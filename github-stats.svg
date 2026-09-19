@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="465" height="195" viewBox="0 0 465 195" fill="none">
+  <style>
+    .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #58a6ff; }
+    .stat { font: 600 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #c9d1d9; }
+    .stat-val { font: 700 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #39d353; }
+  </style>
+  <rect x="0.5" y="0.5" width="464" height="194" rx="10" fill="#0d1117" stroke="#30363d"/>
+  <g transform="translate(25, 35)">
+    <text x="0" y="0" class="header">Subodh's GitHub Stats</text>
+  </g>
+  <g transform="translate(25, 55)">
+    <line x1="0" y1="0" x2="415" y2="0" stroke="#21262d" stroke-width="1"/>
+    
+    <g transform="translate(0, 25)">
+      <circle cx="8" cy="6" r="4.5" fill="#39d353"/>
+      <text x="24" y="10" class="stat">Total Contributions:</text>
+      <text x="330" y="10" class="stat-val">45</text>
+    </g>
+    
+    <g transform="translate(0, 52)">
+      <circle cx="8" cy="6" r="4.5" fill="#58a6ff"/>
+      <text x="24" y="10" class="stat">Public Repositories:</text>
+      <text x="330" y="10" class="stat-val">6</text>
+    </g>
+    
+    <g transform="translate(0, 79)">
+      <circle cx="8" cy="6" r="4.5" fill="#f1e05a"/>
+      <text x="24" y="10" class="stat">Current Streak:</text>
+      <text x="330" y="10" class="stat-val">3 days</text>
+    </g>
+
+    <g transform="translate(0, 106)">
+      <circle cx="8" cy="6" r="4.5" fill="#ffa657"/>
+      <text x="24" y="10" class="stat">Core Domain:</text>
+      <text x="260" y="10" class="stat-val" fill="#58a6ff">Data &amp; BI Analytics</text>
+    </g>
+  </g>
+</svg>

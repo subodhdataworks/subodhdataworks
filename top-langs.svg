@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="195" viewBox="0 0 380 195" fill="none">
+  <style>
+    .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #58a6ff; }
+    .lang-name { font: 600 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: #c9d1d9; }
+    .lang-pct { font: 600 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: #8b949e; }
+  </style>
+  <rect x="0.5" y="0.5" width="379" height="194" rx="10" fill="#0d1117" stroke="#30363d"/>
+  <g transform="translate(25, 35)">
+    <text x="0" y="0" class="header">Most Used Languages</text>
+  </g>
+  <g transform="translate(25, 55)">
+    <line x1="0" y1="0" x2="330" y2="0" stroke="#21262d" stroke-width="1"/>
+
+    <!-- Progress bar -->
+    <g transform="translate(0, 15)">
+      <rect x="0" y="0" width="330" height="10" rx="5" fill="#21262d"/>
+      <rect x="0" y="0" width="235" height="10" rx="5" fill="#DA5B0B"/>
+      <rect x="237" y="0" width="48" height="10" fill="#3572A5"/>
+      <rect x="287" y="0" width="28" height="10" fill="#F2C811"/>
+      <rect x="317" y="0" width="13" height="10" rx="5" fill="#3178C6"/>
+    </g>
+
+    <!-- Legend Row 1 -->
+    <g transform="translate(0, 45)">
+      <circle cx="6" cy="6" r="5" fill="#DA5B0B"/>
+      <text x="20" y="10" class="lang-name">Jupyter Notebook</text>
+      <text x="135" y="10" class="lang-pct">71.2%</text>
+
+      <circle cx="185" cy="6" r="5" fill="#3572A5"/>
+      <text x="200" y="10" class="lang-name">Python</text>
+      <text x="290" y="10" class="lang-pct">14.5%</text>
+    </g>
+
+    <!-- Legend Row 2 -->
+    <g transform="translate(0, 75)">
+      <circle cx="6" cy="6" r="5" fill="#F2C811"/>
+      <text x="20" y="10" class="lang-name">Power BI / DAX</text>
+      <text x="135" y="10" class="lang-pct">8.5%</text>
+
+      <circle cx="185" cy="6" r="5" fill="#3178C6"/>
+      <text x="200" y="10" class="lang-name">TypeScript</text>
+      <text x="290" y="10" class="lang-pct">5.8%</text>
+    </g>
+  </g>
+</svg>

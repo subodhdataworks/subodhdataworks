@@ -149,13 +149,13 @@
 <h3><code>subodhdataworks@github ~ $ ./stats.sh</code></h3>
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=subodhdataworks&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0d1117&title_color=58a6ff&icon_color=39d353&text_color=c9d1d9" alt="Subodh's GitHub Stats" />
+  <img src="./github-stats.svg" alt="Subodh's GitHub Stats" />
   &nbsp;&nbsp;
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=subodhdataworks&layout=compact&theme=tokyonight&hide_border=true&bg_color=0d1117&title_color=58a6ff&text_color=c9d1d9" alt="Top Languages" />
+  <img src="./top-langs.svg" alt="Top Languages" />
 </p>
 
 <p align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=subodhdataworks&theme=tokyonight&hide_border=true&background=0d1117&stroke=30363d&ring=58a6ff&fire=ffa657&currStreakLabel=39d353" alt="GitHub Streak Stats" />
+  <img src="https://streak-stats.demolab.com/?user=subodhdataworks&theme=tokyonight&hide_border=true&background=0d1117&stroke=30363d&ring=58a6ff&fire=ffa657&currStreakLabel=39d353" alt="GitHub Streak Stats" />
 </p>
 
 <br>
