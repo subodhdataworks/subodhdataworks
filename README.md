@@ -9,7 +9,7 @@
 <table>
   <tr>
     <td valign="top">
-      <img src="./subodh-photo.png" width="370" alt="Subodh Kumar — Power BI Data Analyst" />
+      <img src="./subodh-photo.png" width="370" alt="Subodh Kumar — Business Analysis & Data Intelligence" />
     </td>
     <td valign="top">
       <img src="./wordmark.svg" width="490" alt="SUBODH — 3D ASCII wordmark" />
