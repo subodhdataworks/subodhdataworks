@@ -6,12 +6,16 @@
 
 <h3><code>subodhdataworks@github ~ $ whoami</code></h3>
 
-<img src="./subodh-banner.png" width="860" alt="Subodh Kumar — Microsoft Certified Power BI Data Analyst" />
-
-<br>
-<br>
-
-<img src="./wordmark.svg" width="490" alt="SUBODH — 3D ASCII wordmark" />
+<table>
+  <tr>
+    <td valign="top">
+      <img src="./subodh-photo.png" width="370" alt="Subodh Kumar — Power BI Data Analyst" />
+    </td>
+    <td valign="top">
+      <img src="./wordmark.svg" width="490" alt="SUBODH — 3D ASCII wordmark" />
+    </td>
+  </tr>
+</table>
 
 <br>
 
