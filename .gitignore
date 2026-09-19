@@ -8,7 +8,6 @@ requirements-local.txt
 preview_*.html
 scratch_*
 avi-ascii-static.svg
-info-card.svg
 source-prepped.png
 
 # Python artifacts
