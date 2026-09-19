@@ -12,7 +12,7 @@ jobs:
   refresh-graph:
     runs-on: ubuntu-latest
     env:
-      GH_PROFILE_USER: hxrshityadav
+      GH_PROFILE_USER: subodhdataworks
 
     steps:
       - uses: actions/checkout@v4

@@ -14,7 +14,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "..", "info-card.svg")
 STATIC = bool(os.environ.get("STATIC"))
 
-W, H = 480, 475
+W, H = 500, 485
 PAD = 20
 TITLEBAR_H = 30
 KEY_X = PAD
@@ -32,41 +32,31 @@ GREEN = "#3fb950"
 ACCENT = "#22d3ee"
 
 # ===========================================================================
-#  EDIT THIS  -- your info panel. It re-lays-out automatically; if it gets too
-#  tall for the card, bump H above (and the width= in your profile README).
-#  The username in the header is HOST below.
-#
-#  row types:
-#    ("host",)              -> "you@github" header + rule
-#    ("kv", key, value)     -> orange key + light value
-#    ("sec", title)         -> blue "— title —" section rule
-#    ("bul", text)          -> green dot + light bullet
-#    ("gap",)               -> a little vertical space
+#  Subodh Data Analyst / Business Analyst info card
 # ===========================================================================
-HOST = "hxrshityadav"   # shown as  hxrshityadav@github  in the header
+HOST = "subodhdataworks"
 
 ROWS = [
     ("host",),
-    ("kv", "Now",      "Fullstack Developer & AI Builder"),
-    ("kv", "Focus",    "SaaS products · developer tooling"),
-    ("kv", "Building", "AI-powered web apps end-to-end"),
+    ("kv", "Role",         "Data Analyst · Business Analyst"),
+    ("kv", "Focus",        "Business Intelligence · KPI Metrics · Dashboards"),
+    ("kv", "Impact",       "Turning raw data into actionable business decisions"),
     ("gap",),
-    ("sec", "Stack"),
-    ("kv", "Frontend",  "React · Next.js · TypeScript"),
-    ("kv", "Backend",   "Node.js · Express · PostgreSQL"),
-    ("kv", "AI / ML",   "OpenAI · LangChain · Hugging Face"),
-    ("kv", "Cloud",     "Vercel · Docker · AWS"),
-    ("kv", "Tools",     "Git · Prisma · Tailwind CSS"),
+    ("sec", "Core Analytics Stack"),
+    ("kv", "BI & Viz",     "Power BI · DAX · Power Query · Tableau · Excel"),
+    ("kv", "SQL / DB",     "PostgreSQL · MySQL · Complex Queries · Joins"),
+    ("kv", "Python",       "Pandas · NumPy · Matplotlib · Seaborn · EDA"),
+    ("kv", "Domain",       "Fintech · Banking Fraud · Payment Systems"),
+    ("kv", "Tools",        "Git · Jupyter Notebook · VS Code · Vercel"),
     ("gap",),
-    ("sec", "Links"),
-    ("kv", "Portfolio", "harshityadav.dev"),
-    ("kv", "LinkedIn",  "in/hxrshityadav"),
-    ("kv", "X / Twitter", "@harshityadav"),
-    ("kv", "Instagram", "@hxrshityadav"),
+    ("sec", "Featured Analytics Projects"),
+    ("bul", "PhonePe Payment Analytics Dashboard (Power BI & DAX)"),
+    ("bul", "Paisabazaar Banking Fraud & Credit Score EDA (Python)"),
+    ("bul", "Starbucks Beverage Analytics Dashboard (Power BI)"),
     ("gap",),
-    ("sec", "Highlights"),
-    ("bul", "Open-source contributor & AI app builder"),
-    ("bul", "Ships full products solo, fast"),
+    ("sec", "Connect"),
+    ("kv", "GitHub",       "github.com/subodhdataworks"),
+    ("kv", "Portfolio",    "Data Analyst Portfolio (my-portfolio)"),
 ]
 
 
