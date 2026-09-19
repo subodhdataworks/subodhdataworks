@@ -9,7 +9,7 @@
 <table>
   <tr>
     <td valign="top">
-      <img src="./subodh-ascii.svg" width="370" alt="Subodh — ASCII portrait" />
+      <img src="./subodh-live.gif" width="370" alt="Subodh Kumar — Live Video" />
     </td>
     <td valign="top">
       <img src="./wordmark.svg" width="490" alt="SUBODH — 3D ASCII wordmark" />
