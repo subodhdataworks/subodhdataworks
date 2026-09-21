@@ -97,54 +97,100 @@ I work with data to uncover patterns, track business performance, and build inte
 
 ## 🚀 Featured Projects
 
-### 1. 📱 [PhonePe Payment Analytics | Power BI](https://github.com/subodhdataworks/PhonePe-Payment-Analytics-PowerBI)
-
-Analyzed digital payment transaction data to explore transaction performance, user activity, and payment trends through an interactive Power BI dashboard.
-
-<p align="center">
-  <a href="https://github.com/subodhdataworks/PhonePe-Payment-Analytics-PowerBI">
-    <img src="https://raw.githubusercontent.com/subodhdataworks/PhonePe-Payment-Analytics-PowerBI/main/dashboard.png" width="820" alt="PhonePe Payment Analytics Power BI Dashboard" />
-  </a>
-</p>
-
-**Key Highlights:**
-* 📊 **300K+** transactions analyzed
-* 💰 **₹3.47B** total transaction value
-* 👥 **108K** unique users represented
-* 📈 **96%** payment success rate, demographic breakdown & temporal trends
-
-> **Tools:** `Power BI` · `DAX` · `Power Query` · `Data Modeling` · `Data Visualization`  
-> 🔗 [**View Project Repository & Case Study**](https://github.com/subodhdataworks/PhonePe-Payment-Analytics-PowerBI)
-
-<br>
-
-### 2. ☕ [Starbucks Beverage Analytics | Power BI](https://github.com/subodhdataworks/-Starbucks-Beverage-Analytics-Dashboard-Power-BI)
-
-Explored Starbucks beverage data and created an interactive dashboard analyzing product-related nutritional insights, category comparisons, and global store footprint.
-
-<p align="center">
-  <a href="https://github.com/subodhdataworks/-Starbucks-Beverage-Analytics-Dashboard-Power-BI">
-    <img src="https://raw.githubusercontent.com/subodhdataworks/-Starbucks-Beverage-Analytics-Dashboard-Power-BI/main/dashboard.png" width="820" alt="Starbucks Beverage Analytics Power BI Dashboard" />
-  </a>
-</p>
-
-**Key Highlights:**
-* 🥤 **33** core beverage nutritional profiles evaluated
-* 🍬 **Sugar (32.96g) vs. Calories (193.87 kcal) vs. Caffeine (81.35mg)** trade-off analysis
-* ⚡ Top 5 caffeine potency rankings & preparation style impact
-* 🌍 Global store distribution mapping across international hubs
-
-> **Tools:** `Power BI` · `DAX` · `Power Query` · `Geospatial Mapping` · `Data Visualization`  
-> 🔗 [**View Project Repository & Case Study**](https://github.com/subodhdataworks/-Starbucks-Beverage-Analytics-Dashboard-Power-BI)
-
-<br>
-
-### 3. 🛡️ [Paisabazaar Banking Fraud Analysis](https://github.com/subodhdataworks/Product-Dissection-for-Paisabazaar-Banking-Fraud-Analysis)
-
-Conducted a structured product dissection evaluating Paisabazaar's banking fraud use case with risk assessment KPIs, transaction anomaly patterns, and dashboard design.
-
-> **Tools:** `Business Analytics` · `Fraud Modeling` · `Risk KPIs` · `Power BI`  
-> 🔗 [**View Project Repository**](https://github.com/subodhdataworks/Product-Dissection-for-Paisabazaar-Banking-Fraud-Analysis)
+<table width="100%">
+  <tr>
+    <td width="50%" valign="top">
+      <h3 align="center">📱 <a href="https://github.com/subodhdataworks/PhonePe-Payment-Analytics-PowerBI">PhonePe Payment Analytics</a></h3>
+      <p align="center">
+        <a href="https://github.com/subodhdataworks/PhonePe-Payment-Analytics-PowerBI">
+          <img src="https://raw.githubusercontent.com/subodhdataworks/PhonePe-Payment-Analytics-PowerBI/main/dashboard.png" width="100%" alt="PhonePe Payment Analytics Power BI Dashboard" />
+        </a>
+      </p>
+      <b>Digital Payment Business Intelligence Case Study</b> analyzing transaction performance, user demographics, and payment reliability across ₹3.47B+ GMV.
+      <br><br>
+      <b>Key Highlights:</b>
+      <ul>
+        <li>📊 <b>300K+</b> Transactions analyzed</li>
+        <li>💰 <b>₹3.47B</b> Total transaction value</li>
+        <li>👥 <b>108K</b> Unique active users</li>
+        <li>⚡ <b>96%</b> Payment success rate</li>
+      </ul>
+      <p>
+        <code>Power BI</code> · <code>DAX</code> · <code>Power Query</code> · <code>Data Modeling</code>
+      </p>
+      <p align="center">
+        <a href="https://github.com/subodhdataworks/PhonePe-Payment-Analytics-PowerBI">
+          <img src="https://img.shields.io/badge/View_Case_Study-0A66C2?style=for-the-badge&logo=github&logoColor=white" alt="View Project" />
+        </a>
+      </p>
+    </td>
+    <td width="50%" valign="top">
+      <h3 align="center">☕ <a href="https://github.com/subodhdataworks/-Starbucks-Beverage-Analytics-Dashboard-Power-BI">Starbucks Beverage Analytics</a></h3>
+      <p align="center">
+        <a href="https://github.com/subodhdataworks/-Starbucks-Beverage-Analytics-Dashboard-Power-BI">
+          <img src="https://raw.githubusercontent.com/subodhdataworks/-Starbucks-Beverage-Analytics-Dashboard-Power-BI/main/dashboard.png" width="100%" alt="Starbucks Beverage Analytics Power BI Dashboard" />
+        </a>
+      </p>
+      <b>Nutritional & Retail Strategy BI Dashboard</b> evaluating calorie, sugar, and caffeine balances alongside Starbucks' global store network.
+      <br><br>
+      <b>Key Highlights:</b>
+      <ul>
+        <li>🥤 <b>33</b> Core beverage profiles analyzed</li>
+        <li>🍬 <b>Sugar (32.96g) vs. Calories (193.87)</b> trade-offs</li>
+        <li>⚡ <b>Classic Espresso (122mg)</b> highest caffeine</li>
+        <li>🌍 Global store network mapping via Bing Maps</li>
+      </ul>
+      <p>
+        <code>Power BI</code> · <code>DAX</code> · <code>Power Query</code> · <code>Geospatial</code>
+      </p>
+      <p align="center">
+        <a href="https://github.com/subodhdataworks/-Starbucks-Beverage-Analytics-Dashboard-Power-BI">
+          <img src="https://img.shields.io/badge/View_Case_Study-0A66C2?style=for-the-badge&logo=github&logoColor=white" alt="View Project" />
+        </a>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3 align="center">🛡️ <a href="https://github.com/subodhdataworks/Product-Dissection-for-Paisabazaar-Banking-Fraud-Analysis">Paisabazaar Fraud Dissection</a></h3>
+      <b>Banking Risk & Product Analytics</b> dissection evaluating digital banking fraud patterns, anomaly detection, and risk assessment KPIs.
+      <br><br>
+      <b>Key Highlights:</b>
+      <ul>
+        <li>🔍 Product dissection on transaction fraud patterns</li>
+        <li>📑 Risk mitigation framework & operational metrics</li>
+        <li>📊 Executive fraud monitoring architecture</li>
+      </ul>
+      <p>
+        <code>Business Analytics</code> · <code>Risk KPIs</code> · <code>Fraud Modeling</code>
+      </p>
+      <p align="center">
+        <a href="https://github.com/subodhdataworks/Product-Dissection-for-Paisabazaar-Banking-Fraud-Analysis">
+          <img src="https://img.shields.io/badge/View_Case_Study-0A66C2?style=for-the-badge&logo=github&logoColor=white" alt="View Project" />
+        </a>
+      </p>
+    </td>
+    <td width="50%" valign="top">
+      <h3 align="center">🐍 <a href="https://github.com/subodhdataworks/Paisabazaar_EDA">Paisabazaar Fraud EDA (Python)</a></h3>
+      <b>Exploratory Data Analysis (EDA)</b> in Python & Jupyter Notebook evaluating user financial profiles, credit behaviors, and fraud flags.
+      <br><br>
+      <b>Key Highlights:</b>
+      <ul>
+        <li>🧹 Python data cleaning, handling nulls & outliers</li>
+        <li>📈 Correlation heatmaps & feature distributions</li>
+        <li>💡 Actionable risk flags for automated underwriting</li>
+      </ul>
+      <p>
+        <code>Python</code> · <code>Pandas</code> · <code>Jupyter</code> · <code>Seaborn</code>
+      </p>
+      <p align="center">
+        <a href="https://github.com/subodhdataworks/Paisabazaar_EDA">
+          <img src="https://img.shields.io/badge/View_Case_Study-0A66C2?style=for-the-badge&logo=github&logoColor=white" alt="View Project" />
+        </a>
+      </p>
+    </td>
+  </tr>
+</table>
 
 <br>
 
