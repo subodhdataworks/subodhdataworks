@@ -101,23 +101,41 @@ I work with data to uncover patterns, track business performance, and build inte
 
 Analyzed digital payment transaction data to explore transaction performance, user activity, and payment trends through an interactive Power BI dashboard.
 
+<p align="center">
+  <a href="https://github.com/subodhdataworks/PhonePe-Payment-Analytics-PowerBI">
+    <img src="https://raw.githubusercontent.com/subodhdataworks/PhonePe-Payment-Analytics-PowerBI/main/dashboard.png" width="820" alt="PhonePe Payment Analytics Power BI Dashboard" />
+  </a>
+</p>
+
 **Key Highlights:**
 * 📊 **300K+** transactions analyzed
-* 💰 **₹3.47B** transaction value
-* 👥 **108K** users represented in the analysis
-* 📈 Payment success rate, drop-off funnels, and state-wise transaction trends
+* 💰 **₹3.47B** total transaction value
+* 👥 **108K** unique users represented
+* 📈 **96%** payment success rate, demographic breakdown & temporal trends
 
 > **Tools:** `Power BI` · `DAX` · `Power Query` · `Data Modeling` · `Data Visualization`  
-> 🔗 [**View Project Repository**](https://github.com/subodhdataworks/PhonePe-Payment-Analytics-PowerBI)
+> 🔗 [**View Project Repository & Case Study**](https://github.com/subodhdataworks/PhonePe-Payment-Analytics-PowerBI)
 
 <br>
 
 ### 2. ☕ [Starbucks Beverage Analytics | Power BI](https://github.com/subodhdataworks/-Starbucks-Beverage-Analytics-Dashboard-Power-BI)
 
-Explored Starbucks beverage data and created an interactive dashboard to present product-related insights, category comparisons, and nutritional metrics.
+Explored Starbucks beverage data and created an interactive dashboard analyzing product-related nutritional insights, category comparisons, and global store footprint.
 
-> **Tools:** `Power BI` · `Data Visualization` · `Business Intelligence` · `Data Cleaning`  
-> 🔗 [**View Project Repository**](https://github.com/subodhdataworks/-Starbucks-Beverage-Analytics-Dashboard-Power-BI)
+<p align="center">
+  <a href="https://github.com/subodhdataworks/-Starbucks-Beverage-Analytics-Dashboard-Power-BI">
+    <img src="https://raw.githubusercontent.com/subodhdataworks/-Starbucks-Beverage-Analytics-Dashboard-Power-BI/main/dashboard.png" width="820" alt="Starbucks Beverage Analytics Power BI Dashboard" />
+  </a>
+</p>
+
+**Key Highlights:**
+* 🥤 **33** core beverage nutritional profiles evaluated
+* 🍬 **Sugar (32.96g) vs. Calories (193.87 kcal) vs. Caffeine (81.35mg)** trade-off analysis
+* ⚡ Top 5 caffeine potency rankings & preparation style impact
+* 🌍 Global store distribution mapping across international hubs
+
+> **Tools:** `Power BI` · `DAX` · `Power Query` · `Geospatial Mapping` · `Data Visualization`  
+> 🔗 [**View Project Repository & Case Study**](https://github.com/subodhdataworks/-Starbucks-Beverage-Analytics-Dashboard-Power-BI)
 
 <br>
 
