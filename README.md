@@ -25,6 +25,36 @@
 </p>
 
 <br>
+
+<!-- ====================================================================
+     ABOUT ME / EXECUTIVE SUMMARY
+     ==================================================================== -->
+
+<h3><code>subodhdataworks@github ~ $ cat about_me.md</code></h3>
+
+<table width="85%" align="center">
+  <tr>
+    <td align="left">
+      <p>
+        👋 <b>Hi, I'm Subodh Kumar!</b> A passionate and results-driven <b>Data Analyst & Business Analyst</b> with a strong analytical mindset dedicated to transforming raw, complex datasets into actionable business intelligence, KPI metrics, and high-impact interactive dashboards.
+      </p>
+      <p>
+        🎯 <b>What I Bring to the Table:</b>
+        <ul>
+          <li><b>Business Intelligence & Reporting:</b> Designing executive-ready dashboards in <b>Power BI</b> & <b>Tableau</b> using advanced <b>DAX</b> measures, Star Schema data modeling, and automated KPI tracking.</li>
+          <li><b>Data Wrangling & SQL:</b> Writing optimized <b>SQL queries</b> (Joins, Window Functions, CTEs, Aggregations) on PostgreSQL & MySQL to extract, clean, and manipulate multi-million-row datasets.</li>
+          <li><b>Exploratory Data Analysis:</b> Leveraging <b>Python</b> (Pandas, NumPy, Matplotlib, Seaborn) to uncover hidden patterns, customer behavioral trends, and commercial risks.</li>
+          <li><b>Domain Specialization:</b> Hands-on project experience in <b>Fintech & Payment systems</b> (drop-off funnels, transaction success rates) and <b>Banking fraud detection & credit risk</b>.</li>
+        </ul>
+      </p>
+      <p>
+        💡 <i>"My mission is to bridge the gap between complex data and strategic business decisions — driving growth, cutting operational inefficiencies, and delivering measurable ROI."</i>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<br>
 <br>
 
 <!-- ====================================================================
