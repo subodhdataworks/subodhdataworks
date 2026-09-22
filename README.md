@@ -152,7 +152,32 @@ I work with data to uncover patterns, track business performance, and build inte
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <h3 align="center">🛡️ <a href="https://github.com/subodhdataworks/Product-Dissection-for-Paisabazaar-Banking-Fraud-Analysis">Paisabazaar Fraud Dissection</a></h3>
+      <h3 align="center">🤖 <a href="https://github.com/subodhdataworks/smart-analyst-ai">Smart Analyst AI Platform</a></h3>
+      <p align="center">
+        <a href="https://github.com/subodhdataworks/smart-analyst-ai">
+          <img src="https://raw.githubusercontent.com/subodhdataworks/smart-analyst-ai/main/dashboard.png" width="100%" alt="Smart Analyst AI Dashboard" />
+        </a>
+      </p>
+      <b>Autonomous Sales Intelligence & Analytics Web Platform</b> with in-browser dataset parser, auto-computed KPIs, dual-axis Recharts, and n8n AI Copilot.
+      <br><br>
+      <b>Key Highlights:</b>
+      <ul>
+        <li>⚡ Drag & Drop Excel/CSV in-browser parser</li>
+        <li>📊 Autonomous KPI engine & dual-axis Recharts</li>
+        <li>🤖 Integrated <b>n8n AI Analyst Copilot</b></li>
+        <li>💾 IndexedDB persistence across sessions</li>
+      </ul>
+      <p>
+        <code>React 19</code> · <code>TypeScript</code> · <code>Recharts</code> · <code>n8n AI</code>
+      </p>
+      <p align="center">
+        <a href="https://github.com/subodhdataworks/smart-analyst-ai">
+          <img src="https://img.shields.io/badge/View_Platform-0A66C2?style=for-the-badge&logo=github&logoColor=white" alt="View Project" />
+        </a>
+      </p>
+    </td>
+    <td width="50%" valign="top">
+      <h3 align="center">🛡️ <a href="https://github.com/subodhdataworks/Product-Dissection-for-Paisabazaar-Banking-Fraud-Analysis">Paisabazaar Fraud Analytics</a></h3>
       <b>Banking Risk & Product Analytics</b> dissection evaluating digital banking fraud patterns, anomaly detection, and risk assessment KPIs.
       <br><br>
       <b>Key Highlights:</b>
@@ -160,31 +185,13 @@ I work with data to uncover patterns, track business performance, and build inte
         <li>🔍 Product dissection on transaction fraud patterns</li>
         <li>📑 Risk mitigation framework & operational metrics</li>
         <li>📊 Executive fraud monitoring architecture</li>
+        <li>🐍 Python & EDA credit risk modeling</li>
       </ul>
       <p>
-        <code>Business Analytics</code> · <code>Risk KPIs</code> · <code>Fraud Modeling</code>
+        <code>Business Analytics</code> · <code>Risk KPIs</code> · <code>Fraud Modeling</code> · <code>Python</code>
       </p>
       <p align="center">
         <a href="https://github.com/subodhdataworks/Product-Dissection-for-Paisabazaar-Banking-Fraud-Analysis">
-          <img src="https://img.shields.io/badge/View_Case_Study-0A66C2?style=for-the-badge&logo=github&logoColor=white" alt="View Project" />
-        </a>
-      </p>
-    </td>
-    <td width="50%" valign="top">
-      <h3 align="center">🐍 <a href="https://github.com/subodhdataworks/Paisabazaar_EDA">Paisabazaar Fraud EDA (Python)</a></h3>
-      <b>Exploratory Data Analysis (EDA)</b> in Python & Jupyter Notebook evaluating user financial profiles, credit behaviors, and fraud flags.
-      <br><br>
-      <b>Key Highlights:</b>
-      <ul>
-        <li>🧹 Python data cleaning, handling nulls & outliers</li>
-        <li>📈 Correlation heatmaps & feature distributions</li>
-        <li>💡 Actionable risk flags for automated underwriting</li>
-      </ul>
-      <p>
-        <code>Python</code> · <code>Pandas</code> · <code>Jupyter</code> · <code>Seaborn</code>
-      </p>
-      <p align="center">
-        <a href="https://github.com/subodhdataworks/Paisabazaar_EDA">
           <img src="https://img.shields.io/badge/View_Case_Study-0A66C2?style=for-the-badge&logo=github&logoColor=white" alt="View Project" />
         </a>
       </p>
