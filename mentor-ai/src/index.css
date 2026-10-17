@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  html, body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #F8F9FD;
+    color: #0F172A;
+    scroll-behavior: smooth;
+  }
+}
+
+/* Custom scrollbar hiding for clean app experience */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Floating AI orb pulse animation */
+@keyframes aiPulse {
+  0%, 100% {
+    box-shadow: 0 0 25px 4px rgba(99, 102, 241, 0.45), 0 0 40px 10px rgba(168, 85, 247, 0.25);
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    box-shadow: 0 0 35px 8px rgba(99, 102, 241, 0.65), 0 0 55px 15px rgba(236, 72, 153, 0.35);
+    transform: translateY(-2px) scale(1.02);
+  }
+}
+
+.ai-glow-button {
+  animation: aiPulse 3.5s ease-in-out infinite;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.glass-card-subtle {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Safe area support for iOS / Android */
+.safe-pb {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
+}

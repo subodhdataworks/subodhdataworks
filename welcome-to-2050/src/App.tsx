@@ -63,12 +63,14 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const handleLogin = (name: string) => {
+  const handleLogin = (name: string, email?: string, avatar?: string) => {
     const finalName = name && name.trim().length > 0 ? name.trim() : 'Learner';
     setUserName(finalName);
     setIsLoggedIn(true);
     if (typeof window !== 'undefined') {
       localStorage.setItem('futureai_user_name', finalName);
+      if (email) localStorage.setItem('futureai_user_email', email);
+      if (avatar) localStorage.setItem('futureai_user_avatar', avatar);
       localStorage.setItem('futureai_logged_in', 'true');
       window.location.hash = '#dashboard';
     }

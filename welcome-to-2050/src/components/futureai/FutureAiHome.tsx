@@ -31,7 +31,7 @@ interface FutureAiHomeProps {
   onOpenCommunity?: () => void;
   isLoggedIn?: boolean;
   userName?: string;
-  onLoginSuccess?: (name: string) => void;
+  onLoginSuccess?: (name: string, email?: string, avatar?: string) => void;
   onOpenDashboard?: () => void;
 }
 
@@ -196,9 +196,9 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       <FutureAuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
-        onSuccess={(name) => {
+        onSuccess={(name, email, avatar) => {
           setAuthModalOpen(false);
-          onLoginSuccess?.(name);
+          onLoginSuccess?.(name, email, avatar);
         }}
       />
 

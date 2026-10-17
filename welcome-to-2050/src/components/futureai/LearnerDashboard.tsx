@@ -1208,7 +1208,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           {/* User Profile */}
           <div className="dock-user-profile" onClick={() => onLogout?.()}>
             <img 
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces" 
+              src={(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_avatar') : null) || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"} 
               alt={userName} 
               className="dock-avatar-img" 
             />
