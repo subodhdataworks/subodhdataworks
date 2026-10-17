@@ -1,0 +1,239 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #FAFCFE;
+    color: #0F172A;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+}
+
+/* =========================================================================
+   2050 LIGHT FUTURISTIC DESIGN SYSTEM (Apple + DeepMind + Clean Tech)
+   Bright white, soft glass, subtle blue/cyan/emerald/violet accents
+   ========================================================================= */
+
+/* Soft frosted light glass panel */
+.light-glass {
+  background: rgba(255, 255, 255, 0.76);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(226, 232, 240, 0.7);
+  box-shadow: 0 10px 30px -8px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(255, 255, 255, 0.8) inset;
+}
+
+/* High-elevation light futuristic card */
+.light-glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 252, 0.72) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 20px 40px -15px rgba(14, 165, 233, 0.07), 0 1px 3px rgba(15, 23, 42, 0.04);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.light-glass-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(14, 165, 233, 0.35);
+  box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.15), 0 0 0 1px rgba(14, 165, 233, 0.2);
+}
+
+/* Holographic subtle accent card */
+.holographic-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(186, 230, 253, 0.4);
+  box-shadow: 0 12px 32px -8px rgba(2, 132, 199, 0.08);
+  overflow: hidden;
+}
+
+.holographic-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(56, 189, 248, 0.08) 45%,
+    rgba(16, 185, 129, 0.08) 55%,
+    rgba(168, 85, 247, 0.08) 65%,
+    transparent 80%
+  );
+  pointer-events: none;
+  transition: transform 0.8s ease;
+}
+
+.holographic-card:hover::before {
+  transform: translateX(50%);
+}
+
+/* Soft Volumetric Background Gradients */
+.bg-light-ambient {
+  background: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(224, 242, 254, 0.65), transparent),
+    radial-gradient(ellipse 60% 50% at 10% 20%, rgba(209, 250, 229, 0.45), transparent),
+    radial-gradient(ellipse 60% 50% at 90% 30%, rgba(243, 232, 255, 0.4), transparent),
+    #FAFCFE;
+}
+
+/* 2050 Gradient Text Animations */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.text-gradient-future {
+  background: linear-gradient(135deg, #0284c7 0%, #06b6d4 40%, #10b981 75%, #0284c7 100%);
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 6s ease infinite;
+}
+
+/* 2050 Waveform Bars */
+@keyframes waveDynamic {
+  0%, 100% { height: 6px; opacity: 0.5; }
+  50% { height: 26px; opacity: 1; }
+}
+
+.wave-bar {
+  display: inline-block;
+  width: 3.5px;
+  border-radius: 9999px;
+  background: linear-gradient(to top, #0284c7, #10b981);
+  animation: waveDynamic 1s ease-in-out infinite alternate;
+}
+
+/* Futuristic Subtle Grid Floor Overlay */
+.future-grid-overlay {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+}
+
+/* Smooth Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(14, 165, 233, 0.6);
+}
+
+/* =========================================================================
+   ATS RESUME CHECKER - PREMIUM CARD MICRO-ANIMATIONS
+   ========================================================================= */
+@keyframes floatSubtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes pulseGlowRing {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); }
+}
+
+@keyframes shimmerBtn {
+  0% { transform: translateX(-150%); }
+  50%, 100% { transform: translateX(180%); }
+}
+
+.animate-float-subtle {
+  animation: floatSubtle 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlowRing 2.5s infinite;
+}
+
+.btn-shimmer-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer-effect::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.35) 50%, transparent 100%);
+  transform: translateX(-150%);
+  animation: shimmerBtn 3.2s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes pulseBadge {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+.animate-pulse-badge {
+  animation: pulseBadge 2.2s ease-in-out infinite;
+}
+
+/* =========================================================================
+   CONTINUOUS AUTOMATIC SLIDING CAROUSEL / MARQUEE (Stories Track)
+   ========================================================================= */
+@keyframes slideMarqueeLeftToRight {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0%, 0, 0);
+  }
+}
+
+@keyframes slideMarqueeRightToLeft {
+  0% {
+    transform: translate3d(0%, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-stories-ltr {
+  display: flex;
+  width: max-content;
+  animation: slideMarqueeLeftToRight 55s linear infinite;
+  will-change: transform;
+}
+
+.animate-stories-rtl {
+  display: flex;
+  width: max-content;
+  animation: slideMarqueeRightToLeft 55s linear infinite;
+  will-change: transform;
+}
+
+.stories-slider-container:hover .animate-stories-ltr,
+.stories-slider-container:hover .animate-stories-rtl,
+.stories-slider-paused {
+  animation-play-state: paused !important;
+}
+
+

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 24" fill="none">
+  <path d="M4 2L12 22H7L4 14H1L4 2Z" fill="#FA0F00"/>
+  <path d="M20 2L12 22H17L20 14H23L20 2Z" fill="#FA0F00"/>
+  <path d="M12 9.5L16 19H8L12 9.5Z" fill="#FA0F00"/>
+  <text x="32" y="17.5" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="14" fill="#FA0F00" letter-spacing="-0.5">Adobe</text>
+</svg>

@@ -1,0 +1,1365 @@
+/* =========================================================================
+   AI Mock Interview Lab CSS (Pixel-matched to media_1790617782291.jpg)
+   ========================================================================= */
+
+.fai-interview-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f0f6ff;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(224, 242, 254, 0.7) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(238, 242, 255, 0.8) 0px, transparent 50%);
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #0f172a;
+}
+
+/* -------------------------------------------------------------------------
+   1. TOPBAR
+   ------------------------------------------------------------------------- */
+.fai-interview-topbar {
+  height: 64px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.fai-interview-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.fai-interview-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.fai-interview-logo-mark {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+}
+
+.fai-interview-logo-f {
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 19px;
+  line-height: 1;
+}
+
+.fai-interview-logo-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  background: #38bdf8;
+  border-radius: 50%;
+}
+
+.fai-interview-logo-text {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0369a1;
+  letter-spacing: -0.5px;
+}
+
+.fai-interview-logo-ai {
+  color: #0284c7;
+}
+
+.fai-interview-divider-vertical {
+  width: 1px;
+  height: 24px;
+  background: #e2e8f0;
+}
+
+.fai-interview-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.fai-interview-bc-course {
+  color: #334155;
+}
+
+.fai-interview-bc-slash {
+  color: #94a3b8;
+}
+
+.fai-interview-bc-module {
+  color: #0284c7;
+}
+
+/* Center Progress */
+.fai-interview-topbar-center {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fai-interview-progress-segments {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.fai-interview-segment {
+  width: 28px;
+  height: 8px;
+  border-radius: 4px;
+  background: #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.fai-interview-segment.active {
+  background: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.4);
+}
+
+.fai-interview-qcount {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Right Metrics */
+.fai-interview-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.fai-interview-streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+.fai-interview-streak-text {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.fai-interview-metric-val {
+  font-size: 13px;
+  font-weight: 800;
+  color: #b45309;
+}
+
+.fai-interview-metric-lbl {
+  font-size: 11px;
+  font-weight: 600;
+  color: #92400e;
+}
+
+.fai-interview-xp-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fefce8;
+  border: 1px solid #fef08a;
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+.fai-interview-coin-icon {
+  width: 18px;
+  height: 18px;
+  background: #facc15;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(234, 179, 8, 0.4);
+}
+
+.fai-interview-sound-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.fai-interview-sound-btn:hover {
+  background: #f1f5f9;
+}
+
+.fai-interview-avatar-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #38bdf8;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+
+.fai-interview-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* -------------------------------------------------------------------------
+   2. MAIN 3-COLUMN GRID
+   ------------------------------------------------------------------------- */
+.fai-interview-main-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr 340px;
+  gap: 16px;
+  padding: 16px;
+  flex: 1;
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* -------------------------------------------------------------------------
+   LEFT COLUMN: Mission Tree & Assistant
+   ------------------------------------------------------------------------- */
+.fai-interview-left-sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.fai-interview-mission-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.fai-interview-mission-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.fai-interview-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fai-interview-step-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.fai-interview-step-item:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.fai-interview-step-item.active-parent {
+  background: #e0f2fe;
+}
+
+.fai-interview-step-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fai-interview-step-icon.done {
+  background: #10b981;
+}
+
+.fai-interview-step-icon.active {
+  background: #0284c7;
+  border: 2px solid #bae6fd;
+}
+
+.fai-interview-step-inner-dot {
+  width: 6px;
+  height: 6px;
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+.fai-interview-step-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.fai-interview-substep-tree {
+  margin-left: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 10px;
+  border-left: 2px solid #bae6fd;
+  margin-top: -2px;
+  margin-bottom: 6px;
+}
+
+.fai-interview-substep-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.fai-interview-substep-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #cbd5e1;
+}
+
+.fai-interview-substep-dot.active {
+  background: #0284c7;
+}
+
+.fai-interview-substep-label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.fai-interview-substep-label.active {
+  color: #0369a1;
+  font-weight: 700;
+}
+
+/* Robot Assistant Box */
+.fai-interview-robot-bottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding-top: 10px;
+}
+
+.fai-interview-speech-bubble {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: #1e293b;
+  font-weight: 500;
+  position: relative;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.fai-interview-bubble-tail {
+  position: absolute;
+  bottom: -6px;
+  left: 28px;
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  transform: rotate(45deg);
+}
+
+.fai-interview-robot-frame {
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fai-interview-robot-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(14, 165, 233, 0.2));
+  animation: floatRobot 4s ease-in-out infinite;
+}
+
+@keyframes floatRobot {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* -------------------------------------------------------------------------
+   CENTER COLUMN: Questions & Voice Recording
+   ------------------------------------------------------------------------- */
+.fai-interview-center-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Header Banner Card */
+.fai-interview-banner-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.fai-interview-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.fai-interview-purple-mic-box {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(109, 40, 217, 0.25);
+  flex-shrink: 0;
+}
+
+.fai-interview-main-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.fai-interview-main-subtitle {
+  font-size: 12.5px;
+  color: #64748b;
+  margin: 2px 0 0 0;
+}
+
+.fai-interview-pill-topic {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #334155;
+}
+
+/* Card Base */
+.fai-interview-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+}
+
+.fai-interview-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.fai-interview-card-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fai-interview-blue-circle-icon {
+  width: 22px;
+  height: 22px;
+  background: #0284c7;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fai-interview-card-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.fai-interview-timer-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+}
+
+/* Question Body Grid (Typewriter Left, Hints Right) */
+.fai-interview-question-body-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 16px;
+  padding: 18px;
+}
+
+.fai-interview-typewriter-box {
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  padding: 16px;
+  min-height: 120px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.fai-interview-typewriter-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.6;
+  white-space: pre-line;
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+
+.fai-interview-blinking-cursor {
+  display: inline-block;
+  color: #0284c7;
+  font-weight: 900;
+  animation: cursorBlink 0.8s infinite;
+  margin-left: 2px;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.fai-interview-skip-typing-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  font-size: 10px;
+  background: #e2e8f0;
+  border: none;
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: #475569;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.fai-interview-skip-typing-btn:hover {
+  background: #cbd5e1;
+}
+
+/* Hint Box */
+.fai-interview-hint-box {
+  background: #fffdf0;
+  border: 1px solid #fef08a;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.fai-interview-hint-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.fai-interview-bulb-icon {
+  font-size: 15px;
+}
+
+.fai-interview-hint-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #854d0e;
+}
+
+.fai-interview-hint-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fai-interview-hint-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 12px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.fai-interview-hint-bullet {
+  color: #0284c7;
+  font-weight: bold;
+}
+
+/* Answer Card & Recording Area */
+.fai-interview-answer-card {
+  padding-bottom: 14px;
+}
+
+.fai-interview-rec-status-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fai-interview-rec-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 9999px;
+}
+
+.fai-interview-rec-pill.active {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+
+.fai-interview-rec-pill.ready {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+}
+
+.fai-interview-red-dot {
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border-radius: 50%;
+}
+
+.fai-interview-red-dot.pulse {
+  animation: pulseDot 1s infinite;
+}
+
+@keyframes pulseDot {
+  0% { transform: scale(0.9); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.6; }
+  100% { transform: scale(0.9); opacity: 1; }
+}
+
+.fai-interview-timer-elapsed {
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+}
+
+/* Audio Waveform */
+.fai-interview-waveform-container {
+  padding: 16px 20px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70px;
+}
+
+.fai-interview-waveform-bars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 54px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.fai-interview-wave-bar {
+  width: 5px;
+  border-radius: 4px;
+  background: #93c5fd;
+  transition: height 0.1s ease-in-out, background-color 0.2s;
+}
+
+.fai-interview-wave-bar.active {
+  background: linear-gradient(180deg, #0284c7 0%, #38bdf8 100%);
+  box-shadow: 0 0 6px rgba(2, 132, 199, 0.4);
+}
+
+/* Record / Stop Button */
+.fai-interview-rec-control-row {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0 12px;
+}
+
+.fai-interview-stop-btn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 9999px;
+  padding: 10px 24px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
+  transition: all 0.2s;
+}
+
+.fai-interview-stop-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.45);
+}
+
+.fai-interview-start-btn {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 9999px;
+  padding: 10px 24px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+  transition: all 0.2s;
+}
+
+.fai-interview-start-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
+}
+
+/* Transcript Box */
+.fai-interview-transcript-box {
+  padding: 0 18px 12px;
+}
+
+.fai-interview-transcript-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.fai-interview-demo-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fai-interview-sample-chip {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.fai-interview-sample-chip.good {
+  color: #0369a1;
+  border-color: #bae6fd;
+  background: #f0f9ff;
+}
+
+.fai-interview-sample-chip.good:hover {
+  background: #e0f2fe;
+}
+
+.fai-interview-sample-chip.perfect {
+  color: #15803d;
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+
+.fai-interview-sample-chip.perfect:hover {
+  background: #dcfce7;
+}
+
+.fai-interview-transcript-input {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #1e293b;
+  line-height: 1.5;
+  background: #f8fafc;
+  resize: vertical;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.fai-interview-transcript-input:focus {
+  outline: none;
+  border-color: #0284c7;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+/* Tips Bar */
+.fai-interview-tips-bar {
+  margin: 0 18px;
+  background: #f0f9ff;
+  border: 1px solid #e0f2fe;
+  border-radius: 8px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #0369a1;
+}
+
+.fai-interview-tips-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.fai-interview-tips-sep {
+  color: #bae6fd;
+}
+
+/* Bottom Bar */
+.fai-interview-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.fai-interview-prev-btn {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.fai-interview-prev-btn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.fai-interview-submit-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 28px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.fai-interview-submit-btn.ready {
+  background: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+.fai-interview-submit-btn.ready:hover {
+  background: #0369a1;
+  transform: translateY(-1px);
+}
+
+.fai-interview-submit-btn.disabled {
+  background: #cbd5e1;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.fai-interview-next-btn {
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+  transition: all 0.2s;
+}
+
+.fai-interview-next-btn:hover {
+  background: #0369a1;
+  transform: translateY(-1px);
+}
+
+/* -------------------------------------------------------------------------
+   RIGHT COLUMN: Score Gauge, Key Points, Feedback, Model Answer
+   ------------------------------------------------------------------------- */
+.fai-interview-right-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Last Answer Score Card */
+.fai-interview-score-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.fai-interview-score-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.fai-interview-target-icon {
+  width: 22px;
+  height: 22px;
+  background: #e0f2fe;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fai-interview-score-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.fai-interview-score-body {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Donut Gauge */
+.fai-interview-circular-gauge {
+  width: 72px;
+  height: 72px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.fai-interview-gauge-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.fai-interview-gauge-bg {
+  fill: none;
+  stroke: #e2e8f0;
+  stroke-width: 8;
+}
+
+.fai-interview-gauge-fill {
+  fill: none;
+  stroke: #10b981;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.fai-interview-gauge-value {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fai-interview-score-num {
+  font-size: 18px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.fai-interview-score-denom {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.fai-interview-score-summary {
+  display: flex;
+  flex-direction: column;
+}
+
+.fai-interview-rating-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #10b981;
+  margin: 0;
+}
+
+.fai-interview-rating-desc {
+  font-size: 11px;
+  color: #64748b;
+  margin: 3px 0 0 0;
+  line-height: 1.35;
+}
+
+/* Key Points Analysis */
+.fai-interview-analysis-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.fai-interview-analysis-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 10px 0;
+}
+
+.fai-interview-analysis-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fai-interview-kp-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.fai-interview-kp-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fai-interview-kp-badge {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fai-interview-kp-badge.success {
+  background: #10b981;
+}
+
+.fai-interview-kp-badge.danger {
+  background: #ef4444;
+}
+
+.fai-interview-kp-text {
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.fai-interview-kp-row.matched .fai-interview-kp-text {
+  color: #334155;
+}
+
+.fai-interview-kp-row.missed .fai-interview-kp-text {
+  color: #ef4444;
+}
+
+/* Detailed Feedback */
+.fai-interview-detailed-card {
+  background: #f5f3ff;
+  border: 1px solid #e9d5ff;
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.fai-interview-detailed-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.fai-interview-purple-sparkle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fai-interview-detailed-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #6d28d9;
+}
+
+.fai-interview-detailed-text {
+  font-size: 11.5px;
+  color: #5b21b6;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Model Answer */
+.fai-interview-model-card {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.fai-interview-model-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.fai-interview-green-book {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fai-interview-model-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #15803d;
+}
+
+.fai-interview-model-text {
+  font-size: 11.5px;
+  color: #166534;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* -------------------------------------------------------------------------
+   WEB SPEECH API CONTROLS & VOICE-TO-TEXT / TEXT-TO-VOICE STYLES
+   ------------------------------------------------------------------------- */
+.fai-interview-banner-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fai-interview-webspeech-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #065f46;
+}
+
+.fai-interview-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fai-interview-auto-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.fai-interview-auto-toggle:hover {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.fai-interview-auto-toggle.active {
+  background: #f0f9ff;
+  border-color: #bae6fd;
+  color: #0284c7;
+}
+
+.fai-interview-speak-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #0284c7;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.fai-interview-speak-btn:hover {
+  background: #e0f2fe;
+  transform: translateY(-1px);
+}
+
+.fai-interview-speak-btn.speaking {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #dc2626;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.25);
+  animation: pulseSpeaking 1.5s infinite;
+}
+
+@keyframes pulseSpeaking {
+  0%, 100% { box-shadow: 0 0 4px rgba(239, 68, 68, 0.2); }
+  50% { box-shadow: 0 0 12px rgba(239, 68, 68, 0.4); }
+}
+
+.fai-interview-bubble-speak-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.fai-interview-bubble-speak-btn:hover {
+  background: #f1f5f9;
+}
+
+.fai-interview-perm-warning {
+  margin: 10px 18px 0;
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 11.5px;
+  color: #92400e;
+  line-height: 1.4;
+}
+
+.fai-interview-listen-sub-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+}
+
+.fai-interview-listen-sub-btn.purple {
+  background: #ede9fe;
+}
+
+.fai-interview-listen-sub-btn.purple:hover {
+  background: #ddd6fe;
+}
+
+.fai-interview-listen-sub-btn.green {
+  background: #dcfce7;
+}
+
+.fai-interview-listen-sub-btn.green:hover {
+  background: #bbf7d0;
+}
+
+/* -------------------------------------------------------------------------
+   RESPONSIVENESS
+   ------------------------------------------------------------------------- */
+@media (max-width: 1200px) {
+  .fai-interview-main-grid {
+    grid-template-columns: 1fr;
+  }
+  .fai-interview-left-sidebar {
+    display: none;
+  }
+}
+

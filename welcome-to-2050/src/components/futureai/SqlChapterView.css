@@ -1,0 +1,814 @@
+/* =========================================================
+   SQL Chapter View — Exact layout match to PythonChapterView
+   ========================================================= */
+.scv-root {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 16px;
+  align-items: start;
+  font-family: inherit;
+  color: #0f172a;
+}
+.scv-root svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.scv-left { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.scv-right { display: flex; flex-direction: column; gap: 12px; min-width: 0; position: sticky; top: 90px; }
+
+/* ---------- Glass card base ---------- */
+.scv-hero, .scv-chapter, .scv-card {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  border-radius: 18px;
+  box-shadow: 0 8px 28px rgba(30, 90, 200, 0.08);
+}
+
+/* ---------- HERO ---------- */
+.scv-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 180px;
+  padding: 14px 24px;
+  border-radius: 18px 18px 0 0;
+  background: #f8faff;
+}
+.scv-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center right;
+  z-index: 0;
+  pointer-events: none;
+}
+.scv-hero-fade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(240, 246, 255, 0.95) 0%,
+    rgba(240, 246, 255, 0.88) 45%,
+    rgba(240, 246, 255, 0.28) 75%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+.scv-crumbs, .scv-hero-body, .scv-bubble { position: relative; z-index: 2; }
+.scv-crumbs {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: #64748b; font-weight: 600;
+}
+.scv-crumbs button { background: none; border: 0; padding: 0; cursor: pointer; color: #64748b; font: inherit; transition: color 0.15s ease; }
+.scv-crumbs button:hover { color: #7c3aed; }
+.scv-crumbs strong { color: #0f172a; font-weight: 800; }
+.scv-crumbs svg { width: 12px; height: 12px; }
+
+.scv-hero-body { display: flex; align-items: center; gap: 18px; margin-top: 10px; }
+.scv-logo-halo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.scv-logo-halo::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  background: radial-gradient(circle, rgba(147, 51, 234, 0.25) 0%, rgba(59, 130, 246, 0.1) 60%, transparent 80%);
+  border-radius: 50%;
+  filter: blur(8px);
+  z-index: -1;
+}
+.scv-hero-logo {
+  width: 98px; height: 98px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 22px rgba(124, 58, 237, 0.32));
+  animation: scvFloat 4s ease-in-out infinite alternate;
+}
+@keyframes scvFloat { from { transform: translateY(0); } to { transform: translateY(-6px); } }
+
+.scv-hero-text { max-width: 530px; }
+.scv-hero-text h1 {
+  font-size: 26px;
+  font-weight: 900;
+  margin: 0;
+  line-height: 1.15;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+.scv-hero-text h1 span {
+  background: linear-gradient(135deg, #7c3aed 0%, #2563eb 55%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.scv-hero-text p {
+  font-size: 11.5px;
+  color: #475569;
+  margin: 6px 0 11px;
+  line-height: 1.45;
+  font-weight: 500;
+}
+.scv-hero-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.scv-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 9px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #dbeafe;
+  box-shadow: 0 2px 8px rgba(30, 90, 200, 0.05);
+  backdrop-filter: blur(8px);
+  font-size: 11px; font-weight: 700; color: #334155;
+}
+.scv-pill svg { color: #7c3aed; width: 13px; height: 13px; }
+.scv-pill.scv-free {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #15803d;
+  font-weight: 900;
+  padding: 5px 14px;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.15);
+}
+
+.scv-bubble {
+  position: absolute !important;
+  right: 3%; top: 16px;
+  max-width: 160px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 8px 12px;
+  font-size: 11px; font-weight: 700; color: #1e293b; line-height: 1.35;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.18), 0 2px 6px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  animation: scvBubbleFloat 4.5s ease-in-out infinite alternate;
+}
+.scv-bubble::after {
+  content: ''; position: absolute; left: -7px; bottom: 14px;
+  border: 7px solid transparent; border-right-color: #ffffff; border-left: 0;
+}
+@keyframes scvBubbleFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
+}
+
+/* ---------- 20 MODULES SCROLLABLE CONTAINER (Exactly like Python .pcv-topics) ---------- */
+.scv-chapters {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 580px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #f1f5f9;
+}
+
+/* Proper standard scrollbar right beside the modules */
+.scv-chapters::-webkit-scrollbar {
+  width: 7px;
+}
+.scv-chapters::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 99px;
+}
+.scv-chapters::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 99px;
+  border: 2px solid #f1f5f9;
+}
+.scv-chapters::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* ---------- CHAPTER ROW (Ultra-Slim Rounded Pill Line) ---------- */
+.scv-chapter {
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 9999px !important;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03) !important;
+  transition: all .15s ease;
+  background: #ffffff !important;
+}
+.scv-chapter:hover {
+  border-color: #cbd5e1 !important;
+}
+.scv-chapter.open {
+  border-radius: 16px !important;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.1) !important;
+  border-color: #c4b5fd !important;
+}
+
+.scv-chapter-head {
+  display: grid;
+  grid-template-columns: 20px 22px minmax(0, 1fr) 150px 20px;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  min-height: 36px;
+  cursor: pointer;
+}
+.scv-chapter-head:hover { background: rgba(248, 250, 252, 0.9); }
+
+.scv-num {
+  width: 18px; height: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 850; font-size: 10px;
+  box-shadow: none;
+}
+.scv-cicon {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.scv-cicon svg { width: 13px; height: 13px; }
+
+.scv-ctext { min-width: 0; }
+.scv-ctext h3 {
+  font-size: 12px;
+  font-weight: 650;
+  color: #0f172a;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.scv-free-tag {
+  font-style: normal; font-size: 8.5px; font-weight: 900; color: #15803d;
+  background: #dcfce7; border: 1px solid #86efac; border-radius: 9999px; padding: 0.5px 6px;
+}
+
+.scv-cprog { min-width: 0; }
+.scv-cprog-label { font-size: 9px; color: #64748b; font-weight: 600; line-height: 1; }
+.scv-cprog-row { display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+.scv-cprog-row .scv-bar { flex: 1; }
+.scv-cprog-count { font-size: 8.5px; color: #94a3b8; white-space: nowrap; }
+.scv-cprog-row b { font-size: 9px; font-weight: 900; color: #0f172a; min-width: 22px; text-align: right; }
+
+.scv-bar { height: 4px; border-radius: 9999px; background: #f1f5f9; overflow: hidden; }
+.scv-bar.big { height: 6px; margin-top: 5px; }
+.scv-bar i { display: block; height: 100%; border-radius: 9999px; background: linear-gradient(90deg, #7c3aed, #a855f7); }
+
+.scv-chev {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: transparent; border: none; color: #94a3b8;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.scv-chev:hover { color: #7c3aed; background: #f5f3ff; }
+.scv-chev svg { width: 11px; height: 11px; }
+
+/* ---------- Lesson rows (Scrollable topics under chapter) ---------- */
+.scv-lessons {
+  padding: 0 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 250px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #f1f5f9;
+}
+
+.scv-lessons::-webkit-scrollbar {
+  width: 6px;
+}
+.scv-lessons::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 99px;
+}
+.scv-lessons::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 99px;
+  border: 1px solid #f1f5f9;
+}
+.scv-lessons::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+.scv-lesson {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 28px 26px minmax(150px, 1fr) 62px auto 110px auto;
+  align-items: center; gap: 10px;
+  padding: 7px 12px;
+  background: rgba(248, 251, 255, 0.9);
+  border: 1px solid #e6eef9;
+  border-radius: 12px;
+  transition: all .18s ease;
+  cursor: pointer;
+}
+.scv-lesson:hover {
+  border-color: #a855f7;
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.12);
+  transform: translateY(-1px);
+}
+
+.scv-lnum { font-size: 11px; font-weight: 800; color: #334155; }
+.scv-lplay {
+  width: 22px; height: 22px; border-radius: 50%; border: 0; cursor: pointer;
+  background: #7c3aed; color: #fff; display: flex; align-items: center; justify-content: center;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.scv-lplay:hover {
+  transform: scale(1.1);
+  background: #6d28d9;
+}
+.scv-lplay svg { width: 10px; height: 10px; fill: #fff; }
+
+.scv-ltitle {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.scv-lesson:hover .scv-ltitle,
+.scv-ltitle:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+
+.scv-ltime { display: flex; align-items: center; gap: 4px; font-size: 10.5px; color: #475569; font-weight: 600; }
+.scv-ltime svg { width: 12px; height: 12px; color: #7c3aed; }
+
+/* ---------- LESSON ACTIONS ---------- */
+.scv-actions { display: flex; gap: 5px; }
+.scv-act {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 8px; border-radius: 7px; border: 1px solid transparent;
+  font-size: 10px; font-weight: 700; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease;
+}
+.scv-act svg { width: 11px; height: 11px; }
+.scv-act:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+.scv-act.learn     { background: #dbeafe; color: #1d4ed8; }
+.scv-act.learn svg { fill: currentColor; }
+.scv-act.practice  { background: #ede9fe; color: #6d28d9; }
+.scv-act.game      { background: #ffedd5; color: #c2410c; }
+.scv-act.code      { background: #dcfce7; color: #15803d; }
+.scv-act.interview { background: #fce7f3; color: #be185d; }
+.scv-act.report    { background: #f1f5f9; color: #334155; border-color: #e2e8f0; }
+
+/* ---------- LESSON STATUS / BUTTONS ---------- */
+.scv-lstatus { font-size: 10.5px; font-weight: 700; }
+.st-done  { color: #16a34a; display: flex; align-items: center; gap: 4px; }
+.st-prog  { color: #2563eb; display: flex; align-items: center; gap: 4px; }
+.st-todo  { color: #94a3b8; }
+.scv-lstatus svg { width: 13px; height: 13px; }
+
+.scv-continue {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 5px 11px; border-radius: 8px; border: 0; cursor: pointer;
+  background: #7c3aed; color: #fff; font-size: 10.5px; font-weight: 800;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+.scv-continue:hover { background: #6d28d9; }
+
+.scv-lgo {
+  width: 26px; height: 26px; border-radius: 50%; border: 1px solid #e2e8f0;
+  background: #fff; color: #64748b; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all .15s ease;
+}
+.scv-lgo:hover { background: #f5f3ff; color: #7c3aed; border-color: #ddd6fe; }
+
+/* ---------- RIGHT SIDEBAR CARDS ---------- */
+.scv-card { padding: 14px 16px; }
+.scv-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.scv-card-head h4 { font-size: 14px; font-weight: 900; margin: 0; }
+.scv-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: none; border: 0; cursor: pointer; color: #7c3aed; font-size: 11px; font-weight: 700;
+}
+.scv-link svg { width: 12px; height: 12px; }
+
+.scv-prog-top { display: flex; align-items: center; gap: 14px; }
+.scv-ring {
+  width: 70px; height: 70px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; position: relative;
+}
+.scv-ring::before { content: ''; position: absolute; inset: 9px; border-radius: 50%; background: #fff; }
+.scv-ring span { position: relative; font-size: 16px; font-weight: 900; }
+.scv-prog-info { flex: 1; }
+.scv-prog-info strong { font-size: 11.5px; font-weight: 700; }
+
+.scv-mini-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; }
+.scv-mini-stats > div {
+  display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 5px;
+  padding: 7px 7px; border-radius: 10px; background: #faf5ff; border: 1px solid #f3e8ff;
+}
+.scv-mini-stats svg { width: 18px; height: 18px; grid-row: span 1; }
+.scv-mini-stats b { font-size: 13px; font-weight: 900; }
+.scv-mini-stats span { grid-column: span 2; font-size: 9.5px; color: #64748b; font-weight: 600; margin-top: 2px; }
+.c-purple { color: #7c3aed; } .c-amber { color: #f59e0b; } .c-pink { color: #db2777; } .c-teal { color: #0d9488; }
+
+/* ---------- PATH (Scrollable for 20 chapters) ---------- */
+.scv-path {
+  list-style: none; margin: 0; padding: 0; position: relative;
+  max-height: 380px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #f1f5f9;
+}
+.scv-path::-webkit-scrollbar { width: 6px; }
+.scv-path::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 99px; }
+.scv-path::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 99px; }
+
+.scv-path::before {
+  content: ''; position: absolute; left: 11px; top: 14px; bottom: 14px;
+  width: 2px; background: #ddd6fe;
+}
+.scv-path li {
+  position: relative; display: grid; grid-template-columns: 24px 22px 1fr; align-items: center; gap: 10px;
+  padding: 6px 0; cursor: pointer;
+}
+.scv-path-num {
+  width: 24px; height: 24px; border-radius: 50%; background: #fff; border: 1.5px solid #cbd5e1;
+  display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #334155;
+  position: relative; z-index: 1;
+}
+.scv-path li.active .scv-path-num { background: #7c3aed; border-color: #7c3aed; color: #fff; box-shadow: 0 0 0 4px rgba(124,58,237,0.15); }
+.scv-path-check svg { width: 18px; height: 18px; color: #94a3b8; }
+.scv-path li.active .scv-path-check svg { color: #fff; fill: #22c55e; }
+.scv-path strong { display: block; font-size: 11px; font-weight: 700; line-height: 1.25; }
+.scv-path li span:not(.scv-path-num):not(.scv-path-check) { font-size: 10px; color: #64748b; }
+.scv-path li.active div span { color: #16a34a !important; font-weight: 700; }
+.scv-path li:hover strong { color: #7c3aed; }
+
+/* ---------- MENTOR CARD ---------- */
+.scv-mentor { position: relative; overflow: hidden; display: flex; align-items: flex-end; min-height: 150px; }
+.scv-mentor-text { position: relative; z-index: 2; max-width: 62%; }
+.scv-mentor h4 { font-size: 14px; font-weight: 900; margin: 0 0 6px; }
+.scv-mentor p { font-size: 11px; color: #475569; line-height: 1.45; margin: 0 0 10px; }
+.scv-mentor-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 16px; border-radius: 10px; border: 0; cursor: pointer;
+  background: linear-gradient(135deg, #7c3aed, #6d28d9); color: #fff; font-size: 12px; font-weight: 800;
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35); white-space: nowrap;
+}
+.scv-mentor img {
+  position: absolute; right: -14px; bottom: -6px; width: 150px; height: 150px; object-fit: cover;
+  border-radius: 50%;
+  -webkit-mask-image: radial-gradient(circle, #000 55%, transparent 72%);
+  mask-image: radial-gradient(circle, #000 55%, transparent 72%);
+  animation: scvFloat 3.5s ease-in-out infinite alternate;
+}
+.scv-spark { position: absolute; right: 120px; top: 14px; color: #a855f7; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+  .scv-lesson { grid-template-columns: 28px 26px minmax(120px, 1fr) auto auto; }
+  .scv-ltime, .scv-lstatus { display: none; }
+}
+@media (max-width: 1100px) {
+  .scv-root { grid-template-columns: 1fr; }
+  .scv-bubble { display: none; }
+}
+@media (max-width: 760px) {
+  .scv-chapter-head { grid-template-columns: 30px 40px minmax(0, 1fr) 30px; }
+  .scv-cprog { display: none; }
+  .scv-lesson { grid-template-columns: 26px 24px 1fr; }
+  .scv-actions { grid-column: 1 / -1; flex-wrap: wrap; }
+  .scv-continue, .scv-lgo { grid-column: 1 / -1; justify-self: start; }
+  .scv-hero { height: auto; }
+  .scv-hero-icon { width: 64px; height: 64px; }
+}
+
+/* ---------- EXCEL CHAPTER VIEW HERO STYLES ---------- */
+.scv-hero-excel {
+  background: #f0fdf4 !important;
+  border-color: rgba(187, 247, 208, 0.7) !important;
+}
+.scv-hero-fade-excel {
+  background: linear-gradient(
+    90deg,
+    rgba(240, 253, 244, 0.96) 0%,
+    rgba(240, 253, 244, 0.88) 45%,
+    rgba(240, 253, 244, 0.3) 74%,
+    transparent 100%
+  ) !important;
+}
+.scv-hero-excel .scv-crumbs button:hover {
+  color: #059669;
+}
+.scv-logo-halo-excel::after {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.28) 0%, rgba(5, 150, 105, 0.1) 60%, transparent 80%) !important;
+}
+.scv-hero-excel .scv-hero-logo {
+  filter: drop-shadow(0 10px 22px rgba(5, 150, 105, 0.35));
+}
+.scv-hero-excel .scv-hero-text h1 span {
+  background: linear-gradient(135deg, #059669 0%, #0d9488 50%, #0284c7 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+.scv-hero-excel .scv-pill svg {
+  color: #059669;
+}
+
+/* Formula Bar Cheat-Sheet Ribbon — highly useful for learners! */
+.ecv-formula-ribbon {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin: 5px 0 9px;
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(167, 243, 208, 0.85);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.05);
+  max-width: 100%;
+}
+.ecv-fx-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: #065f46;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.ecv-fx-badge i {
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 11px;
+  background: #059669;
+  color: #fff;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.ecv-formula-chip {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #047857;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 2px 6px;
+  border-radius: 5px;
+  letter-spacing: 0.01em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+.scv-bubble-excel {
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.18), 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(167, 243, 208, 0.9) !important;
+}
+
+/* ---------- POWER BI CHAPTER VIEW HERO STYLES ---------- */
+.scv-hero-powerbi {
+  background: #fffbeb !important;
+  border-color: rgba(253, 230, 138, 0.7) !important;
+}
+.scv-hero-fade-powerbi {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 251, 235, 0.96) 0%,
+    rgba(255, 251, 235, 0.88) 45%,
+    rgba(255, 251, 235, 0.3) 74%,
+    transparent 100%
+  ) !important;
+}
+.scv-hero-powerbi .scv-crumbs button:hover {
+  color: #d97706;
+}
+.scv-logo-halo-powerbi::after {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, rgba(217, 119, 6, 0.1) 60%, transparent 80%) !important;
+}
+.scv-hero-powerbi .scv-hero-logo {
+  filter: drop-shadow(0 10px 22px rgba(217, 119, 6, 0.35));
+}
+.scv-hero-powerbi .scv-hero-text h1 span {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 45%, #7c3aed 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+.scv-hero-powerbi .scv-pill svg {
+  color: #d97706;
+}
+
+/* DAX & BI Mastery Ribbon */
+.pb-dax-ribbon {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin: 5px 0 9px;
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(253, 230, 138, 0.9);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.05);
+  max-width: 100%;
+}
+.pb-dax-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: #92400e;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.pb-dax-badge i {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-style: normal;
+  font-weight: 900;
+  font-size: 10.5px;
+  background: #d97706;
+  color: #fff;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.pb-dax-chip {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #b45309;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  padding: 2px 6px;
+  border-radius: 5px;
+  letter-spacing: 0.01em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+.scv-bubble-powerbi {
+  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.18), 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(253, 230, 138, 0.9) !important;
+}
+
+/* ---------- STATISTICS CHAPTER VIEW HERO STYLES ---------- */
+.scv-hero-stats {
+  background: #fdf2f8 !important;
+  border-color: rgba(251, 207, 232, 0.7) !important;
+}
+.scv-hero-fade-stats {
+  background: linear-gradient(
+    90deg,
+    rgba(253, 242, 248, 0.96) 0%,
+    rgba(253, 242, 248, 0.88) 45%,
+    rgba(253, 242, 248, 0.3) 74%,
+    transparent 100%
+  ) !important;
+}
+.scv-hero-stats .scv-crumbs button:hover {
+  color: #db2777;
+}
+.scv-logo-halo-stats::after {
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.28) 0%, rgba(219, 39, 119, 0.1) 60%, transparent 80%) !important;
+}
+.scv-hero-stats .scv-hero-logo {
+  filter: drop-shadow(0 10px 22px rgba(219, 39, 119, 0.35));
+}
+.scv-hero-stats .scv-hero-text h1 span {
+  background: linear-gradient(135deg, #db2777 0%, #9333ea 50%, #2563eb 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+.scv-hero-stats .scv-pill svg {
+  color: #db2777;
+}
+
+/* Statistics Core Concepts Ribbon */
+.st-stats-ribbon {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin: 5px 0 9px;
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(251, 207, 232, 0.9);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 6px rgba(219, 39, 119, 0.05);
+  max-width: 100%;
+}
+.st-stats-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: #9d174d;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.st-stats-badge i {
+  font-family: serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 11px;
+  background: #db2777;
+  color: #fff;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.st-stats-chip {
+  font-size: 9px;
+  font-weight: 700;
+  color: #be185d;
+  background: rgba(236, 72, 153, 0.12);
+  border: 1px solid rgba(236, 72, 153, 0.25);
+  padding: 2px 5px;
+  border-radius: 5px;
+  letter-spacing: 0.01em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+.scv-bubble-stats {
+  box-shadow: 0 8px 24px rgba(219, 39, 119, 0.18), 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(251, 207, 232, 0.9) !important;
+}
+
+/* ---------- GENAI CHAPTER VIEW HERO STYLES ---------- */
+.scv-hero-genai {
+  background: #f0f9ff !important;
+  border-color: rgba(186, 230, 253, 0.7) !important;
+}
+.scv-hero-fade-genai {
+  background: linear-gradient(
+    90deg,
+    rgba(240, 249, 255, 0.96) 0%,
+    rgba(240, 249, 255, 0.88) 45%,
+    rgba(240, 249, 255, 0.3) 74%,
+    transparent 100%
+  ) !important;
+}
+.scv-hero-genai .scv-crumbs button:hover {
+  color: #0284c7;
+}
+.scv-logo-halo-genai::after {
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.3) 0%, rgba(124, 58, 237, 0.12) 60%, transparent 80%) !important;
+}
+.scv-hero-genai .scv-hero-logo {
+  filter: drop-shadow(0 10px 22px rgba(14, 165, 233, 0.38));
+}
+.scv-hero-genai .scv-hero-text h1 span {
+  background: linear-gradient(135deg, #0284c7 0%, #7c3aed 55%, #ec4899 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+.scv-hero-genai .scv-pill svg {
+  color: #0284c7;
+}
+
+/* GenAI Models & Tools Ribbon */
+.gn-genai-ribbon {
+  display: flex;
+  align-items: center;
+  gap: 3.5px;
+  flex-wrap: wrap;
+  margin: 5px 0 9px;
+  padding: 3px 7px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(186, 230, 253, 0.9);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 6px rgba(14, 165, 233, 0.05);
+  max-width: fit-content;
+}
+.gn-genai-badge {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #0369a1;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.gn-genai-badge i {
+  font-family: inherit;
+  font-style: normal;
+  font-weight: 900;
+  font-size: 10px;
+  background: linear-gradient(135deg, #0284c7, #7c3aed);
+  color: #fff;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+.gn-genai-chip {
+  font-size: 8.5px;
+  font-weight: 700;
+  color: #0284c7;
+  background: rgba(14, 165, 233, 0.12);
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  padding: 2px 5px;
+  border-radius: 5px;
+  letter-spacing: 0.01em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+.scv-bubble-genai {
+  box-shadow: 0 8px 24px rgba(14, 165, 233, 0.18), 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(186, 230, 253, 0.9) !important;
+}

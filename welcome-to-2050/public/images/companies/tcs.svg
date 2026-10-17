@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <rect width="48" height="48" rx="8" fill="#001B44"/>
+  <path fill="#0072CE" d="M12 12h24v6h-9v18h-6V18h-9z"/>
+  <path fill="#FF007A" d="M26 12h10v6H26z"/>
+  <text x="24" y="42" font-family="Arial,sans-serif" font-weight="900" font-size="9" fill="#00A3E0" text-anchor="middle">TATA</text>
+</svg>

@@ -1,0 +1,807 @@
+/* =========================================================================
+   LIQUID FLOATING NAVIGATION BAR — 8 SECTIONS
+   1:1 PIXEL-PERFECT REPLICA OF media_1791584665903.png
+   Size, Shape, Design, Color, Caustics, and Glass Meniscus
+   ========================================================================= */
+
+.liquid-nav-dock-wrapper {
+  position: fixed;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 999;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   1. FLOOR REFLECTION CAUSTICS (Disabled per user request)
+   ───────────────────────────────────────────────────────────────────────────── */
+.liquid-nav-floor-caustic-left,
+.liquid-nav-floor-caustic-right,
+.liquid-nav-floor-caustic-center {
+  display: none !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   2. MAIN LIQUID GLASS CAPSULE DOCK (Compact & Sleek with Thin 4-Side Running Light)
+   ───────────────────────────────────────────────────────────────────────────── */
+.liquid-nav-capsule-bar {
+  pointer-events: auto;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  width: 92%;
+  max-width: 800px;
+  min-height: 72px;
+  padding: 4px 14px 8px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* SVG Liquid Wave Shape Backdrop */
+.liquid-nav-wave-shape {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  filter: drop-shadow(0 14px 32px rgba(0, 80, 200, 0.16))
+          drop-shadow(0 4px 10px rgba(0, 0, 0, 0.05));
+}
+
+/* Thin 4-Side Running Light Perimeter on SVG Wave Contour */
+.liquid-running-border-light-1 {
+  stroke-dasharray: 180 850;
+  stroke-dashoffset: 0;
+  animation: runPerimeterLight 3.4s linear infinite;
+  filter: drop-shadow(0 0 3px #00e5ff) drop-shadow(0 0 6px #ffffff);
+}
+
+.liquid-running-border-light-2 {
+  stroke-dasharray: 150 870;
+  stroke-dashoffset: 525;
+  animation: runPerimeterLight 3.4s linear infinite;
+  filter: drop-shadow(0 0 3px #ec4899) drop-shadow(0 0 6px #ffffff);
+}
+
+@keyframes runPerimeterLight {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -1050;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   3. 3D ELEVATED LIQUID BUBBLE (Permanently Centered on Coding Game)
+   ───────────────────────────────────────────────────────────────────────────── */
+.liquid-elevated-bubble {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 68px;
+  height: 68px;
+  margin-left: -34px;
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 25;
+  transition: transform 0.48s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+  will-change: transform;
+}
+
+.liquid-elevated-bubble.dormant-game-bubble {
+  opacity: 0.92;
+  filter: saturate(0.95);
+}
+
+.liquid-elevated-bubble.dormant-game-bubble:hover {
+  opacity: 1;
+  filter: saturate(1.1);
+  transform: translateY(-2px);
+}
+
+.liquid-elevated-bubble.active-game-bubble {
+  opacity: 1;
+}
+
+/* Jelly bounce animation on tab click */
+.liquid-elevated-bubble.jelly-spring {
+  animation: liquidJellySquish 0.45s ease-out;
+}
+
+@keyframes liquidJellySquish {
+  0% {
+    scale: 1 1;
+  }
+  30% {
+    scale: 1.18 0.84;
+  }
+  60% {
+    scale: 0.92 1.12;
+  }
+  80% {
+    scale: 1.05 0.96;
+  }
+  100% {
+    scale: 1 1;
+  }
+}
+
+/* 3D Liquid Glass Sphere Core */
+.liquid-sphere-glass-core {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 34% 26%,
+    #a5f3fc 0%,
+    #38bdf8 26%,
+    #0284c7 56%,
+    #1d4ed8 84%,
+    #0f172a 100%
+  );
+  box-shadow:
+    0 16px 36px rgba(2, 132, 199, 0.65),
+    0 0 50px rgba(56, 189, 248, 0.55),
+    inset 0 2px 5px rgba(255, 255, 255, 0.98),
+    inset 0 -6px 14px rgba(15, 23, 42, 0.55),
+    inset -2px 0 6px rgba(147, 51, 234, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Specular crescent highlight along top-left */
+.liquid-sphere-specular {
+  position: absolute;
+  top: 7px;
+  left: 12px;
+  width: 30px;
+  height: 16px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-radius: 50%;
+  transform: rotate(-25deg);
+  pointer-events: none;
+}
+
+/* Icon inside elevated sphere */
+.liquid-sphere-icon-wrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.liquid-sphere-icon-wrap .liquid-svg-icon {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+}
+
+/* 5 Micro Droplets surrounding the sphere */
+.liquid-droplet {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    #ffffff 0%,
+    #38bdf8 60%,
+    #0284c7 100%
+  );
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.5), inset 0 1px 2px #fff;
+}
+
+.droplet-1 {
+  width: 10px;
+  height: 10px;
+  top: -6px;
+  left: -10px;
+  animation: dropletFloat1 3s ease-in-out infinite alternate;
+}
+
+.droplet-2 {
+  width: 7px;
+  height: 7px;
+  top: 14px;
+  left: -14px;
+  animation: dropletFloat3 3.2s ease-in-out infinite alternate;
+}
+
+.droplet-3 {
+  width: 12px;
+  height: 12px;
+  top: -10px;
+  right: 6px;
+  animation: dropletFloat2 2.6s ease-in-out infinite alternate;
+}
+
+.droplet-4 {
+  width: 8px;
+  height: 8px;
+  top: 8px;
+  right: -12px;
+  animation: dropletFloat1 3.5s ease-in-out infinite alternate;
+}
+
+.droplet-5 {
+  width: 6px;
+  height: 6px;
+  bottom: 8px;
+  left: -10px;
+  animation: dropletFloat2 3s ease-in-out infinite alternate;
+}
+
+@keyframes dropletFloat1 {
+  from {
+    transform: translate(0, 0) scale(0.95);
+  }
+  to {
+    transform: translate(-3px, -5px) scale(1.08);
+  }
+}
+
+@keyframes dropletFloat2 {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(4px, -6px) scale(1.12);
+  }
+}
+
+@keyframes dropletFloat3 {
+  from {
+    transform: translate(0, 0) scale(0.9);
+  }
+  to {
+    transform: translate(-4px, 4px) scale(1.05);
+  }
+}
+
+/* Aura glow behind the sphere */
+.liquid-bubble-aura-glow {
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(56, 189, 248, 0.5) 0%,
+    rgba(2, 132, 199, 0) 70%
+  );
+  filter: blur(10px);
+  z-index: -1;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   4. THE 8 NAV TAB BUTTONS ROW
+   1:1 Match with media_1791584665903.png
+   ───────────────────────────────────────────────────────────────────────────── */
+.liquid-nav-items-row {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 2px;
+}
+
+.liquid-nav-tab-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 2px 4px;
+  border-radius: 18px;
+  transition: all 0.22s ease;
+  min-width: 0;
+  user-select: none;
+  position: relative;
+}
+
+.liquid-nav-tab-btn:hover {
+  transform: translateY(-2px);
+}
+
+.liquid-nav-tab-btn:active {
+  transform: translateY(0);
+}
+
+/* Icon Box - lowered down inside the liquid glass body */
+.liquid-tab-icon-box {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 6px;
+  margin-bottom: 2px;
+  transform: translateY(8px);
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+}
+
+.liquid-tab-icon-box.elevated-hidden {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.75);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ── Special Animations for Other Tabs When Active ── */
+.liquid-nav-tab-btn.active.is-standard-tab .liquid-tab-icon-box {
+  transform: translateY(4px) scale(1.15);
+  animation: tabIconSpringFloat 2.6s ease-in-out infinite alternate;
+}
+
+@keyframes tabIconSpringFloat {
+  0% {
+    transform: translateY(5px) scale(1.14);
+  }
+  100% {
+    transform: translateY(2px) scale(1.18);
+  }
+}
+
+/* Glowing Pulsing Halo Ring Behind Active Icon */
+.liquid-tab-halo-glow {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  z-index: -1;
+  pointer-events: none;
+  animation: tabHaloBreath 2.4s ease-in-out infinite;
+}
+
+@keyframes tabHaloBreath {
+  0%, 100% {
+    transform: scale(0.88);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 0.75;
+  }
+}
+
+/* Tab Hover Lift for Standard Tabs */
+.liquid-nav-tab-btn:hover.is-standard-tab .liquid-tab-icon-box {
+  transform: translateY(5px) scale(1.08);
+}
+
+.liquid-svg-icon {
+  width: 26px;
+  height: 26px;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* Tab Label - Bold Corporate Typography */
+.liquid-tab-label {
+  font-size: 0.72rem;
+  font-weight: 850;
+  color: #0f172a;
+  white-space: nowrap;
+  letter-spacing: -0.015em;
+  transition: color 0.2s ease, font-weight 0.2s ease, transform 0.2s ease;
+  line-height: 1.2;
+  margin-top: 3px;
+  -webkit-font-smoothing: antialiased;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+.liquid-tab-label.active-label {
+  font-weight: 900;
+  color: #0052cc !important;
+  transform: scale(1.06);
+  text-shadow: 0 0 10px rgba(0, 82, 204, 0.25);
+}
+
+/* Indicator Area */
+.liquid-tab-indicator-area {
+  height: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+/* Inactive Grey Dot (Matching reference • ) */
+.liquid-inactive-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #94a3b8;
+  opacity: 0.75;
+  transition: all 0.2s ease;
+}
+
+.liquid-nav-tab-btn:hover .liquid-inactive-dot {
+  background: #64748b;
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* Active Glowing Cyan Pill Underline (Matching reference — ) */
+.liquid-active-pill-indicator {
+  width: 32px;
+  height: 4px;
+  border-radius: 9999px;
+  background: #00d2ff;
+  box-shadow: 0 0 10px #00d2ff, 0 0 20px rgba(0, 210, 255, 0.6);
+  animation: pillFadeIn 0.3s ease-out;
+}
+
+@keyframes pillFadeIn {
+  from {
+    width: 8px;
+    opacity: 0;
+  }
+  to {
+    width: 32px;
+    opacity: 1;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   6. LIQUID WATER / MILK SPLASH & SQUISH INTERACTION
+   Tactile organic fluid ripple when clicking any tab or elevated bubble
+   ───────────────────────────────────────────────────────────────────────────── */
+.liquid-splash-container {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 30;
+}
+
+.liquid-fluid-splash {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Milky Droplet Core Impact */
+.liquid-drop-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 35%,
+    #ffffff 0%,
+    rgba(255, 255, 255, 0.98) 45%,
+    rgba(224, 242, 254, 0.75) 75%,
+    rgba(186, 230, 253, 0) 100%
+  );
+  box-shadow: 0 0 12px #ffffff, 0 2px 8px rgba(0, 140, 255, 0.25);
+  animation: milkCoreImpact 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes milkCoreImpact {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 1;
+  }
+  35% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.4);
+    opacity: 0;
+  }
+}
+
+/* Concentric Expanding Water / Milk Wave Rings */
+.liquid-wave-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.liquid-wave-ring.ring-1 {
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.9), inset 0 0 8px rgba(255, 255, 255, 0.8);
+  animation: milkRingExpand1 0.6s cubic-bezier(0.12, 0.8, 0.32, 1) forwards;
+}
+
+.liquid-wave-ring.ring-2 {
+  width: 20px;
+  height: 20px;
+  border: 2.2px solid rgba(186, 230, 253, 0.88);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.45);
+  animation: milkRingExpand2 0.7s cubic-bezier(0.14, 0.82, 0.35, 1) 0.05s forwards;
+}
+
+.liquid-wave-ring.ring-3 {
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.5);
+  animation: milkRingExpand3 0.75s cubic-bezier(0.16, 0.85, 0.4, 1) 0.1s forwards;
+}
+
+@keyframes milkRingExpand1 {
+  0% {
+    width: 14px;
+    height: 14px;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  60% {
+    opacity: 0.85;
+  }
+  100% {
+    width: 72px;
+    height: 72px;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes milkRingExpand2 {
+  0% {
+    width: 16px;
+    height: 16px;
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  60% {
+    opacity: 0.75;
+  }
+  100% {
+    width: 92px;
+    height: 92px;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+}
+
+@keyframes milkRingExpand3 {
+  0% {
+    width: 18px;
+    height: 18px;
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  100% {
+    width: 115px;
+    height: 115px;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+/* 6 Splashing Micro Milk / Water Droplet Beads */
+.liquid-milk-bead {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #e0f2fe 65%, #38bdf8 100%);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18), 0 0 6px #ffffff;
+  pointer-events: none;
+}
+
+.bead-1 { animation: milkBeadSplash1 0.55s cubic-bezier(0.2, 0.9, 0.4, 1) forwards; }
+.bead-2 { animation: milkBeadSplash2 0.55s cubic-bezier(0.2, 0.9, 0.4, 1) forwards; }
+.bead-3 { animation: milkBeadSplash3 0.55s cubic-bezier(0.2, 0.9, 0.4, 1) forwards; }
+.bead-4 { animation: milkBeadSplash4 0.55s cubic-bezier(0.2, 0.9, 0.4, 1) forwards; }
+.bead-5 { animation: milkBeadSplash5 0.55s cubic-bezier(0.2, 0.9, 0.4, 1) forwards; }
+.bead-6 { animation: milkBeadSplash6 0.55s cubic-bezier(0.2, 0.9, 0.4, 1) forwards; }
+
+@keyframes milkBeadSplash1 {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  60% { transform: translate(-50%, -50%) translate(0px, -24px) scale(1.1); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) translate(0px, -32px) scale(0); opacity: 0; }
+}
+
+@keyframes milkBeadSplash2 {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  60% { transform: translate(-50%, -50%) translate(21px, -12px) scale(1.1); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) translate(28px, -16px) scale(0); opacity: 0; }
+}
+
+@keyframes milkBeadSplash3 {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  60% { transform: translate(-50%, -50%) translate(21px, 12px) scale(1.1); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) translate(28px, 16px) scale(0); opacity: 0; }
+}
+
+@keyframes milkBeadSplash4 {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  60% { transform: translate(-50%, -50%) translate(0px, 24px) scale(1.1); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) translate(0px, 32px) scale(0); opacity: 0; }
+}
+
+@keyframes milkBeadSplash5 {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  60% { transform: translate(-50%, -50%) translate(-21px, 12px) scale(1.1); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) translate(-28px, 16px) scale(0); opacity: 0; }
+}
+
+@keyframes milkBeadSplash6 {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  60% { transform: translate(-50%, -50%) translate(-21px, -12px) scale(1.1); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) translate(-28px, -16px) scale(0); opacity: 0; }
+}
+
+/* Viscous Water/Milk Squish & Rebound Animation */
+.liquid-squish-anim {
+  animation: liquidWaterMilkSquash 0.52s cubic-bezier(0.2, 1.4, 0.4, 1) !important;
+}
+
+@keyframes liquidWaterMilkSquash {
+  0% {
+    transform: scale(1, 1);
+  }
+  25% {
+    /* Viscous fluid spread on impact */
+    transform: scale(1.18, 0.82) translateY(2px);
+  }
+  50% {
+    /* Liquid crown rebound like water/milk drop */
+    transform: scale(0.92, 1.15) translateY(-4px);
+  }
+  75% {
+    /* Surface tension settling */
+    transform: scale(1.05, 0.96) translateY(-1px);
+  }
+  100% {
+    transform: scale(1, 1) translateY(0);
+  }
+}
+
+/* Default Full / Short Label Toggling */
+.liquid-full-label {
+  display: inline;
+}
+
+.liquid-short-label {
+  display: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   5. RESPONSIVE MEDIA QUERIES
+   ───────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .liquid-nav-capsule-bar {
+    width: 96%;
+    padding: 6px 10px 8px;
+    min-height: 72px;
+  }
+
+  .liquid-elevated-bubble {
+    width: 66px;
+    height: 66px;
+    margin-left: -33px;
+  }
+
+  .liquid-sphere-icon-wrap .liquid-svg-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .liquid-tab-label {
+    font-size: 0.68rem;
+    font-weight: 850;
+  }
+
+  .liquid-svg-icon {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 680px) {
+  .liquid-full-label {
+    display: none;
+  }
+
+  .liquid-short-label {
+    display: inline;
+    font-size: 9.5px;
+    font-weight: 800;
+  }
+
+  .liquid-nav-dock-wrapper {
+    bottom: max(8px, env(safe-area-inset-bottom, 8px));
+  }
+
+  .liquid-nav-capsule-bar {
+    width: calc(100% - 10px);
+    max-width: 480px;
+    padding: 4px 4px 6px;
+    min-height: 58px;
+  }
+
+  .liquid-nav-tab-btn {
+    padding: 2px 1px 3px;
+    min-width: 0;
+  }
+
+  .liquid-tab-label {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 1px;
+    line-height: 1.1;
+  }
+
+  .liquid-tab-label.active-label {
+    transform: scale(1.04);
+  }
+
+  .liquid-elevated-bubble {
+    width: 50px;
+    height: 50px;
+    margin-left: -25px;
+  }
+
+  .liquid-sphere-icon-wrap .liquid-svg-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .liquid-tab-icon-box {
+    width: 22px;
+    height: 22px;
+    margin-top: 2px;
+    transform: translateY(4px);
+  }
+
+  .liquid-svg-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .liquid-active-pill-indicator {
+    width: 18px;
+    height: 3px;
+  }
+
+  .liquid-tab-indicator-area {
+    height: 5px;
+    margin-top: 2px;
+  }
+
+  .liquid-inactive-dot {
+    width: 3.5px;
+    height: 3.5px;
+  }
+}

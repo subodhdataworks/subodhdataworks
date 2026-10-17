@@ -1,0 +1,1186 @@
+/* =========================================================================
+   TOPIC MASTERY SCORE LAB CSS (100% 1:1 MATCH WITH media_1790651278659.jpg)
+   ========================================================================= */
+
+.fai-score-page {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* -------------------------------------------------------------------------
+   CONFETTI CELEBRATION
+   ------------------------------------------------------------------------- */
+.fai-score-confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.fai-score-confetti-piece {
+  position: absolute;
+  top: -12px;
+  width: 10px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0.9;
+  animation: scoreConfettiFall 3.8s ease-in infinite;
+}
+
+@keyframes scoreConfettiFall {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(0.8);
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(105vh) rotate(720deg) scale(1);
+    opacity: 0;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   1. TOP NAVIGATION BAR
+   ------------------------------------------------------------------------- */
+.fai-score-topbar {
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.fai-score-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.fai-score-logo-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(59, 130, 246, 0.3);
+}
+
+.fai-score-brand-text {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.fai-score-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.fai-score-bc-parent {
+  color: #475569;
+  font-weight: 600;
+}
+
+.fai-score-bc-sep {
+  color: #94a3b8;
+}
+
+.fai-score-bc-current {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.fai-score-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.fai-score-metric-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.fai-score-metric-badge.streak {
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  color: #b45309;
+}
+
+.fai-score-metric-badge.xp {
+  background: #fefce8;
+  border: 1px solid #fef08a;
+  color: #a16207;
+}
+
+.fai-score-metric-text {
+  line-height: 1;
+}
+
+.fai-score-sound-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.fai-score-sound-btn:hover {
+  background: #e2e8f0;
+}
+
+.fai-score-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid #3b82f6;
+  overflow: hidden;
+  background: #e0f2fe;
+}
+
+.fai-score-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* -------------------------------------------------------------------------
+   2. MAIN 3-COLUMN WORKSPACE LAYOUT
+   ------------------------------------------------------------------------- */
+.fai-score-layout {
+  display: flex;
+  flex: 1;
+  max-width: 1480px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem;
+  gap: 1.5rem;
+  box-sizing: border-box;
+}
+
+/* -------------------------------------------------------------------------
+   LEFT SIDEBAR
+   ------------------------------------------------------------------------- */
+.fai-score-left-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.fai-score-sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.fai-score-py-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.fai-score-sidebar-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.fai-score-sidebar-subtitle {
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.fai-score-steps-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.fai-score-step-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.fai-score-step-row:hover {
+  background: #f1f5f9;
+}
+
+.fai-score-step-row.completed {
+  color: #334155;
+}
+
+.fai-score-step-row.active {
+  background: #eff6ff;
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.fai-score-check-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #10b981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fai-score-active-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #dbeafe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fai-score-active-inner {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #2563eb;
+}
+
+.fai-score-num-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  flex-shrink: 0;
+}
+
+.fai-score-mascot-card {
+  margin-top: auto;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.fai-score-mascot-visual {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fai-score-mascot-confetti {
+  position: absolute;
+  top: 0;
+  right: 5px;
+  font-size: 1.3rem;
+  animation: bounceConfetti 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes bounceConfetti {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-6px) rotate(12deg); }
+}
+
+.fai-score-mascot-img {
+  width: 85px;
+  height: 85px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.1));
+}
+
+.fai-score-speech-bubble {
+  position: relative;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.fai-score-speech-bubble::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 6px 6px 6px;
+  border-style: solid;
+  border-color: transparent transparent #eff6ff transparent;
+}
+
+.fai-score-speech-text {
+  font-size: 0.76rem;
+  color: #1e3a8a;
+  line-height: 1.35;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* -------------------------------------------------------------------------
+   CENTER MAIN STAGE
+   ------------------------------------------------------------------------- */
+.fai-score-center-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+/* 1. Hero Celebration Banner */
+.fai-score-hero-banner {
+  background: linear-gradient(135deg, #1e40af 0%, #2563eb 45%, #6366f1 85%, #7c3aed 100%);
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.22);
+}
+
+.fai-score-hero-sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.fai-sparkle {
+  position: absolute;
+  font-size: 1rem;
+  opacity: 0.7;
+  animation: sparkleTwinkle 2s infinite ease-in-out alternate;
+}
+
+.fai-sparkle.sp1 { top: 12%; left: 16%; animation-delay: 0.2s; }
+.fai-sparkle.sp2 { bottom: 15%; left: 45%; animation-delay: 0.8s; }
+.fai-sparkle.sp3 { top: 20%; right: 28%; animation-delay: 1.4s; }
+
+@keyframes sparkleTwinkle {
+  0% { transform: scale(0.8); opacity: 0.4; }
+  100% { transform: scale(1.2); opacity: 0.9; }
+}
+
+.fai-score-hero-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  position: relative;
+  z-index: 2;
+}
+
+.fai-score-trophy-wrap {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.25));
+}
+
+.fai-score-trophy-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.fai-score-hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.fai-score-hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 9999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  width: fit-content;
+  backdrop-filter: blur(4px);
+}
+
+.fai-score-hero-title {
+  font-size: 1.55rem;
+  font-weight: 800;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.fai-score-hero-sub {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0;
+  font-weight: 500;
+}
+
+.fai-score-hero-right {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.fai-score-mastery-ribbon {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 1px solid #fcd34d;
+  border-radius: 12px;
+  padding: 0.65rem 1rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.fai-score-ribbon-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #92400e;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.fai-score-ribbon-score {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #78350f;
+  line-height: 1.1;
+  margin-top: 0.15rem;
+}
+
+/* 2. Overall Score Section */
+.fai-score-overall-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.fai-score-gauge-col {
+  flex-shrink: 0;
+}
+
+.fai-score-gauge-box {
+  position: relative;
+  width: 128px;
+  height: 128px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fai-score-gauge-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.fai-gauge-bg {
+  stroke: #f1f5f9;
+}
+
+.fai-gauge-fill {
+  stroke: #2563eb;
+  transition: stroke-dasharray 1.2s ease;
+}
+
+.fai-score-gauge-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.fai-score-gauge-val {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.fai-score-gauge-lbl {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.06em;
+  margin-top: 0.15rem;
+}
+
+.fai-score-feedback-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.fai-feedback-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+}
+
+.fai-feedback-box.success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.fai-feedback-box.warning {
+  background: #fffbeb;
+  border: 1px solid #fef08a;
+}
+
+.fai-fb-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.fai-fb-icon.success {
+  background: #22c55e;
+  color: #ffffff;
+}
+
+.fai-fb-icon.warning {
+  background: #f59e0b;
+  color: #ffffff;
+}
+
+.fai-fb-content {
+  flex: 1;
+}
+
+.fai-fb-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin: 0 0 0.15rem 0;
+  line-height: 1.2;
+}
+
+.fai-fb-title.success {
+  color: #15803d;
+}
+
+.fai-fb-title.warning {
+  color: #b45309;
+}
+
+.fai-fb-desc {
+  font-size: 0.8rem;
+  color: #334155;
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* 3. Section-wise Performance */
+.fai-score-sectionwise {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.fai-sectionwise-heading {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.fai-sectionwise-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.85rem;
+}
+
+.fai-section-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fai-section-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.fai-section-gauge {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.fai-mini-bg {
+  stroke: #f1f5f9;
+}
+
+.fai-mini-fill.blue { stroke: #2563eb; }
+.fai-mini-fill.indigo { stroke: #6366f1; }
+.fai-mini-fill.purple { stroke: #9333ea; }
+.fai-mini-fill.amber { stroke: #f59e0b; }
+.fai-mini-fill.teal { stroke: #0d9488; }
+
+.fai-section-gauge-label {
+  position: absolute;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.fai-section-icon-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+
+.fai-section-type-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fai-section-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.fai-section-score {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.15rem;
+}
+
+.fai-section-weight {
+  font-size: 0.68rem;
+  color: #64748b;
+  margin-bottom: 0.65rem;
+}
+
+.fai-section-badge.green {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #059669;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  line-height: 1;
+}
+
+/* 4. Strengths & Areas to Improve */
+.fai-score-insights-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.fai-insight-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.fai-insight-head {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.75rem;
+}
+
+.fai-insight-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.fai-insight-head.strengths .fai-insight-title {
+  color: #15803d;
+}
+
+.fai-insight-head.improve .fai-insight-title {
+  color: #b91c1c;
+}
+
+.fai-insight-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fai-insight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #334155;
+  line-height: 1.35;
+}
+
+.fai-bullet-check {
+  color: #16a34a;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.fai-bullet-cross {
+  color: #ef4444;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* 5. Unlock Requirements (Met) */
+.fai-score-requirements-strip {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.fai-req-label-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
+.fai-req-title {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.fai-req-pills-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fai-req-pill {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #047857;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------------------------------
+   RIGHT SIDEBAR
+   ------------------------------------------------------------------------- */
+.fai-score-right-sidebar {
+  width: 270px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+/* Card 1: Next Topic Unlocked */
+.fai-next-topic-card {
+  background: #ffffff;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  padding: 1.15rem;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.fai-next-topic-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  color: #1d4ed8;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.fai-next-topic-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.fai-next-topic-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fai-next-py-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.fai-next-topic-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.fai-next-topic-desc {
+  font-size: 0.76rem;
+  color: #475569;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.fai-continue-next-btn {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+}
+
+.fai-continue-next-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* Card 2: Mastery Levels */
+.fai-mastery-levels-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.15rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.fai-card-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.75rem 0;
+}
+
+.fai-mastery-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.fai-mastery-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.fai-mastery-item.active {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e3a8a;
+  font-weight: 700;
+}
+
+.fai-mastery-range {
+  font-weight: 600;
+}
+
+.fai-mastery-name.highlight {
+  color: #2563eb;
+  font-weight: 800;
+}
+
+/* Card 3: Badges Earned */
+.fai-badges-earned-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.15rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.fai-badges-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.fai-view-all-link {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #2563eb;
+  cursor: pointer;
+}
+
+.fai-view-all-link:hover {
+  text-decoration: underline;
+}
+
+.fai-badges-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.fai-badge-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.35rem;
+}
+
+.fai-badge-hexagon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.fai-badge-hexagon:hover {
+  transform: scale(1.08);
+}
+
+.fai-badge-hexagon.blue {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.fai-badge-hexagon.gold {
+  background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+}
+
+.fai-badge-hexagon.purple {
+  background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+}
+
+.fai-badge-caption {
+  font-size: 0.65rem;
+  color: #475569;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* -------------------------------------------------------------------------
+   3. BOTTOM ACTION BAR
+   ------------------------------------------------------------------------- */
+.fai-score-bottom-bar {
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  bottom: 0;
+  z-index: 90;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.fai-review-topic-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.6rem 1.15rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.fai-review-topic-btn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.fai-next-topic-main-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #2563eb;
+  border: none;
+  border-radius: 8px;
+  padding: 0.65rem 1.4rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+.fai-next-topic-main-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.45);
+}
+
+/* -------------------------------------------------------------------------
+   RESPONSIVE DESIGN
+   ------------------------------------------------------------------------- */
+@media (max-width: 1200px) {
+  .fai-score-layout {
+    flex-direction: column;
+  }
+  .fai-score-left-sidebar, .fai-score-right-sidebar {
+    width: 100%;
+  }
+  .fai-sectionwise-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .fai-score-hero-banner {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  .fai-score-hero-left {
+    flex-direction: column;
+    text-align: center;
+  }
+  .fai-score-overall-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  .fai-sectionwise-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .fai-score-insights-grid {
+    grid-template-columns: 1fr;
+  }
+}

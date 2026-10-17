@@ -1,0 +1,557 @@
+/* ============================================================
+   REAL PROJECTS. REAL COMPANY EXPERIENCE.
+   Pixel-perfect styling matching media_1790533836235.jpg
+============================================================ */
+
+.real-projects-section {
+  width: 100%;
+  background: #ffffff;
+  padding: 8px 24px 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.real-projects-container {
+  width: min(1400px, 100%);
+  margin: 0 auto;
+}
+
+/* ============================================================
+   1. TOP ROW: LEFT COPY + RIGHT HERO VISUAL
+============================================================ */
+
+.real-projects-top-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1.15fr;
+  gap: 36px;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+/* LEFT COLUMN */
+.projects-header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: #f0f7ff;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  color: #0284c7;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  width: fit-content;
+  margin-bottom: 18px;
+}
+
+.projects-main-heading {
+  font-size: 48px;
+  line-height: 1.04;
+  font-weight: 950;
+  margin: 0 0 20px 0;
+  letter-spacing: -1.4px;
+}
+
+.heading-line-dark {
+  color: #071536;
+  display: block;
+}
+
+.heading-line-gradient-1 {
+  background: linear-gradient(90deg, #0284c7 0%, #00b4d8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: block;
+}
+
+.heading-line-gradient-2 {
+  background: linear-gradient(90deg, #00b4d8 0%, #00d2b4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: block;
+}
+
+/* Company Logos Bar */
+.company-logos-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.logo-item-amazon {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.5px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.amazon-arrow {
+  color: #f59e0b;
+  margin-left: 1px;
+}
+
+.logo-divider {
+  color: #cbd5e1;
+  font-weight: 300;
+  font-size: 18px;
+}
+
+.logo-item-google {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.g-blue { color: #4285f4; }
+.g-red { color: #ea4335; }
+.g-yellow { color: #fbbc05; }
+.g-green { color: #34a853; }
+
+.logo-item-microsoft {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.ms-squares {
+  display: grid;
+  grid-template-columns: repeat(2, 6px);
+  gap: 2px;
+}
+
+.ms-red { width: 6px; height: 6px; background: #f25022; }
+.ms-green { width: 6px; height: 6px; background: #7fba00; }
+.ms-blue { width: 6px; height: 6px; background: #00a4ef; }
+.ms-yellow { width: 6px; height: 6px; background: #ffb900; }
+
+.logo-item-netflix {
+  font-size: 19px;
+  font-weight: 900;
+  color: #e50914;
+  letter-spacing: 0.5px;
+}
+
+.projects-subtitle {
+  font-size: 15px;
+  color: #475569;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* RIGHT HERO VISUAL */
+.projects-hero-visual-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-main-photo-card {
+  width: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 16px 45px rgba(15, 23, 42, 0.1);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  background: #ffffff;
+  position: relative;
+}
+
+.hero-main-photo {
+  width: 100%;
+  height: 330px;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+/* Floating Card 1: Left 4-features list */
+.floating-features-card {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 16px;
+  padding: 10px 14px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+}
+
+.feature-mini-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.mini-icon-circle {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: #e0f2fe;
+  color: #0284c7;
+  display: grid;
+  place-items: center;
+}
+
+/* Floating Card 2: Top Right Script Card */
+.floating-script-card {
+  position: absolute;
+  top: 14px;
+  right: 120px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 14px;
+  padding: 10px 14px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1);
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 10;
+  font-family: 'Caveat', 'Comic Sans MS', cursive;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0284c7;
+  line-height: 1.15;
+}
+
+.script-grow-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Floating Card 3: Far Right Tech Stack Column */
+.floating-tech-column {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 16px;
+  padding: 10px 12px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+}
+
+.tech-mini-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* ============================================================
+   2. MIDDLE ROW: 4 COMPANY PROJECT CARDS
+============================================================ */
+
+.projects-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 36px;
+}
+
+.project-card {
+  border-radius: 20px;
+  padding: 18px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+  background: #ffffff;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Card 1: Amazon */
+.card-amazon {
+  border: 1.5px solid #fed7aa;
+  background: linear-gradient(180deg, #fffbf5 0%, #ffffff 100%);
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.06);
+}
+.card-amazon:hover {
+  box-shadow: 0 14px 35px rgba(245, 158, 11, 0.14);
+}
+
+/* Card 2: Google */
+.card-google {
+  border: 1.5px solid #bae6fd;
+  background: linear-gradient(180deg, #f0f9ff 0%, #ffffff 100%);
+  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.06);
+}
+.card-google:hover {
+  box-shadow: 0 14px 35px rgba(2, 132, 199, 0.14);
+}
+
+/* Card 3: Microsoft */
+.card-microsoft {
+  border: 1.5px solid #bbf7d0;
+  background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.06);
+}
+.card-microsoft:hover {
+  box-shadow: 0 14px 35px rgba(16, 185, 129, 0.14);
+}
+
+/* Card 4: Netflix */
+.card-netflix {
+  border: 1.5px solid #fecdd3;
+  background: linear-gradient(180deg, #fff1f2 0%, #ffffff 100%);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.06);
+}
+.card-netflix:hover {
+  box-shadow: 0 14px 35px rgba(239, 68, 68, 0.14);
+}
+
+/* Card Header */
+.card-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.badge-tag-amber {
+  background: #fef3c7;
+  color: #d97706;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+}
+
+.badge-tag-blue {
+  background: #e0f2fe;
+  color: #0284c7;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+}
+
+.badge-tag-green {
+  background: #dcfce7;
+  color: #16a34a;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+}
+
+.badge-tag-red {
+  background: #fee2e2;
+  color: #dc2626;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+}
+
+/* Laptop Mockup Box */
+.card-laptop-box {
+  width: 100%;
+  height: 180px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-laptop-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.project-card:hover .card-laptop-img {
+  transform: scale(1.03);
+}
+
+/* Card Footer */
+.card-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.card-project-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.card-arrow-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.project-card:hover .card-arrow-btn {
+  background: #0369a1;
+  transform: translateX(2px);
+}
+
+/* ============================================================
+   3. BOTTOM ROW: CTA BUTTON & FEATURE BADGES
+============================================================ */
+
+.projects-bottom-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 10px 0;
+}
+
+.side-feature-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.bottom-feature-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.feature-pill-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+}
+
+.icon-emerald { background: #dcfce7; color: #16a34a; }
+.icon-sky { background: #e0f2fe; color: #0284c7; }
+.icon-purple { background: #f3e8ff; color: #9333ea; }
+.icon-pink { background: #fce7f3; color: #db2777; }
+
+/* Main CTA Button */
+.main-join-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 38px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #007cf0 0%, #00b4d8 50%, #00d2b4 100%);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(0, 124, 240, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.main-join-cta-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 16px 38px rgba(0, 124, 240, 0.45);
+}
+
+.cta-left-curved-arrow,
+.cta-right-curved-arrow {
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN
+============================================================ */
+
+@media (max-width: 1200px) {
+  .real-projects-top-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .projects-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .real-projects-section {
+    padding: 50px 16px 30px;
+  }
+
+  .projects-main-heading {
+    font-size: 32px;
+  }
+
+  .projects-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .floating-features-card,
+  .floating-script-card,
+  .floating-tech-column {
+    display: none;
+  }
+
+  .projects-bottom-cta-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+}

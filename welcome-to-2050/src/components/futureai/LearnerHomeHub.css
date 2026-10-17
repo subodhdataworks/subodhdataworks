@@ -1,0 +1,5165 @@
+/* =============================================================================
+   LEARNER HOME HUB STYLES — EXACT 1:1 MATCH WITH media_1791559749177.jpg
+   With Animated Video Background on Hero Banner & Animated Video on Python Card
+   ============================================================================= */
+
+.lhh-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 100%;
+  padding-bottom: 120px;
+}
+
+/* =============================================================================
+   1. TOP HERO PANORAMIC BANNER WITH VIDEO BACKGROUND & REFERENCE TEXT OVERLAY
+   ============================================================================= */
+.lhh-hero-banner-frame {
+  position: relative;
+  width: 100%;
+  height: 215px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 28px rgba(0, 80, 220, 0.09), 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(226, 232, 240, 0.92);
+  background: #08112b;
+  display: flex;
+  align-items: center;
+}
+
+/* Background Video */
+.lhh-hero-video-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right 35%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Gradient Overlay - fades out gently to the right so mascot robot in video is crisp */
+.lhh-hero-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.97) 0%,
+    rgba(255, 255, 255, 0.92) 40%,
+    rgba(255, 255, 255, 0.72) 56%,
+    rgba(255, 255, 255, 0.18) 70%,
+    rgba(255, 255, 255, 0) 82%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Content Container on top of video */
+.lhh-hero-content-overlay.lhh-hero-full-row {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px 30px;
+  width: 100%;
+  max-width: 780px;
+  height: 100%;
+}
+
+.lhh-hero-left-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Top Pill Badge */
+.lhh-hero-top-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.06);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(59, 130, 246, 0.28);
+  border-radius: 9999px;
+  padding: 4px 14px;
+  width: fit-content;
+  margin-bottom: 8px;
+}
+
+.lhh-hero-pill-text {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e3a8a;
+  letter-spacing: 0.01em;
+}
+
+/* Headline */
+.lhh-hero-headline {
+  font-size: 31px;
+  font-weight: 950;
+  color: #0f172a;
+  line-height: 1.14;
+  letter-spacing: -0.025em;
+  margin: 0 0 6px;
+}
+
+.lhh-headline-brighter-tomorrow {
+  background: linear-gradient(90deg, #0284c7 0%, #6366f1 50%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Subtitle */
+.lhh-hero-subtitle {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #475569;
+  line-height: 1.35;
+  margin: 0;
+}
+
+/* 4 Stat Cards Row inside Video Banner */
+.lhh-hero-stats-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.lhh-hero-stat-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  border-radius: 12px;
+  padding: 6px 12px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+}
+
+.lhh-hero-stat-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.lhh-stat-blue {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+}
+
+.lhh-stat-indigo {
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+}
+
+.lhh-stat-purple {
+  background: linear-gradient(135deg, #7c3aed, #9333ea);
+}
+
+.lhh-stat-amber {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.lhh-hero-stat-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.lhh-hero-stat-info strong {
+  font-size: 13px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.lhh-hero-stat-info span {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+/* =============================================================================
+   2. SECTION HEADER, FILTER PILLS & 9 CORE MODULE CARDS SECTION
+   ============================================================================= */
+.lhh-modules-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.lhh-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+.lhh-section-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.lhh-layer-icon-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
+}
+
+.lhh-section-title-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.lhh-section-title {
+  font-size: 18px;
+  font-weight: 850;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.lhh-section-sub {
+  font-size: 11.5px;
+  color: #64748b;
+  font-weight: 500;
+  margin: 3px 0 0;
+}
+
+.lhh-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Filter Pills */
+.lhh-filter-pills-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(241, 245, 249, 0.88);
+  padding: 4px;
+  border-radius: 9999px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+.lhh-filter-pill {
+  padding: 5px 15px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  border-radius: 9999px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.lhh-filter-pill:hover:not(.active) {
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.lhh-filter-pill.active {
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+/* Grid / List View Toggle */
+.lhh-view-toggle-capsule {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(241, 245, 249, 0.88);
+  padding: 3px;
+  border-radius: 10px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+.lhh-view-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.lhh-view-toggle-btn:hover:not(.active) {
+  color: #0f172a;
+}
+
+.lhh-view-toggle-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+.lhh-modules-6grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  align-items: stretch;
+}
+
+.lhh-module-card {
+  flex: 0 0 calc((100% - 56px) / 5);
+  max-width: calc((100% - 56px) / 5);
+  min-width: 220px;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow:
+    0 6px 20px -4px rgba(15, 23, 42, 0.06),
+    0 2px 6px rgba(15, 23, 42, 0.03);
+  padding: 10px 11px 11px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease, border-color 0.24s ease;
+}
+
+.lhh-module-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 16px 32px -6px rgba(2, 132, 199, 0.13),
+    0 4px 10px rgba(15, 23, 42, 0.04);
+  border-color: rgba(147, 197, 253, 0.9);
+}
+
+/* Course Thumbnail Visual Frame */
+.lhh-card-image-wrap {
+  width: 100%;
+  height: 126px;
+  max-height: 126px;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  background: linear-gradient(135deg, #090d16 0%, #0f172a 100%);
+  position: relative;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.lhh-card-img,
+.lhh-card-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lhh-card-image-wrap:hover .lhh-card-img,
+.lhh-card-image-wrap:hover .lhh-card-video {
+  transform: scale(1.04);
+}
+
+/* Top-Left Number Badge (#1..#9) */
+.lhh-card-badge-overlay {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: #0284c7;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 850;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Ribbon Pill next to Badge (Most Popular / High Demand) */
+.lhh-card-ribbon-pill {
+  position: absolute;
+  top: 8px;
+  left: 37px;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 9.5px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.01em;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Top-Right Heart Button */
+.lhh-card-heart-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.lhh-card-image-wrap:hover .lhh-card-heart-btn {
+  background: rgba(15, 23, 42, 0.75);
+  transform: scale(1.06);
+}
+
+/* Card Body */
+.lhh-card-body {
+  padding: 10px 2px 2px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Title Row with Right Circular Arrow */
+.lhh-card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.lhh-card-title {
+  font-size: 15px;
+  font-weight: 850;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.lhh-card-title-arrow {
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.14);
+  transition: transform 0.2s ease;
+}
+
+.lhh-module-card:hover .lhh-card-title-arrow {
+  transform: translateX(2px);
+}
+
+/* 2-Line Description */
+.lhh-card-desc {
+  display: flex;
+  flex-direction: column;
+  font-size: 10.5px;
+  color: #475569;
+  line-height: 1.38;
+  margin-top: 4px;
+  min-height: 29px;
+  font-weight: 500;
+}
+
+/* 4 Colored Topic Tag Pills */
+.lhh-card-tags-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 3.5px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.lhh-card-tag-pill {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 5.5px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+/* Lessons count & Projects count row */
+.lhh-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 9px;
+  margin-bottom: 5px;
+}
+
+.lhh-lessons-count-wrap,
+.lhh-projects-count-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.lhh-meta-divider {
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.lhh-lessons-text {
+  font-size: 10.5px;
+  font-weight: 650;
+  color: #334155;
+}
+
+/* Progress Status Label + Track */
+.lhh-progress-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.lhh-complete-label {
+  font-size: 10.5px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.lhh-progress-track {
+  position: relative;
+  width: 100%;
+  height: 5px;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  overflow: visible;
+  margin-bottom: 10px;
+}
+
+.lhh-progress-zero-dot {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.lhh-progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.35s ease;
+}
+
+/* Main Pill CTA Button */
+.lhh-action-btn {
+  width: 100%;
+  height: 34px;
+  border-radius: 9999px;
+  border: none;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  user-select: none;
+}
+
+.lhh-action-btn:hover {
+  filter: brightness(1.07);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+}
+
+.lhh-action-btn:active {
+  transform: translateY(0);
+}
+
+/* 4 Bottom Action Icons */
+.lhh-bottom-actions-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-top: 9px;
+  padding-top: 7px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.lhh-sub-action-btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 2px 2px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.lhh-sub-action-btn:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 18%;
+  height: 64%;
+  width: 1px;
+  background: #f1f5f9;
+}
+
+.lhh-sub-action-btn:hover {
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.lhh-sub-action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.lhh-sub-action-btn:hover .lhh-sub-action-icon {
+  transform: scale(1.1);
+}
+
+.lhh-sub-action-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #64748b;
+  line-height: 1.1;
+}
+
+/* =============================================================================
+   4. LIST VIEW FALLBACK
+   ============================================================================= */
+.lhh-modules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.lhh-list-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #ffffff;
+  border: 1px solid #eef2f6;
+  border-radius: 14px;
+  padding: 10px 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.lhh-list-thumb {
+  width: 90px;
+  height: 55px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.lhh-list-info {
+  flex: 1;
+}
+
+.lhh-list-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.lhh-list-desc {
+  font-size: 12px;
+  color: #64748b;
+  margin: 2px 0 4px;
+}
+
+.lhh-list-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.lhh-list-btn {
+  width: auto;
+  padding: 0 16px;
+}
+
+/* =============================================================================
+   5. RESPONSIVE MEDIA QUERIES
+   ============================================================================= */
+@media (max-width: 1240px) {
+  .lhh-module-card {
+    flex: 0 0 calc((100% - 42px) / 4);
+    max-width: calc((100% - 42px) / 4);
+  }
+}
+
+@media (max-width: 960px) {
+  .lhh-module-card {
+    flex: 0 0 calc((100% - 28px) / 3);
+    max-width: calc((100% - 28px) / 3);
+  }
+}
+
+@media (max-width: 768px) {
+  .lhh-hero-banner-frame {
+    height: auto;
+    min-height: 230px;
+  }
+  .lhh-hero-content-overlay.lhh-hero-full-row {
+    max-width: 100%;
+    padding: 16px;
+  }
+  .lhh-hero-headline {
+    font-size: 22px;
+  }
+  .lhh-module-card {
+    flex: 0 0 calc((100% - 14px) / 2);
+    max-width: calc((100% - 14px) / 2);
+    min-width: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .lhh-module-card {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+/* =============================================================================
+   6. WHAT WILL YOU GET SECTION — EXACT 1:1 WITH USER REFERENCE
+   ============================================================================= */
+.lhh-what-you-get-section {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 4px 20px rgba(0, 80, 220, 0.05);
+  padding: 22px 24px;
+}
+
+.lhh-wyg-header-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.lhh-wyg-gift-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0284c7 0%, #0070f3 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+}
+
+.lhh-wyg-header-text h2 {
+  font-size: 20px;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.lhh-wyg-header-text p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 2px 0 0;
+  font-weight: 500;
+}
+
+.lhh-wyg-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.lhh-wyg-card {
+  background: #ffffff;
+  border: 1.5px solid #edf2f7;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.lhh-wyg-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 70, 200, 0.08);
+  border-color: #93c5fd;
+}
+
+.lhh-wyg-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.lhh-wyg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.lhh-wyg-card:hover .lhh-wyg-img {
+  transform: scale(1.04);
+}
+
+.lhh-wyg-badge-overlay {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.lhh-wyg-body {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 6px;
+}
+
+.lhh-wyg-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lhh-wyg-title {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.lhh-wyg-desc {
+  font-size: 11.5px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.45;
+  flex: 1;
+}
+
+.lhh-wyg-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  margin-top: 8px;
+  width: 100%;
+  border: 1px solid transparent;
+  transition: opacity 0.2s;
+}
+
+/* =============================================================================
+   7. CAREER OPPORTUNITIES SECTION — EXACT 1:1 WITH USER REFERENCE
+   ============================================================================= */
+.lhh-career-opportunities-section {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 4px 20px rgba(0, 80, 220, 0.05);
+  padding: 22px 24px;
+}
+
+.lhh-career-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  gap: 16px;
+}
+
+.lhh-career-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lhh-career-briefcase-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1e3a8a 0%, #0369a1 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(3, 105, 161, 0.25);
+}
+
+.lhh-career-header-text h2 {
+  font-size: 19px;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.lhh-career-header-text p {
+  font-size: 12.5px;
+  color: #64748b;
+  margin: 2px 0 0;
+  font-weight: 500;
+}
+
+.lhh-career-explore-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: #f0f7ff;
+  border: 1px solid #bae6fd;
+  color: #0284c7;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.lhh-career-explore-btn:hover {
+  background: #e0f2fe;
+  color: #0369a1;
+  border-color: #7dd3fc;
+}
+
+.lhh-career-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 10px;
+}
+
+.lhh-career-card {
+  background: #ffffff;
+  border: 1px solid #eef2f6;
+  border-radius: 12px;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+}
+
+.lhh-career-card:hover {
+  transform: translateY(-2px);
+  border-color: #93c5fd;
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.08);
+}
+
+.lhh-career-icon-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.lhh-career-role-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.lhh-career-role-desc {
+  font-size: 10px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.35;
+  flex: 1;
+}
+
+.lhh-career-salary-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  font-weight: 800;
+  margin-top: 4px;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Bottom Strip inside Career Section */
+.lhh-career-bottom-strip {
+  border-top: 1px solid #f1f5f9;
+  margin-top: 20px;
+  padding-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.lhh-career-highlights-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.lhh-career-highlight-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #334155;
+}
+
+.lhh-journey-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 900;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lhh-journey-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(245, 158, 11, 0.45);
+}
+
+/* =============================================================================
+   8. WIDESCREEN 3D SKILLS BANNER
+   ============================================================================= */
+.lhh-skills-widescreen-banner-wrap {
+  position: relative;
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 32px rgba(0, 80, 220, 0.12);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  margin-top: 24px;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.lhh-skills-widescreen-banner-wrap:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0, 80, 220, 0.18);
+}
+
+.lhh-skills-widescreen-banner-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1280px) {
+  .lhh-wyg-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .lhh-career-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .lhh-wyg-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .lhh-career-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .lhh-career-bottom-strip {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .lhh-journey-cta-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Badge overlay color variants */
+.lhh-wyg-badge-blue   { background: #1d4ed8; color: #ffffff; }
+.lhh-wyg-badge-green  { background: #059669; color: #ffffff; }
+.lhh-wyg-badge-purple { background: #7c3aed; color: #ffffff; }
+.lhh-wyg-badge-gold   { background: #d97706; color: #ffffff; }
+
+/* Pill button text color */
+.lhh-wyg-pill-btn { color: #ffffff; cursor: pointer; }
+.lhh-wyg-pill-btn:hover { opacity: 0.88; }
+
+/* Career salary pill */
+.lhh-career-salary-pill {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  color: #065f46;
+}
+
+/* Career highlight emoji / label */
+.lhh-career-highlight-emoji { font-size: 16px; }
+.lhh-career-highlight-label { font-size: 12px; font-weight: 700; color: #334155; }
+
+/* Wrapper spacing between sections */
+.lhh-what-you-get-section,
+.lhh-career-opportunities-section,
+.lhh-skills-widescreen-banner-wrap {
+  margin-top: 24px;
+}
+
+/* =============================================================================
+   9. PREMIUM COMBINED SECTION (What Will You Get + Career Opportunities)
+   ============================================================================= */
+.lhh-premium-combined-section {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin-top: 28px;
+}
+
+/* Part 1: What Will You Get Container */
+.lhh-pcomb-wyg-block {
+  background: #ffffff;
+  border-radius: 24px;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 10px 30px rgba(0, 80, 220, 0.04);
+  padding: 28px 32px;
+}
+
+.lhh-pcomb-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.lhh-pcomb-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.lhh-pcomb-icon-blue {
+  background: linear-gradient(135deg, #0284c7 0%, #0070f3 100%);
+  box-shadow: 0 4px 14px rgba(0, 112, 243, 0.3);
+}
+
+.lhh-pcomb-icon-navy {
+  background: linear-gradient(135deg, #0284c7 0%, #6366f1 100%);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+}
+
+.lhh-pcomb-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.lhh-pcomb-subtitle {
+  font-size: 13.5px;
+  color: #64748b;
+  margin: 3px 0 0;
+  font-weight: 500;
+}
+
+/* WYG 4 Cards Grid */
+.lhh-pcomb-wyg-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.lhh-pcomb-wyg-card {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1.5px solid #f1f5f9;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+}
+
+.lhh-pcomb-wyg-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent, #3b82f6);
+  box-shadow: 0 16px 32px rgba(0, 80, 220, 0.09);
+}
+
+.lhh-pcomb-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 145px;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.lhh-pcomb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.lhh-pcomb-wyg-card:hover .lhh-pcomb-img {
+  transform: scale(1.05);
+}
+
+.lhh-pcomb-badge {
+  position: absolute;
+  bottom: 10px;
+  left: 12px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.lhh-pcomb-badge-blue { background: #0052cc; }
+.lhh-pcomb-badge-green { background: #059669; }
+.lhh-pcomb-badge-purple { background: #7c3aed; }
+.lhh-pcomb-badge-gold { background: #d97706; }
+
+.lhh-pcomb-card-body {
+  padding: 16px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.lhh-pcomb-card-icon-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  width: fit-content;
+}
+
+.lhh-pcomb-card-title {
+  font-size: 13.5px;
+  font-weight: 800;
+}
+
+.lhh-pcomb-card-desc {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0 0 16px;
+  flex: 1;
+}
+
+.lhh-pcomb-card-btn {
+  width: 100%;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.lhh-pcomb-card-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+/* Part 2: Career Opportunities (Dark Futuristic Container) */
+.lhh-pcomb-career-block {
+  background: linear-gradient(135deg, #090e1f 0%, #0d1533 50%, #080d21 100%);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 50px rgba(2, 6, 23, 0.4);
+  padding: 30px 32px;
+  color: #ffffff;
+}
+
+.lhh-pcomb-career-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  gap: 16px;
+}
+
+.lhh-pcomb-career-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.lhh-pcomb-career-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.lhh-pcomb-career-subtitle {
+  font-size: 13.5px;
+  color: #94a3b8;
+  margin: 3px 0 0;
+  font-weight: 500;
+}
+
+.lhh-pcomb-explore-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.lhh-pcomb-explore-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 16 Roles Grid */
+.lhh-pcomb-career-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 12px;
+}
+
+.lhh-pcomb-career-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(10px);
+}
+
+.lhh-pcomb-career-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.22);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.lhh-pcomb-career-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+.lhh-pcomb-career-role {
+  font-size: 12.5px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.lhh-pcomb-career-desc {
+  font-size: 10.5px;
+  color: #94a3b8;
+  line-height: 1.35;
+  flex: 1;
+}
+
+.lhh-pcomb-salary-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3.5px 6px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #4ade80;
+  margin-top: 6px;
+  width: 100%;
+}
+
+/* Bottom Strip inside Career Section */
+.lhh-pcomb-bottom-strip {
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  margin-top: 24px;
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.lhh-pcomb-highlights {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.lhh-pcomb-highlight-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lhh-pcomb-highlight-emoji {
+  font-size: 18px;
+}
+
+.lhh-pcomb-highlight-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.lhh-pcomb-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 26px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 900;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(245, 158, 11, 0.4);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.lhh-pcomb-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(245, 158, 11, 0.55);
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1280px) {
+  .lhh-pcomb-wyg-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .lhh-pcomb-career-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .lhh-pcomb-wyg-block,
+  .lhh-pcomb-career-block {
+    padding: 20px 18px;
+  }
+  .lhh-pcomb-wyg-grid {
+    grid-template-columns: 1fr;
+  }
+  .lhh-pcomb-career-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .lhh-pcomb-bottom-strip {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .lhh-pcomb-cta-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* =============================================================================
+   10. EXACT REFERENCE: "WHAT WILL YOU GET" + GRAND CAREER BANNER
+   ============================================================================= */
+.lhh-wyg-full-section {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 22px;
+  border: 1.5px solid rgba(186, 230, 253, 0.85);
+  box-shadow: 0 16px 40px rgba(0, 80, 220, 0.08), 0 2px 8px rgba(0, 0, 0, 0.03);
+  padding: 24px 28px;
+  margin-top: 4px;
+}
+
+.lhh-wyg-exact-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.lhh-wyg-exact-card {
+  border-radius: 16px;
+  border: 1.5px solid #e2e8f0;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  position: relative;
+  min-height: 148px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease;
+}
+
+.lhh-wyg-exact-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(0, 80, 220, 0.12);
+}
+
+/* Specific Card Backgrounds matching reference with luxury borders */
+.lhh-wyg-card-intern {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-color: #7dd3fc;
+  box-shadow: 0 4px 18px rgba(56, 189, 248, 0.16);
+}
+
+.lhh-wyg-card-cert-green {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-color: #86efac;
+  box-shadow: 0 4px 18px rgba(34, 197, 94, 0.16);
+}
+
+.lhh-wyg-card-letter-purple {
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  border-color: #d8b4fe;
+  box-shadow: 0 4px 18px rgba(168, 85, 247, 0.16);
+}
+
+.lhh-wyg-card-cert-gold {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border-color: #fde047;
+  box-shadow: 0 4px 18px rgba(234, 179, 8, 0.18);
+}
+
+/* Card Left Info */
+.lhh-wyg-exact-info {
+  flex: 1;
+  padding: 14px 12px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+.lhh-wyg-icon-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.lhh-tag-blue   { color: #0284c7; }
+.lhh-tag-green  { color: #16a34a; }
+.lhh-tag-purple { color: #9333ea; }
+.lhh-tag-gold   { color: #d97706; }
+
+.lhh-wyg-exact-desc {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.4;
+  margin: 6px 0 10px;
+}
+
+.lhh-wyg-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  width: fit-content;
+}
+
+.lhh-pill-blue   { background: #bae6fd; color: #0284c7; }
+.lhh-pill-green  { background: #bbf7d0; color: #16a34a; }
+.lhh-pill-purple { background: #e9d5ff; color: #9333ea; }
+.lhh-pill-gold   { background: #fde68a; color: #b45309; }
+
+/* Card Right Side — Certificate Preview (Full, Crisp, No Cut, No Blur) */
+.lhh-wyg-exact-img-box {
+  width: 105px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.lhh-wyg-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.lhh-wyg-exact-cert-box {
+  width: 115px;
+  padding: 8px 8px 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.lhh-wyg-cert-full {
+  width: 100%;
+  height: auto;
+  max-height: 125px;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  background: #ffffff;
+}
+
+/* =============================================================================
+   GRAND CAREER BANNER (Exact Reference Graphic)
+   ============================================================================= */
+.lhh-career-grand-banner-section {
+  margin-top: 24px;
+}
+
+.lhh-career-grand-banner-wrap {
+  position: relative;
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 40, 140, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease;
+}
+
+.lhh-career-grand-banner-wrap:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 50px rgba(0, 40, 140, 0.3);
+}
+
+.lhh-career-grand-banner-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Floating Clickable CTA on Grand Banner */
+.lhh-career-grand-floating-btn {
+  position: absolute;
+  bottom: 5.5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 42%;
+  height: 9.5%;
+  min-height: 38px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: transparent;
+  font-size: 0;
+  border-radius: 30px;
+  z-index: 5;
+  transition: background 0.2s ease;
+}
+
+.lhh-career-grand-floating-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1280px) {
+  .lhh-wyg-exact-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .lhh-wyg-exact-grid {
+    grid-template-columns: 1fr;
+  }
+  .lhh-wyg-full-section {
+    padding: 18px 16px;
+  }
+  .lhh-career-grand-floating-btn {
+    width: 70%;
+    bottom: 4%;
+  }
+}
+
+/* =============================================================================
+   11. ULTRA ADVANCED CAREER OPPORTUNITIES SECTION (Custom Built 1:1 UI)
+   ============================================================================= */
+.lhh-career-ultra-section {
+  background: radial-gradient(circle at 15% 20%, #0d1b3e 0%, #080f24 50%, #050917 100%);
+  border-radius: 26px;
+  border: 1.5px solid rgba(59, 130, 246, 0.25);
+  box-shadow: 0 20px 60px rgba(0, 30, 90, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  padding: 32px 36px 36px;
+  margin-top: 28px;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background subtle futuristic glow */
+.lhh-career-ultra-section::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(0, 112, 243, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Top Spotlight Bar */
+.lhh-cu-top-bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 26px;
+  position: relative;
+  z-index: 2;
+}
+
+.lhh-cu-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lhh-cu-crown-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 4px 14px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #f8fafc;
+  width: fit-content;
+}
+
+.lhh-cu-crown {
+  font-size: 14px;
+}
+
+.lhh-cu-heading {
+  font-size: 32px;
+  font-weight: 950;
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.15;
+  color: #ffffff;
+}
+
+.lhh-cu-gradient-genai {
+  background: linear-gradient(135deg, #ec4899 0%, #a855f7 50%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.lhh-cu-salary-highlight {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.25) 0%, rgba(124, 58, 237, 0.25) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  padding: 6px 16px;
+  border-radius: 12px;
+  width: fit-content;
+}
+
+.lhh-cu-salary-icon {
+  font-size: 16px;
+}
+
+.lhh-cu-salary-range {
+  font-size: 18px;
+  font-weight: 900;
+  color: #38bdf8;
+  letter-spacing: 0.02em;
+}
+
+.lhh-cu-subtext {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 2px 0 0;
+  font-weight: 500;
+}
+
+/* Top Right Pills & Explore Button */
+.lhh-cu-top-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.lhh-cu-badges-tag {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #38bdf8;
+}
+
+.lhh-cu-explore-btn {
+  background: linear-gradient(135deg, #0284c7 0%, #0070f3 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 9px 20px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4);
+  transition: all 0.22s ease;
+  white-space: nowrap;
+}
+
+.lhh-cu-explore-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(2, 132, 199, 0.6);
+}
+
+/* Main Split: Left Visual Character + Right 16 Cards */
+.lhh-cu-main-split {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  align-items: stretch;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 28px;
+}
+
+/* Left Visual Avatar & Float Skills */
+.lhh-cu-visual-col {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.lhh-cu-floating-skills {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+.lhh-cu-skill-pill {
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.lhh-cu-sp-py  { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border-color: rgba(59, 130, 246, 0.4); }
+.lhh-cu-sp-sql { background: rgba(168, 85, 247, 0.2); color: #c084fc; border-color: rgba(168, 85, 247, 0.4); }
+.lhh-cu-sp-ex  { background: rgba(34, 197, 94, 0.2);  color: #4ade80; border-color: rgba(34, 197, 94, 0.4); }
+.lhh-cu-sp-ai  { background: rgba(236, 72, 153, 0.2); color: #f472b6; border-color: rgba(236, 72, 153, 0.4); }
+
+.lhh-cu-avatar-showcase {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.lhh-cu-avatar-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.lhh-cu-company-badge {
+  position: absolute;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(10, 15, 30, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.lhh-cu-cb-f {
+  font-weight: 950;
+  color: #38bdf8;
+  font-size: 14px;
+}
+
+.lhh-cu-cb-text {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #f1f5f9;
+}
+
+/* Right 16 Roles Grid (4 columns × 4 rows) */
+.lhh-cu-roles-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.lhh-cu-role-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(8px);
+}
+
+.lhh-cu-role-card:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(56, 189, 248, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.lhh-cu-rc-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.lhh-cu-rc-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.lhh-cu-rc-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.lhh-cu-rc-name {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.lhh-cu-rc-desc {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+.lhh-cu-rc-sal-badge {
+  font-size: 11px;
+  font-weight: 900;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 3px 8px;
+  border-radius: 6px;
+  width: fit-content;
+  align-self: flex-start;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Bottom Feature Pillars & Centered Button */
+.lhh-cu-bottom-strip {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.lhh-cu-pillars-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.lhh-cu-pillar-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #f1f5f9;
+}
+
+.lhh-cp-green  { border-color: rgba(34, 197, 94, 0.4); color: #86efac; }
+.lhh-cp-purple { border-color: rgba(168, 85, 247, 0.4); color: #d8b4fe; }
+.lhh-cp-yellow { border-color: rgba(234, 179, 8, 0.4);  color: #fde047; }
+.lhh-cp-blue   { border-color: rgba(56, 189, 248, 0.4); color: #7dd3fc; }
+.lhh-cp-pink   { border-color: rgba(244, 63, 94, 0.4);  color: #fda4af; }
+
+.lhh-cu-cta-center {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.lhh-cu-big-journey-btn {
+  background: linear-gradient(135deg, #0070f3 0%, #7928ca 50%, #ff0080 100%);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 900;
+  padding: 14px 44px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(121, 40, 202, 0.5);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  letter-spacing: 0.01em;
+}
+
+.lhh-cu-big-journey-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 32px rgba(255, 0, 128, 0.6);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1280px) {
+  .lhh-cu-main-split {
+    grid-template-columns: 1fr;
+  }
+  .lhh-cu-visual-col {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .lhh-cu-roles-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .lhh-cu-top-bar {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 600px) {
+  .lhh-cu-roles-grid {
+    grid-template-columns: 1fr;
+  }
+  .lhh-cu-big-journey-btn {
+    width: 100%;
+  }
+}
+
+/* =============================================================================
+   12. CAREER OPPORTUNITIES OVERLAY STYLING (Text-Free 3D Background + Sharp UI)
+   ============================================================================= */
+.lhh-career-overlay-section {
+  margin-top: 28px;
+}
+
+.lhh-co-container {
+  position: relative;
+  width: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 50, 150, 0.16);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  min-height: 540px;
+}
+
+.lhh-co-bg-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+}
+
+.lhh-co-content-layer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 14px 28px 20px;
+  background: transparent;
+  z-index: 2;
+  min-height: 540px;
+  gap: 12px;
+}
+
+/* Header Row — Wide & Grand Layout */
+.lhh-co-header-row.lhh-co-header-wide {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: -6px;
+}
+
+.lhh-co-wide-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  gap: 10px;
+  width: 100%;
+}
+
+.lhh-co-top-flex-line {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.lhh-co-middle-flex-line {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* 1. Main Big White Headline: Career Opportunities */
+.lhh-cop-headline-white {
+  font-size: 38px;
+  font-weight: 950;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 32px rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lhh-cop-crown-glow {
+  font-size: 32px;
+  filter: drop-shadow(0 0 12px rgba(250, 204, 21, 0.95));
+  animation: lhhCrownBounce 3s ease-in-out infinite;
+}
+
+@keyframes lhhCrownBounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(-6deg); }
+}
+
+/* 2. Sub-Heading: Data Analyst with GenAI in Shimmer Colors */
+.lhh-cop-hero-title {
+  font-size: 26px;
+  font-weight: 950;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lhh-cop-title-data {
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+
+.lhh-cop-title-genai {
+  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 35%, #ec4899 70%, #f59e0b 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: lhhGenAiShimmer 4s linear infinite;
+  filter: drop-shadow(0 2px 14px rgba(236, 72, 153, 0.5));
+}
+
+@keyframes lhhGenAiShimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 3. Glowing Neon Gradient Salary Capsule */
+.lhh-cop-salary-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.4) 0%, rgba(59, 130, 246, 0.45) 50%, rgba(139, 92, 246, 0.4) 100%);
+  border: 1.8px solid rgba(125, 211, 252, 0.9);
+  box-shadow: 0 6px 26px rgba(6, 182, 212, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  padding: 8px 22px;
+  border-radius: 16px;
+  backdrop-filter: blur(14px);
+  width: fit-content;
+  transition: all 0.3s ease;
+}
+
+.lhh-cop-sal-chart-icon {
+  font-size: 20px;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.9));
+}
+
+.lhh-cop-sal-figure {
+  font-size: 20px;
+  font-weight: 950;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 14px rgba(56, 189, 248, 0.7), 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+.lhh-cop-sal-live-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 12px #22c55e, 0 0 18px #22c55e;
+  animation: lhhLivePulse 1.8s ease-in-out infinite;
+}
+
+@keyframes lhhLivePulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.4); opacity: 1; }
+}
+
+.lhh-cop-divider-dot {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 18px;
+}
+
+/* 4. Elegant Subtitle with Micro Gradients */
+.lhh-cop-sub-tagline {
+  font-size: 14.5px;
+  color: #f8fafc;
+  margin: 0;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+}
+
+.lhh-cop-highlight-data {
+  color: #60a5fa;
+  font-weight: 850;
+}
+
+.lhh-cop-highlight-analytics {
+  color: #a78bfa;
+  font-weight: 850;
+}
+
+.lhh-cop-highlight-ai {
+  color: #f472b6;
+  font-weight: 850;
+}
+
+
+/* 16 Roles Cards Grid (positioned over the glass window on right) */
+.lhh-co-grid-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin: 6px 0;
+  width: 100%;
+}
+
+.lhh-co-cards-16grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: 56%;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  border-radius: 18px;
+  padding: 10px;
+  box-shadow: 0 12px 36px rgba(0, 30, 90, 0.25);
+}
+
+.lhh-co-card-item {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.lhh-co-card-item:hover {
+  transform: translateY(-2px);
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 80, 220, 0.25);
+}
+
+.lhh-co-card-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lhh-co-icon-bubble {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.lhh-co-card-texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.lhh-co-role-name {
+  font-size: 11.5px;
+  font-weight: 850;
+  color: #0f172a;
+  line-height: 1.15;
+}
+
+.lhh-co-role-desc {
+  font-size: 9px;
+  color: #64748b;
+  line-height: 1.2;
+}
+
+.lhh-co-sal-tag {
+  font-size: 10.5px;
+  font-weight: 850;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+/* Bottom IT Companies Marquee Strip & CTA */
+.lhh-co-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: rgba(10, 20, 45, 0.55);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  padding: 8px 16px;
+  overflow: hidden;
+}
+
+.lhh-co-marquee-wrapper {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 1) 5%, rgba(0, 0, 0, 1) 95%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 1) 5%, rgba(0, 0, 0, 1) 95%, transparent 100%);
+}
+
+.lhh-co-marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: max-content;
+  animation: lhhCompaniesScroll 28s linear infinite;
+}
+
+.lhh-co-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes lhhCompaniesScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.lhh-co-company-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 4px 14px 4px 6px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.lhh-co-company-pill:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(56, 189, 248, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.lhh-co-comp-logo-box {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3.5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.lhh-co-comp-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.lhh-co-comp-name {
+  font-size: 11.5px;
+  font-weight: 850;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.lhh-co-cta-btn {
+  background: linear-gradient(135deg, #0070f3 0%, #7928ca 50%, #ff0080 100%);
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 900;
+  padding: 10px 26px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(121, 40, 202, 0.5);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.lhh-co-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(255, 0, 128, 0.6);
+}
+
+/* Responsive */
+@media (max-width: 1280px) {
+  .lhh-co-cards-16grid {
+    width: 65%;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .lhh-co-cards-16grid {
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .lhh-co-content-layer {
+    position: relative;
+    background: #0d1e3d;
+  }
+  .lhh-co-bg-img {
+    display: none;
+  }
+  .lhh-co-bottom-row {
+    flex-direction: column;
+  }
+}
+
+
+/* =========================================================================
+   LEARNER HOME HUB — ANDROID MOBILE APP RESPONSIVE OVERRIDES
+   ========================================================================= */
+@media (max-width: 640px) {
+  .lhh-wrapper {
+    gap: 12px !important;
+    padding-bottom: 95px !important;
+  }
+
+  /* Compact Hero Banner */
+  .lhh-hero-banner-frame {
+    min-height: 170px !important;
+    height: auto !important;
+    border-radius: 14px !important;
+  }
+
+  .lhh-hero-content-overlay {
+    padding: 12px 14px !important;
+    max-width: 100% !important;
+  }
+
+  .lhh-hero-headline {
+    font-size: 18px !important;
+    line-height: 1.2 !important;
+  }
+
+  .lhh-hero-subtext {
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+  }
+
+  .lhh-hero-features-row {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    gap: 6px !important;
+    padding-bottom: 2px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .lhh-feature-pill {
+    padding: 4px 9px !important;
+    font-size: 10px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Section Header */
+  .lhh-section-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  .lhh-section-title {
+    font-size: 16px !important;
+  }
+
+  .lhh-controls-group {
+    width: 100% !important;
+    justify-content: space-between !important;
+    overflow-x: auto !important;
+  }
+
+  .lhh-filter-pills-row {
+    overflow-x: auto !important;
+    max-width: 100% !important;
+  }
+
+  .lhh-filter-pill {
+    padding: 4px 10px !important;
+    font-size: 11px !important;
+  }
+
+  /* 2-Column Responsive Course Cards Grid */
+  .lhh-modules-6grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .lhh-module-card {
+    padding: 8px !important;
+    border-radius: 14px !important;
+  }
+
+  .lhh-card-title {
+    font-size: 12.5px !important;
+  }
+
+  .lhh-card-desc {
+    font-size: 9px !important;
+    min-height: 22px !important;
+    line-height: 1.25 !important;
+  }
+
+  .lhh-lessons-text,
+  .lhh-percent-text {
+    font-size: 9.5px !important;
+  }
+
+  .lhh-card-action-btn {
+    padding: 7px 10px !important;
+    font-size: 10.5px !important;
+    border-radius: 9px !important;
+  }
+}
+
+/* =========================================================================
+   4-COURSE STUDENT DASHBOARD (.scd-*) & BREADCRUMB BAR
+   ========================================================================= */
+.scd-courses-4grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  width: 100%;
+}
+
+.scd-course-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.scd-status-badge-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 9.5px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  z-index: 3;
+}
+
+.scd-salary-overlay-pill {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  padding: 3.5px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 10.5px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 3;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.scd-skill-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 2px;
+  margin-bottom: 4px;
+}
+
+.scd-skill-chip {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2.5px 8px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  letter-spacing: 0.01em;
+}
+
+/* Top Breadcrumb Bar inside Data Analyst with GenAI (#data-analyst) */
+.scd-course-top-breadcrumb-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+}
+
+.scd-back-to-courses-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  transition: all 0.2s ease;
+}
+
+.scd-back-to-courses-btn:hover {
+  transform: translateX(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.45);
+}
+
+.scd-breadcrumb-divider {
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.scd-breadcrumb-trail {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.scd-breadcrumb-arrow {
+  color: #94a3b8;
+  font-weight: 900;
+}
+
+.scd-breadcrumb-active {
+  color: #0f172a;
+  font-weight: 900;
+}
+
+.scd-enrolled-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #047857;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+@media (max-width: 1280px) {
+  .scd-courses-4grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .scd-courses-4grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+  .scd-skill-tags-row {
+    gap: 3px !important;
+  }
+  .scd-skill-chip {
+    font-size: 8.5px !important;
+    padding: 1.5px 5px !important;
+  }
+  .scd-status-badge-overlay {
+    font-size: 8px !important;
+    padding: 2.5px 7px !important;
+    top: 6px !important;
+    right: 6px !important;
+  }
+  .scd-salary-overlay-pill {
+    font-size: 8.5px !important;
+    padding: 2px 6px !important;
+    bottom: 6px !important;
+    left: 6px !important;
+  }
+  .scd-course-top-breadcrumb-bar {
+    padding: 8px 10px !important;
+    gap: 8px !important;
+  }
+  .scd-breadcrumb-trail {
+    font-size: 11px !important;
+  }
+}
+
+/* =========================================================================
+   TOP 4-COURSE INDUSTRY CAREER & SALARY VIDEO SHOWCASE BANNER (.scd-hero-*)
+   ========================================================================= */
+.scd-hero-showcase-banner {
+  position: relative;
+  width: 100%;
+  min-height: 330px;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #060d1f;
+  border: 1.5px solid rgba(56, 189, 248, 0.35);
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.22);
+  display: flex;
+  align-items: stretch;
+}
+
+.scd-hero-bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  z-index: 1;
+  filter: saturate(1.12) contrast(1.05);
+}
+
+.scd-hero-cyber-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    90deg,
+    rgba(6, 13, 31, 0.92) 0%,
+    rgba(8, 20, 48, 0.78) 46%,
+    rgba(8, 20, 48, 0.35) 75%,
+    rgba(6, 13, 31, 0.65) 100%
+  );
+  pointer-events: none;
+}
+
+.scd-hero-inner-grid {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 22px;
+  padding: 22px 26px;
+  align-items: center;
+}
+
+.scd-hero-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.scd-hero-top-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: rgba(14, 165, 233, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  color: #7dd3fc;
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  width: fit-content;
+  backdrop-filter: blur(8px);
+}
+
+.scd-live-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+  animation: lhhLivePulse 1.6s ease-in-out infinite;
+}
+
+.scd-hero-main-title {
+  font-size: 30px;
+  font-weight: 950;
+  color: #ffffff;
+  line-height: 1.12;
+  margin: 0;
+  letter-spacing: -0.02em;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.65);
+}
+
+.scd-hero-salary-gradient {
+  background: linear-gradient(90deg, #fde047 0%, #38bdf8 50%, #f472b6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.scd-hero-desc {
+  font-size: 12.5px;
+  line-height: 1.48;
+  color: #cbd5e1;
+  margin: 0;
+  max-width: 580px;
+}
+
+.scd-hero-desc strong {
+  color: #ffffff;
+  font-weight: 800;
+}
+
+/* 3 KPI Badges (Salary Package, Pay After Placement, Hiring Partners) */
+.scd-hero-kpi-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.scd-kpi-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(10px);
+}
+
+.scd-kpi-ctc {
+  border-color: rgba(250, 204, 21, 0.45);
+  background: rgba(234, 179, 8, 0.14);
+}
+
+.scd-kpi-pap {
+  border-color: rgba(16, 185, 129, 0.45);
+  background: rgba(16, 185, 129, 0.14);
+}
+
+.scd-kpi-hiring {
+  border-color: rgba(56, 189, 248, 0.45);
+  background: rgba(14, 165, 233, 0.14);
+}
+
+.scd-kpi-icon {
+  font-size: 16px;
+}
+
+.scd-kpi-label {
+  display: block;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+}
+
+.scd-kpi-val {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+/* Interactive 4-Course Switcher Pills */
+.scd-hero-course-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+.scd-hero-tab-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #e2e8f0;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.scd-hero-tab-pill:hover,
+.scd-hero-tab-pill.active {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.85), rgba(79, 70, 229, 0.85));
+  border-color: #7dd3fc;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.45);
+}
+
+.scd-tab-num {
+  font-size: 9.5px;
+  font-weight: 900;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.scd-tab-ctc {
+  font-size: 10px;
+  font-weight: 900;
+  color: #fde047;
+}
+
+/* RIGHT COLUMN: 2x2 Holographic 4-Course & Salary Matrix */
+.scd-hero-right-col {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.scd-hero-4cards-matrix {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.scd-hero-holo-card {
+  background: rgba(10, 18, 40, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 14px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.scd-hero-holo-card:hover,
+.scd-hero-holo-card.is-active {
+  background: rgba(15, 28, 60, 0.88);
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(14, 165, 233, 0.35);
+}
+
+.scd-holo-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.scd-holo-num {
+  font-size: 9.5px;
+  font-weight: 900;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+}
+
+.scd-holo-status {
+  font-size: 8px;
+  font-weight: 900;
+  color: #ffffff;
+  padding: 2px 7px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+.scd-holo-title {
+  font-size: 13px;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.scd-holo-salary-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #cbd5e1;
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  padding: 2px 8px;
+  border-radius: 6px;
+  width: fit-content;
+}
+
+.scd-holo-salary-box strong {
+  color: #6ee7b7;
+  font-weight: 900;
+}
+
+.scd-holo-roles {
+  font-size: 10px;
+  font-weight: 700;
+  color: #93c5fd;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.scd-holo-skills {
+  font-size: 9.5px;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.scd-holo-footer {
+  margin-top: 2px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.scd-holo-cta {
+  font-size: 10.5px;
+  font-weight: 900;
+}
+
+@media (max-width: 1150px) {
+  .scd-hero-inner-grid {
+    grid-template-columns: 1fr;
+    padding: 18px;
+  }
+}
+
+@media (max-width: 640px) {
+  .scd-hero-showcase-banner {
+    min-height: auto !important;
+    border-radius: 16px !important;
+  }
+  .scd-hero-inner-grid {
+    padding: 12px !important;
+    gap: 12px !important;
+  }
+  .scd-hero-main-title {
+    font-size: 20px !important;
+  }
+  .scd-hero-desc {
+    font-size: 11px !important;
+  }
+  .scd-hero-4cards-matrix {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 6px !important;
+  }
+  .scd-hero-holo-card {
+    padding: 8px !important;
+  }
+  .scd-holo-title {
+    font-size: 11px !important;
+  }
+  .scd-holo-skills {
+    display: none !important;
+  }
+}
+
+/* =========================================================================
+   DATA ANALYST WITH GENAI — TRANSPARENT 3D PEDESTAL & FLOATING LOGOS STAGE
+   ========================================================================= */
+.scd-da-transparent-stage {
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.da-pedestal-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: transparent !important;
+  perspective: 900px;
+  transform-style: preserve-3d;
+  overflow: visible;
+  user-select: none;
+}
+
+.da-neon-rings-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.85));
+}
+
+.da-ring-orbit-slow {
+  animation: daDashFlow 8s linear infinite, daNeonGlowPulse 2.8s ease-in-out infinite;
+}
+
+.da-ring-orbit-fast {
+  animation: daDashFlowReverse 5s linear infinite, daNeonGlowPulse 2.2s ease-in-out infinite;
+}
+
+.da-ring-pulse {
+  animation: daDashFlow 6s linear infinite, daNeonGlowPulse 2.4s ease-in-out infinite;
+}
+
+.da-ring-pulse-alt {
+  animation: daDashFlowReverse 6s linear infinite, daNeonGlowPulse 2.6s ease-in-out infinite;
+}
+
+@keyframes daDashFlow {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -216; }
+}
+
+@keyframes daDashFlowReverse {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 180; }
+}
+
+@keyframes daNeonGlowPulse {
+  0%, 100% {
+    opacity: 0.65;
+    filter: drop-shadow(0 0 6px #00f2fe);
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 16px #38bdf8) drop-shadow(0 0 24px #00f2fe);
+  }
+}
+
+.da-layer-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* 1. FIXED STAND — Never moves, only its neon rings pulse */
+.da-stand-fixed {
+  z-index: 1;
+  transform: none !important;
+  animation: daStandNeonPulse 3s ease-in-out infinite;
+}
+
+@keyframes daStandNeonPulse {
+  0%, 100% {
+    filter: drop-shadow(0 4px 12px rgba(0, 195, 255, 0.45));
+  }
+  50% {
+    filter: drop-shadow(0 4px 22px rgba(0, 242, 254, 0.85)) brightness(1.08);
+  }
+}
+
+/* 2. FLOATING & 3D-ROTATING LOGOS */
+.da-float-python {
+  z-index: 5;
+  transform-origin: 51% 34%;
+  animation: daFloatRotatePython 4.2s ease-in-out infinite;
+  filter: drop-shadow(0 8px 18px rgba(56, 189, 248, 0.65));
+}
+
+.da-float-sql {
+  z-index: 4;
+  transform-origin: 22% 32%;
+  animation: daFloatRotateSql 3.8s ease-in-out infinite;
+  filter: drop-shadow(0 6px 16px rgba(37, 99, 235, 0.65));
+}
+
+.da-float-excel {
+  z-index: 4;
+  transform-origin: 79% 33%;
+  animation: daFloatRotateExcel 4.0s ease-in-out infinite;
+  filter: drop-shadow(0 6px 16px rgba(16, 185, 129, 0.65));
+}
+
+.da-float-powerbi {
+  z-index: 6;
+  transform-origin: 24% 60%;
+  animation: daFloatRotatePowerBi 3.6s ease-in-out infinite;
+  filter: drop-shadow(0 6px 14px rgba(245, 158, 11, 0.6));
+}
+
+.da-float-stats {
+  z-index: 7;
+  transform-origin: 48% 66%;
+  animation: daFloatRotateStats 4.4s ease-in-out infinite;
+  filter: drop-shadow(0 6px 14px rgba(56, 189, 248, 0.55));
+}
+
+.da-float-genai {
+  z-index: 6;
+  transform-origin: 74% 62%;
+  animation: daFloatRotateGenAi 3.9s ease-in-out infinite;
+  filter: drop-shadow(0 6px 16px rgba(16, 185, 129, 0.7));
+}
+
+@keyframes daFloatRotatePython {
+  0%, 100% {
+    transform: translateY(0px) rotateY(-12deg) rotateZ(-2deg) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) rotateY(12deg) rotateZ(2deg) scale(1.04);
+  }
+}
+
+@keyframes daFloatRotateSql {
+  0%, 100% {
+    transform: translateY(-2px) rotateY(15deg) rotateZ(-3deg) scale(1);
+  }
+  50% {
+    transform: translateY(-11px) rotateY(-15deg) rotateZ(3deg) scale(1.05);
+  }
+}
+
+@keyframes daFloatRotateExcel {
+  0%, 100% {
+    transform: translateY(-9px) rotateY(-15deg) rotateZ(3deg) scale(1.04);
+  }
+  50% {
+    transform: translateY(1px) rotateY(15deg) rotateZ(-3deg) scale(1);
+  }
+}
+
+@keyframes daFloatRotatePowerBi {
+  0%, 100% {
+    transform: translateY(0px) rotateY(12deg) rotateZ(-2deg);
+  }
+  50% {
+    transform: translateY(-7px) rotateY(-12deg) rotateZ(2.5deg);
+  }
+}
+
+@keyframes daFloatRotateStats {
+  0%, 100% {
+    transform: translateY(-6px) rotateX(6deg) rotateY(-8deg);
+  }
+  50% {
+    transform: translateY(1px) rotateX(-4deg) rotateY(8deg);
+  }
+}
+
+@keyframes daFloatRotateGenAi {
+  0%, 100% {
+    transform: translateY(-1px) rotateY(-14deg) rotateZ(3deg);
+  }
+  50% {
+    transform: translateY(-8px) rotateY(14deg) rotateZ(-3deg);
+  }
+}
+
+/* =========================================================================
+   COMPACT LIGHT HERO VIDEO BANNER (.scd-light-compact-banner)
+   ========================================================================= */
+.scd-light-compact-banner {
+  height: 205px !important;
+  min-height: 205px !important;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f8fafc 100%) !important;
+  border: 1.5px solid rgba(186, 230, 253, 0.9) !important;
+}
+
+.scd-banner-bg-img {
+  object-fit: cover !important;
+  object-position: right center !important;
+}
+
+.scd-light-banner-gradient {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(248, 250, 252, 0.82) 34%,
+    rgba(240, 249, 255, 0.15) 52%,
+    rgba(240, 249, 255, 0.0) 68%
+  ) !important;
+}
+
+.scd-light-banner-content {
+  padding: 16px 26px !important;
+  gap: 6px !important;
+  max-width: 68% !important;
+}
+
+.scd-compact-headline {
+  font-size: 26px !important;
+  line-height: 1.12 !important;
+}
+
+.scd-compact-subtitle {
+  font-size: 12px !important;
+  line-height: 1.38 !important;
+  margin-bottom: 2px !important;
+}
+
+@media (max-width: 640px) {
+  .scd-light-compact-banner {
+    height: auto !important;
+    min-height: 165px !important;
+  }
+  .scd-light-banner-content {
+    max-width: 100% !important;
+    padding: 12px 14px !important;
+  }
+  .scd-compact-headline {
+    font-size: 18px !important;
+  }
+}
+
+/* =========================================================================
+   4 COURSES — 3D CYLINDRICAL GLOWING NEON POTS (REFERENCE IMAGE 1:1 STYLE)
+   Outer background is 100% transparent so the page background shows through,
+   and top holograms/videos visually flow upward out of each 3D pot!
+   ========================================================================= */
+.scd-transparent-pots-section {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-top: -12px;
+  gap: 6px !important;
+}
+
+.scd-pots-4grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+  padding: 2px 4px 20px;
+  margin-top: -8px;
+  background: transparent !important;
+  align-items: end;
+}
+
+/* Each Pot Card Wrapper — NO white box, 100% transparent outer container */
+.scd-pot-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  overflow: visible;
+}
+
+.scd-pot-card:hover {
+  transform: translateY(-8px);
+}
+
+/* Theme CSS Variables per Pot (Blue, Purple, Gold/Amber, Emerald/Teal) */
+.scd-pot-blue {
+  --pot-neon: #00f2fe;
+  --pot-neon-bright: #7dd3fc;
+  --pot-neon-rgb: 0, 242, 254;
+  --pot-accent: #0284c7;
+  --pot-cyl-bg: linear-gradient(
+    90deg,
+    #041028 0%,
+    #0a2756 18%,
+    #134892 42%,
+    #1d63b8 50%,
+    #134892 58%,
+    #0a2756 82%,
+    #041028 100%
+  );
+  --pot-vortex: radial-gradient(
+    ellipse at 50% 55%,
+    rgba(0, 242, 254, 0.85) 0%,
+    rgba(2, 132, 199, 0.55) 38%,
+    #030b1c 85%
+  );
+}
+
+.scd-pot-purple {
+  --pot-neon: #d8b4fe;
+  --pot-neon-bright: #f3e8ff;
+  --pot-neon-rgb: 192, 132, 252;
+  --pot-accent: #9333ea;
+  --pot-cyl-bg: linear-gradient(
+    90deg,
+    #14072e 0%,
+    #2b125c 18%,
+    #4c1d95 42%,
+    #6b21a8 50%,
+    #4c1d95 58%,
+    #2b125c 82%,
+    #14072e 100%
+  );
+  --pot-vortex: radial-gradient(
+    ellipse at 50% 55%,
+    rgba(216, 180, 254, 0.88) 0%,
+    rgba(147, 51, 234, 0.55) 38%,
+    #0f0522 85%
+  );
+}
+
+.scd-pot-gold {
+  --pot-neon: #fcd34d;
+  --pot-neon-bright: #fef3c7;
+  --pot-neon-rgb: 251, 191, 36;
+  --pot-accent: #d97706;
+  --pot-cyl-bg: linear-gradient(
+    90deg,
+    #231004 0%,
+    #4a2309 18%,
+    #78350f 42%,
+    #9a4412 50%,
+    #78350f 58%,
+    #4a2309 82%,
+    #231004 100%
+  );
+  --pot-vortex: radial-gradient(
+    ellipse at 50% 55%,
+    rgba(252, 211, 77, 0.88) 0%,
+    rgba(217, 119, 6, 0.55) 38%,
+    #1a0b02 85%
+  );
+}
+
+.scd-pot-emerald {
+  --pot-neon: #34d399;
+  --pot-neon-bright: #a7f3d0;
+  --pot-neon-rgb: 52, 211, 153;
+  --pot-accent: #059669;
+  --pot-cyl-bg: linear-gradient(
+    90deg,
+    #031f1c 0%,
+    #063e38 18%,
+    #0b645a 42%,
+    #0f7f72 50%,
+    #0b645a 58%,
+    #063e38 82%,
+    #031f1c 100%
+  );
+  --pot-vortex: radial-gradient(
+    ellipse at 50% 55%,
+    rgba(52, 211, 153, 0.88) 0%,
+    rgba(5, 150, 105, 0.55) 38%,
+    #021513 85%
+  );
+}
+
+/* =========================================================================
+   1. TOP HOLOGRAM / VIDEO DOME FLOWING UP OUT OF THE POT
+   ========================================================================= */
+.scd-pot-flow-stage {
+  position: relative;
+  width: 84%;
+  height: 210px;
+  margin-bottom: -22px; /* Emerges directly from the center of the glowing elliptical pot mouth */
+  z-index: 6;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* Upward Energy Cone rising from the pot mouth */
+.scd-pot-rising-energy {
+  position: absolute;
+  bottom: -10px;
+  left: 2%;
+  right: 2%;
+  height: 175px;
+  background:
+    radial-gradient(
+      ellipse 72% 40% at 50% 96%,
+      rgba(var(--pot-neon-rgb), 0.9) 0%,
+      rgba(var(--pot-neon-rgb), 0.4) 45%,
+      transparent 80%
+    ),
+    conic-gradient(
+      from 160deg at 50% 105%,
+      transparent 0deg,
+      rgba(var(--pot-neon-rgb), 0.35) 15deg,
+      transparent 28deg,
+      rgba(var(--pot-neon-rgb), 0.45) 40deg,
+      transparent 52deg
+    );
+  filter: blur(6px);
+  z-index: 4;
+  animation: potEnergyFlowUp 2.6s ease-in-out infinite;
+}
+
+@keyframes potEnergyFlowUp {
+  0%, 100% {
+    opacity: 0.82;
+    transform: scaleY(0.95) translateY(2px);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1.08) translateY(-5px);
+  }
+}
+
+/* Floating / Rising Energy Particles emerging from the pot */
+.scd-pot-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scd-pt {
+  position: absolute;
+  bottom: 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 8px #ffffff, 0 0 14px var(--pot-neon), 0 0 24px var(--pot-neon);
+  opacity: 0;
+  animation: potParticleRise 2.8s linear infinite;
+}
+
+.scd-pt.p1 { left: 16%; animation-delay: 0s; animation-duration: 2.6s; }
+.scd-pt.p2 { left: 30%; animation-delay: 0.6s; animation-duration: 3.1s; width: 4px; height: 4px; }
+.scd-pt.p3 { left: 48%; animation-delay: 1.1s; animation-duration: 2.5s; width: 7px; height: 7px; }
+.scd-pt.p4 { left: 64%; animation-delay: 0.3s; animation-duration: 2.9s; }
+.scd-pt.p5 { left: 78%; animation-delay: 1.5s; animation-duration: 2.7s; width: 5px; height: 5px; }
+.scd-pt.p6 { left: 86%; animation-delay: 0.9s; animation-duration: 3.0s; }
+
+@keyframes potParticleRise {
+  0% {
+    transform: translateY(12px) scale(0.5);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(-185px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* Translucent 3D Arched Hologram Dome */
+.scd-pot-holo-dome {
+  position: relative;
+  width: 100%;
+  height: 204px;
+  border-radius: 36px 36px 26px 26px;
+  overflow: hidden;
+  z-index: 3;
+  background: radial-gradient(
+    circle at 50% 85%,
+    rgba(var(--pot-neon-rgb), 0.38) 0%,
+    rgba(6, 14, 34, 0.55) 70%,
+    transparent 100%
+  );
+  /* Smoothly tapers & fades the bottom into the glowing elliptical pot mouth so it flows out of the pot */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 80%,
+    rgba(0, 0, 0, 0.55) 93%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 80%,
+    rgba(0, 0, 0, 0.55) 93%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  animation: potHoloFloat 4s ease-in-out infinite;
+}
+
+@keyframes potHoloFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.scd-pot-holo-video,
+.scd-pot-holo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+}
+
+.scd-pot-holo-img {
+  transform: scale(1.03);
+  filter: saturate(1.12) contrast(1.05);
+}
+
+.scd-pot-holo-video.is-always-on {
+  opacity: 1;
+  filter: saturate(1.12) contrast(1.06);
+}
+
+.scd-pot-holo-video.is-hover-video {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  z-index: 2;
+}
+
+/* Glowing Translucent Glass Arch Border + Upward Neon Flow Mist */
+.scd-pot-holo-glass-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 36px 36px 26px 26px;
+  border: 2.5px solid rgba(var(--pot-neon-rgb), 0.82);
+  border-bottom: none;
+  box-shadow:
+    inset 0 0 24px rgba(var(--pot-neon-rgb), 0.52),
+    inset 0 -28px 32px rgba(var(--pot-neon-rgb), 0.65),
+    0 0 20px rgba(var(--pot-neon-rgb), 0.5);
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* =========================================================================
+   2. BOTTOM 3D CYLINDRICAL NEON POT (Rim + Cylinder Body + Metallic Base)
+   ========================================================================= */
+.scd-pot-cylinder-wrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 5;
+}
+
+/* A. Glowing Elliptical Top Rim (Mouth of the 3D Pot) */
+.scd-pot-top-rim {
+  position: relative;
+  width: 96%;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #061024 0%, #0f244a 100%);
+  border: 2.5px solid var(--pot-neon);
+  box-shadow:
+    0 0 20px rgba(var(--pot-neon-rgb), 0.92),
+    0 -6px 26px rgba(var(--pot-neon-rgb), 0.75),
+    inset 0 0 18px rgba(var(--pot-neon-rgb), 0.85);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.scd-pot-mouth-vortex {
+  width: 90%;
+  height: 72%;
+  border-radius: 50%;
+  background: var(--pot-vortex);
+  border: 1.5px solid var(--pot-neon-bright);
+  box-shadow:
+    0 0 18px var(--pot-neon),
+    inset 0 0 16px var(--pot-neon);
+  animation: potVortexPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes potVortexPulse {
+  0%, 100% {
+    filter: brightness(1);
+    transform: scale(0.98);
+  }
+  50% {
+    filter: brightness(1.3);
+    transform: scale(1.02);
+  }
+}
+
+/* B. 3D Cylindrical Metallic Body */
+.scd-pot-cylinder-body {
+  position: relative;
+  width: 92%;
+  min-height: 212px;
+  margin-top: -19px;
+  padding: 26px 14px 18px;
+  background: var(--pot-cyl-bg);
+  border-left: 2px solid rgba(var(--pot-neon-rgb), 0.78);
+  border-right: 2px solid rgba(var(--pot-neon-rgb), 0.78);
+  border-bottom: 2.5px solid var(--pot-neon);
+  border-radius: 0 0 42% 42% / 0 0 26px 26px;
+  box-shadow:
+    inset 16px 0 26px rgba(0, 0, 0, 0.55),
+    inset -16px 0 26px rgba(0, 0, 0, 0.55),
+    inset 0 12px 24px rgba(var(--pot-neon-rgb), 0.28),
+    inset 0 -10px 20px rgba(var(--pot-neon-rgb), 0.32),
+    0 12px 28px rgba(4, 12, 30, 0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  gap: 6px;
+  z-index: 4;
+  overflow: hidden;
+}
+
+/* Specular vertical glossy reflection down the center of the 3D cylinder */
+.scd-pot-cylinder-body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 34%;
+  width: 32%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.11) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* Glowing vertical neon ribs on left & right sides of the pot */
+.scd-pot-side-rib {
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--pot-neon);
+  box-shadow: 0 0 10px var(--pot-neon), 0 0 18px var(--pot-neon);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.scd-pot-side-rib.left {
+  left: 7px;
+}
+
+.scd-pot-side-rib.right {
+  right: 7px;
+}
+
+/* Status & CTC Pills inside the cylinder */
+.scd-pot-top-tags {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  position: relative;
+  z-index: 2;
+  margin-top: 2px;
+}
+
+.scd-pot-status-pill {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(var(--pot-neon-rgb), 0.2);
+  border: 1px solid rgba(var(--pot-neon-rgb), 0.6);
+  color: var(--pot-neon-bright);
+  text-transform: uppercase;
+}
+
+.scd-pot-fee-pill {
+  font-size: 9.5px;
+  font-weight: 950;
+  letter-spacing: 0.02em;
+  padding: 2.5px 9px;
+  border-radius: 999px;
+  background: #fef3c7;
+  border: 1.5px solid #f59e0b;
+  color: #92400e;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+  white-space: nowrap;
+}
+
+.scd-pot-ctc-pill {
+  font-size: 9.5px;
+  font-weight: 950;
+  padding: 2.5px 9px;
+  border-radius: 999px;
+  background: #dcfce7;
+  border: 1.5px solid #10b981;
+  color: #065f46;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.18);
+  white-space: nowrap;
+}
+
+/* Centered Course Title */
+.scd-pot-title {
+  font-size: 17px;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 2px 0 0;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.65);
+  position: relative;
+  z-index: 2;
+}
+
+/* Centered Course Short Description */
+.scd-pot-desc {
+  font-size: 11px;
+  font-weight: 500;
+  color: #e2e8f0;
+  line-height: 1.35;
+  margin: 0;
+  max-width: 94%;
+  opacity: 0.92;
+  position: relative;
+  z-index: 2;
+}
+
+/* Skills Mini Row */
+.scd-pot-skills-row {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 3.5px;
+  margin-top: 2px;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.scd-pot-skill-tag {
+  font-size: 8.5px;
+  font-weight: 800;
+  color: #f8fafc;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(var(--pot-neon-rgb), 0.42);
+  padding: 1.5px 5.5px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* Horizontal Action Row: Left Slashed Price (Red Cut) + Right Start Learning Button */
+.scd-pot-bottom-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 0 2px;
+  margin-top: 10px;
+  position: relative;
+  z-index: 3;
+}
+
+.scd-pot-slashed-price-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 3;
+}
+
+.scd-pot-slashed-daam {
+  font-size: 16.5px;
+  font-weight: 950;
+  color: #0f172a;
+  letter-spacing: 0.05em;
+  background: #ffffff;
+  border: 1.5px solid var(--pot-neon);
+  padding: 3px 10px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(var(--pot-neon-rgb), 0.25);
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  position: relative;
+  text-decoration: none;
+}
+
+/* Angled red cross slash so original numbers behind are 100% clearly visible */
+.scd-pot-slashed-daam::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 50%;
+  height: 1.8px;
+  background: #ef4444;
+  transform: rotate(-10deg);
+  transform-origin: center;
+  border-radius: 999px;
+  pointer-events: none;
+  opacity: 0.9;
+  box-shadow: 0 0 2px rgba(239, 68, 68, 0.45);
+}
+
+.scd-pot-circle-arrow-btn {
+  height: 38px;
+  padding: 0 5px 0 13px;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(var(--pot-neon-rgb), 0.38) 0%,
+    rgba(6, 16, 40, 0.92) 75%
+  );
+  border: 2px solid var(--pot-neon);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow:
+    0 0 14px rgba(var(--pot-neon-rgb), 0.8),
+    0 0 26px rgba(var(--pot-neon-rgb), 0.4),
+    inset 0 0 10px rgba(var(--pot-neon-rgb), 0.55);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.scd-pot-unlock-text {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.65);
+  white-space: nowrap;
+}
+
+.scd-pot-arrow-icon-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(var(--pot-neon-rgb), 0.28);
+  border: 1.5px solid var(--pot-neon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(var(--pot-neon-rgb), 0.75);
+  transition: all 0.25s ease;
+}
+
+.scd-pot-card:hover .scd-pot-circle-arrow-btn,
+.scd-pot-circle-arrow-btn:hover {
+  transform: translateY(-2px) scale(1.04);
+  background: linear-gradient(
+    90deg,
+    rgba(var(--pot-neon-rgb), 0.45) 0%,
+    rgba(var(--pot-neon-rgb), 0.85) 100%
+  );
+  box-shadow:
+    0 0 20px var(--pot-neon),
+    0 0 36px rgba(var(--pot-neon-rgb), 0.75);
+}
+
+.scd-pot-card:hover .scd-pot-arrow-icon-circle,
+.scd-pot-circle-arrow-btn:hover .scd-pot-arrow-icon-circle {
+  background: #ffffff;
+  color: #041028;
+  transform: translateX(2px);
+}
+
+/* C. 3D Stepped Metallic Pedestal Base & Bottom Neon Ring */
+.scd-pot-bottom-base {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -10px;
+  z-index: 3;
+}
+
+.scd-pot-bottom-neon-ring {
+  width: 93%;
+  height: 18px;
+  border-radius: 50%;
+  background: transparent;
+  border-bottom: 3px solid var(--pot-neon);
+  box-shadow: 0 4px 14px rgba(var(--pot-neon-rgb), 0.85);
+  z-index: 3;
+}
+
+.scd-pot-metallic-plinth {
+  width: 98%;
+  height: 22px;
+  margin-top: -8px;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    #0f172a 0%,
+    #334155 22%,
+    #64748b 50%,
+    #334155 78%,
+    #0f172a 100%
+  );
+  border: 1.5px solid rgba(148, 163, 184, 0.45);
+  border-bottom: 3px solid #090d16;
+  box-shadow:
+    0 10px 20px rgba(15, 23, 42, 0.45),
+    inset 0 2px 5px rgba(255, 255, 255, 0.35);
+  z-index: 2;
+}
+
+.scd-pot-floor-glow {
+  width: 86%;
+  height: 14px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(var(--pot-neon-rgb), 0.55) 0%,
+    rgba(15, 23, 42, 0.25) 55%,
+    transparent 80%
+  );
+  filter: blur(5px);
+  z-index: 1;
+}
+
+/* Responsive Breakpoints for 4 Pots Grid */
+@media (max-width: 1280px) {
+  .scd-pots-4grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .scd-pots-4grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+/* =========================================================================
+   ALL 4 POTS — 3D GLOSSY WHITE / PEARL CYLINDRICAL POT WITH NEON RINGS
+   ========================================================================= */
+.scd-pot-card .scd-pot-top-rim {
+  background: linear-gradient(180deg, #f1f5f9 0%, #ffffff 100%);
+  border: 2.5px solid var(--pot-neon);
+  box-shadow:
+    0 0 18px rgba(var(--pot-neon-rgb), 0.88),
+    0 -6px 24px rgba(var(--pot-neon-rgb), 0.65),
+    inset 0 0 16px rgba(var(--pot-neon-rgb), 0.45);
+}
+
+.scd-pot-card .scd-pot-mouth-vortex {
+  background: radial-gradient(
+    ellipse at 50% 55%,
+    rgba(var(--pot-neon-rgb), 0.95) 0%,
+    rgba(var(--pot-neon-rgb), 0.55) 48%,
+    #f8fafc 92%
+  );
+  border: 1.5px solid #ffffff;
+}
+
+.scd-pot-card .scd-pot-cylinder-body {
+  background: linear-gradient(
+    90deg,
+    #cbd5e1 0%,
+    #e2e8f0 12%,
+    #f8fafc 32%,
+    #ffffff 50%,
+    #f8fafc 68%,
+    #e2e8f0 88%,
+    #cbd5e1 100%
+  );
+  border-left: 2px solid var(--pot-neon);
+  border-right: 2px solid var(--pot-neon);
+  border-bottom: 2.5px solid var(--pot-neon);
+  box-shadow:
+    inset 14px 0 22px rgba(148, 163, 184, 0.38),
+    inset -14px 0 22px rgba(148, 163, 184, 0.38),
+    inset 0 12px 22px rgba(var(--pot-neon-rgb), 0.25),
+    inset 0 -10px 20px rgba(var(--pot-neon-rgb), 0.22),
+    0 14px 28px rgba(15, 23, 42, 0.14);
+}
+
+.scd-pot-card .scd-pot-side-rib {
+  background: var(--pot-neon);
+  box-shadow: 0 0 10px var(--pot-neon), 0 0 18px var(--pot-neon);
+}
+
+.scd-pot-card .scd-pot-ctc-pill {
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(5, 150, 105, 0.45);
+  color: #047857;
+}
+
+.scd-pot-card .scd-pot-title {
+  font-size: 18px;
+  font-weight: 950;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 3px 0 1px;
+  text-shadow: none;
+  filter: drop-shadow(0 1px 1px rgba(15, 23, 42, 0.08));
+}
+
+.scd-title-brighter {
+  background: linear-gradient(180deg, #0066ff 0%, #0044cc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #0055ff;
+}
+
+.scd-title-future {
+  background: linear-gradient(135deg, #7c3aed 0%, #c026d3 50%, #e11d48 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #c026d3;
+}
+
+.scd-pot-card .scd-pot-desc {
+  color: #334155;
+  font-weight: 600;
+}
+
+.scd-pot-card .scd-pot-arrow-icon-circle {
+  background: #ffffff;
+  border-color: #ffffff;
+}
+
+.scd-pot-card .scd-pot-metallic-plinth {
+  background: linear-gradient(
+    90deg,
+    #94a3b8 0%,
+    #cbd5e1 22%,
+    #f8fafc 50%,
+    #cbd5e1 78%,
+    #94a3b8 100%
+  );
+  border: 1.5px solid var(--pot-neon);
+  border-bottom: 3px solid #64748b;
+  box-shadow:
+    0 10px 20px rgba(15, 23, 42, 0.2),
+    inset 0 2px 5px rgba(255, 255, 255, 0.9);
+}
+
+/* Per-Pot Accent Colors on the White 3D Cylinder */
+/* 1. Blue Pot (Data Analyst with GenAI) */
+.scd-pot-blue .scd-pot-status-pill {
+  background: rgba(2, 132, 199, 0.14);
+  border: 1px solid rgba(2, 132, 199, 0.45);
+  color: #0369a1;
+}
+.scd-pot-blue .scd-pot-skill-tag {
+  color: #0369a1;
+  background: #f0f9ff;
+  border: 1px solid #7dd3fc;
+}
+.scd-pot-blue .scd-pot-circle-arrow-btn {
+  background: linear-gradient(90deg, #0284c7 0%, #00d2ff 100%);
+  border: 2px solid #38bdf8;
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4), 0 0 20px rgba(0, 210, 255, 0.5);
+}
+.scd-pot-blue .scd-pot-arrow-icon-circle {
+  color: #0284c7;
+}
+
+/* 2. Purple Pot (Data Science & Agentic AI) */
+.scd-pot-purple {
+  --pot-neon: #a855f7;
+  --pot-neon-bright: #d8b4fe;
+  --pot-neon-rgb: 168, 85, 247;
+}
+.scd-pot-purple .scd-pot-status-pill {
+  background: rgba(147, 51, 234, 0.14);
+  border: 1px solid rgba(147, 51, 234, 0.45);
+  color: #7e22ce;
+}
+.scd-pot-purple .scd-pot-skill-tag {
+  color: #7e22ce;
+  background: #faf5ff;
+  border: 1px solid #d8b4fe;
+}
+.scd-pot-purple .scd-pot-circle-arrow-btn {
+  background: linear-gradient(90deg, #7c3aed 0%, #a855f7 100%);
+  border: 2px solid #c084fc;
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.4), 0 0 20px rgba(168, 85, 247, 0.5);
+}
+.scd-pot-purple .scd-pot-arrow-icon-circle {
+  color: #7c3aed;
+}
+
+/* 3. Gold / Amber Pot (ML Engineering) */
+.scd-pot-gold {
+  --pot-neon: #f59e0b;
+  --pot-neon-bright: #fcd34d;
+  --pot-neon-rgb: 245, 158, 11;
+}
+.scd-pot-gold .scd-pot-status-pill {
+  background: rgba(217, 119, 6, 0.14);
+  border: 1px solid rgba(217, 119, 6, 0.45);
+  color: #b45309;
+}
+.scd-pot-gold .scd-pot-skill-tag {
+  color: #b45309;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+}
+.scd-pot-gold .scd-pot-circle-arrow-btn {
+  background: linear-gradient(90deg, #d97706 0%, #f59e0b 100%);
+  border: 2px solid #fbbf24;
+  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.4), 0 0 20px rgba(245, 158, 11, 0.5);
+}
+.scd-pot-gold .scd-pot-arrow-icon-circle {
+  color: #d97706;
+}
+
+/* 4. Emerald / Teal Pot (AI Engineering) */
+.scd-pot-emerald {
+  --pot-neon: #10b981;
+  --pot-neon-bright: #6ee7b7;
+  --pot-neon-rgb: 16, 185, 129;
+}
+.scd-pot-emerald .scd-pot-status-pill {
+  background: rgba(5, 150, 105, 0.14);
+  border: 1px solid rgba(5, 150, 105, 0.45);
+  color: #047857;
+}
+.scd-pot-emerald .scd-pot-skill-tag {
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+}
+.scd-pot-emerald .scd-pot-circle-arrow-btn {
+  background: linear-gradient(90deg, #059669 0%, #10b981 100%);
+  border: 2px solid #34d399;
+  box-shadow: 0 6px 18px rgba(5, 150, 105, 0.4), 0 0 20px rgba(16, 185, 129, 0.5);
+}
+.scd-pot-emerald .scd-pot-arrow-icon-circle {
+  color: #059669;
+}
+
+/* =========================================================================
+   NATIVE 1:1 CUSTOM-GENERATED TOP HERO BANNER (Matches Reference Image)
+   ========================================================================= */
+.scd-native-hero-banner {
+  position: relative;
+  width: 100%;
+  min-height: 220px;
+  max-height: 248px;
+  height: 242px;
+  margin-top: -14px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(0, 80, 220, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+  border: 1.5px solid rgba(186, 230, 253, 0.9);
+  background: #08112b;
+  display: flex;
+  align-items: stretch;
+}
+
+.scd-nhb-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 46%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.scd-nhb-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.88) 0%,
+    rgba(255, 255, 255, 0.78) 32%,
+    rgba(255, 255, 255, 0.35) 46%,
+    rgba(255, 255, 255, 0) 58%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+.scd-nhb-content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 22px;
+  max-width: 48%;
+  gap: 5.5px;
+}
+
+/* 1. High-Converting Limited-Time Offer Ribbon / Capsule */
+.scd-nhb-offer-capsule {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(254, 252, 232, 0.95) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid #f59e0b;
+  border-radius: 9999px;
+  padding: 4px 13px;
+  width: fit-content;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.16), 0 1px 3px rgba(0, 0, 0, 0.04);
+  gap: 9px;
+  color: #1e293b;
+  margin-top: 2px;
+  animation: offerBorderGlow 3s ease-in-out infinite;
+}
+
+@keyframes offerBorderGlow {
+  0%, 100% {
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.16), 0 0 0 0 rgba(245, 158, 11, 0);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.28), 0 0 10px rgba(245, 158, 11, 0.2);
+  }
+}
+
+.scd-nhb-offer-tag {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.scd-nhb-offer-gift {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.scd-nhb-offer-label {
+  background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+  color: #ffffff;
+  font-size: 8.5px;
+  font-weight: 950;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+.scd-nhb-offer-headline {
+  color: #0f172a;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.scd-nhb-offer-price {
+  color: #d97706;
+  font-weight: 950;
+  font-size: 11.5px;
+}
+
+.scd-nhb-offer-sep {
+  width: 1.5px;
+  height: 12px;
+  background: #cbd5e1;
+}
+
+.scd-nhb-offer-pap {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #047857;
+  font-weight: 800;
+  font-size: 9.5px;
+  background: #dcfce7;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  border: 1px solid #86efac;
+}
+
+.scd-nhb-offer-pap-amt {
+  font-weight: 950;
+  color: #065f46;
+}
+
+/* Floating & Shimmer Animations with High Style */
+@keyframes textFloatGentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-2.5px);
+  }
+}
+
+@keyframes offerFloatShine {
+  0%, 100% {
+    transform: translateY(0px);
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.18), 0 0 0 0 rgba(245, 158, 11, 0);
+  }
+  50% {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 22px rgba(245, 158, 11, 0.32), 0 0 14px rgba(245, 158, 11, 0.25);
+  }
+}
+
+@keyframes gradientGlowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 2px 8px rgba(124, 58, 237, 0.35));
+  }
+  50% {
+    filter: drop-shadow(0 2px 14px rgba(236, 72, 153, 0.6)) brightness(1.08);
+  }
+}
+
+.scd-floating-headline {
+  animation: textFloatGentle 4s ease-in-out infinite;
+}
+
+.scd-floating-offer {
+  animation: offerFloatShine 3s ease-in-out infinite !important;
+}
+
+.scd-glow-shimmer {
+  animation: gradientGlowPulse 3s ease-in-out infinite;
+}
+
+/* 2. Main Headline (Highlighted & High-Impact) */
+.scd-nhb-headline {
+  font-size: 24px;
+  font-weight: 950;
+  color: #091124;
+  line-height: 1.13;
+  letter-spacing: -0.026em;
+  margin: 0;
+}
+
+.scd-nhb-hl-title {
+  display: block;
+  color: #091124;
+  font-size: 24px;
+  font-weight: 950;
+  letter-spacing: -0.026em;
+  line-height: 1.12;
+  margin-bottom: 2px;
+}
+
+.scd-nhb-hl-sub {
+  display: block;
+  font-size: 22px;
+  color: #091124;
+  font-weight: 950;
+  letter-spacing: -0.024em;
+}
+
+.scd-nhb-brighter {
+  color: #0062ff;
+  text-shadow: 0 0 14px rgba(0, 98, 255, 0.35);
+}
+
+.scd-nhb-future {
+  background: linear-gradient(135deg, #0284c7 0%, #7c3aed 50%, #ec4899 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(124, 58, 237, 0.3));
+}
+
+.scd-pap-typewriter-text {
+  display: inline;
+}
+
+.scd-pap-typewriter-cursor {
+  display: inline-block;
+  margin-left: 2px;
+  color: #7c3aed;
+  -webkit-text-fill-color: #7c3aed;
+  font-weight: 300;
+  animation: scdCursorBlink 0.7s infinite;
+}
+
+@keyframes scdCursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.scd-nhb-trend-icon {
+  font-size: 20px;
+  vertical-align: middle;
+}
+
+/* 4. Subtitle */
+.scd-nhb-subtitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: #334155;
+  line-height: 1.38;
+  margin: 0;
+}
+
+/* 5. 4 Interactive Cards Row */
+.scd-nhb-cards-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6.5px;
+  width: 100%;
+  margin-top: 2px;
+}
+
+.scd-nhb-mini-card {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 11px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.scd-nhb-mini-card:hover {
+  transform: translateY(-2.5px);
+  box-shadow: 0 8px 18px rgba(0, 80, 220, 0.16);
+}
+
+.scd-card-blue {
+  background: linear-gradient(135deg, rgba(240, 249, 255, 0.98) 0%, rgba(224, 242, 254, 0.95) 100%);
+  border: 1.5px solid #7dd3fc;
+}
+
+.scd-card-purple {
+  background: linear-gradient(135deg, rgba(250, 245, 255, 0.98) 0%, rgba(243, 232, 255, 0.95) 100%);
+  border: 1.5px solid #d8b4fe;
+}
+
+.scd-card-amber {
+  background: linear-gradient(135deg, rgba(255, 251, 235, 0.98) 0%, rgba(254, 243, 199, 0.95) 100%);
+  border: 1.5px solid #fcd34d;
+}
+
+.scd-card-emerald {
+  background: linear-gradient(135deg, rgba(240, 253, 244, 0.98) 0%, rgba(220, 252, 231, 0.95) 100%);
+  border: 1.5px solid #86efac;
+}
+
+.scd-nhb-card-icon-wrap {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.scd-nhb-card-icon-wrap.icon-blue { background: #e0f2fe; }
+.scd-nhb-card-icon-wrap.icon-purple { background: #f3e8ff; }
+.scd-nhb-card-icon-wrap.icon-amber { background: #fef3c7; }
+.scd-nhb-card-icon-wrap.icon-emerald { background: #d1fae5; }
+
+.scd-nhb-card-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  overflow: hidden;
+}
+
+.scd-nhb-card-title {
+  font-size: 9.5px;
+  font-weight: 850;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scd-nhb-card-ctc {
+  font-size: 9.5px;
+  font-weight: 950;
+  margin-top: 1px;
+}
+
+.scd-nhb-card-ctc.ctc-blue { color: #0284c7; }
+.scd-nhb-card-ctc.ctc-purple { color: #7c3aed; }
+.scd-nhb-card-ctc.ctc-amber { color: #d97706; }
+.scd-nhb-card-ctc.ctc-emerald { color: #059669; }
+
+.scd-nhb-card-ctc.scd-card-slashed-daam {
+  color: #000000 !important;
+  text-decoration: line-through !important;
+  text-decoration-color: #ef4444 !important;
+  text-decoration-thickness: 1.5px !important;
+  font-size: 11px;
+}
+
+/* 6. Features Highlights Row - Polished Mini Pills */
+.scd-nhb-features-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 1px;
+  flex-wrap: wrap;
+}
+
+.scd-nhb-feature-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  border-radius: 9999px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 750;
+  color: #1e293b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.scd-nhb-feature-chip:hover {
+  background: #ffffff;
+  border-color: #93c5fd;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 80, 200, 0.12);
+}
+
+@media (max-width: 1200px) {
+  .scd-nhb-content {
+    max-width: 58%;
+  }
+}
+
+@media (max-width: 900px) {
+  .scd-nhb-content {
+    max-width: 100%;
+    padding: 16px 14px;
+  }
+  .scd-nhb-cards-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .scd-nhb-headline {
+    font-size: 20px;
+  }
+  .scd-nhb-gradient-overlay {
+    background: rgba(255, 255, 255, 0.95);
+  }
+}
+
+/* =========================================================================
+   12. SLIM PROMOTIONAL OFFER BANNER STRIP (DIRECTLY UNDER 4 COURSES)
+   Matches media_1792140864467_fdb63c4c.png 1:1
+   ========================================================================= */
+.scd-slim-offer-strip {
+  margin-top: 4px;
+  margin-bottom: 24px;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 2px solid #38bdf8;
+  box-shadow:
+    0 10px 32px rgba(56, 189, 248, 0.28),
+    0 0 20px rgba(168, 85, 247, 0.18);
+  background: linear-gradient(90deg, #dbeafe 0%, #e0f2fe 18%, #ffffff 42%, #fdf4ff 80%, #f3e8ff 100%);
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+}
+
+.scd-slim-offer-strip:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 14px 40px rgba(56, 189, 248, 0.38),
+    0 0 28px rgba(168, 85, 247, 0.28);
+}
+
+/* TOP TIER: Glossy Cyan/White/Purple Card */
+.scd-sos-top-card {
+  display: flex;
+  align-items: center;
+  padding: 14px 24px;
+  gap: 18px;
+  position: relative;
+  background: transparent;
+}
+
+.scd-sos-gift-col {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scd-sos-gift-img {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 18px rgba(147, 51, 234, 0.45));
+  animation: scdGiftFloat 3s ease-in-out infinite alternate;
+}
+
+@keyframes scdGiftFloat {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-4px) rotate(-1.5deg); }
+}
+
+.scd-sos-title-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.scd-sos-limited-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(90deg, #ec4899 0%, #d946ef 100%);
+  color: #ffffff;
+  padding: 2.5px 11px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.05em;
+  width: fit-content;
+  box-shadow: 0 2px 8px rgba(217, 70, 239, 0.35);
+}
+
+.scd-sos-pill-clock {
+  font-size: 12px;
+}
+
+.scd-sos-pill-text {
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.05em;
+}
+
+.scd-sos-main-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  line-height: 1.15;
+  margin-top: 2px;
+}
+
+.scd-sos-headline-lead {
+  font-size: 22px;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.scd-sos-price-989 {
+  font-size: 38px;
+  font-weight: 950;
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.03em;
+  filter: drop-shadow(0 2px 8px rgba(37, 99, 235, 0.25));
+}
+
+.scd-sos-subtitle {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #334155;
+  margin: 0;
+  line-height: 1.25;
+}
+
+/* Center Divider */
+.scd-sos-vdivider {
+  width: 1px;
+  height: 64px;
+  background: linear-gradient(180deg, transparent, #cbd5e1 25%, #cbd5e1 75%, transparent);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+/* Pay After Job Offer Column */
+.scd-sos-pap-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.scd-sos-pap-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.scd-sos-briefcase-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.scd-sos-pap-title {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  font-weight: 850;
+  color: #0f172a;
+  line-height: 1.15;
+  text-align: left;
+}
+
+.scd-sos-pap-price {
+  font-size: 28px;
+  font-weight: 950;
+  color: #f43f5e;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-top: 1px;
+}
+
+.scd-sos-pap-sub {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  margin-top: -1px;
+}
+
+/* Golden Unlock CTA Button */
+.scd-sos-btn-col {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.scd-sos-unlock-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 26px;
+  background: linear-gradient(135deg, #fef08a 0%, #facc15 35%, #eab308 100%);
+  color: #0f172a;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  box-shadow:
+    0 0 26px rgba(250, 204, 21, 0.75),
+    0 4px 14px rgba(234, 179, 8, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.scd-sos-unlock-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow:
+    0 0 34px rgba(250, 204, 21, 0.95),
+    0 6px 18px rgba(234, 179, 8, 0.5);
+  background: linear-gradient(135deg, #ffffff 0%, #fde047 30%, #eab308 100%);
+}
+
+/* BOTTOM TIER: Docked Dark Navy Blue Strip */
+.scd-sos-bottom-strip {
+  background: linear-gradient(90deg, #020b22 0%, #061539 50%, #030d2a 100%);
+  border-top: 1.5px solid #0284c7;
+  box-shadow: 0 -2px 10px rgba(56, 189, 248, 0.55);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.scd-sos-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 1;
+  justify-content: center;
+}
+
+.scd-sos-ficon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scd-ficon-blue {
+  color: #38bdf8;
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.65));
+}
+
+.scd-ficon-pink {
+  color: #f472b6;
+  filter: drop-shadow(0 0 6px rgba(244, 114, 182, 0.65));
+}
+
+.scd-ficon-green {
+  color: #4ade80;
+  filter: drop-shadow(0 0 6px rgba(74, 222, 128, 0.65));
+}
+
+.scd-ficon-yellow {
+  color: #facc15;
+  filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.65));
+}
+
+.scd-ficon-cyan {
+  color: #22d3ee;
+  filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.65));
+}
+
+.scd-sos-ftext {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.scd-sos-ftext strong {
+  color: #ffffff;
+  font-weight: 850;
+  letter-spacing: -0.01em;
+}
+
+.scd-sos-ftext span {
+  color: #94a3b8;
+  font-weight: 500;
+  font-size: 11px;
+}
+
+.scd-sos-strip-sep {
+  width: 1px;
+  height: 24px;
+  background: rgba(56, 189, 248, 0.28);
+  flex-shrink: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1100px) {
+  .scd-sos-top-card {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .scd-sos-vdivider {
+    display: none;
+  }
+  .scd-sos-bottom-strip {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 16px;
+  }
+  .scd-sos-strip-sep {
+    display: none;
+  }
+}

@@ -1,0 +1,1151 @@
+/* ============================================================
+   FUTURE.AI — "WHY PAY ₹50,000 TO ₹1,00,000?"
+   Exact 1:1 Pixel-Matched Recreation of media_1790572423666.jpg
+============================================================ */
+
+.why-compare-section {
+  width: 100%;
+  padding: 40px 16px 30px;
+  background: 
+    radial-gradient(ellipse at 50% 20%, rgba(0, 195, 240, 0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #f6f9fc 0%, #edf3f8 100%);
+  box-sizing: border-box;
+}
+
+.why-compare-container {
+  width: min(1340px, 100%);
+  margin: 0 auto;
+}
+
+/* ================= MASTER COMPARISON CARD ================= */
+.why-compare-card {
+  position: relative;
+  background: #ffffff;
+  border: 1.5px solid rgba(14, 165, 233, 0.35);
+  border-radius: 26px;
+  box-shadow: 
+    0 25px 65px rgba(15, 23, 42, 0.14),
+    0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  overflow: hidden;
+}
+
+/* ================= MAIN COMPARISON STAGE (16:9 POSTER) ================= */
+.why-stage-grid {
+  position: relative;
+  width: 100%;
+  height: 680px;
+  background: #090e1a;
+  overflow: hidden;
+}
+
+/* 1. PHOTOREALISTIC CLEAN BACKGROUND PLATE */
+.stage-unified-backdrop-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.stage-unified-backdrop-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.stage-unified-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg, 
+    rgba(9, 14, 26, 0.5) 0%, 
+    rgba(9, 14, 26, 0.15) 30%, 
+    transparent 50%, 
+    rgba(255, 255, 255, 0.1) 70%, 
+    rgba(255, 255, 255, 0.35) 100%
+  );
+  pointer-events: none;
+}
+
+/* Glowing Logo on Happy Student's Laptop */
+.laptop-lid-logo {
+  position: absolute;
+  bottom: 145px;
+  left: 63.8%;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #00c9ff 0%, #0077f5 100%);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 16px rgba(0, 201, 255, 0.85);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.laptop-f-mark {
+  color: white;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+/* ================= 2. CONTENT COLUMNS (FLOATING) ================= */
+.stage-content-col {
+  position: absolute;
+  top: 26px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+}
+
+.left-content-col {
+  left: 95px;
+  width: 350px;
+  gap: 12px;
+}
+
+.right-content-col {
+  right: 85px;
+  width: 375px;
+  gap: 8px;
+}
+
+/* ---------------- LEFT FLOATING HOLOGRAM BADGES ---------------- */
+.holo-badge-left {
+  position: absolute;
+  z-index: 20;
+  background: rgba(13, 21, 38, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1.2px solid rgba(239, 68, 68, 0.4);
+  border-radius: 12px;
+  padding: 8px 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(239, 68, 68, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.holo-expensive-courses {
+  top: 70px;
+  left: 14px;
+  width: 82px;
+}
+
+.holo-no-exposure {
+  top: 250px;
+  left: 14px;
+  width: 82px;
+  border-color: rgba(0, 180, 255, 0.35);
+}
+
+.holo-badge-title {
+  font-size: 8.5px;
+  font-weight: 900;
+  color: #cbd5e1;
+  text-align: center;
+  line-height: 1.2;
+  letter-spacing: 0.3px;
+}
+
+.holo-chart-svg {
+  width: 100%;
+  height: auto;
+}
+
+.holo-stagnant-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  height: 20px;
+  width: 100%;
+}
+
+.holo-stagnant-bars span {
+  width: 5px;
+  border-radius: 2px;
+  background: #38bdf8;
+  opacity: 0.8;
+}
+
+/* ---------------- LEFT HEADER CARD: OTHER INSTITUTES ---------------- */
+.others-header-card {
+  background: rgba(13, 21, 38, 0.94);
+  border: 1.2px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  padding: 12px 18px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+}
+
+.others-header-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.others-title-text {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+}
+
+.others-price-highlight {
+  font-size: 27px;
+  font-weight: 900;
+  color: #ff3333;
+  letter-spacing: -0.6px;
+  margin: 2px 0 1px;
+  line-height: 1.15;
+}
+
+.others-subtitle-text {
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+}
+
+/* ---------------- LEFT LOWER DESK BOOK TAGS ---------------- */
+.desk-left-books {
+  position: absolute;
+  bottom: 22px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.book-tag {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 9.5px;
+  font-weight: 900;
+  letter-spacing: 0.4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+
+.tag-dark {
+  background: rgba(15, 23, 42, 0.95);
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* ---------------- CENTER FLOATING HOLOGRAM CLUSTER ---------------- */
+.center-hologram-cluster {
+  position: absolute;
+  left: 45.5%;
+  top: 48px;
+  z-index: 22;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.holo-learning-path-card {
+  background: rgba(6, 26, 60, 0.9);
+  backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(0, 201, 255, 0.55);
+  border-radius: 14px;
+  padding: 8px 12px;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(0, 201, 255, 0.25);
+  min-width: 120px;
+}
+
+.holo-lp-title {
+  color: #00e5ff;
+  font-size: 10.5px;
+  font-weight: 900;
+  line-height: 1.25;
+  margin-bottom: 5px;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+}
+
+.holo-lp-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5px;
+}
+
+.holo-lp-item {
+  color: #f1f5f9;
+  font-size: 9.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.3;
+}
+
+.lp-tick {
+  color: #00e5ff;
+  font-weight: 900;
+}
+
+.holo-tech-stack-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.holo-tech-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(5, 20, 48, 0.92);
+  border: 1px solid rgba(0, 201, 255, 0.35);
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.tech-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ---------------- FAR RIGHT FLOATING HOLOGRAM BADGES ---------------- */
+.holo-badge-right {
+  position: absolute;
+  z-index: 20;
+  background: rgba(6, 26, 60, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1.2px solid rgba(0, 201, 255, 0.45);
+  border-radius: 12px;
+  padding: 8px 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 201, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.holo-career-growth {
+  top: 65px;
+  right: 14px;
+  width: 80px;
+  gap: 2px;
+}
+
+.holo-cg-title {
+  font-size: 10px;
+  font-weight: 900;
+  color: #ffffff;
+  text-align: center;
+}
+
+.holo-cg-sub {
+  font-size: 7.5px;
+  font-weight: 700;
+  color: #38bdf8;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.holo-growth-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3.5px;
+  height: 28px;
+  width: 100%;
+}
+
+.holo-growth-bars span {
+  width: 5px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #00e5a3 0%, #0284c7 100%);
+  box-shadow: 0 0 6px rgba(0, 229, 163, 0.5);
+}
+
+.holo-vertical-actions {
+  top: 250px;
+  right: 14px;
+  width: 78px;
+  gap: 6px;
+  padding: 10px 8px;
+}
+
+.action-step {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  font-size: 9px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+/* ---------------- RIGHT BRAND LOGO & PRICE BANNER ---------------- */
+.future-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 2px;
+}
+
+.future-brand-icon-box {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #00c9ff 0%, #0077f5 100%);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 14px rgba(0, 119, 245, 0.35);
+}
+
+.brand-f-logo {
+  font-size: 17px;
+  color: white;
+}
+
+.future-brand-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.future-brand-name {
+  font-size: 25px;
+  font-weight: 900;
+  color: #07194d;
+  letter-spacing: -0.6px;
+  line-height: 1.1;
+}
+
+.future-brand-name span {
+  color: #0077f5;
+}
+
+.future-brand-tagline {
+  font-size: 10px;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 0.8px;
+}
+
+/* Right Price Banner Card: ₹999 to Start */
+.future-price-banner {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1.8px solid #00d5a6;
+  border-radius: 16px;
+  padding: 10px 18px;
+  box-shadow: 
+    0 8px 24px rgba(0, 213, 166, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  backdrop-filter: blur(8px);
+}
+
+.price-banner-main-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.price-big-green {
+  font-size: 38px;
+  font-weight: 900;
+  color: #00c06d;
+  line-height: 1;
+  letter-spacing: -1.2px;
+}
+
+.price-label-navy {
+  font-size: 23px;
+  font-weight: 900;
+  color: #07194d;
+  letter-spacing: -0.4px;
+}
+
+.price-banner-sub-row {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  font-size: 14.5px;
+  font-weight: 900;
+  color: #07194d;
+  margin-top: 3px;
+  letter-spacing: -0.3px;
+}
+
+.text-tension-free {
+  position: relative;
+  display: inline-block;
+  color: #07194d;
+}
+
+.curved-underline-svg {
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+}
+
+/* ================= 3. COMPARISON CARDS ================= */
+.comparison-card-box {
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+/* Left Card: Dark Translucent Glass (1:1 with media_1790577964129.png) */
+.left-negative-card {
+  background: rgba(13, 21, 38, 0.9);
+  backdrop-filter: blur(14px);
+  border: 1.2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+  padding: 4px 0;
+}
+
+.left-negative-card .comp-item-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 7.5px 14px;
+}
+
+.left-negative-card .comp-item-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.left-negative-card .comp-item-icon-wrap {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.left-negative-card .comp-item-title {
+  color: #ffffff;
+}
+
+.left-negative-card .comp-item-desc {
+  color: #94a3b8;
+}
+
+/* Right Card: Pure White Luminous Card */
+.right-positive-card {
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(14px);
+  border: 1.2px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 14px 40px rgba(0, 100, 220, 0.14);
+  padding: 4px 0;
+}
+
+.right-positive-card .comp-item-row {
+  border-bottom: 1px solid #f1f5f9;
+  padding: 6.5px 14px;
+}
+
+.right-positive-card .comp-item-row:hover {
+  background: #f8fafc;
+}
+
+/* Individual Row Item */
+.comp-item-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.comp-item-row:last-child {
+  border-bottom: none;
+}
+
+/* Icon Wrap */
+.comp-item-icon-wrap {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.icon-neutral { background: rgba(255, 255, 255, 0.08); }
+.icon-amber { background: #fef3c7; }
+.icon-blue { background: #e0f2fe; }
+.icon-cyan { background: #e0f7fa; }
+.icon-emerald { background: #d1fae5; }
+.icon-royal { background: #dbeafe; }
+.icon-green { background: #ccfbf1; }
+
+/* Item Text */
+.comp-item-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.comp-item-title {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  line-height: 1.2;
+}
+
+.title-navy {
+  color: #07194d;
+}
+
+.comp-item-desc {
+  font-size: 9.5px;
+  font-weight: 500;
+  color: #475569;
+  line-height: 1.25;
+}
+
+/* Badge Status: Red Cross & Green Tick */
+.comp-badge-status {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.badge-cross {
+  background: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.55);
+}
+
+.badge-tick {
+  background: #10b981;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.55);
+}
+
+/* ================= 4. CENTER DIAGONAL ELECTRIC LIGHTNING DIVIDER ================= */
+.stage-vs-lightning-diagonal {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+}
+
+.diagonal-slash-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.vs-center-badge {
+  position: absolute;
+  top: 48%;
+  left: 48.2%;
+  transform: translate(-50%, -50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #07194d 0%, #0b256d 100%);
+  border: 3px solid #00c9ff;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.5px;
+  box-shadow: 
+    0 0 25px rgba(0, 201, 255, 0.9),
+    0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+.vs-radar-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(0, 201, 255, 0.7);
+  pointer-events: none;
+}
+
+/* ================= 5. SEPARATION SPACER (2-TAB / 36PX SPACE) ================= */
+.why-section-spacer {
+  width: 100%;
+  height: 36px;
+}
+
+/* ================= 6. STANDALONE FUTURISTIC ENROLLMENT BANNER (1:1 with media_1790576623550.png) ================= */
+.why-futuristic-enroll-banner {
+  position: relative;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  background: 
+    radial-gradient(circle at 45% 60%, rgba(0, 215, 255, 0.12) 0%, transparent 60%),
+    linear-gradient(135deg, #ffffff 0%, #f6faff 45%, #ecf5ff 100%);
+  border: 1.5px solid rgba(0, 190, 255, 0.35);
+  border-radius: 26px;
+  padding: 18px 24px;
+  box-shadow: 
+    0 16px 45px rgba(0, 130, 255, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Left Segment */
+.banner-left-segment {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+  width: 345px;
+  flex-shrink: 0;
+}
+
+.banner-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3.5px 11px;
+  border-radius: 999px;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+}
+
+.badge-fire-icon {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.badge-text-purple {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #4f46e5;
+  letter-spacing: 0.5px;
+}
+
+.banner-main-headline {
+  font-size: 24.5px;
+  font-weight: 900;
+  color: #0b192c;
+  line-height: 1.2;
+  letter-spacing: -0.6px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.text-cyan-gradient {
+  position: relative;
+  display: inline-block;
+  color: #00bed7;
+  font-weight: 900;
+  margin-left: 6px;
+}
+
+.banner-curved-underline {
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  pointer-events: none;
+}
+
+.banner-sub-statement {
+  font-size: 13px;
+  line-height: 1.4;
+  color: #475569;
+  margin: 0;
+  font-weight: 500;
+}
+
+.text-highlight-green {
+  color: #059669;
+  font-weight: 800;
+}
+
+.text-highlight-blue {
+  color: #0284c7;
+  font-weight: 800;
+}
+
+/* Center Segment: Cute 3D AI Robot pointing to Hologram */
+.banner-center-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  width: 220px;
+  height: 130px;
+}
+
+.robot-hologram-visual-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.robot-hologram-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  filter: contrast(1.06) brightness(1.02);
+}
+
+.floating-hologram-badge {
+  position: absolute;
+  top: 4px;
+  right: 20px;
+  padding: 2.5px 9px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.45);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  z-index: 2;
+}
+
+/* Right Segment: 4 Trust Pillars + Pill CTA */
+.banner-right-segment {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  flex: 1;
+  max-width: 590px;
+  min-width: 0;
+}
+
+.banner-trust-four-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.trust-four-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 7px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.trust-four-item:hover {
+  transform: translateY(-2px);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.trust-four-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.icon-bg-purple {
+  background: #f3e8ff;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.icon-bg-sky {
+  background: #e0f2fe;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.icon-bg-emerald {
+  background: #dcfce7;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.icon-bg-amber {
+  background: #fef3c7;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.trust-four-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.trust-title-dark {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.trust-sub-grey {
+  font-size: 8.5px;
+  font-weight: 600;
+  color: #64748b;
+  line-height: 1.2;
+}
+
+/* Cyan to Blue CTA Button */
+.banner-cta-btn-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.banner-reserve-btn {
+  width: 100%;
+  padding: 13px 24px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #00d5a6 0%, #00c4bd 25%, #0077f5 100%);
+  color: #ffffff;
+  font-size: 15.5px;
+  font-weight: 900;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 8px 25px rgba(0, 196, 189, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.banner-reserve-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 119, 245, 0.45);
+  filter: brightness(1.05);
+}
+
+.banner-lock-assurance {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 0.2px;
+  text-align: center;
+}
+
+.lock-icon {
+  font-size: 11px;
+}
+
+/* ================= 7. RESPONSIVE DESIGN (MOBILE APP FEEL) ================= */
+@media (max-width: 1240px) {
+  .holo-badge-left,
+  .holo-badge-right {
+    display: none;
+  }
+  .left-content-col {
+    left: 20px;
+    width: 340px;
+  }
+  .right-content-col {
+    right: 20px;
+    width: 350px;
+  }
+}
+
+@media (max-width: 1080px) {
+  .center-hologram-cluster {
+    display: none;
+  }
+
+  .why-futuristic-enroll-banner {
+    flex-direction: column;
+    padding: 22px 18px;
+    gap: 16px;
+  }
+
+  .banner-left-segment {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+
+  .banner-main-headline {
+    justify-content: center;
+    white-space: normal;
+  }
+
+  .banner-badge-pill {
+    margin: 0 auto;
+  }
+
+  .banner-center-segment {
+    width: 100%;
+    height: 140px;
+  }
+
+  .banner-right-segment {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .banner-trust-four-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}
+
+@media (max-width: 900px) {
+  .why-stage-grid {
+    height: auto;
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stage-content-col {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    width: 100%;
+    max-width: 440px;
+    margin: 14px auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+
+  .stage-vs-lightning-diagonal {
+    position: relative;
+    height: 48px;
+    width: 100%;
+    background: #090e1a;
+  }
+
+  .diagonal-slash-svg {
+    display: none;
+  }
+
+  .vs-center-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .center-hologram-cluster {
+    display: flex;
+    position: relative;
+    left: auto;
+    top: auto;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 12px auto;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .holo-tech-stack-col {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .laptop-lid-logo {
+    display: none;
+  }
+
+  .desk-left-books {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    margin: 8px auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 600px) {
+  .why-compare-section {
+    padding: 24px 8px 18px;
+  }
+
+  .why-compare-card {
+    border-radius: 18px;
+  }
+
+  .why-futuristic-enroll-banner {
+    padding: 18px 14px;
+    border-radius: 20px;
+  }
+
+  .why-section-spacer {
+    height: 24px;
+  }
+
+  .banner-trust-four-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .banner-main-headline {
+    font-size: 21px;
+    justify-content: center;
+  }
+
+  .banner-sub-statement {
+    font-size: 12.5px;
+  }
+
+  .banner-reserve-btn {
+    font-size: 14px;
+    padding: 12px 16px;
+  }
+
+  .banner-lock-assurance {
+    font-size: 10px;
+  }
+
+  .stage-content-col {
+    padding: 0 10px;
+  }
+
+  .price-big-green { font-size: 30px; }
+  .price-label-navy { font-size: 18px; }
+  .others-price-highlight { font-size: 20px; }
+
+  .comp-item-row {
+    padding: 7px 12px;
+  }
+
+  .comp-item-title {
+    font-size: 11.5px;
+  }
+
+  .comp-item-desc {
+    font-size: 9px;
+  }
+}

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 42" width="170" height="42" fill="none">
+  <defs>
+    <linearGradient id="fTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1D4ED8" />
+      <stop offset="100%" stop-color="#00B4D8" />
+    </linearGradient>
+    <linearGradient id="fMid" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00B4D8" />
+      <stop offset="100%" stop-color="#00E5A3" />
+    </linearGradient>
+    <linearGradient id="fStem" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0099FF" />
+      <stop offset="100%" stop-color="#10B981" />
+    </linearGradient>
+  </defs>
+  <!-- Stylized Forward Ribbon F -->
+  <g transform="translate(3, 4)">
+    <!-- Top Horizontal Blade -->
+    <path d="M10 2 H32 L26 10 H14 L10 2Z" fill="url(#fTop)" />
+    <!-- Middle Horizontal Blade -->
+    <path d="M7 14 H25 L21 21 H11 L7 14Z" fill="url(#fMid)" />
+    <!-- Angled Stem -->
+    <path d="M10 2 L14 10 L8 34 L2 34 L10 2Z" fill="url(#fStem)" />
+  </g>
+  <!-- Exact Typographic Wordmark: Future.Ai -->
+  <text x="44" y="29" font-family="Plus Jakarta Sans, Inter, system-ui, -apple-system, sans-serif" font-size="26" font-weight="800" letter-spacing="-0.75">
+    <tspan fill="#0F172A">Future</tspan><tspan fill="#0284C7">.Ai</tspan>
+  </text>
+</svg>

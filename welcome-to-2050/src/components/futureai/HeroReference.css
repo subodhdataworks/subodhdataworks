@@ -1,0 +1,1044 @@
+/* =========================================================================
+   FUTURE.AI — 2050 HOMEPAGE HERO SECTION WITH BACKGROUND VIDEO
+   1:1 Pixel-Perfect Recreation of media_1790821818064.jpg
+   ========================================================================= */
+
+.hero-2050-section {
+  position: relative;
+  width: 100%;
+  min-height: 720px;
+  background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ── 1. BACKGROUND VIDEO CONTAINER ── */
+.hero-bg-video-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+  background-color: #f0f7ff;
+}
+
+.hero-bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center right;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+}
+
+.hero-bg-video.loaded {
+  opacity: 1;
+}
+
+/* Subtle Gradient Overlay: Keeps text 100% readable while student/robot/dashboard remain vibrant */
+.hero-video-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(255, 255, 255, 0.92) 28%,
+    rgba(255, 255, 255, 0.70) 42%,
+    rgba(255, 255, 255, 0.15) 58%,
+    rgba(255, 255, 255, 0.00) 72%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── 2. HERO CONTAINER (LEFT 40-45% CONTENT) ── */
+.hero-2050-container {
+  position: relative;
+  z-index: 10;
+  max-width: 1360px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 68px 24px 36px;
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.hero-2050-content {
+  max-width: 580px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.1rem;
+}
+
+/* ── 3. WORLD'S FIRST GAME LEARNING PLATFORM BADGE ── */
+.hero-badge-wrap {
+  animation: heroFadeSlideIn 0.5s ease-out both;
+}
+
+.hero-world-first-badge {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-world-first-badge:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.hero-badge-img {
+  height: 90px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 20px rgba(0, 112, 243, 0.40));
+}
+
+/* Fallback badge styling */
+.hero-badge-fallback {
+  display: none;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 1rem;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+  border: 1.5px solid #38bdf8;
+  border-radius: 9999px;
+  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.3);
+}
+
+.badge-crown {
+  font-size: 1.15rem;
+}
+
+.badge-text-group {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.badge-top-title {
+  font-size: 0.65rem;
+  font-weight: 900;
+  color: #fbbf24;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.badge-sub-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+/* ── 4. MAIN HEADLINE ── */
+.hero-2050-headline {
+  font-size: clamp(26px, 2.8vw, 42px);
+  font-weight: 900;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  animation: heroFadeSlideIn 0.6s ease-out 0.1s both;
+}
+
+.headline-dark {
+  color: #08172e;
+}
+
+.headline-gradient {
+  background: linear-gradient(135deg, #0052cc 0%, #0066ff 40%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+/* ULTRA-PREMIUM 2-COLOR FLOWING TYPEWRITER HEADLINE */
+.headline-dream-job-wrap {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  min-height: 1.25em;
+}
+
+.headline-dream-job-animated {
+  background: linear-gradient(90deg, #0052cc 0%, #0066ff 30%, #7c3aed 70%, #0052cc 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  font-weight: 950;
+  letter-spacing: -0.025em;
+  animation: dreamJobTwoColorsFlow 3s linear infinite;
+  filter: drop-shadow(0 2px 10px rgba(0, 102, 255, 0.25));
+  will-change: background-position;
+}
+
+@keyframes dreamJobTwoColorsFlow {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.headline-typewriter-caret {
+  display: inline-block;
+  margin-left: 2px;
+  color: #0066ff;
+  font-weight: 300;
+  font-size: 1.05em;
+  line-height: 1;
+  animation: typewriterCaretBlink 0.9s infinite;
+  text-shadow: 0 0 8px rgba(0, 102, 255, 0.5);
+  user-select: none;
+}
+
+@keyframes typewriterCaretBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.headline-dream-job-emoji {
+  display: inline-block;
+  font-size: 0.95em;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.16));
+}
+
+
+/* ── 5. DESCRIPTION ── */
+.hero-2050-description {
+  font-size: 1rem;
+  line-height: 1.55;
+  color: #334155;
+  max-width: 530px;
+  margin: 0;
+  font-weight: 500;
+  animation: heroFadeSlideIn 0.6s ease-out 0.2s both;
+}
+
+/* ── 6. LEARNING JOURNEY PILLS ROW (6 ITEMS) ── */
+.hero-journey-pills-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 580px;
+  animation: heroFadeSlideIn 0.6s ease-out 0.3s both;
+}
+
+.journey-pill-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1.2px solid rgba(226, 232, 240, 0.9);
+  border-radius: 10px;
+  padding: 0.5rem 0.35rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.journey-pill-card:hover {
+  transform: translateY(-2px);
+  border-color: #93c5fd;
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.12);
+  background: #ffffff;
+}
+
+.journey-icon-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.3rem;
+}
+
+.journey-icon-img-wrap {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.3rem;
+  flex-shrink: 0;
+}
+
+.journey-pill-icon-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 8px;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.12));
+}
+
+.journey-job-emoji {
+  font-size: 1.5rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
+.journey-pill-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.journey-pill-title {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.journey-pill-sub {
+  font-size: 0.58rem;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+/* ── 7. CTA BUTTONS ROW ── */
+.hero-cta-buttons-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 0.45rem;
+  animation: heroFadeSlideIn 0.6s ease-out 0.4s both;
+}
+
+/* ── ANIMATED 3D FREE ATS RESUME CHECKER CTA BUTTON ── */
+.hero-3d-btn-wrap {
+  position: relative;
+  display: inline-block;
+  padding-top: 4px;
+}
+
+/* Outer breathing neon aura to draw eye attention */
+.btn3d-ats-aura {
+  position: absolute;
+  inset: -4px -6px -2px -6px;
+  border-radius: 20px;
+  background: linear-gradient(90deg, #06b6d4, #3b82f6, #8b5cf6, #10b981, #06b6d4);
+  background-size: 300% 100%;
+  filter: blur(13px);
+  opacity: 0.68;
+  z-index: 0;
+  pointer-events: none;
+  animation: atsAuraFlow 3.5s linear infinite, atsAuraPulse 2.2s ease-in-out infinite;
+}
+
+@keyframes atsAuraFlow {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+@keyframes atsAuraPulse {
+  0%, 100% { opacity: 0.55; transform: scale(0.98); }
+  50%      { opacity: 0.88; transform: scale(1.03); }
+}
+
+/* Floating top-right live badge ("⚡ 100% FREE AI SCAN") */
+.btn3d-ats-floating-badge {
+  position: absolute;
+  top: -9px;
+  right: 12px;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #dc2626 100%);
+  border: 1.5px solid #fef08a;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.5), 0 0 10px rgba(251, 191, 36, 0.6);
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 950;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  pointer-events: none;
+  animation: atsBadgeFloat 2.4s ease-in-out infinite;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes atsBadgeFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-2.5px) scale(1.03); }
+}
+
+.btn3d-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 8px #ffffff;
+  animation: atsDotPing 1.4s ease-in-out infinite;
+}
+
+@keyframes atsDotPing {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.45); opacity: 0.65; }
+}
+
+.hero-3d-game-btn {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  flex-direction: column;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  transform-style: preserve-3d;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), filter 0.18s ease;
+  filter: drop-shadow(0 10px 24px rgba(37, 99, 235, 0.42));
+  animation: atsBtnAttentionFloat 3s ease-in-out infinite;
+}
+
+@keyframes atsBtnAttentionFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-2px); }
+}
+
+.hero-3d-game-btn:hover {
+  animation-play-state: paused;
+  transform: translateY(-4px) scale(1.025);
+  filter: drop-shadow(0 16px 34px rgba(14, 165, 233, 0.6));
+}
+
+.hero-3d-game-btn:hover ~ .btn3d-ats-aura,
+.hero-3d-btn-wrap:hover .btn3d-ats-aura {
+  opacity: 0.95;
+  filter: blur(16px);
+}
+
+.hero-3d-game-btn:active {
+  transform: translateY(2px) scale(0.99);
+  filter: drop-shadow(0 3px 10px rgba(37, 99, 235, 0.35));
+}
+
+.hero-3d-game-btn:active .btn3d-bottom {
+  height: 2px;
+}
+
+.hero-3d-game-btn:active .btn3d-content {
+  transform: translateY(4px);
+}
+
+/* Shimmering neon border ring */
+.btn3d-border-glow {
+  position: absolute;
+  inset: -1.5px;
+  bottom: 4px;
+  z-index: 1;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #38bdf8, #a855f7, #34d399, #38bdf8);
+  background-size: 300% 100%;
+  animation: atsAuraFlow 3s linear infinite;
+  pointer-events: none;
+}
+
+/* Top face — main visible area */
+.btn3d-content {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.78rem 1.35rem 0.78rem 1.05rem;
+  border-radius: 15px;
+  background: linear-gradient(125deg, #2563eb 0%, #4f46e5 38%, #7c3aed 72%, #0891b2 100%);
+  background-size: 220% 220%;
+  animation: atsBtnGradientShift 4.5s ease infinite;
+  color: #ffffff;
+  font-size: 0.96rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  transition: transform 0.12s ease;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35);
+}
+
+@keyframes atsBtnGradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+/* Left animated scanner icon box with vertical laser sweep */
+.btn3d-scanner-box {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(56, 189, 248, 0.35);
+  flex-shrink: 0;
+}
+
+.btn3d-laser-line {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #fde047, #38bdf8, transparent);
+  box-shadow: 0 0 6px #38bdf8;
+  z-index: 20;
+  animation: atsLaserScan 1.8s ease-in-out infinite;
+}
+
+@keyframes atsLaserScan {
+  0%, 100% { top: 3px; opacity: 0.85; }
+  50%      { top: 24px; opacity: 1; }
+}
+
+/* Shine sweep */
+.btn3d-shine {
+  position: absolute;
+  inset: 0;
+  bottom: 5px;
+  z-index: 3;
+  border-radius: 15px;
+  background: linear-gradient(
+    105deg,
+    rgba(255, 255, 255, 0) 35%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0) 65%
+  );
+  background-size: 220% 100%;
+  animation: btn3dShine 2.3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes btn3dShine {
+  0%   { background-position: 200% center; }
+  65%  { background-position: -100% center; }
+  100% { background-position: -100% center; }
+}
+
+/* Bottom 3D depth slab */
+.btn3d-bottom {
+  display: block;
+  height: 6px;
+  border-radius: 0 0 15px 15px;
+  background: linear-gradient(135deg, #1e3a8a 0%, #312e81 55%, #0e7490 100%);
+  margin-top: -4px;
+  transition: height 0.1s ease;
+}
+
+.btn3d-label {
+  flex: 1;
+  text-shadow: 0 1px 4px rgba(15, 23, 42, 0.35);
+}
+
+/* Right arrow circle pill */
+.btn3d-arrow-pill {
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn3d-arrow {
+  opacity: 0.95;
+  animation: atsArrowNudge 1.6s ease-in-out infinite;
+}
+
+@keyframes atsArrowNudge {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(2.5px); }
+}
+
+.hero-3d-game-btn:hover .btn3d-arrow-pill {
+  background: rgba(255, 255, 255, 0.32);
+  transform: translateX(3px);
+}
+
+
+.hero-primary-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.65rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #00d2ff 0%, #0070f3 50%, #0052cc 100%);
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(0, 112, 243, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.hero-primary-cta-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 26px rgba(0, 112, 243, 0.5);
+}
+
+.hero-primary-cta-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.cta-rocket-icon {
+  font-size: 1.1rem;
+}
+
+.hero-secondary-tour-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.8rem 1.45rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid #cbd5e1;
+  color: #0f172a;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.hero-secondary-tour-btn:hover {
+  background: #ffffff;
+  border-color: #94a3b8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.tour-play-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── 8. BENEFIT CHECKLIST ROW ── */
+.hero-benefits-checklist {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 0.15rem;
+  animation: heroFadeSlideIn 0.6s ease-out 0.5s both;
+}
+
+.benefit-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+/* ── 9. TRUSTED BY 50,000+ LEARNERS LOGOS STRIP ── */
+.hero-trust-strip {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.75rem 24px;
+}
+
+.trust-strip-inner {
+  max-width: 1360px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.trust-left-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.trust-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.trust-logos-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.logo-text {
+  font-size: 0.85rem;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.logo-text.google    { color: #4285F4; }
+.logo-text.msft      { color: #00A4EF; }
+.logo-text.amazon    { color: #FF9900; font-weight: 800; }
+.logo-text.deloitte  { color: #86BC25; }
+.logo-text.accenture { color: #A100FF; }
+.logo-text.tcs       { color: #0052CC; font-weight: 800; }
+.logo-text.infosys   { color: #007CC3; }
+.logo-text.ibm       { color: #0F62FE; font-weight: 900; letter-spacing: 1px; }
+.logo-text.wipro     { color: #F36F21; }
+
+.trust-metrics-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.trust-metric-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  color: #475569;
+}
+
+.trust-metric-pill strong {
+  color: #0f172a;
+  font-weight: 800;
+  margin-right: 0.2rem;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes heroFadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── ACCESSIBILITY (PREFERS REDUCED MOTION) ── */
+@media (prefers-reduced-motion: reduce) {
+  .hero-2050-headline,
+  .hero-badge-wrap,
+  .hero-2050-description,
+  .hero-journey-pills-row,
+  .hero-cta-buttons-row,
+  .hero-benefits-checklist {
+    animation: none !important;
+  }
+
+  .hero-bg-video {
+    display: none;
+  }
+
+  .hero-bg-video-wrapper {
+    background-image: url('/images/hero_video_poster.jpg');
+    background-size: cover;
+    background-position: center right;
+  }
+}
+
+/* ── RESPONSIVE DESIGN ── */
+@media (max-width: 1100px) {
+  .hero-video-gradient-overlay {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.98) 0%,
+      rgba(255, 255, 255, 0.94) 40%,
+      rgba(255, 255, 255, 0.50) 65%,
+      transparent 100%
+    );
+  }
+  .hero-journey-pills-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-2050-section {
+    min-height: 650px;
+  }
+
+  .hero-bg-video {
+    object-position: 70% center;
+  }
+
+  .hero-video-gradient-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.98) 0%,
+      rgba(255, 255, 255, 0.92) 55%,
+      rgba(255, 255, 255, 0.45) 85%,
+      rgba(255, 255, 255, 0.15) 100%
+    );
+  }
+
+  .hero-2050-container {
+    padding: 36px 16px 24px;
+  }
+
+  .hero-2050-content {
+    max-width: 100%;
+  }
+
+  .hero-2050-headline {
+    font-size: clamp(34px, 8vw, 44px);
+  }
+
+  .hero-journey-pills-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.35rem;
+  }
+
+  .journey-pill-title {
+    font-size: 0.62rem;
+  }
+
+  .journey-pill-sub {
+    font-size: 0.52rem;
+  }
+
+  .hero-cta-buttons-row {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-primary-cta-btn,
+  .hero-secondary-tour-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .trust-strip-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ── Shifted Header Watch 1-Min Tour Pill ── */
+.hero-header-tour-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid #bfdbfe;
+  border-radius: 9999px;
+  padding: 5px 13px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #1e40af;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(59, 130, 246, 0.14);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+}
+
+.hero-header-tour-btn:hover {
+  background: #ffffff;
+  border-color: #3b82f6;
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.28);
+  color: #1d4ed8;
+}
+
+.tour-play-circle-small {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #dbeafe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tour-badge-pill {
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 2px 5.5px;
+  border-radius: 9999px;
+  letter-spacing: 0.05em;
+}
+
+/* ── High-Converting 3D "Get Started Free →" Button ── */
+.btn3d-content-get-started {
+  background: linear-gradient(135deg, #0284c7 0%, #0264d8 45%, #2563eb 100%) !important;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.75) !important;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.7),
+    0 8px 24px rgba(2, 132, 199, 0.45) !important;
+  color: #ffffff !important;
+}
+
+.hero-3d-game-btn:hover .btn3d-content-get-started {
+  background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 50%, #1d4ed8 100%) !important;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.8),
+    0 12px 30px rgba(14, 165, 233, 0.6) !important;
+}
+
+.btn3d-bottom-blue {
+  background: #034896 !important;
+}
+
+/* ── Free ATS Resume Checker Button Content ── */
+.btn3d-content-ats {
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 45%, #312e81 100%) !important;
+  border-top: 1.5px solid rgba(147, 197, 253, 0.65) !important;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.4),
+    0 8px 24px rgba(30, 27, 75, 0.45) !important;
+  color: #ffffff !important;
+}
+
+.hero-3d-game-btn:hover .btn3d-content-ats {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #4338ca 100%) !important;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.5),
+    0 12px 30px rgba(79, 70, 229, 0.55) !important;
+}
+
+.btn3d-bottom-purple {
+  background: #020617 !important;
+}
+
+.glow-blue {
+  background: linear-gradient(90deg, #38bdf8, #60a5fa, #0284c7, #38bdf8) !important;
+  background-size: 300% 100% !important;
+}
+
+.glow-purple {
+  background: linear-gradient(90deg, #818cf8, #c084fc, #38bdf8, #818cf8) !important;
+  background-size: 300% 100% !important;
+}
+
+.btn3d-get-started-aura {
+  position: absolute;
+  inset: -3px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.45) 0%, rgba(245, 158, 11, 0.25) 50%, rgba(2, 132, 199, 0) 75%);
+  filter: blur(10px);
+  z-index: 0;
+  animation: atsAuraPulse 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ── ULTRA-PREMIUM 3D "GET STARTED FREE →" BUTTON ── */
+.btn3d-content-premium-blue {
+  background: linear-gradient(135deg, #00d2ff 0%, #0070f3 48%, #0052cc 100%) !important;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.9) !important;
+  border-bottom: 1.5px solid rgba(0, 0, 0, 0.15) !important;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.8),
+    0 8px 24px rgba(0, 112, 243, 0.45) !important;
+  padding: 0.78rem 1.45rem 0.78rem 1.15rem !important;
+  border-radius: 9999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.65rem !important;
+  color: #ffffff !important;
+}
+
+.hero-3d-game-btn:hover .btn3d-content-premium-blue {
+  background: linear-gradient(135deg, #38bdf8 0%, #0080ff 48%, #0060e6 100%) !important;
+  box-shadow:
+    inset 0 1px 3px rgba(255, 255, 255, 0.95),
+    0 12px 32px rgba(0, 112, 243, 0.6) !important;
+}
+
+.btn3d-icon-sparkle-box {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+}
+
+.btn3d-label-premium {
+  color: #ffffff !important;
+  font-weight: 950 !important;
+  font-size: 1.02rem !important;
+  letter-spacing: -0.01em !important;
+  text-shadow: 0 1px 3px rgba(0, 30, 90, 0.5) !important;
+  white-space: nowrap !important;
+}
+
+.btn3d-arrow-pill-premium {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.45) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.35) !important;
+}
+
+.btn3d-bottom-premium-blue {
+  background: #003bb3 !important;
+  border-radius: 0 0 9999px 9999px !important;
+  height: 6px !important;
+}
+
+
+
+

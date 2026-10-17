@@ -1,0 +1,449 @@
+/* ============================================================
+   FUTURE.AI HERO + FAQ + METRICS SECTION
+   Pixel-perfect recreation of media_1790530931822.jpg
+============================================================ */
+
+.future-hero-plan-section {
+  position: relative;
+  width: 100%;
+  min-height: auto;
+  padding: 24px 24px 34px;
+  
+  /* High definition panoramic futuristic background */
+  background: #f0f7ff url('/images/future-career-plan-bg.webp') center 24% / cover no-repeat;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Localized soft glow only behind left text column so the center 3D Robot remains 100% crystal-clear */
+.hero-plan-left-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 55%;
+  height: 90%;
+  background: radial-gradient(ellipse at 25% 45%, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.55) 55%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Container */
+.hero-plan-container {
+  width: min(1440px, 100%);
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  gap: 30px;
+}
+
+/* Script Callout directly above the 3D Robot Mascot */
+.hero-script-callout {
+  position: absolute;
+  top: 26px;
+  left: 51.5%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.script-text {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Caveat', 'Comic Sans MS', cursive, sans-serif;
+  color: #1d4ed8;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.8);
+  transform: rotate(-4deg);
+}
+
+.script-arrow {
+  margin-bottom: -4px;
+  filter: drop-shadow(0 2px 4px rgba(2, 132, 199, 0.25));
+}
+
+/* ============================================================
+   1. MAIN 3-COLUMN CONTENT GRID
+============================================================ */
+
+.hero-plan-main-grid {
+  display: grid;
+  grid-template-columns: 1.18fr 0.72fr 1.1fr;
+  gap: 24px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+/* LEFT COLUMN */
+.hero-plan-left-col {
+  max-width: 540px;
+}
+
+/* Badge */
+.plan-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: rgba(238, 246, 255, 0.92);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #0284c7;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.08);
+  margin-bottom: 18px;
+  backdrop-filter: blur(8px);
+}
+
+/* Headline */
+.plan-heading {
+  font-size: 52px;
+  line-height: 1.04;
+  font-weight: 900;
+  color: #071536;
+  letter-spacing: -1.2px;
+  margin: 0 0 16px 0;
+}
+
+.plan-highlight {
+  background: linear-gradient(90deg, #0284c7 0%, #00b4d8 50%, #00d2b4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+/* Subtitle */
+.plan-subtitle {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #475569;
+  max-width: 440px;
+  margin: 0 0 26px 0;
+  font-weight: 500;
+}
+
+/* Actions */
+.plan-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.btn-primary-journey {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 28px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #007cf0 0%, #00b4d8 55%, #00d2b4 100%);
+  color: #ffffff;
+  font-size: 14.5px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(0, 124, 240, 0.32);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary-journey:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0, 124, 240, 0.42);
+}
+
+.btn-secondary-advisor {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 14.5px;
+  font-weight: 700;
+  border: 1.5px solid #cbd5e1;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-secondary-advisor:hover {
+  border-color: #0284c7;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.1);
+}
+
+/* CENTER COLUMN: TRANSPARENT SPACER FOR ROBOT */
+.hero-plan-center-col {
+  min-height: 380px;
+  pointer-events: none;
+}
+
+/* RIGHT COLUMN: FAQ CARD */
+.hero-plan-right-col {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.faq-card-container {
+  width: 100%;
+  max-width: 470px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 26px;
+  padding: 24px 26px;
+  box-shadow: 
+    0 20px 50px rgba(15, 23, 42, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+  backdrop-filter: blur(18px);
+}
+
+.faq-card-header {
+  margin-bottom: 18px;
+}
+
+.faq-card-header h3 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.4px;
+}
+
+.faq-card-header p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.faq-item {
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.faq-item.faq-open {
+  border-color: #38bdf8;
+  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.12);
+}
+
+.faq-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+  transition: color 0.2s ease;
+}
+
+.faq-trigger:hover {
+  color: #0284c7;
+}
+
+.faq-icon-chevron {
+  width: 15px;
+  height: 15px;
+  color: #64748b;
+  flex-shrink: 0;
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.faq-answer {
+  padding: 0 16px 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #475569;
+  border-top: 1px solid #f1f5f9;
+  margin-top: 2px;
+  padding-top: 8px;
+}
+
+/* ============================================================
+   2. BOTTOM FULL-WIDTH 4-METRICS PILL BAR
+============================================================ */
+
+.hero-metrics-bar {
+  width: 100%;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(16px);
+  padding: 14px 34px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  align-items: center;
+}
+
+.metric-col {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.metric-icon-box {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.bg-blue-solid {
+  background: #2563eb;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.bg-green-solid {
+  background: #00c48c;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0, 196, 140, 0.25);
+}
+
+.bg-cyan-solid {
+  background: #00b4d8;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.25);
+}
+
+.bg-yellow-soft {
+  background: #fff3d4;
+  border-radius: 50%;
+}
+
+.metric-text strong {
+  display: block;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.1;
+  color: #0f172a;
+  letter-spacing: -0.5px;
+}
+
+.metric-text span {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #1e293b;
+  margin-top: 1px;
+}
+
+.metric-text small {
+  display: block;
+  font-size: 10px;
+  color: #64748b;
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN
+============================================================ */
+
+@media (max-width: 1200px) {
+  .future-hero-plan-section {
+    padding-top: 20px;
+  }
+
+  .hero-script-callout {
+    display: none;
+  }
+
+  .hero-plan-main-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hero-plan-center-col {
+    display: none;
+  }
+
+  .hero-metrics-bar {
+    grid-template-columns: repeat(2, 1fr);
+    border-radius: 24px;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .future-hero-plan-section {
+    padding: 18px 16px 24px;
+    min-height: auto;
+  }
+
+  .hero-plan-main-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .plan-heading {
+    font-size: clamp(28px, 7.5vw, 38px);
+    line-height: 1.05;
+  }
+
+  .plan-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .btn-primary-journey,
+  .btn-secondary-advisor {
+    width: 100%;
+    justify-content: center;
+    padding: 13px 20px;
+    font-size: 14px;
+  }
+
+  .hero-metrics-bar {
+    grid-template-columns: repeat(2, 1fr);
+    border-radius: 20px;
+    padding: 14px 12px;
+    gap: 12px;
+  }
+
+  .metric-col {
+    padding: 8px;
+    gap: 10px;
+  }
+
+  .metric-text strong {
+    font-size: 18px;
+  }
+
+  .metric-text span {
+    font-size: 10.5px;
+  }
+
+  .metric-text small {
+    display: none;
+  }
+}

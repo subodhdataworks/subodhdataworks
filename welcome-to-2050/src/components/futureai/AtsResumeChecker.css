@@ -1,0 +1,1045 @@
+/* ============================================================ */
+/* ATS RESUME CHECKER - SCANNING ANIMATION & RESULT SUITE CSS   */
+/* ============================================================ */
+
+/* ── 1. SCANNING ANIMATION HUD ── */
+.ats-scanner-hud {
+  position: relative;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #ffffff 0%, #f0f7ff 50%, #f8fafc 100%);
+  border: 1.5px solid #bfdbfe;
+  box-shadow: 0 16px 48px rgba(37, 99, 235, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 24px;
+  overflow: hidden;
+}
+
+.ats-scanner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+}
+
+.ats-scanner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: #eff6ff;
+  border: 1px solid #93c5fd;
+  color: #1d4ed8;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ats-scanner-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3b82f6;
+  box-shadow: 0 0 10px #3b82f6;
+  animation: atsPulseGlow 1.2s infinite ease-in-out;
+}
+
+@keyframes atsPulseGlow {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.5; }
+}
+
+.ats-scanner-filename {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Document & Laser Scanner Container */
+.ats-scanner-canvas-wrap {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 640px) {
+  .ats-scanner-canvas-wrap {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ats-scanner-doc-card {
+  position: relative;
+  width: 140px;
+  height: 180px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.ats-scanner-doc-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ats-doc-line {
+  height: 6px;
+  border-radius: 3px;
+  background: #e2e8f0;
+}
+
+.ats-doc-line.line-title {
+  width: 70%;
+  height: 8px;
+  background: #3b82f6;
+}
+
+.ats-doc-line.line-sub {
+  width: 45%;
+  background: #94a3b8;
+}
+
+.ats-doc-line.w-full { width: 100%; }
+.ats-doc-line.w-85 { width: 85%; }
+.ats-doc-line.w-70 { width: 70%; }
+.ats-doc-line.w-90 { width: 90%; }
+.ats-doc-line.w-60 { width: 60%; }
+
+/* Moving Laser Scanning Beam */
+.ats-scanner-laser-beam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, #38bdf8 30%, #2563eb 50%, #38bdf8 70%, transparent 100%);
+  box-shadow: 0 0 14px #38bdf8, 0 0 24px #2563eb;
+  z-index: 10;
+  pointer-events: none;
+  animation: laserScanVertical 2s ease-in-out infinite alternate;
+}
+
+.ats-scanner-laser-glow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 28px;
+  transform: translateY(-14px);
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.25) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+@keyframes laserScanVertical {
+  0% { top: 6px; }
+  100% { top: 168px; }
+}
+
+/* Scanner Right: Checklist Phases */
+.ats-scanner-phases {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.ats-scan-phase-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  transition: all 0.25s ease;
+}
+
+.ats-scan-phase-item.phase-active {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
+  transform: translateX(4px);
+}
+
+.ats-scan-phase-item.phase-done {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.ats-phase-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+  font-weight: 800;
+}
+
+.phase-done .ats-phase-icon {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.phase-active .ats-phase-icon {
+  background: #2563eb;
+  color: #ffffff;
+  animation: spinSlow 3s linear infinite;
+}
+
+.phase-pending .ats-phase-icon {
+  background: #e2e8f0;
+  color: #64748b;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.ats-phase-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.ats-phase-title {
+  font-size: 11.5px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+.ats-phase-desc {
+  font-size: 10px;
+  font-weight: 600;
+  color: #64748b;
+  line-height: 1.25;
+}
+
+/* Bottom Progress Bar */
+.ats-scanner-bottom-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.ats-scanner-progress-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.ats-scanner-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 9999px;
+  background: #e2e8f0;
+  overflow: hidden;
+  position: relative;
+}
+
+.ats-scanner-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #2563eb 0%, #38bdf8 50%, #10b981 100%);
+  transition: width 0.2s ease-out;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.7);
+}
+
+
+/* ============================================================ */
+/* 2. ULTRA-PREMIUM RESULT HERO & "FIX THESE FIRST" SECTION      */
+/* ============================================================ */
+
+.ats-result-premium-suite {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Hero Score Card */
+.ats-hero-score-card {
+  position: relative;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 45%, #eff6ff 100%);
+  border: 1.5px solid #bfdbfe;
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.07), 0 2px 6px rgba(0, 0, 0, 0.03);
+  padding: 22px 26px;
+  overflow: hidden;
+}
+
+.ats-hero-score-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6 0%, #f59e0b 50%, #10b981 100%);
+}
+
+.ats-hsc-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .ats-hsc-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+
+.ats-hsc-text-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ats-hsc-salutation {
+  font-size: clamp(20px, 2.2vw, 27px);
+  font-weight: 950;
+  color: #0f172a;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.ats-hsc-score-highlight {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 950;
+}
+
+.ats-hsc-context {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #475569;
+  font-weight: 600;
+  margin: 0;
+}
+
+.ats-hsc-context strong {
+  color: #0f172a;
+  font-weight: 800;
+}
+
+/* Right Score Gauge */
+.ats-hsc-gauge-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.ats-score-circle-pill {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 4px solid #fde68a;
+  box-shadow: 0 10px 28px rgba(245, 158, 11, 0.22), 0 0 0 6px rgba(254, 243, 199, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.ats-circle-score-num {
+  font-size: 34px;
+  font-weight: 950;
+  color: #b45309;
+  letter-spacing: -0.03em;
+}
+
+.ats-circle-score-denom {
+  font-size: 11px;
+  font-weight: 800;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.ats-score-rating-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3.5px 12px;
+  border-radius: 9999px;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.02em;
+}
+
+/* Benchmark Target Comparison Bar */
+.ats-benchmark-bar-row {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ats-benchmark-metric {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 750;
+  color: #334155;
+}
+
+.ats-benchmark-target-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+
+/* ============================================================ */
+/* 3. "FIX THESE FIRST" HIGH-IMPACT CARDS                       */
+/* ============================================================ */
+
+.ats-fix-first-container {
+  border-radius: 22px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ats-fix-first-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ats-fix-first-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.ats-fix-first-icon-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.ats-fix-first-h3 {
+  font-size: 16px;
+  font-weight: 950;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.ats-fix-first-sub {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.ats-fix-first-speed-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3.5px 11px;
+  border-radius: 9999px;
+  background: #fff7ed;
+  border: 1px solid #ffedd5;
+  color: #c2410c;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+/* The 3 Priority Fix Cards */
+.ats-fix-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ats-priority-fix-card {
+  position: relative;
+  border-radius: 16px;
+  background: #fafafa;
+  border: 1.5px solid #e5e7eb;
+  padding: 16px 18px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ats-priority-fix-card:hover {
+  background: #ffffff;
+  border-color: #93c5fd;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.08);
+  transform: translateY(-2px);
+}
+
+.ats-pfc-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ats-pfc-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.ats-pfc-title {
+  font-size: 14.5px;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.ats-pfc-desc {
+  font-size: 12.5px;
+  color: #475569;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Category Pill Badges (Style, Impact) */
+.ats-pfc-cat-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3.5px 11px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.ats-pfc-cat-badge.cat-style {
+  background: #f3e8ff;
+  border: 1px solid #e9d5ff;
+  color: #7e22ce;
+}
+
+.ats-pfc-cat-badge.cat-impact {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #e11d48;
+}
+
+/* Interactive Before & After Drawer */
+.ats-pfc-drawer {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11.5px;
+}
+
+.ats-drawer-before {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  color: #991b1b;
+  font-weight: 600;
+}
+
+.ats-drawer-after {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  color: #065f46;
+  font-weight: 700;
+}
+
+.ats-drawer-pill {
+  font-size: 9px;
+  font-weight: 900;
+  padding: 1.5px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ats-drawer-before .ats-drawer-pill {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.ats-drawer-after .ats-drawer-pill {
+  background: #d1fae5;
+  color: #047857;
+}
+
+/* Impact Progress Meter in Card 3 */
+.ats-impact-mini-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.ats-impact-meter-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 750;
+  color: #475569;
+}
+
+.ats-impact-meter-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.ats-impact-meter-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #f59e0b 0%, #ea580c 100%);
+  width: 36%;
+}
+
+/* ============================================================ */
+/* 4. BEYOND-HUMAN ULTRA-PREMIUM 3-CARD COMMAND CENTER          */
+/* ============================================================ */
+
+.ats-trio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  align-items: stretch;
+}
+
+@media (max-width: 1024px) {
+  .ats-trio-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+
+.ats-card-ultra {
+  position: relative;
+  border-radius: 26px;
+  background: linear-gradient(170deg, #ffffff 0%, #f9fbfe 60%, #f1f6fd 100%);
+  border: 1.5px solid #dbeafe;
+  box-shadow: 0 18px 45px rgba(37, 99, 235, 0.07), 0 4px 12px rgba(15, 23, 42, 0.02);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ats-card-ultra:hover {
+  transform: translateY(-4px);
+  border-color: #93c5fd;
+  box-shadow: 0 24px 60px rgba(37, 99, 235, 0.14), 0 8px 20px rgba(15, 23, 42, 0.04);
+}
+
+/* Neon Top Accent Line */
+.ats-card-ultra::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5px;
+  background: linear-gradient(90deg, #38bdf8 0%, #2563eb 50%, #6366f1 100%);
+  opacity: 0.9;
+}
+
+.ats-card-ultra.card-step2::before {
+  background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+}
+
+.ats-card-ultra.card-step3::before {
+  background: linear-gradient(90deg, #2563eb 0%, #7c3aed 50%, #10b981 100%);
+}
+
+/* Step Header */
+.ats-card-header-ultra {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.ats-step-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ats-step-num-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 950;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35), 0 0 0 3px rgba(191, 219, 254, 0.5);
+  flex-shrink: 0;
+}
+
+.card-step2 .ats-step-num-circle {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35), 0 0 0 3px rgba(221, 214, 254, 0.5);
+}
+
+.card-step3 .ats-step-num-circle {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35), 0 0 0 3px rgba(167, 243, 208, 0.5);
+}
+
+.ats-step-title-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.ats-step-main-title {
+  font-size: 16px;
+  font-weight: 950;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.ats-step-sub-desc {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #64748b;
+  margin-top: 1px;
+}
+
+.ats-status-indicator-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3.5px 10px;
+  border-radius: 9999px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 10.5px;
+  font-weight: 850;
+  letter-spacing: 0.02em;
+}
+
+.ats-status-indicator-tag.status-ready {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #047857;
+}
+
+/* ── STEP 1: ULTRA DROPZONE ── */
+.ats-ultra-dropzone {
+  position: relative;
+  border-radius: 20px;
+  border: 2px dashed #93c5fd;
+  background: linear-gradient(180deg, rgba(239, 246, 255, 0.7) 0%, rgba(255, 255, 255, 0.95) 100%);
+  padding: 24px 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  cursor: pointer;
+  transition: all 0.28s ease;
+  overflow: hidden;
+}
+
+.ats-ultra-dropzone:hover {
+  border-color: #3b82f6;
+  background: linear-gradient(180deg, rgba(219, 234, 254, 0.9) 0%, rgba(255, 255, 255, 0.98) 100%);
+  box-shadow: 0 10px 28px rgba(37, 99, 235, 0.12);
+  transform: scale(1.01);
+}
+
+.ats-ultra-dropzone.is-dragging {
+  border-color: #2563eb;
+  background: #dbeafe;
+  box-shadow: 0 0 24px rgba(37, 99, 235, 0.25);
+  transform: scale(1.02);
+}
+
+.ats-dropzone-cloud-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.16);
+  border: 1px solid #bfdbfe;
+  transition: all 0.3s ease;
+}
+
+.ats-ultra-dropzone:hover .ats-dropzone-cloud-icon {
+  transform: scale(1.1) translateY(-2px);
+  color: #1d4ed8;
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.25);
+}
+
+/* ── STEP 2: ROLE SELECTOR & JD ARENA ── */
+.ats-role-selector-pill {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #0f172a;
+  font-weight: 850;
+  font-size: 13.5px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+.ats-role-selector-pill:hover {
+  border-color: #7c3aed;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.12);
+}
+
+.ats-jd-ultra-textarea {
+  width: 100%;
+  border-radius: 16px;
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  padding: 12px 14px;
+  font-size: 12px;
+  color: #1e293b;
+  resize: none;
+  height: 108px;
+  line-height: 1.5;
+  transition: all 0.2s ease;
+}
+
+.ats-jd-ultra-textarea:focus {
+  outline: none;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+/* ── STEP 3: FUTURE AI SCAN CTA BUTTON ── */
+.ats-btn-launch-scan {
+  position: relative;
+  width: 100%;
+  padding: 16px 20px;
+  border-radius: 18px;
+  font-size: 15px;
+  font-weight: 950;
+  color: #ffffff;
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 50%, #7c3aed 100%);
+  border: none;
+  box-shadow: 0 10px 28px rgba(79, 70, 229, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.ats-btn-launch-scan:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 16px 40px rgba(79, 70, 229, 0.45), 0 0 0 2px rgba(255, 255, 255, 0.3) inset;
+  background: linear-gradient(135deg, #1d4ed8 0%, #4338ca 50%, #6d28d9 100%);
+}
+
+.ats-btn-launch-scan:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.ats-btn-shimmer-sweep {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.35) 50%, transparent 100%);
+  transform: skewX(-25deg);
+  animation: atsShimmerSweep 3s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes atsShimmerSweep {
+  0% { left: -100%; }
+  60%, 100% { left: 160%; }
+}
+
+/* 3 Future AI Capabilities Cards */
+.ats-engine-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 14px;
+}
+
+.ats-engine-feature-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  font-size: 11.5px;
+  font-weight: 750;
+  color: #334155;
+  transition: all 0.2s ease;
+}
+
+.ats-engine-feature-chip:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  transform: translateX(3px);
+}
+
+.ats-ef-icon-wrap {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+
+/* ============================================================ */
+/* 5. DEDICATED SEPARATE ATS ANALYSIS RESULT PAGE               */
+/* ============================================================ */
+
+.ats-dedicated-result-view {
+  animation: atsFadeSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@keyframes atsFadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ats-result-top-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 18px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
+}
+
+.ats-btn-back-checker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  font-size: 12.5px;
+  font-weight: 850;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ats-btn-back-checker:hover {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+  transform: translateX(-2px);
+}
+

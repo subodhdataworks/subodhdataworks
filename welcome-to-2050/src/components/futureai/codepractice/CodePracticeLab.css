@@ -1,0 +1,968 @@
+/* =========================================================================
+   FUTURE.AI CODE PRACTICE LAB (1:1 with media_1790614931039.png)
+   ========================================================================= */
+
+.fai-cpl-viewport {
+  width: 100%;
+  min-height: 100vh;
+  background: #F4F8FC radial-gradient(circle at 10% 20%, rgba(22, 119, 255, 0.04) 0%, transparent 40%),
+              radial-gradient(circle at 90% 80%, rgba(0, 207, 235, 0.05) 0%, transparent 40%);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #1E293B;
+  overflow-x: hidden;
+}
+
+/* Fullscreen mode */
+.fai-cpl-viewport.fullscreen-mode {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #F4F8FC;
+}
+
+/* Confetti shower */
+.fai-cpl-confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.fai-cpl-confetti-piece {
+  position: absolute;
+  top: -15px;
+  width: 8px;
+  height: 12px;
+  border-radius: 2px;
+  animation: confettiFall 2.2s ease-in forwards;
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* =========================================================================
+   1. TOP NAVBAR
+   ========================================================================= */
+.fai-cpl-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 28px;
+  background: #FFFFFF;
+  border-bottom: 1px solid #E2EBF5;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.02);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.fai-cpl-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.fai-cpl-logo {
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.fai-cpl-divider {
+  width: 1px;
+  height: 28px;
+  background: #E2EBF5;
+}
+
+.fai-cpl-course-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.fai-cpl-course-name {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #1E3A8A;
+  line-height: 1.2;
+}
+
+.fai-cpl-lesson-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748B;
+  line-height: 1.2;
+}
+
+/* Center Progress Bar */
+.fai-cpl-topbar-center {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fai-cpl-progress-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fai-cpl-pill-seg {
+  width: 28px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #E2E8F0;
+  transition: all 0.3s ease;
+}
+
+.fai-cpl-pill-seg.active {
+  background: #10B981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+.fai-cpl-progress-text {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #334155;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Right Stats */
+.fai-cpl-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.fai-cpl-stat-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.fai-cpl-stat-chip.streak {
+  background: #FFFBEB;
+  border: 1px solid #FEF3C7;
+}
+
+.fai-cpl-stat-chip.xp {
+  background: #EFF6FF;
+  border: 1px solid #DBEAFE;
+}
+
+.fai-cpl-stat-num {
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.1;
+}
+
+.fai-cpl-stat-lbl {
+  font-size: 10px;
+  font-weight: 600;
+  color: #64748B;
+  line-height: 1.1;
+}
+
+.fai-cpl-avatar-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(135deg, #1677FF 0%, #00CFEB 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(22, 119, 255, 0.25);
+  cursor: pointer;
+}
+
+.fai-cpl-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #FFFFFF;
+}
+
+/* =========================================================================
+   2. MAIN LAYOUT (SIDEBAR + CENTER + OUTPUT)
+   ========================================================================= */
+.fai-cpl-main-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(460px, 1fr) 330px;
+  gap: 16px;
+  padding: 16px 24px;
+  flex: 1;
+  max-width: 1540px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Fullscreen Adjust */
+.fullscreen-mode .fai-cpl-main-layout {
+  grid-template-columns: 1fr 360px;
+}
+.fullscreen-mode .fai-cpl-sidebar-card {
+  display: none;
+}
+
+/* ----------------------------------------------------
+   LEFT SIDEBAR: Python Launch Mission
+   ---------------------------------------------------- */
+.fai-cpl-sidebar-card {
+  background: #FFFFFF;
+  border: 1.5px solid #E2EBF5;
+  border-radius: 20px;
+  padding: 18px 16px;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.03);
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+}
+
+.fai-cpl-sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #F1F5F9;
+  margin-bottom: 12px;
+}
+
+.fai-cpl-sidebar-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(22, 119, 255, 0.2));
+}
+
+.fai-cpl-sidebar-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.25;
+}
+
+.fai-cpl-mission-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fai-cpl-mission-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.fai-cpl-mission-item.active {
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+}
+
+.fai-cpl-mission-item.completed .fai-cpl-mission-label {
+  color: #0F172A;
+  font-weight: 700;
+}
+
+.fai-cpl-mission-bullet {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fai-cpl-mission-item.completed .fai-cpl-mission-bullet {
+  background: #10B981;
+}
+
+.fai-cpl-mission-item.active .fai-cpl-mission-bullet {
+  border: 2px solid #1677FF;
+  background: #FFFFFF;
+}
+
+.fai-cpl-bullet-active-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1677FF;
+}
+
+.fai-cpl-bullet-empty-ring {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid #CBD5E1;
+}
+
+.fai-cpl-mission-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #64748B;
+}
+
+.fai-cpl-mission-item.active .fai-cpl-mission-label {
+  color: #1D4ED8;
+  font-weight: 800;
+}
+
+/* ----------------------------------------------------
+   CENTER CARD: Code Practice & Interactive Editor
+   ---------------------------------------------------- */
+.fai-cpl-center-card {
+  background: #FFFFFF;
+  border: 1.5px solid #E2EBF5;
+  border-radius: 20px;
+  padding: 20px 24px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fai-cpl-question-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fai-cpl-qbadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #1677FF;
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.fai-cpl-xp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #FEF3C7;
+  border: 1px solid #FDE68A;
+  color: #B45309;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 9999px;
+}
+
+.fai-cpl-question-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.45;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+
+.fai-cpl-target-pill {
+  display: inline-block;
+  background: #EFF6FF;
+  border: 1.5px solid #93C5FD;
+  color: #1D4ED8;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 2px 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(29, 78, 216, 0.08);
+}
+
+/* Assistant & Hint Row */
+.fai-cpl-assist-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.fai-cpl-robot-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 260px;
+}
+
+.fai-cpl-robot-img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 4px 10px rgba(0, 207, 235, 0.2));
+  animation: floatRobot 3.5s ease-in-out infinite;
+}
+
+@keyframes floatRobot {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.fai-cpl-speech-bubble {
+  background: #FFFFFF;
+  border: 1.5px solid #E0F2FE;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #334155;
+  line-height: 1.4;
+  position: relative;
+  box-shadow: 0 3px 12px rgba(2, 132, 199, 0.06);
+}
+
+.fai-cpl-hint-box {
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 240px;
+}
+
+.fai-cpl-hint-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #B45309;
+}
+
+.fai-cpl-hint-text {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #64748B;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.fai-cpl-hint-code {
+  background: #DBEAFE;
+  color: #1D4ED8;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+/* Code Editor Window (main.py) */
+.fai-cpl-editor-win {
+  border: 1.5px solid #E2EBF5;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #F8FAFC;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 240px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
+}
+
+.fai-cpl-editor-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: #FFFFFF;
+  border-bottom: 1px solid #E2EBF5;
+}
+
+.fai-cpl-editor-file {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fai-cpl-tool-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.fai-cpl-tool-btn:hover {
+  background: #F1F5F9;
+}
+
+.fai-cpl-editor-body {
+  display: flex;
+  flex: 1;
+  background: #F8FAFC;
+  position: relative;
+}
+
+.fai-cpl-gutter {
+  width: 40px;
+  background: #F1F5F9;
+  border-right: 1px solid #E2E8F0;
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  user-select: none;
+}
+
+.fai-cpl-line-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94A3B8;
+  line-height: 24px;
+}
+
+.fai-cpl-code-area {
+  flex: 1;
+  position: relative;
+  display: flex;
+}
+
+.fai-cpl-textarea {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 12px 14px;
+  font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 24px;
+  color: #0F172A;
+  caret-color: #1677FF;
+}
+
+/* ----------------------------------------------------
+   RIGHT CARD: Output & Action Button
+   ---------------------------------------------------- */
+.fai-cpl-output-card {
+  background: #FFFFFF;
+  border: 1.5px solid #E2EBF5;
+  border-radius: 20px;
+  padding: 18px 20px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fai-cpl-output-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fai-cpl-clear-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.fai-cpl-clear-btn:hover {
+  background: #E2E8F0;
+  color: #1E293B;
+}
+
+/* Dark Terminal Box */
+.fai-cpl-terminal-pane {
+  background: #0B132B;
+  border: 1px solid #1E293B;
+  border-radius: 12px;
+  padding: 14px 16px;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.fai-cpl-term-command {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #67E8F9;
+}
+
+.fai-cpl-term-running {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.fai-cpl-term-output {
+  margin: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+/* Success Card */
+.fai-cpl-success-card {
+  background: #ECFDF5;
+  border: 1.5px solid #A7F3D0;
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fai-cpl-success-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fai-cpl-success-icon-wrap {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #10B981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fai-cpl-success-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #065F46;
+  margin: 0 0 2px 0;
+}
+
+.fai-cpl-success-desc {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #047857;
+  margin: 0;
+}
+
+.fai-cpl-party-icon {
+  font-size: 24px;
+  animation: bounceParty 1.2s infinite;
+}
+
+@keyframes bounceParty {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.1); }
+}
+
+/* Error Card */
+.fai-cpl-error-card {
+  background: #FFF1F2;
+  border: 1.5px solid #FECDD3;
+  border-radius: 14px;
+  padding: 10px 14px;
+}
+
+.fai-cpl-error-left {
+  display: flex;
+  gap: 8px;
+}
+
+/* Run Code Button */
+.fai-cpl-run-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 48px;
+  background: #10B981;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  border: none;
+  border-radius: 12px;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+}
+
+.fai-cpl-run-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.45);
+}
+
+.fai-cpl-run-btn.ready {
+  animation: pulseRunBtn 2s infinite;
+}
+
+@keyframes pulseRunBtn {
+  0%, 100% { box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35); }
+  50% { box-shadow: 0 8px 28px rgba(16, 185, 129, 0.65); }
+}
+
+.fai-cpl-kbd-badge {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-left: 4px;
+}
+
+/* =========================================================================
+   3. BOTTOM NAVIGATION BAR (1:1 with media_1790614931039.png)
+   ========================================================================= */
+.fai-cpl-bottombar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  background: #FFFFFF;
+  border-top: 1px solid #E2EBF5;
+  box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.03);
+  position: sticky;
+  bottom: 0;
+  z-index: 40;
+}
+
+.fai-cpl-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.fai-cpl-nav-btn.prev {
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  color: #334155;
+}
+
+.fai-cpl-nav-btn.prev:hover {
+  background: #F8FAFC;
+  border-color: #94A3B8;
+  transform: translateX(-2px);
+}
+
+.fai-cpl-nav-btn.next {
+  background: #1677FF;
+  border: none;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(22, 119, 255, 0.3);
+}
+
+.fai-cpl-nav-btn.next:hover {
+  background: #0958D9;
+  transform: translateX(2px);
+}
+
+.fai-cpl-nav-btn.next.pulse {
+  animation: pulseNext 2s infinite;
+}
+
+@keyframes pulseNext {
+  0%, 100% { box-shadow: 0 4px 14px rgba(22, 119, 255, 0.3); }
+  50% { box-shadow: 0 8px 24px rgba(22, 119, 255, 0.55); transform: translateY(-1px); }
+}
+
+/* Stepper (Q1, 2, 3, 4, 5) */
+.fai-cpl-stepper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fai-cpl-stepper-line {
+  width: 24px;
+  height: 2px;
+  border-top: 2px dashed #CBD5E1;
+  transition: all 0.3s ease;
+}
+
+.fai-cpl-stepper-line.filled {
+  border-top-style: solid;
+  border-top-color: #10B981;
+}
+
+.fai-cpl-stepper-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.fai-cpl-stepper-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #E2E8F0;
+  color: #64748B;
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.fai-cpl-stepper-node.active .fai-cpl-stepper-circle {
+  background: #1677FF;
+  color: #FFFFFF;
+  box-shadow: 0 0 0 4px rgba(22, 119, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.fai-cpl-nav-btn.next:disabled,
+.fai-cpl-nav-btn.next.disabled {
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  color: #94A3B8;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none !important;
+}
+
+.fai-cpl-stepper-node.completed .fai-cpl-stepper-circle {
+  background: #10B981;
+  color: #FFFFFF;
+}
+
+.fai-cpl-stepper-node.locked {
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+.fai-cpl-stepper-node.locked .fai-cpl-stepper-circle {
+  background: #F8FAFC;
+  border: 1.5px dashed #CBD5E1;
+  color: #94A3B8;
+}
+
+.fai-cpl-stepper-node.locked:hover .fai-cpl-stepper-circle {
+  border-color: #F87171;
+  background: #FFF1F2;
+  color: #EF4444;
+}
+
+.fai-cpl-stepper-label {
+  position: absolute;
+  top: 32px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+/* Auto-Advance Pill in Success Card */
+.fai-cpl-auto-adv-notice {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #047857;
+  background: #ECFDF5;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  border: 1px solid #A7F3D0;
+}
+
+.fai-cpl-auto-adv-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10B981;
+  animation: pingDot 1s infinite;
+}
+
+@keyframes pingDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.4); }
+}
+
+/* Floating Toast Alert */
+.fai-cpl-toast {
+  position: fixed;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 22px;
+  background: #0F172A;
+  color: #FFFFFF;
+  border-radius: 9999px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  font-size: 13px;
+  font-weight: 700;
+  animation: toastSlideDown 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.fai-cpl-toast.warning {
+  background: #78350F;
+  border: 1.5px solid #F59E0B;
+  color: #FEF3C7;
+}
+
+@keyframes toastSlideDown {
+  from { opacity: 0; transform: translate(-50%, -12px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1100px) {
+  .fai-cpl-main-layout {
+    grid-template-columns: 1fr;
+  }
+  .fai-cpl-sidebar-card {
+    display: none;
+  }
+}
