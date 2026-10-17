@@ -1,0 +1,8 @@
+{
+  "name": "future-it-industry-monorepo",
+  "private": true,
+  "scripts": {
+    "build": "cd welcome-to-2050 && npm install && npm run build",
+    "dev": "cd welcome-to-2050 && npm run dev"
+  }
+}
