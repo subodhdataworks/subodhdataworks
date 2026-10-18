@@ -3,6 +3,7 @@ import { Bell, Coins, Gem, Download, Flame } from 'lucide-react';
 import { LearnerTelemetry } from '../../../services/realAuthService';
 import { isStandaloneMode, triggerNativeInstall } from '../../../services/pwaInstallService';
 import { useThemeAccent } from '../../../context/ThemeAccentContext';
+import { FutureLogo } from '../FutureLogo';
 
 interface MobileTopBarProps {
   userName: string;
@@ -38,34 +39,15 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white/85 backdrop-blur-2xl border-b border-white/90 px-3.5 py-2.5 flex items-center justify-between shadow-[0_4px_24px_rgba(0,110,255,0.06)] select-none">
-      {/* Left: Futuristic Brand Emblem */}
+      {/* Left: Official Future IT Industry Logo */}
       <div
-        className="flex items-center gap-2 cursor-pointer active:scale-95 transition-transform"
+        className="flex items-center cursor-pointer active:scale-95 transition-transform"
         onClick={() => {
           playClick?.();
           window.location.hash = '#dashboard';
         }}
       >
-        {/* 3D Gradient F Emblem with Cyan Glow */}
-        <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-400 p-0.5 shadow-md shadow-blue-500/25 flex items-center justify-center">
-          <div className="w-full h-full bg-white/10 rounded-[10px] flex items-center justify-center">
-            <span className="text-white font-black text-base tracking-tighter drop-shadow-xs">F</span>
-          </div>
-        </div>
-
-        <div className="leading-tight text-left">
-          <div className="text-sm font-black tracking-tight flex items-center">
-            <span className="text-slate-900">FUTURE&nbsp;</span>
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              IT
-            </span>
-          </div>
-          <div className="text-[9px] font-extrabold text-blue-600/80 uppercase tracking-wider flex items-center gap-1">
-            <span>2050</span>
-            <span className="w-1 h-1 rounded-full bg-blue-500" />
-            <span>AI Learning</span>
-          </div>
-        </div>
+        <FutureLogo size="sm" />
       </div>
 
       {/* Right: Streak, Coins, Gems, Notifications & Profile Avatar */}
