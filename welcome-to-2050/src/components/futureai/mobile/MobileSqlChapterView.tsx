@@ -101,7 +101,7 @@ export const MobileSqlChapterView: React.FC<MobileSqlChapterViewProps> = ({
   };
 
   return (
-    <div className="w-full min-h-screen bg-slate-950 text-slate-100 pb-28 select-none">
+    <div className="w-full min-h-screen bg-slate-950 text-slate-100 pb-36 select-none">
       
       {/* ─── 1. ANDROID TOP APP BAR ─── */}
       <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 px-4 py-3 flex items-center justify-between shadow-sm">

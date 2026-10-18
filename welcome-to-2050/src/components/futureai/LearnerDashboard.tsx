@@ -501,10 +501,12 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
   const currentMobileTab: MobileTab =
     dockTab === 'game'
-      ? 'arena'
+      ? 'game'
+      : dockTab === 'placement'
+      ? 'placement'
       : dockTab === 'income' || dockTab === 'referral' || dockTab === 'wallet' || dockTab === 'withdraw'
       ? 'earn'
-      : selectedModuleView === 'python'
+      : selectedModuleView === 'python' || selectedModuleView === 'sql' || selectedModuleView === 'excel' || selectedModuleView === 'powerbi' || selectedModuleView === 'genai'
       ? 'learn'
       : 'home';
 
@@ -519,7 +521,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       setActiveTopicWs(null);
       setDockTab('home');
       if (typeof window !== 'undefined') window.location.hash = '#python';
-    } else if (tab === 'arena') {
+    } else if (tab === 'game' || tab === 'arena') {
       setSelectedModuleView(null);
       setActiveTopicWs(null);
       setDockTab('game');
@@ -529,6 +531,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       setActiveTopicWs(null);
       setDockTab('income');
       if (typeof window !== 'undefined') window.location.hash = '#earnings';
+    } else if (tab === 'placement') {
+      setSelectedModuleView(null);
+      setActiveTopicWs(null);
+      setDockTab('placement');
+      if (typeof window !== 'undefined') window.location.hash = '#placement';
     } else if (tab === 'profile') {
       setMobileProfileSheetOpen(true);
     }
@@ -1072,7 +1079,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     return (
       <>
         {/* Mobile (< 768px): Native Android Mobile Game Arena Hub */}
-        <div className="md:hidden min-h-screen bg-slate-950">
+        <div className="md:hidden min-h-screen bg-slate-50">
           <MobileTopBar
             userName={userName}
             telemetry={telemetry}
@@ -1165,7 +1172,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     return (
       <>
         {/* Mobile (< 768px): Native Android Mobile Python Chapter View */}
-        <div className="md:hidden min-h-screen bg-slate-950">
+        <div className="md:hidden min-h-screen bg-slate-50">
           <MobileTopBar
             userName={userName}
             telemetry={telemetry}
