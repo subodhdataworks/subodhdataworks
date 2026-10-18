@@ -40,6 +40,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
+import { MobileGameArenaHub } from './mobile/MobileGameArenaHub';
 
 export interface GameArenaHubProps {
   userName?: string;
@@ -1235,7 +1236,24 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
   ];
 
   return (
-    <div className="py-arena-page-root">
+    <>
+      {/* ── Native Android Mobile App View (< 768px) ── */}
+      <div className="md:hidden">
+        <MobileGameArenaHub
+          userName={userName}
+          onPlayPython={onPlayPython}
+          onLockedGame={onLockedGame}
+          onNavigateBack={() => {
+            if (onNavigateTab) onNavigateTab('home');
+            else if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+          }}
+          onOpenAdvisor={onOpenAdvisor}
+        />
+      </div>
+
+      {/* ── Desktop Experience (>= 768px) ── */}
+      <div className="hidden md:block">
+        <div className="py-arena-page-root">
       
 
 
@@ -2169,6 +2187,8 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
       </div>
 
     </div>
+      </div>
+    </>
   );
 };
 
