@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import type { WorkspaceStepId } from './PythonTopicWorkspace';
 import { getLearnerTelemetry } from '../../services/realAuthService';
+import { MobilePythonChapterView } from './mobile/MobilePythonChapterView';
 import './PythonChapterView.css';
 
 interface Props {
@@ -17,9 +18,9 @@ interface Props {
   onOpenAdvisor?: () => void;
 }
 
-type LessonStatus = 'completed' | 'progress' | 'todo';
-interface Lesson { title: string; time: string; status: LessonStatus }
-interface Topic {
+export type LessonStatus = 'completed' | 'progress' | 'todo';
+export interface Lesson { title: string; time: string; status: LessonStatus }
+export interface Topic {
   id: number;
   title: string;
   desc: string;
@@ -29,7 +30,7 @@ interface Topic {
   lessons: Lesson[];
 }
 
-const TOPICS: Topic[] = [
+export const TOPICS: Topic[] = [
   {
     id: 1,
     title: 'Introduction to Programming & Python Thinking',
@@ -534,7 +535,13 @@ const ACTIONS = [
   { step: 'code' as WorkspaceStepId, label: 'Code', icon: <Code2 className="w-3 h-3" />, cls: 'act-code' },
 ];
 
-export const PythonChapterView: React.FC<Props> = ({ onBack, onOpenTopic, onOpenAdvisor }) => {
+export const PythonChapterView: React.FC<Props> = ({
+  userName = 'Learner',
+  onBack,
+  onOpenTopic,
+  onOpenUnlockModal = () => {},
+  onOpenAdvisor,
+}) => {
   const [openId, setOpenId] = useState<number | null>(1);
   const [telemetry, setTelemetry] = useState(getLearnerTelemetry);
 
@@ -556,8 +563,22 @@ export const PythonChapterView: React.FC<Props> = ({ onBack, onOpenTopic, onOpen
   const pct = Math.round((doneLessons / totalLessons) * 100);
 
   return (
-    <div className="pcv-root">
-      {/* ================= FULL-WIDTH TOP BANNER ================= */}
+    <>
+      {/* ── Native Android Mobile App View (< 768px) ── */}
+      <div className="md:hidden">
+        <MobilePythonChapterView
+          userName={userName}
+          onBack={onBack}
+          onOpenTopic={onOpenTopic}
+          onOpenUnlockModal={onOpenUnlockModal}
+          onOpenAdvisor={onOpenAdvisor}
+        />
+      </div>
+
+      {/* ── Desktop Experience (>= 768px) ── */}
+      <div className="hidden md:block">
+        <div className="pcv-root">
+          {/* ================= FULL-WIDTH TOP BANNER ================= */}
       <div className="pcv-top-full">
         {/* Breadcrumbs Navigation */}
         <nav className="pcv-crumbs pcv-crumbs-standalone">
@@ -755,7 +776,9 @@ export const PythonChapterView: React.FC<Props> = ({ onBack, onOpenTopic, onOpen
           <Sparkles className="pcv-spark" />
         </div>
       </aside>
-    </div>
+        </div>
+      </div>
+    </>
   );
 };
 
