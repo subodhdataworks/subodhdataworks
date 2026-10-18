@@ -20,7 +20,12 @@ import {
   X,
   HelpCircle,
   Clock,
-  Crown
+  Crown,
+  Target,
+  Gift,
+  Bell,
+  Medal,
+  ArrowRight,
 } from 'lucide-react';
 import { getLearnerTelemetry } from '../../../services/realAuthService';
 
@@ -40,12 +45,12 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
   onOpenAdvisor,
 }) => {
   const [telemetry, setTelemetry] = useState(getLearnerTelemetry);
-  const [selectedSubject, setSelectedSubject] = useState<'python' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai'>('python');
+  const [activeFilter, setActiveFilter] = useState<'all' | 'python' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai'>('all');
   const [activeChallengeModal, setActiveChallengeModal] = useState<any | null>(null);
   const [userChallengeInput, setUserChallengeInput] = useState('');
   const [challengeFeedback, setChallengeFeedback] = useState<'idle' | 'correct' | 'wrong'>('idle');
   const [showHint, setShowHint] = useState(false);
-  const [leaderboardTab, setLeaderboardTab] = useState<'week' | 'all'>('week');
+  const [leaderboardTab, setLeaderboardTab] = useState<'week' | 'month' | 'all'>('week');
 
   useEffect(() => {
     const handleUpdate = () => setTelemetry(getLearnerTelemetry());
@@ -81,126 +86,95 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
     }
   };
 
-  // 6 Subjects
-  const subjects = [
-    { id: 'python' as const, name: 'Python', icon: '🐍', tag: '29 Levels', color: '#0ea5e9' },
-    { id: 'sql' as const, name: 'SQL', icon: '🗄️', tag: '8 Quests', color: '#8b5cf6' },
-    { id: 'excel' as const, name: 'Excel', icon: '📊', tag: '8 Arenas', color: '#10b981' },
-    { id: 'powerbi' as const, name: 'Power BI', icon: '📈', tag: '8 Leagues', color: '#f59e0b' },
-    { id: 'stats' as const, name: 'Stats', icon: '∑', tag: '8 Arcades', color: '#ec4899' },
-    { id: 'genai' as const, name: 'Gen AI', icon: '🤖', tag: '8 Labs', color: '#06b6d4' },
+  // 6 Subject Filters
+  const filterPills = [
+    { id: 'all' as const, name: 'All Games', icon: '🎮' },
+    { id: 'python' as const, name: 'Python', icon: '🐍' },
+    { id: 'sql' as const, name: 'SQL', icon: '🗄️' },
+    { id: 'excel' as const, name: 'Excel', icon: '📊' },
+    { id: 'powerbi' as const, name: 'Power BI', icon: '📈' },
+    { id: 'stats' as const, name: 'Statistics', icon: '∑' },
+    { id: 'genai' as const, name: 'Gen AI', icon: '🤖' },
   ];
 
-  // 15 Python Levels
-  const pythonLevels = [
+  // 6 Subject Game Cards matching reference image exactly
+  const gameCards = [
     {
-      id: 1,
-      title: 'START YOUR PYTHON JOURNEY',
-      subtitle: 'Introduction & Setup',
-      level: 1,
-      difficulty: 'Beginner',
-      xp: 100,
-      coins: 50,
-      image: '/images/arena/python/cards/level_1.jpg',
-      icon: '🚀',
-      isUnlocked: true,
-      tagColor: '#00e5ff',
+      id: 'python' as const,
+      title: 'Python Game',
+      subtitle: '29 Levels Available • 100% Free',
+      tag: '29 Levels',
+      badge: 'Python',
+      progress: 0,
+      bannerImage: '/images/arena/subjects/card_python.png',
+      btnClass: 'bg-[#0066ff] hover:bg-blue-700 shadow-blue-500/25',
+      barColor: 'bg-blue-500',
+      action: () => onPlayPython(1),
     },
     {
-      id: 2,
-      title: 'VARIABLES & DATA TYPES',
-      subtitle: 'Values, Types & Cast',
-      level: 2,
-      difficulty: 'Beginner',
-      xp: 120,
-      coins: 60,
-      image: '/images/arena/python/cards/level_2_variables.jpg',
-      icon: '💎',
-      isUnlocked: false,
-      tagColor: '#00e676',
+      id: 'sql' as const,
+      title: 'SQL Game',
+      subtitle: '8 Games Available • 100% Free',
+      tag: '8 Games',
+      badge: 'SQL Database',
+      progress: 0,
+      bannerImage: '/images/arena/subjects/card_sql.png',
+      btnClass: 'bg-[#9333ea] hover:bg-purple-700 shadow-purple-500/25',
+      barColor: 'bg-purple-500',
+      action: () => handleOpenChallenge(quickChallenges.sql[0]),
     },
     {
-      id: 3,
-      title: 'INPUT, OUTPUT & INTERACTION',
-      subtitle: 'print(), input() & Formatting',
-      level: 3,
-      difficulty: 'Beginner',
-      xp: 140,
-      coins: 70,
-      image: '/images/arena/python/cards/level_3_input_output.jpg',
-      icon: '💻',
-      isUnlocked: false,
-      tagColor: '#d500f9',
+      id: 'excel' as const,
+      title: 'Excel Game',
+      subtitle: '8 Games Available • 100% Free',
+      tag: '8 Games',
+      badge: 'Excel Formulas',
+      progress: 0,
+      bannerImage: '/images/arena/subjects/card_excel.png',
+      btnClass: 'bg-[#10b981] hover:bg-emerald-600 shadow-emerald-500/25',
+      barColor: 'bg-emerald-500',
+      action: () => handleOpenChallenge(quickChallenges.excel[0]),
     },
     {
-      id: 4,
-      title: 'OPERATORS & LOGIC',
-      subtitle: 'Arithmetic, Comparison & Logic',
-      level: 4,
-      difficulty: 'Beginner',
-      xp: 160,
-      coins: 80,
-      image: '/images/arena/python/cards/level_4_operators.jpg',
-      icon: '🧮',
-      isUnlocked: false,
-      tagColor: '#ff9100',
+      id: 'powerbi' as const,
+      title: 'Power BI Game',
+      subtitle: '8 Games Available • 100% Free',
+      tag: '8 Games',
+      badge: 'Power BI',
+      progress: 0,
+      bannerImage: '/images/arena/subjects/card_powerbi.png',
+      btnClass: 'bg-[#f59e0b] hover:bg-amber-600 shadow-amber-500/25',
+      barColor: 'bg-amber-500',
+      action: () => handleOpenChallenge(quickChallenges.powerbi[0]),
     },
     {
-      id: 5,
-      title: 'TYPE CASTING & CONVERSION',
-      subtitle: 'int(), float(), str() & Types',
-      level: 5,
-      difficulty: 'Beginner',
-      xp: 180,
-      coins: 90,
-      image: '/images/arena/python/cards/level_5_type_casting.jpg',
-      icon: '🔄',
-      isUnlocked: false,
-      tagColor: '#ff1744',
+      id: 'stats' as const,
+      title: 'Statistics Game',
+      subtitle: '8 Games Available • 100% Free',
+      tag: '8 Games',
+      badge: 'Statistics',
+      progress: 0,
+      bannerImage: '/images/arena/subjects/card_stats.png',
+      btnClass: 'bg-[#8b5cf6] hover:bg-purple-600 shadow-purple-500/25',
+      barColor: 'bg-purple-500',
+      action: () => handleOpenChallenge(quickChallenges.stats[0]),
     },
     {
-      id: 6,
-      title: 'CONDITIONAL LOGIC (IF-ELSE)',
-      subtitle: 'Branching, Decisions & Truthy',
-      level: 6,
-      difficulty: 'Intermediate',
-      xp: 200,
-      coins: 100,
-      image: '/images/arena/python/cards/level_6_conditionals.jpg',
-      icon: '⚡',
-      isUnlocked: false,
-      tagColor: '#00b0ff',
-    },
-    {
-      id: 7,
-      title: 'LOOP RUNNER (FOR & WHILE)',
-      subtitle: 'Repetition, range() & break',
-      level: 7,
-      difficulty: 'Intermediate',
-      xp: 220,
-      coins: 110,
-      image: '/images/arena/python/cards/level_7_loops.jpg',
-      icon: '🔁',
-      isUnlocked: false,
-      tagColor: '#76ff03',
-    },
-    {
-      id: 8,
-      title: 'PYTHON BOSS BATTLE',
-      subtitle: 'Core Python Mega Challenge',
-      level: 8,
-      difficulty: 'Advanced',
-      xp: 300,
-      coins: 150,
-      image: '/images/arena/python/cards/level_8_strings.jpg',
-      icon: '👑',
-      isUnlocked: false,
-      tagColor: '#ffd600',
+      id: 'genai' as const,
+      title: 'Gen AI Game',
+      subtitle: '8 Games Available • 100% Free',
+      tag: '8 Games',
+      badge: 'Gen AI & LLM',
+      progress: 0,
+      bannerImage: '/images/arena/subjects/card_genai.png',
+      btnClass: 'bg-[#06b6d4] hover:bg-cyan-600 shadow-cyan-500/25',
+      barColor: 'bg-cyan-500',
+      action: () => handleOpenChallenge(quickChallenges.genai[0]),
     },
   ];
 
-  // Subject quick challenges
-  const subjectQuickChallenges: Record<string, Array<{
+  // Quick challenges for non-Python subjects
+  const quickChallenges: Record<string, Array<{
     id: number;
     title: string;
     subtitle: string;
@@ -224,18 +198,6 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
         starterCode: 'SELECT * FROM Customers;',
         correctAnswer: 'SELECT * FROM Customers;',
         xp: 100,
-      },
-      {
-        id: 102,
-        title: 'SQL Boss: Multi-Table INNER JOIN',
-        subtitle: 'Relational Joins',
-        difficulty: 'Intermediate',
-        desc: 'Join Orders with Customers on CustomerID.',
-        challenge: 'Combine Orders and Customers table matching on CustomerID.',
-        hint: 'SELECT * FROM Orders o JOIN Customers c ON o.CustomerID = c.CustomerID;',
-        starterCode: 'SELECT * FROM Orders o JOIN Customers c ON o.CustomerID = c.CustomerID;',
-        correctAnswer: 'SELECT * FROM Orders o JOIN Customers c ON o.CustomerID = c.CustomerID;',
-        xp: 200,
       },
     ],
     excel: [
@@ -313,408 +275,440 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
         particleCount: 75,
         spread: 65,
         origin: { y: 0.6 },
-        colors: ['#00e5ff', '#10b981', '#f59e0b', '#ec4899']
+        colors: ['#0066ff', '#10b981', '#f59e0b', '#8b5cf6']
       });
     } catch {
       // fallback
     }
   };
 
-  // Leaderboard data
-  const weeklyLeaders = [
-    { rank: 1, name: 'Aakash Roy', score: '3,450 XP', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=faces', badge: '🥇 Python Grandmaster' },
-    { rank: 2, name: 'Sneha Rao', score: '2,920 XP', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=faces', badge: '🥈 Code Ninja' },
-    { rank: 3, name: 'Karan Mehra', score: '2,400 XP', avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100&h=100&fit=crop&crop=faces', badge: '🥉 Data Challenger' },
+  // Top 5 Leaderboard users from reference image
+  const leaderboardUsers = [
+    { rank: 1, name: 'Aditi Sharma', xp: '2,450 XP', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces', badge: '🥇' },
+    { rank: 2, name: 'Rahul Verma', xp: '2,320 XP', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&h=100&fit=crop&crop=faces', badge: '🥈' },
+    { rank: 3, name: 'Neha Gupta', xp: '2,100 XP', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces', badge: '🥉' },
+    { rank: 4, name: 'Aman Kumar', xp: '1,980 XP', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces', badge: '4' },
+    { rank: 5, name: 'Subodh Kumar', xp: '1,750 XP', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces', badge: '5' },
   ];
 
-  return (
-    <div className="w-full min-h-screen bg-slate-950 text-slate-100 pb-36 select-none">
+  const visibleCards = activeFilter === 'all'
+    ? gameCards
+    : gameCards.filter((c) => c.id === activeFilter);
 
-      {/* ─── 1. ANDROID TOP GAMING APP BAR ─── */}
-      <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 px-4 py-3 flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => {
-              playTactile();
-              onNavigateBack();
-            }}
-            className="w-9 h-9 rounded-full bg-slate-800/80 hover:bg-slate-700 flex items-center justify-center text-slate-200 active:scale-95 transition-all"
-            aria-label="Back to Dashboard"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div>
-            <h1 className="text-base font-black text-white leading-tight flex items-center gap-1.5">
-              <span>Coding Games Arena</span>
-              <span className="px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-extrabold border border-purple-500/30">
-                LIVE
+  return (
+    <div className="w-full min-h-screen bg-[#f8fbff] text-slate-900 pb-32 select-none">
+
+
+      {/* ─── MAIN CONTENT CONTAINER ─── */}
+      <div className="max-w-md mx-auto px-3 sm:px-4 pt-3 space-y-3.5">
+
+        {/* ─── 2. HERO BANNER: "Choose a Subject to Play" ─── */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#ebf5ff] via-[#f4f8ff] to-[#edf3ff] border border-sky-200/80 shadow-xs p-4 sm:p-5">
+          {/* Background Soft Glows */}
+          <div className="absolute top-0 right-1/4 w-32 h-32 bg-cyan-400/15 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute bottom-0 right-0 w-40 h-40 bg-purple-400/15 rounded-full blur-3xl pointer-events-none" />
+
+          {/* Content Left */}
+          <div className="relative z-10 max-w-[62%]">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight leading-tight">
+              Choose a Subject<br />
+              <span className="bg-gradient-to-r from-[#0066ff] via-[#6366f1] to-[#8b5cf6] bg-clip-text text-transparent">
+                to Play
               </span>
             </h1>
-            <p className="text-[11px] text-slate-400 font-semibold">
-              Solve Challenges • Win XP &amp; Coins
+            <p className="text-[11px] font-semibold text-slate-500 mt-1 leading-snug">
+              Select a topic to start playing games &amp; earn points
             </p>
-          </div>
-        </div>
 
-        {/* Telemetry badges */}
-        <div className="flex items-center gap-1.5">
-          <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-black">
-            <Coins className="w-3.5 h-3.5 text-amber-400 fill-amber-400/80" />
-            <span>{telemetry.coins}</span>
-          </div>
-          <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-black">
-            <Flame className="w-3.5 h-3.5 text-orange-500 fill-orange-400" />
-            <span>3d</span>
-          </div>
-        </div>
-      </header>
-
-      {/* ─── MAIN CONTENT SCROLL AREA ─── */}
-      <div className="px-4 pt-3.5 space-y-4">
-
-        {/* ─── 2. HERO CINEMATIC GAMING BANNER ─── */}
-        <div className="relative overflow-hidden rounded-3xl bg-slate-900 border border-purple-500/30 shadow-2xl">
-          <div className="relative aspect-video w-full overflow-hidden bg-slate-950">
-            <img
-              src="/images/arena/navigation_game_banner_poster.jpg"
-              alt="Coding Arena"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
-
-            {/* Neon Flagship Tag */}
-            <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-purple-900/80 backdrop-blur-md border border-purple-400/40 text-purple-200 text-[10px] font-black flex items-center gap-1.5">
-              <Sparkles className="w-3 h-3 text-purple-300" />
-              <span>6 LPA to 15 LPA Career Path</span>
+            {/* Pill Tag */}
+            <div className="inline-flex items-center gap-1.5 mt-2.5 px-2.5 py-1 rounded-full bg-blue-100/70 border border-blue-200/90 text-blue-700 text-[10px] font-black shadow-2xs">
+              <Gamepad2 className="w-3.5 h-3.5 text-blue-600" />
+              <span>6 Subjects • 65+ Interactive Games</span>
             </div>
+          </div>
 
-            {/* Play Button */}
-            <button
-              type="button"
-              onClick={() => {
-                playTactile();
-                onPlayPython(1);
-              }}
-              className="absolute inset-0 m-auto w-14 h-14 rounded-full bg-gradient-to-tr from-cyan-500 via-blue-600 to-purple-600 text-white flex items-center justify-center shadow-2xl shadow-cyan-500/50 hover:scale-105 active:scale-95 transition-all border-2 border-white/60"
+          {/* Hero Gamer Robot Right */}
+          <img
+            src="/images/arena/subjects/hero_robot_gamer.png"
+            alt="Hero Mascot"
+            className="absolute -right-2 -bottom-1 w-36 sm:w-40 h-auto object-contain pointer-events-none drop-shadow-md z-10"
+          />
+        </div>
+
+        {/* ─── 3. SUBJECT FILTER PILLS ROW ─── */}
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+          {filterPills.map((pill) => {
+            const isActive = activeFilter === pill.id;
+            return (
+              <button
+                type="button"
+                key={pill.id}
+                onClick={() => {
+                  playTactile();
+                  setActiveFilter(pill.id);
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                  isActive
+                    ? 'bg-[#0066ff] text-white shadow-xs'
+                    : 'bg-white text-slate-700 border border-slate-200/80 hover:bg-slate-50 shadow-2xs'
+                }`}
+              >
+                <span>{pill.icon}</span>
+                <span>{pill.name}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* ─── 4. 2-COLUMN GRID OF 6 SUBJECT GAME CARDS ─── */}
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+          {visibleCards.map((card) => (
+            <div
+              key={card.id}
+              className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-md overflow-hidden flex flex-col justify-between transition-all"
             >
-              <Play className="w-6 h-6 fill-white ml-0.5" />
-            </button>
-
-            {/* Bottom Info Row */}
-            <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white font-bold">
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/85 backdrop-blur-md border border-white/10">
-                <Gamepad2 className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Level 1: Python Rocket Launcher</span>
+              {/* Upper Media Banner */}
+              <div className="relative w-full aspect-[2.6/1] overflow-hidden bg-slate-100">
+                <img
+                  src={card.bannerImage}
+                  alt={card.title}
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <span className="px-2 py-0.5 rounded-lg bg-emerald-500 text-slate-950 font-black text-[10px]">
-                UNLOCKED
+
+              {/* Lower Card Body */}
+              <div className="p-2.5 sm:p-3 flex flex-col flex-1 justify-between">
+                <div>
+                  <h3 className="text-xs sm:text-sm font-black text-slate-900 leading-tight">
+                    {card.title}
+                  </h3>
+                  <p className="text-[9.5px] font-semibold text-slate-400 mt-0.5 mb-2 truncate">
+                    {card.subtitle}
+                  </p>
+                </div>
+
+                {/* Progress bar with 0% */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-1.5">
+                    <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${card.barColor}`}
+                        style={{ width: `${card.progress}%` }}
+                      />
+                    </div>
+                    <span className="text-[9px] font-black text-slate-400 shrink-0">
+                      {card.progress}%
+                    </span>
+                  </div>
+
+                  {/* Start Playing Button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTactile();
+                      card.action();
+                    }}
+                    className={`w-full py-1.5 sm:py-2 rounded-full font-black text-[10.5px] sm:text-xs text-white shadow-xs flex items-center justify-center gap-1 cursor-pointer active:scale-95 transition-all ${card.btnClass}`}
+                  >
+                    <span>Start Playing</span>
+                    <ArrowRight className="w-3 h-3 stroke-[2.8]" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ─── 5. "YOUR PROGRESS" STRIP ─── */}
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs p-3 sm:p-3.5 flex items-center justify-between gap-2">
+          {/* Left: Circular progress indicator */}
+          <div className="flex items-center gap-2.5">
+            <div className="w-11 h-11 rounded-full border-2 border-blue-500 bg-blue-50/70 flex items-center justify-center shrink-0">
+              <span className="text-xs font-black text-blue-700">0%</span>
+            </div>
+            <div>
+              <span className="text-[11px] font-black text-slate-900 block leading-tight">
+                Your Progress
+              </span>
+              <span className="text-[10px] font-bold text-slate-700 block">
+                0 / 15
+              </span>
+              <span className="text-[9px] font-semibold text-slate-400 block leading-none">
+                Topics Completed
               </span>
             </div>
           </div>
 
-          <div className="p-4 flex items-center justify-between">
-            <div>
-              <strong className="text-white font-extrabold text-xs block">Ready to Code?</strong>
-              <span className="text-[10px] text-slate-400">Play Level 1 free &amp; earn +100 XP</span>
+          {/* Right: 3 Metric Cards */}
+          <div className="flex items-center gap-1.5">
+            {/* XP Earned */}
+            <div className="px-2 py-1.5 rounded-xl bg-purple-50/80 border border-purple-200/80 text-center min-w-[55px]">
+              <div className="flex items-center justify-center gap-1 text-[10px] font-black text-purple-700">
+                <Star className="w-3 h-3 fill-purple-500 text-purple-500" />
+                <span>0</span>
+              </div>
+              <span className="text-[8px] font-bold text-slate-500 block">
+                XP Earned
+              </span>
             </div>
+
+            {/* Games Done */}
+            <div className="px-2 py-1.5 rounded-xl bg-blue-50/80 border border-blue-200/80 text-center min-w-[55px]">
+              <div className="flex items-center justify-center gap-1 text-[10px] font-black text-blue-700">
+                <Gamepad2 className="w-3 h-3 text-blue-500" />
+                <span>0</span>
+              </div>
+              <span className="text-[8px] font-bold text-slate-500 block">
+                Games Done
+              </span>
+            </div>
+
+            {/* Quizzes Done */}
+            <div className="px-2 py-1.5 rounded-xl bg-emerald-50/80 border border-emerald-200/80 text-center min-w-[55px]">
+              <div className="flex items-center justify-center gap-1 text-[10px] font-black text-emerald-700">
+                <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                <span>0</span>
+              </div>
+              <span className="text-[8px] font-bold text-slate-500 block">
+                Quizzes Done
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* ─── 6. DAILY CHALLENGE & ACHIEVEMENTS ROW ─── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+          {/* Daily Challenge */}
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs p-3 sm:p-3.5 flex flex-col justify-between">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex items-start gap-2">
+                <div className="w-7 h-7 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                  <Target className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-black text-slate-900 leading-tight">
+                    Daily Challenge
+                  </h4>
+                  <p className="text-[9.5px] font-semibold text-slate-400 mt-0.5">
+                    Complete 3 Python games today
+                  </p>
+                </div>
+              </div>
+              <span className="text-lg">🎁</span>
+            </div>
+
+            <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[9.5px]">
+              <span className="font-semibold text-slate-400">Progress</span>
+              <span className="font-black text-slate-800">0 / 3</span>
+            </div>
+          </div>
+
+          {/* Achievements */}
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs p-3 sm:p-3.5 flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-1.5">
+                <div className="w-7 h-7 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                  <Trophy className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-black text-slate-900 leading-tight">
+                    Achievements
+                  </h4>
+                  <span className="text-[9.5px] font-semibold text-slate-400">
+                    0 / 24 Unlocked
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => playTactile()}
+                className="text-[10px] font-bold text-blue-600 flex items-center gap-0.5 hover:underline"
+              >
+                <span>View All</span>
+                <ChevronRight className="w-3 h-3" />
+              </button>
+            </div>
+
+            {/* 4 Badges */}
+            <div className="grid grid-cols-4 gap-1 pt-1 border-t border-slate-100">
+              <div className="text-center p-1 rounded-xl bg-slate-50 border border-slate-100">
+                <span className="text-xs block">🏳️</span>
+                <span className="text-[7.5px] font-extrabold text-slate-700 block truncate">First Step</span>
+                <span className="text-[6.5px] text-slate-400 block truncate">Play 1 game</span>
+              </div>
+              <div className="text-center p-1 rounded-xl bg-slate-50 border border-slate-100">
+                <span className="text-xs block">🔥</span>
+                <span className="text-[7.5px] font-extrabold text-slate-700 block truncate">7 Day Streak</span>
+                <span className="text-[6.5px] text-slate-400 block truncate">Play 7 days</span>
+              </div>
+              <div className="text-center p-1 rounded-xl bg-slate-50 border border-slate-100">
+                <span className="text-xs block">🐍</span>
+                <span className="text-[7.5px] font-extrabold text-slate-700 block truncate">Python Pro</span>
+                <span className="text-[6.5px] text-slate-400 block truncate">5 games</span>
+              </div>
+              <div className="text-center p-1 rounded-xl bg-slate-50 border border-slate-100">
+                <span className="text-xs block">👑</span>
+                <span className="text-[7.5px] font-extrabold text-slate-700 block truncate">Code Master</span>
+                <span className="text-[6.5px] text-slate-400 block truncate">15 games</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ─── 7. LEADERBOARD SECTION (Exact match to Reference) ─── */}
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs p-3.5 space-y-3">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <div className="w-6 h-6 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                <Medal className="w-3.5 h-3.5" />
+              </div>
+              <h4 className="text-xs sm:text-sm font-black text-slate-900 tracking-tight">
+                Leaderboard
+              </h4>
+            </div>
+
+            {/* Time Filter Pills */}
+            <div className="flex items-center gap-1 bg-slate-100 rounded-full p-0.5">
+              <button
+                type="button"
+                onClick={() => {
+                  playTactile();
+                  setLeaderboardTab('week');
+                }}
+                className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition-all ${
+                  leaderboardTab === 'week'
+                    ? 'bg-[#0066ff] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                This Week
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  playTactile();
+                  setLeaderboardTab('month');
+                }}
+                className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition-all ${
+                  leaderboardTab === 'month'
+                    ? 'bg-[#0066ff] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                This Month
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  playTactile();
+                  setLeaderboardTab('all');
+                }}
+                className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition-all ${
+                  leaderboardTab === 'all'
+                    ? 'bg-[#0066ff] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                All Time
+              </button>
+            </div>
+
             <button
               type="button"
-              onClick={() => {
-                playTactile();
-                onPlayPython(1);
-              }}
-              className="py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-black text-xs shadow-md shadow-cyan-500/30 flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer"
+              onClick={() => playTactile()}
+              className="text-[10px] font-bold text-blue-600 flex items-center gap-0.5 hover:underline shrink-0"
             >
-              <Play className="w-3.5 h-3.5 fill-current" />
-              <span>PLAY NOW</span>
+              <span>View All</span>
+              <ChevronRight className="w-3 h-3" />
             </button>
           </div>
-        </div>
 
-        {/* ─── 3. 6 SUBJECTS CAROUSEL PILLS ─── */}
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xs font-black text-slate-300 uppercase tracking-wider">
-              Choose Subject Arena
-            </h2>
-            <span className="text-[10px] text-cyan-400 font-bold">6 Subjects</span>
-          </div>
-
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-            {subjects.map((subj) => {
-              const isSelected = selectedSubject === subj.id;
-              return (
-                <button
-                  type="button"
-                  key={subj.id}
-                  onClick={() => {
-                    playTactile();
-                    setSelectedSubject(subj.id);
-                  }}
-                  className={`px-3.5 py-2 rounded-2xl flex-shrink-0 flex items-center gap-2 transition-all border ${
-                    isSelected
-                      ? 'bg-slate-900 text-white shadow-lg'
-                      : 'bg-slate-950 text-slate-400 border-slate-800'
-                  }`}
-                  style={{
-                    borderColor: isSelected ? subj.color : undefined,
-                    boxShadow: isSelected ? `0 0 15px ${subj.color}33` : undefined,
-                  }}
-                >
-                  <span className="text-base">{subj.icon}</span>
-                  <div className="text-left">
-                    <span className="text-xs font-black block leading-tight">{subj.name}</span>
-                    <span className="text-[9px] text-slate-500 block font-semibold">{subj.tag}</span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* ─── 4. LEVEL CARDS FOR SELECTED SUBJECT ─── */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xs font-black text-slate-300 uppercase tracking-wider">
-              {selectedSubject === 'python' ? 'Python Levels (8 Core Levels)' : `${selectedSubject.toUpperCase()} Arena Challenges`}
-            </h3>
-            <span className="text-[10px] text-slate-400 font-bold">Tap to Play</span>
-          </div>
-
-          {selectedSubject === 'python' ? (
-            <div className="grid grid-cols-1 gap-3">
-              {pythonLevels.map((lvl) => (
-                <div
-                  key={lvl.id}
-                  className={`rounded-2xl border p-3.5 flex items-center justify-between transition-all ${
-                    lvl.isUnlocked
-                      ? 'bg-gradient-to-r from-slate-900 to-slate-900/90 border-cyan-500/40 shadow-lg shadow-cyan-500/10'
-                      : 'bg-slate-950/70 border-slate-900 opacity-80'
-                  }`}
-                >
-                  <div className="flex items-center gap-3 min-w-0 pr-2">
-                    <div
-                      className="w-12 h-12 rounded-xl flex items-center justify-center font-black text-lg flex-shrink-0 shadow-sm"
-                      style={{
-                        backgroundColor: lvl.isUnlocked ? `${lvl.tagColor}20` : '#1e293b',
-                        border: `1px solid ${lvl.isUnlocked ? lvl.tagColor : '#334155'}40`,
-                      }}
-                    >
-                      {lvl.icon}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[9px] font-black uppercase tracking-wider text-cyan-400">
-                          LEVEL {String(lvl.level).padStart(2, '0')}
-                        </span>
-                        <span className="px-1.5 py-0.2 rounded-md bg-slate-800 text-slate-400 text-[9px] font-bold">
-                          +{lvl.xp} XP
-                        </span>
-                      </div>
-                      <strong className="text-xs font-extrabold text-white block truncate leading-tight mt-0.5">
-                        {lvl.title}
-                      </strong>
-                      <span className="text-[10px] text-slate-400 truncate block">
-                        {lvl.subtitle}
-                      </span>
-                    </div>
-                  </div>
-
-                  {lvl.isUnlocked ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        playTactile();
-                        onPlayPython(lvl.id);
-                      }}
-                      className="py-2 px-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-black text-xs flex-shrink-0 active:scale-95 transition-all shadow-md"
-                    >
-                      PLAY ▶
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        playTactile();
-                        onLockedGame?.(lvl.title);
-                      }}
-                      className="py-2 px-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-amber-400 font-extrabold text-xs flex items-center gap-1 flex-shrink-0"
-                    >
-                      <Lock className="w-3 h-3" />
-                      <span>Lock</span>
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-2.5">
-              {(subjectQuickChallenges[selectedSubject] || []).map((ch) => (
-                <div
-                  key={ch.id}
-                  onClick={() => handleOpenChallenge(ch)}
-                  className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 flex items-center justify-between cursor-pointer active:scale-98 transition-all"
-                >
-                  <div>
-                    <span className="text-[9px] font-black uppercase tracking-wider text-indigo-400">
-                      {ch.difficulty} • +{ch.xp} XP
-                    </span>
-                    <strong className="text-xs font-bold text-white block leading-tight mt-0.5">
-                      {ch.title}
-                    </strong>
-                    <span className="text-[10px] text-slate-400 block mt-0.5">{ch.desc}</span>
-                  </div>
-                  <button
-                    type="button"
-                    className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-cyan-400 flex-shrink-0"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* ─── 5. MOBILE GAMING LEADERBOARD ─── */}
-        <div className="p-4 rounded-3xl bg-slate-900/90 border border-slate-800 space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Trophy className="w-4 h-4 text-amber-400" />
-              <h3 className="text-xs font-black text-white uppercase tracking-wider">
-                Arena Champions
-              </h3>
-            </div>
-            <span className="text-[10px] text-cyan-400 font-extrabold">Weekly Reset</span>
-          </div>
-
-          <div className="space-y-2">
-            {weeklyLeaders.map((lead) => (
+          {/* Top 5 Leaderboard Cards Row */}
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+            {leaderboardUsers.map((user) => (
               <div
-                key={lead.rank}
-                className="p-2.5 rounded-2xl bg-slate-950/80 border border-slate-800 flex items-center justify-between text-xs"
+                key={user.rank}
+                className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 rounded-2xl px-2.5 py-1.5 shrink-0 min-w-[125px] shadow-2xs"
               >
-                <div className="flex items-center gap-2.5">
-                  <span className={`text-xs font-black w-4 text-center ${
-                    lead.rank === 1 ? 'text-amber-400' : lead.rank === 2 ? 'text-slate-300' : 'text-slate-500'
-                  }`}>
-                    #{lead.rank}
-                  </span>
+                <div className="relative shrink-0">
                   <img
-                    src={lead.avatar}
-                    alt={lead.name}
-                    className="w-8 h-8 rounded-full object-cover border border-slate-700"
+                    src={user.avatar}
+                    alt={user.name}
+                    className="w-7 h-7 rounded-full object-cover border border-slate-200"
                   />
-                  <div>
-                    <strong className="text-xs font-bold text-white block leading-tight">
-                      {lead.name}
-                    </strong>
-                    <span className="text-[9px] text-slate-400">{lead.badge}</span>
-                  </div>
+                  <span className="absolute -bottom-1 -left-1 text-[10px]">
+                    {user.badge}
+                  </span>
                 </div>
-
-                <div className="text-right font-black text-cyan-400 text-xs">
-                  {lead.score}
+                <div className="min-w-0">
+                  <span className="text-[10px] font-black text-slate-900 block truncate leading-tight">
+                    {user.name}
+                  </span>
+                  <span className="text-[9px] font-bold text-blue-600 block leading-tight">
+                    {user.xp}
+                  </span>
                 </div>
               </div>
             ))}
           </div>
-
-          {/* User Rank Card */}
-          <div className="p-3 rounded-2xl bg-gradient-to-r from-purple-950 to-slate-900 border border-purple-500/40 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-[10px]">
-                You
-              </span>
-              <div>
-                <strong className="text-white font-extrabold block text-xs">{userName}</strong>
-                <span className="text-[10px] text-slate-400">Rank #14 • Challenger</span>
-              </div>
-            </div>
-            <span className="text-xs font-black text-emerald-400">+100 XP Today</span>
-          </div>
-        </div>
-
-        {/* ─── 6. AI GAME ADVISOR CARD ─── */}
-        <div className="p-4 rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/40 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 text-2xl flex items-center justify-center">
-              🤖
-            </div>
-            <div>
-              <strong className="text-white font-black text-xs block">Game Assistant</strong>
-              <p className="text-[10px] text-slate-400">Need hints or debug tips for any level?</p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              playTactile();
-              onOpenAdvisor?.();
-            }}
-            className="py-2 px-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex-shrink-0 active:scale-95 transition-all cursor-pointer"
-          >
-            Get Help
-          </button>
         </div>
 
       </div>
 
-      {/* ─── 7. INTERACTIVE CHALLENGE BOTTOM SHEET ─── */}
+      {/* ─── INTERACTIVE CHALLENGE MODAL ─── */}
       {activeChallengeModal && (
         <div className="fixed inset-0 z-50 flex items-end justify-center">
           <div
-            className="fixed inset-0 bg-black/70 backdrop-blur-xs"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs"
             onClick={() => setActiveChallengeModal(null)}
           />
 
-          <div className="relative w-full max-w-md bg-slate-900 border-t border-slate-700 rounded-t-3xl p-5 shadow-2xl z-10 space-y-4 animate-in slide-in-from-bottom duration-200">
-            <div className="w-12 h-1.5 bg-slate-700 rounded-full mx-auto" />
+          <div className="relative w-full max-w-md bg-white border-t border-slate-200 rounded-t-3xl p-5 shadow-2xl z-10 space-y-4 animate-in slide-in-from-bottom duration-200">
+            <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto" />
 
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-black uppercase text-cyan-400 tracking-wider">
+                <span className="text-[10px] font-black uppercase text-blue-600 tracking-wider">
                   {activeChallengeModal.difficulty} • +{activeChallengeModal.xp} XP
                 </span>
-                <h3 className="text-base font-black text-white">{activeChallengeModal.title}</h3>
+                <h3 className="text-base font-black text-slate-900">{activeChallengeModal.title}</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setActiveChallengeModal(null)}
-                className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-slate-200"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="p-3 rounded-2xl bg-slate-950 border border-slate-800 text-xs text-slate-300 font-medium">
+            <div className="p-3 rounded-2xl bg-sky-50 border border-sky-100 text-xs text-slate-700 font-medium leading-relaxed">
               {activeChallengeModal.challenge}
             </div>
 
             {challengeFeedback === 'correct' && (
-              <div className="p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-extrabold flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-emerald-400" />
+              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-extrabold flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-emerald-600" />
                 <span>Awesome! Correct solution. +{activeChallengeModal.xp} XP awarded to your profile!</span>
               </div>
             )}
 
             <form onSubmit={handleValidateChallenge} className="space-y-3">
               <div>
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
                   Your Code Solution
                 </label>
                 <textarea
                   rows={3}
                   value={userChallengeInput}
                   onChange={(e) => setUserChallengeInput(e.target.value)}
-                  className="w-full p-3 rounded-2xl bg-slate-950 border border-slate-800 text-cyan-300 font-mono text-xs focus:outline-none focus:border-cyan-500"
+                  className="w-full p-3 rounded-2xl bg-slate-50 border border-slate-300 text-slate-900 font-mono text-xs focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
                 />
               </div>
 
               {showHint && (
-                <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono">
+                <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-mono">
                   💡 Hint: {activeChallengeModal.hint}
                 </div>
               )}
@@ -723,15 +717,15 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowHint((prev) => !prev)}
-                  className="py-3 px-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs flex items-center gap-1 active:scale-95 transition-all"
+                  className="py-2.5 px-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1 active:scale-95 transition-all"
                 >
-                  <HelpCircle className="w-4 h-4 text-amber-400" />
+                  <HelpCircle className="w-4 h-4 text-amber-500" />
                   <span>Hint</span>
                 </button>
 
                 <button
                   type="submit"
-                  className="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-black text-xs shadow-lg shadow-cyan-500/25 flex items-center justify-center gap-2 active:scale-98 transition-all"
+                  className="flex-1 py-2.5 px-4 rounded-2xl bg-[#0066ff] hover:bg-blue-700 text-white font-black text-xs shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 active:scale-98 transition-all"
                 >
                   <Play className="w-4 h-4 fill-current" />
                   <span>Submit Code</span>
