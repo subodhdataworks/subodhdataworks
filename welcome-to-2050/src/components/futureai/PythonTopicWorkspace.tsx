@@ -2045,9 +2045,9 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
             <span className="ptw-bell-badge">3</span>
           </div>
 
-          <div className="ptw-user-profile-chip" onClick={onBack}>
+          <div className="ptw-user-profile-chip select-none">
             <img
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"
+              src={(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_avatar') : null) || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"}
               alt={userName}
               className="ptw-user-avatar"
             />

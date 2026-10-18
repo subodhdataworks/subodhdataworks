@@ -1,5 +1,5 @@
 import { signInWithPopup, signOut, User } from 'firebase/auth';
-import { doc, setDoc, getDoc, collection, getDocs, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, getDoc, collection, getDocs, query, where, serverTimestamp } from 'firebase/firestore';
 import { auth, db, googleProvider } from './firebase';
 
 export interface RegisteredUserRecord {
@@ -127,6 +127,82 @@ export async function loginWithGooglePopup(): Promise<{
     console.warn('Firebase Google popup issue, using resilient Google credential selector:', error);
     throw error;
   }
+}
+
+/**
+ * Check if a user has already completed registration (has mobile number and name)
+ * Checks: 1) Local Master Registry, 2) Firestore Cloud, 3) LocalStorage session
+ */
+export async function findExistingUser(email?: string, uid?: string): Promise<RegisteredUserRecord | null> {
+  const cleanEmail = (email || '').trim().toLowerCase();
+
+  // 1. Check local master registry (fastest & reliable offline)
+  if (typeof window !== 'undefined') {
+    try {
+      const existingRaw = localStorage.getItem(MASTER_REGISTRY_KEY);
+      if (existingRaw) {
+        const localList: RegisteredUserRecord[] = JSON.parse(existingRaw);
+        const match = localList.find((u) => {
+          const matchEmail = cleanEmail && u.email && u.email.toLowerCase() === cleanEmail;
+          const matchUid = uid && u.uid === uid;
+          return (matchEmail || matchUid) && u.phone && u.phone.replace(/\D/g, '').length >= 10;
+        });
+        if (match) return match;
+      }
+    } catch (e) {
+      console.warn('Local registry lookup notice:', e);
+    }
+  }
+
+  // 2. Check Firestore Cloud Database
+  if (uid || cleanEmail) {
+    try {
+      if (uid) {
+        const userDocRef = doc(db, 'registered_users', uid);
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data() as RegisteredUserRecord;
+          if (data && data.phone && data.phone.replace(/\D/g, '').length >= 10) {
+            return data;
+          }
+        }
+      }
+
+      if (cleanEmail) {
+        const colRef = collection(db, 'registered_users');
+        const q = query(colRef, where('email', '==', cleanEmail));
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          const docData = snapshot.docs[0].data() as RegisteredUserRecord;
+          if (docData && docData.phone && docData.phone.replace(/\D/g, '').length >= 10) {
+            return docData;
+          }
+        }
+      }
+    } catch (cloudErr) {
+      console.warn('Firestore cloud lookup notice:', cloudErr);
+    }
+  }
+
+  // 3. Fallback: check if phone is stored in localStorage for this email
+  if (typeof window !== 'undefined') {
+    const savedPhone = localStorage.getItem('futureai_user_phone');
+    const savedEmail = localStorage.getItem('futureai_user_email');
+    if (savedPhone && savedPhone.replace(/\D/g, '').length >= 10 && cleanEmail && savedEmail?.toLowerCase() === cleanEmail) {
+      return {
+        uid: uid || `usr_${savedPhone}`,
+        name: localStorage.getItem('futureai_user_name') || 'Learner',
+        email: cleanEmail,
+        phone: savedPhone,
+        role: (localStorage.getItem('futureai_user_role') as any) || 'student',
+        referralCode: 'PART100',
+        registeredAt: new Date().toISOString(),
+        source: 'Google',
+      };
+    }
+  }
+
+  return null;
 }
 
 /**

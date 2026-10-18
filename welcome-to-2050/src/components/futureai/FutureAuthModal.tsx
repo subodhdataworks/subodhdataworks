@@ -12,7 +12,7 @@ import {
   Lock,
 } from 'lucide-react';
 import { loadGoogleScript, requestGoogleAccountLogin } from '../../services/googleAuthService';
-import { recordUserInDatabase, loginWithGooglePopup } from '../../services/realAuthService';
+import { recordUserInDatabase, loginWithGooglePopup, findExistingUser } from '../../services/realAuthService';
 
 interface FutureAuthModalProps {
   isOpen: boolean;
@@ -25,7 +25,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  // Step 1 = Google Sign-in card; Step 2 = Profile completion & Mobile number save
+  // Step 1 = Google Sign-in card; Step 2 = Profile completion & Mobile number save (only for fresh new users)
   const [step, setStep] = useState<1 | 2>(1);
   const [googleData, setGoogleData] = useState<{
     uid: string;
@@ -59,6 +59,38 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
 
     try {
       const user = await requestGoogleAccountLogin();
+      
+      // Check if this email has ALREADY provided their mobile number before
+      const existing = await findExistingUser(user.email, user.sub);
+      if (existing && existing.phone && existing.phone.replace(/\D/g, '').length >= 10) {
+        const finalName = existing.name || user.name || 'Learner';
+        const finalRole = existing.role || 'student';
+        const finalPhone = existing.phone;
+        const finalAvatar = user.picture || existing.avatar || '';
+
+        // Save session telemetry
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('futureai_user_name', finalName);
+          localStorage.setItem('futureai_user_email', user.email);
+          if (finalAvatar) localStorage.setItem('futureai_user_avatar', finalAvatar);
+          localStorage.setItem('futureai_user_phone', finalPhone);
+          localStorage.setItem('futureai_user_role', finalRole);
+          localStorage.setItem('futureai_logged_in', 'true');
+
+          if (finalRole === 'influencer') {
+            window.location.hash = '#income';
+          } else {
+            window.location.hash = '#dashboard';
+          }
+        }
+
+        setIsSubmitting(false);
+        onSuccess(finalName, user.email, finalAvatar, finalRole);
+        onClose();
+        return; // DIRECT LOGIN! NEVER ASK FOR PHONE AGAIN
+      }
+
+      // First time user: transition to Step 2 to save mobile number
       setGoogleData({
         uid: user.sub,
         name: user.name,
@@ -72,6 +104,36 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
       console.warn('Google 1-Click prompt issue, attempting Firebase popup fallback:', err);
       try {
         const fbUser = await loginWithGooglePopup();
+
+        // Check if this email has ALREADY provided their mobile number before
+        const existing = await findExistingUser(fbUser.email, fbUser.uid);
+        if (existing && existing.phone && existing.phone.replace(/\D/g, '').length >= 10) {
+          const finalName = existing.name || fbUser.name || 'Learner';
+          const finalRole = existing.role || 'student';
+          const finalPhone = existing.phone;
+          const finalAvatar = fbUser.avatar || existing.avatar || '';
+
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('futureai_user_name', finalName);
+            localStorage.setItem('futureai_user_email', fbUser.email);
+            if (finalAvatar) localStorage.setItem('futureai_user_avatar', finalAvatar);
+            localStorage.setItem('futureai_user_phone', finalPhone);
+            localStorage.setItem('futureai_user_role', finalRole);
+            localStorage.setItem('futureai_logged_in', 'true');
+
+            if (finalRole === 'influencer') {
+              window.location.hash = '#income';
+            } else {
+              window.location.hash = '#dashboard';
+            }
+          }
+
+          setIsSubmitting(false);
+          onSuccess(finalName, fbUser.email, finalAvatar, finalRole);
+          onClose();
+          return; // DIRECT LOGIN! NEVER ASK FOR PHONE AGAIN
+        }
+
         setGoogleData({
           uid: fbUser.uid,
           name: fbUser.name,

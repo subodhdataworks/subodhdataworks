@@ -1239,7 +1239,10 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           <div className="relative">
             <div 
               className="dock-user-profile hover:opacity-90 transition-opacity select-none cursor-pointer" 
-              onClick={() => setProfileDropdownOpen((prev) => !prev)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setProfileDropdownOpen((prev) => !prev);
+              }}
             >
               <img 
                 src={(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_avatar') : null) || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"} 

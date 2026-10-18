@@ -78,8 +78,6 @@ export const App: React.FC = () => {
       }
       if (baseH === '#data-analyst' || baseH === '#data-analytics' || baseH === '#courses' || baseH === '#sql' || baseH === '#excel' || baseH === '#powerbi' || baseH === '#stats' || baseH === '#genai' || baseH === '#intro-game' || baseH === '#intro-games' || baseH === '#pyintro' || baseH === '#dashboard' || baseH === '#income' || baseH === '#earnings' || baseH === '#wallet' || baseH === '#withdraw' || baseH === '#referral' || baseH === '#myearnings' || baseH === '#python' || baseH === '#practice' || baseH === '#mcq' || baseH === '#game' || baseH === '#codequest' || baseH === '#workspace' || baseH === '#code' || baseH === '#codepractice' || baseH === '#interview' || baseH === '#mockinterview' || baseH === '#score' || baseH === '#scorecard' || baseH === '#learn' || baseH === '#video') {
         setIsLoggedIn(true);
-      } else if (baseH === '#home') {
-        setIsLoggedIn(false);
       }
     };
     window.addEventListener('hashchange', handleHashChange);
