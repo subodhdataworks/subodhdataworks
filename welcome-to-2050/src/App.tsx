@@ -70,26 +70,41 @@ export const App: React.FC = () => {
     return typeof window !== 'undefined' ? window.location.hash : '';
   });
 
+  const checkIsMobileDevice = (): boolean => {
+    if (typeof window === 'undefined') return false;
+    if (window.innerWidth < 768) return true;
+    if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) return true;
+    if (typeof navigator !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) return true;
+    return false;
+  };
+
   const [isMobile, setIsMobile] = useState<boolean>(() => {
-    return typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+    return checkIsMobileDevice();
   });
 
-  // Track viewport resize
+  // Track viewport resize & screen orientation
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(checkIsMobileDevice());
     };
+    handleResize();
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
   }, []);
 
   // On mobile devices, ensure default route is #dashboard so app experience opens directly
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+    if (checkIsMobileDevice()) {
+      setIsMobile(true);
       const baseH = window.location.hash.split('?')[0];
       if (!baseH || baseH === '#home' || baseH === '') {
         window.location.hash = '#dashboard';
       }
+      setIsLoggedIn(true);
     }
   }, []);
 

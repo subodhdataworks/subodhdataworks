@@ -1,5 +1,5 @@
 // FUTURE AI Service Worker for PWA Offline & Install Support
-const CACHE_NAME = 'futureai-pwa-v1';
+const CACHE_NAME = 'futureai-pwa-v2';
 const PRECACHE_ASSETS = [
   '/',
   '/manifest.json',
@@ -27,6 +27,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
+            console.log('[PWA SW] Deleting old cache:', key);
             return caches.delete(key);
           }
         })
@@ -40,6 +41,24 @@ self.addEventListener('fetch', (event) => {
   // Only handle GET requests and non-chrome-extension requests
   if (event.request.method !== 'GET') return;
   if (!event.request.url.startsWith('http')) return;
+
+  // Always use Network-First for navigation (HTML page load) so mobile visitors immediately see new deploys
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          return caches.match(event.request).then((cached) => cached || caches.match('/'));
+        })
+    );
+    return;
+  }
 
   event.respondWith(
     fetch(event.request)
@@ -65,10 +84,6 @@ self.addEventListener('fetch', (event) => {
       .catch(() => {
         return caches.match(event.request).then((cachedResponse) => {
           if (cachedResponse) return cachedResponse;
-          // Fallback to home page if navigating
-          if (event.request.mode === 'navigate') {
-            return caches.match('/');
-          }
           return new Response('Network error occurred', { status: 408, headers: { 'Content-Type': 'text/plain' } });
         });
       })

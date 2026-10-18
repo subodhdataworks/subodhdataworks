@@ -1,15 +1,15 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/images/brand/future_it_emblem.png" />
     <link rel="apple-touch-icon" href="/images/brand/future_it_emblem.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <meta name="theme-color" content="#0B1638" />
+    <meta name="theme-color" content="#2563EB" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="FUTURE AI" />
     <meta name="application-name" content="FUTURE AI" />
     <title>FUTURE IT INDUSTRY | Learn Today. Earn Tomorrow.</title>
@@ -18,13 +18,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   </head>
-  <body class="bg-lab-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-cyan-500/20 selection:text-cyan-300 overflow-x-hidden">
+  <body class="bg-[#FAFCFE] text-[#0F172A] min-h-screen font-sans antialiased selection:bg-sky-500/20 selection:text-sky-900 overflow-x-hidden">
     <div id="root"></div>
     <script>
-      // Register Service Worker for PWA Add-to-Home-Screen support
+      // Register Service Worker for PWA Add-to-Home-Screen support & immediate update check
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
           navigator.serviceWorker.register('/sw.js').then(function(reg) {
+            reg.update();
             console.log('[PWA] Service Worker registered with scope:', reg.scope);
           }).catch(function(err) {
             console.warn('[PWA] Service Worker registration failed:', err);
