@@ -10,6 +10,7 @@ interface MobileTopBarProps {
   telemetry: LearnerTelemetry;
   onOpenProfile: () => void;
   onOpenNotifications?: () => void;
+  onOpenLogin?: () => void;
 }
 
 export const MobileTopBar: React.FC<MobileTopBarProps> = ({
@@ -17,8 +18,10 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
   telemetry,
   onOpenProfile,
   onOpenNotifications,
+  onOpenLogin,
 }) => {
   const { playClick } = useThemeAccent();
+  const isLoggedIn = typeof window !== 'undefined' ? localStorage.getItem('futureai_logged_in') === 'true' : false;
   const avatarUrl =
     (typeof window !== 'undefined' ? localStorage.getItem('futureai_user_avatar') : null) ||
     'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces';
@@ -90,6 +93,21 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
           <Bell className="w-4 h-4" />
           <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white animate-pulse" />
         </button>
+
+        {/* Guest Login Pill (Visible when not logged in) */}
+        {!isLoggedIn && (
+          <button
+            type="button"
+            onClick={() => {
+              playClick?.();
+              if (onOpenLogin) onOpenLogin();
+              else onOpenProfile();
+            }}
+            className="px-2.5 py-1 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold text-[11px] shadow-xs active:scale-90 transition-all cursor-pointer"
+          >
+            Login
+          </button>
+        )}
 
         {/* User Profile Avatar with glowing gradient ring */}
         <button

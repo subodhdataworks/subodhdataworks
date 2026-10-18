@@ -83,7 +83,10 @@ import { MobileProfileSheet } from './mobile/MobileProfileSheet';
 import { MobileDashboardHome } from './mobile/MobileDashboardHome';
 import { MobilePlacementHub } from './mobile/MobilePlacementHub';
 import { MobilePythonChapterView } from './mobile/MobilePythonChapterView';
+import { MobileSqlChapterView } from './mobile/MobileSqlChapterView';
+import { MobileExcelChapterView } from './mobile/MobileExcelChapterView';
 import { MobileGameArenaHub } from './mobile/MobileGameArenaHub';
+import { FutureAuthModal } from './FutureAuthModal';
 
 // =========================================================================
 // 10 AUTHENTIC 3D-STYLE VECTOR ICONS MATCHING media_1790589591068.jpg
@@ -333,17 +336,39 @@ interface LearnerDashboardProps {
   userName?: string;
   onLogout?: () => void;
   onOpenAdvisor?: () => void;
+  onLoginSuccess?: (name: string, email?: string, avatar?: string, role?: 'student' | 'influencer') => void;
 }
 
 export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   userName = 'Subodh Kumar',
   onLogout,
   onOpenAdvisor,
+  onLoginSuccess,
 }) => {
   const { playHover, playClick, playCinema } = useThemeAccent();
   const [activeTab, setActiveTab] = useState<'dashboard' | 'learning' | 'assessments' | 'certificates' | 'placement' | 'community' | 'resources'>('dashboard');
   const [moduleFilter, setModuleFilter] = useState<'all' | 'in-progress' | 'not-started' | 'completed'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [currentUserName, setCurrentUserName] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('futureai_user_name') || userName || 'Learner';
+    }
+    return userName || 'Learner';
+  });
+
+  useEffect(() => {
+    if (userName && userName !== 'Learner') {
+      setCurrentUserName(userName);
+    }
+  }, [userName]);
+
+  const handleAuthSuccess = (name: string, email?: string, avatar?: string, role?: 'student' | 'influencer') => {
+    setCurrentUserName(name);
+    setTelemetry(getLearnerTelemetry());
+    onLoginSuccess?.(name, email, avatar, role);
+  };
+
   // Navigation Dock Tab State: 'home' | 'game' | 'income' | 'referral' | 'wallet' | 'withdraw' | 'placement'
   const [dockTab, setDockTab] = useState<'home' | 'game' | 'income' | 'referral' | 'wallet' | 'withdraw' | 'placement'>(() => {
     if (typeof window !== 'undefined') {
@@ -1081,9 +1106,10 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         {/* Mobile (< 768px): Native Android Mobile Game Arena Hub */}
         <div className="md:hidden min-h-screen bg-slate-50">
           <MobileTopBar
-            userName={userName}
+            userName={currentUserName}
             telemetry={telemetry}
             onOpenProfile={() => setMobileProfileSheetOpen(true)}
+            onOpenLogin={() => setAuthModalOpen(true)}
           />
           <MobileGameArenaHub
             userName={userName}
@@ -1162,6 +1188,25 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               setUnlockModalOpen(false);
             }}
           />
+          <MobileProfileSheet
+            isOpen={mobileProfileSheetOpen}
+            onClose={() => setMobileProfileSheetOpen(false)}
+            userName={currentUserName}
+            telemetry={telemetry}
+            onLogout={onLogout}
+            onOpenEarn={() => {
+              setSelectedModuleView(null);
+              setActiveTopicWs(null);
+              setDockTab('income');
+              if (typeof window !== 'undefined') window.location.hash = '#earnings';
+            }}
+            onOpenLogin={() => setAuthModalOpen(true)}
+          />
+          <FutureAuthModal
+            isOpen={authModalOpen}
+            onClose={() => setAuthModalOpen(false)}
+            onSuccess={handleAuthSuccess}
+          />
         </div>
       </>
     );
@@ -1174,9 +1219,10 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         {/* Mobile (< 768px): Native Android Mobile Python Chapter View */}
         <div className="md:hidden min-h-screen bg-slate-50">
           <MobileTopBar
-            userName={userName}
+            userName={currentUserName}
             telemetry={telemetry}
             onOpenProfile={() => setMobileProfileSheetOpen(true)}
+            onOpenLogin={() => setAuthModalOpen(true)}
           />
           <MobilePythonChapterView
             userName={userName}
@@ -1268,6 +1314,25 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setUnlockModalOpen(false);
               }}
             />
+            <MobileProfileSheet
+              isOpen={mobileProfileSheetOpen}
+              onClose={() => setMobileProfileSheetOpen(false)}
+              userName={currentUserName}
+              telemetry={telemetry}
+              onLogout={onLogout}
+              onOpenEarn={() => {
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                setDockTab('income');
+                if (typeof window !== 'undefined') window.location.hash = '#earnings';
+              }}
+              onOpenLogin={() => setAuthModalOpen(true)}
+            />
+            <FutureAuthModal
+              isOpen={authModalOpen}
+              onClose={() => setAuthModalOpen(false)}
+              onSuccess={handleAuthSuccess}
+            />
           </div>
         </div>
       </>
@@ -1282,12 +1347,13 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       {/* ── Android Native Top App Bar on Mobile (< 768px) ── */}
       <div className="md:hidden">
         <MobileTopBar
-          userName={userName}
+          userName={currentUserName}
           telemetry={telemetry}
           onOpenProfile={() => setMobileProfileSheetOpen(true)}
           onOpenNotifications={() => {
             alert('🔔 Welcome to FUTURE IT INDUSTRY Android App Portal! Continue learning Python & earning commissions.');
           }}
+          onOpenLogin={() => setAuthModalOpen(true)}
         />
       </div>
 
@@ -1503,68 +1569,139 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         {/* ─── TAB: PYTHON COURSE DETAIL VIEW (Exact match to media_1791029953384.jpg) ─── */}
         {dockTab === 'home' && selectedModuleView === 'python' && (
           <div className="col-span-full">
-            <PythonChapterView
-              userName={userName}
-              onBack={() => {
-                setSelectedModuleView('data_analyst');
-                if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-              }}
-              onOpenTopic={(topicId, step = 'learn') => {
-                setTargetStep(step);
-                setActiveTopicWs(topicId);
-                const map: Record<WorkspaceStepId, string> = {
-                  learn: '#learn',
-                  practice: '#practice',
-                  play: '#play',
-                  code: '#code',
-                  interview: '#interview',
-                  score: '#score',
-                };
-                const stepHash = map[step] || '#learn';
-                if (typeof window !== 'undefined') window.location.hash = `${stepHash}?topic=${topicId}`;
-              }}
-              onOpenUnlockModal={(mod) => {
-                setSelectedLockedModule(mod || 'Python Advanced Track');
-                setUnlockModalOpen(true);
-              }}
-              onOpenAdvisor={onOpenAdvisor}
-            />
+            {/* Mobile View (< 768px) */}
+            <div className="md:hidden min-h-screen bg-slate-50">
+              <MobilePythonChapterView
+                userName={currentUserName}
+                onBack={() => {
+                  setSelectedModuleView(null);
+                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+                }}
+                onOpenTopic={(topicId, step = 'learn') => {
+                  setTargetStep(step);
+                  setActiveTopicWs(topicId);
+                  const map: Record<WorkspaceStepId, string> = {
+                    learn: '#learn',
+                    practice: '#practice',
+                    play: '#play',
+                    code: '#code',
+                    interview: '#interview',
+                    score: '#score',
+                  };
+                  const stepHash = map[step] || '#learn';
+                  if (typeof window !== 'undefined') window.location.hash = `${stepHash}?topic=${topicId}`;
+                }}
+                onOpenUnlockModal={(mod) => {
+                  setSelectedLockedModule(mod || 'Python Advanced Track');
+                  setUnlockModalOpen(true);
+                }}
+                onOpenAdvisor={onOpenAdvisor}
+              />
+            </div>
+
+            {/* Desktop View (>= 768px) */}
+            <div className="hidden md:block">
+              <PythonChapterView
+                userName={userName}
+                onBack={() => {
+                  setSelectedModuleView('data_analyst');
+                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+                }}
+                onOpenTopic={(topicId, step = 'learn') => {
+                  setTargetStep(step);
+                  setActiveTopicWs(topicId);
+                  const map: Record<WorkspaceStepId, string> = {
+                    learn: '#learn',
+                    practice: '#practice',
+                    play: '#play',
+                    code: '#code',
+                    interview: '#interview',
+                    score: '#score',
+                  };
+                  const stepHash = map[step] || '#learn';
+                  if (typeof window !== 'undefined') window.location.hash = `${stepHash}?topic=${topicId}`;
+                }}
+                onOpenUnlockModal={(mod) => {
+                  setSelectedLockedModule(mod || 'Python Advanced Track');
+                  setUnlockModalOpen(true);
+                }}
+                onOpenAdvisor={onOpenAdvisor}
+              />
+            </div>
           </div>
         )}
 
         {/* ─── TAB: SQL COURSE CHAPTER VIEW ─── */}
         {dockTab === 'home' && selectedModuleView === 'sql' && (
           <div className="col-span-full">
-            <SqlChapterView
-              userName={userName}
-              onBack={() => {
-                setSelectedModuleView('data_analyst');
-                if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-              }}
-              onOpenUnlockModal={(mod) => {
-                setSelectedLockedModule(mod || 'SQL & Databases');
-                setUnlockModalOpen(true);
-              }}
-              onOpenAdvisor={onOpenAdvisor}
-            />
+            {/* Mobile View (< 768px) */}
+            <div className="md:hidden min-h-screen bg-slate-50">
+              <MobileSqlChapterView
+                userName={currentUserName}
+                onBack={() => {
+                  setSelectedModuleView(null);
+                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+                }}
+                onOpenUnlockModal={(mod) => {
+                  setSelectedLockedModule(mod || 'SQL & Databases');
+                  setUnlockModalOpen(true);
+                }}
+                onOpenAdvisor={onOpenAdvisor}
+              />
+            </div>
+
+            {/* Desktop View (>= 768px) */}
+            <div className="hidden md:block">
+              <SqlChapterView
+                userName={userName}
+                onBack={() => {
+                  setSelectedModuleView('data_analyst');
+                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+                }}
+                onOpenUnlockModal={(mod) => {
+                  setSelectedLockedModule(mod || 'SQL & Databases');
+                  setUnlockModalOpen(true);
+                }}
+                onOpenAdvisor={onOpenAdvisor}
+              />
+            </div>
           </div>
         )}
 
         {/* ─── TAB: EXCEL COURSE CHAPTER VIEW ─── */}
         {dockTab === 'home' && selectedModuleView === 'excel' && (
           <div className="col-span-full">
-            <ExcelChapterView
-              userName={userName}
-              onBack={() => {
-                setSelectedModuleView('data_analyst');
-                if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-              }}
-              onOpenUnlockModal={(mod) => {
-                setSelectedLockedModule(mod || 'Advanced Excel');
-                setUnlockModalOpen(true);
-              }}
-              onOpenAdvisor={onOpenAdvisor}
-            />
+            {/* Mobile View (< 768px) */}
+            <div className="md:hidden min-h-screen bg-slate-50">
+              <MobileExcelChapterView
+                userName={currentUserName}
+                onBack={() => {
+                  setSelectedModuleView(null);
+                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+                }}
+                onOpenUnlockModal={(mod) => {
+                  setSelectedLockedModule(mod || 'Advanced Excel');
+                  setUnlockModalOpen(true);
+                }}
+                onOpenAdvisor={onOpenAdvisor}
+              />
+            </div>
+
+            {/* Desktop View (>= 768px) */}
+            <div className="hidden md:block">
+              <ExcelChapterView
+                userName={userName}
+                onBack={() => {
+                  setSelectedModuleView('data_analyst');
+                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+                }}
+                onOpenUnlockModal={(mod) => {
+                  setSelectedLockedModule(mod || 'Advanced Excel');
+                  setUnlockModalOpen(true);
+                }}
+                onOpenAdvisor={onOpenAdvisor}
+              />
+            </div>
           </div>
         )}
 
@@ -2350,7 +2487,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       <MobileProfileSheet
         isOpen={mobileProfileSheetOpen}
         onClose={() => setMobileProfileSheetOpen(false)}
-        userName={userName}
+        userName={currentUserName}
         telemetry={telemetry}
         onLogout={onLogout}
         onOpenEarn={() => {
@@ -2359,6 +2496,14 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           setDockTab('income');
           if (typeof window !== 'undefined') window.location.hash = '#earnings';
         }}
+        onOpenLogin={() => setAuthModalOpen(true)}
+      />
+
+      {/* ─── EMAIL-ONLY / GOOGLE AUTH MODAL ─── */}
+      <FutureAuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        onSuccess={handleAuthSuccess}
       />
 
       {/* ─── LEARNING MODULES PROGRESS MODAL (1:1 with media_1791557550984.jpg) ─── */}

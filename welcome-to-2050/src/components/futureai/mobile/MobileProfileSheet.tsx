@@ -10,6 +10,7 @@ interface MobileProfileSheetProps {
   telemetry: LearnerTelemetry;
   onLogout?: () => void;
   onOpenEarn?: () => void;
+  onOpenLogin?: () => void;
 }
 
 export const MobileProfileSheet: React.FC<MobileProfileSheetProps> = ({
@@ -19,9 +20,11 @@ export const MobileProfileSheet: React.FC<MobileProfileSheetProps> = ({
   telemetry,
   onLogout,
   onOpenEarn,
+  onOpenLogin,
 }) => {
   if (!isOpen) return null;
 
+  const isLoggedIn = typeof window !== 'undefined' ? localStorage.getItem('futureai_logged_in') === 'true' : false;
   const email = typeof window !== 'undefined' ? localStorage.getItem('futureai_user_email') : null;
   const phone = typeof window !== 'undefined' ? localStorage.getItem('futureai_user_phone') : null;
   const role = typeof window !== 'undefined' ? localStorage.getItem('futureai_user_role') || 'Student' : 'Student';
@@ -155,23 +158,37 @@ export const MobileProfileSheet: React.FC<MobileProfileSheetProps> = ({
           <div className="flex items-center gap-2 p-3 rounded-2xl bg-slate-50 text-slate-600 text-xs">
             <ShieldCheck className="w-4 h-4 text-sky-500 flex-shrink-0" />
             <span className="text-[11px] font-medium text-slate-500">
-              Verified Student Account • 2050 Learner Portal
+              {isLoggedIn ? 'Verified Student Account • 2050 Learner Portal' : 'Guest Learner • Sign in to save progress'}
             </span>
           </div>
         </div>
 
-        {/* Explicit Android Log Out Button */}
-        <button
-          type="button"
-          onClick={() => {
-            onClose();
-            onLogout?.();
-          }}
-          className="w-full py-3.5 px-4 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer border border-rose-200/80"
-        >
-          <LogOut className="w-4 h-4" />
-          <span>Log Out from Device</span>
-        </button>
+        {/* Dynamic Action: Sign in if guest, or Log Out if logged in */}
+        {!isLoggedIn ? (
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+              onOpenLogin?.();
+            }}
+            className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 active:scale-98 transition-all shadow-md shadow-blue-500/20 cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>Sign In with Email / Google (लॉगिन करें)</span>
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+              onLogout?.();
+            }}
+            className="w-full py-3.5 px-4 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer border border-rose-200/80"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Log Out from Device</span>
+          </button>
+        )}
       </div>
     </div>
   );

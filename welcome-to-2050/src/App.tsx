@@ -70,6 +70,29 @@ export const App: React.FC = () => {
     return typeof window !== 'undefined' ? window.location.hash : '';
   });
 
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    return typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+  });
+
+  // Track viewport resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // On mobile devices, ensure default route is #dashboard so app experience opens directly
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      const baseH = window.location.hash.split('?')[0];
+      if (!baseH || baseH === '#home' || baseH === '') {
+        window.location.hash = '#dashboard';
+      }
+    }
+  }, []);
+
   // Sync hash changes
   useEffect(() => {
     const handleHashChange = () => {
@@ -112,7 +135,7 @@ export const App: React.FC = () => {
     setIsLoggedIn(false);
     if (typeof window !== 'undefined') {
       localStorage.removeItem('futureai_logged_in');
-      window.location.hash = '#home';
+      window.location.hash = isMobile ? '#dashboard' : '#home';
     }
   };
 
@@ -124,7 +147,7 @@ export const App: React.FC = () => {
         {currentHash.split('?')[0] === '#ats-resume-checker' || currentHash.split('?')[0] === '#ats' ? (
           <AtsResumeChecker
             onBackToHome={() => {
-              window.location.hash = '#home';
+              window.location.hash = isMobile ? '#dashboard' : '#home';
             }}
             onOpenLogin={(candidateName?: string) => {
               const nameToUse = candidateName || userName || 'Learner';
@@ -141,11 +164,12 @@ export const App: React.FC = () => {
             isLoggedIn={isLoggedIn}
             userName={userName}
           />
-        ) : isLoggedIn ? (
+        ) : (isLoggedIn || isMobile) ? (
           <LearnerDashboard
             userName={userName}
             onLogout={handleLogout}
             onOpenAdvisor={() => setAdvisorModalOpen(true)}
+            onLoginSuccess={handleLogin}
           />
         ) : (
           <FutureAiHome
