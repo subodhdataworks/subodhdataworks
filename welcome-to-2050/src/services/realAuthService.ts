@@ -8,6 +8,7 @@ export interface RegisteredUserRecord {
   email: string;
   phone?: string;
   avatar?: string;
+  role?: 'student' | 'influencer';
   referralCode: string;
   referredBy?: string;
   registeredAt: string;
@@ -25,6 +26,7 @@ export async function recordUserInDatabase(userData: {
   email?: string;
   phone?: string;
   avatar?: string;
+  role?: 'student' | 'influencer';
   source?: 'Google' | 'Email' | 'Phone' | 'Direct';
 }): Promise<RegisteredUserRecord> {
   const cleanEmail = (userData.email || '').trim().toLowerCase();
@@ -49,6 +51,7 @@ export async function recordUserInDatabase(userData: {
     email: cleanEmail,
     phone: cleanPhone || undefined,
     avatar: userData.avatar || undefined,
+    role: userData.role || 'student',
     referralCode,
     referredBy: referredBy || undefined,
     registeredAt: new Date().toISOString(),
@@ -165,11 +168,12 @@ export async function getAllRegisteredUsers(): Promise<RegisteredUserRecord[]> {
  */
 export async function exportUsersToCSV(): Promise<{ count: number; filename: string }> {
   const users = await getAllRegisteredUsers();
-  const headers = ['Name', 'Email', 'Phone', 'Referral Code', 'Referred By', 'Source', 'Registration Date'];
+  const headers = ['Name', 'Email', 'Phone', 'Role', 'Referral Code', 'Referred By', 'Source', 'Registration Date'];
   const rows = users.map((u) => [
     `"${(u.name || '').replace(/"/g, '""')}"`,
     `"${(u.email || '').replace(/"/g, '""')}"`,
     `"${(u.phone || '').replace(/"/g, '""')}"`,
+    `"${(u.role || 'student').replace(/"/g, '""')}"`,
     `"${(u.referralCode || '').replace(/"/g, '""')}"`,
     `"${(u.referredBy || '').replace(/"/g, '""')}"`,
     `"${(u.source || '').replace(/"/g, '""')}"`,

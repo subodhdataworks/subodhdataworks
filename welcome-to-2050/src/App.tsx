@@ -86,7 +86,7 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const handleLogin = (name: string, email?: string, avatar?: string) => {
+  const handleLogin = (name: string, email?: string, avatar?: string, role?: 'student' | 'influencer') => {
     const finalName = name && name.trim().length > 0 ? name.trim() : 'Learner';
     setUserName(finalName);
     setIsLoggedIn(true);
@@ -94,8 +94,13 @@ export const App: React.FC = () => {
       localStorage.setItem('futureai_user_name', finalName);
       if (email) localStorage.setItem('futureai_user_email', email);
       if (avatar) localStorage.setItem('futureai_user_avatar', avatar);
+      if (role) localStorage.setItem('futureai_user_role', role);
       localStorage.setItem('futureai_logged_in', 'true');
-      window.location.hash = '#dashboard';
+      if (role === 'influencer') {
+        window.location.hash = '#income';
+      } else {
+        window.location.hash = '#dashboard';
+      }
     }
   };
 
