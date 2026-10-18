@@ -1,5 +1,5 @@
 import { signInWithPopup, signOut, User } from 'firebase/auth';
-import { doc, setDoc, getDoc, collection, getDocs, query, where, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, getDoc, collection, getDocs, query, where, serverTimestamp, increment } from 'firebase/firestore';
 import { auth, db, googleProvider } from './firebase';
 
 export interface RegisteredUserRecord {
@@ -34,15 +34,22 @@ export async function recordUserInDatabase(userData: {
   const cleanName = (userData.name || cleanEmail.split('@')[0] || cleanPhone || 'Learner').trim();
   const uid = userData.uid || `usr_${cleanEmail ? cleanEmail.replace(/[^a-zA-Z0-9]/g, '_') : Date.now()}`;
 
-  // Unique referral code for this user
-  const cleanRef = cleanName.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) || 'PART';
+  // Unique referral code for this user (standardized to 8 characters + 100)
+  const cleanRef = cleanName.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 8) || 'PARTNER';
   const referralCode = `${cleanRef}100`;
 
-  // Check attribution from URL
+  // Check attribution from URL (search params or hash params) or localStorage
   let referredBy = '';
   if (typeof window !== 'undefined') {
     const urlParams = new URLSearchParams(window.location.search);
-    referredBy = urlParams.get('ref') || localStorage.getItem('futureai_ref_attribution') || '';
+    referredBy = urlParams.get('ref') || '';
+    if (!referredBy && window.location.hash.includes('?')) {
+      const hashParams = new URLSearchParams(window.location.hash.split('?')[1]);
+      referredBy = hashParams.get('ref') || '';
+    }
+    if (!referredBy) {
+      referredBy = localStorage.getItem('futureai_ref_attribution') || '';
+    }
   }
 
   const record: RegisteredUserRecord = {
@@ -90,7 +97,7 @@ export async function recordUserInDatabase(userData: {
 
   // 3. If referred by an affiliate partner, record real signup & commission for that partner
   if (referredBy) {
-    recordReferralSignup(referredBy, cleanName);
+    recordReferralSignup(referredBy, cleanName, cleanEmail, cleanPhone);
   }
 
   return record;
@@ -272,57 +279,220 @@ export async function exportUsersToCSV(): Promise<{ count: number; filename: str
 }
 
 /**
- * Real Referral Click Tracking
+ * Normalize referral code (removes trailing 100, strips non-alphanumeric, uppercases)
+ * e.g., 'ZODIYO100' -> 'ZODIYO', 'zodiyo' -> 'ZODIYO', 'SUBODH100' -> 'SUBODH'
  */
-export function recordReferralClick(refCode: string): void {
+export function normalizeRefCode(ref?: string): string {
+  if (!ref) return '';
+  return ref.trim().toUpperCase().replace(/100$/, '').replace(/[^A-Z0-9]/g, '');
+}
+
+/**
+ * Standardize user referral code (slice up to 8 chars + 100)
+ */
+export function getUserReferralCode(nameOrEmail: string): string {
+  const clean = (nameOrEmail || '').split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 8) || 'PARTNER';
+  return `${clean}100`;
+}
+
+/**
+ * Real Referral Click Tracking (Persists in Firestore Cloud & localStorage)
+ */
+export async function recordReferralClick(refCode: string): Promise<void> {
   if (typeof window === 'undefined' || !refCode) return;
-  const cleanCode = refCode.replace(/100$/, '').trim().toUpperCase();
+  const cleanCode = normalizeRefCode(refCode);
+  if (!cleanCode) return;
+
+  // 1. Save attribution in localStorage so subsequent signup receives credit
   try {
     localStorage.setItem('futureai_ref_attribution', refCode);
-    const keys = Object.keys(localStorage).filter((k) => k.startsWith('futureai_affiliate_hub_v3_'));
-    for (const k of keys) {
-      if (k.toUpperCase().includes(cleanCode)) {
-        const data = JSON.parse(localStorage.getItem(k) || '{}');
-        data.clicks = (data.clicks || 0) + 1;
-        localStorage.setItem(k, JSON.stringify(data));
-      }
-    }
+  } catch {}
+
+  // 2. Increment click count in Firestore Cloud Database
+  try {
+    const statsDocRef = doc(db, 'affiliate_stats', cleanCode);
+    await setDoc(
+      statsDocRef,
+      {
+        refCode: cleanCode,
+        clicks: increment(1),
+        lastClickAt: serverTimestamp(),
+      },
+      { merge: true }
+    );
+  } catch (cloudErr) {
+    console.warn('Cloud affiliate click record notice:', cloudErr);
+  }
+
+  // 3. Increment locally
+  try {
+    const storageKey = `futureai_affiliate_hub_v3_${cleanCode}`;
+    const raw = localStorage.getItem(storageKey);
+    const data = raw ? JSON.parse(raw) : { clicks: 0, signups: 0, pendingBalance: 0, totalEarned: 0, referrals: [] };
+    data.clicks = (data.clicks || 0) + 1;
+    localStorage.setItem(storageKey, JSON.stringify(data));
   } catch (e) {
-    console.warn('Referral click record issue:', e);
+    console.warn('Local affiliate click record notice:', e);
   }
 }
 
 /**
- * Real Referral Signup Tracking: records ₹100 commission & registered student
+ * Real Referral Signup Tracking: Records ₹100 commission & registered student
+ * Saves to Firestore Cloud Database & localStorage
  */
-export function recordReferralSignup(refCode: string, studentName: string): void {
+export async function recordReferralSignup(
+  refCode: string,
+  studentName: string,
+  studentEmail?: string,
+  studentPhone?: string
+): Promise<void> {
   if (typeof window === 'undefined' || !refCode) return;
-  const cleanCode = refCode.replace(/100$/, '').trim().toUpperCase();
+  const cleanCode = normalizeRefCode(refCode);
+  if (!cleanCode) return;
+
+  const newReferralItem = {
+    id: `ref_${Date.now()}`,
+    name: studentName || 'New Student',
+    email: studentEmail || '',
+    phone: studentPhone || '',
+    date: new Date().toISOString().slice(0, 10),
+    status: 'Registered',
+    amount: 999,
+    commission: 100,
+    course: 'Data Analytics with GenAI',
+    referralId: `RF-${Math.floor(1000 + Math.random() * 9000)}`,
+  };
+
+  // 1. Save in Firestore Cloud Database under affiliate_stats
   try {
-    const keys = Object.keys(localStorage).filter((k) => k.startsWith('futureai_affiliate_hub_v3_'));
-    for (const k of keys) {
-      if (k.toUpperCase().includes(cleanCode)) {
-        const data = JSON.parse(localStorage.getItem(k) || '{}');
-        data.signups = (data.signups || 0) + 1;
-        data.pendingBalance = (data.pendingBalance || 0) + 100;
-        const referrals = Array.isArray(data.referrals) ? data.referrals : [];
-        referrals.unshift({
-          id: `ref_${Date.now()}`,
-          name: studentName || 'New Student',
-          date: new Date().toISOString().slice(0, 10),
-          status: 'Registered',
-          amount: 999,
-          commission: 100,
-          course: 'Data Analytics with GenAI',
-          referralId: `RF-${Math.floor(1000 + Math.random() * 9000)}`,
-        });
-        data.referrals = referrals;
-        localStorage.setItem(k, JSON.stringify(data));
+    const statsDocRef = doc(db, 'affiliate_stats', cleanCode);
+    await setDoc(
+      statsDocRef,
+      {
+        refCode: cleanCode,
+        signups: increment(1),
+        pendingBalance: increment(100),
+        totalEarned: increment(100),
+        lastSignupAt: serverTimestamp(),
+      },
+      { merge: true }
+    );
+  } catch (cloudErr) {
+    console.warn('Cloud affiliate signup record notice:', cloudErr);
+  }
+
+  // 2. Also record in local storage
+  try {
+    const storageKey = `futureai_affiliate_hub_v3_${cleanCode}`;
+    const raw = localStorage.getItem(storageKey);
+    const data = raw ? JSON.parse(raw) : { clicks: 0, signups: 0, pendingBalance: 0, totalEarned: 0, referrals: [] };
+    data.signups = (data.signups || 0) + 1;
+    data.pendingBalance = (data.pendingBalance || 0) + 100;
+    data.totalEarned = (data.totalEarned || 0) + 100;
+    const referrals = Array.isArray(data.referrals) ? data.referrals : [];
+    referrals.unshift(newReferralItem);
+    data.referrals = referrals;
+    localStorage.setItem(storageKey, JSON.stringify(data));
+  } catch (e) {
+    console.warn('Local affiliate signup record notice:', e);
+  }
+}
+
+/**
+ * Real-time Affiliate Hub Data Fetcher
+ * Aggregates Firestore cloud stats + registered users matching referredBy + local storage
+ */
+export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
+  clicks: number;
+  signups: number;
+  pendingBalance: number;
+  totalEarned: number;
+  referrals: any[];
+}> {
+  const cleanCode = normalizeRefCode(refCodeOrName);
+  if (!cleanCode) {
+    return { clicks: 0, signups: 0, pendingBalance: 0, totalEarned: 0, referrals: [] };
+  }
+
+  let cloudClicks = 0;
+  let cloudSignups = 0;
+  let cloudPending = 0;
+  let cloudEarned = 0;
+
+  // 1. Fetch from Firestore affiliate_stats doc
+  try {
+    const statsDoc = await getDoc(doc(db, 'affiliate_stats', cleanCode));
+    if (statsDoc.exists()) {
+      const d = statsDoc.data();
+      cloudClicks = d.clicks || 0;
+      cloudSignups = d.signups || 0;
+      cloudPending = d.pendingBalance || 0;
+      cloudEarned = d.totalEarned || 0;
+    }
+  } catch (e) {
+    console.warn('Fetch affiliate_stats cloud notice:', e);
+  }
+
+  // 2. Fetch all registered users who were referred by this code from registered_users collection
+  const matchedReferrals: any[] = [];
+  try {
+    const allUsers = await getAllRegisteredUsers();
+    for (const u of allUsers) {
+      if (u.referredBy) {
+        const userRef = normalizeRefCode(u.referredBy);
+        if (userRef === cleanCode || cleanCode.startsWith(userRef) || userRef.startsWith(cleanCode)) {
+          matchedReferrals.push({
+            id: `ref_${u.uid}`,
+            name: u.name || 'Student Learner',
+            email: u.email,
+            phone: u.phone,
+            date: u.registeredAt ? u.registeredAt.slice(0, 10) : new Date().toISOString().slice(0, 10),
+            status: 'Registered',
+            amount: 999,
+            commission: 100,
+            course: 'Data Analytics with GenAI',
+            referralId: `RF-${Math.abs(u.uid.split('').reduce((acc, c) => acc + c.charCodeAt(0), 1000) % 9000)}`,
+          });
+        }
       }
     }
   } catch (e) {
-    console.warn('Referral signup record issue:', e);
+    console.warn('Fetch registered user referrals notice:', e);
   }
+
+  // 3. Read local storage cache for this affiliate
+  let localData: any = {};
+  if (typeof window !== 'undefined') {
+    try {
+      const storageKey = `futureai_affiliate_hub_v3_${cleanCode}`;
+      const raw = localStorage.getItem(storageKey);
+      if (raw) localData = JSON.parse(raw);
+    } catch {}
+  }
+
+  // 4. Calculate definitive numbers
+  const matchedCount = matchedReferrals.length;
+  const finalClicks = Math.max(cloudClicks, localData.clicks || 0);
+  const finalSignups = Math.max(cloudSignups, matchedCount, localData.signups || 0);
+  const finalEarned = Math.max(cloudEarned, finalSignups * 100, localData.totalEarned || 0);
+  const finalPending = Math.max(cloudPending, finalSignups * 100, localData.pendingBalance || 0);
+
+  // Merge referrals list
+  const existingLocalRefs: any[] = Array.isArray(localData.referrals) ? localData.referrals : [];
+  const mergedRefs = [...matchedReferrals];
+  for (const lr of existingLocalRefs) {
+    if (!mergedRefs.some((r) => r.name === lr.name || (r.email && lr.email && r.email === lr.email))) {
+      mergedRefs.push(lr);
+    }
+  }
+
+  return {
+    clicks: finalClicks,
+    signups: finalSignups,
+    pendingBalance: finalPending,
+    totalEarned: finalEarned,
+    referrals: mergedRefs,
+  };
 }
 
 /**

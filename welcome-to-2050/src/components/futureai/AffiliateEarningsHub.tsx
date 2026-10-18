@@ -36,6 +36,7 @@ import {
   Share2
 } from 'lucide-react';
 import './AffiliateEarningsHub.css';
+import { fetchAffiliateRealData, getUserReferralCode, normalizeRefCode } from '../../services/realAuthService';
 
 export interface AffiliateEarningsHubProps {
   userName?: string;
@@ -81,7 +82,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   onNavigateTab,
 }) => {
   // Real user referral code & storage key
-  const cleanRefCode = (userName && userName !== 'Learner' ? userName.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 8) : '') || 'PARTNER';
+  const cleanRefCode = normalizeRefCode(userName) || 'PARTNER';
   const affiliateRefUrl = `https://futureitindustry.com/?ref=${cleanRefCode}100`;
   const storageKey = `futureai_affiliate_hub_v3_${cleanRefCode}`;
 
@@ -131,6 +132,53 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       // ignore
     }
   }, [hubState, storageKey]);
+
+  // Live real-time sync with Cloud Database & Master Registry for 100% accurate referral signups
+  useEffect(() => {
+    let isMounted = true;
+    const syncRealCloudData = async () => {
+      try {
+        const real = await fetchAffiliateRealData(cleanRefCode);
+        if (isMounted) {
+          setHubState((prev) => {
+            const nextClicks = Math.max(prev.clicks, real.clicks);
+            const nextSignups = Math.max(prev.signups, real.signups);
+            const nextPending = Math.max(prev.pendingBalance, real.pendingBalance);
+            const nextEarned = Math.max(prev.totalEarned, real.totalEarned);
+            const nextReferrals = real.referrals && real.referrals.length > 0 ? real.referrals : prev.referrals;
+
+            if (
+              nextClicks === prev.clicks &&
+              nextSignups === prev.signups &&
+              nextPending === prev.pendingBalance &&
+              nextEarned === prev.totalEarned &&
+              nextReferrals.length === prev.referrals.length
+            ) {
+              return prev;
+            }
+
+            return {
+              ...prev,
+              clicks: nextClicks,
+              signups: nextSignups,
+              pendingBalance: nextPending,
+              totalEarned: nextEarned,
+              referrals: nextReferrals,
+            };
+          });
+        }
+      } catch (err) {
+        console.warn('Real affiliate sync notice:', err);
+      }
+    };
+
+    syncRealCloudData();
+    const interval = setInterval(syncRealCloudData, 2500);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [cleanRefCode]);
 
   const {
     availableBalance,

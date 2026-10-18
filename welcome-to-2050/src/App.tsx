@@ -17,10 +17,15 @@ export const App: React.FC = () => {
   // Check referral code in URL immediately on page load
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const refCode = urlParams.get('ref');
+      const searchParams = new URLSearchParams(window.location.search);
+      let refCode = searchParams.get('ref');
+      if (!refCode && window.location.hash.includes('?')) {
+        const hashParams = new URLSearchParams(window.location.hash.split('?')[1]);
+        refCode = hashParams.get('ref');
+      }
       if (refCode) {
-        recordReferralClick(refCode);
+        localStorage.setItem('futureai_ref_attribution', refCode.trim());
+        recordReferralClick(refCode.trim());
       }
     }
   }, []);
