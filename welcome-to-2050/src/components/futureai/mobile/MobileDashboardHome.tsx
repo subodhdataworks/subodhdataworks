@@ -63,63 +63,131 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
 }) => {
   const { playClick, playHover } = useThemeAccent();
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeCourseIndex, setActiveCourseIndex] = useState(0);
+  const [filter, setFilter] = useState<'all' | 'in-progress' | 'explore' | 'completed'>('all');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
-  // 4 Core Courses: ONLY Course Name, Amount, and Start Learning
+  // 4 Flagship Industry Courses matching the mobile reference design exactly
   const flagshipCourses = [
     {
       id: 'data-analyst-genai',
       badgeNum: 1,
-      statusTag: 'ENROLLED',
-      title: 'Data Analyst with GenAI',
+      statusTag: 'ENROLLED • ACTIVE',
+      badgeIcon: '🔥',
+      badgeGradient: 'from-rose-500 via-pink-500 to-rose-600',
+      title: 'Data Analyst',
+      subtitle: 'with GenAI',
+      shortDesc: 'Master Python, SQL, Power BI, Excel & GenAI Analytics.',
+      salaryRange: '₹6 LPA - ₹15 LPA',
       courseFee: '₹18,999',
       image: '/images/pot1_sharp_poster.jpg',
       holoImage: '/images/pot1_sharp_poster.jpg',
       video: '/videos/data_analyst_genai_v2.mp4',
       potTheme: 'blue' as const,
-      btnClass: 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/25',
+      skillsList: ['Python', 'SQL', 'Excel', 'Power BI', 'GenAI'],
+      themeStyles: {
+        cardGlow: 'shadow-[0_0_24px_rgba(0,180,255,0.22)]',
+        cardBorder: 'border-sky-300',
+        trayBg: 'bg-gradient-to-r from-sky-50/95 via-white to-cyan-50/95',
+        trayBorder: 'border-sky-300',
+        trayGlow: 'shadow-[0_4px_18px_rgba(0,210,255,0.3)]',
+        neonLip: 'bg-gradient-to-r from-sky-400 via-cyan-300 to-sky-400',
+        btnClass: 'bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600 shadow-blue-500/30',
+        priceBorder: 'border-sky-400',
+      },
       action: onStartPython,
     },
     {
       id: 'data-science-agentic-ai',
       badgeNum: 2,
       statusTag: 'HIGH DEMAND',
-      title: 'Data Science & Agentic AI',
+      badgeIcon: '📊',
+      badgeGradient: 'from-purple-600 via-indigo-600 to-purple-700',
+      title: 'Data Science &',
+      subtitle: 'Agentic AI',
+      shortDesc: 'Explore Machine Learning, Deep Learning, RAG & AI Agents.',
+      salaryRange: '₹10 LPA - ₹22 LPA',
       courseFee: '₹29,999',
       image: '/images/pot2_sharp_poster.jpg',
       holoImage: '/images/pot2_sharp_poster.jpg',
       video: '/videos/data_science_agentic_ai_course.mp4',
       potTheme: 'purple' as const,
-      btnClass: 'bg-purple-600 hover:bg-purple-700 shadow-purple-500/25',
+      skillsList: ['Data Science', 'ML', 'Deep Learning', 'RAG', 'Agentic AI'],
+      themeStyles: {
+        cardGlow: 'shadow-[0_0_24px_rgba(168,85,247,0.22)]',
+        cardBorder: 'border-purple-300',
+        trayBg: 'bg-gradient-to-r from-purple-50/95 via-white to-fuchsia-50/95',
+        trayBorder: 'border-purple-300',
+        trayGlow: 'shadow-[0_4px_18px_rgba(168,85,247,0.3)]',
+        neonLip: 'bg-gradient-to-r from-purple-400 via-fuchsia-300 to-purple-400',
+        btnClass: 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-purple-500/30',
+        priceBorder: 'border-purple-400',
+      },
       action: () => (onOpenGenAi ? onOpenGenAi() : onOpenLockedModule('Data Science & Agentic AI')),
     },
     {
       id: 'ml-engineering',
       badgeNum: 3,
       statusTag: 'ADVANCED TECH',
-      title: 'ML Engineering',
+      badgeIcon: '👑',
+      badgeGradient: 'from-amber-500 via-orange-500 to-amber-600',
+      title: 'ML',
+      subtitle: 'Engineering',
+      shortDesc: 'Build & deploy scalable ML models, PyTorch & MLOps pipelines.',
+      salaryRange: '₹12 LPA - ₹28 LPA',
       courseFee: '₹39,999',
       image: '/images/pot3_sharp_poster.jpg',
       holoImage: '/images/pot3_sharp_poster.jpg',
       video: '/videos/ml_engineering_course.mp4',
       potTheme: 'gold' as const,
-      btnClass: 'bg-amber-600 hover:bg-amber-700 shadow-amber-500/25',
+      skillsList: ['PyTorch', 'TensorFlow', 'MLOps', 'Docker', 'Cloud AI'],
+      themeStyles: {
+        cardGlow: 'shadow-[0_0_24px_rgba(245,158,11,0.22)]',
+        cardBorder: 'border-amber-300',
+        trayBg: 'bg-gradient-to-r from-amber-50/95 via-white to-orange-50/95',
+        trayBorder: 'border-amber-300',
+        trayGlow: 'shadow-[0_4px_18px_rgba(245,158,11,0.3)]',
+        neonLip: 'bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400',
+        btnClass: 'bg-gradient-to-r from-amber-600 to-orange-500 hover:from-amber-700 hover:to-orange-600 shadow-amber-500/30',
+        priceBorder: 'border-amber-400',
+      },
       action: () => (onOpenPowerBi ? onOpenPowerBi() : onOpenLockedModule('ML Engineering')),
     },
     {
       id: 'ai-engineering',
       badgeNum: 4,
       statusTag: 'FLAGSHIP 2050',
-      title: 'AI Engineering',
+      badgeIcon: '⭐',
+      badgeGradient: 'from-emerald-500 via-teal-500 to-emerald-600',
+      title: 'AI',
+      subtitle: 'Engineering',
+      shortDesc: 'Design intelligent systems, LLMs, Vector DBs & Multi-Agents.',
+      salaryRange: '₹15 LPA - ₹35 LPA',
       courseFee: '₹49,999',
       image: '/images/pot4_sharp_poster.jpg',
       holoImage: '/images/pot4_sharp_poster.jpg',
       video: '/videos/ai_engineering_course.mp4',
       potTheme: 'emerald' as const,
-      btnClass: 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/25',
+      skillsList: ['LLMs', 'LangChain', 'Vector DBs', 'Fine-Tuning', 'OpenAI'],
+      themeStyles: {
+        cardGlow: 'shadow-[0_0_24px_rgba(16,185,129,0.22)]',
+        cardBorder: 'border-emerald-300',
+        trayBg: 'bg-gradient-to-r from-emerald-50/95 via-white to-teal-50/95',
+        trayBorder: 'border-emerald-300',
+        trayGlow: 'shadow-[0_4px_18px_rgba(16,185,129,0.3)]',
+        neonLip: 'bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400',
+        btnClass: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-emerald-500/30',
+        priceBorder: 'border-emerald-400',
+      },
       action: () => onOpenLockedModule('Full-Stack AI Engineering'),
     },
   ];
+
+  const visibleCourses = flagshipCourses.filter((c) => {
+    if (filter === 'in-progress') return c.id === 'data-analyst-genai';
+    if (filter === 'explore') return c.id !== 'data-analyst-genai';
+    if (filter === 'completed') return false;
+    return true;
+  });
 
   return (
     <div className="w-full pb-32 pt-2 px-3 sm:px-4 space-y-4 text-left select-none max-w-md mx-auto">
@@ -334,45 +402,153 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       </div>
 
       {/* =========================================================================
-          4. "4 High-Paying Industry Courses" (Compact Double 2-Column Grid, Only Name, Fee & Start)
+          4. "4 High-Paying Industry Courses" (Exact Match to User Reference Screenshot)
           ========================================================================= */}
-      <div className="w-full">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-1.5">
-            <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
-              <Layers className="w-3.5 h-3.5" />
+      <div className="w-full space-y-3.5">
+        {/* Section Header */}
+        <div>
+          <div className="flex items-start gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 shadow-2xs mt-0.5">
+              <Layers className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-xs sm:text-sm font-black text-slate-900 tracking-tight">
-              4 High-Paying Industry Courses
-            </h2>
+            <div className="flex-1 min-w-0">
+              <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-snug">
+                4 High-Paying Industry Courses
+              </h2>
+              <p className="text-xs font-semibold text-slate-500">
+                Job-Ready Skills for a Brighter Tomorrow
+              </p>
+            </div>
           </div>
-          <span className="text-[10px] font-bold text-blue-600 bg-blue-50 border border-blue-200/60 px-2 py-0.5 rounded-full">
-            All 4 Live
-          </span>
+
+          {/* Filter Pills & View Switcher */}
+          <div className="flex items-center justify-between gap-2 pt-2.5">
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+              <button
+                type="button"
+                onClick={() => {
+                  playClick?.();
+                  setFilter('all');
+                }}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                  filter === 'all'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'bg-white text-slate-600 border border-slate-200/90 hover:bg-slate-50'
+                }`}
+              >
+                All (4)
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  playClick?.();
+                  setFilter('in-progress');
+                }}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                  filter === 'in-progress'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'bg-white text-slate-600 border border-slate-200/90 hover:bg-slate-50'
+                }`}
+              >
+                In Progress (1)
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  playClick?.();
+                  setFilter('explore');
+                }}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                  filter === 'explore'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'bg-white text-slate-600 border border-slate-200/90 hover:bg-slate-50'
+                }`}
+              >
+                Explore (3)
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  playClick?.();
+                  setFilter('completed');
+                }}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                  filter === 'completed'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'bg-white text-slate-600 border border-slate-200/90 hover:bg-slate-50'
+                }`}
+              >
+                Completed
+              </button>
+            </div>
+
+            {/* View Mode Toggle (Grid / List) */}
+            <div className="flex items-center bg-white border border-slate-200/90 rounded-full p-0.5 shrink-0 shadow-2xs">
+              <button
+                type="button"
+                onClick={() => {
+                  playClick?.();
+                  setViewMode('grid');
+                }}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
+                  viewMode === 'grid'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span>Grid</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  playClick?.();
+                  setViewMode('list');
+                }}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
+                  viewMode === 'list'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <List className="w-3.5 h-3.5" />
+                <span>List</span>
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* 2-Column Compact Grid (Double Cards Side-by-Side) */}
-        <div className="grid grid-cols-2 gap-2 sm:gap-2.5 items-end">
-          {flagshipCourses.map((c) => (
-            <article
-              key={c.id}
-              className={`scd-pot-card is-mobile-double-compact scd-pot-${c.potTheme} w-full`}
-              onClick={() => {
-                playClick?.();
-                c.action();
-              }}
-            >
-              {/* 3D Hologram Video Dome / Poster */}
-              <div className="scd-pot-flow-stage">
-                <div className="scd-pot-rising-energy" />
-                <div className="scd-pot-particles">
-                  <span className="scd-pt p1" />
-                  <span className="scd-pt p2" />
-                </div>
+        {/* Course Cards List (Vertical Stack of Futuristic Capsule Stage Cards) */}
+        {visibleCourses.length === 0 ? (
+          <div className="p-8 text-center bg-white rounded-3xl border border-slate-200/80 shadow-xs">
+            <GraduationCap className="w-8 h-8 text-blue-500 mx-auto mb-2 opacity-80" />
+            <h4 className="text-sm font-black text-slate-800">No completed courses yet</h4>
+            <p className="text-xs text-slate-500 mt-1">Start learning your active course to unlock completed certification!</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {visibleCourses.map((c) => (
+              <div
+                key={c.id}
+                className={`relative rounded-3xl transition-all duration-300 ${c.themeStyles.cardGlow}`}
+                onClick={() => {
+                  playClick?.();
+                  c.action();
+                }}
+              >
+                {/* 1. Upper Card: Media Box + Course Details */}
+                <div className={`relative bg-white rounded-t-3xl border-t-2 border-x-2 ${c.themeStyles.cardBorder} p-3 sm:p-3.5 flex items-start gap-2.5 sm:gap-3`}>
+                  {/* Left Column: Course Video Playing in Loop with Top-Left Badge */}
+                  <div className="relative w-[115px] sm:w-[130px] h-[115px] sm:h-[125px] rounded-2xl overflow-hidden shrink-0 shadow-xs border border-slate-100 bg-slate-950">
+                    {/* Top-left Badge over the video */}
+                    <div className="absolute top-1.5 left-1.5 z-10 pointer-events-none">
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] sm:text-[8.5px] font-black text-white shadow-xs uppercase tracking-wide bg-gradient-to-r ${c.badgeGradient}`}>
+                        <span>{c.badgeIcon}</span>
+                        <span>{c.statusTag}</span>
+                      </span>
+                    </div>
 
-                <div className="scd-pot-holo-dome">
-                  {c.video ? (
+                    {/* Autoplaying Course Video */}
                     <video
                       src={c.video}
                       poster={c.holoImage}
@@ -381,66 +557,86 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
                       muted
                       playsInline
                       preload="auto"
-                      className="scd-pot-holo-video is-always-on"
-                    />
-                  ) : (
-                    <img
-                      src={c.image}
-                      alt={c.title}
                       className="w-full h-full object-cover"
                     />
-                  )}
-                  <div className="scd-pot-holo-glass-frame" />
+                  </div>
+
+                  {/* Right Column: Course Info, CTC, Description & Skills */}
+                  <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+                    {/* Top Right: CTC Salary Range Pill */}
+                    <div className="flex items-center justify-end">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs">
+                        <span className="text-[10px] font-black">₹</span>
+                        <span>{c.salaryRange}</span>
+                      </span>
+                    </div>
+
+                    {/* Course Title (Title in Blue, Subtitle in Purple) */}
+                    <h3 className="text-[13px] sm:text-sm font-black tracking-tight leading-snug mt-1">
+                      <span className="text-blue-600">{c.title}</span>{' '}
+                      <span className="text-purple-600">{c.subtitle}</span>
+                    </h3>
+
+                    {/* Short Description */}
+                    <p className="text-[10.5px] font-medium text-slate-600 line-clamp-2 leading-relaxed my-1">
+                      {c.shortDesc}
+                    </p>
+
+                    {/* Skills Row */}
+                    <div className="flex flex-wrap items-center gap-1 mt-auto pt-1">
+                      {c.skillsList.map((skill) => (
+                        <span
+                          key={skill}
+                          className="text-[8.5px] font-bold text-purple-700 bg-purple-50/90 border border-purple-200/80 rounded px-1.5 py-0.5 leading-none"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              {/* 3D Cylindrical Metallic Pot Body */}
-              <div className="scd-pot-cylinder-wrap">
-                <div className="scd-pot-top-rim">
-                  <div className="scd-pot-mouth-vortex" />
-                  <div className="scd-pot-rim-neon-ring" />
-                </div>
+                {/* 2. Lower Pedestal / Base Bar: Features + Slashed Price + Start Learning Button */}
+                <div className={`relative rounded-b-3xl border-b-2 border-x-2 ${c.themeStyles.trayBorder} ${c.themeStyles.trayBg} ${c.themeStyles.trayGlow} px-2.5 sm:px-3 py-2 flex items-center justify-between gap-1.5`}>
+                  {/* Neon Glow divider lip line between upper card & tray */}
+                  <div className={`absolute -top-[1.5px] left-2 right-2 h-[2px] rounded-full ${c.themeStyles.neonLip} shadow-xs pointer-events-none`} />
 
-                <div className="scd-pot-cylinder-body">
-                  <span className="scd-pot-side-rib left" />
-                  <span className="scd-pot-side-rib right" />
+                  {/* Left: 28 Real-World Projects & Coding Games */}
+                  <div className="flex items-center gap-2 text-[9px] sm:text-[10px] font-bold text-slate-700 min-w-0">
+                    <div className="inline-flex items-center gap-1 shrink-0">
+                      <Briefcase className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                      <span className="truncate">28 Real-World Projects</span>
+                    </div>
+                    <div className="inline-flex items-center gap-1 shrink-0">
+                      <Gamepad2 className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                      <span className="truncate">Coding Games</span>
+                    </div>
+                  </div>
 
-                  {/* ONLY: Course Name (2-line bold centered) */}
-                  <h3 className="scd-pot-title text-[11px] font-black text-slate-900 tracking-tight text-center my-1.5 leading-snug line-clamp-2 h-[28px] flex items-center justify-center">
-                    {c.title}
-                  </h3>
-
-                  {/* ONLY: Amount + Start Learning Button */}
-                  <div className="scd-pot-bottom-actions-row flex items-center justify-between gap-1 pt-2 mt-1 border-t border-slate-100">
-                    <span className="text-[11px] font-black text-slate-900 tracking-tight shrink-0">
-                      {c.courseFee}
+                  {/* Right: Slashed Fee & Start Learning Button */}
+                  <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <span className="scd-pot-slashed-daam !text-[11px] sm:!text-xs !py-0.5 !px-2 shrink-0">
+                      Rs {c.courseFee.replace('₹', '')}
                     </span>
 
                     <button
                       type="button"
-                      className={`py-1 px-2 rounded-full font-black text-[9.5px] text-white shadow-2xs flex items-center gap-0.5 cursor-pointer active:scale-95 transition-all shrink-0 ${c.btnClass}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         playClick?.();
                         c.action();
                       }}
+                      className={`py-1.5 px-3 sm:px-3.5 rounded-full font-black text-[10.5px] sm:text-[11px] text-white shadow-md flex items-center gap-1 cursor-pointer active:scale-95 transition-all shrink-0 ${c.themeStyles.btnClass}`}
                     >
-                      <span>Start</span>
-                      <ArrowRight className="w-2.5 h-2.5" />
+                      <span>Start Learning</span>
+                      <ArrowRight className="w-3 h-3 stroke-[2.8]" />
                     </button>
                   </div>
                 </div>
-
-                {/* 3D Base Plinth */}
-                <div className="scd-pot-bottom-base">
-                  <div className="scd-pot-bottom-neon-ring" />
-                  <div className="scd-pot-metallic-plinth" />
-                  <div className="scd-pot-floor-glow" />
-                </div>
               </div>
-            </article>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* =========================================================================
