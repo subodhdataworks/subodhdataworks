@@ -19,12 +19,9 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showGoogleAccountPicker, setShowGoogleAccountPicker] = useState(false);
-  const [googleClientIdInput, setGoogleClientIdInput] = useState(() => getGoogleClientId());
-  const [customGoogleName, setCustomGoogleName] = useState('');
-  const [customGoogleEmail, setCustomGoogleEmail] = useState('');
+  const [authError, setAuthError] = useState<string | null>(null);
 
-  // Load Google SDK on open and initialize Google One-Tap
+  // Load Google SDK on open and initialize Google 1-Click
   useEffect(() => {
     if (isOpen) {
       loadGoogleScript().then(() => {
@@ -53,7 +50,23 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
               auto_select: false,
               cancel_on_tap_outside: true,
             });
-            // Try Google One-Tap native prompt
+
+            // Render Google's official native 1-click button directly
+            const btnContainer = document.getElementById('google-signin-btn-container');
+            if (btnContainer) {
+              btnContainer.innerHTML = '';
+              (window as any).google.accounts.id.renderButton(btnContainer, {
+                type: 'standard',
+                theme: 'outline',
+                size: 'large',
+                text: 'continue_with',
+                shape: 'rectangular',
+                logo_alignment: 'left',
+                width: 320,
+              });
+            }
+
+            // Google One-Tap prompt on phone and laptop
             (window as any).google.accounts.id.prompt();
           } catch (e) {
             console.warn('GSI init notice:', e);
@@ -67,12 +80,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
 
   const handleGoogleSignInClick = async () => {
     setIsSubmitting(true);
-    const clientId = getGoogleClientId();
-    if (!clientId) {
-      setIsSubmitting(false);
-      setShowGoogleAccountPicker(true);
-      return;
-    }
+    setAuthError(null);
 
     try {
       const user = await requestGoogleAccountLogin();
@@ -88,32 +96,18 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
       onClose();
       return;
     } catch (err: any) {
-      console.warn('Google 1-Click popup issue, trying Firebase fallback:', err);
+      console.warn('Google Token Client issue, trying Firebase fallback:', err);
       try {
         const googleUser = await loginWithGooglePopup();
         setIsSubmitting(false);
         onSuccess(googleUser.name, googleUser.email, googleUser.avatar);
         onClose();
         return;
-      } catch {
+      } catch (fbErr: any) {
         setIsSubmitting(false);
-        setShowGoogleAccountPicker(true);
+        setAuthError('Google Sign-In window closed. Please tap Continue with Google again or use Mobile OTP below.');
       }
     }
-  };
-
-  const handleSelectGoogleAccount = async (name: string, accEmail: string, avatarUrl: string) => {
-    setIsSubmitting(true);
-    await recordUserInDatabase({
-      name,
-      email: accEmail,
-      avatar: avatarUrl,
-      source: 'Google',
-    });
-    setIsSubmitting(false);
-    setShowGoogleAccountPicker(false);
-    onSuccess(name, accEmail, avatarUrl);
-    onClose();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -158,12 +152,15 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
           </p>
         </div>
 
+        {/* Google 1-Click Native Official Button (Direct from Google SDK) */}
+        <div id="google-signin-btn-container" className="w-full flex justify-center mb-3"></div>
+
         {/* 1-CLICK GOOGLE SIGN IN BUTTON (100% Free Lifetime) */}
         <button
           type="button"
           onClick={handleGoogleSignInClick}
           disabled={isSubmitting}
-          className="w-full py-3 px-4 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-800 font-bold text-xs shadow-sm hover:shadow transition-all flex items-center justify-center gap-3 cursor-pointer mb-4"
+          className="w-full py-3 px-4 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-800 font-bold text-xs shadow-sm hover:shadow transition-all flex items-center justify-center gap-3 cursor-pointer mb-2"
         >
           {/* Authentic Google Multi-Color SVG Icon */}
           <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
@@ -184,11 +181,15 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
               d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
             />
           </svg>
-          <span>Continue with Google</span>
+          <span>{isSubmitting ? 'Opening Google...' : 'Continue with Google'}</span>
           <span className="text-[10px] text-emerald-600 font-extrabold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
             1-Click Free
           </span>
         </button>
+
+        {authError && (
+          <p className="text-xs text-rose-500 font-semibold mb-3 text-center">{authError}</p>
+        )}
 
         {/* OR Divider */}
         <div className="flex items-center my-4">
@@ -287,114 +288,6 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
-
-        {/* Google 1-Click Account Selector Modal Overlay */}
-        {showGoogleAccountPicker && (
-          <div className="absolute inset-0 z-30 bg-white/95 backdrop-blur-md p-6 flex flex-col justify-between animate-fadeIn text-left">
-            <div>
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5" viewBox="0 0 24 24">
-                    <path
-                      fill="#4285F4"
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-                    />
-                    <path
-                      fill="#EA4335"
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-                    />
-                  </svg>
-                  <strong className="text-sm font-bold text-slate-800">Choose Google Account</strong>
-                </div>
-                <button
-                  onClick={() => setShowGoogleAccountPicker(false)}
-                  className="p-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="p-3 bg-sky-50 rounded-2xl border border-sky-200 mt-2 mb-4 text-left">
-                <span className="text-xs font-bold text-sky-900 block mb-1">
-                  🔑 1-Time Google Client ID Setup (Free Lifetime):
-                </span>
-                <p className="text-[11px] text-sky-700 leading-relaxed mb-2.5">
-                  Har student ke laptop &amp; phone me pehle se login Gmail se 1-click automatic login ke liye apna Free Google Client ID yahan paste karein:
-                </p>
-                <div className="space-y-2">
-                  <input
-                    type="text"
-                    placeholder="Paste Client ID (e.g. 123...apps.googleusercontent.com)"
-                    value={googleClientIdInput}
-                    onChange={(e) => setGoogleClientIdInput(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-sky-300 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 font-mono"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (googleClientIdInput.trim()) {
-                        saveGoogleClientId(googleClientIdInput.trim());
-                        setShowGoogleAccountPicker(false);
-                        handleGoogleSignInClick();
-                      }
-                    }}
-                    className="w-full py-2 bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
-                  >
-                    Save &amp; Open Native Google Popup 🚀
-                  </button>
-                </div>
-              </div>
-
-              {/* Enter User's Real Google Account directly */}
-              <div className="pt-2 border-t border-slate-100">
-                <span className="text-[11px] font-bold text-slate-600 block mb-2">
-                  Or sign in directly for testing:
-                </span>
-                <div className="space-y-2">
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Student Full Name (e.g. Subodh Kumar)"
-                      value={customGoogleName}
-                      onChange={(e) => setCustomGoogleName(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-sky-500"
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="email"
-                      placeholder="Student Gmail (e.g. subodh@gmail.com)"
-                      value={customGoogleEmail}
-                      onChange={(e) => setCustomGoogleEmail(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-sky-500"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              disabled={!customGoogleEmail.trim()}
-              onClick={() => {
-                const email = customGoogleEmail.trim();
-                const name = customGoogleName.trim() || email.split('@')[0] || 'Learner';
-                handleSelectGoogleAccount(name, email, 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces');
-              }}
-              className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors mt-3 shadow-sm disabled:opacity-50 cursor-pointer"
-            >
-              Sign In Directly →
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );
