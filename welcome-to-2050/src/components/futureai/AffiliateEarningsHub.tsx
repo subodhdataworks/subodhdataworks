@@ -37,6 +37,7 @@ import {
 } from 'lucide-react';
 import './AffiliateEarningsHub.css';
 import { fetchAffiliateRealData, getUserReferralCode, normalizeRefCode } from '../../services/realAuthService';
+import { MobileAffiliateEarningsHub } from './mobile/MobileAffiliateEarningsHub';
 
 export interface AffiliateEarningsHubProps {
   userName?: string;
@@ -651,8 +652,46 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   ];
 
   return (
-    <div className="affiliate-hub-container">
-      {/* Dynamic Ambient Background Highlights */}
+    <>
+      {/* ── Native Android Mobile App Experience (< 768px) ── */}
+      <div className="md:hidden">
+        <MobileAffiliateEarningsHub
+          userName={userName}
+          hubState={hubState}
+          affiliateRefUrl={affiliateRefUrl}
+          cleanRefCode={cleanRefCode}
+          onCopyLink={handleCopyLink}
+          copiedLink={copiedLink}
+          onWithdrawRequest={(amount, destination) => {
+            const newTx: WithdrawalItem = {
+              id: `w-${Date.now()}`,
+              date: 'Just Now',
+              amount,
+              method: 'UPI',
+              destination,
+              status: 'Processing',
+              txId: `WTH-${Math.floor(100000 + Math.random() * 900000)}`,
+            };
+            setHubState((prev) => ({
+              ...prev,
+              availableBalance: prev.availableBalance - amount,
+              pendingBalance: prev.pendingBalance + amount,
+              withdrawals: [newTx, ...prev.withdrawals],
+            }));
+            showToast(`₹${amount.toLocaleString('en-IN')} withdrawal requested!`, 'success');
+          }}
+          onNavigateBack={() => {
+            if (onNavigateTab) onNavigateTab('home');
+            else {
+              if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+            }
+          }}
+        />
+      </div>
+
+      {/* ── Desktop Experience (>= 768px) ── */}
+      <div className="hidden md:block affiliate-hub-container">
+        {/* Dynamic Ambient Background Highlights */}
       <div className="affiliate-ambient-glow glow-cyan" />
       <div className="affiliate-ambient-glow glow-purple" />
       <div className="affiliate-ambient-glow glow-amber" />
@@ -2359,6 +2398,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 };
