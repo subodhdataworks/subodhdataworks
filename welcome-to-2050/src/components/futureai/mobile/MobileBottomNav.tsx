@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, GraduationCap, Gamepad2, IndianRupee, Briefcase } from 'lucide-react';
+import { Home, GraduationCap, Gamepad2, Users } from 'lucide-react';
 import { useThemeAccent } from '../../../context/ThemeAccentContext';
 
 export type MobileTab = 'home' | 'learn' | 'game' | 'arena' | 'earn' | 'placement' | 'profile';
@@ -13,7 +13,6 @@ interface MobileBottomNavProps {
 export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   currentTab,
   onSelectTab,
-  unreadEarnBadge = false,
 }) => {
   const { playClick } = useThemeAccent();
 
@@ -28,82 +27,117 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
     return currentTab === tabId;
   };
 
-  const navItems = [
-    {
-      id: 'home' as MobileTab,
-      label: 'Home',
-      icon: Home,
-    },
-    {
-      id: 'learn' as MobileTab,
-      label: 'Learn',
-      icon: GraduationCap,
-    },
-    {
-      id: 'game' as MobileTab,
-      label: 'Game',
-      icon: Gamepad2,
-    },
-    {
-      id: 'earn' as MobileTab,
-      label: 'Earn',
-      icon: IndianRupee,
-      badge: '₹100',
-    },
-    {
-      id: 'placement' as MobileTab,
-      label: 'Placement',
-      icon: Briefcase,
-    },
-  ];
-
   return (
-    <div className="fixed bottom-3 left-3 right-3 max-w-md mx-auto z-50 select-none pb-[env(safe-area-inset-bottom,0px)]">
-      {/* Soft Ambient Cyan/Blue Backlight */}
-      <div className="absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-blue-400/20 via-sky-300/30 to-indigo-400/20 blur-xl pointer-events-none" />
+    <div className="fixed bottom-0 inset-x-0 z-50 select-none pb-[env(safe-area-inset-bottom,0px)] bg-white/95 backdrop-blur-xl border-t border-slate-200/90 shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
+      <nav className="max-w-md mx-auto px-2 py-1.5 flex items-center justify-between relative">
+        {/* Tab 1: Home */}
+        <button
+          type="button"
+          onClick={() => handleTabClick('home')}
+          className="flex-1 flex flex-col items-center justify-center py-1 cursor-pointer active:scale-95 transition-all relative"
+        >
+          <Home
+            className={`w-5 h-5 transition-colors ${
+              isTabActive('home') ? 'text-blue-600 fill-blue-600' : 'text-slate-400'
+            }`}
+          />
+          <span
+            className={`text-[10px] font-black mt-0.5 ${
+              isTabActive('home') ? 'text-blue-600' : 'text-slate-500'
+            }`}
+          >
+            Home
+          </span>
+          {isTabActive('home') && (
+            <span className="w-5 h-0.5 rounded-full bg-blue-600 mt-0.5" />
+          )}
+        </button>
 
-      {/* 03 Glass Capsule Dock (1:1 with Next-Gen Reference Design) */}
-      <nav className="relative w-full bg-white/90 backdrop-blur-2xl border-[1.5px] border-white/95 rounded-full px-2 py-1.5 shadow-[0_12px_36px_rgba(0,100,250,0.16),0_4px_16px_rgba(0,0,0,0.04)] flex items-center justify-between gap-1">
-        {navItems.map((item) => {
-          const active = isTabActive(item.id);
-          const Icon = item.icon;
+        {/* Tab 2: Learn */}
+        <button
+          type="button"
+          onClick={() => handleTabClick('learn')}
+          className="flex-1 flex flex-col items-center justify-center py-1 cursor-pointer active:scale-95 transition-all relative"
+        >
+          <GraduationCap
+            className={`w-5 h-5 transition-colors ${
+              isTabActive('learn') ? 'text-blue-600 fill-blue-600' : 'text-slate-500'
+            }`}
+          />
+          <span
+            className={`text-[10px] font-bold mt-0.5 ${
+              isTabActive('learn') ? 'text-blue-600 font-black' : 'text-slate-500'
+            }`}
+          >
+            Learn
+          </span>
+          {isTabActive('learn') && (
+            <span className="w-5 h-0.5 rounded-full bg-blue-600 mt-0.5" />
+          )}
+        </button>
 
-          return (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => handleTabClick(item.id)}
-              className={`relative flex items-center justify-center cursor-pointer transition-all duration-300 rounded-full ${
-                active
-                  ? 'flex-1 py-2 px-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white shadow-md shadow-blue-500/35 scale-[1.03]'
-                  : 'flex-1 py-1.5 px-1.5 text-slate-600 hover:text-slate-900 active:scale-90'
-              }`}
-            >
-              {active ? (
-                // Active Capsule Pill: Icon + Label side-by-side with smooth glow
-                <div className="flex items-center justify-center gap-1.5">
-                  <Icon className="w-4 h-4 stroke-[2.5] flex-shrink-0" />
-                  <span className="text-xs font-black tracking-tight">{item.label}</span>
-                </div>
-              ) : (
-                // Inactive: Clean Icon + Label Stacked
-                <div className="flex flex-col items-center justify-center">
-                  <div className="relative">
-                    <Icon className="w-5 h-5 stroke-[1.8] text-slate-600" />
-                    {item.badge && (
-                      <span className="absolute -top-1.5 -right-2 px-1 py-0.2 rounded-full bg-emerald-500 text-white text-[8px] font-black shadow-xs">
-                        {item.badge}
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-[10px] font-bold text-slate-500 mt-0.5 tracking-tight">
-                    {item.label}
-                  </span>
-                </div>
-              )}
-            </button>
-          );
-        })}
+        {/* Tab 3: Game (Center Elevated Glowing Button matching Reference Design) */}
+        <div className="flex-1 flex flex-col items-center justify-center relative -top-3">
+          <button
+            type="button"
+            onClick={() => handleTabClick('game')}
+            className="w-13 h-13 rounded-full bg-gradient-to-tr from-cyan-400 via-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/35 border-[3.5px] border-white flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+            aria-label="Coding Games"
+          >
+            <Gamepad2 className="w-6 h-6 stroke-[2.2]" />
+          </button>
+          <span
+            className={`text-[10px] font-black mt-0.5 ${
+              isTabActive('game') ? 'text-blue-600' : 'text-slate-600'
+            }`}
+          >
+            Game
+          </span>
+        </div>
+
+        {/* Tab 4: Earn */}
+        <button
+          type="button"
+          onClick={() => handleTabClick('earn')}
+          className="flex-1 flex flex-col items-center justify-center py-1 cursor-pointer active:scale-95 transition-all relative"
+        >
+          <div className="w-5 h-5 rounded-md bg-amber-400 text-white flex items-center justify-center text-[11px] font-black shadow-xs">
+            ₹
+          </div>
+          <span
+            className={`text-[10px] font-bold mt-0.5 ${
+              isTabActive('earn') ? 'text-blue-600 font-black' : 'text-slate-500'
+            }`}
+          >
+            Earn
+          </span>
+          {isTabActive('earn') && (
+            <span className="w-5 h-0.5 rounded-full bg-blue-600 mt-0.5" />
+          )}
+        </button>
+
+        {/* Tab 5: Placement */}
+        <button
+          type="button"
+          onClick={() => handleTabClick('placement')}
+          className="flex-1 flex flex-col items-center justify-center py-1 cursor-pointer active:scale-95 transition-all relative"
+        >
+          <Users
+            className={`w-5 h-5 transition-colors ${
+              isTabActive('placement') ? 'text-rose-600' : 'text-orange-500'
+            }`}
+          />
+          <span
+            className={`text-[10px] font-bold mt-0.5 ${
+              isTabActive('placement') ? 'text-blue-600 font-black' : 'text-slate-500'
+            }`}
+          >
+            Placement
+          </span>
+          {isTabActive('placement') && (
+            <span className="w-5 h-0.5 rounded-full bg-blue-600 mt-0.5" />
+          )}
+        </button>
       </nav>
     </div>
   );

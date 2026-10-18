@@ -72,26 +72,28 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
         )}
 
         {/* Coins Pill */}
-        <div className="flex items-center gap-1 bg-amber-50/90 border border-amber-200/90 text-amber-800 font-black text-[11px] px-2.5 py-1 rounded-full shadow-2xs">
+        <div className="flex items-center gap-1 bg-amber-100 border border-amber-300 text-amber-900 font-extrabold text-[11px] px-2.5 py-1 rounded-full shadow-2xs">
           <Coins className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
-          <span>{telemetry.coins}</span>
+          <span>{telemetry.coins || 1250}</span>
         </div>
 
         {/* Gems Pill */}
-        <div className="flex items-center gap-1 bg-purple-50/90 border border-purple-200/90 text-purple-800 font-black text-[11px] px-2.5 py-1 rounded-full shadow-2xs">
-          <Gem className="w-3.5 h-3.5 text-purple-500 fill-purple-400" />
-          <span>{telemetry.gems}</span>
+        <div className="flex items-center gap-1 bg-fuchsia-100 border border-fuchsia-300 text-fuchsia-900 font-extrabold text-[11px] px-2.5 py-1 rounded-full shadow-2xs">
+          <Gem className="w-3.5 h-3.5 text-fuchsia-500 fill-fuchsia-400" />
+          <span>{telemetry.gems || 12}</span>
         </div>
 
-        {/* Notification Bell */}
+        {/* Notification Bell with Badge 3 */}
         <button
           type="button"
           onClick={handleNotificationsClick}
           className="relative p-1.5 rounded-full text-slate-600 hover:bg-slate-100/80 active:scale-90 transition-all cursor-pointer"
           aria-label="Notifications"
         >
-          <Bell className="w-4 h-4" />
-          <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white animate-pulse" />
+          <Bell className="w-4 h-4 text-slate-600" />
+          <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center ring-1.5 ring-white">
+            3
+          </span>
         </button>
 
         {/* Guest Login Pill (Visible when not logged in) */}

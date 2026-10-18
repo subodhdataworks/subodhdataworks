@@ -1765,7 +1765,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             {/* Native Android Mobile Feed (< 768px) */}
             <div className="md:hidden">
               <MobileDashboardHome
-                userName={userName}
+                userName={currentUserName}
                 telemetry={telemetry}
                 onStartPython={() => {
                   playClick();
@@ -1932,7 +1932,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             {/* Native Android Mobile Dashboard Feed (< 768px) */}
             <div className="md:hidden">
               <MobileDashboardHome
-                userName={userName}
+                userName={currentUserName}
                 telemetry={telemetry}
                 onStartPython={() => {
                   playClick();
