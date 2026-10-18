@@ -1,6 +1,7 @@
 import React from 'react';
-import { X, LogOut, Coins, Gem, GraduationCap, Sparkles, ChevronRight, Share2, ShieldCheck, Flame } from 'lucide-react';
+import { X, LogOut, Coins, Gem, GraduationCap, Sparkles, ChevronRight, Share2, ShieldCheck, Flame, Download } from 'lucide-react';
 import { LearnerTelemetry } from '../../../services/realAuthService';
+import { isStandaloneMode, triggerNativeInstall } from '../../../services/pwaInstallService';
 
 interface MobileProfileSheetProps {
   isOpen: boolean;
@@ -125,6 +126,31 @@ export const MobileProfileSheet: React.FC<MobileProfileSheetProps> = ({
             </div>
             <ChevronRight className="w-4 h-4 text-slate-400" />
           </button>
+
+          {!isStandaloneMode() && (
+            <button
+              type="button"
+              onClick={async () => {
+                onClose();
+                await triggerNativeInstall();
+              }}
+              className="w-full flex items-center justify-between p-3 rounded-2xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 border border-blue-500/20 hover:bg-blue-50 transition-colors cursor-pointer text-left"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold shadow-xs">
+                  <Download className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-xs font-black text-slate-900 leading-tight flex items-center gap-1.5">
+                    <span>Install Android App</span>
+                    <span className="bg-emerald-100 text-emerald-700 text-[9px] font-black px-1.5 py-0.5 rounded-full">Fast</span>
+                  </div>
+                  <div className="text-[10px] text-slate-500">बिना ब्राउज़र के 100% फुल स्क्रीन में चलाएं</div>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-blue-500" />
+            </button>
+          )}
 
           <div className="flex items-center gap-2 p-3 rounded-2xl bg-slate-50 text-slate-600 text-xs">
             <ShieldCheck className="w-4 h-4 text-sky-500 flex-shrink-0" />

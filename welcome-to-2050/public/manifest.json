@@ -1,0 +1,66 @@
+{
+  "name": "FUTURE AI - Learn & Earn",
+  "short_name": "FUTURE AI",
+  "description": "Learn Data Analytics, AI & Coding. Real-world projects, gamified coding arena and 100% placement assistance. Learn Today. Earn Tomorrow.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#070c1e",
+  "theme_color": "#0B1638",
+  "categories": ["education", "finance", "productivity"],
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Learning Dashboard",
+      "short_name": "Dashboard",
+      "description": "Open your learning path & chapters",
+      "url": "/#dashboard",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Coding Arena",
+      "short_name": "Arena",
+      "description": "Play interactive coding games",
+      "url": "/#intro-games",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Affiliate & Earnings Hub",
+      "short_name": "Earnings",
+      "description": "Check wallet & UPI withdrawal",
+      "url": "/#income",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}

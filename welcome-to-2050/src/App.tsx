@@ -9,6 +9,7 @@ import { AdminLeadManagerModal } from './components/futureai/AdminLeadManagerMod
 import { recordReferralClick } from './services/realAuthService';
 import { StorageService } from './services/storage';
 import { ThemeAccentProvider } from './context/ThemeAccentContext';
+import { MobileAppInstallPrompt } from './components/futureai/mobile/MobileAppInstallPrompt';
 
 export const App: React.FC = () => {
   const profile = StorageService.getProfile();
@@ -198,6 +199,9 @@ export const App: React.FC = () => {
             }
           }}
         />
+
+        {/* Global PWA Android App Installation Banner / Modal for Mobile (< 768px) */}
+        <MobileAppInstallPrompt />
 
       </div>
     </ThemeAccentProvider>

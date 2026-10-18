@@ -1,6 +1,7 @@
 import React from 'react';
-import { Bell, Coins, Gem } from 'lucide-react';
+import { Bell, Coins, Gem, Download } from 'lucide-react';
 import { LearnerTelemetry } from '../../../services/realAuthService';
+import { isStandaloneMode, triggerNativeInstall } from '../../../services/pwaInstallService';
 
 interface MobileTopBarProps {
   userName: string;
@@ -63,6 +64,18 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
 
       {/* Right: Coins, Gems & User Profile Chip */}
       <div className="flex items-center gap-1.5 sm:gap-2">
+        {!isStandaloneMode() && (
+          <button
+            type="button"
+            onClick={() => triggerNativeInstall()}
+            className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-[10px] px-2 py-1 rounded-full shadow-xs active:scale-95 transition-all cursor-pointer mr-0.5"
+            title="Install Android App"
+          >
+            <Download className="w-3 h-3 animate-pulse" />
+            <span>Install</span>
+          </button>
+        )}
+
         {/* Coins Pill */}
         <div className="flex items-center gap-1 bg-amber-50/90 border border-amber-200/90 text-amber-700 font-black text-[11px] px-2 py-1 rounded-full shadow-2xs">
           <Coins className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
