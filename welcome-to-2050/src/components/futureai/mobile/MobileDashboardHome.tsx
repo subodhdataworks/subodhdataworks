@@ -63,86 +63,63 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
 }) => {
   const { playClick, playHover } = useThemeAccent();
   const [searchQuery, setSearchQuery] = useState('');
-  const [coursesViewMode, setCoursesViewMode] = useState<'grid' | 'swipe'>('grid');
-  const [coursesFilter, setCoursesFilter] = useState<'all' | 'in-progress' | 'explore'>('all');
+  const [activeCourseIndex, setActiveCourseIndex] = useState(0);
 
-  // 4 Core Courses (1:1 Exact Match with Website 3D Glowing Neon Pots, Scaled Down for Mobile)
+  // 4 Core Courses: ONLY Course Name, Amount, and Start Learning
   const flagshipCourses = [
     {
       id: 'data-analyst-genai',
       badgeNum: 1,
       statusTag: 'ENROLLED',
-      title: 'Data Analyst',
-      subtitle: 'with GenAI',
-      shortDesc: 'Master Python, SQL, Power BI, Excel & GenAI Analytics.',
-      salaryRange: '₹6L - ₹12L',
-      courseFee: 'Rs 18,999',
+      title: 'Data Analyst with GenAI',
+      courseFee: '₹18,999',
       image: '/images/pot1_sharp_poster.jpg',
       holoImage: '/images/pot1_sharp_poster.jpg',
       video: '/videos/data_analyst_genai_v2.mp4',
       potTheme: 'blue' as const,
-      skillsList: ['Python', 'SQL', 'Power BI', 'Excel', 'GenAI'],
+      btnClass: 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/25',
       action: onStartPython,
-      isInProgress: true,
     },
     {
       id: 'data-science-agentic-ai',
       badgeNum: 2,
       statusTag: 'HIGH DEMAND',
-      title: 'Data Science',
-      subtitle: '& Agentic AI',
-      shortDesc: 'Explore Machine Learning, Deep Learning, RAG & AI Agents.',
-      salaryRange: '₹10L - ₹22L',
-      courseFee: 'Rs 29,999',
+      title: 'Data Science & Agentic AI',
+      courseFee: '₹29,999',
       image: '/images/pot2_sharp_poster.jpg',
       holoImage: '/images/pot2_sharp_poster.jpg',
       video: '/videos/data_science_agentic_ai_course.mp4',
       potTheme: 'purple' as const,
-      skillsList: ['ML', 'Deep Learning', 'RAG', 'Agentic AI'],
+      btnClass: 'bg-purple-600 hover:bg-purple-700 shadow-purple-500/25',
       action: () => (onOpenGenAi ? onOpenGenAi() : onOpenLockedModule('Data Science & Agentic AI')),
-      isInProgress: false,
     },
     {
       id: 'ml-engineering',
       badgeNum: 3,
       statusTag: 'ADVANCED TECH',
-      title: 'ML',
-      subtitle: 'Engineering',
-      shortDesc: 'Build & deploy scalable ML models, PyTorch & MLOps pipelines.',
-      salaryRange: '₹12L - ₹28L',
-      courseFee: 'Rs 39,999',
+      title: 'ML Engineering',
+      courseFee: '₹39,999',
       image: '/images/pot3_sharp_poster.jpg',
       holoImage: '/images/pot3_sharp_poster.jpg',
       video: '/videos/ml_engineering_course.mp4',
       potTheme: 'gold' as const,
-      skillsList: ['PyTorch', 'MLOps', 'Docker', 'Cloud AI'],
+      btnClass: 'bg-amber-600 hover:bg-amber-700 shadow-amber-500/25',
       action: () => (onOpenPowerBi ? onOpenPowerBi() : onOpenLockedModule('ML Engineering')),
-      isInProgress: false,
     },
     {
       id: 'ai-engineering',
       badgeNum: 4,
       statusTag: 'FLAGSHIP 2050',
-      title: 'AI',
-      subtitle: 'Engineering',
-      shortDesc: 'Design intelligent systems, LLMs, Vector DBs & Multi-Agents.',
-      salaryRange: '₹15L - ₹35L',
-      courseFee: 'Rs 49,999',
+      title: 'AI Engineering',
+      courseFee: '₹49,999',
       image: '/images/pot4_sharp_poster.jpg',
       holoImage: '/images/pot4_sharp_poster.jpg',
       video: '/videos/ai_engineering_course.mp4',
       potTheme: 'emerald' as const,
-      skillsList: ['LLMs', 'Vector DB', 'Multi-Agent', 'OpenAI'],
+      btnClass: 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/25',
       action: () => onOpenLockedModule('Full-Stack AI Engineering'),
-      isInProgress: false,
     },
   ];
-
-  const visibleCourses = flagshipCourses.filter((c) => {
-    if (coursesFilter === 'in-progress') return c.isInProgress;
-    if (coursesFilter === 'explore') return !c.isInProgress;
-    return true;
-  });
 
   return (
     <div className="w-full pb-32 pt-2 px-3 sm:px-4 space-y-4 text-left select-none max-w-md mx-auto">
@@ -357,10 +334,10 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       </div>
 
       {/* =========================================================================
-          4. "4 High-Paying Industry Courses" (1:1 with Website 3D Glowing Neon Pots, Scaled Down)
+          4. "4 High-Paying Industry Courses" (Single Course per Screen, Only Course Name, Fee & Start Learning)
           ========================================================================= */}
       <div className="w-full">
-        {/* Header & Controls Row */}
+        {/* Header with Course Counter */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5">
             <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
@@ -371,206 +348,150 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
             </h2>
           </div>
 
-          {/* Grid / Swipe View Mode Capsule */}
-          <div className="flex items-center bg-slate-100 p-0.5 rounded-full border border-slate-200">
-            <button
-              type="button"
-              onClick={() => {
-                playClick?.();
-                setCoursesViewMode('grid');
-              }}
-              className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold transition-all ${
-                coursesViewMode === 'grid'
-                  ? 'bg-white text-blue-600 shadow-2xs'
-                  : 'text-slate-500 hover:text-slate-700'
-              }`}
-            >
-              <LayoutGrid className="w-3 h-3" />
-              <span>Grid</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                playClick?.();
-                setCoursesViewMode('swipe');
-              }}
-              className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold transition-all ${
-                coursesViewMode === 'swipe'
-                  ? 'bg-white text-blue-600 shadow-2xs'
-                  : 'text-slate-500 hover:text-slate-700'
-              }`}
-            >
-              <List className="w-3 h-3" />
-              <span>Swipe</span>
-            </button>
+          <div className="flex items-center gap-1 text-[11px] font-black text-blue-700 bg-blue-50 border border-blue-200/60 px-2.5 py-0.5 rounded-full">
+            <span>Course</span>
+            <span className="text-blue-900">{activeCourseIndex + 1}</span>
+            <span className="text-slate-400">/</span>
+            <span className="text-slate-500">4</span>
           </div>
         </div>
 
-        {/* Filter Pills Row (All, In Progress, Explore) */}
-        <div className="flex items-center gap-1.5 mb-2.5 overflow-x-auto scrollbar-none pb-0.5">
-          <button
-            type="button"
-            onClick={() => {
-              playClick?.();
-              setCoursesFilter('all');
-            }}
-            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold shrink-0 transition-all ${
-              coursesFilter === 'all'
-                ? 'bg-blue-600 text-white shadow-2xs'
-                : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
-            }`}
-          >
-            All (4)
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              playClick?.();
-              setCoursesFilter('in-progress');
-            }}
-            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold shrink-0 transition-all ${
-              coursesFilter === 'in-progress'
-                ? 'bg-blue-600 text-white shadow-2xs'
-                : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
-            }`}
-          >
-            In Progress (1)
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              playClick?.();
-              setCoursesFilter('explore');
-            }}
-            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold shrink-0 transition-all ${
-              coursesFilter === 'explore'
-                ? 'bg-blue-600 text-white shadow-2xs'
-                : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
-            }`}
-          >
-            Explore (3)
-          </button>
+        {/* Horizontal Snap Slider: Exactly ONE Single Course on Screen at a Time */}
+        <div
+          id="mobile-courses-single-slider"
+          className="flex gap-4 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory scroll-smooth"
+          onScroll={(e) => {
+            const el = e.currentTarget;
+            const w = el.offsetWidth;
+            if (w > 0) {
+              const idx = Math.round(el.scrollLeft / w);
+              if (idx !== activeCourseIndex && idx >= 0 && idx < flagshipCourses.length) {
+                setActiveCourseIndex(idx);
+              }
+            }
+          }}
+        >
+          {flagshipCourses.map((c) => (
+            <div
+              key={c.id}
+              className="w-full min-w-full flex-shrink-0 snap-center"
+            >
+              <article
+                className={`scd-pot-card is-mobile-single-course scd-pot-${c.potTheme}`}
+                onClick={() => {
+                  playClick?.();
+                  c.action();
+                }}
+              >
+                {/* 3D Hologram Video Dome / Poster */}
+                <div className="scd-pot-flow-stage">
+                  <div className="scd-pot-rising-energy" />
+                  <div className="scd-pot-particles">
+                    <span className="scd-pt p1" />
+                    <span className="scd-pt p2" />
+                    <span className="scd-pt p3" />
+                    <span className="scd-pt p4" />
+                  </div>
+
+                  <div className="scd-pot-holo-dome">
+                    {c.video ? (
+                      <video
+                        src={c.video}
+                        poster={c.holoImage}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        preload="auto"
+                        className="scd-pot-holo-video is-always-on"
+                      />
+                    ) : (
+                      <img
+                        src={c.image}
+                        alt={c.title}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                    <div className="scd-pot-holo-glass-frame" />
+                  </div>
+                </div>
+
+                {/* 3D Cylindrical Metallic Pot Body */}
+                <div className="scd-pot-cylinder-wrap">
+                  <div className="scd-pot-top-rim">
+                    <div className="scd-pot-mouth-vortex" />
+                    <div className="scd-pot-rim-neon-ring" />
+                  </div>
+
+                  <div className="scd-pot-cylinder-body">
+                    <span className="scd-pot-side-rib left" />
+                    <span className="scd-pot-side-rib right" />
+
+                    {/* ONLY 1: Course Name (Large, Bold, Centered) */}
+                    <h3 className="scd-pot-title text-base sm:text-lg font-black text-slate-900 tracking-tight text-center my-2">
+                      {c.title}
+                    </h3>
+
+                    {/* ONLY 2 & 3: Amount + Start Learning Button */}
+                    <div className="scd-pot-bottom-actions-row flex items-center justify-between gap-3 pt-3 mt-1 border-t border-slate-100">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-semibold text-slate-400">Fee:</span>
+                        <span className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+                          {c.courseFee}
+                        </span>
+                      </div>
+
+                      <button
+                        type="button"
+                        className={`py-2 px-4 rounded-full font-black text-xs text-white shadow-md flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all ${c.btnClass}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          playClick?.();
+                          c.action();
+                        }}
+                      >
+                        <span>Start Learning</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 3D Base Plinth */}
+                  <div className="scd-pot-bottom-base">
+                    <div className="scd-pot-bottom-neon-ring" />
+                    <div className="scd-pot-metallic-plinth" />
+                    <div className="scd-pot-floor-glow" />
+                  </div>
+                </div>
+              </article>
+            </div>
+          ))}
         </div>
 
-        {/* Course Cards Container: Grid (2-column) or Swipe (horizontal) */}
-        <div
-          className={
-            coursesViewMode === 'grid'
-              ? 'grid grid-cols-2 gap-2.5 sm:gap-3 items-end'
-              : 'flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory'
-          }
-        >
-          {visibleCourses.map((c) => (
-            <article
+        {/* 4 Pagination Indicator Dots for the 4 Single Courses */}
+        <div className="flex items-center justify-center gap-2 mt-2">
+          {flagshipCourses.map((c, idx) => (
+            <button
               key={c.id}
-              className={`scd-pot-card is-mobile-compact scd-pot-${c.potTheme} ${
-                coursesViewMode === 'swipe' ? 'min-w-[195px] max-w-[215px] shrink-0 snap-start' : 'w-full'
-              }`}
+              type="button"
               onClick={() => {
                 playClick?.();
-                c.action();
+                setActiveCourseIndex(idx);
+                const slider = document.getElementById('mobile-courses-single-slider');
+                if (slider) {
+                  slider.scrollTo({
+                    left: idx * slider.clientWidth,
+                    behavior: 'smooth',
+                  });
+                }
               }}
-            >
-              {/* TOP HOLOGRAM / VIDEO DOME FLOWING UP OUT OF THE POT */}
-              <div className="scd-pot-flow-stage">
-                <div className="scd-pot-rising-energy" />
-                <div className="scd-pot-particles">
-                  <span className="scd-pt p1" />
-                  <span className="scd-pt p2" />
-                  <span className="scd-pt p3" />
-                  <span className="scd-pt p4" />
-                </div>
-
-                <div className="scd-pot-holo-dome">
-                  {c.video ? (
-                    <video
-                      src={c.video}
-                      poster={c.holoImage}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload="auto"
-                      className="scd-pot-holo-video is-always-on"
-                    />
-                  ) : (
-                    <img
-                      src={c.image}
-                      alt={c.title}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                  <div className="scd-pot-holo-glass-frame" />
-                </div>
-              </div>
-
-              {/* BOTTOM 3D CYLINDRICAL NEON POT */}
-              <div className="scd-pot-cylinder-wrap">
-                <div className="scd-pot-top-rim">
-                  <div className="scd-pot-mouth-vortex" />
-                  <div className="scd-pot-rim-neon-ring" />
-                </div>
-
-                <div className="scd-pot-cylinder-body">
-                  <span className="scd-pot-side-rib left" />
-                  <span className="scd-pot-side-rib right" />
-
-                  {/* Status & CTC Tag Pill */}
-                  <div className="scd-pot-top-tags">
-                    <span className="scd-pot-status-pill">{c.statusTag}</span>
-                    <span className="scd-pot-ctc-pill">{c.salaryRange}</span>
-                  </div>
-
-                  {/* Two-Tone Title */}
-                  <h3 className="scd-pot-title">
-                    <span className="scd-title-brighter">{c.title}</span>{' '}
-                    <span className="scd-title-future">{c.subtitle}</span>
-                  </h3>
-
-                  {/* Centered Short Description */}
-                  <p className="scd-pot-desc">{c.shortDesc}</p>
-
-                  {/* Skills Mini Row */}
-                  <div className="scd-pot-skills-row">
-                    {c.skillsList.slice(0, 3).map((s) => (
-                      <span key={s} className="scd-pot-skill-tag">
-                        {s}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Slashed Daam + Start Learning Button */}
-                  <div className="scd-pot-bottom-actions-row">
-                    <div className="scd-pot-slashed-price-wrap">
-                      <span className="scd-pot-slashed-daam">{c.courseFee}</span>
-                    </div>
-
-                    <button
-                      type="button"
-                      className="scd-pot-circle-arrow-btn cursor-pointer active:scale-95 transition-all"
-                      aria-label="Start Learning"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        playClick?.();
-                        c.action();
-                      }}
-                    >
-                      <span className="scd-pot-unlock-text">Start</span>
-                      <span className="scd-pot-arrow-icon-circle">
-                        <ArrowRight className="w-2.5 h-2.5 stroke-[3]" />
-                      </span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* 3D Base Plinth */}
-                <div className="scd-pot-bottom-base">
-                  <div className="scd-pot-bottom-neon-ring" />
-                  <div className="scd-pot-metallic-plinth" />
-                  <div className="scd-pot-floor-glow" />
-                </div>
-              </div>
-            </article>
+              className={`h-2 rounded-full transition-all cursor-pointer ${
+                activeCourseIndex === idx
+                  ? 'w-6 bg-blue-600 shadow-xs'
+                  : 'w-2 bg-slate-300 hover:bg-slate-400'
+              }`}
+              aria-label={`Go to course ${idx + 1}`}
+            />
           ))}
         </div>
       </div>
