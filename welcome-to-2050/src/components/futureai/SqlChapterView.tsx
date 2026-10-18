@@ -7,6 +7,7 @@ import {
   TrendingUp, LineChart, Edit3, Server, Eye, ShieldCheck, Binary,
   Gauge, FileJson, PieChart, Share2
 } from 'lucide-react';
+import { MobileSqlChapterView } from './mobile/MobileSqlChapterView';
 import './SqlChapterView.css';
 
 interface Props {
@@ -16,9 +17,9 @@ interface Props {
   onOpenAdvisor?: () => void;
 }
 
-type LessonStatus = 'completed' | 'progress' | 'todo';
-interface Lesson { title: string; time: string; status: LessonStatus }
-interface Chapter {
+export type LessonStatus = 'completed' | 'progress' | 'todo';
+export interface Lesson { title: string; time: string; status: LessonStatus }
+export interface Chapter {
   id: number;
   title: string;
   desc: string;
@@ -28,9 +29,9 @@ interface Chapter {
   lessons: Lesson[];
 }
 
-const SQL_COLOR = '#7c3aed';
+export const SQL_COLOR = '#7c3aed';
 
-const SQL_CHAPTERS: Chapter[] = [
+export const SQL_CHAPTERS: Chapter[] = [
   {
     id: 1,
     title: 'Introduction to SQL and Databases',
@@ -573,7 +574,12 @@ const ACTIONS = [
   { step: 'code', label: 'Code', icon: <Code2 className="w-3 h-3" />, cls: 'act-code' },
 ];
 
-export const SqlChapterView: React.FC<Props> = ({ onBack, onOpenAdvisor }) => {
+export const SqlChapterView: React.FC<Props> = ({
+  userName = 'Learner',
+  onBack,
+  onOpenUnlockModal,
+  onOpenAdvisor,
+}) => {
   const [openId, setOpenId] = useState<number | null>(1);
 
   const totalLessons = SQL_CHAPTERS.reduce((acc, c) => acc + c.lessons.length, 0);
@@ -581,8 +587,21 @@ export const SqlChapterView: React.FC<Props> = ({ onBack, onOpenAdvisor }) => {
   const pct = Math.round((doneLessons / totalLessons) * 100);
 
   return (
-    <div className="scv-root">
-      {/* ================= LEFT ================= */}
+    <>
+      {/* ── Native Android Mobile App View (< 768px) ── */}
+      <div className="md:hidden">
+        <MobileSqlChapterView
+          userName={userName}
+          onBack={onBack}
+          onOpenUnlockModal={onOpenUnlockModal}
+          onOpenAdvisor={onOpenAdvisor}
+        />
+      </div>
+
+      {/* ── Desktop Experience (>= 768px) ── */}
+      <div className="hidden md:block">
+        <div className="scv-root">
+          {/* ================= LEFT ================= */}
       <div className="scv-left">
         {/* Hero */}
         <section className="scv-hero scv-hero-sql">
@@ -765,7 +784,9 @@ export const SqlChapterView: React.FC<Props> = ({ onBack, onOpenAdvisor }) => {
           <Sparkles className="scv-spark" />
         </div>
       </aside>
-    </div>
+        </div>
+      </div>
+    </>
   );
 };
 
