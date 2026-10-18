@@ -1235,18 +1235,132 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             </span>
           </div>
 
-          {/* User Profile */}
-          <div className="dock-user-profile" onClick={() => onLogout?.()}>
-            <img 
-              src={(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_avatar') : null) || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"} 
-              alt={userName} 
-              className="dock-avatar-img" 
-            />
-            <div className="hidden sm:flex flex-col text-left">
-              <strong className="text-xs font-black text-slate-800 leading-tight">{userName}</strong>
-              <span className="text-[10px] text-slate-500 font-semibold">Level 1 • New Learner</span>
+          {/* User Profile & Dropdown Menu */}
+          <div className="relative">
+            <div 
+              className="dock-user-profile hover:opacity-90 transition-opacity select-none cursor-pointer" 
+              onClick={() => setProfileDropdownOpen((prev) => !prev)}
+            >
+              <img 
+                src={(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_avatar') : null) || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"} 
+                alt={userName} 
+                className="dock-avatar-img" 
+              />
+              <div className="hidden sm:flex flex-col text-left">
+                <strong className="text-xs font-black text-slate-800 leading-tight">{userName}</strong>
+                <span className="text-[10px] text-slate-500 font-semibold">Level 1 • New Learner</span>
+              </div>
+              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${profileDropdownOpen ? 'rotate-180' : ''}`} />
             </div>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+
+            {/* Profile Dropdown Menu */}
+            {profileDropdownOpen && (
+              <>
+                {/* Backdrop overlay to close on outside click */}
+                <div 
+                  className="fixed inset-0 z-40" 
+                  onClick={() => setProfileDropdownOpen(false)} 
+                />
+                
+                <div className="absolute right-0 top-full mt-2 w-72 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200/90 py-3 px-3 z-50 animate-fadeIn text-left">
+                  {/* User Profile Header */}
+                  <div className="flex items-center gap-3 p-2 bg-slate-50/80 rounded-xl mb-2">
+                    <img 
+                      src={(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_avatar') : null) || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"} 
+                      alt={userName} 
+                      className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm flex-shrink-0" 
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-extrabold text-slate-900 truncate">{userName}</div>
+                      <div className="text-[11px] text-slate-500 truncate">
+                        {(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_email') || localStorage.getItem('futureai_user_phone') : null) || 'Student Account'}
+                      </div>
+                      <div className="inline-flex items-center gap-1 mt-0.5 px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 text-[10px] font-bold">
+                        <span>Level 1 • New Learner</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Telemetry Stats */}
+                  <div className="grid grid-cols-2 gap-2 mb-2 p-2 bg-slate-50/60 rounded-xl text-center">
+                    <div className="flex items-center justify-center gap-1.5 text-amber-600 font-bold text-xs">
+                      <Coins className="w-4 h-4 text-amber-500" />
+                      <span>{telemetry.coins} Coins</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-1.5 text-purple-600 font-bold text-xs">
+                      <Gem className="w-4 h-4 text-purple-500" />
+                      <span>{telemetry.gems} Gems</span>
+                    </div>
+                  </div>
+
+                  {/* Menu Items */}
+                  <div className="space-y-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDockTab('home');
+                        setProfileDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer"
+                    >
+                      <LayoutDashboard className="w-4 h-4 text-blue-500" />
+                      <span>My Learning Dashboard</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDockTab('game');
+                        setProfileDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer"
+                    >
+                      <Gamepad2 className="w-4 h-4 text-purple-500" />
+                      <span>Coding Games Arena</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDockTab('income');
+                        setProfileDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer"
+                    >
+                      <IndianRupee className="w-4 h-4 text-emerald-500" />
+                      <span>Affiliate & Earnings Hub</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDockTab('placement');
+                        setProfileDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer"
+                    >
+                      <Briefcase className="w-4 h-4 text-sky-500" />
+                      <span>Job & Placement Portal</span>
+                    </button>
+                  </div>
+
+                  <div className="my-2 border-t border-slate-100" />
+
+                  {/* Dedicated Logout Button (Only logs out when user explicitly clicks this button) */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setProfileDropdownOpen(false);
+                      onLogout?.();
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4 text-rose-500" />
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </header>
