@@ -1,27 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import {
-  X,
-  Check,
-  Lock,
-  Briefcase,
-  Award,
-  TrendingUp,
-  ArrowRight,
-  Sparkles,
-} from 'lucide-react';
+import React, { useEffect } from 'react';
+import { X, ArrowRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundEffects } from '../../services/soundEffects';
-import './LearningModulesProgressModal.css';
-
-export interface ModuleProgressItem {
-  id: string;
-  num: number;
-  title: string;
-  subtitle: string;
-  icon: string;
-  status: 'completed' | 'in_progress' | 'locked';
-  progressPercent: number;
-}
 
 interface LearningModulesProgressModalProps {
   isOpen: boolean;
@@ -32,112 +12,35 @@ interface LearningModulesProgressModalProps {
   initialPythonCompleted?: boolean;
 }
 
-const DEFAULT_MODULES: ModuleProgressItem[] = [
-  {
-    id: 'python',
-    num: 1,
-    title: 'Python',
-    subtitle: 'Build your foundation',
-    icon: '/images/icons3d/icon_01_python.png',
-    status: 'in_progress',
-    progressPercent: 0,
-  },
-  {
-    id: 'sql',
-    num: 2,
-    title: 'SQL',
-    subtitle: 'Work with data',
-    icon: '/images/icons3d/icon_02_sql.png',
-    status: 'locked',
-    progressPercent: 0,
-  },
-  {
-    id: 'excel',
-    num: 3,
-    title: 'Excel',
-    subtitle: 'Analyze & solve',
-    icon: '/images/icons3d/icon_03_excel.png',
-    status: 'locked',
-    progressPercent: 0,
-  },
-  {
-    id: 'powerbi',
-    num: 4,
-    title: 'Power BI',
-    subtitle: 'Create dashboards',
-    icon: '/images/icons3d/icon_04_powerbi.png',
-    status: 'locked',
-    progressPercent: 0,
-  },
-  {
-    id: 'statistics',
-    num: 5,
-    title: 'Statistics',
-    subtitle: 'Understand data',
-    icon: '/images/icons3d/icon_05_stats.png',
-    status: 'locked',
-    progressPercent: 0,
-  },
-  {
-    id: 'genai',
-    num: 6,
-    title: 'GenAI',
-    subtitle: 'Explore AI tools',
-    icon: '/images/icons3d/icon_06_genai.png',
-    status: 'locked',
-    progressPercent: 0,
-  },
-];
-
 export const LearningModulesProgressModal: React.FC<LearningModulesProgressModalProps> = ({
   isOpen,
   onClose,
-  targetFeature = 'Placement',
   onGoToModules,
-  onNavigateToModule,
-  initialPythonCompleted = true,
 }) => {
-  const [modulesList, setModulesList] = useState<ModuleProgressItem[]>(() => {
-    return DEFAULT_MODULES.map((m) =>
-      m.id === 'python'
-        ? {
-            ...m,
-            status: (initialPythonCompleted ? 'completed' : 'in_progress') as 'completed' | 'in_progress',
-            progressPercent: initialPythonCompleted ? 100 : 0,
-          }
-        : m
-    );
-  });
-
-  // Sound and animated entrance on open
+  // Sound and animated confetti burst on open
   useEffect(() => {
     if (isOpen) {
       try {
         soundEffects.playDiscovery();
-      } catch (e) {
+      } catch {
         // audio policy fallback
       }
 
-      // Celebratory sparkle confetti burst
       try {
         confetti({
-          particleCount: 26,
+          particleCount: 30,
           spread: 60,
-          origin: { y: 0.32 },
-          colors: ['#0284c7', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'],
+          origin: { y: 0.35 },
+          colors: ['#0066ff', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'],
           disableForReducedMotion: true,
         });
-      } catch (e) {
+      } catch {
         // ignore
       }
     }
   }, [isOpen]);
 
   if (!isOpen) return null;
-
-  const completedCount = modulesList.filter((m) => m.status === 'completed').length;
-  const overallPercent = Math.round((completedCount / 6) * 100);
-  const allCompleted = completedCount === 6;
 
   const handleCtaClick = () => {
     soundEffects.playClick();
@@ -147,285 +50,105 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
     }
   };
 
-  const handleCardClick = (mod: ModuleProgressItem) => {
-    soundEffects.playClick();
-    if (onNavigateToModule) {
-      onClose();
-      onNavigateToModule(mod.id);
-    }
-  };
-
   return (
-    <div className="lmp-backdrop" onClick={onClose} role="dialog" aria-modal="true">
-      <div className="lmp-modal-card" onClick={(e) => e.stopPropagation()}>
-        {/* Animated Close Button */}
-        <button
-          className="lmp-close-btn"
-          onClick={() => {
-            soundEffects.playClick();
-            onClose();
-          }}
-          aria-label="Close dialog"
-        >
-          <X className="w-4 h-4" />
-        </button>
+    <div
+      className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-md flex items-center justify-center p-3.5 sm:p-4 select-none animate-fadeIn"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        className="relative w-full max-w-[410px] bg-white rounded-[28px] sm:rounded-[32px] shadow-[0_25px_60px_-15px_rgba(0,40,130,0.45)] border border-blue-100 overflow-hidden transform transition-all duration-300 scale-100"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* ── Top Hero Graphic (Robot Graduate, Trophy, Future IT Logo & Placement Shield) ── */}
+        <div className="relative w-full overflow-hidden bg-[#ebf4ff]">
+          <img
+            src="/images/placement/placement_modal_hero.png"
+            alt="Placement Guarantee"
+            className="w-full h-auto block select-none pointer-events-none"
+          />
 
-        {/* ── Top Header Section (1:1 with media_1791559094366.jpg) ── */}
-        <div className="lmp-header-row">
-          {/* Top Left: Single Clean Logo & Headlines (NO repetition) */}
-          <div className="lmp-header-text">
-            <div className="lmp-brand-badge">
-              {/* Colorful Gradient 'F' Logo Mark */}
-              <div className="lmp-brand-f-emblem">
-                <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
-                  <path
-                    d="M6 5C6 3.89543 6.89543 3 8 3H22C24.2091 3 26 4.79086 26 7C26 8.44141 25.2413 9.7042 24.1132 10.4079L13.8 13.5V16.5H20C21.6569 16.5 23 17.8431 23 19.5C23 21.1569 21.6569 22.5 20 22.5H13.8V29H7.5C6.67157 29 6 28.3284 6 27.5V5Z"
-                    fill="url(#lmpRainbowGrad)"
-                  />
-                  <defs>
-                    <linearGradient id="lmpRainbowGrad" x1="6" y1="3" x2="26" y2="29" gradientUnits="userSpaceOnUse">
-                      <stop offset="0%" stopColor="#8b5cf6" />
-                      <stop offset="35%" stopColor="#3b82f6" />
-                      <stop offset="68%" stopColor="#06b6d4" />
-                      <stop offset="100%" stopColor="#10b981" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </div>
-
-              <div className="lmp-brand-info">
-                <span className="lmp-brand-name">FUTURE IT INDUSTRY</span>
-                <span className="lmp-brand-tagline">Learn Today, Earn Tomorrow</span>
-              </div>
-            </div>
-
-            <h2 className="lmp-headline">
-              <span className="lmp-blue-highlight">Complete All 6</span> Learning Modules
-            </h2>
-            <p className="lmp-subheadline">
-              to Unlock Your <span className="lmp-pink-highlight">Internship, Certificate &amp; Placement</span>
-            </p>
-          </div>
-
-          {/* Center/Right: 3D Robot Mascot & Badges Stack */}
-          <div className="lmp-header-visual">
-            <div className="lmp-robot-box">
-              <img
-                src="/images/popup_robot_graduate.jpg"
-                alt="Graduate Robot Mascot"
-                className="lmp-robot-img"
-              />
-            </div>
-
-            <div className="lmp-feature-pills-stack">
-              {/* Blue Capsule: INTERNSHIP */}
-              <div className={`lmp-feat-pill pill-internship ${targetFeature === 'Internship' ? 'active-target' : ''}`}>
-                <div className="lmp-pill-icon-box">
-                  <Briefcase className="w-3.5 h-3.5" />
-                </div>
-                <span>INTERNSHIP</span>
-              </div>
-
-              {/* Gold Capsule: CERTIFICATE */}
-              <div className={`lmp-feat-pill pill-cert ${targetFeature === 'Certificate' ? 'active-target' : ''}`}>
-                <div className="lmp-pill-icon-box">
-                  <Award className="w-3.5 h-3.5" />
-                </div>
-                <span>CERTIFICATE</span>
-              </div>
-
-              {/* Coral Capsule: PLACEMENT */}
-              <div className={`lmp-feat-pill pill-placement ${targetFeature === 'Placement' ? 'active-target' : ''}`}>
-                <div className="lmp-pill-icon-box">
-                  <TrendingUp className="w-3.5 h-3.5" />
-                </div>
-                <span>PLACEMENT</span>
-              </div>
-            </div>
-          </div>
+          {/* Interactive Close Button */}
+          <button
+            type="button"
+            onClick={() => {
+              soundEffects.playClick();
+              onClose();
+            }}
+            className="absolute top-3.5 right-3.5 w-9 h-9 rounded-full bg-white/95 hover:bg-white text-slate-800 flex items-center justify-center shadow-md active:scale-90 transition-all cursor-pointer z-30"
+            aria-label="Close modal"
+          >
+            <X className="w-5 h-5 text-slate-900 stroke-[2.5]" />
+          </button>
         </div>
 
-        {/* ── 6 Module Cards Progression Row ── */}
-        <div className="lmp-modules-section">
-          <div className="lmp-modules-grid">
-            {modulesList.map((mod, idx) => {
-              const isCompleted = mod.status === 'completed';
-              const isInProgress = mod.status === 'in_progress';
-              const isLocked = mod.status === 'locked';
-              const prevIsCompleted = idx > 0 && modulesList[idx - 1].status === 'completed';
-
-              return (
-                <React.Fragment key={mod.id}>
-                  {/* Connector between cards (Tick ONLY between two completed modules) */}
-                  {idx > 0 && (
-                    <div className="lmp-connector-wrap">
-                      <div className={`lmp-connector-line ${prevIsCompleted && isCompleted ? 'active' : ''}`} />
-                      <div className={`lmp-connector-node ${prevIsCompleted && isCompleted ? 'node-done' : 'node-pending'}`}>
-                        {prevIsCompleted && isCompleted ? (
-                          <Check className="w-2.5 h-2.5 text-white" />
-                        ) : (
-                          <span className="lmp-connector-dot" />
-                        )}
-                      </div>
-                      <div className={`lmp-connector-line ${prevIsCompleted && isCompleted ? 'active' : ''}`} />
-                    </div>
-                  )}
-
-                  {/* Module Card */}
-                  <div
-                    className={`lmp-module-card ${isCompleted ? 'card-completed' : ''} ${isInProgress ? 'card-in-progress' : ''} ${isLocked ? 'card-locked' : ''}`}
-                    onClick={() => handleCardClick(mod)}
-                    style={{ animationDelay: `${idx * 0.04}s` }}
-                  >
-                    {/* Top Step Pill Badge: Green for done, Blue for in-progress, Grey for locked */}
-                    <div
-                      className={`lmp-card-step-badge ${isCompleted ? 'badge-completed' : isInProgress ? 'badge-in-progress' : 'badge-locked'}`}
-                    >
-                      {mod.num}
-                    </div>
-
-                    {/* Festive Confetti Sparks ONLY on completed module */}
-                    {isCompleted && (
-                      <div className="lmp-card-confetti-bg">
-                        <span className="dot dot-1" />
-                        <span className="dot dot-2" />
-                        <span className="dot dot-3" />
-                        <span className="dot dot-4" />
-                      </div>
-                    )}
-
-                    {/* 3D Module Icon */}
-                    <div className="lmp-card-icon-wrap">
-                      <img src={mod.icon} alt={mod.title} className="lmp-card-icon-img" />
-                    </div>
-
-                    {/* Titles */}
-                    <strong className="lmp-card-title">{mod.title}</strong>
-                    <span className="lmp-card-sub">{mod.subtitle}</span>
-
-                    {/* Status Pill Button: TICK ONLY ON COMPLETED! */}
-                    <div
-                      className={`lmp-card-status-btn ${isCompleted ? 'btn-done' : ''} ${isInProgress ? 'btn-in-progress' : ''} ${isLocked ? 'btn-locked' : ''}`}
-                    >
-                      {isCompleted ? (
-                        <>
-                          <div className="lmp-status-check-circle">
-                            <Check className="w-2.5 h-2.5" />
-                          </div>
-                          <span>Completed</span>
-                        </>
-                      ) : isInProgress ? (
-                        <>
-                          <span className="lmp-status-pulse-dot" />
-                          <span>In Progress</span>
-                        </>
-                      ) : (
-                        <>
-                          <Lock className="w-2.5 h-2.5 opacity-60" />
-                          <span>Locked</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </React.Fragment>
-              );
-            })}
+        {/* ── Middle Banner Pill: "Complete All 6 Learning Modules" ── */}
+        <div className="mx-4 sm:mx-5 -mt-3.5 relative z-10 bg-[#ebf4ff] border border-[#cfe4fc] rounded-[22px] py-3.5 px-4 text-center shadow-2xs">
+          <div className="flex items-center justify-center gap-2">
+            <span className="text-xl shrink-0">🚀</span>
+            <h3 className="text-[17px] sm:text-[18px] font-black text-[#0f214d] tracking-tight leading-snug">
+              Complete All 6 Learning Modules
+            </h3>
           </div>
+          <p className="text-[12px] sm:text-[13px] font-bold text-[#1d52d8] mt-1 leading-snug">
+            to Unlock Your Internship, Certificate &amp; Placement
+          </p>
         </div>
 
-        {/* ── Overall Learning Progress Bar ── */}
-        <div className="lmp-progress-block">
-          <div className="lmp-progress-meta-row">
-            <span className="lmp-progress-label">Overall Learning Progress</span>
-            <div className="lmp-progress-stats">
-              <span className="lmp-progress-count">{completedCount} of 6 modules completed</span>
-              <strong className="lmp-progress-pct">{overallPercent}%</strong>
-            </div>
-          </div>
-
-          <div className="lmp-progress-track">
-            <div
-              className="lmp-progress-fill"
-              style={{ width: `${Math.max(overallPercent, 12)}%` }}
-            />
-          </div>
-        </div>
-
-        {/* ── Bottom Gift Box & Benefits Banner ── */}
-        <div className="lmp-bottom-banner">
-          {/* 3D Gift Box Graphic with Golden Bow */}
-          <div className="lmp-gift-wrap">
+        {/* ── 3 Benefits Columns Row ── */}
+        <div className="grid grid-cols-3 divide-x divide-slate-200/90 px-3 sm:px-4 py-5 sm:py-6 text-center">
+          {/* Benefit 1: Get Internship Opportunities */}
+          <div className="px-1.5 flex flex-col items-center justify-start">
             <img
-              src="/images/popup_gift_box.jpg"
-              alt="Unlock Rewards Gift"
-              className="lmp-gift-img"
+              src="/images/placement/icon_briefcase.png"
+              alt="Internship"
+              className="w-12 h-12 object-contain mb-2.5 drop-shadow-xs"
             />
+            <div className="text-[11px] sm:text-xs font-black text-[#0f214d] leading-tight">
+              Get Internship<br />Opportunities
+            </div>
           </div>
 
-          {/* Central Callout Message */}
-          <div className="lmp-congrats-text">
-            <div className="lmp-congrats-eyebrow">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500 inline mr-1" />
-              <span>
-                {allCompleted
-                  ? '🎉 Congratulations!'
-                  : completedCount > 0
-                    ? '🎯 Great Progress!'
-                    : '🚀 Start Your Journey!'}
-              </span>
+          {/* Benefit 2: Earn Course Certificate */}
+          <div className="px-1.5 flex flex-col items-center justify-start">
+            <img
+              src="/images/placement/icon_certificate.png"
+              alt="Certificate"
+              className="w-12 h-12 object-contain mb-2.5 drop-shadow-xs"
+            />
+            <div className="text-[11px] sm:text-xs font-black text-[#0f214d] leading-tight">
+              Earn Course<br />Certificate
             </div>
-            <h4 className="lmp-congrats-heading">
-              {allCompleted ? (
-                <>
-                  You're Ready to Unlock Your{' '}
-                  <span className="lmp-pink-callout">Internship, Certificate &amp; Placement!</span>
-                </>
-              ) : (
-                <>
-                  Complete all 6 modules to unlock your{' '}
-                  <span className="lmp-pink-callout">Internship, Certificate &amp; Placement!</span>
-                </>
-              )}
-            </h4>
           </div>
 
-          {/* 3 Reward Feature Cards */}
-          <div className="lmp-benefits-grid">
-            <div className="lmp-benefit-item">
-              <div className="lmp-benefit-icon-box bg-sky-50 text-sky-600 border border-sky-100">
-                <Briefcase className="w-3.5 h-3.5" />
-              </div>
-              <span className="lmp-benefit-label">Get Internship Opportunities</span>
-            </div>
-
-            <div className="lmp-benefit-item">
-              <div className="lmp-benefit-icon-box bg-purple-50 text-purple-600 border border-purple-100">
-                <Award className="w-3.5 h-3.5" />
-              </div>
-              <span className="lmp-benefit-label">Earn Course Certificate</span>
-            </div>
-
-            <div className="lmp-benefit-item">
-              <div className="lmp-benefit-icon-box bg-rose-50 text-rose-600 border border-rose-100">
-                <TrendingUp className="w-3.5 h-3.5" />
-              </div>
-              <span className="lmp-benefit-label">Be Job-Ready for Better Placements</span>
+          {/* Benefit 3: Be Job-Ready for Better Placements */}
+          <div className="px-1.5 flex flex-col items-center justify-start">
+            <img
+              src="/images/placement/icon_rocket.png"
+              alt="Placement"
+              className="w-12 h-12 object-contain mb-2.5 drop-shadow-xs"
+            />
+            <div className="text-[11px] sm:text-xs font-black text-[#0f214d] leading-tight">
+              Be Job-Ready<br />for Better Placements
             </div>
           </div>
         </div>
 
         {/* ── Bottom Main CTA Button ── */}
-        <div className="lmp-footer-cta-row">
-          <button className="lmp-primary-cta" onClick={handleCtaClick}>
-            <span>
-              {allCompleted
-                ? 'Continue to Claim Your Rewards'
-                : 'Continue to Your Learning Modules'}
-            </span>
-            <ArrowRight className="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-1" />
+        <div className="px-4 sm:px-5 pb-5 sm:pb-6 pt-1">
+          <button
+            type="button"
+            onClick={handleCtaClick}
+            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#0062ff] to-[#0047e1] hover:from-[#0055e6] hover:to-[#003dc7] text-white font-black text-sm sm:text-base py-3.5 px-6 rounded-full shadow-[0_10px_24px_rgba(0,98,255,0.4)] active:scale-98 transition-all cursor-pointer"
+          >
+            <span>Continue to Your Learning Modules</span>
+            <ArrowRight className="w-5 h-5 text-white stroke-[2.5]" />
           </button>
         </div>
       </div>
     </div>
   );
 };
+
+export default LearningModulesProgressModal;

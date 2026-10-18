@@ -557,10 +557,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       setDockTab('income');
       if (typeof window !== 'undefined') window.location.hash = '#earnings';
     } else if (tab === 'placement') {
-      setSelectedModuleView(null);
-      setActiveTopicWs(null);
-      setDockTab('placement');
-      if (typeof window !== 'undefined') window.location.hash = '#placement';
+      setPlacementLockOpen(true);
     } else if (tab === 'profile') {
       setMobileProfileSheetOpen(true);
     }

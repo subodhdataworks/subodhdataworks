@@ -17,6 +17,12 @@
   color: #0f172a;
 }
 
+@media (max-width: 767px) {
+  .affiliate-hub-container {
+    display: none !important;
+  }
+}
+
 /* Ambient Radial Glow Spots */
 .affiliate-ambient-glow {
   position: absolute;
