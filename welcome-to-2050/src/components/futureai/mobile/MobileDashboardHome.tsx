@@ -36,6 +36,7 @@ interface MobileDashboardHomeProps {
   userName: string;
   telemetry: LearnerTelemetry;
   onStartPython: () => void;
+  onOpenDataAnalyst?: () => void;
   onOpenSql?: () => void;
   onOpenExcel?: () => void;
   onOpenPowerBi?: () => void;
@@ -51,6 +52,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
   userName,
   telemetry,
   onStartPython,
+  onOpenDataAnalyst,
   onOpenSql,
   onOpenExcel,
   onOpenPowerBi,
@@ -94,7 +96,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
         btnClass: 'bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600 shadow-blue-500/30',
         priceBorder: 'border-sky-400',
       },
-      action: onStartPython,
+      action: onOpenDataAnalyst || onStartPython,
     },
     {
       id: 'data-science-agentic-ai',

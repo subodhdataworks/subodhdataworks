@@ -86,6 +86,7 @@ import { MobilePythonChapterView } from './mobile/MobilePythonChapterView';
 import { MobileSqlChapterView } from './mobile/MobileSqlChapterView';
 import { MobileExcelChapterView } from './mobile/MobileExcelChapterView';
 import { MobileGameArenaHub } from './mobile/MobileGameArenaHub';
+import { MobileDataAnalystHub } from './mobile/MobileDataAnalystHub';
 import { FutureAuthModal } from './FutureAuthModal';
 
 // =========================================================================
@@ -531,7 +532,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       ? 'placement'
       : dockTab === 'income' || dockTab === 'referral' || dockTab === 'wallet' || dockTab === 'withdraw'
       ? 'earn'
-      : selectedModuleView === 'python' || selectedModuleView === 'sql' || selectedModuleView === 'excel' || selectedModuleView === 'powerbi' || selectedModuleView === 'genai'
+      : selectedModuleView === 'data_analyst' || selectedModuleView === 'python' || selectedModuleView === 'sql' || selectedModuleView === 'excel' || selectedModuleView === 'powerbi' || selectedModuleView === 'genai' || selectedModuleView === 'stats'
       ? 'learn'
       : 'home';
 
@@ -542,10 +543,10 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       setDockTab('home');
       if (typeof window !== 'undefined') window.location.hash = '#dashboard';
     } else if (tab === 'learn') {
-      setSelectedModuleView('python');
+      setSelectedModuleView('data_analyst');
       setActiveTopicWs(null);
       setDockTab('home');
-      if (typeof window !== 'undefined') window.location.hash = '#python';
+      if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
     } else if (tab === 'game' || tab === 'arena') {
       setSelectedModuleView(null);
       setActiveTopicWs(null);
@@ -1759,12 +1760,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         {/* ─── COURSE 01 SUB-HUB: DATA ANALYST WITH GENAI (6 MODULES) (#data-analyst) ─── */}
         {dockTab === 'home' && selectedModuleView === 'data_analyst' && (
           <div className="col-span-full">
-            {/* Native Android Mobile Feed (< 768px) */}
+            {/* Native Android Mobile Feed (< 768px): Data Analyst with GenAI 9-Module Hub */}
             <div className="md:hidden">
-              <MobileDashboardHome
+              <MobileDataAnalystHub
                 userName={currentUserName}
-                telemetry={telemetry}
-                onStartPython={() => {
+                onOpenPython={() => {
                   playClick();
                   playCinema();
                   setSelectedModuleView('python');
@@ -1788,17 +1788,31 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                   setSelectedModuleView('powerbi');
                   if (typeof window !== 'undefined') window.location.hash = '#powerbi';
                 }}
+                onOpenStats={() => {
+                  playClick();
+                  playCinema();
+                  setSelectedModuleView('stats');
+                  if (typeof window !== 'undefined') window.location.hash = '#stats';
+                }}
                 onOpenGenAi={() => {
                   playClick();
                   playCinema();
                   setSelectedModuleView('genai');
                   if (typeof window !== 'undefined') window.location.hash = '#genai';
                 }}
-                onOpenPlacement={() => {
+                onOpenMockInterview={() => {
+                  playClick();
+                  if (typeof window !== 'undefined') window.location.hash = '#interview?topic=1';
+                }}
+                onOpenLockedModule={(title) => {
+                  playClick();
+                  setSelectedLockedModule(title);
+                  setUnlockModalOpen(true);
+                }}
+                onNavigateHome={() => {
                   playClick();
                   setSelectedModuleView(null);
-                  setDockTab('placement');
-                  if (typeof window !== 'undefined') window.location.hash = '#placement';
+                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
                 }}
                 onOpenArena={() => {
                   playClick();
@@ -1814,11 +1828,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                   setDockTab('income');
                   if (typeof window !== 'undefined') window.location.hash = '#earnings';
                 }}
-                onOpenAdvisor={onOpenAdvisor}
-                onOpenLockedModule={(title) => {
+                onOpenPlacement={() => {
                   playClick();
-                  setSelectedLockedModule(title);
-                  setUnlockModalOpen(true);
+                  setPlacementLockOpen(true);
                 }}
               />
             </div>
@@ -1934,8 +1946,14 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 onStartPython={() => {
                   playClick();
                   playCinema();
-                  setSelectedModuleView('python');
-                  if (typeof window !== 'undefined') window.location.hash = '#python';
+                  setSelectedModuleView('data_analyst');
+                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+                }}
+                onOpenDataAnalyst={() => {
+                  playClick();
+                  playCinema();
+                  setSelectedModuleView('data_analyst');
+                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
                 }}
                 onOpenSql={() => {
                   playClick();

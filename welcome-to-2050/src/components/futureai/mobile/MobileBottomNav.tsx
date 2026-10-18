@@ -69,7 +69,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               isTabActive('learn') ? 'text-blue-600 font-black' : 'text-slate-500'
             }`}
           >
-            Learn
+            My Learning
           </span>
           {isTabActive('learn') && (
             <span className="w-5 h-0.5 rounded-full bg-blue-600 mt-0.5" />
