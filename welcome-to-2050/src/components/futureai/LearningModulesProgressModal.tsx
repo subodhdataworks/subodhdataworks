@@ -64,7 +64,7 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
         {/* ── Top Hero Graphic (Robot Graduate, Trophy, Future IT Logo & Placement Shield) ── */}
         <div className="relative w-full overflow-hidden bg-[#ebf4ff]">
           <img
-            src="/images/placement/placement_modal_hero.png"
+            src="/images/placement/placement_modal_hero_hd.jpg"
             alt="Placement Guarantee"
             className="w-full h-auto block select-none pointer-events-none"
           />

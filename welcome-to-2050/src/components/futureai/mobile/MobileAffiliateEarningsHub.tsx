@@ -276,11 +276,11 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
           </div>
 
           {/* Right Mascot & Badge */}
-          <div className="absolute right-0 bottom-0 top-0 w-36 sm:w-44 flex items-end justify-end pointer-events-none">
+          <div className="absolute right-0 bottom-0 top-0 w-40 sm:w-48 flex items-end justify-end pointer-events-none">
             <img
-              src="/images/affiliate/earn_hero_boy.png"
+              src="/images/affiliate/earn_hero_boy_hd.png"
               alt="Earn Referrals Mascot"
-              className="w-full h-auto object-contain drop-shadow-sm select-none"
+              className="w-full h-full object-cover object-left-bottom drop-shadow-sm select-none"
             />
           </div>
         </div>
