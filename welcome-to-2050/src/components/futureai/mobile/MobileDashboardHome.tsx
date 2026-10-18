@@ -24,6 +24,11 @@ interface MobileDashboardHomeProps {
   userName: string;
   telemetry: LearnerTelemetry;
   onStartPython: () => void;
+  onOpenSql?: () => void;
+  onOpenExcel?: () => void;
+  onOpenPowerBi?: () => void;
+  onOpenGenAi?: () => void;
+  onOpenPlacement?: () => void;
   onOpenArena: () => void;
   onOpenEarn: () => void;
   onOpenAdvisor?: () => void;
@@ -34,6 +39,11 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
   userName,
   telemetry,
   onStartPython,
+  onOpenSql,
+  onOpenExcel,
+  onOpenPowerBi,
+  onOpenGenAi,
+  onOpenPlacement,
   onOpenArena,
   onOpenEarn,
   onOpenAdvisor,
@@ -82,10 +92,10 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       title: 'SQL & Relational Databases',
       subtitle: 'PostgreSQL, Window Functions & Real Business Queries',
       tag: 'Job Ready Track',
-      isUnlocked: false,
+      isUnlocked: true,
       duration: '25 Hours',
-      badgeColor: 'bg-slate-800 text-slate-200',
-      borderAccent: 'border-slate-200',
+      badgeColor: 'bg-purple-600 text-white',
+      borderAccent: 'border-purple-500/80',
       iconUrl: '/images/icons3d/icon_02_sql.png',
       altIcon: '🗄️',
     },
@@ -94,10 +104,10 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       title: 'Advanced Excel & Business Dashboards',
       subtitle: 'Formulas, Pivot Tables, XLOOKUP, Data Modeling',
       tag: 'Industry Essential',
-      isUnlocked: false,
+      isUnlocked: true,
       duration: '20 Hours',
-      badgeColor: 'bg-emerald-800 text-emerald-200',
-      borderAccent: 'border-slate-200',
+      badgeColor: 'bg-emerald-600 text-white',
+      borderAccent: 'border-emerald-500/80',
       iconUrl: '/images/icons3d/icon_03_excel.png',
       altIcon: '📊',
     },
@@ -106,10 +116,10 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       title: 'Power BI & Interactive Data Storytelling',
       subtitle: 'DAX Measures, Live Dashboards & Executive Reports',
       tag: 'BI Track',
-      isUnlocked: false,
+      isUnlocked: true,
       duration: '28 Hours',
-      badgeColor: 'bg-amber-800 text-amber-200',
-      borderAccent: 'border-slate-200',
+      badgeColor: 'bg-amber-600 text-white',
+      borderAccent: 'border-amber-500/80',
       iconUrl: '/images/icons3d/icon_04_powerbi.png',
       altIcon: '📈',
     },
@@ -118,12 +128,24 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       title: 'Generative AI & LLM Automation',
       subtitle: 'Prompt Engineering, LangChain & OpenAI API Pipelines',
       tag: 'Futuristic Track',
-      isUnlocked: false,
+      isUnlocked: true,
       duration: '32 Hours',
-      badgeColor: 'bg-purple-800 text-purple-200',
-      borderAccent: 'border-slate-200',
+      badgeColor: 'bg-indigo-600 text-white',
+      borderAccent: 'border-indigo-500/80',
       iconUrl: '/images/icons3d/icon_06_genai.png',
       altIcon: '🤖',
+    },
+    {
+      id: 'placement',
+      title: 'Placement Assistance & Job Drives',
+      subtitle: '6 LPA – 15 LPA Guarantee, AI Mock Prep & Active Openings',
+      tag: 'Career Support',
+      isUnlocked: true,
+      duration: '100% Free Prep',
+      badgeColor: 'bg-rose-600 text-white',
+      borderAccent: 'border-rose-500/80',
+      iconUrl: '/images/icons3d/icon_10_placement.png',
+      altIcon: '💼',
     },
   ];
 
@@ -354,8 +376,18 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
             key={mod.id}
             onClick={() => {
               playClick();
-              if (mod.isUnlocked) {
+              if (mod.id === 'python') {
                 onStartPython();
+              } else if (mod.id === 'sql') {
+                if (onOpenSql) onOpenSql(); else onOpenLockedModule(mod.title);
+              } else if (mod.id === 'excel') {
+                if (onOpenExcel) onOpenExcel(); else onOpenLockedModule(mod.title);
+              } else if (mod.id === 'powerbi') {
+                if (onOpenPowerBi) onOpenPowerBi(); else onOpenLockedModule(mod.title);
+              } else if (mod.id === 'genai') {
+                if (onOpenGenAi) onOpenGenAi(); else onOpenLockedModule(mod.title);
+              } else if (mod.id === 'placement') {
+                if (onOpenPlacement) onOpenPlacement(); else onOpenLockedModule(mod.title);
               } else {
                 onOpenLockedModule(mod.title);
               }
