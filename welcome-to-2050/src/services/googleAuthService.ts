@@ -10,9 +10,21 @@ export interface GoogleUserProfile {
   sub?: string;
 }
 
-// Google Client ID: Put your client ID here or in .env VITE_GOOGLE_CLIENT_ID
-// You can get this 100% free from Google Cloud Console (APIs & Services > Credentials)
-export const GOOGLE_CLIENT_ID = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GOOGLE_CLIENT_ID) || '';
+export function getGoogleClientId(): string {
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem('futureai_google_client_id');
+    if (saved) return saved.trim();
+  }
+  return (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GOOGLE_CLIENT_ID) || '';
+}
+
+export function saveGoogleClientId(clientId: string): void {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('futureai_google_client_id', clientId.trim());
+  }
+}
+
+export const GOOGLE_CLIENT_ID = getGoogleClientId();
 
 /**
  * Safely parse a JWT token returned by Google OAuth without external libraries
@@ -40,7 +52,7 @@ export function parseJwt(token: string): any {
 export function loadGoogleScript(): Promise<boolean> {
   return new Promise((resolve) => {
     if (typeof window === 'undefined') return resolve(false);
-    if ((window as any).google?.accounts?.id) return resolve(true);
+    if ((window as any).google?.accounts?.oauth2) return resolve(true);
 
     const existingScript = document.getElementById('google-gsi-client');
     if (existingScript) return resolve(true);
@@ -53,5 +65,57 @@ export function loadGoogleScript(): Promise<boolean> {
     script.onload = () => resolve(true);
     script.onerror = () => resolve(false);
     document.body.appendChild(script);
+  });
+}
+
+/**
+ * Real Google Account Selection via Google Identity Services Token Client
+ * Directly triggers Google's native account chooser with existing Gmail logins
+ */
+export function requestGoogleAccountLogin(): Promise<{ name: string; email: string; picture: string; sub: string }> {
+  return new Promise((resolve, reject) => {
+    const clientId = getGoogleClientId();
+    if (!clientId) {
+      return reject(new Error('NO_CLIENT_ID'));
+    }
+
+    loadGoogleScript().then((loaded) => {
+      if (!loaded || !(window as any).google?.accounts?.oauth2) {
+        return reject(new Error('SDK_NOT_LOADED'));
+      }
+
+      try {
+        const client = (window as any).google.accounts.oauth2.initTokenClient({
+          client_id: clientId,
+          scope: 'openid email profile',
+          callback: async (tokenResponse: any) => {
+            if (tokenResponse?.access_token) {
+              try {
+                const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                  headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+                });
+                const userInfo = await userInfoRes.json();
+                if (userInfo?.email) {
+                  return resolve({
+                    name: userInfo.name || userInfo.email.split('@')[0],
+                    email: userInfo.email,
+                    picture: userInfo.picture || '',
+                    sub: userInfo.sub || Date.now().toString(),
+                  });
+                }
+              } catch (err) {
+                return reject(err);
+              }
+            }
+            reject(new Error('TOKEN_ERROR'));
+          },
+          error_callback: (err: any) => reject(err),
+        });
+
+        client.requestAccessToken({ prompt: 'select_account' });
+      } catch (e) {
+        reject(e);
+      }
+    });
   });
 }

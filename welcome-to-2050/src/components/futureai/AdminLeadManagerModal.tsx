@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { X, Users, Download, Mail, Phone, Calendar, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { X, Users, Download, Mail, Phone, Calendar, RefreshCw, CheckCircle2, Key, ExternalLink } from 'lucide-react';
 import { getAllRegisteredUsers, exportUsersToCSV, RegisteredUserRecord } from '../../services/realAuthService';
+import { getGoogleClientId, saveGoogleClientId } from '../../services/googleAuthService';
 
 interface AdminLeadManagerModalProps {
   isOpen: boolean;
@@ -11,6 +12,8 @@ export const AdminLeadManagerModal: React.FC<AdminLeadManagerModalProps> = ({ is
   const [users, setUsers] = useState<RegisteredUserRecord[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [downloadMsg, setDownloadMsg] = useState('');
+  const [clientIdInput, setClientIdInput] = useState(() => getGoogleClientId());
+  const [clientIdSavedMsg, setClientIdSavedMsg] = useState('');
 
   const loadData = async () => {
     setIsLoading(true);
@@ -27,8 +30,17 @@ export const AdminLeadManagerModal: React.FC<AdminLeadManagerModalProps> = ({ is
   useEffect(() => {
     if (isOpen) {
       loadData();
+      setClientIdInput(getGoogleClientId());
     }
   }, [isOpen]);
+
+  const handleSaveClientId = () => {
+    if (clientIdInput.trim()) {
+      saveGoogleClientId(clientIdInput.trim());
+      setClientIdSavedMsg('✅ Google OAuth Client ID saved! Google 1-Click Login is now ACTIVE for all students.');
+      setTimeout(() => setClientIdSavedMsg(''), 5000);
+    }
+  };
 
   const handleExportCSV = async () => {
     const res = await exportUsersToCSV();
@@ -86,6 +98,57 @@ export const AdminLeadManagerModal: React.FC<AdminLeadManagerModalProps> = ({ is
               <span>Export Emails (CSV / Excel)</span>
             </button>
           </div>
+        </div>
+
+        {/* Google 1-Click Login Config Card */}
+        <div className="mb-4 p-3.5 bg-gradient-to-r from-sky-50 to-indigo-50/60 rounded-2xl border border-sky-200 text-left">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="flex items-center gap-2">
+              <Key className="w-4 h-4 text-sky-600" />
+              <strong className="text-xs font-bold text-slate-800">
+                Google 1-Click Login (Automatic Gmail Detection)
+              </strong>
+              {clientIdInput ? (
+                <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
+                  Active
+                </span>
+              ) : (
+                <span className="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">
+                  Setup Required
+                </span>
+              )}
+            </div>
+            <a
+              href="https://console.cloud.google.com/apis/credentials"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[11px] text-sky-600 hover:text-sky-800 font-bold inline-flex items-center gap-1"
+            >
+              <span>Get Free Google Client ID</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+          <p className="text-[11px] text-slate-600 mb-2">
+            Har student ke laptop &amp; phone me pehle se logged-in Gmail se 1-click automatic login ke liye apna Google OAuth Client ID yahan paste karein:
+          </p>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="e.g. 1234567890-abcdefgh.apps.googleusercontent.com"
+              value={clientIdInput}
+              onChange={(e) => setClientIdInput(e.target.value)}
+              className="flex-1 px-3 py-1.5 text-xs rounded-xl border border-sky-300 bg-white font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            />
+            <button
+              onClick={handleSaveClientId}
+              className="px-3.5 py-1.5 bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white text-xs font-bold rounded-xl shadow-xs shrink-0 cursor-pointer"
+            >
+              Save Client ID
+            </button>
+          </div>
+          {clientIdSavedMsg && (
+            <p className="text-[11px] font-bold text-emerald-700 mt-2">{clientIdSavedMsg}</p>
+          )}
         </div>
 
         {downloadMsg && (

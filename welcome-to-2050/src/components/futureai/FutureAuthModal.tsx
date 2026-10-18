@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Sparkles, ArrowRight, Mail, Lock, Phone, CheckCircle2 } from 'lucide-react';
-import { loadGoogleScript, GOOGLE_CLIENT_ID, parseJwt } from '../../services/googleAuthService';
+import { loadGoogleScript, getGoogleClientId, saveGoogleClientId, requestGoogleAccountLogin, parseJwt } from '../../services/googleAuthService';
 import { recordUserInDatabase, loginWithGooglePopup } from '../../services/realAuthService';
 
 interface FutureAuthModalProps {
@@ -20,40 +20,14 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showGoogleAccountPicker, setShowGoogleAccountPicker] = useState(false);
+  const [googleClientIdInput, setGoogleClientIdInput] = useState(() => getGoogleClientId());
   const [customGoogleName, setCustomGoogleName] = useState('');
   const [customGoogleEmail, setCustomGoogleEmail] = useState('');
 
   // Load Google SDK on open
   useEffect(() => {
     if (isOpen) {
-      loadGoogleScript().then((loaded) => {
-        if (loaded && GOOGLE_CLIENT_ID && (window as any).google?.accounts?.id) {
-          try {
-            (window as any).google.accounts.id.initialize({
-              client_id: GOOGLE_CLIENT_ID,
-              callback: async (response: any) => {
-                if (response?.credential) {
-                  const payload = parseJwt(response.credential);
-                  if (payload) {
-                    const finalName = payload.name || payload.email?.split('@')[0] || 'Learner';
-                    await recordUserInDatabase({
-                      uid: payload.sub,
-                      name: finalName,
-                      email: payload.email,
-                      avatar: payload.picture,
-                      source: 'Google',
-                    });
-                    onSuccess(finalName, payload.email, payload.picture);
-                    onClose();
-                  }
-                }
-              },
-            });
-          } catch (e) {
-            console.error('Google GSI init error', e);
-          }
-        }
-      });
+      loadGoogleScript();
     }
   }, [isOpen]);
 
@@ -61,16 +35,38 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
 
   const handleGoogleSignInClick = async () => {
     setIsSubmitting(true);
-    try {
-      const googleUser = await loginWithGooglePopup();
-      setIsSubmitting(false);
-      onSuccess(googleUser.name, googleUser.email, googleUser.avatar);
-      onClose();
-      return;
-    } catch {
-      // If popup blocked or cancelled or demo config, open interactive Google Account Picker
+    const clientId = getGoogleClientId();
+    if (!clientId) {
       setIsSubmitting(false);
       setShowGoogleAccountPicker(true);
+      return;
+    }
+
+    try {
+      const user = await requestGoogleAccountLogin();
+      await recordUserInDatabase({
+        uid: user.sub,
+        name: user.name,
+        email: user.email,
+        avatar: user.picture,
+        source: 'Google',
+      });
+      setIsSubmitting(false);
+      onSuccess(user.name, user.email, user.picture);
+      onClose();
+      return;
+    } catch (err: any) {
+      console.warn('Google 1-Click popup issue, trying Firebase fallback:', err);
+      try {
+        const googleUser = await loginWithGooglePopup();
+        setIsSubmitting(false);
+        onSuccess(googleUser.name, googleUser.email, googleUser.avatar);
+        onClose();
+        return;
+      } catch {
+        setIsSubmitting(false);
+        setShowGoogleAccountPicker(true);
+      }
     }
   };
 
@@ -294,37 +290,61 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                 </button>
               </div>
 
-              <p className="text-xs text-slate-500 mt-2 mb-4">
-                to sign in and continue to <strong className="text-slate-800">futureitindustry.com</strong>
-              </p>
-
-              {/* Enter User's Real Google Account */}
-              <div className="space-y-3">
-                <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
-                    Your Full Name:
-                  </label>
+              <div className="p-3 bg-sky-50 rounded-2xl border border-sky-200 mt-2 mb-4 text-left">
+                <span className="text-xs font-bold text-sky-900 block mb-1">
+                  🔑 1-Time Google Client ID Setup (Free Lifetime):
+                </span>
+                <p className="text-[11px] text-sky-700 leading-relaxed mb-2.5">
+                  Har student ke laptop &amp; phone me pehle se login Gmail se 1-click automatic login ke liye apna Free Google Client ID yahan paste karein:
+                </p>
+                <div className="space-y-2">
                   <input
                     type="text"
-                    required
-                    placeholder="Enter your name (e.g. Rahul Sharma)"
-                    value={customGoogleName}
-                    onChange={(e) => setCustomGoogleName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium"
+                    placeholder="Paste Client ID (e.g. 123...apps.googleusercontent.com)"
+                    value={googleClientIdInput}
+                    onChange={(e) => setGoogleClientIdInput(e.target.value)}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-sky-300 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 font-mono"
                   />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (googleClientIdInput.trim()) {
+                        saveGoogleClientId(googleClientIdInput.trim());
+                        setShowGoogleAccountPicker(false);
+                        handleGoogleSignInClick();
+                      }
+                    }}
+                    className="w-full py-2 bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
+                  >
+                    Save &amp; Open Native Google Popup 🚀
+                  </button>
                 </div>
-                <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
-                    Your Gmail / Google Email:
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="name@gmail.com"
-                    value={customGoogleEmail}
-                    onChange={(e) => setCustomGoogleEmail(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium"
-                  />
+              </div>
+
+              {/* Enter User's Real Google Account directly */}
+              <div className="pt-2 border-t border-slate-100">
+                <span className="text-[11px] font-bold text-slate-600 block mb-2">
+                  Or sign in directly for testing:
+                </span>
+                <div className="space-y-2">
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Student Full Name (e.g. Subodh Kumar)"
+                      value={customGoogleName}
+                      onChange={(e) => setCustomGoogleName(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="email"
+                      placeholder="Student Gmail (e.g. subodh@gmail.com)"
+                      value={customGoogleEmail}
+                      onChange={(e) => setCustomGoogleEmail(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -337,9 +357,9 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                 const name = customGoogleName.trim() || email.split('@')[0] || 'Learner';
                 handleSelectGoogleAccount(name, email, 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces');
               }}
-              className="w-full py-3 rounded-xl bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white text-xs font-bold transition-colors mt-4 shadow-sm disabled:opacity-50 cursor-pointer"
+              className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors mt-3 shadow-sm disabled:opacity-50 cursor-pointer"
             >
-              Sign In with this Google Account →
+              Sign In Directly →
             </button>
           </div>
         )}
