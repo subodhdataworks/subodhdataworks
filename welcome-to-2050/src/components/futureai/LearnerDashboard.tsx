@@ -81,6 +81,7 @@ import { MobileTopBar } from './mobile/MobileTopBar';
 import { MobileBottomNav, MobileTab } from './mobile/MobileBottomNav';
 import { MobileProfileSheet } from './mobile/MobileProfileSheet';
 import { MobileDashboardHome } from './mobile/MobileDashboardHome';
+import { MobilePlacementHub } from './mobile/MobilePlacementHub';
 
 // =========================================================================
 // 10 AUTHENTIC 3D-STYLE VECTOR ICONS MATCHING media_1790589591068.jpg
@@ -1795,9 +1796,40 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
         {/* ─── TAB: PLACEMENT & CAREER HUB (6 LPA - 15 LPA Guarantee) ─── */}
         {dockTab === 'placement' && (
-          <div className="col-span-full dock-subview-container">
-            {/* Header Card */}
-            <div className="dock-view-header-card" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,247,255,0.95) 100%)' }}>
+          <div className="col-span-full">
+            {/* Native Android Mobile Placement Portal (< 768px) */}
+            <div className="md:hidden">
+              <MobilePlacementHub
+                userName={userName}
+                onStartMockInterview={() => {
+                  playClick();
+                  setSelectedModuleView('python');
+                  setActiveTopicWs(1);
+                  setTargetStep('interview');
+                  if (typeof window !== 'undefined') window.location.hash = '#interview';
+                }}
+                onPlayGames={() => {
+                  playClick();
+                  setSelectedModuleView('python');
+                  setActiveTopicWs(1);
+                  setTargetStep('play');
+                  if (typeof window !== 'undefined') window.location.hash = '#play';
+                }}
+                onNavigateBack={() => {
+                  playClick();
+                  setDockTab('home');
+                  setSelectedModuleView(null);
+                  setActiveTopicWs(null);
+                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+                }}
+                onOpenAdvisor={onOpenAdvisor}
+              />
+            </div>
+
+            {/* Desktop Experience (>= 768px) */}
+            <div className="hidden md:block dock-subview-container">
+              {/* Header Card */}
+              <div className="dock-view-header-card" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,247,255,0.95) 100%)' }}>
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/30">
                   <Briefcase className="w-7 h-7" />
@@ -2076,6 +2108,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 </div>
               </div>
             </div>
+          </div>
           </div>
         )}
 
