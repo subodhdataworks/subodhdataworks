@@ -5163,3 +5163,157 @@
     display: none;
   }
 }
+
+/* =========================================================================
+   MOBILE COMPACT POTS (1:1 with Website, Scaled Down for Mobile Screen)
+   ========================================================================= */
+.scd-pot-card.is-mobile-compact {
+  width: 100% !important;
+  max-width: 100% !important;
+  transition: transform 0.2s ease;
+  overflow: visible !important;
+}
+
+.scd-pot-card.is-mobile-compact:active {
+  transform: scale(0.97);
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-flow-stage {
+  width: 90% !important;
+  height: 120px !important;
+  margin-bottom: -15px !important;
+  z-index: 6;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-rising-energy {
+  height: 105px !important;
+  bottom: -6px !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-holo-dome {
+  border-radius: 18px 18px 0 0 !important;
+  border-width: 1.5px !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-top-rim {
+  height: 16px !important;
+  border-width: 1.5px !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-mouth-vortex {
+  height: 10px !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-cylinder-body {
+  padding: 8px 9px 10px !important;
+  border-radius: 0 0 16px 16px !important;
+  border-width: 1px !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-top-tags {
+  gap: 3px !important;
+  margin-bottom: 4px !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-status-pill {
+  font-size: 7.5px !important;
+  padding: 1.5px 5.5px !important;
+  letter-spacing: 0.02em !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-ctc-pill {
+  font-size: 7.5px !important;
+  padding: 1.5px 5.5px !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-title {
+  font-size: 11.5px !important;
+  line-height: 1.25 !important;
+  margin: 3px 0 3px !important;
+  font-weight: 900 !important;
+  text-align: center !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-desc {
+  font-size: 8.5px !important;
+  line-height: 1.25 !important;
+  margin-bottom: 5px !important;
+  color: #64748b !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-align: center !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-skills-row {
+  gap: 2.5px !important;
+  margin-bottom: 6px !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-skill-tag {
+  font-size: 7.5px !important;
+  padding: 1px 4.5px !important;
+  border-radius: 6px !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-bottom-actions-row {
+  margin-top: 3px !important;
+  padding-top: 5px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 4px !important;
+  border-top: 1px solid rgba(226, 232, 240, 0.6) !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-slashed-price-wrap {
+  flex-shrink: 0 !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-slashed-daam {
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  color: #94a3b8 !important;
+  text-decoration: line-through !important;
+  text-decoration-color: #f43f5e !important;
+  text-decoration-thickness: 1.8px !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-circle-arrow-btn {
+  padding: 3px 7px !important;
+  font-size: 9px !important;
+  gap: 3px !important;
+  border-radius: 9999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  font-weight: 900 !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-arrow-icon-circle {
+  width: 14px !important;
+  height: 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-bottom-base {
+  margin-top: -3px !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-bottom-neon-ring {
+  height: 6px !important;
+  border-width: 1.5px !important;
+}
+
+.scd-pot-card.is-mobile-compact .scd-pot-metallic-plinth {
+  height: 4px !important;
+}
+
