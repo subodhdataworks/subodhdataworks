@@ -334,10 +334,10 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       </div>
 
       {/* =========================================================================
-          4. "4 High-Paying Industry Courses" (Single Course per Screen, Only Course Name, Fee & Start Learning)
+          4. "4 High-Paying Industry Courses" (Compact Double 2-Column Grid, Only Name, Fee & Start)
           ========================================================================= */}
       <div className="w-full">
-        {/* Header with Course Counter */}
+        {/* Header */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5">
             <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
@@ -347,151 +347,98 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
               4 High-Paying Industry Courses
             </h2>
           </div>
-
-          <div className="flex items-center gap-1 text-[11px] font-black text-blue-700 bg-blue-50 border border-blue-200/60 px-2.5 py-0.5 rounded-full">
-            <span>Course</span>
-            <span className="text-blue-900">{activeCourseIndex + 1}</span>
-            <span className="text-slate-400">/</span>
-            <span className="text-slate-500">4</span>
-          </div>
+          <span className="text-[10px] font-bold text-blue-600 bg-blue-50 border border-blue-200/60 px-2 py-0.5 rounded-full">
+            All 4 Live
+          </span>
         </div>
 
-        {/* Horizontal Snap Slider: Exactly ONE Single Course on Screen at a Time */}
-        <div
-          id="mobile-courses-single-slider"
-          className="flex gap-4 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory scroll-smooth"
-          onScroll={(e) => {
-            const el = e.currentTarget;
-            const w = el.offsetWidth;
-            if (w > 0) {
-              const idx = Math.round(el.scrollLeft / w);
-              if (idx !== activeCourseIndex && idx >= 0 && idx < flagshipCourses.length) {
-                setActiveCourseIndex(idx);
-              }
-            }
-          }}
-        >
+        {/* 2-Column Compact Grid (Double Cards Side-by-Side) */}
+        <div className="grid grid-cols-2 gap-2 sm:gap-2.5 items-end">
           {flagshipCourses.map((c) => (
-            <div
+            <article
               key={c.id}
-              className="w-full min-w-full flex-shrink-0 snap-center"
-            >
-              <article
-                className={`scd-pot-card is-mobile-single-course scd-pot-${c.potTheme}`}
-                onClick={() => {
-                  playClick?.();
-                  c.action();
-                }}
-              >
-                {/* 3D Hologram Video Dome / Poster */}
-                <div className="scd-pot-flow-stage">
-                  <div className="scd-pot-rising-energy" />
-                  <div className="scd-pot-particles">
-                    <span className="scd-pt p1" />
-                    <span className="scd-pt p2" />
-                    <span className="scd-pt p3" />
-                    <span className="scd-pt p4" />
-                  </div>
-
-                  <div className="scd-pot-holo-dome">
-                    {c.video ? (
-                      <video
-                        src={c.video}
-                        poster={c.holoImage}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        preload="auto"
-                        className="scd-pot-holo-video is-always-on"
-                      />
-                    ) : (
-                      <img
-                        src={c.image}
-                        alt={c.title}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                    <div className="scd-pot-holo-glass-frame" />
-                  </div>
-                </div>
-
-                {/* 3D Cylindrical Metallic Pot Body */}
-                <div className="scd-pot-cylinder-wrap">
-                  <div className="scd-pot-top-rim">
-                    <div className="scd-pot-mouth-vortex" />
-                    <div className="scd-pot-rim-neon-ring" />
-                  </div>
-
-                  <div className="scd-pot-cylinder-body">
-                    <span className="scd-pot-side-rib left" />
-                    <span className="scd-pot-side-rib right" />
-
-                    {/* ONLY 1: Course Name (Large, Bold, Centered) */}
-                    <h3 className="scd-pot-title text-base sm:text-lg font-black text-slate-900 tracking-tight text-center my-2">
-                      {c.title}
-                    </h3>
-
-                    {/* ONLY 2 & 3: Amount + Start Learning Button */}
-                    <div className="scd-pot-bottom-actions-row flex items-center justify-between gap-3 pt-3 mt-1 border-t border-slate-100">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-semibold text-slate-400">Fee:</span>
-                        <span className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
-                          {c.courseFee}
-                        </span>
-                      </div>
-
-                      <button
-                        type="button"
-                        className={`py-2 px-4 rounded-full font-black text-xs text-white shadow-md flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all ${c.btnClass}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          playClick?.();
-                          c.action();
-                        }}
-                      >
-                        <span>Start Learning</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* 3D Base Plinth */}
-                  <div className="scd-pot-bottom-base">
-                    <div className="scd-pot-bottom-neon-ring" />
-                    <div className="scd-pot-metallic-plinth" />
-                    <div className="scd-pot-floor-glow" />
-                  </div>
-                </div>
-              </article>
-            </div>
-          ))}
-        </div>
-
-        {/* 4 Pagination Indicator Dots for the 4 Single Courses */}
-        <div className="flex items-center justify-center gap-2 mt-2">
-          {flagshipCourses.map((c, idx) => (
-            <button
-              key={c.id}
-              type="button"
+              className={`scd-pot-card is-mobile-double-compact scd-pot-${c.potTheme} w-full`}
               onClick={() => {
                 playClick?.();
-                setActiveCourseIndex(idx);
-                const slider = document.getElementById('mobile-courses-single-slider');
-                if (slider) {
-                  slider.scrollTo({
-                    left: idx * slider.clientWidth,
-                    behavior: 'smooth',
-                  });
-                }
+                c.action();
               }}
-              className={`h-2 rounded-full transition-all cursor-pointer ${
-                activeCourseIndex === idx
-                  ? 'w-6 bg-blue-600 shadow-xs'
-                  : 'w-2 bg-slate-300 hover:bg-slate-400'
-              }`}
-              aria-label={`Go to course ${idx + 1}`}
-            />
+            >
+              {/* 3D Hologram Video Dome / Poster */}
+              <div className="scd-pot-flow-stage">
+                <div className="scd-pot-rising-energy" />
+                <div className="scd-pot-particles">
+                  <span className="scd-pt p1" />
+                  <span className="scd-pt p2" />
+                </div>
+
+                <div className="scd-pot-holo-dome">
+                  {c.video ? (
+                    <video
+                      src={c.video}
+                      poster={c.holoImage}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      preload="auto"
+                      className="scd-pot-holo-video is-always-on"
+                    />
+                  ) : (
+                    <img
+                      src={c.image}
+                      alt={c.title}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                  <div className="scd-pot-holo-glass-frame" />
+                </div>
+              </div>
+
+              {/* 3D Cylindrical Metallic Pot Body */}
+              <div className="scd-pot-cylinder-wrap">
+                <div className="scd-pot-top-rim">
+                  <div className="scd-pot-mouth-vortex" />
+                  <div className="scd-pot-rim-neon-ring" />
+                </div>
+
+                <div className="scd-pot-cylinder-body">
+                  <span className="scd-pot-side-rib left" />
+                  <span className="scd-pot-side-rib right" />
+
+                  {/* ONLY: Course Name (2-line bold centered) */}
+                  <h3 className="scd-pot-title text-[11px] font-black text-slate-900 tracking-tight text-center my-1.5 leading-snug line-clamp-2 h-[28px] flex items-center justify-center">
+                    {c.title}
+                  </h3>
+
+                  {/* ONLY: Amount + Start Learning Button */}
+                  <div className="scd-pot-bottom-actions-row flex items-center justify-between gap-1 pt-2 mt-1 border-t border-slate-100">
+                    <span className="text-[11px] font-black text-slate-900 tracking-tight shrink-0">
+                      {c.courseFee}
+                    </span>
+
+                    <button
+                      type="button"
+                      className={`py-1 px-2 rounded-full font-black text-[9.5px] text-white shadow-2xs flex items-center gap-0.5 cursor-pointer active:scale-95 transition-all shrink-0 ${c.btnClass}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        playClick?.();
+                        c.action();
+                      }}
+                    >
+                      <span>Start</span>
+                      <ArrowRight className="w-2.5 h-2.5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* 3D Base Plinth */}
+                <div className="scd-pot-bottom-base">
+                  <div className="scd-pot-bottom-neon-ring" />
+                  <div className="scd-pot-metallic-plinth" />
+                  <div className="scd-pot-floor-glow" />
+                </div>
+              </div>
+            </article>
           ))}
         </div>
       </div>

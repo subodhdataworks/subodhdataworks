@@ -5368,3 +5368,54 @@
   height: 6px !important;
 }
 
+/* =========================================================================
+   DOUBLE COURSE GRID (Compact 2-Columns on Mobile Screen)
+   ========================================================================= */
+.scd-pot-card.is-mobile-double-compact {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  overflow: visible !important;
+}
+
+.scd-pot-card.is-mobile-double-compact .scd-pot-flow-stage {
+  width: 90% !important;
+  height: 100px !important;
+  margin-bottom: -12px !important;
+  z-index: 6;
+}
+
+.scd-pot-card.is-mobile-double-compact .scd-pot-rising-energy {
+  height: 85px !important;
+  bottom: -4px !important;
+}
+
+.scd-pot-card.is-mobile-double-compact .scd-pot-holo-dome {
+  border-radius: 16px 16px 0 0 !important;
+  border-width: 1.5px !important;
+}
+
+.scd-pot-card.is-mobile-double-compact .scd-pot-top-rim {
+  height: 14px !important;
+  border-width: 1.5px !important;
+}
+
+.scd-pot-card.is-mobile-double-compact .scd-pot-mouth-vortex {
+  height: 8px !important;
+}
+
+.scd-pot-card.is-mobile-double-compact .scd-pot-cylinder-body {
+  padding: 6px 8px 8px !important;
+  border-radius: 0 0 16px 16px !important;
+  border-width: 1px !important;
+}
+
+.scd-pot-card.is-mobile-double-compact .scd-pot-bottom-neon-ring {
+  height: 5px !important;
+  border-width: 1.5px !important;
+}
+
+.scd-pot-card.is-mobile-double-compact .scd-pot-metallic-plinth {
+  height: 4px !important;
+}
+
