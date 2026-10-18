@@ -24,10 +24,42 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
   const [customGoogleName, setCustomGoogleName] = useState('');
   const [customGoogleEmail, setCustomGoogleEmail] = useState('');
 
-  // Load Google SDK on open
+  // Load Google SDK on open and initialize Google One-Tap
   useEffect(() => {
     if (isOpen) {
-      loadGoogleScript();
+      loadGoogleScript().then(() => {
+        const clientId = getGoogleClientId();
+        if (clientId && (window as any).google?.accounts?.id) {
+          try {
+            (window as any).google.accounts.id.initialize({
+              client_id: clientId,
+              callback: async (response: any) => {
+                if (response?.credential) {
+                  const payload = parseJwt(response.credential);
+                  if (payload) {
+                    const finalName = payload.name || payload.email?.split('@')[0] || 'Learner';
+                    await recordUserInDatabase({
+                      uid: payload.sub,
+                      name: finalName,
+                      email: payload.email,
+                      avatar: payload.picture,
+                      source: 'Google',
+                    });
+                    onSuccess(finalName, payload.email, payload.picture);
+                    onClose();
+                  }
+                }
+              },
+              auto_select: false,
+              cancel_on_tap_outside: true,
+            });
+            // Try Google One-Tap native prompt
+            (window as any).google.accounts.id.prompt();
+          } catch (e) {
+            console.warn('GSI init notice:', e);
+          }
+        }
+      });
     }
   }, [isOpen]);
 

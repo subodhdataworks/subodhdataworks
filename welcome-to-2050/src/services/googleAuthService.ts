@@ -10,12 +10,14 @@ export interface GoogleUserProfile {
   sub?: string;
 }
 
+export const DEFAULT_GOOGLE_CLIENT_ID = '876024198925-9d6giu09rj5arv1921391drolplq6q99.apps.googleusercontent.com';
+
 export function getGoogleClientId(): string {
   if (typeof window !== 'undefined') {
     const saved = localStorage.getItem('futureai_google_client_id');
-    if (saved) return saved.trim();
+    if (saved && saved.trim().length > 10) return saved.trim();
   }
-  return (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GOOGLE_CLIENT_ID) || '';
+  return (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GOOGLE_CLIENT_ID) || DEFAULT_GOOGLE_CLIENT_ID;
 }
 
 export function saveGoogleClientId(clientId: string): void {
