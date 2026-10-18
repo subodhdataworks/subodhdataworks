@@ -4,6 +4,7 @@ import {
   BarChart3, CheckCircle2, BookOpen, FolderKanban, Wrench, ArrowRight, Zap, Award,
   Timer, Bot, Sparkles, Circle, Table2, Layers, Cpu, TrendingUp
 } from 'lucide-react';
+import { MobileExcelChapterView } from './mobile/MobileExcelChapterView';
 import './SqlChapterView.css';
 
 interface Props {
@@ -13,9 +14,9 @@ interface Props {
   onOpenAdvisor?: () => void;
 }
 
-type LessonStatus = 'completed' | 'progress' | 'todo';
-interface Lesson { title: string; time: string; status: LessonStatus }
-interface Chapter {
+export type LessonStatus = 'completed' | 'progress' | 'todo';
+export interface Lesson { title: string; time: string; status: LessonStatus }
+export interface Chapter {
   id: number;
   title: string;
   desc: string;
@@ -25,9 +26,9 @@ interface Chapter {
   lessons: Lesson[];
 }
 
-const EXCEL_COLOR = '#059669';
+export const EXCEL_COLOR = '#059669';
 
-const EXCEL_CHAPTERS: Chapter[] = [
+export const EXCEL_CHAPTERS: Chapter[] = [
   {
     id: 1,
     title: 'Introduction to Microsoft Excel',
@@ -570,7 +571,7 @@ const ACTIONS = [
   { step: 'code', label: 'Code', icon: <Code2 className="w-3 h-3" />, cls: 'act-code' },
 ];
 
-export const ExcelChapterView: React.FC<Props> = ({ onBack, onOpenAdvisor }) => {
+export const ExcelChapterView: React.FC<Props> = ({ userName, onBack, onOpenUnlockModal, onOpenAdvisor }) => {
   const [openId, setOpenId] = useState<number | null>(1);
 
   const totalLessons = EXCEL_CHAPTERS.reduce((acc, c) => acc + c.lessons.length, 0);
@@ -578,7 +579,20 @@ export const ExcelChapterView: React.FC<Props> = ({ onBack, onOpenAdvisor }) => 
   const pct = Math.round((doneLessons / totalLessons) * 100);
 
   return (
-    <div className="scv-root">
+    <>
+      {/* ── Native Android Mobile Experience (< 768px) ── */}
+      <div className="md:hidden">
+        <MobileExcelChapterView
+          userName={userName}
+          onBack={onBack}
+          onOpenUnlockModal={onOpenUnlockModal}
+          onOpenAdvisor={onOpenAdvisor}
+        />
+      </div>
+
+      {/* ── Desktop Experience (>= 768px) ── */}
+      <div className="hidden md:block">
+        <div className="scv-root">
       {/* ================= LEFT ================= */}
       <div className="scv-left">
         {/* Hero */}
@@ -757,7 +771,9 @@ export const ExcelChapterView: React.FC<Props> = ({ onBack, onOpenAdvisor }) => 
           <Sparkles className="scv-spark" />
         </div>
       </aside>
-    </div>
+        </div>
+      </div>
+    </>
   );
 };
 
