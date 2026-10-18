@@ -213,6 +213,47 @@ export async function findExistingUser(email?: string, uid?: string): Promise<Re
 }
 
 /**
+ * Find existing user by clean 10-digit phone number
+ */
+export async function findUserByPhone(phone: string): Promise<RegisteredUserRecord | null> {
+  const clean = phone.replace(/\D/g, '');
+  if (clean.length < 10) return null;
+
+  // 1. Check local master registry
+  if (typeof window !== 'undefined') {
+    try {
+      const existingRaw = localStorage.getItem(MASTER_REGISTRY_KEY);
+      if (existingRaw) {
+        const localList: RegisteredUserRecord[] = JSON.parse(existingRaw);
+        const match = localList.find((u) => u.phone && u.phone.replace(/\D/g, '') === clean);
+        if (match) return match;
+      }
+    } catch (e) {
+      console.warn('Local registry phone lookup notice:', e);
+    }
+  }
+
+  // 2. Check Firestore with a 2-second timeout so mobile never hangs
+  try {
+    const colRef = collection(db, 'registered_users');
+    const q = query(colRef, where('phone', '==', clean));
+    const timeoutPromise = new Promise<null>((r) => setTimeout(() => r(null), 2000));
+    const fetchPromise = getDocs(q).then((snapshot) => {
+      if (!snapshot.empty) {
+        return snapshot.docs[0].data() as RegisteredUserRecord;
+      }
+      return null;
+    });
+    const result = await Promise.race([fetchPromise, timeoutPromise]);
+    if (result) return result;
+  } catch (err) {
+    console.warn('Firestore phone lookup note:', err);
+  }
+
+  return null;
+}
+
+/**
  * Get all registered user records for marketing and export
  */
 export async function getAllRegisteredUsers(): Promise<RegisteredUserRecord[]> {

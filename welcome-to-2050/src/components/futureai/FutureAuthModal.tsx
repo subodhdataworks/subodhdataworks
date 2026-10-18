@@ -12,7 +12,7 @@ import {
   Lock,
 } from 'lucide-react';
 import { loadGoogleScript, requestGoogleAccountLogin } from '../../services/googleAuthService';
-import { recordUserInDatabase, loginWithGooglePopup, findExistingUser } from '../../services/realAuthService';
+import { recordUserInDatabase, loginWithGooglePopup, findExistingUser, findUserByPhone } from '../../services/realAuthService';
 
 interface FutureAuthModalProps {
   isOpen: boolean;
@@ -144,11 +144,76 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
         setIsSubmitting(false);
         setStep(2);
       } catch (fbErr: any) {
-        console.warn('Transitioning to Step 2 for resilient completion:', fbErr);
-        // Student is never blocked: seamlessly proceed to Step 2
+        console.warn('Google login popup was blocked or unavailable on mobile:', fbErr);
         setIsSubmitting(false);
-        setStep(2);
+        setValidationError('Google popup was blocked or timed out. Please enter your mobile number below to login instantly!');
       }
+    }
+  };
+
+  // Step 1: Handle Direct Mobile Number / WhatsApp 1-Tap Login
+  const handlePhoneLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setValidationError(null);
+
+    const cleanPhone = mobileNumber.replace(/\D/g, '');
+    if (cleanPhone.length < 10) {
+      setValidationError('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // 1. Check if user already exists with this phone number
+      const existing = await findUserByPhone(cleanPhone);
+      const finalName = fullName.trim() || existing?.name || 'Learner';
+      const finalEmail = existing?.email || '';
+      const finalAvatar = existing?.avatar || '';
+      const finalRole = existing?.role || role || 'student';
+
+      // 2. Record or update in database
+      await recordUserInDatabase({
+        uid: existing?.uid || `usr_${cleanPhone}`,
+        name: finalName,
+        email: finalEmail || undefined,
+        phone: cleanPhone,
+        avatar: finalAvatar || undefined,
+        role: finalRole,
+        source: 'Phone',
+      });
+
+      // 3. Save telemetry & session
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('futureai_user_name', finalName);
+        if (finalEmail) localStorage.setItem('futureai_user_email', finalEmail);
+        if (finalAvatar) localStorage.setItem('futureai_user_avatar', finalAvatar);
+        localStorage.setItem('futureai_user_phone', cleanPhone);
+        localStorage.setItem('futureai_user_role', finalRole);
+        localStorage.setItem('futureai_logged_in', 'true');
+
+        if (finalRole === 'influencer') {
+          window.location.hash = '#income';
+        } else {
+          window.location.hash = '#dashboard';
+        }
+      }
+
+      setIsSubmitting(false);
+      onSuccess(finalName, finalEmail, finalAvatar, finalRole);
+      onClose();
+    } catch (err: any) {
+      console.warn('Phone login fallback notice:', err);
+      const finalName = fullName.trim() || 'Learner';
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('futureai_user_name', finalName);
+        localStorage.setItem('futureai_user_phone', cleanPhone);
+        localStorage.setItem('futureai_user_role', role);
+        localStorage.setItem('futureai_logged_in', 'true');
+        window.location.hash = '#dashboard';
+      }
+      setIsSubmitting(false);
+      onSuccess(finalName, '', '', role);
+      onClose();
     }
   };
 
@@ -210,8 +275,8 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-fadeIn">
-      {/* Modal Container with Glassmorphism */}
-      <div className="relative max-w-[480px] w-full bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[36px] p-7 sm:p-9 shadow-[0_25px_60px_rgba(0,0,0,0.22)] border border-white/80 overflow-hidden text-center transition-all duration-300">
+      {/* Modal Container with Glassmorphism & Mobile Scroll Support */}
+      <div className="relative max-w-[480px] w-full max-h-[92vh] overflow-y-auto bg-white/95 backdrop-blur-2xl rounded-[28px] sm:rounded-[36px] p-5 sm:p-9 shadow-[0_25px_60px_rgba(0,0,0,0.22)] border border-white/80 text-center transition-all duration-300">
         
         {/* Soft Ambient Glow Orbs */}
         <div className="absolute -top-16 -left-16 w-48 h-48 bg-sky-400/20 rounded-full blur-3xl pointer-events-none" />
@@ -334,6 +399,75 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
               {/* Arrow Right Icon */}
               <ArrowRight className="w-6 h-6 text-slate-700 group-hover:translate-x-1 transition-transform flex-shrink-0" />
             </button>
+
+            {/* Validation / Notice Error Banner */}
+            {validationError && (
+              <div className="mb-4 p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold text-left">
+                {validationError}
+              </div>
+            )}
+
+            {/* OR Divider */}
+            <div className="flex items-center gap-3 my-4">
+              <div className="flex-1 h-px bg-slate-200" />
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                OR Instant Phone Login (या फोन नंबर से)
+              </span>
+              <div className="flex-1 h-px bg-slate-200" />
+            </div>
+
+            {/* Direct Mobile Number & Name Login Form */}
+            <form onSubmit={handlePhoneLogin} className="space-y-3 mb-6 text-left">
+              <div>
+                <label className="text-[11px] font-bold text-slate-700 mb-1 block">
+                  Full Name (आपका नाम - Optional)
+                </label>
+                <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 flex items-center gap-2 focus-within:border-blue-500 focus-within:bg-white transition-all">
+                  <User className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                  <input
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="e.g. Subodh Kumar"
+                    className="w-full text-xs font-semibold text-slate-900 bg-transparent outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[11px] font-bold text-slate-700 mb-1 block">
+                  10-Digit Mobile Number (मोबाइल नंबर) *
+                </label>
+                <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 flex items-center gap-2 focus-within:border-blue-500 focus-within:bg-white transition-all">
+                  <span className="text-xs font-black text-slate-600 border-r border-slate-200 pr-2">
+                    🇮🇳 +91
+                  </span>
+                  <input
+                    type="tel"
+                    maxLength={10}
+                    value={mobileNumber}
+                    onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, ''))}
+                    placeholder="9876543210"
+                    required
+                    className="w-full text-xs font-bold tracking-wider text-slate-900 bg-transparent outline-none"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black text-xs shadow-md shadow-blue-500/20 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>{isSubmitting ? 'Logging in...' : 'Login with Mobile Number (लॉगिन करें)'}</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-center justify-center gap-1.5 text-[10px] text-slate-400 font-medium">
+                <Lock className="w-3 h-3 text-emerald-500" />
+                <span>Instant 1-Tap Entry • No Password Required</span>
+              </div>
+            </form>
 
             {/* Bottom 3 Feature Pillars */}
             <div className="grid grid-cols-3 divide-x divide-slate-200/80 pt-4 border-t border-slate-100">

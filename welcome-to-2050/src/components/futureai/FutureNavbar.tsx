@@ -160,7 +160,7 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
               <Search className="w-4 h-4" />
             </button>
 
-            {/* Login or Dashboard Pill Button (Desktop & Tablet) */}
+            {/* Login or Dashboard Pill Button (Visible on both Mobile & Desktop) */}
             {isLoggedIn ? (
               <button
                 onClick={() => {
@@ -168,7 +168,7 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
                   onOpenDashboard?.();
                 }}
                 onMouseEnter={playHover}
-                className="hidden sm:inline-flex items-center gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-semibold text-sky-950 bg-sky-50 hover:bg-sky-100 border border-sky-300 shadow-2xs transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-semibold text-sky-950 bg-sky-50 hover:bg-sky-100 border border-sky-300 shadow-2xs transition-all cursor-pointer"
                 title="Go to Learner Dashboard"
               >
                 <img 
@@ -176,8 +176,8 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
                   alt={userName} 
                   className="w-5 h-5 rounded-full object-cover border border-sky-400"
                 />
-                <span className="font-bold">{userName}</span>
-                <span className="text-[10px] font-bold text-sky-600 bg-white px-1.5 py-0.5 rounded-full border border-sky-200">Dashboard ➔</span>
+                <span className="font-bold hidden sm:inline">{userName}</span>
+                <span className="text-[10px] font-bold text-sky-600 bg-white px-1.5 py-0.5 rounded-full border border-sky-200">App ➔</span>
               </button>
             ) : (
               <button
@@ -186,7 +186,7 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
                   onOpenLogin();
                 }}
                 onMouseEnter={playHover}
-                className="hidden sm:inline-block px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 shadow-2xs hover:border-slate-400 transition-all cursor-pointer"
+                className="inline-flex items-center px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 shadow-2xs hover:border-slate-400 transition-all cursor-pointer"
               >
                 Login
               </button>

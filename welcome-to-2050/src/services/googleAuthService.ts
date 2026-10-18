@@ -81,8 +81,14 @@ export function requestGoogleAccountLogin(): Promise<{ name: string; email: stri
       return reject(new Error('NO_CLIENT_ID'));
     }
 
+    // Safety timeout: on mobile devices, if popup is blocked or closed silently, resolve gracefully
+    const timeoutId = setTimeout(() => {
+      reject(new Error('POPUP_TIMEOUT_OR_BLOCKED'));
+    }, 5000);
+
     loadGoogleScript().then((loaded) => {
       if (!loaded || !(window as any).google?.accounts?.oauth2) {
+        clearTimeout(timeoutId);
         return reject(new Error('SDK_NOT_LOADED'));
       }
 
@@ -91,6 +97,7 @@ export function requestGoogleAccountLogin(): Promise<{ name: string; email: stri
           client_id: clientId,
           scope: 'openid email profile',
           callback: async (tokenResponse: any) => {
+            clearTimeout(timeoutId);
             if (tokenResponse?.access_token) {
               try {
                 const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
@@ -111,11 +118,15 @@ export function requestGoogleAccountLogin(): Promise<{ name: string; email: stri
             }
             reject(new Error('TOKEN_ERROR'));
           },
-          error_callback: (err: any) => reject(err),
+          error_callback: (err: any) => {
+            clearTimeout(timeoutId);
+            reject(err);
+          },
         });
 
         client.requestAccessToken({ prompt: 'select_account' });
       } catch (e) {
+        clearTimeout(timeoutId);
         reject(e);
       }
     });
