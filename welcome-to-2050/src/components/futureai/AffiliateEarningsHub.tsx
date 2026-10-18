@@ -273,8 +273,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
         { icon: '🏛️', label: 'Direct to Bank / UPI' },
         { icon: '✅', label: 'Secure • No Hidden Fee' },
       ],
-      ctaText: availableBalance >= 500 ? `Instant Withdraw ₹${availableBalance.toLocaleString('en-IN')} ⚡` : 'Request Payout (Min ₹500)',
-      ctaType: 'withdraw',
+      ctaText: availableBalance >= 500 ? `Instant Withdraw ₹${availableBalance.toLocaleString('en-IN')} ⚡` : 'Start Earning ₹100 / Student 🚀',
+      ctaType: availableBalance >= 500 ? 'withdraw' : 'copy',
       socialProof: '₹24.5 Lakhs+ Verified Payouts',
       alt: 'Withdraw Earnings Anytime Hassle-Free - Real Student'
     },
@@ -1299,39 +1299,36 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               </button>
             </div>
 
-            {/* Top 5 list */}
+            {/* Top 5 list / Season Empty State */}
             <div className="aff-lb-items-list">
-              {[
-                { rank: 1, name: 'Suresh Patel', enrollments: 152, earnings: '₹19,000', icon: '👑', pillClass: 'badge-amber', avBg: 'bg-amber-100 text-amber-800' },
-                { rank: 2, name: 'Neha Sharma', enrollments: 128, earnings: '₹16,000', icon: '🥈', pillClass: 'badge-blue', avBg: 'bg-sky-100 text-sky-800' },
-                { rank: 3, name: 'Rohit Kumar', enrollments: 106, earnings: '₹13,250', icon: '🥉', pillClass: 'badge-orange', avBg: 'bg-orange-100 text-orange-800' },
-                { rank: 4, name: 'Pooja Verma', enrollments: 92, earnings: '₹11,500', icon: '4', pillClass: 'badge-purple', avBg: 'bg-purple-100 text-purple-800' },
-                { rank: 5, name: 'Amit Tiwari', enrollments: 78, earnings: '₹9,750', icon: '5', pillClass: 'badge-blue-soft', avBg: 'bg-blue-100 text-blue-800' },
-              ].map((p) => (
-                <div key={p.rank} className="aff-lb-row">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <span className={`aff-lb-rank-badge rank-${p.rank}`}>{p.icon}</span>
-                    <div className={`w-8 h-8 rounded-full ${p.avBg} flex items-center justify-center font-bold text-xs shrink-0 shadow-sm`}>
-                      {p.name.charAt(0)}
-                    </div>
-                    <div className="min-w-0">
-                      <strong className="aff-lb-user-name truncate block">{p.name}</strong>
-                      <span className="aff-lb-user-sub truncate block">{p.enrollments} enrollments</span>
-                    </div>
-                  </div>
-                  <div className={`aff-lb-earn-pill ${p.pillClass}`}>
-                    {p.earnings}
-                  </div>
+              <div className="py-6 px-3 text-center">
+                <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center mx-auto mb-2 text-xl shadow-inner">
+                  👑
                 </div>
-              ))}
+                <strong className="text-xs font-bold text-slate-800 block">Season Leaderboard Open</strong>
+                <p className="text-[11px] text-slate-500 mt-1 max-w-[220px] mx-auto leading-relaxed">
+                  Be the first to claim Rank #1! Share your referral link and earn Flat ₹100 per student enrollment.
+                </p>
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold text-[11px] cursor-pointer shadow-sm transition-all"
+                >
+                  <Copy className="w-3 h-3" />
+                  <span>{copiedLink ? 'Copied Link!' : 'Copy Link to Rank #1'}</span>
+                </button>
+              </div>
             </div>
 
             {/* Bottom Callout Banner */}
             <div className="aff-lb-top5-banner">
               <span className="text-xl shrink-0">🚀</span>
               <div className="flex-1 text-[11px] font-semibold text-slate-800 leading-tight">
-                You are ranked in the <strong className="text-[#059669] font-black">Top 5%</strong>
-                <br />of all Future.AI partners this month!
+                {paidEnrollments > 0 ? (
+                  <>You have <strong className="text-[#059669] font-black">{paidEnrollments} verified enrollments</strong> this month!</>
+                ) : (
+                  <>Start inviting students to claim your <strong className="text-[#0066ff] font-black">#1 spot</strong> on the leaderboard!</>
+                )}
               </div>
               <span className="text-xl shrink-0">📈</span>
             </div>
@@ -2292,30 +2289,23 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               </p>
 
               <div className="leaderboard-list max-h-80 overflow-y-auto">
-                {[
-                  { rank: 1, name: 'Suresh Patel', enrollments: 152, earnings: 19000, avatar: '👨‍💼', crown: '👑' },
-                  { rank: 2, name: 'Neha Sharma', enrollments: 128, earnings: 16000, avatar: '👩‍💻', crown: '🥈' },
-                  { rank: 3, name: 'Rohit Kumar', enrollments: 106, earnings: 13250, avatar: '👨‍🎓', crown: '🥉' },
-                  { rank: 4, name: 'Pooja Verma', enrollments: 92, earnings: 11500, avatar: '👩‍🏫', crown: null },
-                  { rank: 5, name: 'Amit Tiwari', enrollments: 78, earnings: 9750, avatar: '👨‍🔬', crown: null },
-                  { rank: 6, name: `${userName || 'Learner'} (You)`, enrollments: 86, earnings: 8600, avatar: '⭐', crown: null },
-                  { rank: 7, name: 'Kunal Deshmukh', enrollments: 65, earnings: 8125, avatar: '👨‍💼', crown: null },
-                  { rank: 8, name: 'Shreya Iyer', enrollments: 54, earnings: 6750, avatar: '👩‍💼', crown: null },
-                ].map((p) => (
-                  <div key={p.rank} className={`leaderboard-item ${p.name.includes('(You)') ? 'bg-sky-50 border border-sky-200' : ''}`}>
-                    <div className="flex items-center gap-2.5">
-                      <span className={`leaderboard-rank-badge rank-${p.rank}`}>
-                        {p.crown || p.rank}
-                      </span>
-                      <span className="text-base">{p.avatar}</span>
-                      <div>
-                        <strong className="text-xs font-bold text-slate-800 block leading-tight">{p.name}</strong>
-                        <span className="text-[10px] text-slate-400 font-medium">{p.enrollments} enrollments</span>
-                      </div>
-                    </div>
-                    <strong className="text-xs font-black text-slate-900">₹{p.earnings.toLocaleString('en-IN')}</strong>
+                <div className="py-10 px-4 text-center">
+                  <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center mx-auto mb-2.5 text-2xl shadow-inner">
+                    🏆
                   </div>
-                ))}
+                  <strong className="text-sm font-bold text-slate-800 block">New Monthly Season Active</strong>
+                  <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto leading-relaxed">
+                    Referral rankings update dynamically as your invited students enroll in Python &amp; Data Science tracks. Top 3 partners win a bonus ₹10,000 cash grant!
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleCopyLink}
+                    className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs cursor-pointer shadow-md transition-all"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>{copiedLink ? 'Copied Link!' : 'Copy Referral Link & Climb Leaderboard'}</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
