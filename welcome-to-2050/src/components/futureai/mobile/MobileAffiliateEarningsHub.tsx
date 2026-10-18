@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import {
   Link2,
@@ -11,6 +11,8 @@ import {
   Clock,
   ExternalLink,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   ArrowRight,
   TrendingUp,
   FileText,
@@ -22,7 +24,8 @@ import {
   BarChart3,
   Flame,
   Award,
-  AlertCircle
+  AlertCircle,
+  Sparkles,
 } from 'lucide-react';
 
 export interface MobileReferralItem {
@@ -102,6 +105,44 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
   const [leaderboardTab, setLeaderboardTab] = useState<'week' | 'month' | 'all'>('week');
   const [referralsTab, setReferralsTab] = useState<'all' | 'paid' | 'approved' | 'trial'>('all');
   const [analyticsRange, setAnalyticsRange] = useState<'7D' | '30D' | '3M' | 'ALL'>('7D');
+
+  // Auto-Sliding 3 Real Human Banners
+  const [activeBannerSlide, setActiveBannerSlide] = useState(0);
+  const [isBannerPaused, setIsBannerPaused] = useState(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchEndX, setTouchEndX] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (isBannerPaused) return;
+    const interval = setInterval(() => {
+      setActiveBannerSlide((prev) => (prev + 1) % 3);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [isBannerPaused]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsBannerPaused(true);
+    setTouchStartX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    setIsBannerPaused(false);
+    if (!touchStartX || !touchEndX) return;
+    const distance = touchStartX - touchEndX;
+    if (distance > 45) {
+      playTactile();
+      setActiveBannerSlide((prev) => (prev + 1) % 3);
+    } else if (distance < -45) {
+      playTactile();
+      setActiveBannerSlide((prev) => (prev - 1 + 3) % 3);
+    }
+    setTouchStartX(null);
+    setTouchEndX(null);
+  };
 
   const playTactile = () => {
     try {
@@ -208,6 +249,43 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
     { rank: 5, name: 'Subodh Kumar', xp: '1,750 XP', amount: '₹5,600', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces', crown: false },
   ];
 
+  // 3 Distinct Real Human Banners for Auto-Slider (100% Real Photography, Zero Cartoon)
+  const bannerSlides = [
+    {
+      id: 0,
+      image: '/images/affiliate/real_banner_1_referral.jpg',
+      badge: '✨ REFER & EARN ₹100',
+      badgeColor: 'bg-blue-600/90 text-white',
+      title: 'Earn ₹100 Per Referral',
+      desc: 'Share your link with students & friends. Earn ₹100 instant cash on every verified enrollment!',
+      ctaText: 'Share Link ↗',
+      action: () => handleNativeShare(),
+    },
+    {
+      id: 1,
+      image: '/images/affiliate/real_banner_2_upi.jpg',
+      badge: '⚡ 24/7 INSTANT UPI PAYOUT',
+      badgeColor: 'bg-emerald-600/90 text-white',
+      title: 'Instant Bank & UPI Payouts',
+      desc: 'Direct withdrawals to PhonePe, Google Pay, or Paytm within 24 hours. Zero hidden charges!',
+      ctaText: 'Withdraw UPI ⚡',
+      action: () => setIsWithdrawSheetOpen(true),
+    },
+    {
+      id: 2,
+      image: '/images/affiliate/real_banner_3_leaderboard.jpg',
+      badge: '🏆 #1 TOP PARTNER AWARDS',
+      badgeColor: 'bg-amber-400 text-slate-950 font-black',
+      title: 'Partner Rewards & Gadgets',
+      desc: 'Win ₹10,000+ monthly bonus, smart tech gadgets, and an official partner certification trophy!',
+      ctaText: 'Top Earners 👑',
+      action: () => {
+        const el = document.getElementById('leaderboard-section');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      },
+    },
+  ];
+
   return (
     <div className="w-full min-h-screen bg-[#f8fbff] text-slate-900 pb-36 select-none text-left">
       
@@ -224,64 +302,160 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
       {/* ─── MAIN CONTENT CONTAINER ─── */}
       <div className="max-w-md mx-auto px-3 sm:px-4 pt-3 space-y-3">
 
-        {/* ─── 1. HERO BANNER: "Earn with Referrals" ─── */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#eaf4ff] via-[#f3f8ff] to-[#edf3ff] border border-sky-200/80 p-3.5 sm:p-4 shadow-xs">
-          {/* Left Text & Steps */}
-          <div className="max-w-[62%] relative z-10">
-            <h1 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight leading-tight">
-              Earn with{' '}
-              <span className="bg-gradient-to-r from-[#0066ff] via-[#4f46e5] to-[#7c3aed] bg-clip-text text-transparent">
-                Referrals
-              </span>
-            </h1>
-            <p className="text-[11px] font-semibold text-slate-600 mt-1 leading-snug">
-              Help students learn, build careers and earn ₹100 per verified enrollment
-            </p>
+        {/* ─── 1. AUTO-SLIDING REAL HUMAN HERO CAROUSEL (3 Distinct Banners) ─── */}
+        <div 
+          className="relative w-full rounded-2xl overflow-hidden shadow-sm border border-slate-200/90 bg-slate-950 select-none group"
+          onMouseEnter={() => setIsBannerPaused(true)}
+          onMouseLeave={() => setIsBannerPaused(false)}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Carousel Track */}
+          <div 
+            className="flex transition-transform duration-500 ease-out w-full"
+            style={{ transform: `translateX(-${activeBannerSlide * 100}%)` }}
+          >
+            {bannerSlides.map((slide) => (
+              <div 
+                key={slide.id} 
+                className="w-full shrink-0 relative aspect-[16/9] sm:aspect-[16/8.2] cursor-pointer"
+                onClick={slide.action}
+              >
+                {/* 100% Real Human Photography */}
+                <img
+                  src={slide.image}
+                  alt={slide.title}
+                  className="w-full h-full object-cover object-center"
+                />
 
-            {/* 3 Step Pills */}
-            <div className="flex items-center gap-1.5 mt-3 overflow-x-auto no-scrollbar py-0.5">
-              {/* Step 1 */}
-              <div className="flex items-center gap-1.5 bg-white border border-slate-200/90 rounded-xl p-1.5 shrink-0 shadow-2xs">
-                <div className="w-6 h-6 rounded-lg bg-fuchsia-100 flex items-center justify-center text-xs">
-                  👥
+                {/* Scrim Gradient Overlay for Crisp Text Readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
+
+                {/* Top Badge */}
+                <div className="absolute top-2.5 left-2.5 z-10">
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wide shadow-sm backdrop-blur-md ${slide.badgeColor}`}>
+                    {slide.badge}
+                  </span>
                 </div>
-                <div>
-                  <div className="text-[9px] font-black text-slate-900 leading-none">Share Your Link</div>
-                  <div className="text-[8px] text-slate-500 font-semibold leading-none mt-0.5">Invite Students</div>
+
+                {/* Bottom Overlay Info & Action */}
+                <div className="absolute bottom-3 left-3 right-3 z-10 flex items-end justify-between gap-2">
+                  <div className="max-w-[72%]">
+                    <h2 className="text-sm sm:text-base font-black text-white tracking-tight leading-tight drop-shadow-md">
+                      {slide.title}
+                    </h2>
+                    <p className="text-[10px] sm:text-[11px] font-medium text-slate-200 line-clamp-1 leading-tight mt-0.5 drop-shadow-sm">
+                      {slide.desc}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      playTactile();
+                      slide.action();
+                    }}
+                    className="shrink-0 py-1.5 px-3 rounded-xl bg-white/95 hover:bg-white text-slate-900 font-extrabold text-[11px] shadow-md active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>{slide.ctaText}</span>
+                  </button>
                 </div>
               </div>
-
-              {/* Step 2 */}
-              <div className="flex items-center gap-1.5 bg-white border border-slate-200/90 rounded-xl p-1.5 shrink-0 shadow-2xs">
-                <div className="w-6 h-6 rounded-lg bg-emerald-100 flex items-center justify-center text-xs">
-                  👨‍💻
-                </div>
-                <div>
-                  <div className="text-[9px] font-black text-slate-900 leading-none">They Enroll</div>
-                  <div className="text-[8px] text-slate-500 font-semibold leading-none mt-0.5">Pay ₹999</div>
-                </div>
-              </div>
-
-              {/* Step 3 */}
-              <div className="flex items-center gap-1.5 bg-white border border-slate-200/90 rounded-xl p-1.5 shrink-0 shadow-2xs">
-                <div className="w-6 h-6 rounded-lg bg-amber-100 flex items-center justify-center text-xs">
-                  🪙
-                </div>
-                <div>
-                  <div className="text-[9px] font-black text-slate-900 leading-none">You Earn</div>
-                  <div className="text-[8px] text-slate-500 font-semibold leading-none mt-0.5">₹100 (Verified)</div>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
 
-          {/* Right Mascot & Badge */}
-          <div className="absolute right-0 bottom-0 top-0 w-40 sm:w-48 flex items-end justify-end pointer-events-none">
-            <img
-              src="/images/affiliate/earn_hero_boy_hd.png"
-              alt="Earn Referrals Mascot"
-              className="w-full h-full object-cover object-left-bottom drop-shadow-sm select-none"
-            />
+          {/* Left Arrow Button */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              playTactile();
+              setActiveBannerSlide((prev) => (prev - 1 + 3) % 3);
+            }}
+            className="absolute left-1.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-slate-900/50 hover:bg-slate-900/80 text-white backdrop-blur-md flex items-center justify-center transition-all z-20 active:scale-90 cursor-pointer"
+            aria-label="Previous banner"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+
+          {/* Right Arrow Button */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              playTactile();
+              setActiveBannerSlide((prev) => (prev + 1) % 3);
+            }}
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-slate-900/50 hover:bg-slate-900/80 text-white backdrop-blur-md flex items-center justify-center transition-all z-20 active:scale-90 cursor-pointer"
+            aria-label="Next banner"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+
+          {/* Bottom Dot Indicators */}
+          <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5">
+            {bannerSlides.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  playTactile();
+                  setActiveBannerSlide(idx);
+                }}
+                className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${
+                  activeBannerSlide === idx
+                    ? 'w-5 bg-white shadow-sm'
+                    : 'w-1.5 bg-white/50 hover:bg-white/80'
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* ─── 3 STEP REFERRAL FLOW PILLS ─── */}
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 shadow-2xs">
+          <div className="flex items-center justify-between gap-1.5">
+            {/* Step 1 */}
+            <div className="flex-1 flex items-center gap-1.5 bg-slate-50 border border-slate-200/70 rounded-xl p-1.5 shadow-2xs">
+              <div className="w-6 h-6 rounded-lg bg-blue-100 flex items-center justify-center text-xs shrink-0">
+                👥
+              </div>
+              <div className="min-w-0">
+                <div className="text-[9px] font-black text-slate-900 truncate leading-none">1. Share Link</div>
+                <div className="text-[8px] text-slate-500 font-semibold leading-none mt-0.5 truncate">Invite Friends</div>
+              </div>
+            </div>
+
+            {/* Arrow */}
+            <ArrowRight className="w-3 h-3 text-slate-300 shrink-0" />
+
+            {/* Step 2 */}
+            <div className="flex-1 flex items-center gap-1.5 bg-slate-50 border border-slate-200/70 rounded-xl p-1.5 shadow-2xs">
+              <div className="w-6 h-6 rounded-lg bg-emerald-100 flex items-center justify-center text-xs shrink-0">
+                👨‍💻
+              </div>
+              <div className="min-w-0">
+                <div className="text-[9px] font-black text-slate-900 truncate leading-none">2. Enroll</div>
+                <div className="text-[8px] text-slate-500 font-semibold leading-none mt-0.5 truncate">Pay ₹999</div>
+              </div>
+            </div>
+
+            {/* Arrow */}
+            <ArrowRight className="w-3 h-3 text-slate-300 shrink-0" />
+
+            {/* Step 3 */}
+            <div className="flex-1 flex items-center gap-1.5 bg-slate-50 border border-slate-200/70 rounded-xl p-1.5 shadow-2xs">
+              <div className="w-6 h-6 rounded-lg bg-amber-100 flex items-center justify-center text-xs shrink-0">
+                🪙
+              </div>
+              <div className="min-w-0">
+                <div className="text-[9px] font-black text-slate-900 truncate leading-none">3. You Earn</div>
+                <div className="text-[8px] text-emerald-600 font-bold leading-none mt-0.5 truncate">₹100 (Instant)</div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -764,7 +938,7 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
         {/* ─── 6. 2-COLUMN SECTION: LEADERBOARD & RECENT REFERRALS ─── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           {/* Left: Top Affiliate Leaderboard */}
-          <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 sm:p-4 shadow-2xs space-y-2.5">
+          <div id="leaderboard-section" className="bg-white border border-slate-200/90 rounded-2xl p-3.5 sm:p-4 shadow-2xs space-y-2.5">
             {/* Header */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">

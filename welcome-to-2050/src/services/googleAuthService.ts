@@ -81,10 +81,10 @@ export function requestGoogleAccountLogin(): Promise<{ name: string; email: stri
       return reject(new Error('NO_CLIENT_ID'));
     }
 
-    // Safety timeout: on mobile devices, if popup is blocked or closed silently, resolve gracefully
+    // Safety timeout: 90 seconds to allow mobile users to comfortably choose their Google account
     const timeoutId = setTimeout(() => {
       reject(new Error('POPUP_TIMEOUT_OR_BLOCKED'));
-    }, 5000);
+    }, 90000);
 
     loadGoogleScript().then((loaded) => {
       if (!loaded || !(window as any).google?.accounts?.oauth2) {

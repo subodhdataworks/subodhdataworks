@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   Lock,
   Sparkles,
+  AlertCircle,
 } from 'lucide-react';
 import { loadGoogleScript, requestGoogleAccountLogin } from '../../services/googleAuthService';
 import { recordUserInDatabase, loginWithGooglePopup, findExistingUser } from '../../services/realAuthService';
@@ -109,21 +110,57 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
       } catch (fbErr: any) {
         console.warn('Google login popup was blocked or unavailable:', fbErr);
         setIsSubmitting(false);
-        setValidationError('Google popup was closed or unavailable. Please enter your email below to login instantly!');
+
+        // If user already typed an email or had one in storage, complete immediately
+        const existingEmail = email.trim() || (typeof window !== 'undefined' ? localStorage.getItem('futureai_user_email') : '') || '';
+        if (existingEmail && existingEmail.includes('@')) {
+          const finalName = fullName.trim() || existingEmail.split('@')[0] || 'Learner';
+          completeLogin(finalName, existingEmail, '', role);
+          return;
+        }
+
+        setValidationError('Google popup was closed or unavailable in this browser. Tap "1-Click Instant Login" below to continue instantly!');
       }
     }
   };
 
-  // Direct Email Login (Email Only, no phone requirement)
+  // Instant 1-Click Login (Zero friction bypass for mobile / webview)
+  const handleInstantLogin = async () => {
+    setIsSubmitting(true);
+    setValidationError(null);
+    try {
+      const generatedEmail = email.trim() || `learner_${Math.floor(1000 + Math.random() * 9000)}@futureit.in`;
+      const finalName = fullName.trim() || (email.trim() ? email.split('@')[0] : 'Learner');
+      const finalRole = role || 'student';
+
+      await recordUserInDatabase({
+        uid: `usr_${generatedEmail.replace(/[^a-zA-Z0-9]/g, '_')}`,
+        name: finalName,
+        email: generatedEmail,
+        role: finalRole,
+        source: 'Direct',
+      });
+
+      completeLogin(finalName, generatedEmail, '', finalRole);
+    } catch {
+      const fallbackEmail = email.trim() || 'learner@futureit.in';
+      const finalName = fullName.trim() || 'Learner';
+      completeLogin(finalName, fallbackEmail, '', role);
+    }
+  };
+
+  // Direct Email Login (Email Only, ultra-forgiving normalization)
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setValidationError(null);
 
-    const cleanEmail = email.trim().toLowerCase();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!cleanEmail || !emailRegex.test(cleanEmail)) {
-      setValidationError('Please enter a valid email address (valid email लिखें).');
-      return;
+    let cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail) {
+      return handleInstantLogin();
+    }
+    // Auto-normalize if user typed just name or number
+    if (!cleanEmail.includes('@')) {
+      cleanEmail = `${cleanEmail.replace(/[^a-zA-Z0-9._-]/g, '')}@futureit.in`;
     }
 
     setIsSubmitting(true);
@@ -273,12 +310,34 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
             <ArrowRight className="w-5 h-5 text-slate-700 group-hover:translate-x-1 transition-transform flex-shrink-0" />
           </button>
 
-          {/* Validation / Notice Error Banner */}
+          {/* Validation / Notice Error Banner with 1-Tap Fallback */}
           {validationError && (
-            <div className="mb-4 p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold text-left">
-              {validationError}
+            <div className="mb-4 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs text-left shadow-xs">
+              <div className="font-bold flex items-center gap-1.5 mb-2">
+                <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                <span>{validationError}</span>
+              </div>
+              <button
+                type="button"
+                onClick={handleInstantLogin}
+                className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>⚡ 1-Click Instant Login (बिना किसी रुकावट तुरंत लॉगिन करें)</span>
+              </button>
             </div>
           )}
+
+          {/* Quick 1-Click Instant Entry Button */}
+          <button
+            type="button"
+            onClick={handleInstantLogin}
+            disabled={isSubmitting}
+            className="w-full py-2.5 px-4 mb-3 rounded-xl bg-gradient-to-r from-sky-50 to-indigo-50 hover:from-sky-100 hover:to-indigo-100 border border-sky-200/90 text-sky-900 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 shadow-2xs"
+          >
+            <Sparkles className="w-4 h-4 text-blue-600" />
+            <span>⚡ Instant 1-Click Login (डायरेक्ट 1-क्लिक लॉगिन)</span>
+          </button>
 
           {/* OR Divider */}
           <div className="flex items-center gap-3 my-4">
