@@ -124,242 +124,28 @@ export interface LeaderboardUser {
   isCurrentUser?: boolean;
 }
 
-const STORAGE_KEY = 'futureai_referral_state_v1';
+const STORAGE_KEY = 'futureai_referral_state_v2';
 const ATTRIBUTION_KEY = 'futureai_ref_attribution';
 
 export class ReferralEngine {
   private static defaultState() {
     const studentProfile: ReferrerProfile = {
-      userId: 'usr_subodh_101',
-      userName: 'Subodh Kumar',
-      email: 'subodh.kumar@futureitindustry.com',
+      userId: 'usr_new_learner',
+      userName: 'Learner',
+      email: 'learner@futureitindustry.com',
       referrerType: 'student',
-      referralCode: 'SUBODH101',
+      referralCode: 'PARTNER100',
       referralStatus: 'ACTIVE',
-      hasPaidEnrollment: true,
-      commissionRate: 125,
-      createdAt: '2026-08-15T10:00:00.000Z',
-      activatedAt: '2026-08-15T10:15:00.000Z'
+      hasPaidEnrollment: false,
+      commissionRate: 100,
+      createdAt: new Date().toISOString(),
+      activatedAt: new Date().toISOString()
     };
 
-    const referrals: ReferralRecord[] = [
-      {
-        id: 'ref_001',
-        referrerId: 'usr_subodh_101',
-        referrerType: 'student',
-        referralCode: 'SUBODH101',
-        referredUserId: 'usr_aman_201',
-        referredUserName: 'Aman Verma',
-        referredUserAvatar: '/images/avatar-rohit.jpg',
-        campaignName: 'WhatsApp Status',
-        source: 'WhatsApp',
-        clickId: 'clk_w_981',
-        attributionId: 'att_981',
-        landingPage: 'https://futureitindustry.com/join?ref=SUBODH101',
-        device: 'Android Mobile',
-        browser: 'Chrome 128',
-        createdAt: '2026-09-28T09:20:00.000Z',
-        registeredAt: '2026-09-28T09:25:00.000Z',
-        paymentAt: '2026-09-28T09:30:00.000Z',
-        paymentId: 'pay_rzp_98124',
-        paymentAmount: 999,
-        paymentStatus: 'SUCCESS',
-        validationStatus: 'COMPLETED',
-        validationDaysLeft: 0,
-        commissionAmount: 125,
-        commissionStatus: 'AVAILABLE',
-        timeline: [
-          { event: 'Link Clicked', timestamp: '28 Sep 2026, 02:50 PM', description: 'Clicked via WhatsApp direct link' },
-          { event: 'Registered', timestamp: '28 Sep 2026, 02:55 PM', description: 'Created FUTURE IT INDUSTRY learner account' },
-          { event: 'Payment Successful', timestamp: '28 Sep 2026, 03:00 PM', description: 'Enrolled in Python for Data Analysis (₹999)' },
-          { event: 'Validation Complete', timestamp: '28 Sep 2026, 03:00 PM', description: 'Verified genuine enrollment' },
-          { event: 'Reward Available', timestamp: '28 Sep 2026, 03:00 PM', description: '₹125 credited to available wallet' }
-        ]
-      },
-      {
-        id: 'ref_002',
-        referrerId: 'usr_subodh_101',
-        referrerType: 'student',
-        referralCode: 'SUBODH101',
-        referredUserId: 'usr_priya_202',
-        referredUserName: 'Priya Singh',
-        referredUserAvatar: '/images/avatar-sneha.jpg',
-        campaignName: 'Instagram Bio',
-        source: 'Instagram',
-        clickId: 'clk_i_982',
-        attributionId: 'att_982',
-        landingPage: 'https://futureitindustry.com/join?ref=SUBODH101',
-        device: 'iOS Mobile',
-        browser: 'Safari Mobile',
-        createdAt: '2026-09-26T14:10:00.000Z',
-        registeredAt: '2026-09-26T14:15:00.000Z',
-        paymentAt: '2026-09-26T14:22:00.000Z',
-        paymentId: 'pay_rzp_98125',
-        paymentAmount: 999,
-        paymentStatus: 'SUCCESS',
-        validationStatus: 'COMPLETED',
-        validationDaysLeft: 0,
-        commissionAmount: 125,
-        commissionStatus: 'AVAILABLE',
-        timeline: [
-          { event: 'Link Clicked', timestamp: '26 Sep 2026, 07:40 PM', description: 'Clicked via Instagram Story swipe-up' },
-          { event: 'Registered', timestamp: '26 Sep 2026, 07:45 PM', description: 'Created FUTURE IT INDUSTRY learner account' },
-          { event: 'Payment Successful', timestamp: '26 Sep 2026, 07:52 PM', description: 'Paid ₹999 for Data Analyst Track' },
-          { event: 'Validation Complete', timestamp: '26 Sep 2026, 07:52 PM', description: 'Server-side verified' },
-          { event: 'Reward Available', timestamp: '26 Sep 2026, 07:52 PM', description: '₹125 credited to wallet' }
-        ]
-      },
-      {
-        id: 'ref_003',
-        referrerId: 'usr_subodh_101',
-        referrerType: 'student',
-        referralCode: 'SUBODH101',
-        referredUserId: 'usr_rohit_203',
-        referredUserName: 'Rohit Kumar',
-        referredUserAvatar: '/images/avatar-rohit.jpg',
-        campaignName: 'Telegram Group',
-        source: 'Telegram',
-        clickId: 'clk_t_983',
-        attributionId: 'att_983',
-        landingPage: 'https://futureitindustry.com/join?ref=SUBODH101',
-        device: 'Windows Desktop',
-        browser: 'Chrome 128',
-        createdAt: '2026-09-21T11:00:00.000Z',
-        registeredAt: '2026-09-21T11:10:00.000Z',
-        paymentAt: '2026-09-21T11:18:00.000Z',
-        paymentId: 'pay_rzp_98126',
-        paymentAmount: 999,
-        paymentStatus: 'SUCCESS',
-        validationStatus: 'PENDING',
-        validationDaysLeft: 5,
-        commissionAmount: 125,
-        commissionStatus: 'PENDING',
-        timeline: [
-          { event: 'Link Clicked', timestamp: '21 Sep 2026, 04:30 PM', description: 'Clicked Telegram invite channel' },
-          { event: 'Registered', timestamp: '21 Sep 2026, 04:40 PM', description: 'User signed up' },
-          { event: 'Payment Successful', timestamp: '21 Sep 2026, 04:48 PM', description: '₹999 course enrollment payment verified' },
-          { event: 'Validation In Progress', timestamp: '21 Sep 2026, 04:48 PM', description: '7-day holding period (5 days remaining)' }
-        ]
-      },
-      {
-        id: 'ref_004',
-        referrerId: 'usr_subodh_101',
-        referrerType: 'student',
-        referralCode: 'SUBODH101',
-        referredUserId: 'usr_neha_204',
-        referredUserName: 'Neha Sharma',
-        referredUserAvatar: '/images/avatar-neha.jpg',
-        campaignName: 'Direct Share',
-        source: 'Direct',
-        clickId: 'clk_d_984',
-        attributionId: 'att_984',
-        landingPage: 'https://futureitindustry.com/join?ref=SUBODH101',
-        device: 'Android Mobile',
-        browser: 'Chrome 128',
-        createdAt: '2026-09-18T16:00:00.000Z',
-        registeredAt: '2026-09-18T16:05:00.000Z',
-        paymentAt: undefined,
-        paymentId: undefined,
-        paymentAmount: 0,
-        paymentStatus: 'FAILED',
-        validationStatus: 'CANCELLED',
-        validationDaysLeft: 0,
-        commissionAmount: 0,
-        commissionStatus: 'CANCELLED',
-        timeline: [
-          { event: 'Link Clicked', timestamp: '18 Sep 2026, 09:30 PM', description: 'Direct referral link click' },
-          { event: 'Registered', timestamp: '18 Sep 2026, 09:35 PM', description: 'Learner profile registered' },
-          { event: 'Payment Attempted', timestamp: '18 Sep 2026, 09:40 PM', description: 'Payment gateway bank timeout / failed' },
-          { event: 'Status Cancelled', timestamp: '18 Sep 2026, 09:45 PM', description: 'No commission generated for failed order' }
-        ]
-      }
-    ];
-
-    const walletLedger: WalletLedgerEntry[] = [
-      {
-        transactionId: 'txn_001',
-        referrerId: 'usr_subodh_101',
-        type: 'REFERRAL_REWARD',
-        amount: 125,
-        balanceAfter: 125,
-        status: 'SUCCESS',
-        date: '2026-09-02T10:00:00.000Z',
-        reference: 'ref_seed_01',
-        description: 'Referral reward for Vikash Patel (₹999 paid)'
-      },
-      {
-        transactionId: 'txn_002',
-        referrerId: 'usr_subodh_101',
-        type: 'REFERRAL_REWARD',
-        amount: 125,
-        balanceAfter: 250,
-        status: 'SUCCESS',
-        date: '2026-09-06T12:00:00.000Z',
-        reference: 'ref_seed_02',
-        description: 'Referral reward for Sneha Ray (₹999 paid)'
-      },
-      {
-        transactionId: 'txn_003',
-        referrerId: 'usr_subodh_101',
-        type: 'REFERRAL_REWARD',
-        amount: 125,
-        balanceAfter: 1500,
-        status: 'SUCCESS',
-        date: '2026-09-28T09:30:00.000Z',
-        reference: 'ref_001',
-        description: 'Referral reward for Aman Verma (₹999 paid)'
-      }
-    ];
-
-    const campaigns: CampaignItem[] = [
-      {
-        id: 'cmp_1',
-        code: 'SUBODH101-WHATSAPP',
-        name: 'WhatsApp Status & Groups',
-        clicks: 120,
-        registrations: 42,
-        enrollments: 6,
-        revenue: 5994,
-        commission: 750,
-        createdAt: '2026-09-01T10:00:00.000Z'
-      },
-      {
-        id: 'cmp_2',
-        code: 'SUBODH101-INSTA',
-        name: 'Instagram Story & Bio',
-        clicks: 80,
-        registrations: 24,
-        enrollments: 4,
-        revenue: 3996,
-        commission: 500,
-        createdAt: '2026-09-05T12:00:00.000Z'
-      },
-      {
-        id: 'cmp_3',
-        code: 'SUBODH101-TELEGRAM',
-        name: 'Tech Prep Telegram Channel',
-        clicks: 52,
-        registrations: 14,
-        enrollments: 2,
-        revenue: 1998,
-        commission: 250,
-        createdAt: '2026-09-10T15:00:00.000Z'
-      }
-    ];
-
-    const withdrawals: WithdrawalRequest[] = [
-      {
-        id: 'wth_001',
-        referrerId: 'usr_subodh_101',
-        amount: 500,
-        method: 'UPI',
-        details: { upiId: 'subodh.kumar@okhdfcbank' },
-        status: 'PAID',
-        requestedAt: '2026-09-12T14:00:00.000Z',
-        paidAt: '2026-09-13T10:00:00.000Z',
-        referenceNo: 'UPI-REF-908234'
-      }
-    ];
+    const referrals: ReferralRecord[] = [];
+    const walletLedger: WalletLedgerEntry[] = [];
+    const campaigns: CampaignItem[] = [];
+    const withdrawals: WithdrawalRequest[] = [];
 
     return {
       profile: studentProfile,
@@ -367,10 +153,10 @@ export class ReferralEngine {
       walletLedger,
       campaigns,
       withdrawals,
-      clicksCount: 284,
-      pendingCommission: 750, // 6 pending rewards * 125
-      availableCommission: 1500, // 12 successful enrollments * 125
-      successfulEnrollmentsCount: 12
+      clicksCount: 0,
+      pendingCommission: 0,
+      availableCommission: 0,
+      successfulEnrollmentsCount: 0
     };
   }
 

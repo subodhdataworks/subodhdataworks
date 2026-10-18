@@ -64,15 +64,85 @@ interface WithdrawalItem {
   txId: string;
 }
 
+interface HubState {
+  availableBalance: number;
+  pendingBalance: number;
+  totalPaid: number;
+  totalEarned: number;
+  clicks: number;
+  signups: number;
+  paidEnrollments: number;
+  referrals: ReferralItem[];
+  withdrawals: WithdrawalItem[];
+}
+
 export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   userName = 'Learner',
   onNavigateTab,
 }) => {
-  // Live Financial State
-  const [availableBalance, setAvailableBalance] = useState<number>(5400);
-  const [pendingBalance, setPendingBalance] = useState<number>(8600);
-  const [totalPaid, setTotalPaid] = useState<number>(24500);
-  const totalEarned = 24500;
+  // Real user referral code & storage key
+  const cleanRefCode = (userName && userName !== 'Learner' ? userName.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 8) : '') || 'PARTNER';
+  const affiliateRefUrl = `https://futureitindustry.com/?ref=${cleanRefCode}100`;
+  const storageKey = `futureai_affiliate_hub_v3_${cleanRefCode}`;
+
+  // Live Financial State (User-Scoped & Defaults to 0)
+  const [hubState, setHubState] = useState<HubState>(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem(storageKey);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return {
+            availableBalance: typeof parsed.availableBalance === 'number' ? parsed.availableBalance : 0,
+            pendingBalance: typeof parsed.pendingBalance === 'number' ? parsed.pendingBalance : 0,
+            totalPaid: typeof parsed.totalPaid === 'number' ? parsed.totalPaid : 0,
+            totalEarned: typeof parsed.totalEarned === 'number' ? parsed.totalEarned : 0,
+            clicks: typeof parsed.clicks === 'number' ? parsed.clicks : 0,
+            signups: typeof parsed.signups === 'number' ? parsed.signups : 0,
+            paidEnrollments: typeof parsed.paidEnrollments === 'number' ? parsed.paidEnrollments : 0,
+            referrals: Array.isArray(parsed.referrals) ? (parsed.referrals as ReferralItem[]) : ([] as ReferralItem[]),
+            withdrawals: Array.isArray(parsed.withdrawals) ? (parsed.withdrawals as WithdrawalItem[]) : ([] as WithdrawalItem[]),
+          };
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return {
+      availableBalance: 0,
+      pendingBalance: 0,
+      totalPaid: 0,
+      totalEarned: 0,
+      clicks: 0,
+      signups: 0,
+      paidEnrollments: 0,
+      referrals: [] as ReferralItem[],
+      withdrawals: [] as WithdrawalItem[],
+    };
+  });
+
+  // Automatically sync to local storage
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(storageKey, JSON.stringify(hubState));
+      }
+    } catch {
+      // ignore
+    }
+  }, [hubState, storageKey]);
+
+  const {
+    availableBalance,
+    pendingBalance,
+    totalPaid,
+    totalEarned,
+    clicks,
+    signups,
+    paidEnrollments,
+    referrals: referralsList,
+    withdrawals: withdrawalHistory
+  } = hubState;
 
   // Notification Toast
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
@@ -83,8 +153,6 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
 
   // Referral Link Copy Feedback & Confetti
   const [copiedLink, setCopiedLink] = useState(false);
-  const cleanRefCode = (userName && userName !== 'Learner' ? userName.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 8) : '') || 'PARTNER';
-  const affiliateRefUrl = `https://futureitindustry.com/?ref=${cleanRefCode}100`;
 
   const handleCopyLink = () => {
     playUiSound('success');
@@ -92,6 +160,10 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       navigator.clipboard.writeText(affiliateRefUrl);
     }
     setCopiedLink(true);
+    setHubState((prev) => ({
+      ...prev,
+      clicks: prev.clicks + 1
+    }));
     try {
       confetti({
         particleCount: 65,
@@ -201,7 +273,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
         { icon: '🏛️', label: 'Direct to Bank / UPI' },
         { icon: '✅', label: 'Secure • No Hidden Fee' },
       ],
-      ctaText: 'Instant Withdraw ₹5,400 ⚡',
+      ctaText: availableBalance >= 500 ? `Instant Withdraw ₹${availableBalance.toLocaleString('en-IN')} ⚡` : 'Request Payout (Min ₹500)',
       ctaType: 'withdraw',
       socialProof: '₹24.5 Lakhs+ Verified Payouts',
       alt: 'Withdraw Earnings Anytime Hassle-Free - Real Student'
@@ -232,7 +304,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       socialProof: '12,500+ Active Student Partners',
       alt: 'Share & Earn Real Money'
     }
-  ], []);
+  ], [availableBalance]);
 
   useEffect(() => {
     if (isBannerHovered) return;
@@ -256,31 +328,9 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   const [referralStatusFilter, setReferralStatusFilter] = useState<'All' | 'Paid' | 'Approved' | 'Registered' | 'Trial Started' | 'Reversed'>('All');
   const [referralSearch, setReferralSearch] = useState('');
 
-  // Initial Referrals List
-  const [referralsList] = useState<ReferralItem[]>([
-    { id: '1', name: 'Rahul Verma', date: '06 Oct 2026', status: 'Paid', amount: 999, commission: 100, course: 'Data Analyst with GenAI', referralId: 'REF-10245', approvedDate: '08 Oct 2026' },
-    { id: '2', name: 'Priya Singh', date: '05 Oct 2026', status: 'Registered', amount: 0, commission: 0, course: 'Full Stack Python Developer', referralId: 'REF-10244' },
-    { id: '3', name: 'Aman Kumar', date: '04 Oct 2026', status: 'Trial Started', amount: 0, commission: 0, course: 'Python Foundation Lab', referralId: 'REF-10243' },
-    { id: '4', name: 'Neha Gupta', date: '03 Oct 2026', status: 'Paid', amount: 999, commission: 100, course: 'Business Analytics with Power BI', referralId: 'REF-10242', approvedDate: '05 Oct 2026' },
-    { id: '5', name: 'Saurav Raj', date: '02 Oct 2026', status: 'Trial Started', amount: 0, commission: 0, course: 'Python & AI Engineering', referralId: 'REF-10241' },
-    { id: '6', name: 'Vikram Mehta', date: '01 Oct 2026', status: 'Approved', amount: 999, commission: 100, course: 'Data Analyst with GenAI', referralId: 'REF-10240', approvedDate: '03 Oct 2026' },
-    { id: '7', name: 'Ananya Sen', date: '30 Sep 2026', status: 'Reversed', amount: 0, commission: 0, course: 'Data Analytics Mastery', referralId: 'REF-10239' },
-    { id: '8', name: 'Rohan Joshi', date: '29 Sep 2026', status: 'Paid', amount: 999, commission: 100, course: 'Full Stack Python Developer', referralId: 'REF-10238', approvedDate: '01 Oct 2026' },
-    { id: '9', name: 'Divya Nair', date: '28 Sep 2026', status: 'Approved', amount: 999, commission: 100, course: 'Data Analyst with GenAI', referralId: 'REF-10237', approvedDate: '30 Sep 2026' },
-    { id: '10', name: 'Mohit Patel', date: '27 Sep 2026', status: 'Approved', amount: 999, commission: 100, course: 'Business Analytics with Power BI', referralId: 'REF-10236', approvedDate: '29 Sep 2026' },
-  ]);
-
-  // Initial Withdrawal History
-  const [withdrawalHistory, setWithdrawalHistory] = useState<WithdrawalItem[]>([
-    { id: 'w-1', date: '06 Oct 2026', amount: 2500, method: 'UPI', destination: 'subodh@okhdfcbank', status: 'Paid', txId: 'WTH-982144' },
-    { id: 'w-2', date: '28 Sep 2026', amount: 5000, method: 'Bank', destination: 'HDFC ••••4521', status: 'Paid', txId: 'WTH-941209' },
-    { id: 'w-3', date: '20 Sep 2026', amount: 1250, method: 'UPI', destination: 'subodh@okhdfcbank', status: 'Processing', txId: 'WTH-910543' },
-    { id: 'w-4', date: '12 Sep 2026', amount: 3000, method: 'UPI', destination: 'subodh@okhdfcbank', status: 'Paid', txId: 'WTH-884192' },
-  ]);
-
   // Filtered Referrals
   const filteredReferrals = useMemo(() => {
-    return referralsList.filter((item) => {
+    return referralsList.filter((item: ReferralItem) => {
       const matchStatus = referralStatusFilter === 'All' || item.status === referralStatusFilter;
       const matchSearch =
         referralSearch === '' ||
@@ -370,9 +420,6 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     }
 
     // Step confirm -> execute
-    setAvailableBalance((prev) => prev - amt);
-    setPendingBalance((prev) => prev + amt);
-
     const newTx: WithdrawalItem = {
       id: `w-${Date.now()}`,
       date: 'Just Now',
@@ -383,7 +430,12 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       txId: `WTH-${Math.floor(100000 + Math.random() * 900000)}`,
     };
 
-    setWithdrawalHistory([newTx, ...withdrawalHistory]);
+    setHubState((prev) => ({
+      ...prev,
+      availableBalance: prev.availableBalance - amt,
+      pendingBalance: prev.pendingBalance + amt,
+      withdrawals: [newTx, ...prev.withdrawals],
+    }));
     setWithdrawStep('success');
 
     try {
@@ -405,8 +457,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     {
       id: 'clicks',
       label: 'Total Clicks',
-      val: '1,248',
-      growth: '↑ 12%',
+      val: clicks.toLocaleString('en-IN'),
+      growth: clicks > 0 ? '+ Active' : '0 this week',
       colorClass: 'card-cyan',
       iconBg: '#0066ff',
       badgeClass: 'badge-emerald-soft',
@@ -425,13 +477,13 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
           <rect x="52" y="2" width="6" height="26" rx="1.5" fill="#0066ff" />
         </svg>
       ),
-      onClick: () => showToast('1,248 total clicks tracked across all shared channels (↑ 12% this week).', 'info')
+      onClick: () => showToast(`${clicks} total clicks tracked across all shared channels.`, 'info')
     },
     {
       id: 'signups',
       label: 'Free Signups',
-      val: '320',
-      growth: '+ 18%',
+      val: signups.toLocaleString('en-IN'),
+      growth: signups > 0 ? `+ ${signups}` : '0 leads',
       colorClass: 'card-purple',
       iconBg: '#10b981',
       badgeClass: 'badge-emerald-soft',
@@ -454,8 +506,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     {
       id: 'paid',
       label: 'Paid Enrollments',
-      val: '86',
-      growth: '+ 25%',
+      val: paidEnrollments.toLocaleString('en-IN'),
+      growth: paidEnrollments > 0 ? `+ ${paidEnrollments}` : '0 enrollments',
       colorClass: 'card-emerald',
       iconBg: '#8b5cf6',
       badgeClass: 'badge-purple-soft',
@@ -479,7 +531,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       id: 'pending',
       label: 'Pending Escrow',
       val: `₹${pendingBalance.toLocaleString('en-IN')}`,
-      growth: '7-Day Clear',
+      growth: pendingBalance > 0 ? '7-Day Clear' : '₹0 pending',
       colorClass: 'card-amber',
       iconBg: '#f59e0b',
       badgeClass: 'badge-amber-soft',
@@ -505,7 +557,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       id: 'available',
       label: 'Available to Payout',
       val: `₹${availableBalance.toLocaleString('en-IN')}`,
-      growth: 'Within 24 Hours',
+      growth: availableBalance >= 500 ? 'Ready to Payout' : 'Min ₹500',
       colorClass: 'card-teal',
       iconBg: '#06b6d4',
       badgeClass: 'badge-cyan-soft',
@@ -691,8 +743,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                       <CheckCircle2 className="w-4 h-4 text-emerald-500 animate-pulse" />
                     </div>
                     <div className="ath-fws-text-col">
-                      <span className="ath-fws-sub">Instant Payout Success</span>
-                      <strong className="ath-fws-title">₹5,400 Credited</strong>
+                      <span className="ath-fws-sub">Instant Payouts</span>
+                      <strong className="ath-fws-title">{availableBalance > 0 ? `₹${availableBalance.toLocaleString('en-IN')} Available` : 'Flat ₹100 / Student'}</strong>
                     </div>
                     <div className="ath-fws-bank-chip">Direct to Bank ✓</div>
                   </div>
@@ -984,25 +1036,37 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               {/* Donut Chart */}
               <div className="aff-donut-chart-box">
                 <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-sm">
-                  <g transform="rotate(-90 100 100)">
-                    {/* Cyan / Approved (22%) */}
-                    <circle cx="100" cy="100" r="72" fill="transparent" stroke="#00a8ff" strokeWidth="28" strokeDasharray="99.5 453" strokeDashoffset="0" />
-                    {/* Amber / Pending (35%) */}
-                    <circle cx="100" cy="100" r="72" fill="transparent" stroke="#f59e0b" strokeWidth="28" strokeDasharray="158.3 453" strokeDashoffset="-99.5" />
-                    {/* Rose / Reversed (10%) */}
-                    <circle cx="100" cy="100" r="72" fill="transparent" stroke="#f43f5e" strokeWidth="28" strokeDasharray="45.2 453" strokeDashoffset="-257.8" />
-                    {/* Emerald / Paid (33%) */}
-                    <circle cx="100" cy="100" r="72" fill="transparent" stroke="#10b981" strokeWidth="28" strokeDasharray="149.3 453" strokeDashoffset="-303" />
-                  </g>
+                  {totalEarned === 0 ? (
+                    <circle cx="100" cy="100" r="72" fill="transparent" stroke="#e2e8f0" strokeWidth="22" strokeDasharray="6 6" />
+                  ) : (
+                    <g transform="rotate(-90 100 100)">
+                      {/* Cyan / Approved */}
+                      <circle cx="100" cy="100" r="72" fill="transparent" stroke="#00a8ff" strokeWidth="28" strokeDasharray={`${(availableBalance / totalEarned) * 453} 453`} strokeDashoffset="0" />
+                      {/* Amber / Pending */}
+                      <circle cx="100" cy="100" r="72" fill="transparent" stroke="#f59e0b" strokeWidth="28" strokeDasharray={`${(pendingBalance / totalEarned) * 453} 453`} strokeDashoffset={`-${(availableBalance / totalEarned) * 453}`} />
+                      {/* Emerald / Paid */}
+                      <circle cx="100" cy="100" r="72" fill="transparent" stroke="#10b981" strokeWidth="28" strokeDasharray={`${(totalPaid / totalEarned) * 453} 453`} strokeDashoffset={`-${((availableBalance + pendingBalance) / totalEarned) * 453}`} />
+                    </g>
+                  )}
 
-                  {/* Percentage Labels on Donut Segments (Extra Bold & Crystal Clear) */}
-                  <text x="146" y="50" fontSize="13" fontWeight="950" fill="#ffffff" textAnchor="middle" filter="drop-shadow(0px 1px 2px rgba(0,0,0,0.5))">22%</text>
-                  <text x="144" y="161" fontSize="13" fontWeight="950" fill="#ffffff" textAnchor="middle" filter="drop-shadow(0px 1px 2px rgba(0,0,0,0.5))">35%</text>
-                  <text x="51" y="156" fontSize="13" fontWeight="950" fill="#ffffff" textAnchor="middle" filter="drop-shadow(0px 1px 2px rgba(0,0,0,0.5))">10%</text>
-                  <text x="42" y="68" fontSize="13" fontWeight="950" fill="#ffffff" textAnchor="middle" filter="drop-shadow(0px 1px 2px rgba(0,0,0,0.5))">33%</text>
+                  {totalEarned > 0 && availableBalance > 0 && (
+                    <text x="146" y="50" fontSize="13" fontWeight="950" fill="#ffffff" textAnchor="middle" filter="drop-shadow(0px 1px 2px rgba(0,0,0,0.5))">
+                      {Math.round((availableBalance / totalEarned) * 100)}%
+                    </text>
+                  )}
+                  {totalEarned > 0 && pendingBalance > 0 && (
+                    <text x="144" y="161" fontSize="13" fontWeight="950" fill="#ffffff" textAnchor="middle" filter="drop-shadow(0px 1px 2px rgba(0,0,0,0.5))">
+                      {Math.round((pendingBalance / totalEarned) * 100)}%
+                    </text>
+                  )}
+                  {totalEarned > 0 && totalPaid > 0 && (
+                    <text x="42" y="68" fontSize="13" fontWeight="950" fill="#ffffff" textAnchor="middle" filter="drop-shadow(0px 1px 2px rgba(0,0,0,0.5))">
+                      {Math.round((totalPaid / totalEarned) * 100)}%
+                    </text>
+                  )}
                 </svg>
                 <div className="aff-donut-center-info">
-                  <strong className="aff-donut-center-amount">₹24,500</strong>
+                  <strong className="aff-donut-center-amount">₹{totalEarned.toLocaleString('en-IN')}</strong>
                   <span className="aff-donut-center-label">Total Earned</span>
                 </div>
               </div>
@@ -1011,27 +1075,27 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               <div className="aff-legend-col">
                 <div className="aff-legend-row" onClick={() => { playUiSound('tab'); setReferralStatusFilter('Approved'); setIsReferralsModalOpen(true); }}>
                   <div className="aff-leg-icon-circle bg-[#e0f2fe] text-[#00a8ff]">−</div>
-                  <span className="aff-leg-name">Approved</span>
-                  <strong className="aff-leg-val text-[#0066ff]">₹5,400</strong>
-                  <span className="aff-leg-pct">(22%)</span>
+                  <span className="aff-leg-name">Available</span>
+                  <strong className="aff-leg-val text-[#0066ff]">₹{availableBalance.toLocaleString('en-IN')}</strong>
+                  <span className="aff-leg-pct">({totalEarned > 0 ? Math.round((availableBalance / totalEarned) * 100) : 0}%)</span>
                 </div>
                 <div className="aff-legend-row" onClick={() => { playUiSound('tab'); setReferralStatusFilter('All'); setIsReferralsModalOpen(true); }}>
                   <div className="aff-leg-icon-circle bg-[#fef3c7] text-[#f59e0b]">⏱</div>
                   <span className="aff-leg-name">Pending</span>
-                  <strong className="aff-leg-val text-amber-600">₹8,600</strong>
-                  <span className="aff-leg-pct">(35%)</span>
+                  <strong className="aff-leg-val text-amber-600">₹{pendingBalance.toLocaleString('en-IN')}</strong>
+                  <span className="aff-leg-pct">({totalEarned > 0 ? Math.round((pendingBalance / totalEarned) * 100) : 0}%)</span>
                 </div>
                 <div className="aff-legend-row" onClick={() => { playUiSound('tab'); setReferralStatusFilter('Paid'); setIsReferralsModalOpen(true); }}>
                   <div className="aff-leg-icon-circle bg-[#dcfce7] text-[#10b981]">✓</div>
-                  <span className="aff-leg-name">Paid</span>
-                  <strong className="aff-leg-val text-emerald-600">₹24,500</strong>
-                  <span className="aff-leg-pct">(33%)</span>
+                  <span className="aff-leg-name">Withdrawn</span>
+                  <strong className="aff-leg-val text-emerald-600">₹{totalPaid.toLocaleString('en-IN')}</strong>
+                  <span className="aff-leg-pct">({totalEarned > 0 ? Math.round((totalPaid / totalEarned) * 100) : 0}%)</span>
                 </div>
                 <div className="aff-legend-row" onClick={() => { playUiSound('tab'); setReferralStatusFilter('Reversed'); setIsReferralsModalOpen(true); }}>
                   <div className="aff-leg-icon-circle bg-[#ffe4e6] text-[#f43f5e]">✕</div>
                   <span className="aff-leg-name">Reversed</span>
-                  <strong className="aff-leg-val text-rose-600">₹2,250</strong>
-                  <span className="aff-leg-pct">(10%)</span>
+                  <strong className="aff-leg-val text-rose-600">₹0</strong>
+                  <span className="aff-leg-pct">(0%)</span>
                 </div>
               </div>
             </div>
@@ -1474,7 +1538,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   setIsReferralsModalOpen(true);
                 }}
               >
-                View All (86) →
+                View All ({referralsList.length}) →
               </button>
             </div>
 
@@ -1489,7 +1553,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 }}
               >
                 <Users className="w-3.5 h-3.5 inline mr-1" />
-                <span>All (86)</span>
+                <span>All ({referralsList.length})</span>
               </button>
               <button
                 type="button"
@@ -1499,7 +1563,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   setReferralStatusFilter('Paid');
                 }}
               >
-                <span>✔ Paid (24)</span>
+                <span>✔ Paid ({referralsList.filter((r: ReferralItem) => r.status === 'Paid').length})</span>
               </button>
               <button
                 type="button"
@@ -1509,7 +1573,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   setReferralStatusFilter('Approved');
                 }}
               >
-                <span>⏱ Approved (18)</span>
+                <span>⏱ Approved ({referralsList.filter((r: ReferralItem) => r.status === 'Approved').length})</span>
               </button>
               <button
                 type="button"
@@ -1519,68 +1583,79 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   setReferralStatusFilter('Trial Started');
                 }}
               >
-                <span>👤 Trial Started (32)</span>
+                <span>👤 Trial Started ({referralsList.filter((r: ReferralItem) => r.status === 'Trial Started').length})</span>
               </button>
             </div>
 
-            {/* 5-Row Table */}
+            {/* Table or Clean Empty State */}
             <div className="aff-table-responsive">
-              <table className="aff-data-table">
-                <thead>
-                  <tr>
-                    <th style={{ width: '30px' }}>#</th>
-                    <th>Student</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th style={{ textAlign: 'right' }}>Commission</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    { id: '1', hash: '1', name: 'Rahul Verma', course: 'Data Analyst with GenAI', date: '06 Oct 2026', status: 'Paid', statusText: 'Paid (₹999)', comm: '+₹100', avBg: 'bg-blue-100 text-blue-700' },
-                    { id: '2', hash: '2', name: 'Priya Singh', course: 'Full Stack Python Developer', date: '05 Oct 2026', status: 'Registered', statusText: 'Registered', comm: '—', avBg: 'bg-pink-100 text-pink-700' },
-                    { id: '3', hash: '3', name: 'Aman Kumar', course: 'Python Foundation Lab', date: '04 Oct 2026', status: 'Trial', statusText: 'Trial', comm: '—', avBg: 'bg-amber-100 text-amber-700' },
-                    { id: '4', hash: '4', name: 'Neha Gupta', course: 'Business Analytics with Power BI', date: '03 Oct 2026', status: 'Paid', statusText: 'Paid (₹999)', comm: '+₹100', avBg: 'bg-emerald-100 text-emerald-700' },
-                    { id: '5', hash: '5', name: 'Saurav Raj', course: 'Python & AI Engineering', date: '02 Oct 2026', status: 'Trial', statusText: 'Trial', comm: '—', avBg: 'bg-rose-100 text-rose-700' },
-                  ].map((row) => (
-                    <tr
-                      key={row.id}
-                      className="cursor-pointer hover:bg-sky-50/50 transition-colors"
-                      onClick={() => {
-                        const match = referralsList.find((r) => r.id === row.id) || referralsList[0];
-                        setSelectedReferralDetail(match);
-                      }}
-                    >
-                      <td className="font-mono text-slate-400 font-semibold">{row.hash}</td>
-                      <td>
-                        <div className="flex items-center gap-2">
-                          <div className={`w-7 h-7 rounded-full ${row.avBg} flex items-center justify-center font-black text-xs shrink-0 shadow-sm`}>
-                            {row.name.charAt(0)}
-                          </div>
-                          <div>
-                            <strong className="aff-table-stud-name">{row.name}</strong>
-                            <span className="aff-table-stud-course">{row.course}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="text-slate-500 font-semibold text-xs whitespace-nowrap">{row.date}</td>
-                      <td>
-                        <span className={`aff-table-status-pill st-${row.status.toLowerCase()}`}>
-                          {row.status === 'Paid' && <Check className="w-3 h-3 inline mr-1 text-emerald-600 stroke-[3]" />}
-                          {row.status === 'Registered' && <Users className="w-3 h-3 inline mr-1 text-blue-600" />}
-                          {row.status === 'Trial' && <span className="inline mr-1 text-purple-600">▶</span>}
-                          <span>{row.statusText}</span>
-                        </span>
-                      </td>
-                      <td style={{ textAlign: 'right' }}>
-                        <strong className={row.comm.startsWith('+') ? "text-[#059669] font-black text-xs sm:text-sm" : "text-slate-400 font-medium"}>
-                          {row.comm}
-                        </strong>
-                      </td>
+              {filteredReferrals.length === 0 ? (
+                <div className="py-12 px-4 text-center">
+                  <div className="w-12 h-12 mx-auto rounded-full bg-sky-50 text-sky-600 flex items-center justify-center mb-3 shadow-inner">
+                    <Users className="w-6 h-6" />
+                  </div>
+                  <strong className="text-sm font-bold text-slate-800 block mb-1">No Referrals Recorded Yet</strong>
+                  <p className="text-xs text-slate-500 max-w-sm mx-auto mb-4 leading-relaxed">
+                    Share your unique referral link to earn Flat ₹100 cash commission for every student who enrolls!
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleCopyLink}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-600 text-white font-bold text-xs shadow-md hover:bg-sky-500 transition-all cursor-pointer"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>{copiedLink ? 'Copied Link!' : 'Copy Referral Link'}</span>
+                  </button>
+                </div>
+              ) : (
+                <table className="aff-data-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '30px' }}>#</th>
+                      <th>Student</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                      <th style={{ textAlign: 'right' }}>Commission</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {filteredReferrals.slice(0, 5).map((row: ReferralItem, idx: number) => (
+                      <tr
+                        key={row.id}
+                        className="cursor-pointer hover:bg-sky-50/50 transition-colors"
+                        onClick={() => setSelectedReferralDetail(row)}
+                      >
+                        <td className="font-mono text-slate-400 font-semibold">{idx + 1}</td>
+                        <td>
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-black text-xs shrink-0 shadow-sm">
+                              {row.name.charAt(0)}
+                            </div>
+                            <div>
+                              <strong className="aff-table-stud-name">{row.name}</strong>
+                              <span className="aff-table-stud-course">{row.course}</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="text-slate-500 font-semibold text-xs whitespace-nowrap">{row.date}</td>
+                        <td>
+                          <span className={`aff-table-status-pill st-${row.status.toLowerCase().replace(/\s+/g, '-')}`}>
+                            {row.status === 'Paid' && <Check className="w-3 h-3 inline mr-1 text-emerald-600 stroke-[3]" />}
+                            {row.status === 'Registered' && <Users className="w-3 h-3 inline mr-1 text-blue-600" />}
+                            {row.status === 'Trial Started' && <span className="inline mr-1 text-purple-600">▶</span>}
+                            <span>{row.status}</span>
+                          </span>
+                        </td>
+                        <td style={{ textAlign: 'right' }}>
+                          <strong className={row.commission > 0 ? "text-[#059669] font-black text-xs sm:text-sm" : "text-slate-400 font-medium"}>
+                            {row.commission > 0 ? `+₹${row.commission}` : '—'}
+                          </strong>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
 
@@ -1605,13 +1680,23 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
 
             {withdrawStep === 'form' && (
               <div className="modal-body-content">
-                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between mb-3">
                   <div>
                     <span className="text-[11px] text-slate-400 font-semibold block uppercase tracking-wider">Available for Payout</span>
                     <strong className="text-xl font-black text-emerald-600">₹{availableBalance.toLocaleString('en-IN')}</strong>
                   </div>
                   <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">24/7 Payout (Within 24h)</span>
                 </div>
+
+                {availableBalance < 500 && (
+                  <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 mb-3 text-xs text-amber-900 flex items-start gap-2.5">
+                    <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="block font-bold">Minimum Balance: ₹500</strong>
+                      <span>You need at least ₹500 in your wallet to withdraw. Share your referral link with students and friends to earn Flat ₹100 per enrollment!</span>
+                    </div>
+                  </div>
+                )}
 
                 <div className="mt-4">
                   <label className="text-xs font-bold text-slate-700 block mb-1">Enter Amount to Withdraw</label>
@@ -1719,10 +1804,15 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 )}
 
                 <button
-                  className="w-full mt-5 py-3 rounded-xl bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-black text-sm shadow-lg shadow-sky-500/25 transition-all cursor-pointer active:scale-95"
+                  disabled={availableBalance < 500}
+                  className={`w-full mt-5 py-3 rounded-xl font-black text-sm shadow-lg transition-all ${
+                    availableBalance >= 500
+                      ? 'bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sky-500/25 cursor-pointer active:scale-95'
+                      : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
+                  }`}
                   onClick={handleProcessWithdrawal}
                 >
-                  Proceed to Confirmation →
+                  {availableBalance >= 500 ? 'Proceed to Confirmation →' : 'Minimum ₹500 Balance Required'}
                 </button>
               </div>
             )}
@@ -1829,31 +1919,39 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               </div>
 
               <div className="ref-table-body max-h-72 overflow-y-auto">
-                {withdrawalHistory.map((item) => (
-                  <div key={item.id} className="wth-modal-row">
-                    <span className="col-date text-xs text-slate-500">{item.date}</span>
-                    <span className="col-comm font-black text-slate-900">₹{item.amount.toLocaleString('en-IN')}</span>
-                    <span className="col-name text-xs text-slate-700 font-medium">
-                      {item.method}: {item.destination}
-                    </span>
-                    <span className="col-status">
-                      <span
-                        className={`status-pill ${
-                          item.status === 'Paid'
-                            ? 'pill-approved'
-                            : item.status === 'Processing'
-                            ? 'pill-trial-started'
-                            : 'pill-reversed'
-                        }`}
-                      >
-                        {item.status === 'Paid' && '🟢 Paid'}
-                        {item.status === 'Processing' && '🟡 Processing'}
-                        {item.status === 'Failed' && '🔴 Failed'}
-                      </span>
-                    </span>
-                    <span className="col-hash font-mono text-[11px] text-slate-400">{item.txId}</span>
+                {withdrawalHistory.length === 0 ? (
+                  <div className="py-10 text-center text-slate-400">
+                    <Clock className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                    <p className="text-xs font-semibold text-slate-700">No withdrawal requests yet</p>
+                    <p className="text-[11px] text-slate-400 mt-1">Once you earn ₹500 or more, request an instant payout here.</p>
                   </div>
-                ))}
+                ) : (
+                  withdrawalHistory.map((item: WithdrawalItem) => (
+                    <div key={item.id} className="wth-modal-row">
+                      <span className="col-date text-xs text-slate-500">{item.date}</span>
+                      <span className="col-comm font-black text-slate-900">₹{item.amount.toLocaleString('en-IN')}</span>
+                      <span className="col-name text-xs text-slate-700 font-medium">
+                        {item.method}: {item.destination}
+                      </span>
+                      <span className="col-status">
+                        <span
+                          className={`status-pill ${
+                            item.status === 'Paid'
+                              ? 'pill-approved'
+                              : item.status === 'Processing'
+                              ? 'pill-trial-started'
+                              : 'pill-reversed'
+                          }`}
+                        >
+                          {item.status === 'Paid' && '🟢 Paid'}
+                          {item.status === 'Processing' && '🟡 Processing'}
+                          {item.status === 'Failed' && '🔴 Failed'}
+                        </span>
+                      </span>
+                      <span className="col-hash font-mono text-[11px] text-slate-400">{item.txId}</span>
+                    </div>
+                  ))
+                )}
               </div>
 
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
@@ -1935,7 +2033,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 {filteredReferrals.length === 0 ? (
                   <div className="text-center py-8 text-xs text-slate-400">No referrals found matching the filter.</div>
                 ) : (
-                  filteredReferrals.map((item) => (
+                  filteredReferrals.map((item: ReferralItem) => (
                     <div key={item.id} className="ref-full-modal-row">
                       <span className="col-name font-bold text-slate-800 text-xs">
                         {item.name}
