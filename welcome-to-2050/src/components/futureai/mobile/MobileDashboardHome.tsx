@@ -530,107 +530,103 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
             {visibleCourses.map((c) => (
               <div
                 key={c.id}
-                className={`relative rounded-3xl transition-all duration-300 ${c.themeStyles.cardGlow}`}
+                className={`fii-course-stage-card theme-${c.potTheme}`}
                 onClick={() => {
                   playClick?.();
                   c.action();
                 }}
               >
-                {/* 1. Upper Card: Media Box + Course Details */}
-                <div className={`relative bg-white rounded-t-3xl border-t-2 border-x-2 ${c.themeStyles.cardBorder} p-3 sm:p-3.5 flex items-start gap-2.5 sm:gap-3`}>
-                  {/* Left Column: Course Video Playing in Loop with Top-Left Badge */}
-                  <div className="relative w-[115px] sm:w-[130px] h-[115px] sm:h-[125px] rounded-2xl overflow-hidden shrink-0 shadow-xs border border-slate-100 bg-slate-950">
-                    {/* Top-left Badge over the video */}
-                    <div className="absolute top-1.5 left-1.5 z-10 pointer-events-none">
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] sm:text-[8.5px] font-black text-white shadow-xs uppercase tracking-wide bg-gradient-to-r ${c.badgeGradient}`}>
+                <div className="fii-stage-outer-frame">
+                  {/* 1. Upper Card: Media Box + Course Details */}
+                  <div className="fii-stage-upper">
+                    {/* Left Column: Course Video Playing in Loop with Top-Left Badge */}
+                    <div className="fii-stage-media-box">
+                      {/* Top-left Badge over the video */}
+                      <span className={`fii-stage-media-badge bg-gradient-to-r ${c.badgeGradient}`}>
                         <span>{c.badgeIcon}</span>
                         <span>{c.statusTag}</span>
                       </span>
+
+                      {/* Autoplaying Course Video */}
+                      <video
+                        src={c.video}
+                        poster={c.holoImage}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        preload="auto"
+                        className="fii-stage-video"
+                      />
                     </div>
 
-                    {/* Autoplaying Course Video */}
-                    <video
-                      src={c.video}
-                      poster={c.holoImage}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload="auto"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-
-                  {/* Right Column: Course Info, CTC, Description & Skills */}
-                  <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
-                    {/* Top Right: CTC Salary Range Pill */}
-                    <div className="flex items-center justify-end">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs">
-                        <span className="text-[10px] font-black">₹</span>
-                        <span>{c.salaryRange}</span>
-                      </span>
-                    </div>
-
-                    {/* Course Title (Title in Blue, Subtitle in Purple) */}
-                    <h3 className="text-[13px] sm:text-sm font-black tracking-tight leading-snug mt-1">
-                      <span className="text-blue-600">{c.title}</span>{' '}
-                      <span className="text-purple-600">{c.subtitle}</span>
-                    </h3>
-
-                    {/* Short Description */}
-                    <p className="text-[10.5px] font-medium text-slate-600 line-clamp-2 leading-relaxed my-1">
-                      {c.shortDesc}
-                    </p>
-
-                    {/* Skills Row */}
-                    <div className="flex flex-wrap items-center gap-1 mt-auto pt-1">
-                      {c.skillsList.map((skill) => (
-                        <span
-                          key={skill}
-                          className="text-[8.5px] font-bold text-purple-700 bg-purple-50/90 border border-purple-200/80 rounded px-1.5 py-0.5 leading-none"
-                        >
-                          {skill}
+                    {/* Right Column: Course Info, CTC, Description & Skills */}
+                    <div className="fii-stage-info">
+                      {/* Top Right: CTC Salary Range Pill */}
+                      <div className="flex items-center justify-end">
+                        <span className="fii-stage-ctc-pill">
+                          <span className="text-[10px] font-black">₹</span>
+                          <span>{c.salaryRange}</span>
                         </span>
-                      ))}
+                      </div>
+
+                      {/* Course Title (Title in Blue, Subtitle in Purple) */}
+                      <h3 className="fii-stage-title">
+                        <span className="part-primary">{c.title}</span>{' '}
+                        <span className="part-secondary">{c.subtitle}</span>
+                      </h3>
+
+                      {/* Short Description */}
+                      <p className="fii-stage-desc">
+                        {c.shortDesc}
+                      </p>
+
+                      {/* Skills Row */}
+                      <div className="fii-stage-skills">
+                        {c.skillsList.map((skill) => (
+                          <span key={skill} className="fii-stage-skill-pill">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* 2. Lower Pedestal / Base Bar: Features + Slashed Price + Start Learning Button */}
-                <div className={`relative rounded-b-3xl border-b-2 border-x-2 ${c.themeStyles.trayBorder} ${c.themeStyles.trayBg} ${c.themeStyles.trayGlow} px-2.5 sm:px-3 py-2 flex items-center justify-between gap-1.5`}>
-                  {/* Neon Glow divider lip line between upper card & tray */}
-                  <div className={`absolute -top-[1.5px] left-2 right-2 h-[2px] rounded-full ${c.themeStyles.neonLip} shadow-xs pointer-events-none`} />
-
-                  {/* Left: 28 Real-World Projects & Coding Games */}
-                  <div className="flex items-center gap-2 text-[9px] sm:text-[10px] font-bold text-slate-700 min-w-0">
-                    <div className="inline-flex items-center gap-1 shrink-0">
-                      <Briefcase className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                      <span className="truncate">28 Real-World Projects</span>
+                  {/* 2. Bottom 3D Floating Glowing Glass Pedestal / Shelf */}
+                  <div className="fii-stage-pedestal">
+                    {/* Left: 28 Real-World Projects & Coding Games */}
+                    <div className="fii-stage-pedestal-left">
+                      <div className="fii-stage-feature-pill">
+                        <Briefcase className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                        <span>28 Real-World Projects</span>
+                      </div>
+                      <div className="fii-stage-feature-pill">
+                        <Gamepad2 className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                        <span>Coding Games</span>
+                      </div>
                     </div>
-                    <div className="inline-flex items-center gap-1 shrink-0">
-                      <Gamepad2 className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                      <span className="truncate">Coding Games</span>
+
+                    {/* Right: Slashed Fee & Start Learning Button with White Circular Arrow */}
+                    <div className="fii-stage-pedestal-right">
+                      <span className="fii-stage-price-pill">
+                        Rs {c.courseFee.replace('₹', '')}
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          playClick?.();
+                          c.action();
+                        }}
+                        className="fii-stage-start-btn"
+                      >
+                        <span>Start Learning</span>
+                        <span className="fii-stage-arrow-disc">
+                          <ArrowRight className="w-3 h-3 stroke-[3]" />
+                        </span>
+                      </button>
                     </div>
-                  </div>
-
-                  {/* Right: Slashed Fee & Start Learning Button */}
-                  <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                    <span className="scd-pot-slashed-daam !text-[11px] sm:!text-xs !py-0.5 !px-2 shrink-0">
-                      Rs {c.courseFee.replace('₹', '')}
-                    </span>
-
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        playClick?.();
-                        c.action();
-                      }}
-                      className={`py-1.5 px-3 sm:px-3.5 rounded-full font-black text-[10.5px] sm:text-[11px] text-white shadow-md flex items-center gap-1 cursor-pointer active:scale-95 transition-all shrink-0 ${c.themeStyles.btnClass}`}
-                    >
-                      <span>Start Learning</span>
-                      <ArrowRight className="w-3 h-3 stroke-[2.8]" />
-                    </button>
                   </div>
                 </div>
               </div>
