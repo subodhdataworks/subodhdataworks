@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Sparkles, ArrowRight, Mail, Lock, Phone, CheckCircle2 } from 'lucide-react';
 import { loadGoogleScript, GOOGLE_CLIENT_ID, parseJwt } from '../../services/googleAuthService';
+import { recordUserInDatabase, loginWithGooglePopup } from '../../services/realAuthService';
 
 interface FutureAuthModalProps {
   isOpen: boolean;
@@ -30,15 +31,19 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
           try {
             (window as any).google.accounts.id.initialize({
               client_id: GOOGLE_CLIENT_ID,
-              callback: (response: any) => {
+              callback: async (response: any) => {
                 if (response?.credential) {
                   const payload = parseJwt(response.credential);
                   if (payload) {
-                    onSuccess(
-                      payload.name || payload.email?.split('@')[0] || 'Learner',
-                      payload.email,
-                      payload.picture
-                    );
+                    const finalName = payload.name || payload.email?.split('@')[0] || 'Learner';
+                    await recordUserInDatabase({
+                      uid: payload.sub,
+                      name: finalName,
+                      email: payload.email,
+                      avatar: payload.picture,
+                      source: 'Google',
+                    });
+                    onSuccess(finalName, payload.email, payload.picture);
                     onClose();
                   }
                 }
@@ -54,40 +59,48 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleGoogleSignInClick = () => {
-    // If official Google Client ID is configured, trigger native prompt
-    if (GOOGLE_CLIENT_ID && (window as any).google?.accounts?.id) {
-      try {
-        (window as any).google.accounts.id.prompt();
-        return;
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    // Interactive Google 1-Click Account Picker
-    setShowGoogleAccountPicker(true);
-  };
-
-  const handleSelectGoogleAccount = (name: string, accEmail: string, avatarUrl: string) => {
+  const handleGoogleSignInClick = async () => {
     setIsSubmitting(true);
-    setTimeout(() => {
+    try {
+      const googleUser = await loginWithGooglePopup();
       setIsSubmitting(false);
-      setShowGoogleAccountPicker(false);
-      onSuccess(name, accEmail, avatarUrl);
+      onSuccess(googleUser.name, googleUser.email, googleUser.avatar);
       onClose();
-    }, 400);
+      return;
+    } catch {
+      // If popup blocked or cancelled or demo config, open interactive Google Account Picker
+      setIsSubmitting(false);
+      setShowGoogleAccountPicker(true);
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSelectGoogleAccount = async (name: string, accEmail: string, avatarUrl: string) => {
+    setIsSubmitting(true);
+    await recordUserInDatabase({
+      name,
+      email: accEmail,
+      avatar: avatarUrl,
+      source: 'Google',
+    });
+    setIsSubmitting(false);
+    setShowGoogleAccountPicker(false);
+    onSuccess(name, accEmail, avatarUrl);
+    onClose();
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      const cleanName = (phoneNumber || email || 'Learner').trim();
-      onSuccess(cleanName, email || undefined);
-      onClose();
-    }, 400);
+    const cleanName = (phoneNumber || email || 'Learner').trim();
+    await recordUserInDatabase({
+      name: cleanName,
+      email: email || undefined,
+      phone: phoneNumber || undefined,
+      source: email ? 'Email' : 'Phone',
+    });
+    setIsSubmitting(false);
+    onSuccess(cleanName, email || undefined);
+    onClose();
   };
 
   return (
@@ -282,92 +295,51 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
               </div>
 
               <p className="text-xs text-slate-500 mt-2 mb-4">
-                to continue to <strong className="text-slate-700">futureitindustry.com</strong>
+                to sign in and continue to <strong className="text-slate-800">futureitindustry.com</strong>
               </p>
 
-              {/* Sample Google Accounts */}
-              <div className="space-y-2 mb-4">
-                <button
-                  type="button"
-                  onClick={() =>
-                    handleSelectGoogleAccount(
-                      'Subodh Kumar',
-                      'subodh.dataworks@gmail.com',
-                      'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=faces'
-                    )
-                  }
-                  className="w-full p-2.5 rounded-xl border border-slate-200 hover:border-sky-300 hover:bg-sky-50/50 flex items-center justify-between transition-all"
-                >
-                  <div className="flex items-center gap-3">
-                    <img
-                      src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=faces"
-                      alt=""
-                      className="w-9 h-9 rounded-full object-cover"
-                    />
-                    <div className="text-left">
-                      <strong className="text-xs font-bold text-slate-800 block">Subodh Kumar</strong>
-                      <span className="text-[11px] text-slate-500">subodh.dataworks@gmail.com</span>
-                    </div>
-                  </div>
-                  <CheckCircle2 className="w-4 h-4 text-sky-500" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    handleSelectGoogleAccount(
-                      'Learner Student',
-                      'student@gmail.com',
-                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces'
-                    )
-                  }
-                  className="w-full p-2.5 rounded-xl border border-slate-200 hover:border-sky-300 hover:bg-sky-50/50 flex items-center justify-between transition-all"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-emerald-500 text-white font-black flex items-center justify-center text-xs">
-                      L
-                    </div>
-                    <div className="text-left">
-                      <strong className="text-xs font-bold text-slate-800 block">Learner Student</strong>
-                      <span className="text-[11px] text-slate-500">student@gmail.com</span>
-                    </div>
-                  </div>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                </button>
-              </div>
-
-              {/* Enter Another Account */}
-              <div className="pt-2 border-t border-slate-100">
-                <span className="text-[11px] font-bold text-slate-600 block mb-1.5">
-                  Or enter your Gmail account:
-                </span>
-                <input
-                  type="text"
-                  placeholder="Your Name (e.g. Rahul Sharma)"
-                  value={customGoogleName}
-                  onChange={(e) => setCustomGoogleName(e.target.value)}
-                  className="w-full mb-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-sky-500"
-                />
-                <input
-                  type="email"
-                  placeholder="Your Email (e.g. rahul@gmail.com)"
-                  value={customGoogleEmail}
-                  onChange={(e) => setCustomGoogleEmail(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-sky-500"
-                />
+              {/* Enter User's Real Google Account */}
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    Your Full Name:
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Enter your name (e.g. Rahul Sharma)"
+                    value={customGoogleName}
+                    onChange={(e) => setCustomGoogleName(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    Your Gmail / Google Email:
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="name@gmail.com"
+                    value={customGoogleEmail}
+                    onChange={(e) => setCustomGoogleEmail(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium"
+                  />
+                </div>
               </div>
             </div>
 
             <button
               type="button"
+              disabled={!customGoogleEmail.trim()}
               onClick={() => {
-                const name = customGoogleName.trim() || customGoogleEmail.split('@')[0] || 'Learner';
-                const email = customGoogleEmail.trim() || 'learner@gmail.com';
+                const email = customGoogleEmail.trim();
+                const name = customGoogleName.trim() || email.split('@')[0] || 'Learner';
                 handleSelectGoogleAccount(name, email, 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces');
               }}
-              className="w-full py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition-colors mt-3"
+              className="w-full py-3 rounded-xl bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white text-xs font-bold transition-colors mt-4 shadow-sm disabled:opacity-50 cursor-pointer"
             >
-              Continue with this account →
+              Sign In with this Google Account →
             </button>
           </div>
         )}

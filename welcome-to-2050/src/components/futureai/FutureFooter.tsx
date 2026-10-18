@@ -275,6 +275,16 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
                     <span>Privacy Policy</span>
                   </a>
                 </li>
+                <li>
+                  <a
+                    href="#leads"
+                    className="text-slate-400 hover:text-emerald-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer"
+                    title="Export Registered Student Leads CSV"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transition-transform group-hover:translate-x-0.5" />
+                    <span>Student Database (Admin)</span>
+                  </a>
+                </li>
               </ul>
             </div>
 

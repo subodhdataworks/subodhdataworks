@@ -76,6 +76,7 @@ import { StudentCoursesDashboard } from './StudentCoursesDashboard';
 import { PythonIntroGameWorkspace } from './PythonIntroGameWorkspace';
 import { LearningModulesProgressModal } from './LearningModulesProgressModal';
 import { LiquidFloatingNavBar } from './LiquidFloatingNavBar';
+import { getLearnerTelemetry } from '../../services/realAuthService';
 
 // =========================================================================
 // 10 AUTHENTIC 3D-STYLE VECTOR ICONS MATCHING media_1790589591068.jpg
@@ -355,6 +356,23 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   const [upiId, setUpiId] = useState('subodh@okhdfcbank');
 
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+
+  // Live Learner Telemetry (Coins, Gems, Completed Topics) starting at 0
+  const [telemetry, setTelemetry] = useState(getLearnerTelemetry);
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setTelemetry(getLearnerTelemetry());
+    };
+    window.addEventListener('storage', handleUpdate);
+    window.addEventListener('focus', handleUpdate);
+    const interval = setInterval(handleUpdate, 2500);
+    return () => {
+      window.removeEventListener('storage', handleUpdate);
+      window.removeEventListener('focus', handleUpdate);
+      clearInterval(interval);
+    };
+  }, []);
 
   // Student Enrollment State:
   // "koi bhi new studend join krega to uska sab kuch 0 se start hoga and abhi sirf python unlock hoga baaki sab lock hoga click krne pr 999 wala page aa jayega"
@@ -679,7 +697,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       code: '01',
       title: 'Python for Data Analysis',
       desc: 'Learn Python with real-world data analysis examples.',
-      progress: isNewStudentMode ? 0 : 60, // 0% start for new student (starts from scratch)
+      progress: telemetry.completedTopics.length > 0 ? Math.min(100, Math.round((telemetry.completedTopics.length / 26) * 100)) : 0,
       lessons: '260 Lessons',
       exercises: '26 Quizzes',
       project: '8 Projects',
@@ -693,7 +711,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       code: '02',
       title: 'SQL & Databases',
       desc: 'Query, analyze and manage data using SQL.',
-      progress: isNewStudentMode ? 0 : 40,
+      progress: 0,
       lessons: '280 Lessons',
       exercises: '28 Quizzes',
       project: '7 Projects',
@@ -1176,17 +1194,29 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
         {/* Right Actions: Coins, Gems, Ask AI Mentor + Notifications + User Profile (media_1791313375552.jpg) */}
         <div className="flex items-center gap-3">
-          {/* Gaming Coins & Gems badges */}
+          {/* Gaming Coins & Gems badges (Dynamic real telemetry starting at 0) */}
           <div className="hidden md:flex items-center gap-2">
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200/90 text-amber-800 text-xs font-black shadow-xs">
               <Coins className="w-4 h-4 text-amber-500 fill-amber-400" />
-              <span>0</span>
+              <span>{telemetry.coins}</span>
             </div>
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-fuchsia-50 border border-fuchsia-200/90 text-fuchsia-800 text-xs font-black shadow-xs">
               <Gem className="w-4 h-4 text-fuchsia-500 fill-fuchsia-400" />
-              <span>0</span>
+              <span>{telemetry.gems}</span>
             </div>
           </div>
+
+          {/* Admin Leads & Emails Database Button */}
+          <button 
+            onClick={() => {
+              window.location.hash = '#leads';
+            }}
+            className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-bold transition shadow-xs cursor-pointer"
+            title="View Registered Students & Download Email CSV"
+          >
+            <Users className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Leads &amp; Emails</span>
+          </button>
 
           {/* Ask AI Mentor button */}
           <button 

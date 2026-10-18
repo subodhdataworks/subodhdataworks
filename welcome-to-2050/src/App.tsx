@@ -5,12 +5,25 @@ import { AtsResumeChecker } from './components/futureai/AtsResumeChecker';
 import { PayToUnlockModal } from './components/futureai/PayToUnlockModal';
 import { AdvisorModal } from './components/futureai/AdvisorModal';
 import { AdminHrSettingsModal } from './components/admin/AdminHrSettingsModal';
+import { AdminLeadManagerModal } from './components/futureai/AdminLeadManagerModal';
+import { recordReferralClick } from './services/realAuthService';
 import { StorageService } from './services/storage';
 import { ThemeAccentProvider } from './context/ThemeAccentContext';
 
 export const App: React.FC = () => {
   const profile = StorageService.getProfile();
   const [payModalOpen, setPayModalOpen] = useState(false);
+
+  // Check referral code in URL immediately on page load
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const refCode = urlParams.get('ref');
+      if (refCode) {
+        recordReferralClick(refCode);
+      }
+    }
+  }, []);
 
   // Initialize login state from URL hash, search params, or localStorage
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
@@ -40,6 +53,13 @@ export const App: React.FC = () => {
     }
     return false;
   });
+  const [adminLeadsModalOpen, setAdminLeadsModalOpen] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const baseH = window.location.hash.split('?')[0];
+      return baseH === '#admin-leads' || baseH === '#leads';
+    }
+    return false;
+  });
   const [currentHash, setCurrentHash] = useState<string>(() => {
     return typeof window !== 'undefined' ? window.location.hash : '';
   });
@@ -52,6 +72,9 @@ export const App: React.FC = () => {
       setCurrentHash(h);
       if (baseH === '#admin' || baseH === '#hr-settings') {
         setAdminModalOpen(true);
+      }
+      if (baseH === '#admin-leads' || baseH === '#leads') {
+        setAdminLeadsModalOpen(true);
       }
       if (baseH === '#data-analyst' || baseH === '#data-analytics' || baseH === '#courses' || baseH === '#sql' || baseH === '#excel' || baseH === '#powerbi' || baseH === '#stats' || baseH === '#genai' || baseH === '#intro-game' || baseH === '#intro-games' || baseH === '#pyintro' || baseH === '#dashboard' || baseH === '#income' || baseH === '#earnings' || baseH === '#wallet' || baseH === '#withdraw' || baseH === '#referral' || baseH === '#myearnings' || baseH === '#python' || baseH === '#practice' || baseH === '#mcq' || baseH === '#game' || baseH === '#codequest' || baseH === '#workspace' || baseH === '#code' || baseH === '#codepractice' || baseH === '#interview' || baseH === '#mockinterview' || baseH === '#score' || baseH === '#scorecard' || baseH === '#learn' || baseH === '#video') {
         setIsLoggedIn(true);
@@ -153,6 +176,17 @@ export const App: React.FC = () => {
             setAdminModalOpen(false);
             if (typeof window !== 'undefined' && (window.location.hash.includes('#admin') || window.location.hash.includes('#hr-settings'))) {
               window.location.hash = '#dashboard';
+            }
+          }}
+        />
+
+        {/* Admin Student Leads & Emails Exporter Modal */}
+        <AdminLeadManagerModal
+          isOpen={adminLeadsModalOpen}
+          onClose={() => {
+            setAdminLeadsModalOpen(false);
+            if (typeof window !== 'undefined' && (window.location.hash.includes('#admin-leads') || window.location.hash.includes('#leads'))) {
+              window.location.hash = isLoggedIn ? '#dashboard' : '#home';
             }
           }}
         />

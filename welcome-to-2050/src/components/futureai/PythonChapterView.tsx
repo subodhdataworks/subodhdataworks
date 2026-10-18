@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ChevronRight, ChevronDown, ChevronUp, Play, Clock, FileText, Gamepad2, Code2, Mic,
   BarChart3, CheckCircle2, BookOpen, FolderKanban, Wrench, ArrowRight, Zap, Award,
@@ -6,6 +6,7 @@ import {
   Terminal, Layers, Cpu, Sliders, TrendingUp, LineChart, ShieldCheck, Binary,
 } from 'lucide-react';
 import type { WorkspaceStepId } from './PythonTopicWorkspace';
+import { getLearnerTelemetry } from '../../services/realAuthService';
 import './PythonChapterView.css';
 
 interface Props {
@@ -535,9 +536,23 @@ const ACTIONS = [
 
 export const PythonChapterView: React.FC<Props> = ({ onBack, onOpenTopic, onOpenAdvisor }) => {
   const [openId, setOpenId] = useState<number | null>(1);
+  const [telemetry, setTelemetry] = useState(getLearnerTelemetry);
+
+  useEffect(() => {
+    const handleUpdate = () => setTelemetry(getLearnerTelemetry());
+    window.addEventListener('storage', handleUpdate);
+    window.addEventListener('focus', handleUpdate);
+    return () => {
+      window.removeEventListener('storage', handleUpdate);
+      window.removeEventListener('focus', handleUpdate);
+    };
+  }, []);
 
   const totalLessons = TOPICS.reduce((acc, t) => acc + t.lessons.length, 0);
-  const doneLessons = TOPICS.reduce((acc, t) => acc + t.lessons.filter(l => l.status === 'completed').length, 0);
+  const doneLessons = TOPICS.reduce((acc, t) => {
+    const isTopicDone = telemetry.completedTopics.includes(t.id);
+    return acc + (isTopicDone ? t.lessons.length : t.lessons.filter(l => l.status === 'completed').length);
+  }, 0);
   const pct = Math.round((doneLessons / totalLessons) * 100);
 
   return (
@@ -569,7 +584,8 @@ export const PythonChapterView: React.FC<Props> = ({ onBack, onOpenTopic, onOpen
         <section className="pcv-topics">
           {TOPICS.map((t, idx) => {
             const isOpen = openId === t.id;
-            const done = t.lessons.filter(l => l.status === 'completed').length;
+            const isTopicDone = telemetry.completedTopics.includes(t.id);
+            const done = isTopicDone ? t.lessons.length : t.lessons.filter(l => l.status === 'completed').length;
             const tp = Math.round((done / t.lessons.length) * 100);
             return (
               <div key={t.id} id={`pcv-module-${t.id}`} className={`pcv-topic ${isOpen ? 'open' : ''}`}>
@@ -644,9 +660,9 @@ export const PythonChapterView: React.FC<Props> = ({ onBack, onOpenTopic, onOpen
                             ))}
                           </div>
                           <div className="pcv-lstatus">
-                            {l.status === 'completed' && <span className="st-done"><CheckCircle2 /> Completed</span>}
-                            {l.status === 'progress' && <span className="st-prog"><Circle /> In Progress</span>}
-                            {l.status === 'todo' && <span className="st-todo">Not Started</span>}
+                            {(isTopicDone || l.status === 'completed') && <span className="st-done"><CheckCircle2 /> Completed</span>}
+                            {!isTopicDone && l.status === 'progress' && <span className="st-prog"><Circle /> In Progress</span>}
+                            {!isTopicDone && l.status === 'todo' && <span className="st-todo">Not Started</span>}
                           </div>
                           {l.status === 'progress' ? (
                             <button

@@ -75,6 +75,7 @@ import { HrSettingsService, HrSettingsConfig, DEFAULT_HR_SETTINGS } from '../../
 import { StableMouthLipSyncAvatar } from './interview/StableMouthLipSyncAvatar';
 import { ZeroCostMockInterviewRoom } from './interview/ZeroCostMockInterviewRoom';
 import { AdminHrSettingsModal } from '../admin/AdminHrSettingsModal';
+import { awardLearnerTelemetry, markTopicComplete } from '../../services/realAuthService';
 import './PythonTopicWorkspace.css';
 
 export type WorkspaceStepId = 'learn' | 'practice' | 'play' | 'code' | 'interview' | 'score';
@@ -387,6 +388,11 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
       setMcqTimerPaused(false);
     } else {
       setMcqShowCelebrationModal(true);
+      try {
+        awardLearnerTelemetry(50, 10);
+      } catch (e) {
+        console.warn(e);
+      }
       if (mcqSoundEnabled) soundEffects.playCelebration();
     }
   };
@@ -5850,6 +5856,11 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                   className="report-btn btn-next-topic"
                   onClick={() => {
                     soundEffects.playCelebration();
+                    try {
+                      markTopicComplete(topicId);
+                    } catch (e) {
+                      console.warn(e);
+                    }
                     if (onNavigateNextTopic) onNavigateNextTopic();
                     else onBack();
                   }}
