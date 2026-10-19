@@ -506,56 +506,133 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
+  // ─────────────────────────────────────────────────────────────────────────────
+  // 3. MOCK INTERVIEW HR PROFILES (Using user's official uploaded photos)
+  // ─────────────────────────────────────────────────────────────────────────────
+  const [selectedHr, setSelectedHr] = useState<'male' | 'female'>('male');
+
+  const HR_PROFILES = {
+    male: {
+      name: "Subodh Kumar (Senior HR Lead)",
+      shortName: "Subodh Kumar",
+      avatar: "/images/hr_subodh_kumar.jpg",
+      role: "Technical Recruiter",
+      badge: "Senior HR",
+      accent: "Indian English",
+      gender: "male" as const,
+    },
+    female: {
+      name: "Aditi Sharma (Talent Acquisition Lead)",
+      shortName: "Aditi Sharma",
+      avatar: "/images/hr_aditi_sharma.jpg",
+      role: "Talent Acquisition Lead",
+      badge: "Lead HR",
+      accent: "Indian English",
+      gender: "female" as const,
+    },
+  };
+  const currentHr = HR_PROFILES[selectedHr];
+
+  const recognitionRef = useRef<any>(null);
+
   const toggleSpeechRecording = () => {
     playTactile();
+
+    // If already recording, stop cleanly
+    if (isInterviewRecording) {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch {}
+      }
+      setIsInterviewRecording(false);
+      return;
+    }
+
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      alert("Microphone speech recognition is not supported in this browser. Please type or edit your answer directly.");
-      return;
-    }
-
-    if (isInterviewRecording) {
-      setIsInterviewRecording(false);
+      // Fallback for browsers without Web Speech API
+      setIsInterviewRecording(true);
+      const sampleText =
+        "Programming is the process of writing step-by-step instructions for a computer to perform tasks. A real-world example is an ATM machine that validates your PIN, checks account balance, dispenses cash, and updates the bank database.";
+      setInterviewAnswerText((prev) => (prev ? prev + ' ' : '') + sampleText);
+      setTimeout(() => setIsInterviewRecording(false), 1500);
       return;
     }
 
     try {
       const recognition = new SpeechRecognition();
-      recognition.lang = 'en-US';
-      recognition.continuous = false;
-      recognition.interimResults = false;
+      recognition.lang = 'en-IN';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
 
-      recognition.onstart = () => setIsInterviewRecording(true);
-      recognition.onend = () => setIsInterviewRecording(false);
-      recognition.onerror = () => setIsInterviewRecording(false);
-      recognition.onresult = (event: any) => {
-        const text = event.results[0][0].transcript;
-        setInterviewAnswerText((prev) => (prev ? prev + ' ' + text : text));
+      recognition.onstart = () => {
+        setIsInterviewRecording(true);
       };
 
+      // LIVE REAL-TIME TYPING: words appear as the student speaks
+      recognition.onresult = (event: any) => {
+        let fullTranscript = '';
+        for (let i = 0; i < event.results.length; i++) {
+          fullTranscript += event.results[i][0].transcript + ' ';
+        }
+        if (fullTranscript.trim()) {
+          setInterviewAnswerText(fullTranscript.trim());
+        }
+      };
+
+      recognition.onerror = (err: any) => {
+        console.warn("Speech recognition error:", err);
+        setIsInterviewRecording(false);
+      };
+
+      recognition.onend = () => {
+        setIsInterviewRecording(false);
+      };
+
+      recognitionRef.current = recognition;
       recognition.start();
-    } catch {
+    } catch (e) {
+      console.warn("Speech recognition initiation failed:", e);
       setIsInterviewRecording(false);
     }
   };
 
-  const handleSpeakQuestion = () => {
+  const handleSpeakQuestion = (overrideHr?: 'male' | 'female') => {
     playTactile();
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
-    const questionText =
-      "Namaste! Welcome to your technical mock interview. Question 1: What is programming and can you give one real-life example?";
+
+    const hrKey = overrideHr || selectedHr;
+    const isFem = hrKey === 'female';
+
+    const questionText = isFem
+      ? "Namaste! I am Aditi Sharma from Future IT Industry. Welcome to your technical mock interview. Question 1: What is programming and can you give one real-life example?"
+      : "Namaste! I am Subodh Kumar from Future IT Industry. Welcome to your technical mock interview. Question 1: What is programming and can you give one real-life example?";
+
     const utterance = new SpeechSynthesisUtterance(questionText);
-    utterance.rate = 0.93;
-    utterance.pitch = 1.0;
+    utterance.rate = 0.92;
+    utterance.pitch = isFem ? 1.15 : 0.95;
 
     const voices = window.speechSynthesis.getVoices();
-    const indianVoice = voices.find(
-      (v) => v.lang.includes('en-IN') || v.name.includes('India') || v.lang.includes('hi')
-    );
-    if (indianVoice) utterance.voice = indianVoice;
+    if (isFem) {
+      const femaleVoice = voices.find(
+        (v) =>
+          (v.lang.includes('en-IN') || v.name.includes('India') || v.lang.includes('en')) &&
+          (v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Aditi') || v.name.includes('Heera'))
+      );
+      if (femaleVoice) utterance.voice = femaleVoice;
+    } else {
+      const maleVoice = voices.find(
+        (v) =>
+          (v.lang.includes('en-IN') || v.name.includes('India') || v.lang.includes('en')) &&
+          (v.name.includes('Male') || v.name.includes('Ravi') || v.name.includes('David') || v.name.includes('George'))
+      );
+      if (maleVoice) utterance.voice = maleVoice;
+    }
 
     utterance.onstart = () => setIsHrSpeaking(true);
     utterance.onend = () => setIsHrSpeaking(false);
@@ -586,7 +663,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#f3f8fe] text-slate-900 pb-36 text-left font-sans overflow-y-auto overscroll-y-contain">
+    <div className="w-full min-h-[100dvh] bg-[#f3f8fe] text-slate-900 pb-48 text-left font-sans select-auto">
       {/* ═════════════════════════════════════════════════════════════════════════
           TOP GLOBAL HEADER (Matching all 3 reference screenshots)
           ═════════════════════════════════════════════════════════════════════════ */}
@@ -862,16 +939,16 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
           {/* Quick Action: Close Video ➔ Start Practice Game */}
           <div className="flex items-center justify-between px-1">
-            <span className="text-[10px] font-bold text-slate-500">
-              Lesson 1.1 • Bunny Stream HD
+            <span className="text-[10.5px] font-black text-slate-700">
+              Chapter 1 • Lesson 1
             </span>
             <button
               type="button"
               onClick={handleCloseVideoAndPlayGame}
-              className="px-3 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-black border border-blue-200 flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs"
+              className="px-3 py-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black border border-blue-600 flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-xs"
             >
-              <span>Close Video ➔ Practice Game</span>
-              <ChevronRight className="w-3 h-3" />
+              <span>Play Practice Game</span>
+              <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
@@ -1072,7 +1149,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
           </div>
 
           {/* 4 Interactive Option Cards (A, B, C, D) */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {currentChallenge.options.map((opt) => {
               const isSelected = selectedGameOption === opt.id;
               let optStyle = 'bg-white border-slate-200 text-slate-800 hover:bg-slate-50';
@@ -1092,14 +1169,14 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   key={opt.id}
                   type="button"
                   onClick={() => handleSelectGameOption(opt.id)}
-                  className={`w-full p-3 rounded-2xl border-2 flex items-center gap-3 transition-all cursor-pointer text-left ${optStyle}`}
+                  className={`w-full py-2.5 px-3 rounded-xl border-2 flex items-center gap-2.5 transition-all cursor-pointer text-left ${optStyle}`}
                 >
-                  <span className={`w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black shrink-0 ${
+                  <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-black shrink-0 ${
                     isSelected ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700'
                   }`}>
                     {opt.id}
                   </span>
-                  <span className="text-xs font-black flex-1">
+                  <span className="text-[11.5px] font-black flex-1 leading-snug">
                     {opt.text}
                   </span>
                   {isAnswerSubmitted && opt.correct && (
@@ -1110,84 +1187,86 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             })}
           </div>
 
-          {/* Submit Answer Button */}
-          {!isAnswerSubmitted ? (
-            <button
-              type="button"
-              onClick={handleSubmitGameAnswer}
-              disabled={!selectedGameOption}
-              className={`w-full py-3.5 px-4 rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md transition-transform cursor-pointer ${
-                selectedGameOption
-                  ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white shadow-blue-500/25 active:scale-98'
-                  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-              }`}
-            >
-              <span>Submit Answer</span>
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          ) : (
-            <div className="space-y-2.5">
-              <div className={`p-3 rounded-xl border text-xs font-bold flex items-start gap-2.5 ${
-                isAnswerCorrect ? 'bg-emerald-50 text-emerald-800 border-emerald-300' : 'bg-rose-50 text-rose-800 border-rose-300'
-              }`}>
-                {isAnswerCorrect ? (
-                  <>
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                    <div>
-                      <div className="font-black text-emerald-950">🎉 Correct Answer! +10 Points</div>
-                      <div className="text-[10px] font-semibold text-emerald-800 mt-1 leading-relaxed">
-                        {currentChallenge.options.find((o) => o.correct)?.explanation}
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <X className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
-                    <div>
-                      <div className="font-black text-rose-950">
-                        Not quite right! Correct answer is {currentChallenge.options.find((o) => o.correct)?.id}
-                      </div>
-                      <div className="text-[10px] font-semibold text-rose-800 mt-1 leading-relaxed">
-                        {currentChallenge.options.find((o) => o.correct)?.explanation}
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* Next Level or Finish ➔ Auto Interview CTA */}
+          {/* Sticky Floating Bottom Action Bar for Submit / Next Level */}
+          <div className="sticky bottom-2 z-30 pt-2 pb-1 bg-gradient-to-t from-[#f3f8fe] via-[#f3f8fe]/95 to-transparent">
+            {!isAnswerSubmitted ? (
+              <button
+                type="button"
+                onClick={handleSubmitGameAnswer}
+                disabled={!selectedGameOption}
+                className={`w-full py-3.5 px-4 rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-lg transition-transform cursor-pointer ${
+                  selectedGameOption
+                    ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white shadow-blue-500/30 active:scale-98'
+                    : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
+                }`}
+              >
+                <span>Submit Answer</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            ) : (
               <div className="space-y-2">
-                {activeGameLevel < 10 ? (
-                  <button
-                    type="button"
-                    onClick={handleNextGameLevel}
-                    className="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-blue-500/25 active:scale-98 transition-transform cursor-pointer"
-                  >
-                    <span>Next Level: Practice Game {activeGameLevel + 1} of 10 →</span>
-                  </button>
-                ) : (
+                <div className={`p-2.5 rounded-xl border text-xs font-bold flex items-start gap-2 shadow-sm ${
+                  isAnswerCorrect ? 'bg-emerald-50 text-emerald-800 border-emerald-300' : 'bg-rose-50 text-rose-800 border-rose-300'
+                }`}>
+                  {isAnswerCorrect ? (
+                    <>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <div className="min-w-0">
+                        <div className="font-black text-emerald-950 text-[11px]">🎉 Correct Answer! +10 Points</div>
+                        <div className="text-[9.5px] font-semibold text-emerald-800 mt-0.5 leading-tight">
+                          {currentChallenge.options.find((o) => o.correct)?.explanation}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <X className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                      <div className="min-w-0">
+                        <div className="font-black text-rose-950 text-[11px]">
+                          Not quite right! Correct answer is {currentChallenge.options.find((o) => o.correct)?.id}
+                        </div>
+                        <div className="text-[9.5px] font-semibold text-rose-800 mt-0.5 leading-tight">
+                          {currentChallenge.options.find((o) => o.correct)?.explanation}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* Next Level or Finish ➔ Auto Interview CTA */}
+                <div className="space-y-1.5">
+                  {activeGameLevel < 10 ? (
+                    <button
+                      type="button"
+                      onClick={handleNextGameLevel}
+                      className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-blue-500/25 active:scale-98 transition-transform cursor-pointer"
+                    >
+                      <span>Next Level: Practice Game {activeGameLevel + 1} of 10 →</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleFinishGameAndStartInterview}
+                      className="w-full py-3 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-emerald-500/30 active:scale-98 transition-transform cursor-pointer animate-pulse"
+                    >
+                      <Mic className="w-4 h-4" />
+                      <span>🎉 Complete Practice Game ➔ Start Video Call Interview</span>
+                    </button>
+                  )}
+
+                  {/* Direct Shortcut to Start Interview at Any Time */}
                   <button
                     type="button"
                     onClick={handleFinishGameAndStartInterview}
-                    className="w-full py-3.5 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-emerald-500/30 active:scale-98 transition-transform cursor-pointer animate-pulse"
+                    className="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                   >
-                    <Mic className="w-4 h-4" />
-                    <span>🎉 All 10 Practice Games Complete ➔ Start Video Call Interview</span>
+                    <Mic className="w-3 h-3 text-blue-600" />
+                    <span>Skip to Video Call Interview →</span>
                   </button>
-                )}
-
-                {/* Direct Shortcut to Start Interview at Any Time */}
-                <button
-                  type="button"
-                  onClick={handleFinishGameAndStartInterview}
-                  className="w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10.5px] font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                >
-                  <Mic className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Finish Practice Game &amp; Start Video Call Interview →</span>
-                </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Progress / Telemetry Card */}
           <div className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs grid grid-cols-4 gap-2 text-center">
@@ -1213,16 +1292,6 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             </div>
           </div>
 
-          {/* Bottom Motivational Banner (Matching Screenshot) */}
-          <div className="rounded-2xl bg-gradient-to-r from-sky-400 via-blue-500 to-indigo-600 p-3 text-white flex items-center justify-between shadow-sm">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">🤖</span>
-              <p className="text-[10px] font-bold leading-tight">
-                Solve all 10 practice games to unlock the real video call mock interview!
-              </p>
-            </div>
-            <span className="text-2xl shrink-0">🎮</span>
-          </div>
         </div>
       )}
 
@@ -1231,13 +1300,13 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
           ═════════════════════════════════════════════════════════════════════════ */}
       {activeStep === 'interview' && (
         <div className="max-w-md mx-auto px-3.5 pt-3 space-y-3">
-          {/* Sub Header Card: Python Mock Interview (Clean without View Topics button) */}
+          {/* Sub Header Card: Python Mock Interview with HR Male/Female Switcher */}
           <div className="bg-white border border-slate-200/90 rounded-2xl p-3 flex items-center justify-between shadow-2xs">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center font-black text-blue-600">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center font-black text-blue-600 shrink-0">
                 🐍
               </div>
-              <div>
+              <div className="min-w-0">
                 <h2 className="text-xs font-black text-slate-900 leading-tight">
                   Python Mock Interview
                 </h2>
@@ -1247,154 +1316,180 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               </div>
             </div>
 
-            {/* Live Video Call Status Pill */}
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black border border-emerald-200 shadow-2xs">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Live Call</span>
+            {/* Male / Female HR Switcher Pill */}
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  playTactile();
+                  setSelectedHr('male');
+                  handleSpeakQuestion('male');
+                }}
+                className={`px-2 py-1 rounded-lg text-[9.5px] font-black transition-all cursor-pointer ${
+                  selectedHr === 'male'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+                title="Switch to Male HR (Subodh Kumar)"
+              >
+                👨‍💼 Subodh
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  playTactile();
+                  setSelectedHr('female');
+                  handleSpeakQuestion('female');
+                }}
+                className={`px-2 py-1 rounded-lg text-[9.5px] font-black transition-all cursor-pointer ${
+                  selectedHr === 'female'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+                title="Switch to Female HR (Aditi Sharma)"
+              >
+                👩‍💼 Aditi
+              </button>
             </div>
           </div>
 
-          {/* ── SPLIT VIDEO CALL UI (Interactive HR Video + Real Student Camera) ── */}
-          <div className="space-y-2">
-            {/* Top Video: Subodh Kumar (HR) */}
-            <div className={`relative overflow-hidden rounded-2xl bg-slate-900 border shadow-sm aspect-video transition-all ${
-              isHrSpeaking ? 'border-blue-500 ring-4 ring-blue-500/30' : 'border-slate-300'
+          {/* ── SPLIT VIDEO CALL UI (Compact Side-by-Side: HR Interviewer + Student Camera) ── */}
+          <div className="grid grid-cols-2 gap-2">
+            {/* Left Box: HR Interviewer (Subodh / Aditi with Animated Lip-Sync) */}
+            <div className={`relative overflow-hidden rounded-2xl bg-slate-900 border transition-all h-40 shadow-sm ${
+              isHrSpeaking ? 'border-blue-500 ring-2 ring-blue-500/50' : 'border-slate-200'
             }`}>
               <img
-                src="/images/interviewer_female_1.jpg"
+                src={currentHr.avatar}
+                alt={currentHr.name}
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=250&fit=crop&crop=faces';
+                  (e.target as HTMLImageElement).src =
+                    selectedHr === 'female'
+                      ? 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=300&fit=crop'
+                      : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop';
                 }}
-                alt="Subodh Kumar (HR)"
-                className="w-full h-full object-cover"
+                className={`w-full h-full object-cover transition-transform duration-300 ${
+                  isHrSpeaking ? 'scale-105' : 'scale-100'
+                }`}
               />
 
-              {/* Overlay Top Bar: HR Name + Time Left */}
-              <div className="absolute top-2 left-2 right-2 flex items-center justify-between text-white text-[9.5px] font-black">
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/80 backdrop-blur-md border border-white/20">
-                  <span className={`w-2 h-2 rounded-full ${isHrSpeaking ? 'bg-cyan-400 animate-ping' : 'bg-blue-500 animate-pulse'}`}></span>
-                  <span>Subodh Kumar (HR)</span>
-                  <span className="text-slate-300 text-[8px] font-medium">• Indian English</span>
+              {/* Top Bar: HR Tag & Lip-sync Speaking Indicator */}
+              <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between text-white text-[8.5px] font-black pointer-events-none">
+                <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-slate-900/85 backdrop-blur-md border border-white/20">
+                  <span className={`w-1.5 h-1.5 rounded-full ${isHrSpeaking ? 'bg-cyan-400 animate-ping' : 'bg-blue-500'}`} />
+                  <span className="truncate max-w-[80px]">{currentHr.shortName}</span>
                 </div>
 
-                {/* Listen to HR Question Button */}
-                <button
-                  type="button"
-                  onClick={handleSpeakQuestion}
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-xl backdrop-blur-md text-[9px] font-black cursor-pointer transition-all ${
-                    isHrSpeaking
-                      ? 'bg-blue-600 text-white shadow-md shadow-blue-500/40 animate-pulse'
-                      : 'bg-slate-900/80 text-sky-300 border border-white/20 hover:bg-slate-800'
-                  }`}
-                >
-                  <Volume2 className="w-3 h-3" />
-                  <span>{isHrSpeaking ? 'Speaking...' : 'Listen Question'}</span>
-                </button>
+                <span className="px-1.5 py-0.5 rounded-md bg-blue-600/90 text-[7.5px] font-black text-white">
+                  HR Lead
+                </span>
               </div>
 
-              {/* Bottom HR Subtitle / Speech Banner */}
-              <div className="absolute bottom-2 inset-x-2 p-2 rounded-xl bg-slate-900/85 backdrop-blur-md border border-white/20 text-white flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
-                    isHrSpeaking ? 'bg-cyan-500 text-white animate-bounce' : 'bg-blue-600 text-white'
-                  }`}>
-                    🔊
-                  </span>
-                  <p className="text-[9.5px] font-bold leading-tight truncate">
-                    {isHrSpeaking
-                      ? "HR: What is programming and can you give one real-life example?"
-                      : "Namaste! Welcome to your technical mock interview. Question 1:"}
-                  </p>
+              {/* Animated Lip-Sync Audio Equalizer Overlay when HR speaks */}
+              {isHrSpeaking && (
+                <div className="absolute inset-x-1.5 bottom-8 p-1 rounded-lg bg-blue-950/85 backdrop-blur-xs border border-blue-400/40 text-white flex items-center justify-center gap-1 shadow-md animate-pulse">
+                  <span className="text-[8px] font-black text-cyan-300">🗣️ Speaking</span>
+                  <div className="flex items-center gap-0.5 ml-1">
+                    <span className="w-0.5 h-2 bg-cyan-300 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-0.5 h-3 bg-cyan-200 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-0.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <span className="w-0.5 h-2.5 bg-cyan-200 rounded-full animate-bounce" style={{ animationDelay: '450ms' }} />
+                  </div>
                 </div>
+              )}
 
+              {/* Bottom Button: Speak / Listen Question */}
+              <div className="absolute bottom-1.5 inset-x-1.5">
                 <button
                   type="button"
-                  onClick={handleSpeakQuestion}
-                  className="px-2 py-0.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-[8.5px] font-black text-white shrink-0 cursor-pointer"
+                  onClick={() => handleSpeakQuestion()}
+                  className={`w-full py-1 px-1.5 rounded-lg text-[8.5px] font-black flex items-center justify-center gap-1 cursor-pointer transition-all ${
+                    isHrSpeaking
+                      ? 'bg-blue-600 text-white shadow-xs animate-pulse'
+                      : 'bg-slate-900/85 hover:bg-slate-900 text-cyan-300 border border-white/20'
+                  }`}
                 >
-                  Ask Again
+                  <Volume2 className="w-2.5 h-2.5" />
+                  <span>{isHrSpeaking ? 'Speaking...' : 'Listen Question'}</span>
                 </button>
               </div>
             </div>
 
-            {/* Bottom Video: Real Student Front Camera Feed */}
-            <div className="relative overflow-hidden rounded-2xl bg-slate-900 border border-slate-300 shadow-sm aspect-video">
+            {/* Right Box: Real Student Front Camera Feed */}
+            <div className="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-200 h-40 shadow-sm flex flex-col justify-between">
               {isCameraOn && hasCameraPermission ? (
                 <video
                   ref={userCameraVideoRef}
                   autoPlay
                   playsInline
                   muted
-                  className="w-full h-full object-cover transform -scale-x-100"
+                  className="w-full h-full object-cover transform -scale-x-100 absolute inset-0"
                 />
               ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-2 bg-slate-950 p-4 text-center">
-                  <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-rose-400">
-                    <VideoOff className="w-5 h-5" />
+                <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-1.5 p-2 text-center bg-slate-950 absolute inset-0 z-10">
+                  <div className="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-rose-400">
+                    <VideoOff className="w-3.5 h-3.5" />
                   </div>
-                  <div className="text-[11px] font-black text-white leading-tight">
-                    {cameraError ? "Camera / Mic Permission Needed" : "Camera is Turned Off"}
+                  <div className="text-[9px] font-black text-white leading-tight">
+                    {cameraError ? 'Camera Needed' : 'Camera Off'}
                   </div>
-                  <p className="text-[8.5px] text-slate-400 max-w-[85%] leading-tight">
-                    Live video call interview ke liye apne mobile ka camera allow kijiye.
-                  </p>
                   <button
                     type="button"
                     onClick={startCameraStream}
-                    className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[9.5px] font-black flex items-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer"
+                    className="px-2 py-1 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[8px] font-black flex items-center gap-1 shadow-xs cursor-pointer active:scale-95"
                   >
-                    <Video className="w-3.5 h-3.5" />
-                    <span>Allow Camera &amp; Mic Permission</span>
+                    <Video className="w-2.5 h-2.5" />
+                    <span>Allow Camera</span>
                   </button>
                 </div>
               )}
 
-              {/* Top Left: Student Name Badge */}
-              <div className="absolute top-2 left-2 flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/80 backdrop-blur-md border border-white/20 text-white text-[9.5px] font-black">
-                <Video className="w-3 h-3 text-emerald-400" />
-                <span>You ({userName || 'Student'})</span>
-                <span className={`w-1.5 h-1.5 rounded-full ${hasCameraPermission ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'}`}></span>
+              {/* Top Bar: Student Name + Cam Toggle */}
+              <div className="relative z-20 top-1.5 left-1.5 right-1.5 flex items-center justify-between text-white text-[8.5px] font-black">
+                <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-slate-900/85 backdrop-blur-md border border-white/20">
+                  <span className={`w-1.5 h-1.5 rounded-full ${hasCameraPermission ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+                  <span className="truncate max-w-[65px]">You ({userName || 'Student'})</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    playTactile();
+                    if (isCameraOn && hasCameraPermission) {
+                      setIsCameraOn(false);
+                      stopCameraStream();
+                    } else {
+                      startCameraStream();
+                    }
+                  }}
+                  className="px-1.5 py-0.5 rounded-lg bg-slate-900/85 backdrop-blur-md border border-white/20 text-white text-[8px] font-bold flex items-center gap-1 cursor-pointer"
+                  title="Toggle Camera"
+                >
+                  {isCameraOn && hasCameraPermission ? (
+                    <>
+                      <Video className="w-2.5 h-2.5 text-emerald-400" />
+                      <span>On</span>
+                    </>
+                  ) : (
+                    <>
+                      <VideoOff className="w-2.5 h-2.5 text-rose-400" />
+                      <span>Off</span>
+                    </>
+                  )}
+                </button>
               </div>
 
-              {/* Top Right: Camera Switcher */}
-              <button
-                type="button"
-                onClick={() => {
-                  playTactile();
-                  if (isCameraOn && hasCameraPermission) {
-                    setIsCameraOn(false);
-                    stopCameraStream();
-                  } else {
-                    startCameraStream();
-                  }
-                }}
-                className="absolute top-2 right-2 px-2 py-1 rounded-xl bg-slate-900/80 backdrop-blur-md border border-white/20 text-white text-[9px] font-bold flex items-center gap-1 cursor-pointer"
-                title="Toggle Camera"
-              >
-                {isCameraOn && hasCameraPermission ? (
-                  <>
-                    <Video className="w-3 h-3 text-emerald-400" />
-                    <span>Cam On</span>
-                  </>
-                ) : (
-                  <>
-                    <VideoOff className="w-3 h-3 text-rose-400" />
-                    <span>Cam Off</span>
-                  </>
-                )}
-              </button>
-
-              {/* Right Side: Audio Equalizer Level Bars */}
-              <div className="absolute right-2 bottom-3 flex flex-col gap-0.5 items-center">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <span
-                    key={i}
-                    className={`w-1 h-1.5 rounded-full transition-all ${
-                      isInterviewRecording ? 'bg-emerald-400 animate-pulse h-2.5' : 'bg-slate-600'
-                    }`}
-                  />
-                ))}
-              </div>
+              {/* Live Voice Equalizer on Student Box when student is recording */}
+              {isInterviewRecording && (
+                <div className="relative z-20 bottom-1.5 inset-x-1.5 p-1 rounded-lg bg-rose-950/85 backdrop-blur-xs border border-rose-400/40 text-white flex items-center justify-center gap-1 shadow-md">
+                  <span className="text-[8px] font-black text-rose-300">🎙️ Listening Live...</span>
+                  <div className="flex items-center gap-0.5 ml-1">
+                    <span className="w-0.5 h-2 bg-rose-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-0.5 h-3.5 bg-rose-300 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-0.5 h-2 bg-rose-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
