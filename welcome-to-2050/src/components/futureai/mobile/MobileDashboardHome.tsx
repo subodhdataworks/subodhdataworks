@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Search,
   SlidersHorizontal,
@@ -24,6 +24,10 @@ import {
   Bookmark,
   Award,
   ChevronRight,
+  ChevronLeft,
+  Star,
+  Pause,
+  Play,
   Layers,
   LayoutGrid,
   List,
@@ -67,6 +71,149 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'all' | 'in-progress' | 'explore' | 'completed'>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+  // Hiring Partners & Real People Home Showcase State
+  const [activeStoryIdx, setActiveStoryIdx] = useState(0);
+  const [isStoryAutoPlaying, setIsStoryAutoPlaying] = useState(true);
+  const [isMarqueePaused, setIsMarqueePaused] = useState(false);
+
+  // 16 Hiring Partners Split into 2 Dynamic Flowing Stream Rows
+  const homePartnersRow1 = [
+    { name: 'Google', logo: '/images/companies/google.svg', role: 'Data & AI', package: '₹14 - 24 LPA' },
+    { name: 'Amazon', logo: '/images/companies/amazon.svg', role: 'Data Engineer', package: '₹12 - 20 LPA' },
+    { name: 'Microsoft', logo: '/images/companies/microsoft.svg', role: 'Cloud BI', package: '₹11 - 18 LPA' },
+    { name: 'Deloitte', logo: '/images/companies/deloitte.svg', role: 'BI Consultant', package: '₹7 - 12 LPA' },
+    { name: 'Accenture', logo: '/images/companies/accenture.svg', role: 'Data Analyst', package: '₹6 - 10 LPA' },
+    { name: 'TCS', logo: '/images/companies/tcs.svg', role: 'Analytics Lead', package: '₹5 - 9 LPA' },
+    { name: 'Infosys', logo: '/images/companies/infosys.svg', role: 'Data Specialist', package: '₹6 - 9 LPA' },
+    { name: 'Wipro', logo: '/images/companies/wipro.svg', role: 'BI Developer', package: '₹5 - 8 LPA' },
+  ];
+
+  const homePartnersRow2 = [
+    { name: 'Adobe', logo: '/images/companies/adobe.svg', role: 'Product Analytics', package: '₹12 - 18 LPA' },
+    { name: 'IBM', logo: '/images/companies/ibm.svg', role: 'Cloud Analytics', package: '₹8 - 14 LPA' },
+    { name: 'EY', logo: '/images/companies/ey.svg', role: 'Risk Analyst', package: '₹7 - 11 LPA' },
+    { name: 'Cognizant', logo: '/images/companies/cognizant.svg', role: 'Business Analyst', package: '₹6 - 10 LPA' },
+    { name: 'Capgemini', logo: '/images/companies/capgemini.svg', role: 'BI Consultant', package: '₹6 - 9 LPA' },
+    { name: 'PwC', logo: '/images/companies/pwc.svg', role: 'Insights Consultant', package: '₹7 - 12 LPA' },
+    { name: 'HCLTech', logo: '/images/companies/hcl.svg', role: 'Data Ops', package: '₹5 - 8 LPA' },
+    { name: 'KPMG', logo: '/images/companies/kpmg.svg', role: 'Financial Analyst', package: '₹7 - 11 LPA' },
+  ];
+
+  // 6 Career Transformation Stories for Home Spotlight
+  const homeSuccessStories = [
+    {
+      id: 'rohit',
+      name: 'Rohit Kumar',
+      shortName: 'Rohit',
+      photo: '/images/alumni/alumni_rohit_kumar.jpg',
+      role: 'Business & BI Analyst',
+      company: 'Deloitte',
+      companyLogo: '/images/companies/deloitte.svg',
+      previousRole: 'B.Com Graduate (Non-Tech)',
+      previousCtc: '₹2.4 LPA',
+      placedCtc: '₹6.8 LPA',
+      hike: '+183% Hike',
+      rating: '5.0',
+      skills: ['SQL', 'Excel', 'Power BI', 'Analytics'],
+      quote: 'Switched from accounting to analytics in 4 months. The live capstone projects and mock interview drills made it effortless!',
+      batch: 'Placed 2026',
+    },
+    {
+      id: 'neha',
+      name: 'Neha Singh',
+      shortName: 'Neha',
+      photo: '/images/alumni/alumni_neha_singh.jpg',
+      role: 'Data Analyst',
+      company: 'Accenture',
+      companyLogo: '/images/companies/accenture.svg',
+      previousRole: 'Tier-3 College Fresher',
+      previousCtc: '₹0 (Fresher)',
+      placedCtc: '₹5.8 LPA',
+      hike: 'First Offer 🚀',
+      rating: '5.0',
+      skills: ['Python', 'SQL', 'Power BI', 'Excel'],
+      quote: '1-on-1 mentor guidance helped me build an ATS-approved portfolio that cracked my first job with ease.',
+      batch: 'Placed 2026',
+    },
+    {
+      id: 'aman',
+      name: 'Aman Sharma',
+      shortName: 'Aman',
+      photo: '/images/alumni/alumni_aman_sharma.jpg',
+      role: 'Python Data Engineer',
+      company: 'Amazon',
+      companyLogo: '/images/companies/amazon.svg',
+      previousRole: 'BPO Support Executive',
+      previousCtc: '₹3.2 LPA',
+      placedCtc: '₹11.5 LPA',
+      hike: '+260% Hike',
+      rating: '5.0',
+      skills: ['Python', 'DSA', 'SQL', 'GenAI'],
+      quote: 'The advanced Python challenge series and query optimization sessions were directly asked in my Amazon technical rounds!',
+      batch: 'Placed 2026',
+    },
+    {
+      id: 'anjali',
+      name: 'Anjali Sharma',
+      shortName: 'Anjali',
+      photo: '/images/alumni/alumni_sneha_verma.jpg',
+      role: 'Junior Data Analyst',
+      company: 'TCS',
+      companyLogo: '/images/companies/tcs.svg',
+      previousRole: 'Arts Graduate (0 Coding)',
+      previousCtc: '₹1.8 LPA',
+      placedCtc: '₹5.2 LPA',
+      hike: '+188% Hike',
+      rating: '5.0',
+      skills: ['Excel', 'SQL', 'Python', 'Power BI'],
+      quote: 'I had never written code before Future.AI. The gamified lessons broke every barrier for non-tech students.',
+      batch: 'Placed 2026',
+    },
+    {
+      id: 'priya',
+      name: 'Priya Patel',
+      shortName: 'Priya',
+      photo: '/images/alumni/alumni_priya_patel.jpg',
+      role: 'AI & Insights Specialist',
+      company: 'Microsoft',
+      companyLogo: '/images/companies/microsoft.svg',
+      previousRole: 'Junior MIS Coordinator',
+      previousCtc: '₹4.0 LPA',
+      placedCtc: '₹10.2 LPA',
+      hike: '+155% Hike',
+      rating: '5.0',
+      skills: ['GenAI', 'Power BI', 'Python', 'Prompt Eng'],
+      quote: 'GenAI prompt workflows and portfolio capstones gave me a clear unfair advantage during Microsoft interviews.',
+      batch: 'Placed 2026',
+    },
+    {
+      id: 'ananya',
+      name: 'Ananya Sengupta',
+      shortName: 'Ananya',
+      photo: '/images/alumni/alumni_ananya_sengupta.jpg',
+      role: 'Business Analytics Lead',
+      company: 'Google',
+      companyLogo: '/images/companies/google.svg',
+      previousRole: 'Senior MIS Exec',
+      previousCtc: '₹5.5 LPA',
+      placedCtc: '₹14.2 LPA',
+      hike: '+158% Hike',
+      rating: '5.0',
+      skills: ['Python', 'Statistics', 'SQL', 'Storytelling'],
+      quote: 'Industry datasets and rigorous mock coaching prepared me to lead large-scale business analytics initiatives.',
+      batch: 'Placed 2026',
+    },
+  ];
+
+  // Auto-advance spotlight story
+  useEffect(() => {
+    if (!isStoryAutoPlaying) return;
+    const timer = setInterval(() => {
+      setActiveStoryIdx((prev) => (prev + 1) % homeSuccessStories.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [isStoryAutoPlaying, homeSuccessStories.length]);
 
   // 4 Flagship Industry Courses matching the mobile reference design exactly
   const flagshipCourses = [
@@ -851,17 +998,28 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       </div>
 
       {/* =========================================================================
-          8. "Our Hiring Partners" (Exact Brand Logo Grid from Screenshot)
+          8. "Our Hiring Partners" (Dual Dynamic Flowing Marquee Ribbons)
           ========================================================================= */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 shadow-2xs space-y-3">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-blue-50 border border-blue-200/60 flex items-center justify-center text-blue-600 shadow-2xs">
               <Building2 className="w-4 h-4" />
             </div>
-            <h2 className="text-sm font-black text-slate-900 tracking-tight">
-              Our Hiring Partners
-            </h2>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <h2 className="text-xs font-black text-slate-900 tracking-tight">
+                  🏢 Our Hiring Partners
+                </h2>
+                <span className="flex items-center gap-1 text-[8px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Active Hiring
+                </span>
+              </div>
+              <p className="text-[9px] text-slate-500 font-medium mt-0.5">
+                150+ Top Tech Companies Actively Recruiting Future.AI Alumni
+              </p>
+            </div>
           </div>
 
           <button
@@ -871,67 +1029,357 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
               if (onOpenPlacement) onOpenPlacement();
               else window.location.hash = '#placement';
             }}
-            className="flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-700"
+            className="flex items-center gap-0.5 text-[10px] font-bold text-blue-600 hover:text-blue-700 shrink-0"
           >
-            <span>View All Partners</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <span>View All</span>
+            <ChevronRight className="w-3 h-3" />
           </button>
         </div>
 
-        {/* Hiring Partner Logo Badges (9 Companies matching Screenshot) */}
-        <div className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none">
-          {/* Adobe */}
-          <div className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center gap-1.5 shrink-0">
-            <span className="text-rose-600 font-black text-xs tracking-tight">Adobe</span>
+        {/* Dual-Direction Flowing Marquee Ribbon (Different Style from Hub Grid) */}
+        <div 
+          className="space-y-2 overflow-hidden py-1"
+          onMouseEnter={() => setIsMarqueePaused(true)}
+          onMouseLeave={() => setIsMarqueePaused(false)}
+          onTouchStart={() => setIsMarqueePaused(true)}
+          onTouchEnd={() => setIsMarqueePaused(false)}
+        >
+          {/* Stream 1: Moving Left-to-Right */}
+          <div className="overflow-hidden w-full">
+            <div 
+              className={`animate-stories-ltr ${isMarqueePaused ? 'stories-slider-paused' : ''} flex items-center gap-2`}
+              style={{ animationDuration: '36s' }}
+            >
+              {[...homePartnersRow1, ...homePartnersRow1].map((partner, idx) => (
+                <div
+                  key={`p1-${partner.name}-${idx}`}
+                  onClick={() => {
+                    playClick?.();
+                    if (onOpenPlacement) onOpenPlacement();
+                  }}
+                  className="px-2.5 py-1.5 rounded-xl bg-slate-50/90 hover:bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2 shrink-0 active:scale-95 transition-all cursor-pointer"
+                >
+                  <img
+                    src={partner.logo}
+                    alt={partner.name}
+                    className="w-5 h-5 object-contain shrink-0"
+                    loading="lazy"
+                  />
+                  <div className="flex flex-col text-left">
+                    <span className="text-[10px] font-black text-slate-800 leading-tight">
+                      {partner.name}
+                    </span>
+                    <span className="text-[7.5px] font-semibold text-slate-400 leading-tight">
+                      {partner.role}
+                    </span>
+                  </div>
+                  <span className="text-[7.5px] font-black text-emerald-700 bg-emerald-50 border border-emerald-200/70 px-1.5 py-0.2 rounded-full shrink-0">
+                    {partner.package}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* EY */}
-          <div className="px-3 py-1.5 rounded-xl bg-slate-950 text-amber-400 font-black text-xs shrink-0 shadow-2xs">
-            EY
-          </div>
-
-          {/* IBM */}
-          <div className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center gap-1 shrink-0">
-            <span className="text-blue-600 font-black text-xs tracking-widest">IBM</span>
-          </div>
-
-          {/* Cognizant */}
-          <div className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center gap-1 shrink-0">
-            <span className="text-blue-800 font-bold text-xs">cognizant</span>
-          </div>
-
-          {/* Capgemini */}
-          <div className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center gap-1 shrink-0">
-            <span className="text-sky-600 font-bold text-xs">Capgemini</span>
-          </div>
-
-          {/* PwC */}
-          <div className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center gap-1 shrink-0">
-            <span className="text-orange-600 font-extrabold text-xs">pwc</span>
-          </div>
-
-          {/* KPMG */}
-          <div className="px-3 py-1.5 rounded-xl bg-blue-900 text-white font-black text-xs px-2.5 shrink-0 shadow-2xs">
-            KPMG
-          </div>
-
-          {/* Amazon */}
-          <div className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center gap-1 shrink-0">
-            <span className="text-slate-900 font-bold text-xs">amazon</span>
-          </div>
-
-          {/* Google */}
-          <div className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center gap-1 shrink-0">
-            <span className="font-bold text-xs">
-              <span className="text-blue-500">G</span>
-              <span className="text-rose-500">o</span>
-              <span className="text-amber-500">o</span>
-              <span className="text-blue-500">g</span>
-              <span className="text-emerald-500">l</span>
-              <span className="text-rose-500">e</span>
-            </span>
+          {/* Stream 2: Moving Right-to-Left */}
+          <div className="overflow-hidden w-full">
+            <div 
+              className={`animate-stories-rtl ${isMarqueePaused ? 'stories-slider-paused' : ''} flex items-center gap-2`}
+              style={{ animationDuration: '36s' }}
+            >
+              {[...homePartnersRow2, ...homePartnersRow2].map((partner, idx) => (
+                <div
+                  key={`p2-${partner.name}-${idx}`}
+                  onClick={() => {
+                    playClick?.();
+                    if (onOpenPlacement) onOpenPlacement();
+                  }}
+                  className="px-2.5 py-1.5 rounded-xl bg-slate-50/90 hover:bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2 shrink-0 active:scale-95 transition-all cursor-pointer"
+                >
+                  <img
+                    src={partner.logo}
+                    alt={partner.name}
+                    className="w-5 h-5 object-contain shrink-0"
+                    loading="lazy"
+                  />
+                  <div className="flex flex-col text-left">
+                    <span className="text-[10px] font-black text-slate-800 leading-tight">
+                      {partner.name}
+                    </span>
+                    <span className="text-[7.5px] font-semibold text-slate-400 leading-tight">
+                      {partner.role}
+                    </span>
+                  </div>
+                  <span className="text-[7.5px] font-black text-blue-700 bg-blue-50 border border-blue-200/70 px-1.5 py-0.2 rounded-full shrink-0">
+                    {partner.package}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
+
+        {/* Placement Guarantee Banner Callout */}
+        <div className="bg-gradient-to-r from-blue-50/80 via-indigo-50/60 to-sky-50/80 border border-blue-100 rounded-xl p-2.5 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-base">💼</span>
+            <div>
+              <div className="text-[10px] font-black text-slate-900 leading-tight">Direct Referral & Interview Guarantee</div>
+              <div className="text-[8px] font-medium text-slate-500">₹6.0 - 15.0 LPA Average Salary Package</div>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              playClick?.();
+              if (onOpenPlacement) onOpenPlacement();
+              else window.location.hash = '#placement';
+            }}
+            className="text-[9px] font-black text-blue-700 bg-white border border-blue-200 px-2 py-0.5 rounded-full shadow-2xs hover:bg-blue-600 hover:text-white transition-colors shrink-0"
+          >
+            Apply Drives →
+          </button>
+        </div>
+      </div>
+
+      {/* =========================================================================
+          9. "Real People. Real Transformations." (Career Transformation Spotlight Style)
+          ========================================================================= */}
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 shadow-2xs space-y-3">
+        {/* Header with Title and Auto-Play / Navigation Controls */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-emerald-600 shadow-2xs">
+              <Users className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <h2 className="text-xs font-black text-slate-900 tracking-tight">
+                  👥 Real People. Real Success.
+                </h2>
+                <span className="text-[8px] font-bold text-amber-600 bg-amber-50 border border-amber-200 px-1.5 py-0.2 rounded-full flex items-center gap-0.5">
+                  <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
+                  4.9/5
+                </span>
+              </div>
+              <p className="text-[9px] text-blue-600 font-bold mt-0.5">
+                From Non-Tech & Freshers to Top Tech Earners
+              </p>
+            </div>
+          </div>
+
+          {/* Auto-Slide Controls */}
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => {
+                playClick?.();
+                setIsStoryAutoPlaying((prev) => !prev);
+              }}
+              className={`text-[8.5px] font-bold px-2 py-0.5 rounded-full border transition-all flex items-center gap-1 shadow-2xs ${
+                isStoryAutoPlaying
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                  : 'bg-slate-100 text-slate-600 border-slate-200'
+              }`}
+              title="Toggle Auto Slide"
+            >
+              {isStoryAutoPlaying ? (
+                <>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                  <span>Auto</span>
+                </>
+              ) : (
+                <>
+                  <Pause className="w-2.5 h-2.5" />
+                  <span>Paused</span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                playClick?.();
+                setActiveStoryIdx((prev) => (prev === 0 ? homeSuccessStories.length - 1 : prev - 1));
+              }}
+              className="w-5 h-5 rounded-md bg-slate-100 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-600 transition-transform shadow-2xs"
+              aria-label="Previous Story"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                playClick?.();
+                setActiveStoryIdx((prev) => (prev + 1) % homeSuccessStories.length);
+              }}
+              className="w-5 h-5 rounded-md bg-slate-100 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-600 transition-transform shadow-2xs"
+              aria-label="Next Story"
+            >
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Story Circle Avatars (Instagram / LinkedIn Story Reel Style) */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+          {homeSuccessStories.map((story, idx) => {
+            const isActive = idx === activeStoryIdx;
+            return (
+              <button
+                key={story.id}
+                type="button"
+                onClick={() => {
+                  playClick?.();
+                  setActiveStoryIdx(idx);
+                }}
+                className="flex flex-col items-center gap-1 shrink-0 group focus:outline-none"
+              >
+                <div
+                  className={`relative p-0.5 rounded-full transition-all ${
+                    isActive
+                      ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-white scale-105'
+                      : 'opacity-70 hover:opacity-100'
+                  }`}
+                >
+                  <img
+                    src={story.photo}
+                    alt={story.name}
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                  <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-white border border-slate-200 shadow-2xs flex items-center justify-center p-0.5">
+                    <img
+                      src={story.companyLogo}
+                      alt={story.company}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                </div>
+                <span
+                  className={`text-[9px] font-bold leading-tight ${
+                    isActive ? 'text-blue-600 font-black' : 'text-slate-600'
+                  }`}
+                >
+                  {story.shortName}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Featured Story Spotlight Card */}
+        {(() => {
+          const currentStory = homeSuccessStories[activeStoryIdx];
+          return (
+            <div className="bg-gradient-to-b from-slate-50/80 to-white border border-slate-200/90 rounded-2xl p-3.5 space-y-3 shadow-2xs text-left transition-all">
+              {/* Top Row: Avatar + Name + Placed Badge */}
+              <div className="flex items-center gap-2.5">
+                <div className="relative">
+                  <img
+                    src={currentStory.photo}
+                    alt={currentStory.name}
+                    className="w-11 h-11 rounded-full object-cover ring-2 ring-emerald-500/30"
+                  />
+                  <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white flex items-center justify-center text-[8px] text-white font-black">
+                    ✓
+                  </span>
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-black text-slate-900 leading-tight">
+                      {currentStory.name}
+                    </span>
+                    <span className="text-[7.5px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-1.5 py-0.2 rounded-full">
+                      Verified Hire
+                    </span>
+                  </div>
+                  <div className="text-[9.5px] font-bold text-blue-600 leading-tight mt-0.5">
+                    {currentStory.role} @ {currentStory.company}
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-end shrink-0">
+                  <div className="text-[10px] font-black text-amber-500 flex items-center gap-0.5">
+                    <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                    <span>{currentStory.rating}</span>
+                  </div>
+                  <span className="text-[7.5px] font-semibold text-slate-400">
+                    {currentStory.batch}
+                  </span>
+                </div>
+              </div>
+
+              {/* Career Transformation Bar: Previous Role ➔ Placed Role */}
+              <div className="bg-white border border-slate-200/80 rounded-xl p-2.5 space-y-1.5 shadow-2xs">
+                <div className="flex items-center justify-between text-[8px] font-bold text-slate-400 uppercase tracking-wider">
+                  <span>Career Journey</span>
+                  <span className="text-emerald-600 font-black">{currentStory.hike}</span>
+                </div>
+
+                <div className="flex items-center justify-between gap-2">
+                  <div className="min-w-0 flex-1 bg-slate-50 rounded-lg p-1.5 border border-slate-100">
+                    <div className="text-[7.5px] font-bold text-slate-400">Previous Role</div>
+                    <div className="text-[9px] font-bold text-slate-700 truncate">{currentStory.previousRole}</div>
+                    <div className="text-[8px] font-bold text-slate-500">{currentStory.previousCtc}</div>
+                  </div>
+
+                  <span className="text-slate-400 text-xs font-black">➔</span>
+
+                  <div className="min-w-0 flex-1 bg-emerald-50/70 rounded-lg p-1.5 border border-emerald-200/60">
+                    <div className="text-[7.5px] font-bold text-emerald-600">Placed Career</div>
+                    <div className="text-[9px] font-black text-emerald-900 truncate">{currentStory.role}</div>
+                    <div className="text-[8px] font-black text-emerald-700">{currentStory.placedCtc}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Testimonial Quote */}
+              <p className="text-[9.5px] text-slate-600 italic leading-snug">
+                "{currentStory.quote}"
+              </p>
+
+              {/* Skills Tags & Company Logo Bar */}
+              <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                <div className="flex flex-wrap gap-1">
+                  {currentStory.skills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="text-[7.5px] font-bold text-slate-600 bg-white border border-slate-200 px-1.5 py-0.5 rounded-md shadow-2xs"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <img
+                    src={currentStory.companyLogo}
+                    alt={currentStory.company}
+                    className="w-4 h-4 object-contain"
+                  />
+                  <span className="text-[9.5px] font-black text-slate-800">
+                    {currentStory.company}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  playClick?.();
+                  if (onOpenDataAnalyst) onOpenDataAnalyst();
+                  else window.location.hash = '#data-analyst';
+                }}
+                className="w-full py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl text-[10px] font-black flex items-center justify-center gap-1.5 shadow-sm shadow-blue-500/20 active:scale-98 transition-transform"
+              >
+                <span>Start Your Analytics Career Journey</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          );
+        })()}
       </div>
 
     </div>
