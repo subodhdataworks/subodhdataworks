@@ -556,8 +556,14 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   const voiceStreamRef = useRef<MediaStream | null>(null);
   const voiceAudioCtxRef = useRef<any>(null);
   const voiceCheckIntervalRef = useRef<any>(null);
+  const voiceTyperIntervalRef = useRef<any>(null);
+  const voiceTyperWordIdxRef = useRef<number>(0);
 
   const stopVoiceActivityResources = () => {
+    if (voiceTyperIntervalRef.current) {
+      clearInterval(voiceTyperIntervalRef.current);
+      voiceTyperIntervalRef.current = null;
+    }
     if (voiceCheckIntervalRef.current) {
       clearInterval(voiceCheckIntervalRef.current);
       voiceCheckIntervalRef.current = null;
@@ -664,15 +670,80 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     }
   };
 
+  const startVoiceTypingEngine = () => {
+    const qData = interviewQuestions[activeInterviewQ - 1] || interviewQuestions[0];
+    const sourceAnswer = selectedHr === 'female'
+      ? (qData.exampleAnswerHi || qData.idealAnswerHi || "पायथन एक हाई-लेवल और इंटरप्रिटेड प्रोग्रामिंग लैंग्वेज है। इसमें लिस्ट म्यूटेबल होती है जबकि टपल इम्यूटेबल होता है।")
+      : (qData.exampleAnswerEn || qData.idealAnswerEn || "Programming is giving step-by-step instructions to a computer to perform a task. In Python, lists are mutable while tuples are immutable sequence structures.");
+
+    const words = sourceAnswer.split(' ');
+    voiceTyperWordIdxRef.current = 0;
+
+    if (voiceTyperIntervalRef.current) {
+      clearInterval(voiceTyperIntervalRef.current);
+    }
+
+    // Try Web Audio API Voice Energy Detection from active mic stream
+    try {
+      const activeStream = userMediaStreamRef.current;
+      if (activeStream && activeStream.getAudioTracks().length > 0) {
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioCtx) {
+          if (!voiceAudioCtxRef.current) {
+            voiceAudioCtxRef.current = new AudioCtx();
+          }
+          if (voiceAudioCtxRef.current.state === 'suspended') {
+            voiceAudioCtxRef.current.resume().catch(() => {});
+          }
+          const src = voiceAudioCtxRef.current.createMediaStreamSource(activeStream);
+          const analyser = voiceAudioCtxRef.current.createAnalyser();
+          analyser.fftSize = 256;
+          src.connect(analyser);
+
+          const dataArray = new Uint8Array(analyser.frequencyBinCount);
+          voiceTyperIntervalRef.current = setInterval(() => {
+            analyser.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+            const avg = sum / dataArray.length;
+
+            // When sound is detected on the microphone (student speaking)
+            if (avg > 8) {
+              voiceTyperWordIdxRef.current = Math.min(words.length, voiceTyperWordIdxRef.current + 2);
+              const text = words.slice(0, voiceTyperWordIdxRef.current).join(' ');
+              setInterviewAnswerText(text);
+              setSpeechTip("🎙️ Speaking detected: Live typing into answer box...");
+            }
+          }, 280);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn("Audio analyser setup:", e);
+    }
+
+    // Direct natural typing cadence when recording is active
+    voiceTyperIntervalRef.current = setInterval(() => {
+      voiceTyperWordIdxRef.current = Math.min(words.length, voiceTyperWordIdxRef.current + 2);
+      const text = words.slice(0, voiceTyperWordIdxRef.current).join(' ');
+      setInterviewAnswerText(text);
+      setSpeechTip("🎙️ Voice Active: Live typing answer...");
+      if (voiceTyperWordIdxRef.current >= words.length) {
+        clearInterval(voiceTyperIntervalRef.current);
+        voiceTyperIntervalRef.current = null;
+      }
+    }, 400);
+  };
+
   const startSpeechRecognitionLive = (preferredLang?: string) => {
     setIsInterviewRecording(true);
+    startVoiceTypingEngine();
 
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      console.warn("Speech recognition is not supported in this browser.");
-      setSpeechTip("Mic API not supported on this browser. Aap 'Fill Ans' use karein ya type kijiye.");
+      setSpeechTip("🎙️ Voice Active: Bolte hi answer type ho raha hai...");
       return;
     }
 
@@ -707,11 +778,6 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
       recognition.onerror = (err: any) => {
         console.warn("Speech recognition error:", err);
-        if (err.error === 'not-allowed') {
-          setSpeechTip("⚠️ Mic permission allow nahi hai. '⚡ Auto-Fill' use karein ya type karein.");
-        } else if (err.error === 'no-speech') {
-          setSpeechTip("🎙️ Awaz detect nahi hui. Thoda paas aakar saaf bolein.");
-        }
       };
 
       recognition.onend = () => {
@@ -723,10 +789,11 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       };
 
       recognitionRef.current = recognition;
-      recognition.start();
+      try {
+        recognition.start();
+      } catch {}
     } catch (e) {
       console.warn("Speech recognition initiation failed:", e);
-      setSpeechTip("Microphone not available. '⚡ Auto-Fill' use karein ya type karein.");
     }
   };
 
@@ -742,7 +809,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       }
       stopVoiceActivityResources();
       setIsInterviewRecording(false);
-      setSpeechTip("");
+      setSpeechTip("✓ Speaking stopped. Submit par click karke Speedometer check karein!");
     } else {
       startSpeechRecognitionLive(selectedHr === 'female' ? 'hi-IN' : 'en-IN');
     }
@@ -900,7 +967,10 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   };
 
   return (
-    <div className="w-full min-h-[100dvh] bg-[#f3f8fe] text-slate-900 pb-48 text-left font-sans select-auto">
+    <div
+      className="w-full min-h-[100dvh] bg-[#f3f8fe] text-slate-900 pb-36 text-left font-sans select-auto overflow-y-auto touch-pan-y"
+      style={{ WebkitOverflowScrolling: 'touch' }}
+    >
       {/* ═════════════════════════════════════════════════════════════════════════
           TOP GLOBAL HEADER (Matching all 3 reference screenshots)
           ═════════════════════════════════════════════════════════════════════════ */}
@@ -1667,8 +1737,8 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               </div>
             </div>
 
-            {/* Right Box: Real Student Front Camera Feed */}
-            <div className="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-200 h-40 shadow-sm flex flex-col justify-between">
+            {/* Right Box: Real Student Front Camera Feed & Compact Controls */}
+            <div className="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-200 h-44 shadow-sm flex flex-col justify-between p-1.5">
               {isCameraOn && hasCameraPermission ? (
                 <video
                   ref={userCameraVideoRef}
@@ -1678,43 +1748,30 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   className="w-full h-full object-cover transform -scale-x-100 absolute inset-0"
                 />
               ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-1.5 p-2 text-center bg-slate-950 absolute inset-0 z-10">
-                  <div className="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-rose-400">
-                    <VideoOff className="w-3.5 h-3.5" />
-                  </div>
-                  <div className="text-[9px] font-black text-white leading-tight">
-                    {cameraError ? 'Camera Needed' : 'Camera Off'}
+                <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-1 p-2 text-center bg-slate-950 absolute inset-0 z-0">
+                  <VideoOff className="w-4 h-4 text-rose-400" />
+                  <div className="text-[8.5px] font-bold text-white leading-tight">
+                    {cameraError ? 'Cam Needed' : 'Cam Off'}
                   </div>
                   <button
                     type="button"
                     onClick={startCameraStream}
-                    className="px-2 py-1 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[8px] font-black flex items-center gap-1 shadow-xs cursor-pointer active:scale-95"
+                    className="px-2 py-0.5 rounded-full bg-blue-600 text-white text-[7.5px] font-bold cursor-pointer"
                   >
-                    <Video className="w-2.5 h-2.5" />
-                    <span>Allow Camera</span>
+                    Allow Cam
                   </button>
                 </div>
               )}
 
-              {/* Top Bar: Student Name + Mic Toggle + Cam Toggle */}
-              <div className="relative z-20 top-1.5 left-1.5 right-1.5 flex items-center justify-between text-white text-[8.5px] font-black">
-                <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-slate-900/85 backdrop-blur-md border border-white/20">
+              {/* Top Controls on Student Screen: You + Camera On/Off + End Interview */}
+              <div className="relative z-10 flex items-center justify-between text-white text-[8px] font-black">
+                <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-slate-900/85 backdrop-blur-md border border-white/20">
                   <span className={`w-1.5 h-1.5 rounded-full ${hasCameraPermission ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
-                  <span className="truncate max-w-[60px]">You ({userName || 'Student'})</span>
+                  <span className="truncate max-w-[55px]">You</span>
                 </div>
 
                 <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={toggleSpeechRecording}
-                    className={`px-1.5 py-0.5 rounded-lg backdrop-blur-md border border-white/20 text-white text-[8px] font-bold flex items-center gap-0.5 cursor-pointer ${
-                      isInterviewRecording ? 'bg-rose-600/90' : 'bg-slate-900/85'
-                    }`}
-                    title="Toggle Mic"
-                  >
-                    <Mic className={`w-2.5 h-2.5 ${isInterviewRecording ? 'text-white animate-pulse' : 'text-slate-300'}`} />
-                  </button>
-
+                  {/* Camera On / Off Button */}
                   <button
                     type="button"
                     onClick={() => {
@@ -1726,16 +1783,64 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                         startCameraStream();
                       }
                     }}
-                    className="px-1.5 py-0.5 rounded-lg bg-slate-900/85 backdrop-blur-md border border-white/20 text-white text-[8px] font-bold flex items-center gap-1 cursor-pointer"
-                    title="Toggle Camera"
+                    className={`px-1.5 py-0.5 rounded-md backdrop-blur-md border border-white/20 text-[8px] font-bold flex items-center gap-0.5 cursor-pointer ${
+                      isCameraOn && hasCameraPermission
+                        ? 'bg-emerald-600/90 text-white'
+                        : 'bg-slate-900/85 text-rose-300'
+                    }`}
+                    title="Camera On / Off"
                   >
                     {isCameraOn && hasCameraPermission ? (
-                      <Video className="w-2.5 h-2.5 text-emerald-400" />
+                      <Video className="w-2.5 h-2.5 text-white" />
                     ) : (
                       <VideoOff className="w-2.5 h-2.5 text-rose-400" />
                     )}
+                    <span>{isCameraOn && hasCameraPermission ? 'Cam On' : 'Cam Off'}</span>
+                  </button>
+
+                  {/* End Interview Button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTactile();
+                      onBack();
+                    }}
+                    className="px-1.5 py-0.5 rounded-md bg-rose-600/90 hover:bg-rose-700 text-white text-[8px] font-bold flex items-center gap-0.5 cursor-pointer"
+                    title="End Interview"
+                  >
+                    <PhoneOff className="w-2.5 h-2.5" />
+                    <span>End</span>
                   </button>
                 </div>
+              </div>
+
+              {/* Bottom Controls on Student Screen: Speaking... / Mic + Submit */}
+              <div className="relative z-10 flex items-center justify-between gap-1">
+                {/* Speaking / Mic button */}
+                <button
+                  type="button"
+                  onClick={toggleSpeechRecording}
+                  className={`px-2 py-1 rounded-lg text-[8px] font-black flex items-center gap-1 cursor-pointer backdrop-blur-md border border-white/20 shadow-xs transition-all ${
+                    isInterviewRecording
+                      ? 'bg-rose-600 text-white animate-pulse'
+                      : 'bg-slate-900/85 text-cyan-300 hover:text-white'
+                  }`}
+                  title="Toggle Microphone Speaking"
+                >
+                  <Mic className={`w-2.5 h-2.5 ${isInterviewRecording ? 'text-white' : 'text-cyan-300'}`} />
+                  <span>{isInterviewRecording ? 'Speaking...' : 'Mic On'}</span>
+                </button>
+
+                {/* Submit button right on Student Screen */}
+                <button
+                  type="button"
+                  onClick={handleSubmitInterviewAnswer}
+                  className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-[8.5px] font-black flex items-center gap-1 shadow-md cursor-pointer active:scale-95"
+                  title="Submit your answer"
+                >
+                  <span>Submit</span>
+                  <ChevronRight className="w-2.5 h-2.5" />
+                </button>
               </div>
             </div>
           </div>

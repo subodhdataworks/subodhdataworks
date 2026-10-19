@@ -1267,8 +1267,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             </button>
           </div>
 
-          {/* Centered Realistic Mobile Phone Frame */}
-          <div className="w-full max-w-[420px] min-h-[844px] bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] border-4 border-slate-700 overflow-hidden relative">
+          {/* Centered Realistic Mobile Phone Frame (Scrollable on Desktop) */}
+          <div className="w-full max-w-[420px] max-h-[90vh] overflow-y-auto rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] border-4 border-slate-700 bg-white relative">
             <MobileTopicWorkspace
               userName={currentUserName}
               topicId={activeTopicWs}
