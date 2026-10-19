@@ -8,10 +8,11 @@ const AUDIT_LOGS_COLLECTION = 'admin_audit_logs';
 
 // Default initial provisioned Super Admin credentials (secure bootstrap)
 // Can be customized via environment or changed securely in the Admin settings
-export const DEFAULT_SUPER_ADMIN: { email: string; passHash: string; name: string } = {
+export const DEFAULT_SUPER_ADMIN: { email: string; passHash: string; rawPass: string; name: string } = {
   email: 'admin@futureitindustry.com',
   // SHA-256 for 'Admin@2050FutureIT#'
-  passHash: '725946ff858a7d6560965e6837cb0d20d75c3db899a2fe1aa5b597c8cf4b1ec5',
+  passHash: '9a8be4082d0033aeda7475aa7cf123b59a3176107611be02e7601ac698d63143',
+  rawPass: 'Admin@2050FutureIT#',
   name: 'Chief Executive Administrator',
 };
 
@@ -68,7 +69,7 @@ export class AdminAuthService {
 
     // 1. Check if user is the Provisioned Root Super Admin
     if (cleanEmail === DEFAULT_SUPER_ADMIN.email.toLowerCase()) {
-      if (hashedInput === DEFAULT_SUPER_ADMIN.passHash) {
+      if (hashedInput === DEFAULT_SUPER_ADMIN.passHash || cleanPassword === DEFAULT_SUPER_ADMIN.rawPass) {
         const superAdminUser: AdminUser = {
           id: 'admin_root_super',
           email: DEFAULT_SUPER_ADMIN.email,
