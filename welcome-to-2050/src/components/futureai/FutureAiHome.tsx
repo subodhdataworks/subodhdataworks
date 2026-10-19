@@ -38,6 +38,7 @@ interface FutureAiHomeProps {
   userName?: string;
   onLoginSuccess?: (name: string, email?: string, avatar?: string, role?: 'student' | 'influencer') => void;
   onOpenDashboard?: () => void;
+  onLogout?: () => void;
 }
 
 export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
@@ -46,9 +47,10 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
   onToggleTheme,
   onStartLearning,
   isLoggedIn = false,
-  userName = 'Subodh Kumar',
+  userName = 'Learner',
   onLoginSuccess,
   onOpenDashboard,
+  onLogout,
 }) => {
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -177,10 +179,18 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           onClose={() => setMobileProfileOpen(false)}
           userName={userName}
           telemetry={telemetry}
-          onLogout={() => {
+          onLogout={onLogout ? onLogout : () => {
             if (typeof window !== 'undefined') {
               localStorage.removeItem('futureai_logged_in');
-              window.location.hash = '#dashboard';
+              localStorage.removeItem('futureai_user_name');
+              localStorage.removeItem('futureai_user_email');
+              localStorage.removeItem('futureai_user_avatar');
+              localStorage.removeItem('futureai_user_role');
+              localStorage.removeItem('futureai_user_wallet');
+              localStorage.removeItem('futureai_user_coins');
+              localStorage.removeItem('futureai_user_gems');
+              window.location.hash = '#home';
+              window.location.reload();
             }
           }}
           onOpenEarn={() => {

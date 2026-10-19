@@ -1541,18 +1541,6 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             </div>
           </div>
 
-          {/* Admin Leads & Emails Database Button */}
-          <button 
-            onClick={() => {
-              window.location.hash = '#leads';
-            }}
-            className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-bold transition shadow-xs cursor-pointer"
-            title="View Registered Students & Download Email CSV"
-          >
-            <Users className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Leads &amp; Emails</span>
-          </button>
-
           {/* Ask AI Mentor button */}
           <button 
             className="dock-ask-ai-btn"

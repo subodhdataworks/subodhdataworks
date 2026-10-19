@@ -108,15 +108,17 @@ export const App: React.FC = () => {
     };
   }, []);
 
-  // On mobile devices, ensure default route is #dashboard so app experience opens directly
+  // On mobile devices, ensure default route is #dashboard only if logged in or navigating to course
   useEffect(() => {
     if (checkIsMobileDevice()) {
       setIsMobile(true);
       const baseH = window.location.hash.split('?')[0];
       if (!baseH || baseH === '#home' || baseH === '') {
-        window.location.hash = '#dashboard';
+        const isAuth = localStorage.getItem('futureai_logged_in') === 'true';
+        if (isAuth) {
+          window.location.hash = '#dashboard';
+        }
       }
-      setIsLoggedIn(true);
     }
   }, []);
 
@@ -132,7 +134,7 @@ export const App: React.FC = () => {
       if (baseH === '#admin-leads' || baseH === '#leads') {
         setAdminLeadsModalOpen(true);
       }
-      if (baseH === '#data-analyst' || baseH === '#data-analytics' || baseH === '#courses' || baseH === '#sql' || baseH === '#excel' || baseH === '#powerbi' || baseH === '#stats' || baseH === '#genai' || baseH === '#intro-game' || baseH === '#intro-games' || baseH === '#pyintro' || baseH === '#dashboard' || baseH === '#income' || baseH === '#earnings' || baseH === '#wallet' || baseH === '#withdraw' || baseH === '#referral' || baseH === '#myearnings' || baseH === '#python' || baseH === '#practice' || baseH === '#mcq' || baseH === '#game' || baseH === '#codequest' || baseH === '#workspace' || baseH === '#code' || baseH === '#codepractice' || baseH === '#interview' || baseH === '#mockinterview' || baseH === '#score' || baseH === '#scorecard' || baseH === '#learn' || baseH === '#video') {
+      if (baseH === '#data-analyst' || baseH === '#data-analytics' || baseH === '#courses' || baseH === '#sql' || baseH === '#excel' || baseH === '#powerbi' || baseH === '#stats' || baseH === '#genai' || baseH === '#intro-game' || baseH === '#intro-games' || baseH === '#pyintro' || baseH === '#income' || baseH === '#earnings' || baseH === '#wallet' || baseH === '#withdraw' || baseH === '#referral' || baseH === '#myearnings' || baseH === '#python' || baseH === '#practice' || baseH === '#mcq' || baseH === '#game' || baseH === '#codequest' || baseH === '#workspace' || baseH === '#code' || baseH === '#codepractice' || baseH === '#interview' || baseH === '#mockinterview' || baseH === '#score' || baseH === '#scorecard' || baseH === '#learn' || baseH === '#video') {
         setIsLoggedIn(true);
       }
     };
@@ -160,9 +162,18 @@ export const App: React.FC = () => {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setUserName('Learner');
     if (typeof window !== 'undefined') {
       localStorage.removeItem('futureai_logged_in');
-      window.location.hash = isMobile ? '#dashboard' : '#home';
+      localStorage.removeItem('futureai_user_name');
+      localStorage.removeItem('futureai_user_email');
+      localStorage.removeItem('futureai_user_avatar');
+      localStorage.removeItem('futureai_user_role');
+      localStorage.removeItem('futureai_user_wallet');
+      localStorage.removeItem('futureai_user_coins');
+      localStorage.removeItem('futureai_user_gems');
+      window.location.hash = '#home';
+      window.location.reload();
     }
   };
 
@@ -209,7 +220,7 @@ export const App: React.FC = () => {
             isLoggedIn={isLoggedIn}
             userName={userName}
           />
-        ) : (isLoggedIn || isMobile) ? (
+        ) : isLoggedIn ? (
           <LearnerDashboard
             userName={userName}
             onLogout={handleLogout}
@@ -223,6 +234,7 @@ export const App: React.FC = () => {
             isLoggedIn={isLoggedIn}
             userName={userName}
             onLoginSuccess={handleLogin}
+            onLogout={handleLogout}
             onOpenDashboard={() => {
               setIsLoggedIn(true);
               window.location.hash = '#dashboard';

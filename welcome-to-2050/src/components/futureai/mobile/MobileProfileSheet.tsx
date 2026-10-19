@@ -51,14 +51,26 @@ export const MobileProfileSheet: React.FC<MobileProfileSheetProps> = ({
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [imageLinkInput, setImageLinkInput] = useState('');
 
-  // Stored user data
+  // Stored user data (Defaults to clean learner state)
   const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('futureai_user_email') : null;
   const storedName = typeof window !== 'undefined' ? localStorage.getItem('futureai_user_name') : null;
   const storedAvatar = typeof window !== 'undefined' ? localStorage.getItem('futureai_user_avatar') : null;
 
-  const [displayName] = useState(storedName || (userName !== 'Learner' ? userName : 'Subodh Kumar'));
-  const [displayEmail] = useState(storedEmail || 'subodh.mscit@gmail.com');
+  const [displayName, setDisplayName] = useState(storedName || (userName !== 'Learner' ? userName : 'Future Learner'));
+  const [displayEmail, setDisplayEmail] = useState(storedEmail || 'learner@futureitindustry.com');
   const [avatarUrl, setAvatarUrl] = useState(storedAvatar || '/images/profile_student_avatar.png');
+
+  // Keep state updated on drawer open
+  useEffect(() => {
+    if (isOpen && typeof window !== 'undefined') {
+      const e = localStorage.getItem('futureai_user_email');
+      const n = localStorage.getItem('futureai_user_name');
+      const a = localStorage.getItem('futureai_user_avatar');
+      if (e) setDisplayEmail(e);
+      if (n) setDisplayName(n);
+      if (a) setAvatarUrl(a);
+    }
+  }, [isOpen]);
 
   // Smooth opening / closing transition
   useEffect(() => {
@@ -151,13 +163,22 @@ export const MobileProfileSheet: React.FC<MobileProfileSheetProps> = ({
 
   const handleSignOutClick = () => {
     playTactile();
-    if (window.confirm('Are you sure you want to sign out from this device?')) {
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('futureai_logged_in');
-      }
-      handleSmoothClose();
-      if (onLogout) onLogout();
-      else window.location.reload();
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('futureai_logged_in');
+      localStorage.removeItem('futureai_user_name');
+      localStorage.removeItem('futureai_user_email');
+      localStorage.removeItem('futureai_user_avatar');
+      localStorage.removeItem('futureai_user_role');
+      localStorage.removeItem('futureai_user_wallet');
+      localStorage.removeItem('futureai_user_coins');
+      localStorage.removeItem('futureai_user_gems');
+    }
+    handleSmoothClose();
+    if (onLogout) {
+      onLogout();
+    } else if (typeof window !== 'undefined') {
+      window.location.hash = '#home';
+      window.location.reload();
     }
   };
 
@@ -396,7 +417,7 @@ export const MobileProfileSheet: React.FC<MobileProfileSheetProps> = ({
         {/* ─── Bottom Section: Compliance Links + Cyber Sign Out Capsule ─── */}
         <div className="p-3.5 pt-1 border-t border-slate-100/90 bg-white/90 backdrop-blur-md sticky bottom-0 z-20 space-y-2">
           
-          {/* Subtle Compliance & Staff Portal Links */}
+          {/* Subtle Compliance Links (Admin link removed as requested) */}
           <div className="flex items-center justify-center gap-2 text-[10px] font-semibold text-slate-400">
             <a
               href="#contact-us"
@@ -420,18 +441,6 @@ export const MobileProfileSheet: React.FC<MobileProfileSheetProps> = ({
               className="hover:text-blue-600 underline underline-offset-2 transition-colors"
             >
               Terms & Conditions
-            </a>
-            <span>•</span>
-            <a
-              href="#admin"
-              onClick={(e) => {
-                e.preventDefault();
-                handleSmoothClose();
-                window.location.hash = '#admin';
-              }}
-              className="hover:text-blue-600 font-bold text-slate-500 underline underline-offset-2 transition-colors"
-            >
-              Admin Portal
             </a>
           </div>
 

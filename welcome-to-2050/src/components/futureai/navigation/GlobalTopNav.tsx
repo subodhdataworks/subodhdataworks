@@ -179,17 +179,6 @@ export const GlobalTopNav: React.FC<GlobalTopNavProps> = ({
                 <span>Unlock ₹999 Program</span>
               </button>
 
-              <button
-                className="global-dropdown-item"
-                onClick={() => {
-                  setProfileDropdownOpen(false);
-                  onOpenAdminHrSettings?.();
-                }}
-              >
-                <Settings className="w-4 h-4 text-sky-500" />
-                <span>Admin HR Settings (Avatar & Voice)</span>
-              </button>
-
               <div className="global-dropdown-divider" />
               <button
                 className="global-dropdown-item text-red-600 hover:bg-red-50"
