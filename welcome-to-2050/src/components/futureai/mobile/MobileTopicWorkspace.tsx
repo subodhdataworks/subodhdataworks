@@ -50,6 +50,160 @@ import type { WorkspaceStepId } from '../PythonTopicWorkspace';
 import { TOPICS } from '../PythonChapterView';
 import { LESSON_BUNNY_VIDEOS, BUNNY_STREAM_CONFIG } from '../../../services/bunnyVideoService';
 
+export interface PracticeChallenge {
+  num: number;
+  tag: string;
+  title: string;
+  concept: string;
+  text: string;
+  codeSnippet?: string;
+  options: {
+    id: string;
+    text: string;
+    correct: boolean;
+    explanation: string;
+  }[];
+}
+
+export const PRACTICE_GAMES: PracticeChallenge[] = [
+  {
+    num: 1,
+    tag: "Fundamentals",
+    title: "QUESTION 1 — CONCEPT CHALLENGE",
+    concept: "What is Programming?",
+    text: "A computer follows instructions to complete a task. What is this process called?",
+    options: [
+      { id: 'A', text: "Programming", correct: true, explanation: "Programming is the process of creating a set of instructions that tell a computer how to perform a task." },
+      { id: 'B', text: "Browsing", correct: false, explanation: "Browsing is viewing web pages on the internet." },
+      { id: 'C', text: "Charging", correct: false, explanation: "Charging powers the computer hardware battery." },
+      { id: 'D', text: "Printing", correct: false, explanation: "Printing produces physical hard copies on paper." },
+    ],
+  },
+  {
+    num: 2,
+    tag: "Python History",
+    title: "QUESTION 2 — CREATOR & ORIGIN",
+    concept: "Guido van Rossum (1991)",
+    text: "Who designed and created the Python programming language in 1991?",
+    options: [
+      { id: 'A', text: "Dennis Ritchie", correct: false, explanation: "Dennis Ritchie created the C programming language." },
+      { id: 'B', text: "Guido van Rossum", correct: true, explanation: "Guido van Rossum created Python and released version 0.9.0 in February 1991." },
+      { id: 'C', text: "James Gosling", correct: false, explanation: "James Gosling created Java." },
+      { id: 'D', text: "Bjarne Stroustrup", correct: false, explanation: "Bjarne Stroustrup created C++." },
+    ],
+  },
+  {
+    num: 3,
+    tag: "Output & Syntax",
+    title: "QUESTION 3 — FIRST PYTHON COMMAND",
+    concept: "The print() Function",
+    text: "Which built-in function is used to display output on the screen in Python 3?",
+    codeSnippet: '_____("Welcome to Python!")',
+    options: [
+      { id: 'A', text: 'echo("Welcome to Python!")', correct: false, explanation: "'echo' is used in Unix shell / PHP, not Python." },
+      { id: 'B', text: 'System.out.println("Welcome to Python!")', correct: false, explanation: "This is Java syntax." },
+      { id: 'C', text: 'print("Welcome to Python!")', correct: true, explanation: "The print() function outputs the specified message to the screen or console." },
+      { id: 'D', text: 'console.log("Welcome to Python!")', correct: false, explanation: "This is JavaScript syntax." },
+    ],
+  },
+  {
+    num: 4,
+    tag: "Data Types",
+    title: "QUESTION 4 — VARIABLE TYPES",
+    concept: "Floating Point Numbers",
+    text: "In Python, what data type is automatically assigned to the variable score = 98.5?",
+    codeSnippet: "score = 98.5\nprint(type(score))",
+    options: [
+      { id: 'A', text: "<class 'float'>", correct: true, explanation: "Numbers with fractional decimal points are stored as floating point numbers (float)." },
+      { id: 'B', text: "<class 'int'>", correct: false, explanation: "int is reserved for whole integers like 98 without decimal fractions." },
+      { id: 'C', text: "<class 'str'>", correct: false, explanation: "str is for text strings enclosed in quotes." },
+      { id: 'D', text: "<class 'bool'>", correct: false, explanation: "bool represents True or False values." },
+    ],
+  },
+  {
+    num: 5,
+    tag: "Indentation Rules",
+    title: "QUESTION 5 — CODE STRUCTURE",
+    concept: "Whitespace Indentation",
+    text: "Unlike C++ or Java that use curly braces { }, how does Python define a code block inside an if statement or loop?",
+    options: [
+      { id: 'A', text: "Semicolons at line endings", correct: false, explanation: "Semicolons are optional and do not create blocks in Python." },
+      { id: 'B', text: "Round parentheses ( )", correct: false, explanation: "Parentheses are used for tuples and function calls." },
+      { id: 'C', text: "Square brackets [ ]", correct: false, explanation: "Square brackets are used for lists." },
+      { id: 'D', text: "Consistent Whitespace Indentation", correct: true, explanation: "Python strictly uses 4 spaces (or tabs) of indentation to group blocks of code." },
+    ],
+  },
+  {
+    num: 6,
+    tag: "String Operations",
+    title: "QUESTION 6 — REPETITION & CONCAT",
+    concept: "String Multiplication",
+    text: "What will be the exact output of running: print('Py' + 'thon' * 2) in Python?",
+    codeSnippet: "print('Py' + 'thon' * 2)",
+    options: [
+      { id: 'A', text: "'PythonPython'", correct: false, explanation: "'*' has higher precedence than '+', so only 'thon' is multiplied." },
+      { id: 'B', text: "'Pythonthon'", correct: true, explanation: "'thon' * 2 produces 'thonthon', and concatenating 'Py' yields 'Pythonthon'!" },
+      { id: 'C', text: "TypeError: Cannot multiply string", correct: false, explanation: "Python natively supports string repetition with the * operator." },
+      { id: 'D', text: "'Python2'", correct: false, explanation: "The * operator repeats strings rather than appending numbers." },
+    ],
+  },
+  {
+    num: 7,
+    tag: "Boolean Logic",
+    title: "QUESTION 7 — TRUTHY & FALSY",
+    concept: "Falsy Evaluation",
+    text: "Which of the following values evaluates to False when passed into bool()?",
+    codeSnippet: "bool(value) -> ?",
+    options: [
+      { id: 'A', text: "bool('False')", correct: false, explanation: "Any non-empty string is truthy in Python!" },
+      { id: 'B', text: "bool([0])", correct: false, explanation: "A list with any element (even 0) is truthy." },
+      { id: 'C', text: "bool(0)", correct: true, explanation: "The number 0, empty string '', empty list [], and None are falsy in Python." },
+      { id: 'D', text: "bool(-1)", correct: false, explanation: "Any non-zero integer is truthy." },
+    ],
+  },
+  {
+    num: 8,
+    tag: "Data Structures",
+    title: "QUESTION 8 — LIST INDEXING",
+    concept: "Negative Indices",
+    text: "Given skills = ['Python', 'SQL', 'Tableau', 'GenAI'], what is the value of skills[-1]?",
+    codeSnippet: "skills = ['Python', 'SQL', 'Tableau', 'GenAI']\nprint(skills[-1])",
+    options: [
+      { id: 'A', text: "'GenAI'", correct: true, explanation: "Negative index -1 in Python always returns the last element of the sequence." },
+      { id: 'B', text: "'Python'", correct: false, explanation: "'Python' is at index 0 or -4." },
+      { id: 'C', text: "IndexError", correct: false, explanation: "Python fully supports negative indexing." },
+      { id: 'D', text: "'Tableau'", correct: false, explanation: "'Tableau' is at index 2 or -2." },
+    ],
+  },
+  {
+    num: 9,
+    tag: "Bug Hunter",
+    title: "QUESTION 9 — IDENTIFIER RULES",
+    concept: "Variable Naming Syntax",
+    text: "Which of the following is an INVALID variable name in Python and triggers a SyntaxError?",
+    options: [
+      { id: 'A', text: "_user_score", correct: false, explanation: "Identifiers can legally start with an underscore." },
+      { id: 'B', text: "total_marks_2026", correct: false, explanation: "Digits are allowed in variable names as long as they are not the first character." },
+      { id: 'C', text: "MAX_SPEED", correct: false, explanation: "Uppercase identifiers are legal and commonly used for constants." },
+      { id: 'D', text: "2nd_student", correct: true, explanation: "Python variable names cannot start with a number! '2nd_student' raises an immediate SyntaxError." },
+    ],
+  },
+  {
+    num: 10,
+    tag: "Execution Model",
+    title: "QUESTION 10 — BYTECODE & PVM",
+    concept: "Python Virtual Machine",
+    text: "When you run a Python script, what intermediate bytecode format does the interpreter compile it into before running on the PVM?",
+    codeSnippet: "main.py ➔ Bytecode (.pyc) ➔ PVM Execution",
+    options: [
+      { id: 'A', text: "Native x86 Machine Code", correct: false, explanation: "Compiled languages like C produce machine code; Python uses bytecode interpreted by PVM." },
+      { id: 'B', text: "Bytecode (.pyc format)", correct: true, explanation: "Python source code is compiled into platform-independent Bytecode (.pyc files) executed by the Python Virtual Machine." },
+      { id: 'C', text: "Assembly Code", correct: false, explanation: "CPython does not convert code to assembly language." },
+      { id: 'D', text: "JavaScript Code", correct: false, explanation: "Python does not transpile to JavaScript in standard execution." },
+    ],
+  },
+];
+
 export interface MobileTopicWorkspaceProps {
   userName?: string;
   topicId?: number;
@@ -114,6 +268,24 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     return () => window.removeEventListener('message', handleBunnyMessage);
   }, []);
 
+  // Sync activeStep when URL hash updates (e.g. #interview?topic=1)
+  useEffect(() => {
+    const syncHash = () => {
+      const h = window.location.hash || '';
+      const baseH = h.split('?')[0];
+      if (baseH === '#interview' || baseH === '#mockinterview') {
+        setActiveStep('interview');
+      } else if (baseH === '#play' || baseH === '#game' || baseH === '#practice') {
+        setActiveStep('play');
+      } else if (baseH === '#learn' || baseH === '#video') {
+        setActiveStep('learn');
+      }
+    };
+    syncHash();
+    window.addEventListener('hashchange', syncHash);
+    return () => window.removeEventListener('hashchange', syncHash);
+  }, []);
+
   const playTactile = () => {
     try {
       soundEffects.playClick();
@@ -159,8 +331,18 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
+  // Close video and transition directly to practice game
+  const handleCloseVideoAndPlayGame = () => {
+    playTactile();
+    if (videoRef.current) {
+      videoRef.current.pause();
+      setIsVideoPlaying(false);
+    }
+    setActiveStep('play');
+  };
+
   // ─────────────────────────────────────────────────────────────────────────────
-  // 2. GAME SCREEN STATE (Matches media_1792386770782_47d1c2a3.png)
+  // 2. PRACTICE GAME SCREEN STATE (10 Distinct Unique Challenges)
   // ─────────────────────────────────────────────────────────────────────────────
   const [activeGameLevel, setActiveGameLevel] = useState<number>(1);
   const [selectedGameOption, setSelectedGameOption] = useState<string | null>(null);
@@ -169,17 +351,8 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   const [gameQuestionsDone, setGameQuestionsDone] = useState<number>(0);
   const [gameScore, setGameScore] = useState<number>(10);
 
-  const gameQuestion = {
-    num: 1,
-    title: "QUESTION 1 — CONCEPT CHALLENGE",
-    text: "A computer follows instructions to complete a task. What is this process called?",
-    options: [
-      { id: 'A', text: "Programming", correct: true },
-      { id: 'B', text: "Browsing", correct: false },
-      { id: 'C', text: "Charging", correct: false },
-      { id: 'D', text: "Printing", correct: false },
-    ],
-  };
+  // Active Challenge corresponding to activeGameLevel (1 to 10)
+  const currentChallenge = PRACTICE_GAMES[activeGameLevel - 1] || PRACTICE_GAMES[0];
 
   const handleSelectGameOption = (optId: string) => {
     if (isAnswerSubmitted) return;
@@ -191,7 +364,8 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     if (!selectedGameOption || isAnswerSubmitted) return;
     playTactile();
     setIsAnswerSubmitted(true);
-    const correct = selectedGameOption === 'A';
+    const chosen = currentChallenge.options.find((o) => o.id === selectedGameOption);
+    const correct = chosen?.correct ?? false;
     setIsAnswerCorrect(correct);
     if (correct) {
       try {
@@ -199,8 +373,39 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
         soundEffects.playCoinCollect();
         awardLearnerTelemetry(20, 5);
       } catch {}
-      setGameQuestionsDone((prev) => Math.min(10, prev + 1));
+      setGameQuestionsDone((prev) => Math.min(10, Math.max(prev, activeGameLevel)));
       setGameScore((prev) => prev + 10);
+    }
+  };
+
+  const handleSelectLevel = (levelNum: number) => {
+    playTactile();
+    setActiveGameLevel(levelNum);
+    setSelectedGameOption(null);
+    setIsAnswerSubmitted(false);
+    setIsAnswerCorrect(false);
+  };
+
+  const handleNextGameLevel = () => {
+    playTactile();
+    if (activeGameLevel < 10) {
+      setActiveGameLevel((prev) => prev + 1);
+      setSelectedGameOption(null);
+      setIsAnswerSubmitted(false);
+      setIsAnswerCorrect(false);
+    } else {
+      handleFinishGameAndStartInterview();
+    }
+  };
+
+  const handleFinishGameAndStartInterview = () => {
+    playTactile();
+    try {
+      soundEffects.playCelebration();
+    } catch {}
+    setActiveStep('interview');
+    if (typeof window !== 'undefined') {
+      window.location.hash = `#interview?topic=${topicId || 1}`;
     }
   };
 
@@ -443,7 +648,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
           <span className="text-slate-400 font-bold text-xs shrink-0">&gt;</span>
 
-          {/* Stepper Pill 2: Level 1 Game */}
+          {/* Stepper Pill 2: Practice Game */}
           <button
             type="button"
             onClick={() => {
@@ -461,7 +666,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             }`}>
               2
             </span>
-            <span>Level 1 Game</span>
+            <span>Practice Game</span>
           </button>
 
           <span className="text-slate-400 font-bold text-xs shrink-0">&gt;</span>
@@ -487,15 +692,6 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             <span>Mock Interview</span>
           </button>
         </div>
-
-        {/* View Topics Button */}
-        <button
-          type="button"
-          onClick={onBack}
-          className="text-[9.5px] font-black text-blue-600 hover:underline shrink-0 pl-1"
-        >
-          View Topics
-        </button>
       </div>
 
       {/* ═════════════════════════════════════════════════════════════════════════
@@ -595,45 +791,19 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             )}
           </div>
 
-          {/* Auto-Pilot Learning Banner */}
-          <div className="bg-gradient-to-r from-blue-50 via-sky-50 to-indigo-50 border border-blue-200/80 rounded-2xl p-2.5 flex items-center justify-between shadow-2xs">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-xs">
-                <Bot className="w-4 h-4" />
-              </div>
-              <div className="min-w-0 pr-1">
-                <div className="text-[11px] font-black text-blue-950 leading-tight">
-                  Auto-Pilot Learning
-                </div>
-                <div className="text-[8.5px] font-medium text-slate-600 leading-tight mt-0.5">
-                  Video khatam hone ke baad MCQ, Game, Interview aur Report ek-ek karke automatically start ho jate hain!
-                </div>
-              </div>
-            </div>
-            <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
-              <ChevronRight className="w-3.5 h-3.5" />
-            </div>
-          </div>
-
-          {/* Lesson Overview Card */}
-          <div className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs space-y-1.5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
-                  <FileText className="w-3.5 h-3.5" />
-                </div>
-                <h3 className="text-xs font-black text-slate-900 leading-tight">
-                  Lesson Overview
-                </h3>
-              </div>
-              <span className="text-[9px] font-bold text-slate-500 flex items-center gap-1 bg-slate-100 px-2 py-0.5 rounded-full">
-                <Clock className="w-2.5 h-2.5" />
-                <span>08:00 min</span>
-              </span>
-            </div>
-            <p className="text-[9.5px] text-slate-600 font-medium leading-relaxed">
-              In this video, you will learn what Python is, why it is popular, its key features, real-world applications, and why it is a great choice for a career in data analytics, AI, and more.
-            </p>
+          {/* Quick Action: Close Video ➔ Start Practice Game */}
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[10px] font-bold text-slate-500">
+              Lesson 1.1 • Bunny Stream HD
+            </span>
+            <button
+              type="button"
+              onClick={handleCloseVideoAndPlayGame}
+              className="px-3 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-black border border-blue-200 flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs"
+            >
+              <span>Close Video ➔ Practice Game</span>
+              <ChevronRight className="w-3 h-3" />
+            </button>
           </div>
 
           {/* What You Will Learn Card */}
@@ -674,7 +844,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             </div>
           </div>
 
-          {/* Resources Card */}
+          {/* Download Resources Card */}
           <div className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -682,7 +852,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   <BookOpen className="w-3.5 h-3.5" />
                 </div>
                 <h3 className="text-xs font-black text-slate-900 leading-tight">
-                  Resources
+                  Download Resources
                 </h3>
               </div>
               <button
@@ -730,17 +900,14 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               <div className="h-full bg-blue-600 rounded-full transition-all" style={{ width: `${videoProgress}%` }} />
             </div>
 
-            {/* BIG BLUE GRADIENT BUTTON MATCHING SCREENSHOT */}
+            {/* Start Practice Game Action Button */}
             <button
               type="button"
-              onClick={() => {
-                playTactile();
-                setActiveStep('play');
-              }}
+              onClick={handleCloseVideoAndPlayGame}
               className="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 via-sky-500 to-blue-600 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-blue-500/30 active:scale-98 transition-transform cursor-pointer"
             >
               <Gamepad2 className="w-4 h-4" />
-              <span>Video Finished ➔ Play {currentTopic.title} Game</span>
+              <span>Video Finished ➔ Start Practice Game</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -772,27 +939,27 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               <div className="flex items-center gap-1.5">
                 <Gamepad2 className="w-5 h-5 text-amber-300" />
                 <h1 className="text-base font-black tracking-tight">
-                  Python <span className="text-amber-300">Game</span>
+                  Practice <span className="text-amber-300">Game</span>
                 </h1>
               </div>
 
               <p className="text-[9.5px] text-blue-50 font-semibold leading-tight">
-                Learn by Playing • Solve Quizzes • Earn Points • Build Your Python Skills
+                Learn by Playing • 10 Unique Challenges • Earn Points • Auto-Interview Next
               </p>
 
               {/* 3 Stat Badges */}
               <div className="flex items-center gap-1.5 pt-1">
                 <div className="px-2 py-0.5 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 text-center">
-                  <div className="text-[9.5px] font-black">29</div>
+                  <div className="text-[9.5px] font-black">10</div>
                   <div className="text-[7.5px] font-semibold text-blue-100">Levels</div>
                 </div>
                 <div className="px-2 py-0.5 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 text-center">
-                  <div className="text-[9.5px] font-black">20+</div>
-                  <div className="text-[7.5px] font-semibold text-blue-100">Games</div>
+                  <div className="text-[9.5px] font-black">10</div>
+                  <div className="text-[7.5px] font-semibold text-blue-100">Distinct</div>
                 </div>
                 <div className="px-2 py-0.5 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 text-center">
-                  <div className="text-[9.5px] font-black">15+</div>
-                  <div className="text-[7.5px] font-semibold text-blue-100">Projects</div>
+                  <div className="text-[9.5px] font-black">+100</div>
+                  <div className="text-[7.5px] font-semibold text-blue-100">Points</div>
                 </div>
               </div>
             </div>
@@ -807,19 +974,16 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             </div>
           </div>
 
-          {/* Level Selector Circles (1 to 8) */}
+          {/* Level Selector Circles (All 10 Distinct Levels 1 to 10) */}
           <div className="flex items-center justify-between gap-1 px-1 py-1 overflow-x-auto no-scrollbar">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => {
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
               const isActive = num === activeGameLevel;
               return (
                 <button
                   key={num}
                   type="button"
-                  onClick={() => {
-                    playTactile();
-                    setActiveGameLevel(num);
-                  }}
-                  className={`w-9 h-9 rounded-full flex items-center justify-center font-black text-xs transition-all shrink-0 cursor-pointer ${
+                  onClick={() => handleSelectLevel(num)}
+                  className={`w-8.5 h-8.5 rounded-full flex items-center justify-center font-black text-xs transition-all shrink-0 cursor-pointer ${
                     isActive
                       ? 'bg-blue-600 text-white shadow-md shadow-blue-500/40 ring-4 ring-blue-100 scale-105'
                       : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
@@ -831,7 +995,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             })}
           </div>
 
-          {/* Game Card Header: Game 1 - Puzzle Quest */}
+          {/* Game Card Header: Practice Game 1 to 10 with Dynamic Concept */}
           <div className="bg-white border border-slate-200/90 rounded-2xl p-3 flex items-center justify-between shadow-2xs">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-xs shadow-xs">
@@ -839,16 +1003,16 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               </div>
               <div>
                 <h3 className="text-xs font-black text-slate-900 leading-tight">
-                  Game {activeGameLevel} — Puzzle Quest
+                  Practice Game {activeGameLevel} — {currentChallenge.tag}
                 </h3>
                 <p className="text-[9px] text-slate-500 font-semibold leading-tight mt-0.5">
-                  10 Questions — Test your understanding of computing and programming foundations.
+                  {currentChallenge.concept} • Challenge {activeGameLevel} of 10
                 </p>
               </div>
             </div>
 
-            <span className="px-2 py-0.5 rounded-full bg-slate-100 text-[9px] font-bold text-slate-600 shrink-0">
-              Question 1/10
+            <span className="px-2 py-0.5 rounded-full bg-blue-50 text-[9px] font-black text-blue-700 border border-blue-200 shrink-0">
+              Level {activeGameLevel}/10
             </span>
           </div>
 
@@ -856,12 +1020,18 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
           <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-950 via-slate-900 to-indigo-950 p-4 text-white shadow-md space-y-2">
             <div className="flex items-center gap-1.5 text-amber-300 text-[10px] font-black">
               <span>💡</span>
-              <span>{gameQuestion.title}</span>
+              <span>{currentChallenge.title}</span>
             </div>
 
             <p className="text-xs font-black leading-relaxed max-w-[70%]">
-              {gameQuestion.text}
+              {currentChallenge.text}
             </p>
+
+            {currentChallenge.codeSnippet && (
+              <pre className="text-[10px] font-mono bg-black/40 border border-white/10 p-2 rounded-xl text-emerald-300 max-w-[70%] whitespace-pre-wrap">
+                {currentChallenge.codeSnippet}
+              </pre>
+            )}
 
             {/* 3D Thinking Avatar Graphic on Right */}
             <div className="absolute right-2 bottom-1 w-20 h-20 pointer-events-none">
@@ -875,7 +1045,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
           {/* 4 Interactive Option Cards (A, B, C, D) */}
           <div className="space-y-2">
-            {gameQuestion.options.map((opt) => {
+            {currentChallenge.options.map((opt) => {
               const isSelected = selectedGameOption === opt.id;
               let optStyle = 'bg-white border-slate-200 text-slate-800 hover:bg-slate-50';
 
@@ -928,35 +1098,66 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               <ChevronRight className="w-4 h-4" />
             </button>
           ) : (
-            <div className="space-y-2">
-              <div className={`p-3 rounded-xl border text-xs font-bold flex items-center gap-2 ${
+            <div className="space-y-2.5">
+              <div className={`p-3 rounded-xl border text-xs font-bold flex items-start gap-2.5 ${
                 isAnswerCorrect ? 'bg-emerald-50 text-emerald-800 border-emerald-300' : 'bg-rose-50 text-rose-800 border-rose-300'
               }`}>
                 {isAnswerCorrect ? (
                   <>
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-                    <span>🎉 Correct! Programming is the exact process of instructing a computer. +10 Points!</span>
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                    <div>
+                      <div className="font-black text-emerald-950">🎉 Correct Answer! +10 Points</div>
+                      <div className="text-[10px] font-semibold text-emerald-800 mt-1 leading-relaxed">
+                        {currentChallenge.options.find((o) => o.correct)?.explanation}
+                      </div>
+                    </div>
                   </>
                 ) : (
                   <>
-                    <X className="w-5 h-5 text-rose-600 shrink-0" />
-                    <span>Not quite right! The correct answer is A (Programming).</span>
+                    <X className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+                    <div>
+                      <div className="font-black text-rose-950">
+                        Not quite right! Correct answer is {currentChallenge.options.find((o) => o.correct)?.id}
+                      </div>
+                      <div className="text-[10px] font-semibold text-rose-800 mt-1 leading-relaxed">
+                        {currentChallenge.options.find((o) => o.correct)?.explanation}
+                      </div>
+                    </div>
                   </>
                 )}
               </div>
 
-              {/* Proceed to Mock Interview CTA */}
-              <button
-                type="button"
-                onClick={() => {
-                  playTactile();
-                  setActiveStep('interview');
-                }}
-                className="w-full py-3.5 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-emerald-500/30 active:scale-98 transition-transform cursor-pointer"
-              >
-                <Mic className="w-4 h-4" />
-                <span>Continue to Step 3: Mock Interview →</span>
-              </button>
+              {/* Next Level or Finish ➔ Auto Interview CTA */}
+              <div className="space-y-2">
+                {activeGameLevel < 10 ? (
+                  <button
+                    type="button"
+                    onClick={handleNextGameLevel}
+                    className="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-blue-500/25 active:scale-98 transition-transform cursor-pointer"
+                  >
+                    <span>Next Level: Practice Game {activeGameLevel + 1} of 10 →</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleFinishGameAndStartInterview}
+                    className="w-full py-3.5 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-emerald-500/30 active:scale-98 transition-transform cursor-pointer animate-pulse"
+                  >
+                    <Mic className="w-4 h-4" />
+                    <span>🎉 All 10 Practice Games Complete ➔ Start Video Call Interview</span>
+                  </button>
+                )}
+
+                {/* Direct Shortcut to Start Interview at Any Time */}
+                <button
+                  type="button"
+                  onClick={handleFinishGameAndStartInterview}
+                  className="w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10.5px] font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                >
+                  <Mic className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Finish Practice Game &amp; Start Video Call Interview →</span>
+                </button>
+              </div>
             </div>
           )}
 
@@ -979,7 +1180,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             </div>
             <div className="flex flex-col items-center">
               <span className="text-base">📊</span>
-              <span className="text-[9.5px] font-black text-blue-600 mt-0.5">{gameQuestionsDone * 10}%</span>
+              <span className="text-[9.5px] font-black text-blue-600 mt-0.5">{Math.round((gameQuestionsDone / 10) * 100)}%</span>
               <span className="text-[7.5px] font-semibold text-slate-400">Complete</span>
             </div>
           </div>
@@ -989,7 +1190,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             <div className="flex items-center gap-2">
               <span className="text-2xl">🤖</span>
               <p className="text-[10px] font-bold leading-tight">
-                Solve all questions correctly to complete this game and earn exciting rewards!
+                Solve all 10 practice games to unlock the real video call mock interview!
               </p>
             </div>
             <span className="text-2xl shrink-0">🎮</span>
@@ -1002,7 +1203,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
           ═════════════════════════════════════════════════════════════════════════ */}
       {activeStep === 'interview' && (
         <div className="max-w-md mx-auto px-3.5 pt-3 space-y-3">
-          {/* Sub Header Card: Python Mock Interview */}
+          {/* Sub Header Card: Python Mock Interview (Clean without View Topics button) */}
           <div className="bg-white border border-slate-200/90 rounded-2xl p-3 flex items-center justify-between shadow-2xs">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center font-black text-blue-600">
@@ -1018,14 +1219,11 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={onBack}
-              className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-[10px] font-black border border-blue-200 flex items-center gap-1 shadow-2xs"
-            >
-              <LayoutGrid className="w-3 h-3" />
-              <span>View Topics</span>
-            </button>
+            {/* Live Video Call Status Pill */}
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black border border-emerald-200 shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Live Call</span>
+            </div>
           </div>
 
           {/* ── SPLIT VIDEO CALL UI (Matches Screenshot Exact Layout) ── */}
