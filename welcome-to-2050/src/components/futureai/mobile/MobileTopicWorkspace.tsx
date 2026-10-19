@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   ArrowLeft,
   Play,
@@ -49,6 +49,13 @@ import { awardLearnerTelemetry } from '../../../services/realAuthService';
 import type { WorkspaceStepId } from '../PythonTopicWorkspace';
 import { TOPICS } from '../PythonChapterView';
 import { LESSON_BUNNY_VIDEOS, BUNNY_STREAM_CONFIG } from '../../../services/bunnyVideoService';
+import { StableMouthLipSyncAvatar } from '../interview/StableMouthLipSyncAvatar';
+import {
+  getPreloadedInterviewQuestionsForTopic,
+  evaluateInterviewAnswerDeterministically,
+  DeterministicEvaluationResult,
+  PreloadedInterviewQuestion,
+} from '../data/mockInterviewQuestionBank';
 
 export interface PracticeChallenge {
   num: number;
@@ -412,14 +419,24 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   // ─────────────────────────────────────────────────────────────────────────────
   // 3. MOCK INTERVIEW SCREEN STATE (Matches media_1792386770731_fc4283bf.png)
   // ─────────────────────────────────────────────────────────────────────────────
+  const interviewQuestions = useMemo<PreloadedInterviewQuestion[]>(
+    () => getPreloadedInterviewQuestionsForTopic(topicId || 1),
+    [topicId]
+  );
   const [activeInterviewQ, setActiveInterviewQ] = useState<number>(1);
+  const currentInterviewQData = interviewQuestions[activeInterviewQ - 1] || interviewQuestions[0];
+
   const [activeInterviewTab, setActiveInterviewTab] = useState<'feedback' | 'model' | 'points'>('feedback');
   const [interviewAnswerText, setInterviewAnswerText] = useState<string>('');
   const [isInterviewRecording, setIsInterviewRecording] = useState<boolean>(false);
   const [isInterviewSubmitted, setIsInterviewSubmitted] = useState<boolean>(false);
+  const [evaluationResult, setEvaluationResult] = useState<DeterministicEvaluationResult | null>(null);
+  const [isPass, setIsPass] = useState<boolean | null>(null);
   const [isCameraOn, setIsCameraOn] = useState<boolean>(true);
   const [interviewTimeLeft, setInterviewTimeLeft] = useState<number>(592); // 09:52
   const [isHrSpeaking, setIsHrSpeaking] = useState<boolean>(false);
+  const [hrSpeakingText, setHrSpeakingText] = useState<string>('');
+  const [isMicHighlighted, setIsMicHighlighted] = useState<boolean>(false);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
 
@@ -535,34 +552,21 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
   const recognitionRef = useRef<any>(null);
 
-  const toggleSpeechRecording = () => {
-    playTactile();
+  const startSpeechRecognitionLive = () => {
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
-    // If already recording, stop cleanly
-    if (isInterviewRecording) {
+    if (!SpeechRecognition) {
+      setIsInterviewRecording(true);
+      return;
+    }
+
+    try {
       if (recognitionRef.current) {
         try {
           recognitionRef.current.stop();
         } catch {}
       }
-      setIsInterviewRecording(false);
-      return;
-    }
-
-    const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-      // Fallback for browsers without Web Speech API
-      setIsInterviewRecording(true);
-      const sampleText =
-        "Programming is the process of writing step-by-step instructions for a computer to perform tasks. A real-world example is an ATM machine that validates your PIN, checks account balance, dispenses cash, and updates the bank database.";
-      setInterviewAnswerText((prev) => (prev ? prev + ' ' : '') + sampleText);
-      setTimeout(() => setIsInterviewRecording(false), 1500);
-      return;
-    }
-
-    try {
       const recognition = new SpeechRecognition();
       recognition.lang = 'en-IN';
       recognition.continuous = true;
@@ -573,7 +577,6 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
         setIsInterviewRecording(true);
       };
 
-      // LIVE REAL-TIME TYPING: words appear as the student speaks
       recognition.onresult = (event: any) => {
         let fullTranscript = '';
         for (let i = 0; i < event.results.length; i++) {
@@ -601,17 +604,39 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     }
   };
 
-  const handleSpeakQuestion = (overrideHr?: 'male' | 'female') => {
+  const toggleSpeechRecording = () => {
+    playTactile();
+
+    // If already recording, stop cleanly
+    if (isInterviewRecording) {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch {}
+      }
+      setIsInterviewRecording(false);
+    } else {
+      startSpeechRecognitionLive();
+    }
+  };
+
+  const handleSpeakQuestion = (overrideHr?: 'male' | 'female', overrideQNum?: number) => {
     playTactile();
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
 
     const hrKey = overrideHr || selectedHr;
     const isFem = hrKey === 'female';
+    const qNum = overrideQNum || activeInterviewQ;
+    const qData = interviewQuestions[qNum - 1] || interviewQuestions[0];
 
     const questionText = isFem
-      ? "Namaste! I am Aditi Sharma from Future IT Industry. Welcome to your technical mock interview. Question 1: What is programming and can you give one real-life example?"
-      : "Namaste! I am Subodh Kumar from Future IT Industry. Welcome to your technical mock interview. Question 1: What is programming and can you give one real-life example?";
+      ? `Namaste! I am Aditi Sharma from Future IT Industry. Welcome to your technical mock interview. Question ${qNum}: ${qData.questionEn}`
+      : `Namaste! I am Subodh Kumar from Future IT Industry. Welcome to your technical mock interview. Question ${qNum}: ${qData.questionEn}`;
+
+    setHrSpeakingText(questionText);
+    setIsHrSpeaking(true);
+    setIsMicHighlighted(false);
 
     const utterance = new SpeechSynthesisUtterance(questionText);
     utterance.rate = 0.92;
@@ -634,9 +659,67 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       if (maleVoice) utterance.voice = maleVoice;
     }
 
+    let finished = false;
+    const onSpeechEnd = () => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(safetyTimer);
+      setIsHrSpeaking(false);
+      setIsMicHighlighted(true);
+      // AUTO MIC HIGHLIGHT & START: student ke bolte hi live typing start ho jati hai!
+      startSpeechRecognitionLive();
+    };
+
+    const safetyTimer = setTimeout(onSpeechEnd, 10000);
+
     utterance.onstart = () => setIsHrSpeaking(true);
-    utterance.onend = () => setIsHrSpeaking(false);
-    utterance.onerror = () => setIsHrSpeaking(false);
+    utterance.onend = onSpeechEnd;
+    utterance.onerror = () => {
+      clearTimeout(safetyTimer);
+      setIsHrSpeaking(false);
+      setIsMicHighlighted(true);
+    };
+
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const speakVerdict = (text: string) => {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    setHrSpeakingText(text);
+    setIsHrSpeaking(true);
+
+    const isFem = selectedHr === 'female';
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.92;
+    utterance.pitch = isFem ? 1.15 : 0.95;
+
+    const voices = window.speechSynthesis.getVoices();
+    if (isFem) {
+      const femaleVoice = voices.find(
+        (v) =>
+          (v.lang.includes('en-IN') || v.name.includes('India') || v.lang.includes('en')) &&
+          (v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Aditi') || v.name.includes('Heera'))
+      );
+      if (femaleVoice) utterance.voice = femaleVoice;
+    } else {
+      const maleVoice = voices.find(
+        (v) =>
+          (v.lang.includes('en-IN') || v.name.includes('India') || v.lang.includes('en')) &&
+          (v.name.includes('Male') || v.name.includes('Ravi') || v.name.includes('David') || v.name.includes('George'))
+      );
+      if (maleVoice) utterance.voice = maleVoice;
+    }
+
+    const timer = setTimeout(() => setIsHrSpeaking(false), 9000);
+    utterance.onend = () => {
+      clearTimeout(timer);
+      setIsHrSpeaking(false);
+    };
+    utterance.onerror = () => {
+      clearTimeout(timer);
+      setIsHrSpeaking(false);
+    };
 
     window.speechSynthesis.speak(utterance);
   };
@@ -644,6 +727,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   const handleInsertInterviewExample = () => {
     playTactile();
     setInterviewAnswerText(
+      currentInterviewQData.exampleAnswerEn ||
       "Programming is giving step-by-step instructions to a computer to perform a specific task. A real-life example is an ATM machine: when you insert a card and enter a PIN, the system follows a programmed algorithm to verify your credentials, check balance, dispense cash, and update your account."
     );
   };
@@ -654,12 +738,52 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       return;
     }
     playTactile();
+
+    // Stop recording if active
+    if (isInterviewRecording && recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch {}
+      setIsInterviewRecording(false);
+    }
+
+    const result = evaluateInterviewAnswerDeterministically(interviewAnswerText, currentInterviewQData);
+    setEvaluationResult(result);
+    const passed = result.score >= 5.5; // pass threshold 5.5 / 10
+    setIsPass(passed);
     setIsInterviewSubmitted(true);
     setActiveInterviewTab('feedback');
-    try {
-      soundEffects.playCelebration();
-      awardLearnerTelemetry(25, 10);
-    } catch {}
+
+    if (passed) {
+      try {
+        soundEffects.playCelebration();
+        awardLearnerTelemetry(50, 20);
+      } catch {}
+      const verdict = selectedHr === 'female'
+        ? `Congratulations! Your answer is accepted and passed with a score of ${result.score} out of 10! Excellent response!`
+        : `Congratulations! Your answer is accepted and passed with a score of ${result.score} out of 10! Excellent response!`;
+      speakVerdict(verdict);
+    } else {
+      try {
+        soundEffects.playClick();
+      } catch {}
+      const missingTerm = result.missingKeywords.length > 0 ? result.missingKeywords[0].labelEn : 'core definition';
+      const verdict = selectedHr === 'female'
+        ? `Your answer needs improvement. You scored ${result.score} out of 10. Key concept ${missingTerm} was missing. Please review the model answer.`
+        : `Your answer needs improvement. Score is ${result.score} out of 10. Key concept ${missingTerm} was missing. Please review the model answer.`;
+      speakVerdict(verdict);
+    }
+  };
+
+  const handleSelectQuestion = (qNum: number) => {
+    playTactile();
+    setActiveInterviewQ(qNum);
+    setInterviewAnswerText('');
+    setEvaluationResult(null);
+    setIsPass(null);
+    setIsInterviewSubmitted(false);
+    setActiveInterviewTab('feedback');
+    handleSpeakQuestion(selectedHr, qNum);
   };
 
   return (
@@ -1353,42 +1477,39 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             </div>
           </div>
 
-          {/* ── SPLIT VIDEO CALL UI (Compact Side-by-Side: HR Interviewer + Student Camera) ── */}
+          {/* ── SPLIT VIDEO CALL UI (Compact Side-by-Side: HR Lip-Sync Avatar + Student Camera) ── */}
           <div className="grid grid-cols-2 gap-2">
-            {/* Left Box: HR Interviewer (Subodh / Aditi with Animated Lip-Sync) */}
+            {/* Left Box: HR Interviewer with StableMouthLipSyncAvatar (Canvas 60fps Real Lip-Sync) */}
             <div className={`relative overflow-hidden rounded-2xl bg-slate-900 border transition-all h-40 shadow-sm ${
               isHrSpeaking ? 'border-blue-500 ring-2 ring-blue-500/50' : 'border-slate-200'
             }`}>
-              <img
-                src={currentHr.avatar}
-                alt={currentHr.name}
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src =
-                    selectedHr === 'female'
-                      ? 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=300&fit=crop'
-                      : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop';
-                }}
-                className={`w-full h-full object-cover transition-transform duration-300 ${
-                  isHrSpeaking ? 'scale-105' : 'scale-100'
-                }`}
+              <StableMouthLipSyncAvatar
+                imageUrl={currentHr.avatar}
+                isSpeaking={isHrSpeaking}
+                speakingText={hrSpeakingText}
+                speakingRate={0.92}
+                gender={selectedHr}
+                isLipSyncEnabled={true}
+                hideInternalBadge={true}
+                className="w-full h-full object-cover"
               />
 
               {/* Top Bar: HR Tag & Lip-sync Speaking Indicator */}
-              <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between text-white text-[8.5px] font-black pointer-events-none">
+              <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between text-white text-[8.5px] font-black pointer-events-none z-10">
                 <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-slate-900/85 backdrop-blur-md border border-white/20">
                   <span className={`w-1.5 h-1.5 rounded-full ${isHrSpeaking ? 'bg-cyan-400 animate-ping' : 'bg-blue-500'}`} />
                   <span className="truncate max-w-[80px]">{currentHr.shortName}</span>
                 </div>
 
                 <span className="px-1.5 py-0.5 rounded-md bg-blue-600/90 text-[7.5px] font-black text-white">
-                  HR Lead
+                  {selectedHr === 'male' ? 'Senior HR' : 'Lead HR'}
                 </span>
               </div>
 
               {/* Animated Lip-Sync Audio Equalizer Overlay when HR speaks */}
               {isHrSpeaking && (
-                <div className="absolute inset-x-1.5 bottom-8 p-1 rounded-lg bg-blue-950/85 backdrop-blur-xs border border-blue-400/40 text-white flex items-center justify-center gap-1 shadow-md animate-pulse">
-                  <span className="text-[8px] font-black text-cyan-300">🗣️ Speaking</span>
+                <div className="absolute inset-x-1.5 bottom-8 p-1 rounded-lg bg-blue-950/85 backdrop-blur-xs border border-blue-400/40 text-white flex items-center justify-center gap-1 shadow-md animate-pulse z-10">
+                  <span className="text-[8px] font-black text-cyan-300">🗣️ Lip-Sync Speaking...</span>
                   <div className="flex items-center gap-0.5 ml-1">
                     <span className="w-0.5 h-2 bg-cyan-300 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                     <span className="w-0.5 h-3 bg-cyan-200 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -1399,7 +1520,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               )}
 
               {/* Bottom Button: Speak / Listen Question */}
-              <div className="absolute bottom-1.5 inset-x-1.5">
+              <div className="absolute bottom-1.5 inset-x-1.5 z-10">
                 <button
                   type="button"
                   onClick={() => handleSpeakQuestion()}
@@ -1515,10 +1636,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   <React.Fragment key={qNum}>
                     <button
                       type="button"
-                      onClick={() => {
-                        playTactile();
-                        setActiveInterviewQ(qNum);
-                      }}
+                      onClick={() => handleSelectQuestion(qNum)}
                       className={`w-7 h-7 rounded-full flex items-center justify-center font-black text-xs transition-all cursor-pointer ${
                         isActive
                           ? 'bg-blue-600 text-white shadow-xs scale-105'
@@ -1541,30 +1659,47 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 text-xs font-black text-slate-900">
                 <span className="w-5 h-5 rounded-md bg-blue-100 text-blue-600 flex items-center justify-center text-[10px]">
-                  Q
+                  Q{activeInterviewQ}
                 </span>
                 <span>Current Question</span>
               </div>
               <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[9px] font-black border border-emerald-200">
-                Technical (Easy)
+                {currentInterviewQData.topic} ({currentInterviewQData.difficulty})
               </span>
             </div>
 
             <p className="text-xs font-black text-blue-950 leading-snug">
-              What is programming and can you give one real-life example?
+              {currentInterviewQData.questionEn}
             </p>
 
             {/* Hint Box */}
             <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200/80 flex items-start gap-2">
               <Lightbulb className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
               <div>
-                <div className="text-[10px] font-black text-amber-900 leading-tight">Hint</div>
+                <div className="text-[10px] font-black text-amber-900 leading-tight">HR Hint</div>
                 <div className="text-[9px] font-medium text-amber-800 leading-tight mt-0.5">
-                  Keep your answer structured with a clear explanation and a practical example.
+                  {currentInterviewQData.hintEn}
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Auto Mic Highlight Notification Banner */}
+          {isMicHighlighted && !isInterviewSubmitted && (
+            <div className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 border-2 border-emerald-400 text-emerald-950 flex items-center justify-between shadow-xs animate-pulse">
+              <div className="flex items-center gap-2">
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping shrink-0" />
+                <span className="text-[10px] font-black leading-tight">
+                  {isInterviewRecording
+                    ? "🎙️ Mic Active! Student jo bol rahe hain wo live type ho raha hai..."
+                    : "🎙️ Question finished! Mic highlight ho gaya hai — bolna shuru kijiye..."}
+                </span>
+              </div>
+              <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[8px] font-black shrink-0">
+                Live Typing ON
+              </span>
+            </div>
+          )}
 
           {/* 3 Tab Switcher: Feedback | Model Answer | Key Points */}
           <div className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs space-y-2.5">
@@ -1581,7 +1716,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                     : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
                 }`}
               >
-                <span>✨ Feedback</span>
+                <span>✨ Pass / Reject Feedback</span>
               </button>
               <button
                 type="button"
@@ -1613,43 +1748,143 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               </button>
             </div>
 
-            {/* Tab Contents */}
+            {/* Tab 1: AI Feedback with Pass / Reject Evaluation */}
             {activeInterviewTab === 'feedback' && (
-              <div className="text-center py-3 space-y-1">
-                {isInterviewSubmitted ? (
-                  <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-2.5 text-left space-y-1 text-emerald-900">
-                    <div className="flex items-center justify-between font-black text-xs">
-                      <span>AI Feedback Score</span>
-                      <span className="text-emerald-700 bg-white px-2 py-0.5 rounded-full border border-emerald-300">
-                        94 / 100
+              <div className="py-1 space-y-2">
+                {isInterviewSubmitted && evaluationResult ? (
+                  <div className={`border rounded-xl p-3 space-y-2 ${
+                    isPass
+                      ? 'bg-emerald-50/80 border-emerald-300 text-emerald-950'
+                      : 'bg-rose-50/80 border-rose-300 text-rose-950'
+                  }`}>
+                    {/* Header: Pass or Reject with Score */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        {isPass ? (
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[9.5px] font-black flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3" />
+                            PASSED / SELECTED
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[9.5px] font-black flex items-center gap-1">
+                            <X className="w-3 h-3" />
+                            REJECTED / NEEDS IMPROVEMENT
+                          </span>
+                        )}
+                      </div>
+                      <span className={`text-[11px] font-black px-2.5 py-0.5 rounded-full bg-white border ${
+                        isPass ? 'border-emerald-300 text-emerald-700' : 'border-rose-300 text-rose-700'
+                      }`}>
+                        Score: {evaluationResult.score} / 10
                       </span>
                     </div>
-                    <p className="text-[9.5px] leading-relaxed">
-                      🌟 Excellent! Your answer clearly defined programming as step-by-step instructions and provided an intuitive real-world ATM analogy.
+
+                    {/* Summary Explanation */}
+                    <p className="text-[10px] font-semibold leading-relaxed">
+                      {evaluationResult.summaryEn}
                     </p>
+
+                    {/* Matched Keywords (Green Chips) */}
+                    {evaluationResult.matchedKeywords.length > 0 && (
+                      <div className="space-y-1 pt-1">
+                        <div className="text-[9px] font-black text-emerald-800">
+                          ✓ Matched Keywords ({evaluationResult.matchedKeywords.length}):
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {evaluationResult.matchedKeywords.map((kw) => (
+                            <span
+                              key={kw.id}
+                              className="px-2 py-0.5 rounded-md bg-white border border-emerald-300 text-emerald-800 text-[8.5px] font-black"
+                            >
+                              ✓ {kw.labelEn}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Missing Keywords (Red Chips) */}
+                    {evaluationResult.missingKeywords.length > 0 && (
+                      <div className="space-y-1 pt-1">
+                        <div className="text-[9px] font-black text-rose-800">
+                          ✗ Missing Concepts to Include:
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {evaluationResult.missingKeywords.map((kw) => (
+                            <span
+                              key={kw.id}
+                              className="px-2 py-0.5 rounded-md bg-white border border-rose-300 text-rose-800 text-[8.5px] font-black"
+                            >
+                              ✗ {kw.labelEn}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Action Next Question / Try Again */}
+                    <div className="pt-2 flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setInterviewAnswerText('');
+                          setIsInterviewSubmitted(false);
+                          setEvaluationResult(null);
+                          setIsPass(null);
+                          handleSpeakQuestion(selectedHr, activeInterviewQ);
+                        }}
+                        className="flex-1 py-1.5 px-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-[9.5px] font-black text-center cursor-pointer"
+                      >
+                        🔁 Try Again
+                      </button>
+
+                      {activeInterviewQ < 5 && (
+                        <button
+                          type="button"
+                          onClick={() => handleSelectQuestion(activeInterviewQ + 1)}
+                          className="flex-1 py-1.5 px-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[9.5px] font-black text-center shadow-xs cursor-pointer"
+                        >
+                          Next Question {activeInterviewQ + 1} →
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ) : (
-                  <>
+                  <div className="text-center py-4 space-y-1">
                     <FileText className="w-6 h-6 text-slate-300 mx-auto" />
                     <p className="text-[10px] text-slate-500 font-medium">
-                      Your feedback will appear here after you submit your answer.
+                      Answer submit karne ke baad HR ka Pass/Reject verdict aur score yahan aayega.
                     </p>
-                  </>
+                  </div>
                 )}
               </div>
             )}
 
+            {/* Tab 2: Model Answer from HR */}
             {activeInterviewTab === 'model' && (
-              <div className="p-2.5 rounded-xl bg-blue-50/70 border border-blue-200 text-[10px] text-slate-800 leading-relaxed font-medium">
-                <strong>Model Answer:</strong> "Programming is the craft of writing step-by-step instructions (an algorithm) for a computer to execute. For example, in an e-commerce checkout pipeline, the code checks inventory, calculates taxes, triggers payments, and sends order confirmation automatically."
+              <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200 text-[10px] text-slate-800 space-y-2 leading-relaxed">
+                <div>
+                  <span className="font-black text-blue-900 block mb-0.5">🌟 Ideal Answer (HR Benchmark):</span>
+                  <p className="font-medium text-slate-700">{currentInterviewQData.idealAnswerEn}</p>
+                </div>
+                <div className="pt-1 border-t border-blue-200/60">
+                  <span className="font-black text-blue-900 block mb-0.5">💡 Real Example:</span>
+                  <p className="font-medium text-slate-700">{currentInterviewQData.exampleAnswerEn}</p>
+                </div>
               </div>
             )}
 
+            {/* Tab 3: Key Points & Required Concepts */}
             {activeInterviewTab === 'points' && (
-              <div className="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200 text-[10px] text-slate-800 space-y-1 font-medium">
-                <div>• Definition: Sequence of instructions to solve a problem.</div>
-                <div>• Real-life Example: Traffic light automation, ATM systems, GPS routing.</div>
-                <div>• Impact on Analytics: Enables processing millions of records in seconds.</div>
+              <div className="p-3 rounded-xl bg-purple-50/70 border border-purple-200 text-[10px] text-slate-800 space-y-2 font-medium">
+                <span className="font-black text-purple-900 block">📋 Required Keywords &amp; Concepts:</span>
+                <ul className="list-disc pl-4 space-y-1">
+                  {currentInterviewQData.requiredKeywords.map((kw: any) => (
+                    <li key={kw.id}>
+                      <strong>{kw.labelEn}:</strong> {kw.synonyms.slice(0, 4).join(', ')}
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>
@@ -1658,8 +1893,8 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
           <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 shadow-2xs space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 text-xs font-black text-slate-900">
-                <Mic className="w-3.5 h-3.5 text-blue-600" />
-                <span>Your Answer (Live Transcription)</span>
+                <Mic className={`w-3.5 h-3.5 ${isInterviewRecording ? 'text-rose-600 animate-pulse' : 'text-blue-600'}`} />
+                <span>Your Answer {isInterviewRecording ? '(Live Speaking...)' : '(Editable)'}</span>
               </div>
               <span className="text-[9.5px] font-bold text-slate-500 flex items-center gap-1">
                 <Clock className="w-2.5 h-2.5" />
@@ -1671,7 +1906,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               rows={4}
               value={interviewAnswerText}
               onChange={(e) => setInterviewAnswerText(e.target.value)}
-              placeholder="Click the microphone to speak your answer in English, or type/edit your answer directly here..."
+              placeholder="Student bolte hi answer yahan live type hoga... Click mic to speak or type directly."
               className="w-full p-2.5 rounded-xl border border-slate-200 text-[11px] text-slate-800 bg-slate-50/60 focus:outline-none focus:bg-white focus:border-blue-500 transition-all leading-relaxed"
             />
 
@@ -1706,7 +1941,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             </div>
           </div>
 
-          {/* Bottom Floating Call Bar (Camera On, Tap to Speak, End Interview) */}
+          {/* Bottom Floating Call Bar (Camera On, Tap to Speak with Auto Highlight, End Interview) */}
           <div className="bg-white/95 backdrop-blur-md border border-slate-200 rounded-3xl p-2 flex items-center justify-around shadow-lg">
             <button
               type="button"
@@ -1719,22 +1954,34 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               <span>{isCameraOn ? 'Camera On' : 'Camera Off'}</span>
             </button>
 
-            {/* Glowing Big Center Microphone */}
+            {/* Glowing Big Center Microphone with Auto Highlight */}
             <button
               type="button"
               onClick={toggleSpeechRecording}
               className={`flex flex-col items-center gap-1 text-[9.5px] font-black cursor-pointer ${
-                isInterviewRecording ? 'text-rose-600' : 'text-blue-600'
+                isInterviewRecording
+                  ? 'text-rose-600'
+                  : isMicHighlighted
+                  ? 'text-emerald-600'
+                  : 'text-blue-600'
               }`}
             >
               <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white shadow-md transition-all ${
                 isInterviewRecording
-                  ? 'bg-rose-500 animate-pulse shadow-rose-500/40 ring-4 ring-rose-200'
+                  ? 'bg-rose-500 animate-pulse shadow-rose-500/50 ring-4 ring-rose-300 scale-105'
+                  : isMicHighlighted
+                  ? 'bg-gradient-to-tr from-emerald-500 to-teal-500 shadow-emerald-500/50 ring-4 ring-emerald-300 scale-105 animate-bounce'
                   : 'bg-gradient-to-tr from-blue-600 to-cyan-500 shadow-blue-500/40 ring-4 ring-blue-100 active:scale-95'
               }`}>
                 {isInterviewRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
               </div>
-              <span>{isInterviewRecording ? 'Recording...' : 'Tap to Speak'}</span>
+              <span>
+                {isInterviewRecording
+                  ? 'Listening Live...'
+                  : isMicHighlighted
+                  ? 'Speak Now! 🎙️'
+                  : 'Tap to Speak'}
+              </span>
             </button>
 
             <button
