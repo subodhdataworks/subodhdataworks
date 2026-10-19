@@ -566,6 +566,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   const [autoNextCountdown, setAutoNextCountdown] = useState<number | null>(null);
   const isInterviewRecordingRef = useRef<boolean>(false);
   const isInterviewSubmittedRef = useRef<boolean>(false);
+  const answerSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     isInterviewRecordingRef.current = isInterviewRecording;
@@ -873,6 +874,9 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       utterance.voice = matchedVoice;
     }
 
+    const wordsCount = questionText.split(/\s+/).filter(Boolean).length;
+    const calculatedDurationMs = Math.min(10000, Math.max(3800, Math.round((wordsCount / 2.3) * 1000)));
+
     let finished = false;
     const onSpeechEnd = () => {
       if (finished) return;
@@ -880,10 +884,22 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       clearTimeout(safetyTimer);
       setIsHrSpeaking(false);
       setIsMicHighlighted(true);
-      setSpeechTip("🎙️ Mentor question complete! Tap 'Speak Answer' to speak into mic");
+      setSpeechTip(
+        isFem
+          ? "🎙️ मेंटर का सवाल पूरा हुआ! नीचे हाइलाइट किए गए बटन को दबाकर अपना उत्तर बोलें..."
+          : "🎙️ Mentor question complete! Tap the highlighted button below to speak your answer..."
+      );
+      try {
+        soundEffects.playClick();
+      } catch {}
+      setTimeout(() => {
+        if (answerSectionRef.current) {
+          answerSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 250);
     };
 
-    const safetyTimer = setTimeout(onSpeechEnd, 12000);
+    const safetyTimer = setTimeout(onSpeechEnd, calculatedDurationMs);
 
     utterance.onstart = () => setIsHrSpeaking(true);
     utterance.onend = onSpeechEnd;
@@ -891,7 +907,12 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       clearTimeout(safetyTimer);
       setIsHrSpeaking(false);
       setIsMicHighlighted(true);
-      setSpeechTip("🎙️ Tap 'Speak Answer' below to answer into mic");
+      setSpeechTip("🎙️ Tap the highlighted button below to answer into mic");
+      setTimeout(() => {
+        if (answerSectionRef.current) {
+          answerSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 250);
     };
 
     window.speechSynthesis.speak(utterance);
@@ -1009,7 +1030,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
   return (
     <div
-      className="w-full min-h-[100dvh] bg-[#f3f8fe] text-slate-900 pb-36 text-left font-sans select-auto overflow-y-auto touch-pan-y"
+      className="w-full min-h-[100dvh] bg-[#f3f8fe] text-slate-900 pb-44 text-left font-sans select-auto overflow-y-auto touch-pan-y"
       style={{ WebkitOverflowScrolling: 'touch' }}
     >
       {/* ═════════════════════════════════════════════════════════════════════════
@@ -1652,7 +1673,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
           {/* ── 1. SPLIT VIDEO CALL UI (Mentor Left + Student Right) ── */}
           <div className="grid grid-cols-2 gap-2">
             {/* Left Card: Mentor (Technical Expert) */}
-            <div className={`relative overflow-hidden rounded-2xl bg-slate-900 border transition-all h-44 shadow-sm ${
+            <div className={`relative overflow-hidden rounded-2xl bg-slate-900 border transition-all h-36 shadow-sm ${
               isHrSpeaking ? 'border-blue-500 ring-2 ring-blue-500/50' : 'border-slate-800'
             }`}>
               <StableMouthLipSyncAvatar
@@ -1695,7 +1716,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             </div>
 
             {/* Right Card: You (Student) */}
-            <div className={`relative overflow-hidden rounded-2xl bg-slate-950 border transition-all h-44 shadow-sm ${
+            <div className={`relative overflow-hidden rounded-2xl bg-slate-950 border transition-all h-36 shadow-sm ${
               isStudentSpeakingAudio ? 'border-emerald-500 ring-2 ring-emerald-500/40' : 'border-slate-800'
             }`}>
               {isCameraOn && hasCameraPermission ? (
@@ -1803,6 +1824,8 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                 className={`w-11 h-11 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-lg active:scale-90 ${
                   isInterviewRecording || isStudentSpeakingAudio
                     ? 'bg-rose-600 text-white shadow-rose-600/50 ring-4 ring-rose-500/40 animate-pulse'
+                    : isMicHighlighted
+                    ? 'bg-emerald-600 text-white shadow-emerald-500/50 ring-4 ring-emerald-400 animate-bounce'
                     : 'bg-rose-600 hover:bg-rose-500 text-white shadow-rose-900/40'
                 }`}
                 title="Toggle Mic (Speak answer)"
@@ -1858,7 +1881,12 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               </div>
 
               {/* Your Answer (Live Transcription) Card with Live Speaking Typing */}
-              <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 shadow-2xs space-y-2.5 text-left">
+              <div
+                ref={answerSectionRef}
+                className={`bg-white rounded-2xl p-3.5 shadow-2xs space-y-2.5 text-left transition-all ${
+                  isMicHighlighted ? 'border-2 border-emerald-400 ring-4 ring-emerald-100 shadow-md' : 'border border-slate-200/90'
+                }`}
+              >
                 {/* Header: Title + Speech Indicator + Auto-Fill + Clear */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-xs font-black text-blue-900">
@@ -1889,22 +1917,37 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   </div>
                 </div>
 
+                {/* 🌟 Prominent Call-to-Action Banner when HR Question completes 🌟 */}
+                {isMicHighlighted && !isInterviewRecording && (
+                  <div className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border-2 border-emerald-400 flex items-center justify-between shadow-xs animate-pulse">
+                    <span className="flex items-center gap-1.5 text-[10.5px] font-black text-emerald-800">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+                      👉 आपकी बारी: नीचे हरा बटन दबाएं और बोलें 👈
+                    </span>
+                    <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-xs">
+                      Ready ✓
+                    </span>
+                  </div>
+                )}
+
                 {/* 🎙️ Direct User Tap-to-Speak Button (Guarantees Android Chrome Mic Permission) 🎙️ */}
                 <button
                   type="button"
                   onClick={toggleSpeechRecording}
-                  className={`w-full py-2.5 px-3 rounded-xl text-xs font-black flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all active:scale-98 ${
+                  className={`w-full py-3 px-3 rounded-xl text-xs font-black flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all active:scale-95 ${
                     isInterviewRecording
                       ? 'bg-rose-600 text-white animate-pulse shadow-rose-600/40 ring-4 ring-rose-300'
                       : isMicHighlighted
-                      ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-emerald-600/30 ring-2 ring-emerald-300'
+                      ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600 text-white shadow-xl shadow-emerald-500/50 ring-4 ring-emerald-400 ring-offset-2 ring-offset-white animate-bounce'
                       : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-blue-600/25'
                   }`}
                 >
-                  <Mic className="w-4 h-4 text-white" />
+                  <Mic className={`w-4 h-4 text-white ${isMicHighlighted ? 'animate-pulse' : ''}`} />
                   <span>
                     {isInterviewRecording
                       ? '🔴 Mic On: Listening... (Tap to Pause)'
+                      : isMicHighlighted
+                      ? '🎙️ TAP TO SPEAK (अब अपनी आवाज़ में उत्तर बोलें)'
                       : '🎙️ Tap to Speak (माइक ऑन करें और बोलें)'}
                   </span>
                 </button>
@@ -2250,6 +2293,26 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   className="py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black text-xs flex items-center justify-center gap-1.5 shadow-md shadow-purple-500/25 cursor-pointer active:scale-95"
                 >
                   <span>Next Question</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* 🚀 STICKY FLOATING BOTTOM SUBMIT BAR (Guarantees Submit Button is ALWAYS visible on Android) 🚀 */}
+          {!isInterviewSubmitted && (
+            <div className="fixed bottom-0 inset-x-0 z-50 p-3 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-8px_20px_rgba(0,0,0,0.15)]">
+              <div className="max-w-md mx-auto flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleSubmitInterviewAnswer}
+                  className={`w-full py-3.5 px-4 rounded-xl font-black text-xs flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer active:scale-98 ${
+                    interviewAnswerText.trim()
+                      ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white shadow-blue-500/35 ring-2 ring-blue-300 animate-pulse'
+                      : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white shadow-blue-500/25 opacity-90'
+                  }`}
+                >
+                  <span>🚀 Submit Answer (Evaluate &amp; View Result)</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
