@@ -556,14 +556,8 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   const voiceStreamRef = useRef<MediaStream | null>(null);
   const voiceAudioCtxRef = useRef<any>(null);
   const voiceCheckIntervalRef = useRef<any>(null);
-  const voiceTyperIntervalRef = useRef<any>(null);
-  const voiceTyperWordIdxRef = useRef<number>(0);
 
   const stopVoiceActivityResources = () => {
-    if (voiceTyperIntervalRef.current) {
-      clearInterval(voiceTyperIntervalRef.current);
-      voiceTyperIntervalRef.current = null;
-    }
     if (voiceCheckIntervalRef.current) {
       clearInterval(voiceCheckIntervalRef.current);
       voiceCheckIntervalRef.current = null;
@@ -670,80 +664,14 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     }
   };
 
-  const startVoiceTypingEngine = () => {
-    const qData = interviewQuestions[activeInterviewQ - 1] || interviewQuestions[0];
-    const sourceAnswer = selectedHr === 'female'
-      ? (qData.exampleAnswerHi || qData.idealAnswerHi || "पायथन एक हाई-लेवल और इंटरप्रिटेड प्रोग्रामिंग लैंग्वेज है। इसमें लिस्ट म्यूटेबल होती है जबकि टपल इम्यूटेबल होता है।")
-      : (qData.exampleAnswerEn || qData.idealAnswerEn || "Programming is giving step-by-step instructions to a computer to perform a task. In Python, lists are mutable while tuples are immutable sequence structures.");
-
-    const words = sourceAnswer.split(' ');
-    voiceTyperWordIdxRef.current = 0;
-
-    if (voiceTyperIntervalRef.current) {
-      clearInterval(voiceTyperIntervalRef.current);
-    }
-
-    // Try Web Audio API Voice Energy Detection from active mic stream
-    try {
-      const activeStream = userMediaStreamRef.current;
-      if (activeStream && activeStream.getAudioTracks().length > 0) {
-        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-        if (AudioCtx) {
-          if (!voiceAudioCtxRef.current) {
-            voiceAudioCtxRef.current = new AudioCtx();
-          }
-          if (voiceAudioCtxRef.current.state === 'suspended') {
-            voiceAudioCtxRef.current.resume().catch(() => {});
-          }
-          const src = voiceAudioCtxRef.current.createMediaStreamSource(activeStream);
-          const analyser = voiceAudioCtxRef.current.createAnalyser();
-          analyser.fftSize = 256;
-          src.connect(analyser);
-
-          const dataArray = new Uint8Array(analyser.frequencyBinCount);
-          voiceTyperIntervalRef.current = setInterval(() => {
-            analyser.getByteFrequencyData(dataArray);
-            let sum = 0;
-            for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
-            const avg = sum / dataArray.length;
-
-            // When sound is detected on the microphone (student speaking)
-            if (avg > 8) {
-              voiceTyperWordIdxRef.current = Math.min(words.length, voiceTyperWordIdxRef.current + 2);
-              const text = words.slice(0, voiceTyperWordIdxRef.current).join(' ');
-              setInterviewAnswerText(text);
-              setSpeechTip("🎙️ Speaking detected: Live typing into answer box...");
-            }
-          }, 280);
-          return;
-        }
-      }
-    } catch (e) {
-      console.warn("Audio analyser setup:", e);
-    }
-
-    // Direct natural typing cadence when recording is active
-    voiceTyperIntervalRef.current = setInterval(() => {
-      voiceTyperWordIdxRef.current = Math.min(words.length, voiceTyperWordIdxRef.current + 2);
-      const text = words.slice(0, voiceTyperWordIdxRef.current).join(' ');
-      setInterviewAnswerText(text);
-      setSpeechTip("🎙️ Voice Active: Live typing answer...");
-      if (voiceTyperWordIdxRef.current >= words.length) {
-        clearInterval(voiceTyperIntervalRef.current);
-        voiceTyperIntervalRef.current = null;
-      }
-    }, 400);
-  };
-
   const startSpeechRecognitionLive = (preferredLang?: string) => {
     setIsInterviewRecording(true);
-    startVoiceTypingEngine();
 
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      setSpeechTip("🎙️ Voice Active: Bolte hi answer type ho raha hai...");
+      setSpeechTip("🎙️ Mic On: Browser me speech API nahi mili, aap keyboard se type kar sakte hain ya 'Auto-Fill' dabayein.");
       return;
     }
 
