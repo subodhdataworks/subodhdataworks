@@ -396,7 +396,7 @@ export const MobileProfileSheet: React.FC<MobileProfileSheetProps> = ({
         {/* ─── Bottom Section: Compliance Links + Cyber Sign Out Capsule ─── */}
         <div className="p-3.5 pt-1 border-t border-slate-100/90 bg-white/90 backdrop-blur-md sticky bottom-0 z-20 space-y-2">
           
-          {/* Subtle Compliance Links for Fast Payment Gateway Verification */}
+          {/* Subtle Compliance & Staff Portal Links */}
           <div className="flex items-center justify-center gap-2 text-[10px] font-semibold text-slate-400">
             <a
               href="#contact-us"
@@ -420,6 +420,18 @@ export const MobileProfileSheet: React.FC<MobileProfileSheetProps> = ({
               className="hover:text-blue-600 underline underline-offset-2 transition-colors"
             >
               Terms & Conditions
+            </a>
+            <span>•</span>
+            <a
+              href="#admin"
+              onClick={(e) => {
+                e.preventDefault();
+                handleSmoothClose();
+                window.location.hash = '#admin';
+              }}
+              className="hover:text-blue-600 font-bold text-slate-500 underline underline-offset-2 transition-colors"
+            >
+              Admin Portal
             </a>
           </div>
 
