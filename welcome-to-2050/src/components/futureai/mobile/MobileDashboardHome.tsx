@@ -341,27 +341,6 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
   return (
     <div className="w-full pb-32 pt-2 px-3 sm:px-4 space-y-4 text-left select-none max-w-md mx-auto">
       
-      {/* =========================================================================
-          1. SEARCH BAR WITH FILTER SLIDER (Exact match to Reference)
-          ========================================================================= */}
-      <div className="relative w-full bg-white border border-sky-200/90 rounded-2xl shadow-xs px-3.5 py-2.5 flex items-center gap-2.5 focus-within:border-blue-500 transition-all">
-        <Search className="w-4 h-4 text-sky-500 shrink-0" />
-        <input
-          type="text"
-          placeholder="Search for topics, modules, projects, interview questions..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full text-xs font-semibold text-slate-800 placeholder:text-slate-400 bg-transparent outline-none"
-        />
-        <button
-          type="button"
-          onClick={() => playClick?.()}
-          className="shrink-0 p-1 text-slate-500 hover:text-slate-800 cursor-pointer active:scale-95"
-          aria-label="Filter"
-        >
-          <SlidersHorizontal className="w-4 h-4" />
-        </button>
-      </div>
 
       {/* =========================================================================
           2. HERO BANNER: "Learn AI & Data Skills. Get Job-Ready. Pay After Placement."

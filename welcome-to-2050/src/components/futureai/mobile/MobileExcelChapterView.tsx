@@ -140,17 +140,21 @@ export const MobileExcelChapterView: React.FC<MobileExcelChapterViewProps> = ({
             <Search className="w-4 h-4" />
           </button>
 
+          {/* 2. Wallet Pill with Amount */}
           <button
             type="button"
             onClick={() => {
               playTactile();
               if (typeof window !== 'undefined') window.location.hash = '#earnings';
             }}
-            className="w-8 h-8 rounded-full bg-slate-800/80 hover:bg-amber-900/30 text-amber-400 flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+            className="h-8 px-2.5 rounded-full bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/40 text-amber-300 flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs shrink-0"
             aria-label="Wallet"
-            title="Wallet"
+            title="Wallet Balance"
           >
-            <Wallet className="w-4 h-4" />
+            <Wallet className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <span className="text-xs font-black text-amber-200 leading-none">
+              ₹500
+            </span>
           </button>
 
           <button

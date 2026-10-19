@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, Wallet, Bell, ArrowLeft, X, Sparkles, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Wallet, Bell, ArrowLeft } from 'lucide-react';
 import { LearnerTelemetry } from '../../../services/realAuthService';
 import { useThemeAccent } from '../../../context/ThemeAccentContext';
 import { FutureLogo } from '../FutureLogo';
@@ -32,12 +32,77 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
   onOpenLogin,
 }) => {
   const { playClick } = useThemeAccent();
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
-  const avatarUrl =
-    (typeof window !== 'undefined' ? localStorage.getItem('futureai_user_avatar') : null) ||
-    '/images/profile_student_avatar.png';
+  // Read dynamic wallet balance
+  const [walletBalance, setWalletBalance] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      const customWallet = localStorage.getItem('futureai_user_wallet');
+      if (customWallet) return parseInt(customWallet, 10);
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('futureai_affiliate_hub_v3_')) {
+          try {
+            const item = localStorage.getItem(k);
+            if (item) {
+              const p = JSON.parse(item);
+              if (typeof p.availableBalance === 'number' && p.availableBalance > 0) {
+                return p.availableBalance;
+              }
+            }
+          } catch {}
+        }
+      }
+    }
+    return 500;
+  });
+
+  const [avatarUrl, setAvatarUrl] = useState<string>(() => {
+    return (
+      (typeof window !== 'undefined' ? localStorage.getItem('futureai_user_avatar') : null) ||
+      '/images/profile_student_avatar.png'
+    );
+  });
+
+  // Sync avatar and wallet updates in real time
+  useEffect(() => {
+    const syncData = () => {
+      if (typeof window !== 'undefined') {
+        const customAvatar = localStorage.getItem('futureai_user_avatar');
+        if (customAvatar) setAvatarUrl(customAvatar);
+
+        const customWallet = localStorage.getItem('futureai_user_wallet');
+        if (customWallet) {
+          setWalletBalance(parseInt(customWallet, 10));
+          return;
+        }
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith('futureai_affiliate_hub_v3_')) {
+            try {
+              const item = localStorage.getItem(k);
+              if (item) {
+                const p = JSON.parse(item);
+                if (typeof p.availableBalance === 'number' && p.availableBalance > 0) {
+                  setWalletBalance(p.availableBalance);
+                  return;
+                }
+              }
+            } catch {}
+          }
+        }
+      }
+    };
+    window.addEventListener('storage', syncData);
+    window.addEventListener('focus', syncData);
+    window.addEventListener('futureai_avatar_updated', syncData);
+    window.addEventListener('futureai_wallet_updated', syncData);
+    return () => {
+      window.removeEventListener('storage', syncData);
+      window.removeEventListener('focus', syncData);
+      window.removeEventListener('futureai_avatar_updated', syncData);
+      window.removeEventListener('futureai_wallet_updated', syncData);
+    };
+  }, []);
 
   const handleProfileClick = () => {
     playClick?.();
@@ -69,29 +134,17 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
     if (onOpenSearch) {
       onOpenSearch();
     } else {
-      setSearchOpen((prev) => !prev);
-    }
-  };
-
-  const handleSearchSubmit = (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (!searchQuery.trim()) return;
-    const q = searchQuery.toLowerCase();
-    setSearchOpen(false);
-    if (q.includes('py') || q.includes('python')) {
-      window.location.hash = '#python';
-    } else if (q.includes('sql') || q.includes('data')) {
-      window.location.hash = '#sql';
-    } else if (q.includes('excel')) {
-      window.location.hash = '#excel';
-    } else if (q.includes('power') || q.includes('bi')) {
-      window.location.hash = '#powerbi';
-    } else if (q.includes('job') || q.includes('placement')) {
-      window.location.hash = '#placement';
-    } else if (q.includes('earn') || q.includes('wallet') || q.includes('money')) {
-      window.location.hash = '#earnings';
-    } else {
-      window.location.hash = '#data-analyst';
+      const query = window.prompt('🔍 Search Courses & Topics:\n(e.g., Python, SQL, Excel, Jobs, Wallet)');
+      if (query && query.trim()) {
+        const q = query.toLowerCase();
+        if (q.includes('py')) window.location.hash = '#python';
+        else if (q.includes('sql') || q.includes('data')) window.location.hash = '#sql';
+        else if (q.includes('excel')) window.location.hash = '#excel';
+        else if (q.includes('power') || q.includes('bi')) window.location.hash = '#powerbi';
+        else if (q.includes('job') || q.includes('placement')) window.location.hash = '#placement';
+        else if (q.includes('earn') || q.includes('wallet') || q.includes('money')) window.location.hash = '#earnings';
+        else window.location.hash = '#data-analyst';
+      }
     }
   };
 
@@ -151,33 +204,32 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
           )}
         </div>
 
-        {/* Right: EXACT 4 Items: Search, Wallet, Notification, Profile Picture */}
-        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+        {/* Right: EXACT 4 Items: Search, Wallet with Amount, Notification, Profile Picture */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           
           {/* 1. Search Icon */}
           <button
             type="button"
             onClick={handleSearchClick}
-            className={`w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer active:scale-90 ${
-              searchOpen
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-            }`}
+            className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer active:scale-90"
             aria-label="Search"
             title="Search courses & topics"
           >
             <Search className="w-4 h-4" />
           </button>
 
-          {/* 2. Wallet Icon */}
+          {/* 2. Wallet Pill with Amount (Shows ₹ Amount right in header) */}
           <button
             type="button"
             onClick={handleWalletClick}
-            className="w-8 h-8 rounded-full bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-700 flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+            className="h-8 px-2.5 rounded-full bg-gradient-to-r from-amber-50 to-amber-100/90 hover:from-amber-100 hover:to-amber-200 border border-amber-300 text-amber-950 flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs shrink-0"
             aria-label="Wallet & Earnings"
-            title="Wallet & Earnings"
+            title={`Wallet Balance: ₹${walletBalance}`}
           >
-            <Wallet className="w-4 h-4" />
+            <Wallet className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+            <span className="text-xs font-black text-amber-950 leading-none">
+              ₹{walletBalance.toLocaleString('en-IN')}
+            </span>
           </button>
 
           {/* 3. Notification Bell with Badge 3 */}
@@ -213,60 +265,6 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
           </button>
         </div>
       </header>
-
-      {/* ── Expandable Instant Search Bar (Opens on tapping Search Icon) ── */}
-      {searchOpen && (
-        <div className="bg-white border-b border-slate-200 px-3 py-2 animate-fadeIn shadow-md">
-          <form onSubmit={handleSearchSubmit} className="flex items-center gap-2">
-            <div className="relative flex-1">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                autoFocus
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search Python, SQL, Excel, Jobs, Wallet..."
-                className="w-full bg-slate-100 border border-slate-200 rounded-xl pl-8 pr-3 py-1.5 text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white"
-              />
-            </div>
-            <button
-              type="submit"
-              className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-black cursor-pointer active:scale-95 transition-all"
-            >
-              Go
-            </button>
-            <button
-              type="button"
-              onClick={() => setSearchOpen(false)}
-              className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-800 cursor-pointer"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          </form>
-          {/* Quick Search Chips */}
-          <div className="flex items-center gap-1.5 mt-2 overflow-x-auto no-scrollbar pb-0.5">
-            {['Python', 'SQL', 'Excel', 'Power BI', 'Placement', 'Wallet'].map((item) => (
-              <button
-                key={item}
-                type="button"
-                onClick={() => {
-                  setSearchQuery(item);
-                  setSearchOpen(false);
-                  if (item === 'Python') window.location.hash = '#python';
-                  else if (item === 'SQL') window.location.hash = '#sql';
-                  else if (item === 'Excel') window.location.hash = '#excel';
-                  else if (item === 'Power BI') window.location.hash = '#powerbi';
-                  else if (item === 'Placement') window.location.hash = '#placement';
-                  else if (item === 'Wallet') window.location.hash = '#earnings';
-                }}
-                className="px-2 py-0.5 rounded-full bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-600 text-[10px] font-bold shrink-0 border border-slate-200 cursor-pointer"
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
