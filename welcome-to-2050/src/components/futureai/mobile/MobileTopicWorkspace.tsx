@@ -573,13 +573,70 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     }
   };
 
-  const startLiveVoiceFallbackTyper = () => {
+  const startLiveVoiceFallbackTyper = (existingStream?: MediaStream) => {
     stopVoiceActivityResources();
     const targetAnswer = currentInterviewQData.idealAnswerEn || currentInterviewQData.exampleAnswerEn;
     const words = targetAnswer.split(/\s+/).filter(Boolean);
     let wordIdx = 0;
 
-    if (
+    const setupAudioAnalyser = (stream: MediaStream) => {
+      try {
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        voiceAudioCtxRef.current = ctx;
+        if (ctx.state === 'suspended') {
+          ctx.resume().catch(() => {});
+        }
+        const source = ctx.createMediaStreamSource(stream);
+        const analyser = ctx.createAnalyser();
+        analyser.fftSize = 512;
+        source.connect(analyser);
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+        let baselineNoise = 0.015;
+        let calibrationSamples = 0;
+        let consecutiveVoiceFrames = 0;
+
+        voiceCheckIntervalRef.current = setInterval(() => {
+          if (hasCapturedSpeechRef.current) return;
+          if (ctx.state === 'suspended') {
+            ctx.resume().catch(() => {});
+          }
+          analyser.getByteTimeDomainData(dataArray);
+          let sumSq = 0;
+          for (let i = 0; i < dataArray.length; i++) {
+            const norm = (dataArray[i] - 128) / 128;
+            sumSq += norm * norm;
+          }
+          const rms = Math.sqrt(sumSq / dataArray.length);
+
+          if (calibrationSamples < 4 && rms < 0.04) {
+            baselineNoise = (baselineNoise * calibrationSamples + rms) / (calibrationSamples + 1);
+            calibrationSamples += 1;
+            return;
+          }
+
+          const voiceThreshold = Math.max(0.035, baselineNoise * 2.2);
+          if (rms >= voiceThreshold) {
+            consecutiveVoiceFrames += 1;
+            if (consecutiveVoiceFrames >= 2 && wordIdx < words.length) {
+              wordIdx = Math.min(words.length, wordIdx + 1);
+              const partial = words.slice(0, wordIdx).join(' ');
+              setInterviewAnswerText(partial);
+            }
+          } else {
+            consecutiveVoiceFrames = 0;
+          }
+        }, 140);
+      } catch (err) {
+        console.warn("Analyser fallback error:", err);
+      }
+    };
+
+    if (existingStream) {
+      setupAudioAnalyser(existingStream);
+    } else if (
       typeof navigator !== 'undefined' &&
       navigator.mediaDevices &&
       typeof navigator.mediaDevices.getUserMedia === 'function'
@@ -595,64 +652,16 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
         })
         .then((stream) => {
           voiceStreamRef.current = stream;
-          const AudioCtx =
-            window.AudioContext || (window as any).webkitAudioContext;
-          if (!AudioCtx) return;
-          const ctx = new AudioCtx();
-          voiceAudioCtxRef.current = ctx;
-          if (ctx.state === 'suspended') {
-            ctx.resume().catch(() => {});
-          }
-          const source = ctx.createMediaStreamSource(stream);
-          const analyser = ctx.createAnalyser();
-          analyser.fftSize = 512;
-          source.connect(analyser);
-          const dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-          let baselineNoise = 0.015;
-          let calibrationSamples = 0;
-          let consecutiveVoiceFrames = 0;
-
-          voiceCheckIntervalRef.current = setInterval(() => {
-            if (hasCapturedSpeechRef.current) return;
-            if (ctx.state === 'suspended') {
-              ctx.resume().catch(() => {});
-            }
-            analyser.getByteTimeDomainData(dataArray);
-            let sumSq = 0;
-            for (let i = 0; i < dataArray.length; i++) {
-              const norm = (dataArray[i] - 128) / 128;
-              sumSq += norm * norm;
-            }
-            const rms = Math.sqrt(sumSq / dataArray.length);
-
-            if (calibrationSamples < 4 && rms < 0.04) {
-              baselineNoise = (baselineNoise * calibrationSamples + rms) / (calibrationSamples + 1);
-              calibrationSamples += 1;
-              return;
-            }
-
-            const voiceThreshold = Math.max(0.035, baselineNoise * 2.2);
-            if (rms >= voiceThreshold) {
-              consecutiveVoiceFrames += 1;
-              if (consecutiveVoiceFrames >= 2 && wordIdx < words.length) {
-                wordIdx = Math.min(words.length, wordIdx + 1);
-                const partial = words.slice(0, wordIdx).join(' ');
-                setInterviewAnswerText(partial);
-              }
-            } else {
-              consecutiveVoiceFrames = 0;
-            }
-          }, 140);
+          setupAudioAnalyser(stream);
         })
         .catch(() => {});
     }
   };
 
-  const startSpeechRecognitionLive = () => {
+  const startSpeechRecognitionLive = (existingStream?: MediaStream) => {
     hasCapturedSpeechRef.current = false;
     setIsInterviewRecording(true);
-    startLiveVoiceFallbackTyper();
+    startLiveVoiceFallbackTyper(existingStream);
 
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -703,7 +712,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     }
   };
 
-  const toggleSpeechRecording = () => {
+  const toggleSpeechRecording = async () => {
     playTactile();
 
     // If already recording, stop cleanly
@@ -715,8 +724,33 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       }
       stopVoiceActivityResources();
       setIsInterviewRecording(false);
-    } else {
-      startSpeechRecognitionLive();
+      return;
+    }
+
+    // Explicitly prompt phone browser for microphone permission via user gesture
+    try {
+      if (
+        typeof navigator !== 'undefined' &&
+        navigator.mediaDevices &&
+        typeof navigator.mediaDevices.getUserMedia === 'function'
+      ) {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          },
+          video: false,
+        });
+        voiceStreamRef.current = stream;
+        startSpeechRecognitionLive(stream);
+      } else {
+        startSpeechRecognitionLive();
+      }
+    } catch (err: any) {
+      console.warn("Microphone permission denied:", err);
+      setIsInterviewRecording(false);
+      alert("Microphone permission blocked! Please allow microphone access in your mobile browser settings to speak your answer.");
     }
   };
 
@@ -766,8 +800,6 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       clearTimeout(safetyTimer);
       setIsHrSpeaking(false);
       setIsMicHighlighted(true);
-      // AUTO MIC HIGHLIGHT & START: student ke bolte hi live typing start ho jati hai!
-      startSpeechRecognitionLive();
     };
 
     const safetyTimer = setTimeout(onSpeechEnd, 10000);
@@ -1773,56 +1805,74 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               {currentInterviewQData.questionEn}
             </p>
 
-            {/* Hint Box */}
-            <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200/80 flex items-start gap-2">
-              <Lightbulb className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-              <div>
-                <div className="text-[10px] font-black text-amber-900 leading-tight">HR Hint</div>
-                <div className="text-[9px] font-medium text-amber-800 leading-tight mt-0.5">
-                  {currentInterviewQData.hintEn}
-                </div>
-              </div>
-            </div>
           </div>
 
-          {/* ── 3. YOUR ANSWER BOX & BIG PROMINENT SUBMIT BUTTON (Right below Question) ── */}
-          <div className="bg-white border-2 border-blue-500/80 rounded-2xl p-3.5 shadow-md space-y-2.5 ring-2 ring-blue-100">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs font-black text-slate-900">
-                <Mic className={`w-4 h-4 ${isInterviewRecording ? 'text-rose-600 animate-pulse' : 'text-blue-600'}`} />
-                <span>Your Answer {isInterviewRecording ? '(Listening Live...)' : '(Speak or Type)'}</span>
-              </div>
+          {/* ── 3. MIC ICON & ANSWER TYPING BOX (Right below Question) ── */}
+          <div className="bg-white border-2 border-blue-500 rounded-2xl p-3.5 shadow-md space-y-3 ring-2 ring-blue-100">
+            {/* Dedicated Mic Tap & Recording Bar */}
+            <div className="flex items-center justify-between gap-2">
+              <button
+                type="button"
+                onClick={toggleSpeechRecording}
+                className={`flex-1 py-2.5 px-3 rounded-xl font-black text-xs flex items-center justify-center gap-2 cursor-pointer transition-all shadow-sm ${
+                  isInterviewRecording
+                    ? 'bg-rose-600 text-white animate-pulse ring-2 ring-rose-300'
+                    : isMicHighlighted
+                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-emerald-500/30 ring-2 ring-emerald-300 animate-bounce'
+                    : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white active:scale-98'
+                }`}
+              >
+                {isInterviewRecording ? (
+                  <>
+                    <MicOff className="w-4 h-4 animate-spin" />
+                    <span>🎙️ Listening Live... (Tap to Stop)</span>
+                  </>
+                ) : (
+                  <>
+                    <Mic className="w-4 h-4" />
+                    <span>{isMicHighlighted ? '🎙️ Tap to Speak (Allow Mic)' : '🎙️ Tap to Speak (Mic)'}</span>
+                  </>
+                )}
+              </button>
 
-              {/* Quick Action Helpers */}
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={handleInsertInterviewExample}
-                  className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-[9.5px] font-black flex items-center gap-1 active:scale-95 cursor-pointer shadow-2xs"
-                  title="Click to fill benchmark answer"
-                >
-                  <Sparkles className="w-3 h-3 text-amber-500" />
-                  <span>⚡ Quick Fill Answer</span>
-                </button>
+              <button
+                type="button"
+                onClick={handleInsertInterviewExample}
+                className="px-2.5 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-[10px] font-black flex items-center gap-1 active:scale-95 cursor-pointer shrink-0 shadow-2xs"
+                title="1-tap fill sample answer"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <span>⚡ Fill Ans</span>
+              </button>
 
+              {interviewAnswerText && (
                 <button
                   type="button"
                   onClick={() => setInterviewAnswerText('')}
-                  className="p-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 cursor-pointer"
-                  title="Clear Text"
+                  className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 cursor-pointer shrink-0"
+                  title="Clear Answer"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
-              </div>
+              )}
             </div>
 
-            <textarea
-              rows={4}
-              value={interviewAnswerText}
-              onChange={(e) => setInterviewAnswerText(e.target.value)}
-              placeholder="Bolna shuru kijiye ya yahan type kijiye... (Speak into microphone or type your answer here)"
-              className="w-full p-3 rounded-xl border border-slate-300 text-xs text-slate-900 bg-slate-50/70 focus:outline-none focus:bg-white focus:border-blue-600 transition-all leading-relaxed placeholder:text-slate-400 font-medium"
-            />
+            {/* Answer Typing Textarea */}
+            <div className="relative">
+              <textarea
+                rows={4}
+                value={interviewAnswerText}
+                onChange={(e) => setInterviewAnswerText(e.target.value)}
+                placeholder="Aapka jawab yahan type hoga... (Tap mic button above to speak or type here)"
+                className="w-full p-3 rounded-xl border border-slate-300 text-xs text-slate-900 bg-slate-50/70 focus:outline-none focus:bg-white focus:border-blue-600 transition-all leading-relaxed placeholder:text-slate-400 font-medium"
+              />
+              {isInterviewRecording && (
+                <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500 text-white text-[9px] font-black shadow-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                  <span>Recording Live...</span>
+                </div>
+              )}
+            </div>
 
             {/* 🚀 BIG HIGH-VISIBILITY SUBMIT BUTTON 🚀 */}
             <button
