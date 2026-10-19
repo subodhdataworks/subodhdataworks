@@ -47,6 +47,7 @@ import {
 import { soundEffects } from '../../../services/soundEffects';
 import { awardLearnerTelemetry } from '../../../services/realAuthService';
 import type { WorkspaceStepId } from '../PythonTopicWorkspace';
+import { TOPICS } from '../PythonChapterView';
 
 export interface MobileTopicWorkspaceProps {
   userName?: string;
@@ -67,6 +68,9 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   onOpenUnlockModal,
   onOpenProfile,
 }) => {
+  const currentTopic = TOPICS.find((t) => t.id === topicId) || TOPICS[0];
+  const firstLesson = currentTopic.lessons[0] || { title: currentTopic.title, time: '08:00' };
+
   const normalizeStep = (step?: WorkspaceStepId): WorkspaceStepId => {
     if (step === 'interview') return 'interview';
     if (step === 'play' || step === 'practice' || step === 'code') return 'play';
@@ -474,20 +478,20 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
           {/* Title & Tags */}
           <div className="space-y-1.5">
             <h1 className="text-sm font-black text-slate-900 leading-tight">
-              1.1 What is Programming? – Real-Life Examples
+              {currentTopic.id}.1 {firstLesson.title}
             </h1>
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[9px] flex items-center gap-1">
                 <span>🌱</span>
-                <span>Beginner Friendly</span>
+                <span>Chapter {currentTopic.id}</span>
               </span>
-              <span className="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 border border-purple-200 font-bold text-[9px] flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200 font-bold text-[9px] flex items-center gap-1">
                 <span>⚡</span>
-                <span>Concept Based</span>
+                <span>Bunny Video Stream</span>
               </span>
               <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200 font-bold text-[9px] flex items-center gap-1">
-                <span>💼</span>
-                <span>Real World Examples</span>
+                <span>🎮</span>
+                <span>Auto Game Next</span>
               </span>
             </div>
           </div>
@@ -502,6 +506,12 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               playsInline
               onTimeUpdate={handleVideoTimeUpdate}
               onClick={toggleVideoPlay}
+              onEnded={() => {
+                try {
+                  soundEffects.playCelebration();
+                } catch {}
+                setActiveStep('play');
+              }}
             />
 
             {/* Glowing Big Center Play Button */}
@@ -689,7 +699,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               className="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 via-sky-500 to-blue-600 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-blue-500/30 active:scale-98 transition-transform cursor-pointer"
             >
               <Gamepad2 className="w-4 h-4" />
-              <span>Start Python Level 1 Game (8 Interactive Games)</span>
+              <span>Video Finished ➔ Play {currentTopic.title} Game</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -961,8 +971,8 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                 <h2 className="text-xs font-black text-slate-900 leading-tight">
                   Python Mock Interview
                 </h2>
-                <p className="text-[9px] text-slate-500 font-semibold mt-0.5">
-                  1.1 What is Programming? – Real-Life Examples
+                <p className="text-[9px] text-slate-500 font-semibold mt-0.5 truncate">
+                  {currentTopic.id}.1 {firstLesson.title}
                 </p>
               </div>
             </div>
