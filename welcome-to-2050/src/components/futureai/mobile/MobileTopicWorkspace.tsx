@@ -48,6 +48,7 @@ import { soundEffects } from '../../../services/soundEffects';
 import { awardLearnerTelemetry } from '../../../services/realAuthService';
 import type { WorkspaceStepId } from '../PythonTopicWorkspace';
 import { TOPICS } from '../PythonChapterView';
+import { LESSON_BUNNY_VIDEOS, BUNNY_STREAM_CONFIG } from '../../../services/bunnyVideoService';
 
 export interface MobileTopicWorkspaceProps {
   userName?: string;
@@ -85,6 +86,33 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       setActiveStep(normalizeStep(initialStep));
     }
   }, [initialStep]);
+
+  // Official Bunny.net Stream Video resolution
+  const bunnyVideoId =
+    (topicId === 1 ? '56e7a759-1562-4700-ab14-d5f31b921dc1' : '') ||
+    LESSON_BUNNY_VIDEOS[`topic_${topicId}_lesson_1`]?.videoId ||
+    '56e7a759-1562-4700-ab14-d5f31b921dc1';
+  const bunnyLibraryId = BUNNY_STREAM_CONFIG.libraryId || '783689';
+  const bunnyEmbedUrl = bunnyVideoId
+    ? `https://iframe.mediadelivery.net/embed/${bunnyLibraryId}/${bunnyVideoId}?autoplay=true&loop=false&muted=false&preload=true&responsive=true`
+    : '';
+
+  // Auto advance to Game when Bunny video finishes
+  useEffect(() => {
+    const handleBunnyMessage = (event: MessageEvent) => {
+      try {
+        if (typeof event.data === 'string') {
+          const data = JSON.parse(event.data);
+          if (data.event === 'ended' || data.type === 'ended' || data.status === 'ended') {
+            soundEffects.playCelebration();
+            setActiveStep('play');
+          }
+        }
+      } catch {}
+    };
+    window.addEventListener('message', handleBunnyMessage);
+    return () => window.removeEventListener('message', handleBunnyMessage);
+  }, []);
 
   const playTactile = () => {
     try {
@@ -496,62 +524,75 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             </div>
           </div>
 
-          {/* Video Player Card */}
+          {/* Video Player Card (Bunny.net Stream Embed with HTML5 Fallback) */}
           <div className="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-200 shadow-sm aspect-video">
-            <video
-              ref={videoRef}
-              src="/videos/what_is_programming_lesson.mp4"
-              poster="/images/what_is_python_video_poster.jpg"
-              className="w-full h-full object-cover"
-              playsInline
-              onTimeUpdate={handleVideoTimeUpdate}
-              onClick={toggleVideoPlay}
-              onEnded={() => {
-                try {
-                  soundEffects.playCelebration();
-                } catch {}
-                setActiveStep('play');
-              }}
-            />
-
-            {/* Glowing Big Center Play Button */}
-            {!isVideoPlaying && (
-              <button
-                type="button"
-                onClick={toggleVideoPlay}
-                className="absolute inset-0 m-auto w-14 h-14 rounded-full bg-blue-600/90 text-white flex items-center justify-center shadow-lg shadow-blue-500/50 hover:scale-105 active:scale-95 transition-all border-2 border-white cursor-pointer"
-                aria-label="Play video"
-              >
-                <Play className="w-6 h-6 fill-white ml-0.5" />
-              </button>
-            )}
-
-            {/* Bottom Controls Bar */}
-            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-2 text-white flex items-center justify-between text-[10px] font-bold">
-              <div className="flex items-center gap-2">
-                <button type="button" onClick={toggleVideoPlay} className="cursor-pointer">
-                  {isVideoPlaying ? <Pause className="w-3.5 h-3.5 fill-white" /> : <Play className="w-3.5 h-3.5 fill-white" />}
-                </button>
-                <span>{formatVideoTime(videoCurrentTime)} / {formatVideoTime(videoDuration)}</span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    playTactile();
-                    if (videoRef.current) {
-                      videoRef.current.muted = !isVideoMuted;
-                      setIsVideoMuted(!isVideoMuted);
-                    }
+            {bunnyEmbedUrl ? (
+              <iframe
+                src={bunnyEmbedUrl}
+                title={firstLesson.title}
+                loading="lazy"
+                className="w-full h-full absolute inset-0 border-0"
+                allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;"
+                allowFullScreen={true}
+              />
+            ) : (
+              <>
+                <video
+                  ref={videoRef}
+                  src="/videos/what_is_programming_lesson.mp4"
+                  poster="/images/what_is_python_video_poster.jpg"
+                  className="w-full h-full object-cover"
+                  playsInline
+                  onTimeUpdate={handleVideoTimeUpdate}
+                  onClick={toggleVideoPlay}
+                  onEnded={() => {
+                    try {
+                      soundEffects.playCelebration();
+                    } catch {}
+                    setActiveStep('play');
                   }}
-                >
-                  {isVideoMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-                </button>
-                <span className="text-[9px] font-black bg-white/20 px-1.5 py-0.2 rounded">CC</span>
-                <Maximize2 className="w-3.5 h-3.5" />
-              </div>
-            </div>
+                />
+
+                {/* Glowing Big Center Play Button */}
+                {!isVideoPlaying && (
+                  <button
+                    type="button"
+                    onClick={toggleVideoPlay}
+                    className="absolute inset-0 m-auto w-14 h-14 rounded-full bg-blue-600/90 text-white flex items-center justify-center shadow-lg shadow-blue-500/50 hover:scale-105 active:scale-95 transition-all border-2 border-white cursor-pointer"
+                    aria-label="Play video"
+                  >
+                    <Play className="w-6 h-6 fill-white ml-0.5" />
+                  </button>
+                )}
+
+                {/* Bottom Controls Bar */}
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-2 text-white flex items-center justify-between text-[10px] font-bold">
+                  <div className="flex items-center gap-2">
+                    <button type="button" onClick={toggleVideoPlay} className="cursor-pointer">
+                      {isVideoPlaying ? <Pause className="w-3.5 h-3.5 fill-white" /> : <Play className="w-3.5 h-3.5 fill-white" />}
+                    </button>
+                    <span>{formatVideoTime(videoCurrentTime)} / {formatVideoTime(videoDuration)}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playTactile();
+                        if (videoRef.current) {
+                          videoRef.current.muted = !isVideoMuted;
+                          setIsVideoMuted(!isVideoMuted);
+                        }
+                      }}
+                    >
+                      {isVideoMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+                    </button>
+                    <span className="text-[9px] font-black bg-white/20 px-1.5 py-0.2 rounded">CC</span>
+                    <Maximize2 className="w-3.5 h-3.5" />
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Auto-Pilot Learning Banner */}

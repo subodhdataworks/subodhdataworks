@@ -18,8 +18,8 @@ export interface BunnyStreamConfig {
 
 // Default Configuration for Future IT Industry
 export const BUNNY_STREAM_CONFIG: BunnyStreamConfig = {
-  // Replace with your Bunny Stream Library ID when generated in Bunny.net dashboard
-  libraryId: 'future-it-library',
+  // Official Bunny Stream Library ID
+  libraryId: '783689',
   streamHost: 'iframe.mediadelivery.net',
   customDomain: 'video.futureitindustry.com',
   tokenAuthEnabled: false,
@@ -36,7 +36,7 @@ export const BUNNY_STREAM_CONFIG: BunnyStreamConfig = {
 export const LESSON_BUNNY_VIDEOS: Record<string, { videoId: string; title: string; duration?: string }> = {
   // Topic 1: Introduction to Programming
   'topic_1_lesson_1': {
-    videoId: 'demo_intro_programming', // Replace with Bunny.net Video GUID
+    videoId: '56e7a759-1562-4700-ab14-d5f31b921dc1', // Official Bunny.net Video GUID
     title: '1.1 What Is Programming?',
     duration: '07:40',
   },
