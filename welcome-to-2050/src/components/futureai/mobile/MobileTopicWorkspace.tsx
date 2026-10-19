@@ -556,6 +556,10 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   };
   const currentHr = HR_PROFILES[selectedHr];
 
+function cleanWord(w: string): string {
+  return (w || '').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
+}
+
 /**
  * Intelligently merges an existing committed transcript with incoming text (final or interim),
  * eliminating any duplicate words, phrases, or repeated prefixes caused by mobile SpeechRecognition restarts.
@@ -570,36 +574,59 @@ function mergeTranscripts(base: string, addition: string): string {
   const bLower = b.toLowerCase();
   const aLower = a.toLowerCase();
 
-  // 1. If addition is completely identical to base, keep base
+  // 1. Exact match
   if (bLower === aLower) {
     return b;
   }
 
-  // 2. If addition already starts with base (e.g., base="software", addition="software instruction")
+  // 2. Direct string startsWith / endsWith containment
   if (aLower.startsWith(bLower)) {
     return a;
   }
-
-  // 3. If base already ends with addition (e.g., base="software instruction", addition="instruction")
+  if (bLower.startsWith(aLower)) {
+    return b;
+  }
   if (bLower.endsWith(aLower)) {
     return b;
   }
 
-  // 4. Overlap check: Find if suffix of base matches prefix of addition
-  // e.g. base="Computer instructions", addition="instructions must be clear" -> "Computer instructions must be clear"
-  const bWords = b.split(/\s+/);
-  const aWords = a.split(/\s+/);
-  const maxOverlapWords = Math.min(bWords.length, aWords.length);
+  const bWords = b.split(/\s+/).filter(Boolean);
+  const aWords = a.split(/\s+/).filter(Boolean);
+  if (bWords.length === 0) return a;
+  if (aWords.length === 0) return b;
 
+  const bClean = bWords.map(cleanWord);
+  const aClean = aWords.map(cleanWord);
+
+  // 3. Shared Prefix (Android SpeechRecognizer re-emission / expansion):
+  // When mobile speech recognition restarts or refines hypotheses,
+  // addition often repeats the sentence starting from word 0 or 1.
+  // e.g. base = "software", addition = "software instruction"
+  // e.g. base = "Programming is a process", addition = "Programming is the process of writing instructions"
+  let commonPrefixCount = 0;
+  const maxPrefix = Math.min(bClean.length, aClean.length);
+  for (let i = 0; i < maxPrefix; i++) {
+    if (bClean[i] === aClean[i] && bClean[i].length > 0) {
+      commonPrefixCount++;
+    } else {
+      break;
+    }
+  }
+
+  if (commonPrefixCount >= 1) {
+    if (aWords.length >= bWords.length) {
+      return a;
+    } else {
+      return b;
+    }
+  }
+
+  // 4. Suffix-to-Prefix Overlap (continuous speech boundary):
+  // e.g. base = "Programming is the process of", addition = "process of writing instructions"
+  const maxOverlapWords = Math.min(bWords.length, aWords.length);
   for (let len = maxOverlapWords; len > 0; len--) {
-    const bSuffix = bWords
-      .slice(bWords.length - len)
-      .map((w) => w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, ''))
-      .join(' ');
-    const aPrefix = aWords
-      .slice(0, len)
-      .map((w) => w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, ''))
-      .join(' ');
+    const bSuffix = bClean.slice(bClean.length - len).join(' ');
+    const aPrefix = aClean.slice(0, len).join(' ');
 
     if (bSuffix && bSuffix === aPrefix) {
       const remainingAWords = aWords.slice(len);
@@ -610,7 +637,7 @@ function mergeTranscripts(base: string, addition: string): string {
     }
   }
 
-  // No overlap found, concatenate with single space
+  // 5. Clean concatenation for genuinely separate next phrase
   return b + ' ' + a;
 }
 
@@ -914,12 +941,13 @@ function mergeTranscripts(base: string, addition: string): string {
         isStartingRecognitionRef.current = false;
         if (recognitionRef.current !== recognition) return;
 
-        // Commit this session's finalized text permanently into committedTextRef
-        if (lastSessionFinalRef.current.trim()) {
-          committedTextRef.current = mergeTranscripts(committedTextRef.current, lastSessionFinalRef.current.trim());
+        // Commit this session's speech permanently into committedTextRef
+        const textToCommit = lastSessionFinalRef.current.trim() || currentInterimRef.current.trim();
+        if (textToCommit) {
+          committedTextRef.current = mergeTranscripts(committedTextRef.current, textToCommit);
           lastSessionFinalRef.current = '';
+          currentInterimRef.current = '';
         }
-        currentInterimRef.current = '';
 
         if (committedTextRef.current.trim()) {
           setInterviewAnswerText(committedTextRef.current.trim());

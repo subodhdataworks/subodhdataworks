@@ -389,6 +389,27 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   };
   const [mobileTestingFrame, setMobileTestingFrame] = useState<boolean>(() => isMobileSizeTesting());
 
+  const isMobileViewport = (): boolean => {
+    if (typeof window === 'undefined') return false;
+    return (
+      window.innerWidth < 768 ||
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    );
+  };
+  const [isMobileScreen, setIsMobileScreen] = useState<boolean>(() => isMobileViewport());
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileScreen(isMobileViewport());
+    };
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  }, []);
+
   useEffect(() => {
     const handleCheckMobileParam = () => {
       if (isMobileSizeTesting()) {
@@ -1312,10 +1333,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       );
     }
 
-    return (
-      <>
-        {/* Mobile (< 768px): Native Mobile Topic Workspace with Video, Game, Mock Interview matching reference screenshots */}
-        <div className="md:hidden min-h-screen bg-slate-50">
+    if (isMobileScreen || mobileTestingFrame) {
+      return (
+        <div className="min-h-screen bg-slate-50">
           <MobileTopicWorkspace
             userName={currentUserName}
             topicId={activeTopicWs}
@@ -1355,110 +1375,109 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             onOpenAdvisor={onOpenAdvisor}
           />
         </div>
+      );
+    }
 
-        {/* Desktop Experience (>= 768px): Hands-on 3-Column IDE Workspace */}
-        <div className="hidden md:block relative">
-          <button
-            onClick={() => setMobileTestingFrame(true)}
-            className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 text-white px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 text-xs font-bold border-2 border-white/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"
-            title="Open in Mobile Size Phone Container"
-          >
-            <Smartphone className="w-4 h-4 text-emerald-300 animate-pulse" />
-            <span>📱 Test in Mobile View (390px)</span>
-          </button>
+    return (
+      <div className="relative dock-dashboard-page">
+        <button
+          onClick={() => setMobileTestingFrame(true)}
+          className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 text-white px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 text-xs font-bold border-2 border-white/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          title="Open in Mobile Size Phone Container"
+        >
+          <Smartphone className="w-4 h-4 text-emerald-300 animate-pulse" />
+          <span>📱 Test in Mobile View (390px)</span>
+        </button>
 
-          <div className="dock-dashboard-page">
-            <PythonTopicWorkspace
-              userName={userName}
-              topicId={activeTopicWs}
-              initialStep={targetStep}
-              onBack={() => {
-                setActiveTopicWs(null);
-                setTargetStep('learn');
-                if (typeof window !== 'undefined') window.location.hash = '#python';
-              }}
-              onNavigateDock={(tab) => {
-                setActiveTopicWs(null);
-                if (tab === 'game') {
-                  setSelectedModuleView(null);
-                  setDockTab('game');
-                  if (typeof window !== 'undefined') window.location.hash = '#game';
-                } else if (tab === 'home' || tab === 'dashboard') {
-                  setSelectedModuleView(null);
-                  setDockTab('home');
-                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-                } else if (tab === 'learn' || tab === 'learning') {
-                  setSelectedModuleView('python');
-                  setActiveTopicWs(null);
-                  if (typeof window !== 'undefined') window.location.hash = '#python';
-                } else if (tab === 'earning' || tab === 'income') {
-                  setSelectedModuleView(null);
-                  setDockTab('income');
-                  if (typeof window !== 'undefined') window.location.hash = '#earnings';
-                } else if (tab === 'internship') {
-                  setLockedSectionTarget('Internship');
-                  setPlacementLockOpen(true);
-                } else if (tab === 'certificate' || tab === 'certificates') {
-                  setLockedSectionTarget('Certificate');
-                  setPlacementLockOpen(true);
-                } else if (tab === 'placement') {
-                  setLockedSectionTarget('Placement');
-                  setPlacementLockOpen(true);
-                } else {
-                  setSelectedModuleView(null);
-                  setDockTab(tab as any);
-                  if (typeof window !== 'undefined') window.location.hash = '#' + tab;
-                }
-              }}
-              onOpenUnlockModal={(mod) => {
-                setSelectedLockedModule(mod || 'Python Hands-on Lab');
-                setUnlockModalOpen(true);
-              }}
-              onOpenAdvisor={onOpenAdvisor}
-              onNavigateNextTopic={() => {
-                setActiveTopicWs(2);
-                setTargetStep('learn');
-                if (typeof window !== 'undefined') window.location.hash = '#learn';
-              }}
-            />
-            <PayToUnlockModal
-              isOpen={unlockModalOpen}
-              onClose={() => setUnlockModalOpen(false)}
-              targetModuleName={selectedLockedModule}
-              onSimulateUnlock={() => {
-                setIsNewStudentMode(false);
-                setUnlockModalOpen(false);
-              }}
-            />
-            <MobileProfileSheet
-              isOpen={mobileProfileSheetOpen}
-              onClose={() => setMobileProfileSheetOpen(false)}
-              userName={currentUserName}
-              telemetry={telemetry}
-              onLogout={onLogout}
-              onOpenEarn={() => {
-                setSelectedModuleView(null);
-                setActiveTopicWs(null);
-                setDockTab('income');
-                if (typeof window !== 'undefined') window.location.hash = '#earnings';
-              }}
-              onOpenPlacement={() => {
-                setSelectedModuleView(null);
-                setActiveTopicWs(null);
-                setDockTab('placement');
-                if (typeof window !== 'undefined') window.location.hash = '#placement';
-              }}
-              onOpenLogin={() => setAuthModalOpen(true)}
-              onOpenAdvisor={onOpenAdvisor}
-            />
-            <FutureAuthModal
-              isOpen={authModalOpen}
-              onClose={() => setAuthModalOpen(false)}
-              onSuccess={handleAuthSuccess}
-            />
-          </div>
-        </div>
-      </>
+        <PythonTopicWorkspace
+          userName={userName}
+          topicId={activeTopicWs}
+          initialStep={targetStep}
+          onBack={() => {
+            setActiveTopicWs(null);
+            setTargetStep('learn');
+            if (typeof window !== 'undefined') window.location.hash = '#python';
+          }}
+          onNavigateDock={(tab) => {
+            setActiveTopicWs(null);
+            if (tab === 'game') {
+              setSelectedModuleView(null);
+              setDockTab('game');
+              if (typeof window !== 'undefined') window.location.hash = '#game';
+            } else if (tab === 'home' || tab === 'dashboard') {
+              setSelectedModuleView(null);
+              setDockTab('home');
+              if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+            } else if (tab === 'learn' || tab === 'learning') {
+              setSelectedModuleView('python');
+              setActiveTopicWs(null);
+              if (typeof window !== 'undefined') window.location.hash = '#python';
+            } else if (tab === 'earning' || tab === 'income') {
+              setSelectedModuleView(null);
+              setDockTab('income');
+              if (typeof window !== 'undefined') window.location.hash = '#earnings';
+            } else if (tab === 'internship') {
+              setLockedSectionTarget('Internship');
+              setPlacementLockOpen(true);
+            } else if (tab === 'certificate' || tab === 'certificates') {
+              setLockedSectionTarget('Certificate');
+              setPlacementLockOpen(true);
+            } else if (tab === 'placement') {
+              setLockedSectionTarget('Placement');
+              setPlacementLockOpen(true);
+            } else {
+              setSelectedModuleView(null);
+              setDockTab(tab as any);
+              if (typeof window !== 'undefined') window.location.hash = '#' + tab;
+            }
+          }}
+          onOpenUnlockModal={(mod) => {
+            setSelectedLockedModule(mod || 'Python Hands-on Lab');
+            setUnlockModalOpen(true);
+          }}
+          onOpenAdvisor={onOpenAdvisor}
+          onNavigateNextTopic={() => {
+            setActiveTopicWs(2);
+            setTargetStep('learn');
+            if (typeof window !== 'undefined') window.location.hash = '#learn';
+          }}
+        />
+        <PayToUnlockModal
+          isOpen={unlockModalOpen}
+          onClose={() => setUnlockModalOpen(false)}
+          targetModuleName={selectedLockedModule}
+          onSimulateUnlock={() => {
+            setIsNewStudentMode(false);
+            setUnlockModalOpen(false);
+          }}
+        />
+        <MobileProfileSheet
+          isOpen={mobileProfileSheetOpen}
+          onClose={() => setMobileProfileSheetOpen(false)}
+          userName={currentUserName}
+          telemetry={telemetry}
+          onLogout={onLogout}
+          onOpenEarn={() => {
+            setSelectedModuleView(null);
+            setActiveTopicWs(null);
+            setDockTab('income');
+            if (typeof window !== 'undefined') window.location.hash = '#earnings';
+          }}
+          onOpenPlacement={() => {
+            setSelectedModuleView(null);
+            setActiveTopicWs(null);
+            setDockTab('placement');
+            if (typeof window !== 'undefined') window.location.hash = '#placement';
+          }}
+          onOpenLogin={() => setAuthModalOpen(true)}
+          onOpenAdvisor={onOpenAdvisor}
+        />
+        <FutureAuthModal
+          isOpen={authModalOpen}
+          onClose={() => setAuthModalOpen(false)}
+          onSuccess={handleAuthSuccess}
+        />
+      </div>
     );
   }
 

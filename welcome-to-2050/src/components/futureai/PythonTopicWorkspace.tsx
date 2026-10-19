@@ -1440,7 +1440,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
         const englishQ = getExactHrQuestion(interviewQuestionIdx, 'en');
         utteranceText =
           interviewQuestionIdx === 0 && !isRepeat && !overrideText
-            ? `Namaste Subodh, aapke Google aur Microsoft technical interview round mein aapka swagat hai. Main ${hrSettings.hrName} hoon. Chaliye pehle prashn se shuru karte hain: ${englishQ}`
+            ? `Welcome to your Python Technical Assessment. Let us begin with question 1: ${englishQ}`
             : englishQ;
       }
 
