@@ -18,7 +18,8 @@ import {
   Zap,
   FolderKanban,
   ExternalLink,
-  BookOpen
+  BookOpen,
+  Mic
 } from 'lucide-react';
 import { TOPICS, Topic, Lesson } from '../PythonChapterView';
 import type { WorkspaceStepId } from '../PythonTopicWorkspace';
@@ -147,54 +148,115 @@ export const MobilePythonChapterView: React.FC<MobilePythonChapterViewProps> = (
       {/* ─── MAIN CONTENT SCROLL AREA ─── */}
       <div className="px-4 pt-3.5 space-y-4 max-w-md mx-auto text-left">
 
-        {/* ─── 2. LIGHT HERO VIDEO CARD (Coursera / YouTube Style) ─── */}
-        <div className="relative overflow-hidden rounded-3xl bg-white border border-slate-200/90 shadow-sm">
-          {/* 16:9 Aspect Ratio Banner Thumbnail */}
-          <div className="relative aspect-video w-full overflow-hidden bg-slate-100">
+        {/* ─── 2. ATTRACTIVE HIGH-TECH HERO BANNER (3D Python + Quick Launchers) ─── */}
+        <div className="relative overflow-hidden rounded-3xl bg-white border border-slate-200/90 shadow-md">
+          {/* 16:9 Aspect Ratio Hero Banner Thumbnail */}
+          <div className="relative aspect-video w-full overflow-hidden bg-slate-950">
             <img
               src="/images/python_mastery_banner_hd.jpg"
-              alt="Python Mastery Video Player"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '/images/what_is_python_video_poster.jpg';
+              }}
+              alt="Python Mastery Banner"
               className="w-full h-full object-cover"
             />
-            {/* Subtle Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
+            {/* Soft Ambient Vignette Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-900/30 to-transparent" />
 
-            {/* Glowing Big Play Button */}
+            {/* Glowing Big Center Play Button */}
             <button
               type="button"
               onClick={() => {
                 playTactile();
                 onOpenTopic(1, 'learn');
               }}
-              className="absolute inset-0 m-auto w-14 h-14 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-xl shadow-blue-500/40 hover:scale-105 active:scale-95 transition-all border-2 border-white cursor-pointer"
+              className="absolute inset-0 m-auto w-14 h-14 rounded-full bg-gradient-to-tr from-blue-600 via-sky-500 to-indigo-600 text-white flex items-center justify-center shadow-xl shadow-blue-500/50 hover:scale-105 active:scale-95 transition-all border-2 border-white cursor-pointer group"
               aria-label="Start Video"
             >
-              <Play className="w-6 h-6 fill-white ml-0.5" />
+              <Play className="w-6 h-6 fill-white ml-0.5 group-hover:scale-110 transition-transform" />
             </button>
 
-            {/* Top Right Flagship Badge */}
-            <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-md border border-white text-blue-700 text-[10px] font-black flex items-center gap-1 shadow-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping" />
-              <span>Python 3.12 Live</span>
+            {/* Top Left: Live Status Badge */}
+            <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/20 text-white text-[9.5px] font-black flex items-center gap-1.5 shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Python 3.12 Enterprise</span>
+            </div>
+
+            {/* Top Right: 100% Free Foundation Chip */}
+            <div className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-[9.5px] font-black flex items-center gap-1 shadow-xs border border-white/30">
+              <span>⭐</span>
+              <span>100% FREE</span>
             </div>
 
             {/* Video Duration / Chapter Pill */}
-            <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white font-bold">
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/80 backdrop-blur-md">
+            <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-xs text-white font-bold">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/85 backdrop-blur-md border border-white/15">
                 <Clock className="w-3.5 h-3.5 text-sky-400" />
-                <span>Topic 1: Foundations</span>
+                <span className="text-[10px] font-black">Chapter 1: What is Programming?</span>
               </div>
-              <span className="px-2 py-0.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] shadow-xs">
-                100% FREE
+              <span className="text-[9px] font-black text-amber-300 bg-black/60 px-2 py-0.5 rounded-lg border border-white/10">
+                08:00 min
               </span>
             </div>
           </div>
 
-          {/* Under-Player Progress Bar & Quick Start */}
-          <div className="p-4 space-y-3">
-            <div>
-              <div className="flex items-center justify-between text-xs mb-1">
-                <span className="font-extrabold text-slate-800">Course Progress</span>
+          {/* Under-Player Content & 3 Quick Topic Launchers */}
+          <div className="p-3.5 space-y-3">
+            {/* Quick Launchers for Chapter 1: Video, Game, Mock Interview */}
+            <div className="grid grid-cols-3 gap-1.5">
+              {/* 1. Video Launcher */}
+              <button
+                type="button"
+                onClick={() => {
+                  playTactile();
+                  onOpenTopic(1, 'learn');
+                }}
+                className="p-2 rounded-xl bg-blue-50 hover:bg-blue-100/80 border border-blue-200/80 text-blue-800 flex flex-col items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs"
+              >
+                <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs">
+                  <Play className="w-3 h-3 fill-white ml-0.5" />
+                </div>
+                <span className="text-[10px] font-black leading-none">1. Video</span>
+                <span className="text-[7.5px] font-bold text-blue-600">08:00 min</span>
+              </button>
+
+              {/* 2. Game Launcher */}
+              <button
+                type="button"
+                onClick={() => {
+                  playTactile();
+                  onOpenTopic(1, 'play');
+                }}
+                className="p-2 rounded-xl bg-purple-50 hover:bg-purple-100/80 border border-purple-200/80 text-purple-800 flex flex-col items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs"
+              >
+                <div className="w-6 h-6 rounded-lg bg-purple-600 text-white flex items-center justify-center shadow-xs">
+                  <Gamepad2 className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-[10px] font-black leading-none">2. Game</span>
+                <span className="text-[7.5px] font-bold text-purple-600">Puzzle Quest</span>
+              </button>
+
+              {/* 3. Mock Interview Launcher */}
+              <button
+                type="button"
+                onClick={() => {
+                  playTactile();
+                  onOpenTopic(1, 'interview');
+                }}
+                className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200/80 text-emerald-800 flex flex-col items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs"
+              >
+                <div className="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-xs">
+                  <Mic className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-[10px] font-black leading-none">3. Interview</span>
+                <span className="text-[7.5px] font-bold text-emerald-600">AI Recruiter</span>
+              </button>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="pt-0.5">
+              <div className="flex items-center justify-between text-[11px] mb-1">
+                <span className="font-extrabold text-slate-800">Module Progress</span>
                 <span className="font-black text-blue-600">{progressPercent}%</span>
               </div>
               <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
@@ -203,7 +265,7 @@ export const MobilePythonChapterView: React.FC<MobilePythonChapterViewProps> = (
                   style={{ width: `${Math.max(5, progressPercent)}%` }}
                 />
               </div>
-              <div className="flex justify-between text-[10px] text-slate-500 font-bold mt-1">
+              <div className="flex justify-between text-[9.5px] text-slate-500 font-bold mt-1">
                 <span>{doneLessons} of {totalLessons} Lessons Done</span>
                 <span>8 Real-World Projects</span>
               </div>
@@ -216,10 +278,10 @@ export const MobilePythonChapterView: React.FC<MobilePythonChapterViewProps> = (
                 playTactile();
                 onOpenTopic(1, 'learn');
               }}
-              className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-extrabold text-xs shadow-md shadow-blue-500/25 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-600 via-sky-500 to-indigo-600 text-white font-black text-xs shadow-md shadow-blue-500/25 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Play className="w-4 h-4 fill-white" />
-              <span>Resume Topic 1: What is Programming?</span>
+              <span>Resume Chapter 1: What is Programming?</span>
             </button>
           </div>
         </div>
@@ -405,15 +467,6 @@ export const MobilePythonChapterView: React.FC<MobilePythonChapterViewProps> = (
 
                       <button
                         type="button"
-                        onClick={(e) => handleActionClick(e, topic.id, 'practice', isFree, topic.title)}
-                        className="py-2 px-1 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 text-[10px] font-black flex flex-col items-center gap-1 active:scale-95 transition-all cursor-pointer"
-                      >
-                        <FileText className="w-3.5 h-3.5" />
-                        <span>MCQ</span>
-                      </button>
-
-                      <button
-                        type="button"
                         onClick={(e) => handleActionClick(e, topic.id, 'play', isFree, topic.title)}
                         className="py-2 px-1 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 text-[10px] font-black flex flex-col items-center gap-1 active:scale-95 transition-all cursor-pointer"
                       >
@@ -423,11 +476,20 @@ export const MobilePythonChapterView: React.FC<MobilePythonChapterViewProps> = (
 
                       <button
                         type="button"
-                        onClick={(e) => handleActionClick(e, topic.id, 'code', isFree, topic.title)}
+                        onClick={(e) => handleActionClick(e, topic.id, 'interview', isFree, topic.title)}
                         className="py-2 px-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-[10px] font-black flex flex-col items-center gap-1 active:scale-95 transition-all cursor-pointer"
                       >
-                        <Code2 className="w-3.5 h-3.5" />
-                        <span>Code</span>
+                        <Mic className="w-3.5 h-3.5" />
+                        <span>Interview</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => handleActionClick(e, topic.id, 'practice', isFree, topic.title)}
+                        className="py-2 px-1 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 text-[10px] font-black flex flex-col items-center gap-1 active:scale-95 transition-all cursor-pointer"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>Practice</span>
                       </button>
                     </div>
 

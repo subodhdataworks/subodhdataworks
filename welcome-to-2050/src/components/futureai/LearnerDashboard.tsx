@@ -83,6 +83,7 @@ import { MobileProfileSheet } from './mobile/MobileProfileSheet';
 import { MobileDashboardHome } from './mobile/MobileDashboardHome';
 import { MobilePlacementHub } from './mobile/MobilePlacementHub';
 import { MobilePythonChapterView } from './mobile/MobilePythonChapterView';
+import { MobileTopicWorkspace } from './mobile/MobileTopicWorkspace';
 import { MobileSqlChapterView } from './mobile/MobileSqlChapterView';
 import { MobileExcelChapterView } from './mobile/MobileExcelChapterView';
 import { MobileGameArenaHub } from './mobile/MobileGameArenaHub';
@@ -1214,36 +1215,23 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   if (selectedModuleView === 'python' && activeTopicWs !== null) {
     return (
       <>
-        {/* Mobile (< 768px): Native Android Mobile Python Chapter View */}
+        {/* Mobile (< 768px): Native Mobile Topic Workspace with Video, Game, Mock Interview matching reference screenshots */}
         <div className="md:hidden min-h-screen bg-slate-50">
-          <MobileTopBar
+          <MobileTopicWorkspace
             userName={currentUserName}
-            telemetry={telemetry}
-            onOpenProfile={() => setMobileProfileSheetOpen(true)}
-            onOpenLogin={() => setAuthModalOpen(true)}
-          />
-          <MobilePythonChapterView
-            userName={userName}
+            topicId={activeTopicWs}
+            initialStep={targetStep}
             onBack={() => {
               setActiveTopicWs(null);
-              setSelectedModuleView(null);
-              setDockTab('home');
-              if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-            }}
-            onOpenTopic={(topicId: number, step?: WorkspaceStepId) => {
-              setActiveTopicWs(topicId);
-              setTargetStep(step || 'learn');
+              if (typeof window !== 'undefined') {
+                window.location.hash = '#python';
+              }
             }}
             onOpenUnlockModal={(mod?: string) => {
               setSelectedLockedModule(mod || 'Python Advanced Track');
               setUnlockModalOpen(true);
             }}
             onOpenAdvisor={onOpenAdvisor}
-          />
-          <MobileBottomNav
-            currentTab="learn"
-            onSelectTab={handleMobileTabSelect}
-            unreadEarnBadge={true}
           />
         </div>
 
