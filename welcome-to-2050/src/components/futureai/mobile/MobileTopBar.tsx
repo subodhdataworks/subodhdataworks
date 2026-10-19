@@ -53,7 +53,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
         }
       }
     }
-    return 500;
+    return 0;
   });
 
   const [avatarUrl, setAvatarUrl] = useState<string>(() => {
@@ -232,7 +232,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
             </span>
           </button>
 
-          {/* 3. Notification Bell with Badge 3 */}
+          {/* 3. Notification Bell (Only show badge when unread > 0, default 0) */}
           <button
             type="button"
             onClick={handleNotificationsClick}
@@ -241,9 +241,6 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
             title="Notifications"
           >
             <Bell className="w-4 h-4" />
-            <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-rose-500 text-white text-[8.5px] font-black flex items-center justify-center ring-1.5 ring-white">
-              3
-            </span>
           </button>
 
           {/* 4. Profile Picture Avatar */}
