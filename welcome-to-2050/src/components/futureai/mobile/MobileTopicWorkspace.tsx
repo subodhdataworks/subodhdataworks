@@ -459,7 +459,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       }
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
-        audio: true,
+        audio: false, // Critical: Only request video mirror so mobile mic is NOT locked by MediaStream
       });
       userMediaStreamRef.current = stream;
       if (userCameraVideoRef.current) {
@@ -467,32 +467,11 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
         userCameraVideoRef.current.play().catch(() => {});
       }
 
-      // Initialize Web Audio API AnalyserNode for Real-Time Student Voice Detection
-      try {
-        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-        if (AudioContextClass) {
-          if (!voiceAudioCtxRef.current) {
-            voiceAudioCtxRef.current = new AudioContextClass();
-          }
-          if (voiceAudioCtxRef.current.state === 'suspended') {
-            voiceAudioCtxRef.current.resume().catch(() => {});
-          }
-          const audioSrc = voiceAudioCtxRef.current.createMediaStreamSource(stream);
-          const analyser = voiceAudioCtxRef.current.createAnalyser();
-          analyser.fftSize = 256;
-          analyser.smoothingTimeConstant = 0.3;
-          audioSrc.connect(analyser);
-          analyserRef.current = analyser;
-        }
-      } catch (audioErr) {
-        console.warn("Web Audio Analyser setup note:", audioErr);
-      }
-
       setHasCameraPermission(true);
       setIsCameraOn(true);
     } catch (err: any) {
-      console.warn("Camera/mic permission error:", err);
-      setCameraError(err.message || "Permission denied");
+      console.warn("Camera permission error:", err);
+      setCameraError(err.message || "Camera permission denied");
       setHasCameraPermission(false);
       setIsCameraOn(false);
     }
@@ -578,10 +557,9 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   const currentHr = HR_PROFILES[selectedHr];
 
   const recognitionRef = useRef<any>(null);
-  const voiceStreamRef = useRef<MediaStream | null>(null);
-  const voiceAudioCtxRef = useRef<any>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const voiceCheckIntervalRef = useRef<any>(null);
+  const userRequestedRecordingRef = useRef<boolean>(false);
+  const speechRestartTimerRef = useRef<any>(null);
+  const speechSpeakingTimerRef = useRef<any>(null);
   const [isStudentSpeakingAudio, setIsStudentSpeakingAudio] = useState<boolean>(false);
   const speechAccumulatedRef = useRef<string>('');
   const autoNextTimerRef = useRef<any>(null);
@@ -597,40 +575,29 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     isInterviewSubmittedRef.current = isInterviewSubmitted;
   }, [isInterviewSubmitted]);
 
-  // Voice Activity Detection Loop: Monitors student's mic volume ONLY for live visual indicator
-  useEffect(() => {
-    if (activeStep !== 'interview') return;
-
-    let animId: number;
-    const dataArray = new Uint8Array(128);
-
-    const checkAudioLoop = () => {
-      if (analyserRef.current) {
-        analyserRef.current.getByteFrequencyData(dataArray);
-        let sum = 0;
-        for (let i = 0; i < 128; i++) sum += dataArray[i];
-        const avg = sum / 128;
-        const isLoud = avg > 11; // Hardware voice activity detected
-        setIsStudentSpeakingAudio(isLoud);
-      }
-      animId = requestAnimationFrame(checkAudioLoop);
-    };
-
-    animId = requestAnimationFrame(checkAudioLoop);
-    return () => {
-      cancelAnimationFrame(animId);
-    };
-  }, [activeStep]);
-
-  const stopVoiceActivityResources = () => {
-    if (voiceCheckIntervalRef.current) {
-      clearInterval(voiceCheckIntervalRef.current);
-      voiceCheckIntervalRef.current = null;
+  const stopSpeechRecognition = () => {
+    userRequestedRecordingRef.current = false;
+    if (speechRestartTimerRef.current) {
+      clearTimeout(speechRestartTimerRef.current);
+      speechRestartTimerRef.current = null;
     }
-    if (voiceStreamRef.current) {
-      voiceStreamRef.current.getTracks().forEach((tr) => tr.stop());
-      voiceStreamRef.current = null;
+    if (speechSpeakingTimerRef.current) {
+      clearTimeout(speechSpeakingTimerRef.current);
+      speechSpeakingTimerRef.current = null;
     }
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.onstart = null;
+        recognitionRef.current.onresult = null;
+        recognitionRef.current.onerror = null;
+        recognitionRef.current.onend = null;
+        recognitionRef.current.stop();
+      } catch {}
+      recognitionRef.current = null;
+    }
+    setIsInterviewRecording(false);
+    isInterviewRecordingRef.current = false;
+    setIsStudentSpeakingAudio(false);
   };
 
   const getIndianVoice = (isFem: boolean, isHindiLang: boolean = false) => {
@@ -716,95 +683,164 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     }
   };
 
-  const startSpeechRecognitionLive = (preferredLang?: string) => {
-    setIsInterviewRecording(true);
-    isInterviewRecordingRef.current = true;
+  const getSpeechRecognitionClass = () => {
+    if (typeof window === 'undefined') return null;
+    return (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition || null;
+  };
 
-    const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+  const initAndStartRecognition = (preferredLang?: string) => {
+    const SpeechRecognitionClass = getSpeechRecognitionClass();
 
-    if (!SpeechRecognition) {
-      setSpeechTip("🎙️ Mic Active: Bolna shuru kijiye");
+    if (!SpeechRecognitionClass) {
+      setSpeechTip("⚠️ Speech Recognition is not supported on this browser. Please type your answer or use Android Chrome.");
+      setIsInterviewRecording(false);
+      isInterviewRecordingRef.current = false;
+      userRequestedRecordingRef.current = false;
       return;
     }
 
+    // Clean up existing instance before starting fresh
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.onstart = null;
+        recognitionRef.current.onresult = null;
+        recognitionRef.current.onerror = null;
+        recognitionRef.current.onend = null;
+        recognitionRef.current.abort();
+      } catch {}
+      recognitionRef.current = null;
+    }
+
     try {
-      if (recognitionRef.current) {
-        try {
-          recognitionRef.current.stop();
-        } catch {}
-      }
-      const recognition = new SpeechRecognition();
+      const recognition = new SpeechRecognitionClass();
       const langToUse = preferredLang || (selectedHr === 'female' ? 'hi-IN' : 'en-IN');
       recognition.lang = langToUse;
-      // continuous = false is required on Android Chrome to prevent immediate aborted errors
-      recognition.continuous = false;
+      // continuous = true allows smooth speech without cutting off every 2 seconds
+      recognition.continuous = true;
       recognition.interimResults = true;
       recognition.maxAlternatives = 1;
 
       recognition.onstart = () => {
+        // Crucial: "Mic On: Listening" must only appear when the recognition service is actually running
         setIsInterviewRecording(true);
         isInterviewRecordingRef.current = true;
-        setSpeechTip("● Listening: Speak your answer...");
+        setIsStudentSpeakingAudio(true);
+        setSpeechTip(
+          selectedHr === 'female'
+            ? "● Listening: बोलिए, आपकी आवाज़ लाइव टाइप हो रही है..."
+            : "● Listening: Speak your answer, transcribing live..."
+        );
+      };
+
+      recognition.onspeechstart = () => {
+        setIsStudentSpeakingAudio(true);
+      };
+
+      recognition.onspeechend = () => {
+        if (speechSpeakingTimerRef.current) clearTimeout(speechSpeakingTimerRef.current);
+        speechSpeakingTimerRef.current = setTimeout(() => {
+          setIsStudentSpeakingAudio(false);
+        }, 800);
       };
 
       recognition.onresult = (event: any) => {
-        let currentUtterance = '';
-        for (let i = 0; i < event.results.length; i++) {
-          currentUtterance += event.results[i][0].transcript + ' ';
+        let interimTranscript = '';
+        let newlyFinalized = '';
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const res = event.results[i];
+          const text = res[0]?.transcript || '';
+          if (res.isFinal) {
+            newlyFinalized += text + ' ';
+          } else {
+            interimTranscript += text;
+          }
         }
-        if (currentUtterance.trim()) {
-          const combined = (speechAccumulatedRef.current + ' ' + currentUtterance.trim()).trim();
-          setInterviewAnswerText(combined);
-          setSpeechTip("● Live voice: " + currentUtterance.trim());
+
+        if (newlyFinalized.trim()) {
+          speechAccumulatedRef.current = (speechAccumulatedRef.current + ' ' + newlyFinalized.trim()).trim();
+        }
+
+        const liveText = (speechAccumulatedRef.current + (interimTranscript ? ' ' + interimTranscript.trim() : '')).trim();
+        if (liveText) {
+          setInterviewAnswerText(liveText);
+          setIsStudentSpeakingAudio(true);
+          const previewWord = (interimTranscript.trim() || newlyFinalized.trim());
+          setSpeechTip("● Live: " + previewWord);
         }
       };
 
-      recognition.onerror = (err: any) => {
-        console.warn("Speech recognition notice:", err?.error);
-        if (err?.error === 'not-allowed') {
-          setSpeechTip("⚠️ Mic permission blocked. Tap Red Mic button to allow.");
+      recognition.onerror = (event: any) => {
+        const error = event.error;
+        console.warn("SpeechRecognition error:", error);
+
+        if (error === 'not-allowed' || error === 'service-not-allowed') {
+          userRequestedRecordingRef.current = false;
+          setIsInterviewRecording(false);
+          isInterviewRecordingRef.current = false;
+          setIsStudentSpeakingAudio(false);
+          setSpeechTip("⚠️ Mic permission blocked. Tap browser lock/settings icon to allow microphone.");
+        } else if (error === 'audio-capture') {
+          userRequestedRecordingRef.current = false;
+          setIsInterviewRecording(false);
+          isInterviewRecordingRef.current = false;
+          setIsStudentSpeakingAudio(false);
+          setSpeechTip("⚠️ Mic unavailable. Please ensure no other app is using your microphone.");
+        } else if (error === 'network') {
+          setSpeechTip("⚠️ Speech network error. Please check your internet connection.");
+        } else if (error === 'no-speech') {
+          // Normal silence; do not cancel recording
+          setSpeechTip("● Listening: No speech detected yet, please speak...");
         }
       };
 
       recognition.onend = () => {
-        if (interviewAnswerText) {
-          speechAccumulatedRef.current = interviewAnswerText;
-        }
-        if (isInterviewRecordingRef.current && !isInterviewSubmittedRef.current && recognitionRef.current === recognition) {
-          setTimeout(() => {
-            try {
-              recognition.start();
-            } catch {}
+        // If user still intends to record and interview has not been submitted, restart with a fresh instance
+        if (userRequestedRecordingRef.current && !isInterviewSubmittedRef.current) {
+          if (speechRestartTimerRef.current) clearTimeout(speechRestartTimerRef.current);
+          speechRestartTimerRef.current = setTimeout(() => {
+            if (userRequestedRecordingRef.current && !isInterviewSubmittedRef.current) {
+              initAndStartRecognition(langToUse);
+            }
           }, 150);
+        } else {
+          setIsInterviewRecording(false);
+          isInterviewRecordingRef.current = false;
+          setIsStudentSpeakingAudio(false);
         }
       };
 
       recognitionRef.current = recognition;
-      try {
-        recognition.start();
-      } catch {}
-    } catch (e) {
-      console.warn("Speech recognition setup:", e);
+      recognition.start();
+    } catch (err: any) {
+      console.warn("initAndStartRecognition exception:", err);
+      setIsInterviewRecording(false);
+      isInterviewRecordingRef.current = false;
+      setIsStudentSpeakingAudio(false);
+      if (err?.name === 'InvalidStateError') {
+        if (speechRestartTimerRef.current) clearTimeout(speechRestartTimerRef.current);
+        speechRestartTimerRef.current = setTimeout(() => {
+          if (userRequestedRecordingRef.current && !isInterviewSubmittedRef.current) {
+            initAndStartRecognition(preferredLang);
+          }
+        }, 200);
+      } else {
+        setSpeechTip("⚠️ Could not activate mic: " + (err.message || 'Error'));
+      }
     }
   };
 
   const toggleSpeechRecording = () => {
     playTactile();
 
-    if (isInterviewRecording) {
-      if (recognitionRef.current) {
-        try {
-          recognitionRef.current.stop();
-        } catch {}
-      }
-      setIsInterviewRecording(false);
-      isInterviewRecordingRef.current = false;
+    if (isInterviewRecording || userRequestedRecordingRef.current) {
+      stopSpeechRecognition();
       setSpeechTip("✓ Speaking paused. Click Submit to evaluate!");
     } else {
-      setIsInterviewRecording(true);
-      isInterviewRecordingRef.current = true;
-      startSpeechRecognitionLive(selectedHr === 'female' ? 'hi-IN' : 'en-IN');
+      userRequestedRecordingRef.current = true;
+      setIsMicHighlighted(false);
+      setSpeechTip("⏳ Activating microphone...");
+      initAndStartRecognition(selectedHr === 'female' ? 'hi-IN' : 'en-IN');
     }
   };
 
@@ -899,14 +935,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     playTactile();
 
     // Stop recording if active
-    if (isInterviewRecording && recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-      } catch {}
-      stopVoiceActivityResources();
-      setIsInterviewRecording(false);
-      isInterviewRecordingRef.current = false;
-    }
+    stopSpeechRecognition();
 
     const result = evaluateInterviewAnswerDeterministically(interviewAnswerText, currentInterviewQData);
     setEvaluationResult(result);
@@ -961,6 +990,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
   const handleSelectQuestion = (qNum: number) => {
     playTactile();
+    stopSpeechRecognition();
     if (autoNextTimerRef.current) {
       clearInterval(autoNextTimerRef.current);
       autoNextTimerRef.current = null;
@@ -1899,11 +1929,14 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   <textarea
                     rows={4}
                     value={interviewAnswerText}
-                    onChange={(e) => setInterviewAnswerText(e.target.value)}
+                    onChange={(e) => {
+                      setInterviewAnswerText(e.target.value);
+                      speechAccumulatedRef.current = e.target.value;
+                    }}
                     placeholder={
                       selectedHr === 'female'
-                        ? "माइक में बोलें... आपके बोलने से यहाँ लाइव टाइप होगा (या 'Auto-Fill' दबाएं)।"
-                        : "Speak into your mic... your spoken words will type here in real time (or click 'Auto-Fill')."
+                        ? "माइक में बोलें... आपके बोलने से यहाँ लाइव टाइप होगा..."
+                        : "Speak into your mic... your spoken words will type here in real time..."
                     }
                     className="w-full text-xs text-slate-900 bg-transparent border-none focus:outline-none leading-relaxed placeholder:text-slate-400 font-medium resize-none"
                   />
