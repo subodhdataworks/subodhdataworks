@@ -23,6 +23,7 @@ interface SystemSettingsProps {
   auditLogs: AdminAuditLog[];
   onUpdateSettings: (updates: Partial<SystemBusinessSettings>) => Promise<void>;
   onRefresh: () => void;
+  isDark?: boolean;
 }
 
 export const SystemSettings: React.FC<SystemSettingsProps> = ({
@@ -30,7 +31,12 @@ export const SystemSettings: React.FC<SystemSettingsProps> = ({
   auditLogs,
   onUpdateSettings,
   onRefresh,
+  isDark = false,
 }) => {
+  const cardBg = isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200/90 shadow-sm';
+  const textPrimary = isDark ? 'text-white' : 'text-slate-900';
+  const textMuted = isDark ? 'text-slate-400' : 'text-slate-500';
+
   // Config state
   const [studentComm, setStudentComm] = useState(settings.studentReferralCommission.toString());
   const [influencerComm, setInfluencerComm] = useState(settings.influencerReferralCommission.toString());

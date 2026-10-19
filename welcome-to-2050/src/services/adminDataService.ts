@@ -76,6 +76,7 @@ export class AdminDataService {
     const pendingWithdrawals = withdrawals.filter((w) => w.status === 'REQUESTED' || w.status === 'UNDER_REVIEW' || w.status === 'APPROVED');
     const paidWithdrawals = withdrawals.filter((w) => w.status === 'PAID');
 
+    // Count real course enrollments strictly from verified purchases
     const courseEnrollmentMap: Record<string, number> = {
       'Python for Data Analytics & AI': 0,
       'SQL & Databases Mastery': 0,
@@ -84,21 +85,29 @@ export class AdminDataService {
       'GenAI for Data Engineers': 0,
     };
 
-    allUsers.forEach((u, idx) => {
-      // Attribute initial realistic curriculum distributions
-      if (idx % 2 === 0) courseEnrollmentMap['Python for Data Analytics & AI']++;
-      if (idx % 3 === 0) courseEnrollmentMap['SQL & Databases Mastery']++;
-      if (idx % 4 === 0) courseEnrollmentMap['Excel & Business Reporting']++;
-      if (idx % 5 === 0) courseEnrollmentMap['Power BI Dashboards']++;
-      if (idx % 6 === 0) courseEnrollmentMap['GenAI for Data Engineers']++;
+    verifiedPayments.forEach((p) => {
+      const cName = p.courseName || '';
+      if (cName.includes('Python') || p.courseId === 'python') {
+        courseEnrollmentMap['Python for Data Analytics & AI']++;
+      } else if (cName.includes('SQL') || p.courseId === 'sql') {
+        courseEnrollmentMap['SQL & Databases Mastery']++;
+      } else if (cName.includes('Excel') || p.courseId === 'excel') {
+        courseEnrollmentMap['Excel & Business Reporting']++;
+      } else if (cName.includes('Power BI') || p.courseId === 'powerbi') {
+        courseEnrollmentMap['Power BI Dashboards']++;
+      } else if (cName.includes('GenAI') || p.courseId === 'genai') {
+        courseEnrollmentMap['GenAI for Data Engineers']++;
+      } else {
+        courseEnrollmentMap['Python for Data Analytics & AI']++;
+      }
     });
 
     return {
       totalUsers: allUsers.length,
       activeUsers: activeCount,
       suspendedUsers: suspendedCount,
-      enrolledStudents: verifiedPayments.length > 0 ? verifiedPayments.length : Math.round(allUsers.length * 0.4),
-      totalRevenue: totalRev > 0 ? totalRev : Math.round(allUsers.length * 0.4) * 987,
+      enrolledStudents: verifiedPayments.length,
+      totalRevenue: totalRev,
       totalReferrals: allUsers.filter((u) => u.referredBy).length,
       pendingWithdrawalsCount: pendingWithdrawals.length,
       pendingWithdrawalsAmount: pendingWithdrawals.reduce((a, b) => a + b.amount, 0),
@@ -209,69 +218,24 @@ export class AdminDataService {
     if (typeof window === 'undefined') return [];
     try {
       const raw = localStorage.getItem(PAYMENTS_KEY);
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        const list: SystemPaymentRecord[] = JSON.parse(raw);
+        // Strict purge: remove any previously seeded fake demo transactions
+        const cleanList = list.filter(
+          (p) =>
+            !p.id.startsWith('tx_pay_9920') &&
+            p.userName !== 'Aakash Verma' &&
+            p.userName !== 'Priya Sharma' &&
+            p.userName !== 'Rahul Kumar'
+        );
+        if (cleanList.length !== list.length) {
+          localStorage.setItem(PAYMENTS_KEY, JSON.stringify(cleanList));
+        }
+        return cleanList;
+      }
     } catch {}
 
-    // Initial seeded verified transactions from real registered students
-    const initialList: SystemPaymentRecord[] = [
-      {
-        id: 'tx_pay_99201',
-        userId: 'usr_subodh_lead_1',
-        userName: 'Aakash Verma',
-        userEmail: 'aakash.v@gmail.com',
-        userPhone: '9876543210',
-        amount: 987,
-        courseId: 'python',
-        courseName: 'Data Analytics & AI Super 30 Flagship',
-        status: 'SUCCESS',
-        provider: 'UPI',
-        paymentRef: 'UPI/2026/8947265819',
-        orderId: 'ORD_FUTURE_1001',
-        date: new Date(Date.now() - 3600000 * 24 * 2).toISOString(),
-        verifiedBy: 'Razorpay AutoWebhook',
-        refundStatus: 'NONE',
-      },
-      {
-        id: 'tx_pay_99202',
-        userId: 'usr_priya_sharma',
-        userName: 'Priya Sharma',
-        userEmail: 'priyasharma.ai@gmail.com',
-        userPhone: '9812345678',
-        amount: 987,
-        courseId: 'python',
-        courseName: 'Data Analytics & AI Super 30 Flagship',
-        status: 'SUCCESS',
-        provider: 'Razorpay',
-        paymentRef: 'pay_NzY2291048123',
-        orderId: 'ORD_FUTURE_1002',
-        date: new Date(Date.now() - 3600000 * 24 * 3).toISOString(),
-        verifiedBy: 'Razorpay AutoWebhook',
-        refundStatus: 'NONE',
-      },
-      {
-        id: 'tx_pay_99203',
-        userId: 'usr_rahul_kumar',
-        userName: 'Rahul Kumar',
-        userEmail: 'rahul.k99@gmail.com',
-        userPhone: '9123456789',
-        amount: 987,
-        courseId: 'python',
-        courseName: 'Data Analytics & AI Super 30 Flagship',
-        status: 'SUCCESS',
-        provider: 'UPI',
-        paymentRef: 'UPI/2026/7788992211',
-        orderId: 'ORD_FUTURE_1003',
-        date: new Date(Date.now() - 3600000 * 24 * 4).toISOString(),
-        verifiedBy: 'Razorpay AutoWebhook',
-        refundStatus: 'NONE',
-      },
-    ];
-
-    try {
-      localStorage.setItem(PAYMENTS_KEY, JSON.stringify(initialList));
-    } catch {}
-
-    return initialList;
+    return [];
   }
 
   public static async recordPayment(payment: Omit<SystemPaymentRecord, 'id' | 'date'>): Promise<SystemPaymentRecord> {

@@ -16,6 +16,9 @@ export interface BunnyStreamConfig {
   tokenAuthEnabled: boolean;
 }
 
+const BUNNY_CONFIG_STORAGE_KEY = 'futureai_bunny_stream_config_v1';
+const BUNNY_VIDEOS_STORAGE_KEY = 'futureai_lesson_bunny_videos_v1';
+
 // Default Configuration for Future IT Industry
 export const BUNNY_STREAM_CONFIG: BunnyStreamConfig = {
   // Official Bunny Stream Library ID
@@ -26,12 +29,30 @@ export const BUNNY_STREAM_CONFIG: BunnyStreamConfig = {
 };
 
 /**
+ * Get dynamic or stored Bunny Stream configuration
+ */
+export function getBunnyConfig(): BunnyStreamConfig {
+  if (typeof window !== 'undefined') {
+    try {
+      const raw = localStorage.getItem(BUNNY_CONFIG_STORAGE_KEY);
+      if (raw) return { ...BUNNY_STREAM_CONFIG, ...JSON.parse(raw) };
+    } catch {}
+  }
+  return BUNNY_STREAM_CONFIG;
+}
+
+/**
+ * Save updated Bunny Stream configuration from Admin Panel
+ */
+export function saveBunnyConfig(config: BunnyStreamConfig): void {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(BUNNY_CONFIG_STORAGE_KEY, JSON.stringify(config));
+  }
+}
+
+/**
  * Registry of Lesson Videos mapped to Bunny.net Video IDs.
  * Key format: `topic_{topicId}_lesson_{lessonIndex}` or `course_{courseId}_lesson_{lessonId}`
- * 
- * When you upload a video to Bunny.net:
- * 1. Copy the "Video ID" from Bunny Stream (e.g. 'a819b21f-9988-4412-92ab-xxxx')
- * 2. Put it in this registry below, or pass it directly to <BunnyVideoPlayer videoId="..." />
  */
 export const LESSON_BUNNY_VIDEOS: Record<string, { videoId: string; title: string; duration?: string }> = {
   // Topic 1: Introduction to Programming
@@ -51,6 +72,40 @@ export const LESSON_BUNNY_VIDEOS: Record<string, { videoId: string; title: strin
     duration: '05:45',
   },
 };
+
+/**
+ * Get dynamic or stored Lesson Bunny Videos mapping
+ */
+export function getLessonBunnyVideos(): Record<string, { videoId: string; title: string; duration?: string }> {
+  if (typeof window !== 'undefined') {
+    try {
+      const raw = localStorage.getItem(BUNNY_VIDEOS_STORAGE_KEY);
+      if (raw) return { ...LESSON_BUNNY_VIDEOS, ...JSON.parse(raw) };
+    } catch {}
+  }
+  return { ...LESSON_BUNNY_VIDEOS };
+}
+
+/**
+ * Save updated Bunny Video ID for a specific topic or lesson
+ */
+export function saveLessonBunnyVideo(key: string, data: { videoId: string; title: string; duration?: string }): Record<string, { videoId: string; title: string; duration?: string }> {
+  const current = getLessonBunnyVideos();
+  current[key] = data;
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(BUNNY_VIDEOS_STORAGE_KEY, JSON.stringify(current));
+  }
+  return current;
+}
+
+/**
+ * Save bulk updated Bunny Videos mapping
+ */
+export function saveAllLessonBunnyVideos(allVideos: Record<string, { videoId: string; title: string; duration?: string }>): void {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(BUNNY_VIDEOS_STORAGE_KEY, JSON.stringify(allVideos));
+  }
+}
 
 /**
  * Builds the official Bunny.net Stream Embed Iframe URL.

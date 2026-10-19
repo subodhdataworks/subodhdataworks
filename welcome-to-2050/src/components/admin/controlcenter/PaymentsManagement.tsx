@@ -22,13 +22,18 @@ import { AdminAuthService } from '../../../services/adminAuthService';
 interface PaymentsManagementProps {
   payments: SystemPaymentRecord[];
   onRefresh: () => void;
+  isDark?: boolean;
 }
 
-export const PaymentsManagement: React.FC<PaymentsManagementProps> = ({ payments, onRefresh }) => {
+export const PaymentsManagement: React.FC<PaymentsManagementProps> = ({ payments, onRefresh, isDark = false }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'SUCCESS' | 'PENDING' | 'FAILED' | 'REFUNDED'>('all');
   const [providerFilter, setProviderFilter] = useState<string>('all');
   const [isRecordModalOpen, setIsRecordModalOpen] = useState(false);
+
+  const cardBg = isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200/90 shadow-sm';
+  const textPrimary = isDark ? 'text-white' : 'text-slate-900';
+  const textMuted = isDark ? 'text-slate-400' : 'text-slate-500';
 
   // New manual verified payment form state
   const [newPayName, setNewPayName] = useState('');

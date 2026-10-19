@@ -26,12 +26,17 @@ import { AdminAuthService } from '../../../services/adminAuthService';
 interface CourseManagementProps {
   courses: CourseModule[];
   onRefresh: () => void;
+  isDark?: boolean;
 }
 
-export const CourseManagement: React.FC<CourseManagementProps> = ({ courses, onRefresh }) => {
+export const CourseManagement: React.FC<CourseManagementProps> = ({ courses, onRefresh, isDark = false }) => {
   const [selectedCourseId, setSelectedCourseId] = useState<string>(courses[0]?.id || 'python');
   const [expandedTopicId, setExpandedTopicId] = useState<number | null>(1);
   const [saveSuccessMsg, setSaveSuccessMsg] = useState('');
+
+  const cardBg = isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200/90 shadow-sm';
+  const textPrimary = isDark ? 'text-white' : 'text-slate-900';
+  const textMuted = isDark ? 'text-slate-400' : 'text-slate-500';
 
   // Course overrides state
   const courseOverrides = AdminDataService.getCourseOverrides();

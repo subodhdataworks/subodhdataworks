@@ -1,0 +1,333 @@
+================================================================================
+FUTURE IT INDUSTRY - MOCK INTERVIEW SPEECH-TO-TEXT CLEAN SOURCE CODE EXPORT
+================================================================================
+Date: 2026-10-19
+Technology: Native Web Speech API (window.SpeechRecognition / webkitSpeechRecognition)
+Fix Applied: Strict final/interim separation, resultIndex cumulative parsing, zero interim commits on onend
+
+--------------------------------------------------------------------------------
+FILE 1: src/components/futureai/mobile/MobileTopicWorkspace.tsx
+(Relevant Speech Recognition Engine, Handlers, Lifecycle, and UI Component)
+--------------------------------------------------------------------------------
+
+  // ── SPEECH RECOGNITION REFS & CONTROLS ──
+  const recognitionRef = useRef<any>(null);
+  const isStartingRecognitionRef = useRef<boolean>(false);
+  const userRequestedRecordingRef = useRef<boolean>(false);
+  const speechRestartTimerRef = useRef<any>(null);
+  const speechSpeakingTimerRef = useRef<any>(null);
+  const [isStudentSpeakingAudio, setIsStudentSpeakingAudio] = useState<boolean>(false);
+
+  // Single Source of Truth: Separate Final from Temporary Interim
+  const finalTranscriptRef = useRef<string>('');
+  const interimTranscriptRef = useRef<string>('');
+
+  const autoNextTimerRef = useRef<any>(null);
+  const [autoNextCountdown, setAutoNextCountdown] = useState<number | null>(null);
+  const isInterviewRecordingRef = useRef<boolean>(false);
+  const isInterviewSubmittedRef = useRef<boolean>(false);
+  const answerSectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    isInterviewRecordingRef.current = isInterviewRecording;
+  }, [isInterviewRecording]);
+
+  useEffect(() => {
+    isInterviewSubmittedRef.current = isInterviewSubmitted;
+  }, [isInterviewSubmitted]);
+
+  // ── STOP SPEECH RECOGNITION ──
+  const stopSpeechRecognition = () => {
+    userRequestedRecordingRef.current = false;
+    isStartingRecognitionRef.current = false;
+
+    if (speechRestartTimerRef.current) {
+      clearTimeout(speechRestartTimerRef.current);
+      speechRestartTimerRef.current = null;
+    }
+    if (speechSpeakingTimerRef.current) {
+      clearTimeout(speechSpeakingTimerRef.current);
+      speechSpeakingTimerRef.current = null;
+    }
+
+    if (recognitionRef.current) {
+      try {
+        const inst = recognitionRef.current;
+        recognitionRef.current = null;
+        inst.onstart = null;
+        inst.onresult = null;
+        inst.onerror = null;
+        inst.onend = null;
+        inst.onspeechstart = null;
+        inst.onspeechend = null;
+        inst.abort();
+      } catch {}
+    }
+
+    // Temporary interim is discarded; confirmed final text is preserved
+    interimTranscriptRef.current = '';
+    setInterviewAnswerText(finalTranscriptRef.current);
+
+    setIsInterviewRecording(false);
+    isInterviewRecordingRef.current = false;
+    setIsStudentSpeakingAudio(false);
+  };
+
+  const getSpeechRecognitionClass = () => {
+    if (typeof window === 'undefined') return null;
+    return (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition || null;
+  };
+
+  // ── INITIALIZE AND START SPEECH RECOGNITION ──
+  const initAndStartRecognition = (preferredLang?: string) => {
+    const SpeechRecognitionClass = getSpeechRecognitionClass();
+
+    if (!SpeechRecognitionClass) {
+      setSpeechTip("⚠️ Speech Recognition is not supported on this browser. Please type your answer or use Android Chrome.");
+      setIsInterviewRecording(false);
+      isInterviewRecordingRef.current = false;
+      userRequestedRecordingRef.current = false;
+      return;
+    }
+
+    if (isStartingRecognitionRef.current) {
+      return;
+    }
+    isStartingRecognitionRef.current = true;
+
+    if (speechRestartTimerRef.current) {
+      clearTimeout(speechRestartTimerRef.current);
+      speechRestartTimerRef.current = null;
+    }
+
+    // Clean up existing instance before starting fresh
+    if (recognitionRef.current) {
+      try {
+        const oldInstance = recognitionRef.current;
+        recognitionRef.current = null;
+        oldInstance.onstart = null;
+        oldInstance.onresult = null;
+        oldInstance.onerror = null;
+        oldInstance.onend = null;
+        oldInstance.onspeechstart = null;
+        oldInstance.onspeechend = null;
+        oldInstance.abort();
+      } catch {}
+    }
+
+    try {
+      const recognition = new SpeechRecognitionClass();
+      const langToUse = preferredLang || (selectedHr === 'female' ? 'hi-IN' : 'en-IN');
+      recognition.lang = langToUse;
+      // continuous = true allows smooth speech without cutting off every 2 seconds
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
+
+      // Assign reference immediately so any orphan instance callbacks will be rejected
+      recognitionRef.current = recognition;
+      interimTranscriptRef.current = '';
+
+      recognition.onstart = () => {
+        isStartingRecognitionRef.current = false;
+        if (recognitionRef.current !== recognition) return;
+
+        setIsInterviewRecording(true);
+        isInterviewRecordingRef.current = true;
+        setIsStudentSpeakingAudio(true);
+        setSpeechTip(
+          selectedHr === 'female'
+            ? "● Listening: बोलिए, आपकी आवाज़ लाइव टाइप हो रही है..."
+            : "● Listening: Speak your answer, transcribing live..."
+        );
+      };
+
+      recognition.onspeechstart = () => {
+        if (recognitionRef.current !== recognition) return;
+        setIsStudentSpeakingAudio(true);
+      };
+
+      recognition.onspeechend = () => {
+        if (recognitionRef.current !== recognition) return;
+        if (speechSpeakingTimerRef.current) clearTimeout(speechSpeakingTimerRef.current);
+        speechSpeakingTimerRef.current = setTimeout(() => {
+          setIsStudentSpeakingAudio(false);
+        }, 800);
+      };
+
+      // ── ONRESULT: STRICT FINAL SEPARATION & RESULTINDEX PARSING ──
+      recognition.onresult = (event: any) => {
+        if (recognitionRef.current !== recognition) return;
+
+        let newlyFinalized = '';
+        let currentInterim = '';
+
+        // Iterate strictly from event.resultIndex to process only NEW/changed results
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const res = event.results[i];
+          const text = (res[0]?.transcript || '').trim();
+          if (!text) continue;
+
+          if (res.isFinal) {
+            newlyFinalized += (newlyFinalized ? ' ' : '') + text;
+          } else {
+            currentInterim += (currentInterim ? ' ' : '') + text;
+          }
+        }
+
+        // 1. Permanently append ONLY newly confirmed final speech
+        if (newlyFinalized) {
+          finalTranscriptRef.current = finalTranscriptRef.current
+            ? `${finalTranscriptRef.current} ${newlyFinalized}`
+            : newlyFinalized;
+        }
+
+        // 2. Keep interim strictly temporary (never saved permanently)
+        interimTranscriptRef.current = currentInterim;
+
+        // 3. Display confirmed final text + current interim text
+        const confirmed = finalTranscriptRef.current;
+        const display = (confirmed + (currentInterim ? (confirmed ? ' ' : '') + currentInterim : '')).trim();
+
+        if (display) {
+          setInterviewAnswerText(display);
+          setIsStudentSpeakingAudio(true);
+          const previewTip = currentInterim || newlyFinalized;
+          setSpeechTip("● " + (currentInterim ? `Listening: "${previewTip}"` : `Transcribed: "${previewTip}"`));
+        }
+      };
+
+      recognition.onerror = (event: any) => {
+        isStartingRecognitionRef.current = false;
+        if (recognitionRef.current !== recognition) return;
+
+        const error = event.error;
+        console.warn("SpeechRecognition error:", error);
+
+        if (error === 'not-allowed' || error === 'service-not-allowed') {
+          userRequestedRecordingRef.current = false;
+          setIsInterviewRecording(false);
+          isInterviewRecordingRef.current = false;
+          setIsStudentSpeakingAudio(false);
+          setSpeechTip("⚠️ Mic permission blocked. Tap browser lock/settings icon to allow microphone.");
+        } else if (error === 'audio-capture') {
+          userRequestedRecordingRef.current = false;
+          setIsInterviewRecording(false);
+          isInterviewRecordingRef.current = false;
+          setIsStudentSpeakingAudio(false);
+          setSpeechTip("⚠️ Mic unavailable. Please ensure no other app is using your microphone.");
+        } else if (error === 'network') {
+          setSpeechTip("⚠️ Speech network error. Please check your internet connection.");
+        } else if (error === 'no-speech') {
+          setSpeechTip("● Listening: No speech detected yet, please speak...");
+        }
+      };
+
+      // ── ONEND: RESTART & LIFECYCLE MANAGEMENT ──
+      recognition.onend = () => {
+        isStartingRecognitionRef.current = false;
+        if (recognitionRef.current !== recognition) return;
+
+        // Discard any unfinalized interim speech (never commit interim to final!)
+        interimTranscriptRef.current = '';
+
+        // Display strictly the confirmed final transcript
+        setInterviewAnswerText(finalTranscriptRef.current);
+
+        // Auto-restart if user still wants to record and interview is not yet submitted
+        if (userRequestedRecordingRef.current && !isInterviewSubmittedRef.current) {
+          if (speechRestartTimerRef.current) clearTimeout(speechRestartTimerRef.current);
+          speechRestartTimerRef.current = setTimeout(() => {
+            if (userRequestedRecordingRef.current && !isInterviewSubmittedRef.current) {
+              initAndStartRecognition(langToUse);
+            }
+          }, 150);
+        } else {
+          setIsInterviewRecording(false);
+          isInterviewRecordingRef.current = false;
+          setIsStudentSpeakingAudio(false);
+        }
+      };
+
+      recognition.start();
+    } catch (err: any) {
+      isStartingRecognitionRef.current = false;
+      console.warn("initAndStartRecognition exception:", err);
+      setIsInterviewRecording(false);
+      isInterviewRecordingRef.current = false;
+      setIsStudentSpeakingAudio(false);
+      if (err?.name === 'InvalidStateError') {
+        if (speechRestartTimerRef.current) clearTimeout(speechRestartTimerRef.current);
+        speechRestartTimerRef.current = setTimeout(() => {
+          if (userRequestedRecordingRef.current && !isInterviewSubmittedRef.current) {
+            initAndStartRecognition(preferredLang);
+          }
+        }, 200);
+      } else {
+        setSpeechTip("⚠️ Could not activate mic: " + (err.message || 'Error'));
+      }
+    }
+  };
+
+  // ── TOGGLE MICROPHONE ──
+  const toggleSpeechRecording = () => {
+    playTactile();
+
+    if (isInterviewRecording || userRequestedRecordingRef.current) {
+      stopSpeechRecognition();
+      setSpeechTip("✓ Speaking paused. Click Submit to evaluate!");
+    } else {
+      userRequestedRecordingRef.current = true;
+      setIsMicHighlighted(false);
+      setSpeechTip("⏳ Activating microphone...");
+      initAndStartRecognition(selectedHr === 'female' ? 'hi-IN' : 'en-IN');
+    }
+  };
+
+  // ── QUESTION NAVIGATION ──
+  const handleSelectQuestion = (qNum: number) => {
+    playTactile();
+    stopSpeechRecognition();
+    if (autoNextTimerRef.current) {
+      clearInterval(autoNextTimerRef.current);
+      autoNextTimerRef.current = null;
+      setAutoNextCountdown(null);
+    }
+    setActiveInterviewQ(qNum);
+    setInterviewAnswerText('');
+    finalTranscriptRef.current = '';
+    interimTranscriptRef.current = '';
+    setEvaluationResult(null);
+    setIsPass(null);
+    setIsInterviewSubmitted(false);
+    isInterviewSubmittedRef.current = false;
+  };
+
+  // ── ANSWER CARD & TEXTAREA UI ──
+  <textarea
+    rows={3}
+    value={interviewAnswerText}
+    onChange={(e) => {
+      const val = e.target.value;
+      setInterviewAnswerText(val);
+      finalTranscriptRef.current = val;
+      interimTranscriptRef.current = '';
+    }}
+    placeholder="Start speaking or type your answer here..."
+    className="w-full text-xs text-slate-800 bg-transparent border-none focus:outline-none placeholder:text-slate-400 font-medium resize-none leading-relaxed min-h-[64px]"
+  />
+
+  <button
+    type="button"
+    onClick={() => {
+      setInterviewAnswerText('');
+      finalTranscriptRef.current = '';
+      interimTranscriptRef.current = '';
+    }}
+    className="text-slate-400 hover:text-rose-500 text-[10px] font-bold cursor-pointer shrink-0 ml-2"
+  >
+    Clear
+  </button>
+================================================================================
+END OF SOURCE CODE EXPORT
+================================================================================

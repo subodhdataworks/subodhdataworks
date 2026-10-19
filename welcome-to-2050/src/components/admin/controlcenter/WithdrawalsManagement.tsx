@@ -23,12 +23,17 @@ import { AdminAuthService } from '../../../services/adminAuthService';
 interface WithdrawalsManagementProps {
   withdrawals: WithdrawalRequest[];
   onRefresh: () => void;
+  isDark?: boolean;
 }
 
-export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ withdrawals, onRefresh }) => {
+export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ withdrawals, onRefresh, isDark = false }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedReq, setSelectedReq] = useState<WithdrawalRequest | null>(null);
+
+  const cardBg = isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200/90 shadow-sm';
+  const textPrimary = isDark ? 'text-white' : 'text-slate-900';
+  const textMuted = isDark ? 'text-slate-400' : 'text-slate-500';
 
   // Modal action state
   const [actionType, setActionType] = useState<'APPROVE' | 'PAY' | 'REJECT' | null>(null);

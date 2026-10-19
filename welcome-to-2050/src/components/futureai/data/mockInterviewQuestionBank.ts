@@ -810,8 +810,39 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
   },
 ];
 
+const CUSTOM_QUESTIONS_STORAGE_KEY = 'futureai_custom_interview_questions_v1';
+
+export function getCustomInterviewQuestions(): Record<number, PreloadedInterviewQuestion[]> {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = localStorage.getItem(CUSTOM_QUESTIONS_STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return {};
+}
+
+export function saveCustomInterviewQuestionsForTopic(topicId: number, questions: PreloadedInterviewQuestion[]): void {
+  if (typeof window === 'undefined') return;
+  const current = getCustomInterviewQuestions();
+  current[topicId] = questions;
+  localStorage.setItem(CUSTOM_QUESTIONS_STORAGE_KEY, JSON.stringify(current));
+}
+
+export function resetCustomInterviewQuestionsForTopic(topicId: number): void {
+  if (typeof window === 'undefined') return;
+  const current = getCustomInterviewQuestions();
+  delete current[topicId];
+  localStorage.setItem(CUSTOM_QUESTIONS_STORAGE_KEY, JSON.stringify(current));
+}
+
 // Build a complete 5-question list for any Topic ID, merging topic-specific questions from module01TopicContent
 export function getPreloadedInterviewQuestionsForTopic(topicId: number = 1): PreloadedInterviewQuestion[] {
+  // Check for admin custom configured questions first
+  const custom = getCustomInterviewQuestions();
+  if (custom[topicId] && Array.isArray(custom[topicId]) && custom[topicId].length > 0) {
+    return custom[topicId];
+  }
+
   if (topicId === 1) {
     return CORE_PRELOADED_QUESTIONS.slice(0, 5);
   }
