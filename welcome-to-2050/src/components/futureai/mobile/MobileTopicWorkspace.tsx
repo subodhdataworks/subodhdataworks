@@ -583,7 +583,9 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   const analyserRef = useRef<AnalyserNode | null>(null);
   const voiceCheckIntervalRef = useRef<any>(null);
   const [isStudentSpeakingAudio, setIsStudentSpeakingAudio] = useState<boolean>(false);
-  const spokenWordsIndexRef = useRef<number>(0);
+  const speechAccumulatedRef = useRef<string>('');
+  const autoNextTimerRef = useRef<any>(null);
+  const [autoNextCountdown, setAutoNextCountdown] = useState<number | null>(null);
   const isInterviewRecordingRef = useRef<boolean>(false);
   const isInterviewSubmittedRef = useRef<boolean>(false);
 
@@ -595,13 +597,12 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     isInterviewSubmittedRef.current = isInterviewSubmitted;
   }, [isInterviewSubmitted]);
 
-  // Voice Activity Detection Loop: Monitors student's mic audio in real-time
+  // Voice Activity Detection Loop: Monitors student's mic volume ONLY for live visual indicator
   useEffect(() => {
     if (activeStep !== 'interview') return;
 
     let animId: number;
     const dataArray = new Uint8Array(128);
-    let lastWordStamp = 0;
 
     const checkAudioLoop = () => {
       if (analyserRef.current) {
@@ -609,28 +610,8 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
         let sum = 0;
         for (let i = 0; i < 128; i++) sum += dataArray[i];
         const avg = sum / 128;
-        const isLoud = avg > 11; // Student is speaking into microphone!
+        const isLoud = avg > 11; // Hardware voice activity detected
         setIsStudentSpeakingAudio(isLoud);
-
-        // When student is actually speaking into mic while recording is active:
-        if (isLoud && isInterviewRecordingRef.current && !isInterviewSubmittedRef.current) {
-          const now = Date.now();
-          if (now - lastWordStamp > 280) {
-            lastWordStamp = now;
-            const targetAnswer =
-              selectedHr === 'female' && currentInterviewQData.exampleAnswerHi
-                ? currentInterviewQData.exampleAnswerHi
-                : (currentInterviewQData.exampleAnswerEn ||
-                   "Programming is a way to give instructions to a computer to perform a specific task. For example, WhatsApp uses programming to send messages.");
-            const words = targetAnswer.split(' ');
-            if (spokenWordsIndexRef.current < words.length) {
-              spokenWordsIndexRef.current += 1;
-              const nextChunk = words.slice(0, spokenWordsIndexRef.current).join(' ');
-              setInterviewAnswerText(nextChunk);
-              setSpeechTip("● Transcribing your voice in real time...");
-            }
-          }
-        }
       }
       animId = requestAnimationFrame(checkAudioLoop);
     };
@@ -639,7 +620,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     return () => {
       cancelAnimationFrame(animId);
     };
-  }, [activeStep, selectedHr, currentInterviewQData]);
+  }, [activeStep]);
 
   const stopVoiceActivityResources = () => {
     if (voiceCheckIntervalRef.current) {
@@ -764,25 +745,32 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       recognition.onstart = () => {
         setIsInterviewRecording(true);
         isInterviewRecordingRef.current = true;
-        setSpeechTip("● Transcribed from speech");
+        setSpeechTip("● Listening: Speak your answer...");
       };
 
       recognition.onresult = (event: any) => {
-        let fullTranscript = '';
+        let currentUtterance = '';
         for (let i = 0; i < event.results.length; i++) {
-          fullTranscript += event.results[i][0].transcript + ' ';
+          currentUtterance += event.results[i][0].transcript + ' ';
         }
-        if (fullTranscript.trim()) {
-          setInterviewAnswerText(fullTranscript.trim());
-          setSpeechTip("✓ Voice captured! Submit par click karein.");
+        if (currentUtterance.trim()) {
+          const combined = (speechAccumulatedRef.current + ' ' + currentUtterance.trim()).trim();
+          setInterviewAnswerText(combined);
+          setSpeechTip("● Live voice: " + currentUtterance.trim());
         }
       };
 
       recognition.onerror = (err: any) => {
-        console.warn("Speech recognition notice:", err);
+        console.warn("Speech recognition notice:", err?.error);
+        if (err?.error === 'not-allowed') {
+          setSpeechTip("⚠️ Mic permission blocked. Tap Red Mic button to allow.");
+        }
       };
 
       recognition.onend = () => {
+        if (interviewAnswerText) {
+          speechAccumulatedRef.current = interviewAnswerText;
+        }
         if (isInterviewRecordingRef.current && !isInterviewSubmittedRef.current && recognitionRef.current === recognition) {
           setTimeout(() => {
             try {
@@ -856,8 +844,9 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       clearTimeout(safetyTimer);
       setIsHrSpeaking(false);
       setIsMicHighlighted(true);
-      // Automatically activate live recording & speech recognition
+      // Automatically activate live recording & speech recognition once HR completes question
       startSpeechRecognitionLive(isFem ? 'hi-IN' : 'en-IN');
+      setSpeechTip("🎙️ Mentor finished! Speak your answer now...");
     };
 
     const safetyTimer = setTimeout(onSpeechEnd, 12000);
@@ -869,6 +858,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       setIsHrSpeaking(false);
       setIsMicHighlighted(true);
       startSpeechRecognitionLive(isFem ? 'hi-IN' : 'en-IN');
+      setSpeechTip("🎙️ Speak your answer now...");
     };
 
     window.speechSynthesis.speak(utterance);
@@ -906,14 +896,13 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
   const handleInsertInterviewExample = () => {
     playTactile();
-    if (selectedHr === 'female' && currentInterviewQData.exampleAnswerHi) {
-      setInterviewAnswerText(currentInterviewQData.exampleAnswerHi);
-    } else {
-      setInterviewAnswerText(
-        currentInterviewQData.exampleAnswerEn ||
-        "Programming is giving step-by-step instructions to a computer to perform a specific task. A real-life example is an ATM machine: when you insert a card and enter a PIN, the system follows a programmed algorithm to verify your credentials, check balance, dispense cash, and update your account."
-      );
-    }
+    const ans =
+      selectedHr === 'female' && currentInterviewQData.exampleAnswerHi
+        ? currentInterviewQData.exampleAnswerHi
+        : currentInterviewQData.exampleAnswerEn ||
+          "Programming is giving step-by-step instructions to a computer to perform a specific task. A real-life example is an ATM machine: when you insert a card and enter a PIN, the system follows a programmed algorithm to verify your credentials, check balance, dispense cash, and update your account.";
+    setInterviewAnswerText(ans);
+    speechAccumulatedRef.current = ans;
     setSpeechTip("✓ Sample Answer auto-filled! Click 'Submit Answer' to test Speedometer.");
   };
 
@@ -931,6 +920,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       } catch {}
       stopVoiceActivityResources();
       setIsInterviewRecording(false);
+      isInterviewRecordingRef.current = false;
     }
 
     const result = evaluateInterviewAnswerDeterministically(interviewAnswerText, currentInterviewQData);
@@ -938,6 +928,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     const passed = result.score >= 5.5; // pass threshold 5.5 / 10
     setIsPass(passed);
     setIsInterviewSubmitted(true);
+    isInterviewSubmittedRef.current = true;
     setActiveInterviewTab('feedback');
 
     if (passed) {
@@ -958,15 +949,45 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
         : `Your answer needs improvement. Score is ${result.score} out of 10. Key concepts were missing. Please review model answer.`;
       speakVerdict(verdict, selectedHr === 'female');
     }
+
+    // Auto-countdown to disappear result and auto-start Question 2 (or next question)
+    if (autoNextTimerRef.current) {
+      clearInterval(autoNextTimerRef.current);
+    }
+    let countdown = 6;
+    setAutoNextCountdown(countdown);
+
+    autoNextTimerRef.current = setInterval(() => {
+      countdown -= 1;
+      setAutoNextCountdown(countdown);
+      if (countdown <= 0) {
+        clearInterval(autoNextTimerRef.current);
+        autoNextTimerRef.current = null;
+        setAutoNextCountdown(null);
+        // Auto-advance to next question!
+        if (activeInterviewQ < 5) {
+          handleSelectQuestion(activeInterviewQ + 1);
+        } else {
+          handleSelectQuestion(1);
+        }
+      }
+    }, 1000);
   };
 
   const handleSelectQuestion = (qNum: number) => {
     playTactile();
+    if (autoNextTimerRef.current) {
+      clearInterval(autoNextTimerRef.current);
+      autoNextTimerRef.current = null;
+      setAutoNextCountdown(null);
+    }
     setActiveInterviewQ(qNum);
     setInterviewAnswerText('');
+    speechAccumulatedRef.current = '';
     setEvaluationResult(null);
     setIsPass(null);
     setIsInterviewSubmitted(false);
+    isInterviewSubmittedRef.current = false;
     setActiveInterviewTab('feedback');
     handleSpeakQuestion(selectedHr, qNum);
   };
@@ -1852,7 +1873,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                         type="button"
                         onClick={() => {
                           setInterviewAnswerText('');
-                          spokenWordsIndexRef.current = 0;
+                          speechAccumulatedRef.current = '';
                         }}
                         className="p-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 cursor-pointer"
                         title="Clear Answer"
@@ -2141,16 +2162,52 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                 </div>
               </div>
 
+              {/* Auto-Next Question Countdown Banner */}
+              {autoNextCountdown !== null && (
+                <div className="p-3 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 flex items-center justify-between text-left shadow-2xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping" />
+                    <div>
+                      <div className="text-xs font-black text-blue-950">
+                        Auto-starting Question {activeInterviewQ < 5 ? activeInterviewQ + 1 : 1}
+                      </div>
+                      <div className="text-[10px] font-semibold text-blue-700">
+                        Result will disappear in <span className="font-black text-blue-900">{autoNextCountdown}s</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (activeInterviewQ < 5) {
+                        handleSelectQuestion(activeInterviewQ + 1);
+                      } else {
+                        handleSelectQuestion(1);
+                      }
+                    }}
+                    className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-black cursor-pointer shadow-xs active:scale-95"
+                  >
+                    Start Now ➔
+                  </button>
+                </div>
+              )}
+
               {/* Action Buttons: Try Again & Next Question */}
               <div className="grid grid-cols-2 gap-2 pt-1">
                 <button
                   type="button"
                   onClick={() => {
                     playTactile();
+                    if (autoNextTimerRef.current) {
+                      clearInterval(autoNextTimerRef.current);
+                      autoNextTimerRef.current = null;
+                      setAutoNextCountdown(null);
+                    }
                     setIsInterviewSubmitted(false);
+                    isInterviewSubmittedRef.current = false;
                     setInterviewAnswerText('');
+                    speechAccumulatedRef.current = '';
                     setEvaluationResult(null);
-                    spokenWordsIndexRef.current = 0;
                     handleSpeakQuestion(selectedHr, activeInterviewQ);
                   }}
                   className="py-3 px-4 rounded-xl bg-white hover:bg-slate-50 border-2 border-blue-500 text-blue-600 font-black text-xs flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer active:scale-95"
