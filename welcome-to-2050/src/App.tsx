@@ -74,6 +74,15 @@ export const App: React.FC = () => {
 
   const checkIsMobileDevice = (): boolean => {
     if (typeof window === 'undefined') return false;
+    const searchParams = new URLSearchParams(window.location.search);
+    if (
+      searchParams.get('mobile') === 'true' ||
+      searchParams.get('mode') === 'mobile' ||
+      window.location.hash.includes('mobile=true') ||
+      window.location.hash.includes('mode=mobile')
+    ) {
+      return true;
+    }
     if (window.innerWidth < 768) return true;
     if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) return true;
     if (typeof navigator !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) return true;

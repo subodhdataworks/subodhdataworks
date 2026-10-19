@@ -52,7 +52,9 @@ import {
   GraduationCap,
   Coins,
   Gem,
-  X
+  X,
+  Smartphone,
+  Monitor
 } from 'lucide-react';
 import { FutureLogo } from './FutureLogo';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
@@ -371,7 +373,37 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     onLoginSuccess?.(name, email, avatar, role);
   };
 
-  // Navigation Dock Tab State: 'home' | 'game' | 'income' | 'referral' | 'wallet' | 'withdraw' | 'placement'
+  // Check if user specifically requested mobile size testing link (?mobile=true, #mobile=true, etc.)
+  const isMobileSizeTesting = (): boolean => {
+    if (typeof window === 'undefined') return false;
+    const searchStr = (window.location.search || '').toLowerCase();
+    const hashStr = (window.location.hash || '').toLowerCase();
+    return (
+      searchStr.includes('mobile=true') ||
+      searchStr.includes('mode=mobile') ||
+      searchStr.includes('mobile=1') ||
+      hashStr.includes('mobile=true') ||
+      hashStr.includes('mode=mobile') ||
+      hashStr.includes('mobile=1')
+    );
+  };
+  const [mobileTestingFrame, setMobileTestingFrame] = useState<boolean>(() => isMobileSizeTesting());
+
+  useEffect(() => {
+    const handleCheckMobileParam = () => {
+      if (isMobileSizeTesting()) {
+        setMobileTestingFrame(true);
+      }
+    };
+    window.addEventListener('hashchange', handleCheckMobileParam);
+    window.addEventListener('popstate', handleCheckMobileParam);
+    return () => {
+      window.removeEventListener('hashchange', handleCheckMobileParam);
+      window.removeEventListener('popstate', handleCheckMobileParam);
+    };
+  }, []);
+
+
   const [dockTab, setDockTab] = useState<'home' | 'game' | 'income' | 'referral' | 'wallet' | 'withdraw' | 'placement'>(() => {
     if (typeof window !== 'undefined') {
       const h = window.location.hash;
@@ -1213,6 +1245,73 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
   // Render Hands-on Python Lab Workspace when an interactive step is active
   if (selectedModuleView === 'python' && activeTopicWs !== null) {
+    if (mobileTestingFrame) {
+      return (
+        <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-start py-4 px-2 sm:px-4">
+          {/* Top Control Bar for Mobile Testing */}
+          <div className="w-full max-w-[420px] mb-3 bg-slate-900 border border-slate-700/80 rounded-2xl px-4 py-2.5 shadow-xl flex items-center justify-between text-xs backdrop-blur-md">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400/50" />
+              <span className="font-bold text-slate-100 flex items-center gap-1.5">
+                <Smartphone className="w-3.5 h-3.5 text-cyan-400" />
+                Mobile Testing Size (390px)
+              </span>
+            </div>
+            <button
+              onClick={() => setMobileTestingFrame(false)}
+              className="px-2.5 py-1 rounded-lg bg-indigo-600/80 hover:bg-indigo-600 text-white font-medium text-[11px] flex items-center gap-1 transition-all cursor-pointer"
+              title="Switch to full desktop IDE view"
+            >
+              <Monitor className="w-3 h-3" />
+              Desktop IDE
+            </button>
+          </div>
+
+          {/* Centered Realistic Mobile Phone Frame */}
+          <div className="w-full max-w-[420px] min-h-[844px] bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] border-4 border-slate-700 overflow-hidden relative">
+            <MobileTopicWorkspace
+              userName={currentUserName}
+              topicId={activeTopicWs}
+              initialStep={targetStep}
+              onBack={() => {
+                setActiveTopicWs(null);
+                if (typeof window !== 'undefined') {
+                  window.location.hash = '#python';
+                }
+              }}
+              onOpenUnlockModal={(mod?: string) => {
+                setSelectedLockedModule(mod || 'Python Advanced Track');
+                setUnlockModalOpen(true);
+              }}
+              onOpenAdvisor={onOpenAdvisor}
+              onOpenProfile={() => setMobileProfileSheetOpen(true)}
+            />
+            <MobileProfileSheet
+              isOpen={mobileProfileSheetOpen}
+              onClose={() => setMobileProfileSheetOpen(false)}
+              userName={currentUserName}
+              telemetry={telemetry}
+              onLogout={onLogout}
+              onOpenEarn={() => {
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                setDockTab('income');
+                if (typeof window !== 'undefined') window.location.hash = '#earnings';
+              }}
+              onOpenPlacement={() => {
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                setDockTab('placement');
+                if (typeof window !== 'undefined') window.location.hash = '#placement';
+              }}
+              onOpenLogin={() => setAuthModalOpen(true)}
+              onOpenAdvisor={onOpenAdvisor}
+            />
+          </div>
+        </div>
+      );
+    }
+
     return (
       <>
         {/* Mobile (< 768px): Native Mobile Topic Workspace with Video, Game, Mock Interview matching reference screenshots */}
@@ -1258,7 +1357,16 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         </div>
 
         {/* Desktop Experience (>= 768px): Hands-on 3-Column IDE Workspace */}
-        <div className="hidden md:block">
+        <div className="hidden md:block relative">
+          <button
+            onClick={() => setMobileTestingFrame(true)}
+            className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 text-white px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 text-xs font-bold border-2 border-white/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            title="Open in Mobile Size Phone Container"
+          >
+            <Smartphone className="w-4 h-4 text-emerald-300 animate-pulse" />
+            <span>📱 Test in Mobile View (390px)</span>
+          </button>
+
           <div className="dock-dashboard-page">
             <PythonTopicWorkspace
               userName={userName}

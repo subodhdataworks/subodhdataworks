@@ -438,6 +438,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   const [isHrSpeaking, setIsHrSpeaking] = useState<boolean>(false);
   const [hrSpeakingText, setHrSpeakingText] = useState<string>('');
   const [isMicHighlighted, setIsMicHighlighted] = useState<boolean>(false);
+  const [speechTip, setSpeechTip] = useState<string>('');
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
 
@@ -525,27 +526,27 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   };
 
   // ─────────────────────────────────────────────────────────────────────────────
-  // 3. MOCK INTERVIEW HR PROFILES (Using user's official uploaded photos)
+  // 3. MOCK INTERVIEW HR PROFILES (English Mentor vs Hindi Girl Voice)
   // ─────────────────────────────────────────────────────────────────────────────
   const [selectedHr, setSelectedHr] = useState<'male' | 'female'>('male');
 
   const HR_PROFILES = {
     male: {
-      name: "Technical Mentor (Senior AI Guide)",
-      shortName: "Mentor",
+      name: "English Mentor (Indian English Voice)",
+      shortName: "English",
       avatar: "/images/hr_subodh_kumar.jpg",
-      role: "Technical Mentor",
-      badge: "Mentor",
-      accent: "Indian English",
+      role: "English AI Mentor",
+      badge: "English",
+      accent: "Indian English (Male)",
       gender: "male" as const,
     },
     female: {
-      name: "Aditi Sharma (Talent Acquisition Lead)",
-      shortName: "Aditi Sharma",
+      name: "Hindi Mentor (Real Human Girl Voice)",
+      shortName: "Hindi",
       avatar: "/images/hr_aditi_sharma.jpg",
-      role: "Talent Acquisition Lead",
-      badge: "Lead HR",
-      accent: "Indian English",
+      role: "Hindi AI Mentor",
+      badge: "Hindi",
+      accent: "Real Human Girl Voice (Hindi)",
       gender: "female" as const,
     },
   };
@@ -555,7 +556,6 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   const voiceStreamRef = useRef<MediaStream | null>(null);
   const voiceAudioCtxRef = useRef<any>(null);
   const voiceCheckIntervalRef = useRef<any>(null);
-  const hasCapturedSpeechRef = useRef<boolean>(false);
 
   const stopVoiceActivityResources = () => {
     if (voiceCheckIntervalRef.current) {
@@ -574,13 +574,25 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     }
   };
 
-  const getIndianVoice = (isFem: boolean) => {
+  const getIndianVoice = (isFem: boolean, isHindiLang: boolean = false) => {
     if (!('speechSynthesis' in window)) return null;
     const voices = window.speechSynthesis.getVoices();
     if (!voices || voices.length === 0) return null;
 
     if (isFem) {
-      // 1. Indian Female Voice (Heera, Aditi, Sangeeta, Google en-IN Female, hi-IN Female)
+      // 1. Look specifically for Hindi female / Indian female girl voices
+      if (isHindiLang) {
+        const hiFem = voices.find((v) => {
+          const lang = (v.lang || '').toLowerCase().replace('_', '-');
+          const name = (v.name || '').toLowerCase();
+          const isHi = lang.startsWith('hi') || lang.includes('hi-in') || name.includes('hindi');
+          const isFem = name.includes('female') || name.includes('kalpana') || name.includes('swara') || name.includes('geeta') || name.includes('aditi') || !name.includes('male');
+          return isHi && isFem;
+        });
+        if (hiFem) return hiFem;
+      }
+
+      // 2. Indian Female Voice (Heera, Aditi, Sangeeta, Google en-IN Female, hi-IN Female)
       const inFem = voices.find((v) => {
         const lang = (v.lang || '').toLowerCase().replace('_', '-');
         const name = (v.name || '').toLowerCase();
@@ -594,20 +606,22 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
           name.includes('kavya') ||
           name.includes('ananya') ||
           name.includes('priya') ||
+          name.includes('kalpana') ||
+          name.includes('swara') ||
           name.includes('#female');
         return isIndian && isFemTag;
       });
       if (inFem) return inFem;
 
-      // 2. Any Indian voice without male tag
+      // 3. Any Indian voice without male tag
       const anyIn = voices.find((v) => {
         const lang = (v.lang || '').toLowerCase().replace('_', '-');
         const name = (v.name || '').toLowerCase();
-        return (lang.startsWith('en-in') || name.includes('india')) && !name.includes('male') && !name.includes('ravi') && !name.includes('rishi');
+        return (lang.startsWith('en-in') || lang.startsWith('hi') || name.includes('india')) && !name.includes('male') && !name.includes('ravi') && !name.includes('rishi');
       });
       if (anyIn) return anyIn;
 
-      // 3. Fallback female
+      // 4. Fallback female
       return (
         voices.find((v) => {
           const name = (v.name || '').toLowerCase();
@@ -650,7 +664,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     }
   };
 
-  const startSpeechRecognitionLive = () => {
+  const startSpeechRecognitionLive = (preferredLang?: string) => {
     setIsInterviewRecording(true);
 
     const SpeechRecognition =
@@ -658,6 +672,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
     if (!SpeechRecognition) {
       console.warn("Speech recognition is not supported in this browser.");
+      setSpeechTip("Mic API not supported on this browser. Aap 'Fill Ans' use karein ya type kijiye.");
       return;
     }
 
@@ -668,13 +683,15 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
         } catch {}
       }
       const recognition = new SpeechRecognition();
-      recognition.lang = 'en-IN';
+      const langToUse = preferredLang || (selectedHr === 'female' ? 'hi-IN' : 'en-IN');
+      recognition.lang = langToUse;
       recognition.continuous = true;
       recognition.interimResults = true;
       recognition.maxAlternatives = 1;
 
       recognition.onstart = () => {
         setIsInterviewRecording(true);
+        setSpeechTip("🎙️ Mic Active: Bolna shuru kijiye (Live typing chalu hai)");
       };
 
       recognition.onresult = (event: any) => {
@@ -684,15 +701,20 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
         }
         if (fullTranscript.trim()) {
           setInterviewAnswerText(fullTranscript.trim());
+          setSpeechTip("✓ Voice captured! Submit par click karein speedometer check karne ke liye.");
         }
       };
 
       recognition.onerror = (err: any) => {
         console.warn("Speech recognition error:", err);
+        if (err.error === 'not-allowed') {
+          setSpeechTip("⚠️ Mic permission allow nahi hai. '⚡ Auto-Fill' use karein ya type karein.");
+        } else if (err.error === 'no-speech') {
+          setSpeechTip("🎙️ Awaz detect nahi hui. Thoda paas aakar saaf bolein.");
+        }
       };
 
       recognition.onend = () => {
-        // Keep active if recording is still active
         if (isInterviewRecording && recognitionRef.current === recognition) {
           try {
             recognition.start();
@@ -704,6 +726,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       recognition.start();
     } catch (e) {
       console.warn("Speech recognition initiation failed:", e);
+      setSpeechTip("Microphone not available. '⚡ Auto-Fill' use karein ya type karein.");
     }
   };
 
@@ -719,8 +742,9 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       }
       stopVoiceActivityResources();
       setIsInterviewRecording(false);
+      setSpeechTip("");
     } else {
-      startSpeechRecognitionLive();
+      startSpeechRecognitionLive(selectedHr === 'female' ? 'hi-IN' : 'en-IN');
     }
   };
 
@@ -734,20 +758,21 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     const qNum = overrideQNum || activeInterviewQ;
     const qData = interviewQuestions[qNum - 1] || interviewQuestions[0];
 
+    const questionHindi = qData.questionHi || qData.questionEn;
     const questionText = isFem
-      ? `Namaste! I am Aditi Sharma from Future IT Industry. Welcome to your technical mock interview. Question ${qNum}: ${qData.questionEn}`
-      : `Namaste! I am your Technical Mentor from Future IT Industry. Welcome to your technical mock interview. Question ${qNum}: ${qData.questionEn}`;
+      ? `नमस्ते! मैं अदिति शर्मा। आपके पायथन टेक्निकल इंटरव्यू में आपका स्वागत है। सवाल नंबर ${qNum}: ${questionHindi}`
+      : `Namaste! I am your English Technical Mentor from Future IT Industry. Welcome to your technical mock interview. Question ${qNum}: ${qData.questionEn}`;
 
     setHrSpeakingText(questionText);
     setIsHrSpeaking(true);
     setIsMicHighlighted(false);
 
     const utterance = new SpeechSynthesisUtterance(questionText);
-    utterance.lang = 'en-IN';
-    utterance.rate = 0.92;
-    utterance.pitch = isFem ? 1.15 : 0.88;
+    utterance.lang = isFem ? 'hi-IN' : 'en-IN';
+    utterance.rate = isFem ? 0.95 : 0.92;
+    utterance.pitch = isFem ? 1.25 : 0.88;
 
-    const matchedVoice = getIndianVoice(isFem);
+    const matchedVoice = getIndianVoice(isFem, isFem);
     if (matchedVoice) {
       utterance.voice = matchedVoice;
     }
@@ -759,11 +784,11 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       clearTimeout(safetyTimer);
       setIsHrSpeaking(false);
       setIsMicHighlighted(true);
-      // Automatically activate live recording & typing when question finishes!
-      startSpeechRecognitionLive();
+      // Automatically activate live recording & speech recognition
+      startSpeechRecognitionLive(isFem ? 'hi-IN' : 'en-IN');
     };
 
-    const safetyTimer = setTimeout(onSpeechEnd, 10000);
+    const safetyTimer = setTimeout(onSpeechEnd, 12000);
 
     utterance.onstart = () => setIsHrSpeaking(true);
     utterance.onend = onSpeechEnd;
@@ -771,25 +796,25 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       clearTimeout(safetyTimer);
       setIsHrSpeaking(false);
       setIsMicHighlighted(true);
-      startSpeechRecognitionLive();
+      startSpeechRecognitionLive(isFem ? 'hi-IN' : 'en-IN');
     };
 
     window.speechSynthesis.speak(utterance);
   };
 
-  const speakVerdict = (text: string) => {
+  const speakVerdict = (text: string, isFemMode?: boolean) => {
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
     setHrSpeakingText(text);
     setIsHrSpeaking(true);
 
-    const isFem = selectedHr === 'female';
+    const isFem = isFemMode ?? (selectedHr === 'female');
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-IN';
-    utterance.rate = 0.92;
-    utterance.pitch = isFem ? 1.15 : 0.88;
+    utterance.lang = isFem ? 'hi-IN' : 'en-IN';
+    utterance.rate = isFem ? 0.95 : 0.92;
+    utterance.pitch = isFem ? 1.25 : 0.88;
 
-    const matchedVoice = getIndianVoice(isFem);
+    const matchedVoice = getIndianVoice(isFem, isFem);
     if (matchedVoice) {
       utterance.voice = matchedVoice;
     }
@@ -809,10 +834,15 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
   const handleInsertInterviewExample = () => {
     playTactile();
-    setInterviewAnswerText(
-      currentInterviewQData.exampleAnswerEn ||
-      "Programming is giving step-by-step instructions to a computer to perform a specific task. A real-life example is an ATM machine: when you insert a card and enter a PIN, the system follows a programmed algorithm to verify your credentials, check balance, dispense cash, and update your account."
-    );
+    if (selectedHr === 'female' && currentInterviewQData.exampleAnswerHi) {
+      setInterviewAnswerText(currentInterviewQData.exampleAnswerHi);
+    } else {
+      setInterviewAnswerText(
+        currentInterviewQData.exampleAnswerEn ||
+        "Programming is giving step-by-step instructions to a computer to perform a specific task. A real-life example is an ATM machine: when you insert a card and enter a PIN, the system follows a programmed algorithm to verify your credentials, check balance, dispense cash, and update your account."
+      );
+    }
+    setSpeechTip("✓ Sample Answer auto-filled! Click 'Submit Answer' to test Speedometer.");
   };
 
   const handleSubmitInterviewAnswer = () => {
@@ -844,18 +874,17 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
         awardLearnerTelemetry(50, 20);
       } catch {}
       const verdict = selectedHr === 'female'
-        ? `Congratulations! Your answer is accepted and passed with a score of ${result.score} out of 10! Excellent response!`
+        ? `बधाई हो! आपका उत्तर पास हुआ, स्कोर 10 में से ${result.score} है! बहुत बढ़िया उत्तर!`
         : `Congratulations! Your answer is accepted and passed with a score of ${result.score} out of 10! Excellent response!`;
-      speakVerdict(verdict);
+      speakVerdict(verdict, selectedHr === 'female');
     } else {
       try {
         soundEffects.playClick();
       } catch {}
-      const missingTerm = result.missingKeywords.length > 0 ? result.missingKeywords[0].labelEn : 'core definition';
       const verdict = selectedHr === 'female'
-        ? `Your answer needs improvement. You scored ${result.score} out of 10. Key concept ${missingTerm} was missing. Please review the model answer.`
-        : `Your answer needs improvement. Score is ${result.score} out of 10. Key concept ${missingTerm} was missing. Please review the model answer.`;
-      speakVerdict(verdict);
+        ? `आपका स्कोर 10 में से ${result.score} है। कुछ मुख्य कॉन्सेप्ट्स मिसिंग हैं, कृपया सुधार करें।`
+        : `Your answer needs improvement. Score is ${result.score} out of 10. Key concepts were missing. Please review model answer.`;
+      speakVerdict(verdict, selectedHr === 'female');
     }
   };
 
@@ -1508,6 +1537,48 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
           ═════════════════════════════════════════════════════════════════════════ */}
       {activeStep === 'interview' && (
         <div className="max-w-md mx-auto px-3.5 pt-3 space-y-3">
+          {/* ── HR MENTOR LANGUAGE SELECTOR (English vs Hindi) ── */}
+          <div className="flex items-center justify-between bg-white border-2 border-slate-200/90 rounded-2xl p-1.5 shadow-2xs">
+            <div className="flex items-center gap-1.5 pl-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[10px] font-black text-slate-800 uppercase tracking-wider">
+                HR Voice:
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => {
+                  playTactile();
+                  setSelectedHr('male');
+                  handleSpeakQuestion('male');
+                }}
+                className={`px-3 py-1.5 rounded-xl text-[10.5px] font-black transition-all flex items-center gap-1 cursor-pointer ${
+                  selectedHr === 'male'
+                    ? 'bg-blue-600 text-white shadow-xs ring-1 ring-blue-400'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                <span>🇬🇧 English</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  playTactile();
+                  setSelectedHr('female');
+                  handleSpeakQuestion('female');
+                }}
+                className={`px-3 py-1.5 rounded-xl text-[10.5px] font-black transition-all flex items-center gap-1 cursor-pointer ${
+                  selectedHr === 'female'
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-xs ring-1 ring-purple-400'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                <span>🇮🇳 Hindi</span>
+              </button>
+            </div>
+          </div>
+
           {/* ── SPLIT VIDEO CALL UI (Compact Side-by-Side: HR Lip-Sync Avatar + Student Camera) ── */}
           <div className="grid grid-cols-2 gap-2">
             {/* Left Box: HR Interviewer with StableMouthLipSyncAvatar (Canvas 60fps Real Lip-Sync) */}
@@ -1525,27 +1596,45 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                 className="w-full h-full object-cover"
               />
 
-              {/* Top Bar: HR Tag & Lip-sync Speaking Indicator */}
+              {/* Top Bar: HR Tag & English/Hindi Toggle Buttons */}
               <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between text-white text-[8.5px] font-black z-10">
                 <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-slate-900/85 backdrop-blur-md border border-white/20">
                   <span className={`w-1.5 h-1.5 rounded-full ${isHrSpeaking ? 'bg-cyan-400 animate-ping' : 'bg-blue-500'}`} />
-                  <span className="truncate max-w-[80px]">{currentHr.shortName}</span>
+                  <span className="truncate max-w-[80px]">{selectedHr === 'male' ? 'English' : 'Hindi'}</span>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    playTactile();
-                    const next = selectedHr === 'male' ? 'female' : 'male';
-                    setSelectedHr(next);
-                    handleSpeakQuestion(next);
-                  }}
-                  className="px-1.5 py-0.5 rounded-md bg-blue-600/90 hover:bg-blue-700 text-[8px] font-black text-white flex items-center gap-1 cursor-pointer pointer-events-auto shadow-2xs"
-                  title="Click to toggle Mentor / Aditi"
-                >
-                  <span>{selectedHr === 'male' ? '👨 Mentor' : '👩 Aditi'}</span>
-                  <span className="text-[7px] opacity-75">⇄</span>
-                </button>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTactile();
+                      setSelectedHr('male');
+                      handleSpeakQuestion('male');
+                    }}
+                    className={`px-1.5 py-0.5 rounded-md text-[8px] font-black transition-all cursor-pointer ${
+                      selectedHr === 'male'
+                        ? 'bg-blue-600 text-white ring-1 ring-white'
+                        : 'bg-slate-900/85 text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    English
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTactile();
+                      setSelectedHr('female');
+                      handleSpeakQuestion('female');
+                    }}
+                    className={`px-1.5 py-0.5 rounded-md text-[8px] font-black transition-all cursor-pointer ${
+                      selectedHr === 'female'
+                        ? 'bg-pink-600 text-white ring-1 ring-white'
+                        : 'bg-slate-900/85 text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    Hindi
+                  </button>
+                </div>
               </div>
 
               {/* Animated Lip-Sync Audio Equalizer Overlay when HR speaks */}
@@ -1666,29 +1755,38 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             </div>
 
             <p className="text-xs font-black text-blue-950 leading-snug">
-              {currentInterviewQData.questionEn}
+              {selectedHr === 'female' && currentInterviewQData.questionHi
+                ? currentInterviewQData.questionHi
+                : currentInterviewQData.questionEn}
             </p>
-
+            {selectedHr === 'female' && currentInterviewQData.questionHi && (
+              <p className="text-[10px] font-medium text-slate-500 italic">
+                En: {currentInterviewQData.questionEn}
+              </p>
+            )}
           </div>
 
           {/* ── 3. YOUR ANSWER BOX & SUBMIT BUTTON (Right below Question) ── */}
           <div className="bg-white border-2 border-blue-500 rounded-2xl p-3.5 shadow-md space-y-2.5 ring-2 ring-blue-100">
-            {/* Header: Title + Quick Fill + Clear */}
+            {/* Header: Title + Mic Status + Auto-Fill + Clear */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 text-xs font-black text-slate-900">
                 <Mic className={`w-3.5 h-3.5 ${isInterviewRecording ? 'text-rose-600 animate-pulse' : 'text-blue-600'}`} />
                 <span>Your Answer</span>
+                {isInterviewRecording && (
+                  <span className="text-[9px] font-bold text-rose-600 animate-pulse">● Listening</span>
+                )}
               </div>
 
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={handleInsertInterviewExample}
-                  className="px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-[9.5px] font-black flex items-center gap-1 active:scale-95 cursor-pointer shadow-2xs"
+                  className="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-[10px] font-black flex items-center gap-1 active:scale-95 cursor-pointer shadow-2xs"
                   title="1-tap fill benchmark answer"
                 >
-                  <Sparkles className="w-3 h-3 text-amber-500" />
-                  <span>⚡ Fill Ans</span>
+                  <Sparkles className="w-3 h-3 text-emerald-600" />
+                  <span>⚡ Auto-Fill Answer</span>
                 </button>
 
                 {interviewAnswerText && (
@@ -1704,12 +1802,30 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               </div>
             </div>
 
+            {/* Live Speech Tip / Status Banner */}
+            {speechTip && (
+              <div className="p-2 rounded-xl bg-blue-50/80 border border-blue-200 text-[10px] font-semibold text-blue-900 flex items-center justify-between">
+                <span>{speechTip}</span>
+                <button
+                  type="button"
+                  onClick={toggleSpeechRecording}
+                  className="text-[10px] font-bold text-blue-700 underline cursor-pointer ml-2"
+                >
+                  {isInterviewRecording ? 'Stop Mic' : 'Retry Mic'}
+                </button>
+              </div>
+            )}
+
             {/* Answer Typing Textarea */}
             <textarea
               rows={4}
               value={interviewAnswerText}
               onChange={(e) => setInterviewAnswerText(e.target.value)}
-              placeholder="Student bolte hi answer yahan type hoga... ya type kijiye."
+              placeholder={
+                selectedHr === 'female'
+                  ? "आप बोलकर या यहाँ टाइप करके उत्तर दे सकते हैं... या 'Auto-Fill' दबाएं।"
+                  : "Speak into your mic or type your answer here... or click 'Auto-Fill Answer'."
+              }
               className="w-full p-3 rounded-xl border border-slate-300 text-xs text-slate-900 bg-slate-50/70 focus:outline-none focus:bg-white focus:border-blue-600 transition-all leading-relaxed placeholder:text-slate-400 font-medium"
             />
 
@@ -1719,7 +1835,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               onClick={handleSubmitInterviewAnswer}
               className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black text-xs flex items-center justify-center gap-2 shadow-lg shadow-blue-500/35 active:scale-98 transition-all cursor-pointer"
             >
-              <span>🚀 Submit Answer (Check Pass / Reject)</span>
+              <span>🚀 Submit Answer (Check Pass / Reject & Speedometer)</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -1733,13 +1849,13 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   playTactile();
                   setActiveInterviewTab('feedback');
                 }}
-                className={`flex-1 py-1.5 rounded-xl text-[10px] font-black transition-all flex items-center justify-center gap-1 ${
+                className={`flex-1 py-1.5 rounded-xl text-[10px] font-black transition-all flex items-center justify-center gap-1 cursor-pointer ${
                   activeInterviewTab === 'feedback'
                     ? 'bg-blue-600 text-white shadow-xs'
                     : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
                 }`}
               >
-                <span>✨ Pass / Reject Feedback</span>
+                <span>✨ Speedometer &amp; Feedback</span>
               </button>
               <button
                 type="button"
@@ -1747,7 +1863,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   playTactile();
                   setActiveInterviewTab('model');
                 }}
-                className={`flex-1 py-1.5 rounded-xl text-[10px] font-black transition-all flex items-center justify-center gap-1 ${
+                className={`flex-1 py-1.5 rounded-xl text-[10px] font-black transition-all flex items-center justify-center gap-1 cursor-pointer ${
                   activeInterviewTab === 'model'
                     ? 'bg-blue-600 text-white shadow-xs'
                     : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
@@ -1761,7 +1877,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   playTactile();
                   setActiveInterviewTab('points');
                 }}
-                className={`flex-1 py-1.5 rounded-xl text-[10px] font-black transition-all flex items-center justify-center gap-1 ${
+                className={`flex-1 py-1.5 rounded-xl text-[10px] font-black transition-all flex items-center justify-center gap-1 cursor-pointer ${
                   activeInterviewTab === 'points'
                     ? 'bg-blue-600 text-white shadow-xs'
                     : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
@@ -1774,91 +1890,125 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             {/* Tab 1: AI Feedback with Pass / Reject Speedometer Evaluation */}
             {activeInterviewTab === 'feedback' && (
               <div className="py-1 space-y-2.5">
-                {isInterviewSubmitted && evaluationResult ? (
-                  <div className="space-y-2.5">
-                    {/* ══════════════════════════════════════════════════════
-                        SPEEDOMETER GAUGE METER (Score & Pass / Reject)
-                        ══════════════════════════════════════════════════════ */}
-                    <div className="bg-gradient-to-b from-slate-50 to-white rounded-2xl p-3 border-2 border-slate-200/90 shadow-sm flex flex-col items-center">
-                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">
-                        Performance Speedometer
-                      </div>
+                {/* ══════════════════════════════════════════════════════
+                    SPEEDOMETER GAUGE METER (Score & Pass / Reject)
+                    ALWAYS VISIBLE SO USER SEES THE PERFORMANCE METER
+                    ══════════════════════════════════════════════════════ */}
+                <div className="bg-gradient-to-b from-slate-50 to-white rounded-2xl p-3 border-2 border-slate-200/90 shadow-sm flex flex-col items-center">
+                  <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Performance Speedometer</span>
+                  </div>
 
-                      {/* SVG Gauge Speedometer Arc */}
-                      <div className="relative w-48 h-28 flex items-center justify-center">
-                        <svg viewBox="0 0 200 120" className="w-full h-full overflow-visible">
-                          <defs>
-                            <linearGradient id="speedometerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                              <stop offset="0%" stopColor="#ef4444" />
-                              <stop offset="45%" stopColor="#f59e0b" />
-                              <stop offset="70%" stopColor="#10b981" />
-                              <stop offset="100%" stopColor="#059669" />
-                            </linearGradient>
-                          </defs>
+                  {/* SVG Gauge Speedometer Arc */}
+                  <div className="relative w-48 h-28 flex items-center justify-center">
+                    <svg viewBox="0 0 200 120" className="w-full h-full overflow-visible">
+                      <defs>
+                        <linearGradient id="speedometerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#ef4444" />
+                          <stop offset="45%" stopColor="#f59e0b" />
+                          <stop offset="70%" stopColor="#10b981" />
+                          <stop offset="100%" stopColor="#059669" />
+                        </linearGradient>
+                      </defs>
 
-                          {/* Background Track Arc */}
-                          <path
-                            d="M 25 105 A 75 75 0 0 1 175 105"
-                            fill="none"
-                            stroke="#e2e8f0"
-                            strokeWidth="14"
-                            strokeLinecap="round"
-                          />
+                      {/* Background Track Arc */}
+                      <path
+                        d="M 25 105 A 75 75 0 0 1 175 105"
+                        fill="none"
+                        stroke="#e2e8f0"
+                        strokeWidth="14"
+                        strokeLinecap="round"
+                      />
 
-                          {/* Colored Speedometer Gradient Track */}
-                          <path
-                            d="M 25 105 A 75 75 0 0 1 175 105"
-                            fill="none"
-                            stroke="url(#speedometerGradient)"
-                            strokeWidth="14"
-                            strokeLinecap="round"
-                            strokeDasharray="235.6"
-                            strokeDashoffset={235.6 - (Math.min(10, Math.max(0, evaluationResult.score)) / 10) * 235.6}
-                            style={{ transition: 'stroke-dashoffset 1.2s ease-out' }}
-                          />
+                      {/* Colored Speedometer Gradient Track */}
+                      <path
+                        d="M 25 105 A 75 75 0 0 1 175 105"
+                        fill="none"
+                        stroke="url(#speedometerGradient)"
+                        strokeWidth="14"
+                        strokeLinecap="round"
+                        strokeDasharray="235.6"
+                        strokeDashoffset={
+                          235.6 -
+                          (Math.min(10, Math.max(0, evaluationResult?.score ?? 0)) / 10) * 235.6
+                        }
+                        style={{ transition: 'stroke-dashoffset 1.2s ease-out' }}
+                      />
 
-                          {/* Scale Markers */}
-                          <text x="22" y="118" fontSize="9" fontWeight="bold" fill="#ef4444" textAnchor="middle">0</text>
-                          <text x="65" y="48" fontSize="8" fontWeight="bold" fill="#f59e0b" textAnchor="middle">4</text>
-                          <text x="100" y="24" fontSize="9" fontWeight="bold" fill="#10b981" textAnchor="middle">6</text>
-                          <text x="140" y="48" fontSize="8" fontWeight="bold" fill="#059669" textAnchor="middle">8</text>
-                          <text x="178" y="118" fontSize="9" fontWeight="bold" fill="#059669" textAnchor="middle">10</text>
+                      {/* Scale Markers */}
+                      <text x="22" y="118" fontSize="9" fontWeight="bold" fill="#ef4444" textAnchor="middle">0</text>
+                      <text x="65" y="48" fontSize="8" fontWeight="bold" fill="#f59e0b" textAnchor="middle">4</text>
+                      <text x="100" y="24" fontSize="9" fontWeight="bold" fill="#10b981" textAnchor="middle">6</text>
+                      <text x="140" y="48" fontSize="8" fontWeight="bold" fill="#059669" textAnchor="middle">8</text>
+                      <text x="178" y="118" fontSize="9" fontWeight="bold" fill="#059669" textAnchor="middle">10</text>
 
-                          {/* Speedometer Needle */}
-                          <g
-                            transform={`rotate(${-180 + (Math.min(10, Math.max(0, evaluationResult.score)) / 10) * 180} 100 105)`}
-                            style={{ transition: 'transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
-                          >
-                            <polygon points="98,105 102,105 100,35" fill="#0f172a" />
-                            <circle cx="100" cy="105" r="7" fill="#0f172a" />
-                            <circle cx="100" cy="105" r="3.5" fill={isPass ? "#10b981" : "#ef4444"} />
-                          </g>
-                        </svg>
-                      </div>
+                      {/* Speedometer Needle */}
+                      <g
+                        transform={`rotate(${
+                          -180 +
+                          (Math.min(10, Math.max(0, evaluationResult?.score ?? 0)) / 10) * 180
+                        } 100 105)`}
+                        style={{ transition: 'transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+                      >
+                        <polygon points="98,105 102,105 100,35" fill="#0f172a" />
+                        <circle cx="100" cy="105" r="7" fill="#0f172a" />
+                        <circle
+                          cx="100"
+                          cy="105"
+                          r="3.5"
+                          fill={
+                            evaluationResult
+                              ? isPass
+                                ? '#10b981'
+                                : '#ef4444'
+                              : '#94a3b8'
+                          }
+                        />
+                      </g>
+                    </svg>
+                  </div>
 
-                      {/* Speedometer Score & Status */}
-                      <div className="text-center -mt-1 space-y-1">
-                        <div className="flex items-baseline justify-center gap-1">
-                          <span className={`text-2xl font-black ${isPass ? 'text-emerald-600' : 'text-rose-600'}`}>
-                            {evaluationResult.score}
-                          </span>
-                          <span className="text-xs font-bold text-slate-400">/ 10</span>
-                        </div>
-
-                        {isPass ? (
-                          <div className="px-3.5 py-1 rounded-full bg-emerald-600 text-white text-[10px] font-black flex items-center gap-1 shadow-sm">
-                            <CheckCircle2 className="w-3.5 h-3.5" />
-                            <span>PASSED &amp; SELECTED</span>
-                          </div>
-                        ) : (
-                          <div className="px-3.5 py-1 rounded-full bg-rose-600 text-white text-[10px] font-black flex items-center gap-1 shadow-sm">
-                            <X className="w-3.5 h-3.5" />
-                            <span>REJECTED - NEEDS IMPROVEMENT</span>
-                          </div>
-                        )}
-                      </div>
+                  {/* Speedometer Score & Status */}
+                  <div className="text-center -mt-1 space-y-1">
+                    <div className="flex items-baseline justify-center gap-1">
+                      <span
+                        className={`text-2xl font-black ${
+                          evaluationResult
+                            ? isPass
+                              ? 'text-emerald-600'
+                              : 'text-rose-600'
+                            : 'text-slate-400'
+                        }`}
+                      >
+                        {evaluationResult ? evaluationResult.score : '0.0'}
+                      </span>
+                      <span className="text-xs font-bold text-slate-400">/ 10</span>
                     </div>
 
+                    {evaluationResult ? (
+                      isPass ? (
+                        <div className="px-3.5 py-1 rounded-full bg-emerald-600 text-white text-[10px] font-black flex items-center gap-1 shadow-sm">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>PASSED &amp; SELECTED (Pass Mark: 5.5+)</span>
+                        </div>
+                      ) : (
+                        <div className="px-3.5 py-1 rounded-full bg-rose-600 text-white text-[10px] font-black flex items-center gap-1 shadow-sm">
+                          <X className="w-3.5 h-3.5" />
+                          <span>REJECTED - NEEDS IMPROVEMENT</span>
+                        </div>
+                      )
+                    ) : (
+                      <div className="px-3.5 py-1 rounded-full bg-slate-100 text-slate-600 text-[9.5px] font-bold border border-slate-300 flex items-center gap-1">
+                        <span>⏳ Speedometer Ready (Submit answer to test score)</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* When Submitted, show Keywords & Feedback */}
+                {isInterviewSubmitted && evaluationResult && (
+                  <div className="space-y-2.5">
                     {/* Sahi Keywords Matched */}
                     <div className="p-3 rounded-2xl bg-emerald-50/90 border-2 border-emerald-300 space-y-2">
                       <div className="flex items-center justify-between">
@@ -1951,13 +2101,6 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                         </button>
                       )}
                     </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-4 space-y-1">
-                    <FileText className="w-6 h-6 text-slate-300 mx-auto" />
-                    <p className="text-[10px] text-slate-500 font-medium">
-                      Answer submit karne ke baad HR ka Pass/Reject speedometer score aur feedback yahan aayega.
-                    </p>
                   </div>
                 )}
               </div>
