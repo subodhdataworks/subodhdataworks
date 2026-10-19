@@ -1232,6 +1232,28 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               setUnlockModalOpen(true);
             }}
             onOpenAdvisor={onOpenAdvisor}
+            onOpenProfile={() => setMobileProfileSheetOpen(true)}
+          />
+          <MobileProfileSheet
+            isOpen={mobileProfileSheetOpen}
+            onClose={() => setMobileProfileSheetOpen(false)}
+            userName={currentUserName}
+            telemetry={telemetry}
+            onLogout={onLogout}
+            onOpenEarn={() => {
+              setSelectedModuleView(null);
+              setActiveTopicWs(null);
+              setDockTab('income');
+              if (typeof window !== 'undefined') window.location.hash = '#earnings';
+            }}
+            onOpenPlacement={() => {
+              setSelectedModuleView(null);
+              setActiveTopicWs(null);
+              setDockTab('placement');
+              if (typeof window !== 'undefined') window.location.hash = '#placement';
+            }}
+            onOpenLogin={() => setAuthModalOpen(true)}
+            onOpenAdvisor={onOpenAdvisor}
           />
         </div>
 
@@ -1312,7 +1334,14 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setDockTab('income');
                 if (typeof window !== 'undefined') window.location.hash = '#earnings';
               }}
+              onOpenPlacement={() => {
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                setDockTab('placement');
+                if (typeof window !== 'undefined') window.location.hash = '#placement';
+              }}
               onOpenLogin={() => setAuthModalOpen(true)}
+              onOpenAdvisor={onOpenAdvisor}
             />
             <FutureAuthModal
               isOpen={authModalOpen}
@@ -2499,7 +2528,14 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           setDockTab('income');
           if (typeof window !== 'undefined') window.location.hash = '#earnings';
         }}
+        onOpenPlacement={() => {
+          setSelectedModuleView(null);
+          setActiveTopicWs(null);
+          setDockTab('placement');
+          if (typeof window !== 'undefined') window.location.hash = '#placement';
+        }}
         onOpenLogin={() => setAuthModalOpen(true)}
+        onOpenAdvisor={onOpenAdvisor}
       />
 
       {/* ─── EMAIL-ONLY / GOOGLE AUTH MODAL ─── */}

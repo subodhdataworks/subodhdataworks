@@ -40,7 +40,9 @@ import {
   VideoOff,
   Lightbulb,
   Trash2,
-  LayoutGrid
+  LayoutGrid,
+  Search,
+  Wallet
 } from 'lucide-react';
 import { soundEffects } from '../../../services/soundEffects';
 import { awardLearnerTelemetry } from '../../../services/realAuthService';
@@ -53,6 +55,7 @@ export interface MobileTopicWorkspaceProps {
   onBack: () => void;
   onOpenAdvisor?: () => void;
   onOpenUnlockModal?: (moduleName?: string) => void;
+  onOpenProfile?: () => void;
 }
 
 export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
@@ -62,6 +65,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   onBack,
   onOpenAdvisor,
   onOpenUnlockModal,
+  onOpenProfile,
 }) => {
   const normalizeStep = (step?: WorkspaceStepId): WorkspaceStepId => {
     if (step === 'interview') return 'interview';
@@ -293,37 +297,73 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
           </div>
         </div>
 
-        {/* Right Badges: Coins, Gems, Bell, User Avatar */}
-        <div className="flex items-center gap-1.5 shrink-0">
-          {/* Coins */}
-          <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200/90 text-[10px] font-black text-amber-800 shadow-2xs">
-            <span>🪙</span>
-            <span>1,250</span>
-          </div>
+        {/* Right: EXACT 4 Items: Search, Wallet, Notification, Profile Picture */}
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          {/* 1. Search */}
+          <button
+            type="button"
+            onClick={() => {
+              playTactile();
+              if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+            }}
+            className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+            aria-label="Search"
+            title="Search courses"
+          >
+            <Search className="w-4 h-4" />
+          </button>
 
-          {/* Gems */}
-          <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-50 border border-purple-200/90 text-[10px] font-black text-purple-700 shadow-2xs">
-            <span>💎</span>
-            <span>12</span>
-          </div>
+          {/* 2. Wallet */}
+          <button
+            type="button"
+            onClick={() => {
+              playTactile();
+              if (typeof window !== 'undefined') window.location.hash = '#earnings';
+            }}
+            className="w-8 h-8 rounded-full bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-700 flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+            aria-label="Wallet & Earnings"
+            title="Wallet"
+          >
+            <Wallet className="w-4 h-4" />
+          </button>
 
-          {/* Bell with Badge 3 */}
-          <div className="relative w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
-            <Bell className="w-3.5 h-3.5" />
-            <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 text-white rounded-full text-[8px] font-black flex items-center justify-center">
+          {/* 3. Notification */}
+          <button
+            type="button"
+            onClick={() => {
+              playTactile();
+              alert('🔔 Welcome to FUTURE IT INDUSTRY!\nYou are currently in Python Chapter 1.');
+            }}
+            className="relative w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+            aria-label="Notifications"
+            title="Notifications"
+          >
+            <Bell className="w-4 h-4" />
+            <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-rose-500 text-white rounded-full text-[8.5px] font-black flex items-center justify-center ring-1.5 ring-white">
               3
             </span>
-          </div>
+          </button>
 
-          {/* Avatar */}
-          <img
-            src="/images/python_hero_student.png"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces';
+          {/* 4. Profile Picture (Gmail avatar) */}
+          <button
+            type="button"
+            onClick={() => {
+              playTactile();
+              onOpenProfile?.();
             }}
-            alt={userName}
-            className="w-7 h-7 rounded-full object-cover ring-2 ring-blue-500/30"
-          />
+            className="relative rounded-full p-0.5 bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-600 shadow-xs active:scale-90 transition-all cursor-pointer ml-0.5"
+            aria-label="Profile"
+            title="Profile"
+          >
+            <img
+              src={(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_avatar') : null) || '/images/profile_student_avatar.png'}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '/images/profile_student_avatar.png';
+              }}
+              alt={userName}
+              className="w-7 h-7 rounded-full object-cover border border-white"
+            />
+          </button>
         </div>
       </header>
 

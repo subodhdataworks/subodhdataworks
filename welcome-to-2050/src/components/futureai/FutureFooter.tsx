@@ -233,13 +233,13 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
                   </button>
                 </li>
                 <li>
-                  <button
-                    onClick={() => onNavigateSection('future-plan')}
+                  <a
+                    href="#contact-us"
                     className="hover:text-indigo-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer"
                   >
                     <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 transition-transform group-hover:translate-x-0.5" />
                     <span>Contact Us</span>
-                  </button>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -259,11 +259,30 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
               <ul className="space-y-2.5 text-xs sm:text-[13px] font-semibold text-slate-700">
                 <li>
                   <a
-                    href="#terms"
-                    className="hover:text-emerald-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer"
+                    href="#contact-us"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.hash = '#contact-us';
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="hover:text-emerald-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer font-bold text-blue-600"
                   >
                     <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transition-transform group-hover:translate-x-0.5" />
-                    <span>Terms of Service</span>
+                    <span>Contact Us (Mandatory Policy)</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#terms"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.hash = '#terms';
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="hover:text-emerald-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer font-bold text-blue-600"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transition-transform group-hover:translate-x-0.5" />
+                    <span>Terms & Conditions (Mandatory Policy)</span>
                   </a>
                 </li>
                 <li>
@@ -299,7 +318,30 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
           <div>
             © 2026 FUTURE IT INDUSTRY. All rights reserved.
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href="#contact-us"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.hash = '#contact-us';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="hover:text-blue-600 transition-colors underline underline-offset-2"
+            >
+              Contact Us
+            </a>
+            <span className="text-slate-300">·</span>
+            <a
+              href="#terms"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.hash = '#terms';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="hover:text-blue-600 transition-colors underline underline-offset-2"
+            >
+              Terms & Conditions
+            </a>
             <span className="hidden sm:inline text-slate-300">|</span>
             <div>
               Learn Today. <span className="text-blue-600 font-extrabold">Earn Tomorrow.</span>

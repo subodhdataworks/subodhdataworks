@@ -10,6 +10,8 @@ import { recordReferralClick } from './services/realAuthService';
 import { StorageService } from './services/storage';
 import { ThemeAccentProvider } from './context/ThemeAccentContext';
 import { MobileAppInstallPrompt } from './components/futureai/mobile/MobileAppInstallPrompt';
+import { ContactUsView } from './components/legal/ContactUsView';
+import { TermsAndConditionsView } from './components/legal/TermsAndConditionsView';
 
 export const App: React.FC = () => {
   const profile = StorageService.getProfile();
@@ -158,8 +160,20 @@ export const App: React.FC = () => {
     <ThemeAccentProvider>
       <div className="w-full min-h-screen bg-[#FAFCFE] font-sans antialiased relative">
         
-        {/* ATS Resume Checker Dedicated Page Route */}
-        {currentHash.split('?')[0] === '#ats-resume-checker' || currentHash.split('?')[0] === '#ats' ? (
+        {/* Contact Us Dedicated RBI Mandated Policy Route */}
+        {['#contact-us', '#contactus', '#contact'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#ContactUs' ? (
+          <ContactUsView
+            onBack={() => {
+              window.location.hash = isMobile ? '#dashboard' : '#home';
+            }}
+          />
+        ) : ['#terms', '#terms-and-conditions', '#termsandconditions', '#terms-conditions'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#TermsAndConditions' ? (
+          <TermsAndConditionsView
+            onBack={() => {
+              window.location.hash = isMobile ? '#dashboard' : '#home';
+            }}
+          />
+        ) : currentHash.split('?')[0] === '#ats-resume-checker' || currentHash.split('?')[0] === '#ats' ? (
           <AtsResumeChecker
             onBackToHome={() => {
               window.location.hash = isMobile ? '#dashboard' : '#home';

@@ -1,30 +1,43 @@
-import React from 'react';
-import { Bell, Coins, Gem, Download, Flame } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, Wallet, Bell, ArrowLeft, X, Sparkles, ChevronRight } from 'lucide-react';
 import { LearnerTelemetry } from '../../../services/realAuthService';
-import { isStandaloneMode, triggerNativeInstall } from '../../../services/pwaInstallService';
 import { useThemeAccent } from '../../../context/ThemeAccentContext';
 import { FutureLogo } from '../FutureLogo';
 
-interface MobileTopBarProps {
-  userName: string;
-  telemetry: LearnerTelemetry;
+export interface MobileTopBarProps {
+  userName?: string;
+  telemetry?: LearnerTelemetry;
+  showBack?: boolean;
+  onBack?: () => void;
+  title?: string;
+  subtitle?: string;
   onOpenProfile: () => void;
   onOpenNotifications?: () => void;
+  onOpenWallet?: () => void;
+  onOpenSearch?: () => void;
   onOpenLogin?: () => void;
 }
 
 export const MobileTopBar: React.FC<MobileTopBarProps> = ({
-  userName,
+  userName = 'Subodh Kumar',
   telemetry,
+  showBack = false,
+  onBack,
+  title,
+  subtitle,
   onOpenProfile,
   onOpenNotifications,
+  onOpenWallet,
+  onOpenSearch,
   onOpenLogin,
 }) => {
   const { playClick } = useThemeAccent();
-  const isLoggedIn = typeof window !== 'undefined' ? localStorage.getItem('futureai_logged_in') === 'true' : false;
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
   const avatarUrl =
     (typeof window !== 'undefined' ? localStorage.getItem('futureai_user_avatar') : null) ||
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces';
+    '/images/profile_student_avatar.png';
 
   const handleProfileClick = () => {
     playClick?.();
@@ -36,95 +49,224 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
     if (onOpenNotifications) {
       onOpenNotifications();
     } else {
-      alert('🔔 Welcome to FUTURE IT INDUSTRY! Complete lessons to earn gems and unlock job placement guarantee.');
+      alert('🔔 Welcome to FUTURE IT INDUSTRY!\nYou have 3 unread updates:\n1. 🐍 Python Chapter 1 Unlocked!\n2. 💼 24 New Hiring Drives Live today!\n3. 💰 Refer & Earn ₹100 per signup.');
+    }
+  };
+
+  const handleWalletClick = () => {
+    playClick?.();
+    if (onOpenWallet) {
+      onOpenWallet();
+    } else {
+      if (typeof window !== 'undefined') {
+        window.location.hash = '#earnings';
+      }
+    }
+  };
+
+  const handleSearchClick = () => {
+    playClick?.();
+    if (onOpenSearch) {
+      onOpenSearch();
+    } else {
+      setSearchOpen((prev) => !prev);
+    }
+  };
+
+  const handleSearchSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!searchQuery.trim()) return;
+    const q = searchQuery.toLowerCase();
+    setSearchOpen(false);
+    if (q.includes('py') || q.includes('python')) {
+      window.location.hash = '#python';
+    } else if (q.includes('sql') || q.includes('data')) {
+      window.location.hash = '#sql';
+    } else if (q.includes('excel')) {
+      window.location.hash = '#excel';
+    } else if (q.includes('power') || q.includes('bi')) {
+      window.location.hash = '#powerbi';
+    } else if (q.includes('job') || q.includes('placement')) {
+      window.location.hash = '#placement';
+    } else if (q.includes('earn') || q.includes('wallet') || q.includes('money')) {
+      window.location.hash = '#earnings';
+    } else {
+      window.location.hash = '#data-analyst';
     }
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/85 backdrop-blur-2xl border-b border-white/90 px-3.5 py-2.5 flex items-center justify-between shadow-[0_4px_24px_rgba(0,110,255,0.06)] select-none">
-      {/* Left: Official Future IT Industry Logo */}
-      <div
-        className="flex items-center cursor-pointer active:scale-95 transition-transform"
-        onClick={() => {
-          playClick?.();
-          window.location.hash = '#dashboard';
-        }}
-      >
-        <FutureLogo size="sm" />
-      </div>
-
-      {/* Right: Streak, Coins, Gems, Notifications & Profile Avatar */}
-      <div className="flex items-center gap-1.5 sm:gap-2">
-        {/* Android PWA Install Pill (if not already installed) */}
-        {!isStandaloneMode() && (
-          <button
-            type="button"
-            onClick={() => {
-              playClick?.();
-              triggerNativeInstall();
-            }}
-            className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-[10px] px-2.5 py-1 rounded-full shadow-xs active:scale-90 transition-all cursor-pointer mr-0.5"
-            title="Install Android App"
-          >
-            <Download className="w-3 h-3 animate-bounce" />
-            <span>App</span>
-          </button>
-        )}
-
-        {/* Coins Pill */}
-        <div className="flex items-center gap-1 bg-amber-100 border border-amber-300 text-amber-900 font-extrabold text-[11px] px-2.5 py-1 rounded-full shadow-2xs">
-          <Coins className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
-          <span>{telemetry.coins || 1250}</span>
+    <div className="sticky top-0 z-40 w-full select-none">
+      {/* ── Main Mobile Header Bar ── */}
+      <header className="w-full bg-white/95 backdrop-blur-xl border-b border-slate-200/90 px-3 py-2 flex items-center justify-between shadow-xs transition-colors">
+        
+        {/* Left: Brand Logo or Back Button */}
+        <div className="flex items-center gap-2 min-w-0 pr-1">
+          {showBack && onBack ? (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  playClick?.();
+                  onBack();
+                }}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center active:scale-90 transition-transform cursor-pointer shrink-0"
+                aria-label="Back"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+              {title ? (
+                <div className="flex flex-col min-w-0">
+                  <span className="text-xs font-black text-slate-900 leading-tight truncate">
+                    {title}
+                  </span>
+                  {subtitle && (
+                    <span className="text-[9.5px] font-semibold text-slate-500 leading-tight truncate">
+                      {subtitle}
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <div
+                  className="cursor-pointer active:scale-95 transition-transform"
+                  onClick={() => {
+                    playClick?.();
+                    window.location.hash = '#dashboard';
+                  }}
+                >
+                  <FutureLogo size="sm" />
+                </div>
+              )}
+            </div>
+          ) : (
+            <div
+              className="cursor-pointer active:scale-95 transition-transform shrink-0"
+              onClick={() => {
+                playClick?.();
+                window.location.hash = '#dashboard';
+              }}
+            >
+              <FutureLogo size="sm" />
+            </div>
+          )}
         </div>
 
-        {/* Gems Pill */}
-        <div className="flex items-center gap-1 bg-fuchsia-100 border border-fuchsia-300 text-fuchsia-900 font-extrabold text-[11px] px-2.5 py-1 rounded-full shadow-2xs">
-          <Gem className="w-3.5 h-3.5 text-fuchsia-500 fill-fuchsia-400" />
-          <span>{telemetry.gems || 12}</span>
-        </div>
-
-        {/* Notification Bell with Badge 3 */}
-        <button
-          type="button"
-          onClick={handleNotificationsClick}
-          className="relative p-1.5 rounded-full text-slate-600 hover:bg-slate-100/80 active:scale-90 transition-all cursor-pointer"
-          aria-label="Notifications"
-        >
-          <Bell className="w-4 h-4 text-slate-600" />
-          <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center ring-1.5 ring-white">
-            3
-          </span>
-        </button>
-
-        {/* Guest Login Pill (Visible when not logged in) */}
-        {!isLoggedIn && (
+        {/* Right: EXACT 4 Items: Search, Wallet, Notification, Profile Picture */}
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          
+          {/* 1. Search Icon */}
           <button
             type="button"
-            onClick={() => {
-              playClick?.();
-              if (onOpenLogin) onOpenLogin();
-              else onOpenProfile();
-            }}
-            className="px-2.5 py-1 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold text-[11px] shadow-xs active:scale-90 transition-all cursor-pointer"
+            onClick={handleSearchClick}
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer active:scale-90 ${
+              searchOpen
+                ? 'bg-blue-600 text-white shadow-xs'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+            }`}
+            aria-label="Search"
+            title="Search courses & topics"
           >
-            Login
+            <Search className="w-4 h-4" />
           </button>
-        )}
 
-        {/* User Profile Avatar with glowing gradient ring */}
-        <button
-          type="button"
-          onClick={handleProfileClick}
-          className="relative ml-0.5 rounded-full p-0.5 bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-600 shadow-xs active:scale-90 transition-all cursor-pointer"
-          aria-label="User Profile"
-        >
-          <img
-            src={avatarUrl}
-            alt={userName}
-            className="w-7 h-7 rounded-full object-cover border border-white"
-          />
-        </button>
-      </div>
-    </header>
+          {/* 2. Wallet Icon */}
+          <button
+            type="button"
+            onClick={handleWalletClick}
+            className="w-8 h-8 rounded-full bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-700 flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+            aria-label="Wallet & Earnings"
+            title="Wallet & Earnings"
+          >
+            <Wallet className="w-4 h-4" />
+          </button>
+
+          {/* 3. Notification Bell with Badge 3 */}
+          <button
+            type="button"
+            onClick={handleNotificationsClick}
+            className="relative w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+            aria-label="Notifications"
+            title="Notifications"
+          >
+            <Bell className="w-4 h-4" />
+            <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-rose-500 text-white text-[8.5px] font-black flex items-center justify-center ring-1.5 ring-white">
+              3
+            </span>
+          </button>
+
+          {/* 4. Profile Picture Avatar */}
+          <button
+            type="button"
+            onClick={handleProfileClick}
+            className="relative rounded-full p-0.5 bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-600 shadow-xs active:scale-90 transition-all cursor-pointer ml-0.5"
+            aria-label="User Profile"
+            title="View Profile"
+          >
+            <img
+              src={avatarUrl}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '/images/profile_student_avatar.png';
+              }}
+              alt={userName}
+              className="w-7 h-7 rounded-full object-cover border border-white"
+            />
+          </button>
+        </div>
+      </header>
+
+      {/* ── Expandable Instant Search Bar (Opens on tapping Search Icon) ── */}
+      {searchOpen && (
+        <div className="bg-white border-b border-slate-200 px-3 py-2 animate-fadeIn shadow-md">
+          <form onSubmit={handleSearchSubmit} className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                autoFocus
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search Python, SQL, Excel, Jobs, Wallet..."
+                className="w-full bg-slate-100 border border-slate-200 rounded-xl pl-8 pr-3 py-1.5 text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white"
+              />
+            </div>
+            <button
+              type="submit"
+              className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-black cursor-pointer active:scale-95 transition-all"
+            >
+              Go
+            </button>
+            <button
+              type="button"
+              onClick={() => setSearchOpen(false)}
+              className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-800 cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </form>
+          {/* Quick Search Chips */}
+          <div className="flex items-center gap-1.5 mt-2 overflow-x-auto no-scrollbar pb-0.5">
+            {['Python', 'SQL', 'Excel', 'Power BI', 'Placement', 'Wallet'].map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => {
+                  setSearchQuery(item);
+                  setSearchOpen(false);
+                  if (item === 'Python') window.location.hash = '#python';
+                  else if (item === 'SQL') window.location.hash = '#sql';
+                  else if (item === 'Excel') window.location.hash = '#excel';
+                  else if (item === 'Power BI') window.location.hash = '#powerbi';
+                  else if (item === 'Placement') window.location.hash = '#placement';
+                  else if (item === 'Wallet') window.location.hash = '#earnings';
+                }}
+                className="px-2 py-0.5 rounded-full bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-600 text-[10px] font-bold shrink-0 border border-slate-200 cursor-pointer"
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };

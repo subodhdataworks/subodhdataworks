@@ -22,7 +22,9 @@ import {
   Calendar,
   GitMerge,
   Workflow,
-  ExternalLink
+  ExternalLink,
+  Wallet,
+  Bell
 } from 'lucide-react';
 import { SQL_CHAPTERS, Chapter } from '../SqlChapterView';
 import { getLearnerTelemetry } from '../../../services/realAuthService';
@@ -32,6 +34,7 @@ export interface MobileSqlChapterViewProps {
   onBack: () => void;
   onOpenUnlockModal?: (moduleName?: string) => void;
   onOpenAdvisor?: () => void;
+  onOpenProfile?: () => void;
 }
 
 export const MobileSqlChapterView: React.FC<MobileSqlChapterViewProps> = ({
@@ -39,6 +42,7 @@ export const MobileSqlChapterView: React.FC<MobileSqlChapterViewProps> = ({
   onBack,
   onOpenUnlockModal,
   onOpenAdvisor,
+  onOpenProfile,
 }) => {
   const [openChapterId, setOpenChapterId] = useState<number | null>(1);
   const [filterMode, setFilterMode] = useState<'all' | 'video' | 'mcq' | 'game' | 'code'>('all');
@@ -130,16 +134,69 @@ export const MobileSqlChapterView: React.FC<MobileSqlChapterViewProps> = ({
           </div>
         </div>
 
-        {/* Telemetry badges */}
-        <div className="flex items-center gap-1.5">
-          <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-black">
-            <Coins className="w-3.5 h-3.5 text-amber-400 fill-amber-400/80" />
-            <span>{telemetry.coins}</span>
-          </div>
-          <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-fuchsia-500/10 border border-fuchsia-500/20 text-fuchsia-400 text-xs font-black">
-            <Gem className="w-3.5 h-3.5 text-fuchsia-400 fill-fuchsia-400/80" />
-            <span>{telemetry.gems}</span>
-          </div>
+        {/* Right: EXACT 4 Items: Search, Wallet, Notification, Profile Picture */}
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          <button
+            type="button"
+            onClick={() => {
+              playTactile();
+              if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+            }}
+            className="w-8 h-8 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-200 flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+            aria-label="Search"
+            title="Search"
+          >
+            <Search className="w-4 h-4" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              playTactile();
+              if (typeof window !== 'undefined') window.location.hash = '#earnings';
+            }}
+            className="w-8 h-8 rounded-full bg-slate-800/80 hover:bg-amber-900/30 text-amber-400 flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+            aria-label="Wallet"
+            title="Wallet"
+          >
+            <Wallet className="w-4 h-4" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              playTactile();
+              alert('🔔 Welcome to FUTURE IT INDUSTRY!\nYou are in SQL & Databases Module.');
+            }}
+            className="relative w-8 h-8 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-200 flex items-center justify-center active:scale-90 transition-all cursor-pointer"
+            aria-label="Notifications"
+            title="Notifications"
+          >
+            <Bell className="w-4 h-4" />
+            <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-rose-500 text-white rounded-full text-[8.5px] font-black flex items-center justify-center ring-1.5 ring-slate-900">
+              3
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              playTactile();
+              onOpenProfile?.();
+            }}
+            className="relative rounded-full p-0.5 bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-600 shadow-xs active:scale-90 transition-all cursor-pointer ml-0.5"
+            aria-label="Profile"
+            title="Profile"
+          >
+            <img
+              src={(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_avatar') : null) || '/images/profile_student_avatar.png'}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '/images/profile_student_avatar.png';
+              }}
+              alt={userName}
+              className="w-7 h-7 rounded-full object-cover border border-white"
+            />
+          </button>
         </div>
       </header>
 
