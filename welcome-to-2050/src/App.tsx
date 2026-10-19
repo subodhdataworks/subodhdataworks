@@ -34,14 +34,9 @@ export const App: React.FC = () => {
     }
   }, []);
 
-  // Initialize login state from URL hash, search params, or localStorage
+  // Initialize login state strictly from localStorage
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const baseH = window.location.hash.split('?')[0];
-      if (urlParams.get('view') === 'dashboard' || baseH === '#data-analyst' || baseH === '#data-analytics' || baseH === '#courses' || baseH === '#sql' || baseH === '#excel' || baseH === '#powerbi' || baseH === '#stats' || baseH === '#genai' || baseH === '#intro-game' || baseH === '#intro-games' || baseH === '#pyintro' || baseH === '#dashboard' || baseH === '#income' || baseH === '#earnings' || baseH === '#wallet' || baseH === '#withdraw' || baseH === '#referral' || baseH === '#myearnings' || baseH === '#python' || baseH === '#practice' || baseH === '#mcq' || baseH === '#game' || baseH === '#arena' || baseH === '#games' || baseH === '#codequest' || baseH === '#workspace' || baseH === '#code' || baseH === '#codepractice' || baseH === '#interview' || baseH === '#mockinterview' || baseH === '#score' || baseH === '#scorecard' || baseH === '#learn' || baseH === '#video') {
-        return true;
-      }
       return localStorage.getItem('futureai_logged_in') === 'true';
     }
     return false;
@@ -133,9 +128,6 @@ export const App: React.FC = () => {
       }
       if (baseH === '#admin-leads' || baseH === '#leads') {
         setAdminLeadsModalOpen(true);
-      }
-      if (baseH === '#data-analyst' || baseH === '#data-analytics' || baseH === '#courses' || baseH === '#sql' || baseH === '#excel' || baseH === '#powerbi' || baseH === '#stats' || baseH === '#genai' || baseH === '#intro-game' || baseH === '#intro-games' || baseH === '#pyintro' || baseH === '#income' || baseH === '#earnings' || baseH === '#wallet' || baseH === '#withdraw' || baseH === '#referral' || baseH === '#myearnings' || baseH === '#python' || baseH === '#practice' || baseH === '#mcq' || baseH === '#game' || baseH === '#codequest' || baseH === '#workspace' || baseH === '#code' || baseH === '#codepractice' || baseH === '#interview' || baseH === '#mockinterview' || baseH === '#score' || baseH === '#scorecard' || baseH === '#learn' || baseH === '#video') {
-        setIsLoggedIn(true);
       }
     };
     window.addEventListener('hashchange', handleHashChange);
