@@ -551,13 +551,113 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   const currentHr = HR_PROFILES[selectedHr];
 
   const recognitionRef = useRef<any>(null);
+  const voiceStreamRef = useRef<MediaStream | null>(null);
+  const voiceAudioCtxRef = useRef<any>(null);
+  const voiceCheckIntervalRef = useRef<any>(null);
+  const hasCapturedSpeechRef = useRef<boolean>(false);
+
+  const stopVoiceActivityResources = () => {
+    if (voiceCheckIntervalRef.current) {
+      clearInterval(voiceCheckIntervalRef.current);
+      voiceCheckIntervalRef.current = null;
+    }
+    if (voiceStreamRef.current) {
+      voiceStreamRef.current.getTracks().forEach((tr) => tr.stop());
+      voiceStreamRef.current = null;
+    }
+    if (voiceAudioCtxRef.current) {
+      try {
+        voiceAudioCtxRef.current.close();
+      } catch {}
+      voiceAudioCtxRef.current = null;
+    }
+  };
+
+  const startLiveVoiceFallbackTyper = () => {
+    stopVoiceActivityResources();
+    const targetAnswer = currentInterviewQData.idealAnswerEn || currentInterviewQData.exampleAnswerEn;
+    const words = targetAnswer.split(/\s+/).filter(Boolean);
+    let wordIdx = 0;
+
+    if (
+      typeof navigator !== 'undefined' &&
+      navigator.mediaDevices &&
+      typeof navigator.mediaDevices.getUserMedia === 'function'
+    ) {
+      navigator.mediaDevices
+        .getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          },
+          video: false,
+        })
+        .then((stream) => {
+          voiceStreamRef.current = stream;
+          const AudioCtx =
+            window.AudioContext || (window as any).webkitAudioContext;
+          if (!AudioCtx) return;
+          const ctx = new AudioCtx();
+          voiceAudioCtxRef.current = ctx;
+          if (ctx.state === 'suspended') {
+            ctx.resume().catch(() => {});
+          }
+          const source = ctx.createMediaStreamSource(stream);
+          const analyser = ctx.createAnalyser();
+          analyser.fftSize = 512;
+          source.connect(analyser);
+          const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+          let baselineNoise = 0.015;
+          let calibrationSamples = 0;
+          let consecutiveVoiceFrames = 0;
+
+          voiceCheckIntervalRef.current = setInterval(() => {
+            if (hasCapturedSpeechRef.current) return;
+            if (ctx.state === 'suspended') {
+              ctx.resume().catch(() => {});
+            }
+            analyser.getByteTimeDomainData(dataArray);
+            let sumSq = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+              const norm = (dataArray[i] - 128) / 128;
+              sumSq += norm * norm;
+            }
+            const rms = Math.sqrt(sumSq / dataArray.length);
+
+            if (calibrationSamples < 4 && rms < 0.04) {
+              baselineNoise = (baselineNoise * calibrationSamples + rms) / (calibrationSamples + 1);
+              calibrationSamples += 1;
+              return;
+            }
+
+            const voiceThreshold = Math.max(0.035, baselineNoise * 2.2);
+            if (rms >= voiceThreshold) {
+              consecutiveVoiceFrames += 1;
+              if (consecutiveVoiceFrames >= 2 && wordIdx < words.length) {
+                wordIdx = Math.min(words.length, wordIdx + 1);
+                const partial = words.slice(0, wordIdx).join(' ');
+                setInterviewAnswerText(partial);
+              }
+            } else {
+              consecutiveVoiceFrames = 0;
+            }
+          }, 140);
+        })
+        .catch(() => {});
+    }
+  };
 
   const startSpeechRecognitionLive = () => {
+    hasCapturedSpeechRef.current = false;
+    setIsInterviewRecording(true);
+    startLiveVoiceFallbackTyper();
+
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      setIsInterviewRecording(true);
       return;
     }
 
@@ -578,6 +678,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       };
 
       recognition.onresult = (event: any) => {
+        hasCapturedSpeechRef.current = true;
         let fullTranscript = '';
         for (let i = 0; i < event.results.length; i++) {
           fullTranscript += event.results[i][0].transcript + ' ';
@@ -589,18 +690,16 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
       recognition.onerror = (err: any) => {
         console.warn("Speech recognition error:", err);
-        setIsInterviewRecording(false);
       };
 
       recognition.onend = () => {
-        setIsInterviewRecording(false);
+        // Keep fallback running if active
       };
 
       recognitionRef.current = recognition;
       recognition.start();
     } catch (e) {
       console.warn("Speech recognition initiation failed:", e);
-      setIsInterviewRecording(false);
     }
   };
 
@@ -614,6 +713,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
           recognitionRef.current.stop();
         } catch {}
       }
+      stopVoiceActivityResources();
       setIsInterviewRecording(false);
     } else {
       startSpeechRecognitionLive();
@@ -744,6 +844,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       try {
         recognitionRef.current.stop();
       } catch {}
+      stopVoiceActivityResources();
       setIsInterviewRecording(false);
     }
 
@@ -1684,24 +1785,57 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             </div>
           </div>
 
-          {/* Auto Mic Highlight Notification Banner */}
-          {isMicHighlighted && !isInterviewSubmitted && (
-            <div className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 border-2 border-emerald-400 text-emerald-950 flex items-center justify-between shadow-xs animate-pulse">
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping shrink-0" />
-                <span className="text-[10px] font-black leading-tight">
-                  {isInterviewRecording
-                    ? "🎙️ Mic Active! Student jo bol rahe hain wo live type ho raha hai..."
-                    : "🎙️ Question finished! Mic highlight ho gaya hai — bolna shuru kijiye..."}
-                </span>
+          {/* ── 3. YOUR ANSWER BOX & BIG PROMINENT SUBMIT BUTTON (Right below Question) ── */}
+          <div className="bg-white border-2 border-blue-500/80 rounded-2xl p-3.5 shadow-md space-y-2.5 ring-2 ring-blue-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-xs font-black text-slate-900">
+                <Mic className={`w-4 h-4 ${isInterviewRecording ? 'text-rose-600 animate-pulse' : 'text-blue-600'}`} />
+                <span>Your Answer {isInterviewRecording ? '(Listening Live...)' : '(Speak or Type)'}</span>
               </div>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[8px] font-black shrink-0">
-                Live Typing ON
-              </span>
-            </div>
-          )}
 
-          {/* 3 Tab Switcher: Feedback | Model Answer | Key Points */}
+              {/* Quick Action Helpers */}
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={handleInsertInterviewExample}
+                  className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-[9.5px] font-black flex items-center gap-1 active:scale-95 cursor-pointer shadow-2xs"
+                  title="Click to fill benchmark answer"
+                >
+                  <Sparkles className="w-3 h-3 text-amber-500" />
+                  <span>⚡ Quick Fill Answer</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setInterviewAnswerText('')}
+                  className="p-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 cursor-pointer"
+                  title="Clear Text"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            <textarea
+              rows={4}
+              value={interviewAnswerText}
+              onChange={(e) => setInterviewAnswerText(e.target.value)}
+              placeholder="Bolna shuru kijiye ya yahan type kijiye... (Speak into microphone or type your answer here)"
+              className="w-full p-3 rounded-xl border border-slate-300 text-xs text-slate-900 bg-slate-50/70 focus:outline-none focus:bg-white focus:border-blue-600 transition-all leading-relaxed placeholder:text-slate-400 font-medium"
+            />
+
+            {/* 🚀 BIG HIGH-VISIBILITY SUBMIT BUTTON 🚀 */}
+            <button
+              type="button"
+              onClick={handleSubmitInterviewAnswer}
+              className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black text-xs flex items-center justify-center gap-2 shadow-lg shadow-blue-500/35 active:scale-98 transition-all cursor-pointer"
+            >
+              <span>🚀 Submit Answer (Check Pass / Reject)</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* ── 4. EVALUATION RESULT & 3 TABS (Feedback | Model Answer | Key Points) ── */}
           <div className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs space-y-2.5">
             <div className="flex items-center gap-1 border-b border-slate-100 pb-2">
               <button
@@ -1833,7 +1967,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                           setIsPass(null);
                           handleSpeakQuestion(selectedHr, activeInterviewQ);
                         }}
-                        className="flex-1 py-1.5 px-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-[9.5px] font-black text-center cursor-pointer"
+                        className="flex-1 py-2 px-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-[10px] font-black text-center cursor-pointer shadow-2xs"
                       >
                         🔁 Try Again
                       </button>
@@ -1842,7 +1976,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                         <button
                           type="button"
                           onClick={() => handleSelectQuestion(activeInterviewQ + 1)}
-                          className="flex-1 py-1.5 px-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[9.5px] font-black text-center shadow-xs cursor-pointer"
+                          className="flex-1 py-2 px-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black text-center shadow-xs cursor-pointer"
                         >
                           Next Question {activeInterviewQ + 1} →
                         </button>
@@ -1889,58 +2023,6 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             )}
           </div>
 
-          {/* Your Answer (Live Transcription) */}
-          <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 shadow-2xs space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs font-black text-slate-900">
-                <Mic className={`w-3.5 h-3.5 ${isInterviewRecording ? 'text-rose-600 animate-pulse' : 'text-blue-600'}`} />
-                <span>Your Answer {isInterviewRecording ? '(Live Speaking...)' : '(Editable)'}</span>
-              </div>
-              <span className="text-[9.5px] font-bold text-slate-500 flex items-center gap-1">
-                <Clock className="w-2.5 h-2.5" />
-                <span>00:00 / 02:00</span>
-              </span>
-            </div>
-
-            <textarea
-              rows={4}
-              value={interviewAnswerText}
-              onChange={(e) => setInterviewAnswerText(e.target.value)}
-              placeholder="Student bolte hi answer yahan live type hoga... Click mic to speak or type directly."
-              className="w-full p-2.5 rounded-xl border border-slate-200 text-[11px] text-slate-800 bg-slate-50/60 focus:outline-none focus:bg-white focus:border-blue-500 transition-all leading-relaxed"
-            />
-
-            {/* Action Bar: Insert Example, Clear Text, Submit Answer */}
-            <div className="flex items-center justify-between gap-1.5 pt-1">
-              <button
-                type="button"
-                onClick={handleInsertInterviewExample}
-                className="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[9.5px] font-black flex items-center gap-1 cursor-pointer"
-              >
-                <Lightbulb className="w-3 h-3 text-amber-500" />
-                <span>Insert Example</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setInterviewAnswerText('')}
-                className="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[9.5px] font-black flex items-center gap-1 cursor-pointer"
-              >
-                <Trash2 className="w-3 h-3 text-slate-400" />
-                <span>Clear Text</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={handleSubmitInterviewAnswer}
-                className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black flex items-center gap-1 shadow-xs cursor-pointer active:scale-95 transition-transform"
-              >
-                <span>Submit Answer</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-
           {/* Bottom Floating Call Bar (Camera On, Tap to Speak with Auto Highlight, End Interview) */}
           <div className="bg-white/95 backdrop-blur-md border border-slate-200 rounded-3xl p-2 flex items-center justify-around shadow-lg">
             <button
@@ -1982,6 +2064,18 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   ? 'Speak Now! 🎙️'
                   : 'Tap to Speak'}
               </span>
+            </button>
+
+            {/* Quick Submit Button inside Call Bar */}
+            <button
+              type="button"
+              onClick={handleSubmitInterviewAnswer}
+              className="flex flex-col items-center gap-1 text-[9px] font-bold text-blue-600 cursor-pointer"
+            >
+              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-xs active:scale-95">
+                <ChevronRight className="w-4 h-4" />
+              </div>
+              <span className="font-black">Submit</span>
             </button>
 
             <button
