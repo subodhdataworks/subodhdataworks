@@ -236,4 +236,28 @@
   animation-play-state: paused !important;
 }
 
+/* =========================================================================
+   CANDIDATE SUCCESS STORIES CONTINUOUS AUTO-MOVING TICKER
+   ========================================================================= */
+@keyframes candidateMarqueeScroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-candidate-marquee {
+  display: flex;
+  width: max-content;
+  animation: candidateMarqueeScroll 38s linear infinite;
+  will-change: transform;
+}
+
+.animate-candidate-marquee:hover,
+.candidate-marquee-paused {
+  animation-play-state: paused !important;
+}
+
 
