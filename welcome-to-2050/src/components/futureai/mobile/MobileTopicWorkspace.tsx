@@ -556,91 +556,6 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   };
   const currentHr = HR_PROFILES[selectedHr];
 
-function cleanWord(w: string): string {
-  return (w || '').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
-}
-
-/**
- * Intelligently merges an existing committed transcript with incoming text (final or interim),
- * eliminating any duplicate words, phrases, or repeated prefixes caused by mobile SpeechRecognition restarts.
- */
-function mergeTranscripts(base: string, addition: string): string {
-  const b = (base || '').trim();
-  const a = (addition || '').trim();
-
-  if (!b) return a;
-  if (!a) return b;
-
-  const bLower = b.toLowerCase();
-  const aLower = a.toLowerCase();
-
-  // 1. Exact match
-  if (bLower === aLower) {
-    return b;
-  }
-
-  // 2. Direct string startsWith / endsWith containment
-  if (aLower.startsWith(bLower)) {
-    return a;
-  }
-  if (bLower.startsWith(aLower)) {
-    return b;
-  }
-  if (bLower.endsWith(aLower)) {
-    return b;
-  }
-
-  const bWords = b.split(/\s+/).filter(Boolean);
-  const aWords = a.split(/\s+/).filter(Boolean);
-  if (bWords.length === 0) return a;
-  if (aWords.length === 0) return b;
-
-  const bClean = bWords.map(cleanWord);
-  const aClean = aWords.map(cleanWord);
-
-  // 3. Shared Prefix (Android SpeechRecognizer re-emission / expansion):
-  // When mobile speech recognition restarts or refines hypotheses,
-  // addition often repeats the sentence starting from word 0 or 1.
-  // e.g. base = "software", addition = "software instruction"
-  // e.g. base = "Programming is a process", addition = "Programming is the process of writing instructions"
-  let commonPrefixCount = 0;
-  const maxPrefix = Math.min(bClean.length, aClean.length);
-  for (let i = 0; i < maxPrefix; i++) {
-    if (bClean[i] === aClean[i] && bClean[i].length > 0) {
-      commonPrefixCount++;
-    } else {
-      break;
-    }
-  }
-
-  if (commonPrefixCount >= 1) {
-    if (aWords.length >= bWords.length) {
-      return a;
-    } else {
-      return b;
-    }
-  }
-
-  // 4. Suffix-to-Prefix Overlap (continuous speech boundary):
-  // e.g. base = "Programming is the process of", addition = "process of writing instructions"
-  const maxOverlapWords = Math.min(bWords.length, aWords.length);
-  for (let len = maxOverlapWords; len > 0; len--) {
-    const bSuffix = bClean.slice(bClean.length - len).join(' ');
-    const aPrefix = aClean.slice(0, len).join(' ');
-
-    if (bSuffix && bSuffix === aPrefix) {
-      const remainingAWords = aWords.slice(len);
-      if (remainingAWords.length === 0) {
-        return b;
-      }
-      return b + ' ' + remainingAWords.join(' ');
-    }
-  }
-
-  // 5. Clean concatenation for genuinely separate next phrase
-  return b + ' ' + a;
-}
-
   const recognitionRef = useRef<any>(null);
   const isStartingRecognitionRef = useRef<boolean>(false);
   const userRequestedRecordingRef = useRef<boolean>(false);
@@ -648,10 +563,9 @@ function mergeTranscripts(base: string, addition: string): string {
   const speechSpeakingTimerRef = useRef<any>(null);
   const [isStudentSpeakingAudio, setIsStudentSpeakingAudio] = useState<boolean>(false);
 
-  // Single Source of Truth for Speech Transcription
-  const committedTextRef = useRef<string>('');
-  const lastSessionFinalRef = useRef<string>('');
-  const currentInterimRef = useRef<string>('');
+  // Single Source of Truth: Separate Final from Temporary Interim
+  const finalTranscriptRef = useRef<string>('');
+  const interimTranscriptRef = useRef<string>('');
 
   const autoNextTimerRef = useRef<any>(null);
   const [autoNextCountdown, setAutoNextCountdown] = useState<number | null>(null);
@@ -694,16 +608,9 @@ function mergeTranscripts(base: string, addition: string): string {
       } catch {}
     }
 
-    // Commit any uncommitted session final
-    if (lastSessionFinalRef.current.trim()) {
-      committedTextRef.current = mergeTranscripts(committedTextRef.current, lastSessionFinalRef.current.trim());
-      lastSessionFinalRef.current = '';
-    }
-    currentInterimRef.current = '';
-
-    if (committedTextRef.current.trim()) {
-      setInterviewAnswerText(committedTextRef.current.trim());
-    }
+    // Temporary interim is discarded; confirmed final text is preserved
+    interimTranscriptRef.current = '';
+    setInterviewAnswerText(finalTranscriptRef.current);
 
     setIsInterviewRecording(false);
     isInterviewRecordingRef.current = false;
@@ -845,8 +752,7 @@ function mergeTranscripts(base: string, addition: string): string {
 
       // Assign reference immediately so any orphan instance callbacks will be rejected
       recognitionRef.current = recognition;
-      lastSessionFinalRef.current = '';
-      currentInterimRef.current = '';
+      interimTranscriptRef.current = '';
 
       recognition.onstart = () => {
         isStartingRecognitionRef.current = false;
@@ -878,36 +784,41 @@ function mergeTranscripts(base: string, addition: string): string {
       recognition.onresult = (event: any) => {
         if (recognitionRef.current !== recognition) return;
 
-        // Rebuild this session's final and interim transcript directly from cumulative results
-        let sessionFinal = '';
-        let sessionInterim = '';
+        let newlyFinalized = '';
+        let currentInterim = '';
 
-        for (let i = 0; i < event.results.length; ++i) {
+        // Iterate strictly from event.resultIndex to process only NEW/changed results
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
           const res = event.results[i];
           const text = (res[0]?.transcript || '').trim();
           if (!text) continue;
 
           if (res.isFinal) {
-            sessionFinal += (sessionFinal ? ' ' : '') + text;
+            newlyFinalized += (newlyFinalized ? ' ' : '') + text;
           } else {
-            sessionInterim += (sessionInterim ? ' ' : '') + text;
+            currentInterim += (currentInterim ? ' ' : '') + text;
           }
         }
 
-        lastSessionFinalRef.current = sessionFinal;
-        currentInterimRef.current = sessionInterim;
+        // 1. Permanently append ONLY newly confirmed final speech
+        if (newlyFinalized) {
+          finalTranscriptRef.current = finalTranscriptRef.current
+            ? `${finalTranscriptRef.current} ${newlyFinalized}`
+            : newlyFinalized;
+        }
 
-        // Merge committed text with this session's results using intelligent deduplication
-        const currentConfirmed = mergeTranscripts(committedTextRef.current, sessionFinal);
-        const fullDisplay = sessionInterim
-          ? mergeTranscripts(currentConfirmed, sessionInterim)
-          : currentConfirmed;
+        // 2. Keep interim strictly temporary (never saved permanently)
+        interimTranscriptRef.current = currentInterim;
 
-        if (fullDisplay) {
-          setInterviewAnswerText(fullDisplay);
+        // 3. Display confirmed final text + current interim text
+        const confirmed = finalTranscriptRef.current;
+        const display = (confirmed + (currentInterim ? (confirmed ? ' ' : '') + currentInterim : '')).trim();
+
+        if (display) {
+          setInterviewAnswerText(display);
           setIsStudentSpeakingAudio(true);
-          const previewTip = sessionInterim || sessionFinal.split(/\s+/).slice(-3).join(' ');
-          setSpeechTip("● " + (sessionInterim ? `Listening: "${previewTip}"` : `Transcribed: "${previewTip}"`));
+          const previewTip = currentInterim || newlyFinalized;
+          setSpeechTip("● " + (currentInterim ? `Listening: "${previewTip}"` : `Transcribed: "${previewTip}"`));
         }
       };
 
@@ -941,17 +852,11 @@ function mergeTranscripts(base: string, addition: string): string {
         isStartingRecognitionRef.current = false;
         if (recognitionRef.current !== recognition) return;
 
-        // Commit this session's speech permanently into committedTextRef
-        const textToCommit = lastSessionFinalRef.current.trim() || currentInterimRef.current.trim();
-        if (textToCommit) {
-          committedTextRef.current = mergeTranscripts(committedTextRef.current, textToCommit);
-          lastSessionFinalRef.current = '';
-          currentInterimRef.current = '';
-        }
+        // Discard any unfinalized interim speech (never commit interim to final!)
+        interimTranscriptRef.current = '';
 
-        if (committedTextRef.current.trim()) {
-          setInterviewAnswerText(committedTextRef.current.trim());
-        }
+        // Display strictly the confirmed final transcript
+        setInterviewAnswerText(finalTranscriptRef.current);
 
         // Auto-restart if user still wants to record and interview is not yet submitted
         if (userRequestedRecordingRef.current && !isInterviewSubmittedRef.current) {
@@ -1213,9 +1118,8 @@ function mergeTranscripts(base: string, addition: string): string {
     }
     setActiveInterviewQ(qNum);
     setInterviewAnswerText('');
-    committedTextRef.current = '';
-    lastSessionFinalRef.current = '';
-    currentInterimRef.current = '';
+    finalTranscriptRef.current = '';
+    interimTranscriptRef.current = '';
     setEvaluationResult(null);
     setIsPass(null);
     setIsInterviewSubmitted(false);
@@ -2090,9 +1994,8 @@ function mergeTranscripts(base: string, addition: string): string {
                         type="button"
                         onClick={() => {
                           setInterviewAnswerText('');
-                          committedTextRef.current = '';
-                          lastSessionFinalRef.current = '';
-                          currentInterimRef.current = '';
+                          finalTranscriptRef.current = '';
+                          interimTranscriptRef.current = '';
                         }}
                         className="text-slate-400 hover:text-rose-500 text-[10px] font-bold cursor-pointer shrink-0 ml-2"
                       >
@@ -2109,9 +2012,8 @@ function mergeTranscripts(base: string, addition: string): string {
                   onChange={(e) => {
                     const val = e.target.value;
                     setInterviewAnswerText(val);
-                    committedTextRef.current = val;
-                    lastSessionFinalRef.current = '';
-                    currentInterimRef.current = '';
+                    finalTranscriptRef.current = val;
+                    interimTranscriptRef.current = '';
                   }}
                   placeholder="Start speaking or type your answer here..."
                   className="w-full text-xs text-slate-800 bg-transparent border-none focus:outline-none placeholder:text-slate-400 font-medium resize-none leading-relaxed min-h-[64px]"
@@ -2431,9 +2333,8 @@ function mergeTranscripts(base: string, addition: string): string {
                     setIsInterviewSubmitted(false);
                     isInterviewSubmittedRef.current = false;
                     setInterviewAnswerText('');
-                    committedTextRef.current = '';
-                    lastSessionFinalRef.current = '';
-                    currentInterimRef.current = '';
+                    finalTranscriptRef.current = '';
+                    interimTranscriptRef.current = '';
                     setEvaluationResult(null);
                     handleSpeakQuestion(selectedHr, activeInterviewQ);
                   }}
