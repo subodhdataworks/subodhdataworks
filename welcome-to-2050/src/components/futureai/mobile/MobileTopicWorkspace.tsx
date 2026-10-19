@@ -856,9 +856,46 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     const qData = interviewQuestions[qNum - 1] || interviewQuestions[0];
 
     const questionHindi = qData.questionHi || qData.questionEn;
-    const questionText = isFem
-      ? `नमस्ते! मैं अदिति शर्मा। आपके पायथन टेक्निकल इंटरव्यू में आपका स्वागत है। सवाल नंबर ${qNum}: ${questionHindi}`
-      : `Namaste! I am your English Technical Mentor from Future IT Industry. Welcome to your technical mock interview. Question ${qNum}: ${qData.questionEn}`;
+    const questionEnglish = qData.questionEn;
+
+    let questionText = '';
+    if (isFem) {
+      if (qNum === 1) {
+        const intros = [
+          `नमस्कार। आपके पायथन टेक्निकल इंटरव्यू में आपका स्वागत है। चलिए पहले सवाल से शुरू करते हैं: ${questionHindi}`,
+          `हेलो, टेक्निकल इंटरव्यू राउंड में आपका स्वागत है। आपका पहला सवाल यह है: ${questionHindi}`,
+          `स्वागत है। आज के टेक्निकल असेसमेंट की शुरुआत करते हैं सवाल नंबर 1 से: ${questionHindi}`,
+        ];
+        questionText = intros[Math.floor(Math.random() * intros.length)];
+      } else {
+        const transitions = [
+          `ठीक है, आगे बढ़ते हैं सवाल नंबर ${qNum} की ओर: ${questionHindi}`,
+          `अब आपके अगले कॉन्सेप्ट की जांच करते हैं। सवाल नंबर ${qNum}: ${questionHindi}`,
+          `अगला सवाल आपके लिए: सवाल नंबर ${qNum}: ${questionHindi}`,
+          `आइए अब सवाल नंबर ${qNum} को समझते हैं: ${questionHindi}`,
+          `बहुत अच्छे, अब अगला प्रश्न: सवाल नंबर ${qNum}: ${questionHindi}`,
+        ];
+        questionText = transitions[Math.floor(Math.random() * transitions.length)];
+      }
+    } else {
+      if (qNum === 1) {
+        const intros = [
+          `Hello! Welcome to your Python technical assessment. Let's begin with question 1: ${questionEnglish}`,
+          `Good day! We will start your technical evaluation now. Here is your first question: ${questionEnglish}`,
+          `Welcome to this technical round. Let us kick off with question 1: ${questionEnglish}`,
+        ];
+        questionText = intros[Math.floor(Math.random() * intros.length)];
+      } else {
+        const transitions = [
+          `Moving forward to question ${qNum}: ${questionEnglish}`,
+          `Alright, here is question ${qNum}: ${questionEnglish}`,
+          `Let us examine the next concept. Question ${qNum}: ${questionEnglish}`,
+          `Proceeding to your next challenge, question ${qNum}: ${questionEnglish}`,
+          `Good. Now let's tackle question ${qNum}: ${questionEnglish}`,
+        ];
+        questionText = transitions[Math.floor(Math.random() * transitions.length)];
+      }
+    }
 
     setHrSpeakingText(questionText);
     setIsHrSpeaking(true);
@@ -1030,7 +1067,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
   return (
     <div
-      className="w-full min-h-[100dvh] bg-[#f3f8fe] text-slate-900 pb-44 text-left font-sans select-auto overflow-y-auto touch-pan-y"
+      className="w-full min-h-[100dvh] bg-[#f3f8fe] text-slate-900 pb-28 text-left font-sans select-auto overflow-y-auto touch-pan-y"
       style={{ WebkitOverflowScrolling: 'touch' }}
     >
       {/* ═════════════════════════════════════════════════════════════════════════
@@ -1917,19 +1954,6 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   </div>
                 </div>
 
-                {/* 🌟 Prominent Call-to-Action Banner when HR Question completes 🌟 */}
-                {isMicHighlighted && !isInterviewRecording && (
-                  <div className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border-2 border-emerald-400 flex items-center justify-between shadow-xs animate-pulse">
-                    <span className="flex items-center gap-1.5 text-[10.5px] font-black text-emerald-800">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-                      👉 आपकी बारी: नीचे हरा बटन दबाएं और बोलें 👈
-                    </span>
-                    <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-xs">
-                      Ready ✓
-                    </span>
-                  </div>
-                )}
-
                 {/* 🎙️ Direct User Tap-to-Speak Button (Guarantees Android Chrome Mic Permission) 🎙️ */}
                 <button
                   type="button"
@@ -1938,16 +1962,16 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                     isInterviewRecording
                       ? 'bg-rose-600 text-white animate-pulse shadow-rose-600/40 ring-4 ring-rose-300'
                       : isMicHighlighted
-                      ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600 text-white shadow-xl shadow-emerald-500/50 ring-4 ring-emerald-400 ring-offset-2 ring-offset-white animate-bounce'
+                      ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl shadow-emerald-500/40 ring-4 ring-emerald-300 ring-offset-2 animate-pulse'
                       : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-blue-600/25'
                   }`}
                 >
-                  <Mic className={`w-4 h-4 text-white ${isMicHighlighted ? 'animate-pulse' : ''}`} />
+                  <Mic className={`w-4 h-4 text-white ${isMicHighlighted ? 'animate-bounce' : ''}`} />
                   <span>
                     {isInterviewRecording
                       ? '🔴 Mic On: Listening... (Tap to Pause)'
                       : isMicHighlighted
-                      ? '🎙️ TAP TO SPEAK (अब अपनी आवाज़ में उत्तर बोलें)'
+                      ? '🎙️ Tap to Speak (अब आप बोलें — माइक ऑन करें)'
                       : '🎙️ Tap to Speak (माइक ऑन करें और बोलें)'}
                   </span>
                 </button>
@@ -1960,17 +1984,17 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                 )}
 
                 {/* Live Answer Box with Mic Icon & Real-Time Typing */}
-                <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-50/80 border border-slate-200 focus-within:border-blue-500 transition-all">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-xs transition-all ${
+                <div className="flex items-start gap-2 p-2 rounded-xl bg-slate-50/90 border border-slate-200 focus-within:border-blue-500 transition-all">
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 shadow-xs transition-all ${
                     isInterviewRecording || isStudentSpeakingAudio
                       ? 'bg-rose-500 text-white animate-pulse'
                       : 'bg-slate-200 text-slate-500'
                   }`}>
-                    <Mic className="w-4 h-4 text-white" />
+                    <Mic className="w-3.5 h-3.5 text-white" />
                   </div>
 
                   <textarea
-                    rows={4}
+                    rows={2}
                     value={interviewAnswerText}
                     onChange={(e) => {
                       setInterviewAnswerText(e.target.value);
@@ -1981,7 +2005,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                         ? "माइक में बोलें... आपके बोलने से यहाँ लाइव टाइप होगा..."
                         : "Speak into your mic... your spoken words will type here in real time..."
                     }
-                    className="w-full text-xs text-slate-900 bg-transparent border-none focus:outline-none leading-relaxed placeholder:text-slate-400 font-medium resize-none"
+                    className="w-full text-xs text-slate-900 bg-transparent border-none focus:outline-none leading-relaxed placeholder:text-slate-400 font-medium resize-none min-h-[50px]"
                   />
                 </div>
 
@@ -2293,26 +2317,6 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   className="py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black text-xs flex items-center justify-center gap-1.5 shadow-md shadow-purple-500/25 cursor-pointer active:scale-95"
                 >
                   <span>Next Question</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* 🚀 STICKY FLOATING BOTTOM SUBMIT BAR (Guarantees Submit Button is ALWAYS visible on Android) 🚀 */}
-          {!isInterviewSubmitted && (
-            <div className="fixed bottom-0 inset-x-0 z-50 p-3 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-8px_20px_rgba(0,0,0,0.15)]">
-              <div className="max-w-md mx-auto flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handleSubmitInterviewAnswer}
-                  className={`w-full py-3.5 px-4 rounded-xl font-black text-xs flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer active:scale-98 ${
-                    interviewAnswerText.trim()
-                      ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white shadow-blue-500/35 ring-2 ring-blue-300 animate-pulse'
-                      : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white shadow-blue-500/25 opacity-90'
-                  }`}
-                >
-                  <span>🚀 Submit Answer (Evaluate &amp; View Result)</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
