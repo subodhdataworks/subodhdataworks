@@ -8,6 +8,7 @@ import {
   VolumeX,
   Maximize2,
   CheckCircle2,
+  AlertTriangle,
   ChevronRight,
   ChevronLeft,
   Clock,
@@ -649,32 +650,14 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     }
   };
 
-  const startLiveVoiceFallbackTyper = () => {
-    stopVoiceActivityResources();
-    const targetAnswer = currentInterviewQData.idealAnswerEn || currentInterviewQData.exampleAnswerEn;
-    const words = targetAnswer.split(/\s+/).filter(Boolean);
-    let wordIdx = 0;
-
-    // Direct steady speech typing cadence
-    voiceCheckIntervalRef.current = setInterval(() => {
-      if (hasCapturedSpeechRef.current) return;
-      if (wordIdx < words.length) {
-        wordIdx = Math.min(words.length, wordIdx + 1);
-        const partial = words.slice(0, wordIdx).join(' ');
-        setInterviewAnswerText(partial);
-      }
-    }, 280);
-  };
-
   const startSpeechRecognitionLive = () => {
-    hasCapturedSpeechRef.current = false;
     setIsInterviewRecording(true);
-    startLiveVoiceFallbackTyper();
 
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
+      console.warn("Speech recognition is not supported in this browser.");
       return;
     }
 
@@ -695,7 +678,6 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       };
 
       recognition.onresult = (event: any) => {
-        hasCapturedSpeechRef.current = true;
         let fullTranscript = '';
         for (let i = 0; i < event.results.length; i++) {
           fullTranscript += event.results[i][0].transcript + ' ';
@@ -710,7 +692,12 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       };
 
       recognition.onend = () => {
-        // Keep fallback running if active
+        // Keep active if recording is still active
+        if (isInterviewRecording && recognitionRef.current === recognition) {
+          try {
+            recognition.start();
+          } catch {}
+        }
       };
 
       recognitionRef.current = recognition;
@@ -1620,52 +1607,47 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                 </div>
               )}
 
-              {/* Top Bar: Student Name + Cam Toggle */}
+              {/* Top Bar: Student Name + Mic Toggle + Cam Toggle */}
               <div className="relative z-20 top-1.5 left-1.5 right-1.5 flex items-center justify-between text-white text-[8.5px] font-black">
                 <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-slate-900/85 backdrop-blur-md border border-white/20">
                   <span className={`w-1.5 h-1.5 rounded-full ${hasCameraPermission ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
-                  <span className="truncate max-w-[65px]">You ({userName || 'Student'})</span>
+                  <span className="truncate max-w-[60px]">You ({userName || 'Student'})</span>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    playTactile();
-                    if (isCameraOn && hasCameraPermission) {
-                      setIsCameraOn(false);
-                      stopCameraStream();
-                    } else {
-                      startCameraStream();
-                    }
-                  }}
-                  className="px-1.5 py-0.5 rounded-lg bg-slate-900/85 backdrop-blur-md border border-white/20 text-white text-[8px] font-bold flex items-center gap-1 cursor-pointer"
-                  title="Toggle Camera"
-                >
-                  {isCameraOn && hasCameraPermission ? (
-                    <>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={toggleSpeechRecording}
+                    className={`px-1.5 py-0.5 rounded-lg backdrop-blur-md border border-white/20 text-white text-[8px] font-bold flex items-center gap-0.5 cursor-pointer ${
+                      isInterviewRecording ? 'bg-rose-600/90' : 'bg-slate-900/85'
+                    }`}
+                    title="Toggle Mic"
+                  >
+                    <Mic className={`w-2.5 h-2.5 ${isInterviewRecording ? 'text-white animate-pulse' : 'text-slate-300'}`} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTactile();
+                      if (isCameraOn && hasCameraPermission) {
+                        setIsCameraOn(false);
+                        stopCameraStream();
+                      } else {
+                        startCameraStream();
+                      }
+                    }}
+                    className="px-1.5 py-0.5 rounded-lg bg-slate-900/85 backdrop-blur-md border border-white/20 text-white text-[8px] font-bold flex items-center gap-1 cursor-pointer"
+                    title="Toggle Camera"
+                  >
+                    {isCameraOn && hasCameraPermission ? (
                       <Video className="w-2.5 h-2.5 text-emerald-400" />
-                      <span>On</span>
-                    </>
-                  ) : (
-                    <>
+                    ) : (
                       <VideoOff className="w-2.5 h-2.5 text-rose-400" />
-                      <span>Off</span>
-                    </>
-                  )}
-                </button>
-              </div>
-
-              {/* Live Voice Equalizer on Student Box when student is recording */}
-              {isInterviewRecording && (
-                <div className="relative z-20 bottom-1.5 inset-x-1.5 p-1 rounded-lg bg-rose-950/85 backdrop-blur-xs border border-rose-400/40 text-white flex items-center justify-center gap-1 shadow-md">
-                  <span className="text-[8px] font-black text-rose-300">🎙️ Listening Live...</span>
-                  <div className="flex items-center gap-0.5 ml-1">
-                    <span className="w-0.5 h-2 bg-rose-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-0.5 h-3.5 bg-rose-300 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-0.5 h-2 bg-rose-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                  </div>
+                    )}
+                  </button>
                 </div>
-              )}
+              </div>
             </div>
           </div>
 
@@ -1689,72 +1671,47 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
           </div>
 
-          {/* ── 3. MIC ICON & ANSWER TYPING BOX (Right below Question) ── */}
-          <div className="bg-white border-2 border-blue-500 rounded-2xl p-3.5 shadow-md space-y-3 ring-2 ring-blue-100">
-            {/* Dedicated Mic Tap & Recording Bar */}
-            <div className="flex items-center justify-between gap-2">
-              <button
-                type="button"
-                onClick={toggleSpeechRecording}
-                className={`flex-1 py-2.5 px-3 rounded-xl font-black text-xs flex items-center justify-center gap-2 cursor-pointer transition-all shadow-sm ${
-                  isInterviewRecording
-                    ? 'bg-rose-600 text-white animate-pulse ring-2 ring-rose-300'
-                    : isMicHighlighted
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-emerald-500/30 ring-2 ring-emerald-300 animate-bounce'
-                    : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white active:scale-98'
-                }`}
-              >
-                {isInterviewRecording ? (
-                  <>
-                    <MicOff className="w-4 h-4 animate-spin" />
-                    <span>🎙️ Listening Live... (Tap to Stop)</span>
-                  </>
-                ) : (
-                  <>
-                    <Mic className="w-4 h-4" />
-                    <span>{isMicHighlighted ? '🎙️ Tap to Speak (Allow Mic)' : '🎙️ Tap to Speak (Mic)'}</span>
-                  </>
-                )}
-              </button>
+          {/* ── 3. YOUR ANSWER BOX & SUBMIT BUTTON (Right below Question) ── */}
+          <div className="bg-white border-2 border-blue-500 rounded-2xl p-3.5 shadow-md space-y-2.5 ring-2 ring-blue-100">
+            {/* Header: Title + Quick Fill + Clear */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-xs font-black text-slate-900">
+                <Mic className={`w-3.5 h-3.5 ${isInterviewRecording ? 'text-rose-600 animate-pulse' : 'text-blue-600'}`} />
+                <span>Your Answer</span>
+              </div>
 
-              <button
-                type="button"
-                onClick={handleInsertInterviewExample}
-                className="px-2.5 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-[10px] font-black flex items-center gap-1 active:scale-95 cursor-pointer shrink-0 shadow-2xs"
-                title="1-tap fill sample answer"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                <span>⚡ Fill Ans</span>
-              </button>
-
-              {interviewAnswerText && (
+              <div className="flex items-center gap-1.5">
                 <button
                   type="button"
-                  onClick={() => setInterviewAnswerText('')}
-                  className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 cursor-pointer shrink-0"
-                  title="Clear Answer"
+                  onClick={handleInsertInterviewExample}
+                  className="px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-[9.5px] font-black flex items-center gap-1 active:scale-95 cursor-pointer shadow-2xs"
+                  title="1-tap fill benchmark answer"
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
+                  <Sparkles className="w-3 h-3 text-amber-500" />
+                  <span>⚡ Fill Ans</span>
                 </button>
-              )}
+
+                {interviewAnswerText && (
+                  <button
+                    type="button"
+                    onClick={() => setInterviewAnswerText('')}
+                    className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 cursor-pointer"
+                    title="Clear Answer"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Answer Typing Textarea */}
-            <div className="relative">
-              <textarea
-                rows={4}
-                value={interviewAnswerText}
-                onChange={(e) => setInterviewAnswerText(e.target.value)}
-                placeholder="Aapka jawab yahan type hoga... (Tap mic button above to speak or type here)"
-                className="w-full p-3 rounded-xl border border-slate-300 text-xs text-slate-900 bg-slate-50/70 focus:outline-none focus:bg-white focus:border-blue-600 transition-all leading-relaxed placeholder:text-slate-400 font-medium"
-              />
-              {isInterviewRecording && (
-                <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500 text-white text-[9px] font-black shadow-xs">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
-                  <span>Recording Live...</span>
-                </div>
-              )}
-            </div>
+            <textarea
+              rows={4}
+              value={interviewAnswerText}
+              onChange={(e) => setInterviewAnswerText(e.target.value)}
+              placeholder="Student bolte hi answer yahan type hoga... ya type kijiye."
+              className="w-full p-3 rounded-xl border border-slate-300 text-xs text-slate-900 bg-slate-50/70 focus:outline-none focus:bg-white focus:border-blue-600 transition-all leading-relaxed placeholder:text-slate-400 font-medium"
+            />
 
             {/* 🚀 BIG HIGH-VISIBILITY SUBMIT BUTTON 🚀 */}
             <button
@@ -1814,82 +1771,161 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               </button>
             </div>
 
-            {/* Tab 1: AI Feedback with Pass / Reject Evaluation */}
+            {/* Tab 1: AI Feedback with Pass / Reject Speedometer Evaluation */}
             {activeInterviewTab === 'feedback' && (
-              <div className="py-1 space-y-2">
+              <div className="py-1 space-y-2.5">
                 {isInterviewSubmitted && evaluationResult ? (
-                  <div className={`border rounded-xl p-3 space-y-2 ${
-                    isPass
-                      ? 'bg-emerald-50/80 border-emerald-300 text-emerald-950'
-                      : 'bg-rose-50/80 border-rose-300 text-rose-950'
-                  }`}>
-                    {/* Header: Pass or Reject with Score */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
+                  <div className="space-y-2.5">
+                    {/* ══════════════════════════════════════════════════════
+                        SPEEDOMETER GAUGE METER (Score & Pass / Reject)
+                        ══════════════════════════════════════════════════════ */}
+                    <div className="bg-gradient-to-b from-slate-50 to-white rounded-2xl p-3 border-2 border-slate-200/90 shadow-sm flex flex-col items-center">
+                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">
+                        Performance Speedometer
+                      </div>
+
+                      {/* SVG Gauge Speedometer Arc */}
+                      <div className="relative w-48 h-28 flex items-center justify-center">
+                        <svg viewBox="0 0 200 120" className="w-full h-full overflow-visible">
+                          <defs>
+                            <linearGradient id="speedometerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                              <stop offset="0%" stopColor="#ef4444" />
+                              <stop offset="45%" stopColor="#f59e0b" />
+                              <stop offset="70%" stopColor="#10b981" />
+                              <stop offset="100%" stopColor="#059669" />
+                            </linearGradient>
+                          </defs>
+
+                          {/* Background Track Arc */}
+                          <path
+                            d="M 25 105 A 75 75 0 0 1 175 105"
+                            fill="none"
+                            stroke="#e2e8f0"
+                            strokeWidth="14"
+                            strokeLinecap="round"
+                          />
+
+                          {/* Colored Speedometer Gradient Track */}
+                          <path
+                            d="M 25 105 A 75 75 0 0 1 175 105"
+                            fill="none"
+                            stroke="url(#speedometerGradient)"
+                            strokeWidth="14"
+                            strokeLinecap="round"
+                            strokeDasharray="235.6"
+                            strokeDashoffset={235.6 - (Math.min(10, Math.max(0, evaluationResult.score)) / 10) * 235.6}
+                            style={{ transition: 'stroke-dashoffset 1.2s ease-out' }}
+                          />
+
+                          {/* Scale Markers */}
+                          <text x="22" y="118" fontSize="9" fontWeight="bold" fill="#ef4444" textAnchor="middle">0</text>
+                          <text x="65" y="48" fontSize="8" fontWeight="bold" fill="#f59e0b" textAnchor="middle">4</text>
+                          <text x="100" y="24" fontSize="9" fontWeight="bold" fill="#10b981" textAnchor="middle">6</text>
+                          <text x="140" y="48" fontSize="8" fontWeight="bold" fill="#059669" textAnchor="middle">8</text>
+                          <text x="178" y="118" fontSize="9" fontWeight="bold" fill="#059669" textAnchor="middle">10</text>
+
+                          {/* Speedometer Needle */}
+                          <g
+                            transform={`rotate(${-180 + (Math.min(10, Math.max(0, evaluationResult.score)) / 10) * 180} 100 105)`}
+                            style={{ transition: 'transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+                          >
+                            <polygon points="98,105 102,105 100,35" fill="#0f172a" />
+                            <circle cx="100" cy="105" r="7" fill="#0f172a" />
+                            <circle cx="100" cy="105" r="3.5" fill={isPass ? "#10b981" : "#ef4444"} />
+                          </g>
+                        </svg>
+                      </div>
+
+                      {/* Speedometer Score & Status */}
+                      <div className="text-center -mt-1 space-y-1">
+                        <div className="flex items-baseline justify-center gap-1">
+                          <span className={`text-2xl font-black ${isPass ? 'text-emerald-600' : 'text-rose-600'}`}>
+                            {evaluationResult.score}
+                          </span>
+                          <span className="text-xs font-bold text-slate-400">/ 10</span>
+                        </div>
+
                         {isPass ? (
-                          <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[9.5px] font-black flex items-center gap-1">
-                            <CheckCircle2 className="w-3 h-3" />
-                            PASSED / SELECTED
-                          </span>
+                          <div className="px-3.5 py-1 rounded-full bg-emerald-600 text-white text-[10px] font-black flex items-center gap-1 shadow-sm">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            <span>PASSED &amp; SELECTED</span>
+                          </div>
                         ) : (
-                          <span className="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[9.5px] font-black flex items-center gap-1">
-                            <X className="w-3 h-3" />
-                            REJECTED / NEEDS IMPROVEMENT
-                          </span>
+                          <div className="px-3.5 py-1 rounded-full bg-rose-600 text-white text-[10px] font-black flex items-center gap-1 shadow-sm">
+                            <X className="w-3.5 h-3.5" />
+                            <span>REJECTED - NEEDS IMPROVEMENT</span>
+                          </div>
                         )}
                       </div>
-                      <span className={`text-[11px] font-black px-2.5 py-0.5 rounded-full bg-white border ${
-                        isPass ? 'border-emerald-300 text-emerald-700' : 'border-rose-300 text-rose-700'
-                      }`}>
-                        Score: {evaluationResult.score} / 10
-                      </span>
                     </div>
 
-                    {/* Summary Explanation */}
-                    <p className="text-[10px] font-semibold leading-relaxed">
-                      {evaluationResult.summaryEn}
-                    </p>
-
-                    {/* Matched Keywords (Green Chips) */}
-                    {evaluationResult.matchedKeywords.length > 0 && (
-                      <div className="space-y-1 pt-1">
-                        <div className="text-[9px] font-black text-emerald-800">
-                          ✓ Matched Keywords ({evaluationResult.matchedKeywords.length}):
-                        </div>
-                        <div className="flex flex-wrap gap-1">
+                    {/* Sahi Keywords Matched */}
+                    <div className="p-3 rounded-2xl bg-emerald-50/90 border-2 border-emerald-300 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-black text-emerald-950 flex items-center gap-1.5">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                          Sahi Keywords &amp; Concepts ({evaluationResult.matchedKeywords.length})
+                        </span>
+                        <span className="text-[9px] font-black text-emerald-700 bg-white px-2 py-0.5 rounded-full border border-emerald-300">
+                          Matched ✓
+                        </span>
+                      </div>
+                      {evaluationResult.matchedKeywords.length > 0 ? (
+                        <div className="flex flex-wrap gap-1.5">
                           {evaluationResult.matchedKeywords.map((kw) => (
                             <span
                               key={kw.id}
-                              className="px-2 py-0.5 rounded-md bg-white border border-emerald-300 text-emerald-800 text-[8.5px] font-black"
+                              className="px-2.5 py-1 rounded-xl bg-white border border-emerald-300 text-emerald-900 text-[10px] font-black flex items-center gap-1 shadow-2xs"
                             >
-                              ✓ {kw.labelEn}
+                              <span className="text-emerald-600 font-black">✓</span> {kw.labelEn}
                             </span>
                           ))}
                         </div>
-                      </div>
-                    )}
+                      ) : (
+                        <p className="text-[10px] text-emerald-800 font-medium">Koi main keyword match nahi hua.</p>
+                      )}
+                    </div>
 
-                    {/* Missing Keywords (Red Chips) */}
-                    {evaluationResult.missingKeywords.length > 0 && (
-                      <div className="space-y-1 pt-1">
-                        <div className="text-[9px] font-black text-rose-800">
-                          ✗ Missing Concepts to Include:
-                        </div>
-                        <div className="flex flex-wrap gap-1">
-                          {evaluationResult.missingKeywords.map((kw) => (
-                            <span
-                              key={kw.id}
-                              className="px-2 py-0.5 rounded-md bg-white border border-rose-300 text-rose-800 text-[8.5px] font-black"
-                            >
-                              ✗ {kw.labelEn}
-                            </span>
-                          ))}
-                        </div>
+                    {/* Kya Missing Hai */}
+                    <div className="p-3 rounded-2xl bg-rose-50/90 border-2 border-rose-300 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-black text-rose-950 flex items-center gap-1.5">
+                          <AlertTriangle className="w-4 h-4 text-rose-600" />
+                          Kya Missing Hai ({evaluationResult.missingKeywords.length} Concepts Needed)
+                        </span>
+                        <span className="text-[9px] font-black text-rose-700 bg-white px-2 py-0.5 rounded-full border border-rose-300">
+                          Missing ✗
+                        </span>
                       </div>
-                    )}
+                      {evaluationResult.missingKeywords.length > 0 ? (
+                        <div className="space-y-1.5">
+                          <div className="flex flex-wrap gap-1.5">
+                            {evaluationResult.missingKeywords.map((kw) => (
+                              <span
+                                key={kw.id}
+                                className="px-2.5 py-1 rounded-xl bg-white border border-rose-300 text-rose-900 text-[10px] font-black flex items-center gap-1 shadow-2xs"
+                              >
+                                <span className="text-rose-600 font-black">✗</span> {kw.labelEn}
+                              </span>
+                            ))}
+                          </div>
+                          <p className="text-[9.5px] font-semibold text-rose-800 leading-tight">
+                            💡 Tip: Agli baar answer me in missing concepts ko shamil karein taaki full marks milein.
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-[10px] text-emerald-800 font-bold">🎉 Kuch bhi missing nahi hai! Aapne saare main concepts cover kiye!</p>
+                      )}
+                    </div>
 
-                    {/* Action Next Question / Try Again */}
-                    <div className="pt-2 flex items-center gap-2">
+                    {/* HR Feedback Summary */}
+                    <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[10px] text-slate-800 font-medium leading-relaxed">
+                      <span className="font-black text-slate-900 block mb-0.5">HR Evaluation Remarks:</span>
+                      {evaluationResult.summaryEn}
+                    </div>
+
+                    {/* Action Buttons: Try Again & Next Question */}
+                    <div className="pt-1 flex items-center gap-2">
                       <button
                         type="button"
                         onClick={() => {
@@ -1899,7 +1935,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                           setIsPass(null);
                           handleSpeakQuestion(selectedHr, activeInterviewQ);
                         }}
-                        className="flex-1 py-2 px-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-[10px] font-black text-center cursor-pointer shadow-2xs"
+                        className="flex-1 py-2.5 px-3 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-[10px] font-black text-center cursor-pointer shadow-2xs active:scale-95"
                       >
                         🔁 Try Again
                       </button>
@@ -1908,9 +1944,10 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                         <button
                           type="button"
                           onClick={() => handleSelectQuestion(activeInterviewQ + 1)}
-                          className="flex-1 py-2 px-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black text-center shadow-xs cursor-pointer"
+                          className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-[10px] font-black text-center shadow-xs cursor-pointer active:scale-95 flex items-center justify-center gap-1"
                         >
-                          Next Question {activeInterviewQ + 1} →
+                          <span>Next Question {activeInterviewQ + 1}</span>
+                          <ChevronRight className="w-3.5 h-3.5" />
                         </button>
                       )}
                     </div>
@@ -1919,7 +1956,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   <div className="text-center py-4 space-y-1">
                     <FileText className="w-6 h-6 text-slate-300 mx-auto" />
                     <p className="text-[10px] text-slate-500 font-medium">
-                      Answer submit karne ke baad HR ka Pass/Reject verdict aur score yahan aayega.
+                      Answer submit karne ke baad HR ka Pass/Reject speedometer score aur feedback yahan aayega.
                     </p>
                   </div>
                 )}
@@ -1991,10 +2028,10 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               </div>
               <span>
                 {isInterviewRecording
-                  ? 'Listening Live...'
+                  ? 'Speaking...'
                   : isMicHighlighted
-                  ? 'Speak Now! 🎙️'
-                  : 'Tap to Speak'}
+                  ? 'Speak Now 🎙️'
+                  : 'Mic'}
               </span>
             </button>
 
