@@ -10,6 +10,7 @@ import { recordReferralClick } from './services/realAuthService';
 import { StorageService } from './services/storage';
 import { ThemeAccentProvider } from './context/ThemeAccentContext';
 import { MobileAppInstallPrompt } from './components/futureai/mobile/MobileAppInstallPrompt';
+import { AdminControlCenter } from './components/admin/controlcenter/AdminControlCenter';
 import { ContactUsView } from './components/legal/ContactUsView';
 import { TermsAndConditionsView } from './components/legal/TermsAndConditionsView';
 
@@ -57,7 +58,7 @@ export const App: React.FC = () => {
   const [adminModalOpen, setAdminModalOpen] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       const baseH = window.location.hash.split('?')[0];
-      return baseH === '#admin' || baseH === '#hr-settings';
+      return baseH === '#hr-settings';
     }
     return false;
   });
@@ -125,7 +126,7 @@ export const App: React.FC = () => {
       const h = window.location.hash;
       const baseH = h.split('?')[0];
       setCurrentHash(h);
-      if (baseH === '#admin' || baseH === '#hr-settings') {
+      if (baseH === '#hr-settings') {
         setAdminModalOpen(true);
       }
       if (baseH === '#admin-leads' || baseH === '#leads') {
@@ -169,8 +170,14 @@ export const App: React.FC = () => {
     <ThemeAccentProvider>
       <div className="w-full min-h-screen bg-[#FAFCFE] font-sans antialiased relative">
         
-        {/* Contact Us Dedicated RBI Mandated Policy Route */}
-        {['#contact-us', '#contactus', '#contact'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#ContactUs' ? (
+        {/* Dedicated Secure Admin Control Center Route */}
+        {['#admin', '#admin-portal', '#control-center', '#admin-panel'].includes(currentHash.split('?')[0].toLowerCase()) ? (
+          <AdminControlCenter
+            onClose={() => {
+              window.location.hash = isMobile ? '#dashboard' : '#home';
+            }}
+          />
+        ) : ['#contact-us', '#contactus', '#contact'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#ContactUs' ? (
           <ContactUsView
             onBack={() => {
               window.location.hash = isMobile ? '#dashboard' : '#home';

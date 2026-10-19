@@ -445,6 +445,50 @@ export class ReferralEngine {
     ];
   }
 
+  // Admin inspection & management helpers
+  public static getWithdrawals(): WithdrawalRequest[] {
+    const state = this.getState();
+    return state.withdrawals || [];
+  }
+
+  public static saveWithdrawal(updated: WithdrawalRequest) {
+    const state = this.getState();
+    const idx = (state.withdrawals || []).findIndex((w: WithdrawalRequest) => w.id === updated.id);
+    if (idx >= 0) {
+      state.withdrawals[idx] = updated;
+    } else {
+      state.withdrawals.unshift(updated);
+    }
+    this.saveState(state);
+    return state;
+  }
+
+  public static reverseWithdrawal(params: {
+    referrerId: string;
+    amount: number;
+    withdrawalId: string;
+    reason: string;
+  }) {
+    const state = this.getState();
+    state.availableCommission += params.amount;
+
+    const reversalTxn: WalletLedgerEntry = {
+      transactionId: `txn_rev_${Date.now()}`,
+      referrerId: params.referrerId,
+      type: 'COMMISSION_REVERSAL',
+      amount: params.amount,
+      balanceAfter: state.availableCommission,
+      status: 'SUCCESS',
+      date: new Date().toISOString(),
+      reference: params.withdrawalId,
+      description: `Withdrawal rejected/reversed: ${params.reason}. Funds restored to wallet balance.`,
+    };
+
+    state.walletLedger.unshift(reversalTxn);
+    this.saveState(state);
+    return state;
+  }
+
   // Reset to default seed
   public static resetToSeed() {
     const def = this.defaultState();
