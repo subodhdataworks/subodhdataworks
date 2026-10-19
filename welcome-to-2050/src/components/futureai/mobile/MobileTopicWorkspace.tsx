@@ -556,12 +556,76 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   };
   const currentHr = HR_PROFILES[selectedHr];
 
+/**
+ * Intelligently merges an existing committed transcript with incoming text (final or interim),
+ * eliminating any duplicate words, phrases, or repeated prefixes caused by mobile SpeechRecognition restarts.
+ */
+function mergeTranscripts(base: string, addition: string): string {
+  const b = (base || '').trim();
+  const a = (addition || '').trim();
+
+  if (!b) return a;
+  if (!a) return b;
+
+  const bLower = b.toLowerCase();
+  const aLower = a.toLowerCase();
+
+  // 1. If addition is completely identical to base, keep base
+  if (bLower === aLower) {
+    return b;
+  }
+
+  // 2. If addition already starts with base (e.g., base="software", addition="software instruction")
+  if (aLower.startsWith(bLower)) {
+    return a;
+  }
+
+  // 3. If base already ends with addition (e.g., base="software instruction", addition="instruction")
+  if (bLower.endsWith(aLower)) {
+    return b;
+  }
+
+  // 4. Overlap check: Find if suffix of base matches prefix of addition
+  // e.g. base="Computer instructions", addition="instructions must be clear" -> "Computer instructions must be clear"
+  const bWords = b.split(/\s+/);
+  const aWords = a.split(/\s+/);
+  const maxOverlapWords = Math.min(bWords.length, aWords.length);
+
+  for (let len = maxOverlapWords; len > 0; len--) {
+    const bSuffix = bWords
+      .slice(bWords.length - len)
+      .map((w) => w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, ''))
+      .join(' ');
+    const aPrefix = aWords
+      .slice(0, len)
+      .map((w) => w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, ''))
+      .join(' ');
+
+    if (bSuffix && bSuffix === aPrefix) {
+      const remainingAWords = aWords.slice(len);
+      if (remainingAWords.length === 0) {
+        return b;
+      }
+      return b + ' ' + remainingAWords.join(' ');
+    }
+  }
+
+  // No overlap found, concatenate with single space
+  return b + ' ' + a;
+}
+
   const recognitionRef = useRef<any>(null);
+  const isStartingRecognitionRef = useRef<boolean>(false);
   const userRequestedRecordingRef = useRef<boolean>(false);
   const speechRestartTimerRef = useRef<any>(null);
   const speechSpeakingTimerRef = useRef<any>(null);
   const [isStudentSpeakingAudio, setIsStudentSpeakingAudio] = useState<boolean>(false);
-  const baseTranscriptRef = useRef<string>('');
+
+  // Single Source of Truth for Speech Transcription
+  const committedTextRef = useRef<string>('');
+  const lastSessionFinalRef = useRef<string>('');
+  const currentInterimRef = useRef<string>('');
+
   const autoNextTimerRef = useRef<any>(null);
   const [autoNextCountdown, setAutoNextCountdown] = useState<number | null>(null);
   const isInterviewRecordingRef = useRef<boolean>(false);
@@ -578,6 +642,8 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
   const stopSpeechRecognition = () => {
     userRequestedRecordingRef.current = false;
+    isStartingRecognitionRef.current = false;
+
     if (speechRestartTimerRef.current) {
       clearTimeout(speechRestartTimerRef.current);
       speechRestartTimerRef.current = null;
@@ -586,16 +652,32 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       clearTimeout(speechSpeakingTimerRef.current);
       speechSpeakingTimerRef.current = null;
     }
+
     if (recognitionRef.current) {
       try {
-        recognitionRef.current.onstart = null;
-        recognitionRef.current.onresult = null;
-        recognitionRef.current.onerror = null;
-        recognitionRef.current.onend = null;
-        recognitionRef.current.stop();
+        const inst = recognitionRef.current;
+        recognitionRef.current = null;
+        inst.onstart = null;
+        inst.onresult = null;
+        inst.onerror = null;
+        inst.onend = null;
+        inst.onspeechstart = null;
+        inst.onspeechend = null;
+        inst.abort();
       } catch {}
-      recognitionRef.current = null;
     }
+
+    // Commit any uncommitted session final
+    if (lastSessionFinalRef.current.trim()) {
+      committedTextRef.current = mergeTranscripts(committedTextRef.current, lastSessionFinalRef.current.trim());
+      lastSessionFinalRef.current = '';
+    }
+    currentInterimRef.current = '';
+
+    if (committedTextRef.current.trim()) {
+      setInterviewAnswerText(committedTextRef.current.trim());
+    }
+
     setIsInterviewRecording(false);
     isInterviewRecordingRef.current = false;
     setIsStudentSpeakingAudio(false);
@@ -700,16 +782,29 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       return;
     }
 
+    if (isStartingRecognitionRef.current) {
+      return;
+    }
+    isStartingRecognitionRef.current = true;
+
+    if (speechRestartTimerRef.current) {
+      clearTimeout(speechRestartTimerRef.current);
+      speechRestartTimerRef.current = null;
+    }
+
     // Clean up existing instance before starting fresh
     if (recognitionRef.current) {
       try {
-        recognitionRef.current.onstart = null;
-        recognitionRef.current.onresult = null;
-        recognitionRef.current.onerror = null;
-        recognitionRef.current.onend = null;
-        recognitionRef.current.abort();
+        const oldInstance = recognitionRef.current;
+        recognitionRef.current = null;
+        oldInstance.onstart = null;
+        oldInstance.onresult = null;
+        oldInstance.onerror = null;
+        oldInstance.onend = null;
+        oldInstance.onspeechstart = null;
+        oldInstance.onspeechend = null;
+        oldInstance.abort();
       } catch {}
-      recognitionRef.current = null;
     }
 
     try {
@@ -721,8 +816,15 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       recognition.interimResults = true;
       recognition.maxAlternatives = 1;
 
+      // Assign reference immediately so any orphan instance callbacks will be rejected
+      recognitionRef.current = recognition;
+      lastSessionFinalRef.current = '';
+      currentInterimRef.current = '';
+
       recognition.onstart = () => {
-        // Crucial: "Mic On: Listening" must only appear when the recognition service is actually running
+        isStartingRecognitionRef.current = false;
+        if (recognitionRef.current !== recognition) return;
+
         setIsInterviewRecording(true);
         isInterviewRecordingRef.current = true;
         setIsStudentSpeakingAudio(true);
@@ -734,10 +836,12 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       };
 
       recognition.onspeechstart = () => {
+        if (recognitionRef.current !== recognition) return;
         setIsStudentSpeakingAudio(true);
       };
 
       recognition.onspeechend = () => {
+        if (recognitionRef.current !== recognition) return;
         if (speechSpeakingTimerRef.current) clearTimeout(speechSpeakingTimerRef.current);
         speechSpeakingTimerRef.current = setTimeout(() => {
           setIsStudentSpeakingAudio(false);
@@ -745,32 +849,45 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       };
 
       recognition.onresult = (event: any) => {
-        let currentFinal = '';
-        let currentInterim = '';
+        if (recognitionRef.current !== recognition) return;
+
+        // Rebuild this session's final and interim transcript directly from cumulative results
+        let sessionFinal = '';
+        let sessionInterim = '';
 
         for (let i = 0; i < event.results.length; ++i) {
           const res = event.results[i];
-          const text = res[0]?.transcript || '';
+          const text = (res[0]?.transcript || '').trim();
+          if (!text) continue;
+
           if (res.isFinal) {
-            currentFinal += text + ' ';
+            sessionFinal += (sessionFinal ? ' ' : '') + text;
           } else {
-            currentInterim += text;
+            sessionInterim += (sessionInterim ? ' ' : '') + text;
           }
         }
 
-        const sessionCombined = (currentFinal.trim() + (currentInterim.trim() ? ' ' + currentInterim.trim() : '')).trim();
-        const base = baseTranscriptRef.current.trim();
-        const fullDisplay = (base ? base + ' ' + sessionCombined : sessionCombined).trim();
+        lastSessionFinalRef.current = sessionFinal;
+        currentInterimRef.current = sessionInterim;
+
+        // Merge committed text with this session's results using intelligent deduplication
+        const currentConfirmed = mergeTranscripts(committedTextRef.current, sessionFinal);
+        const fullDisplay = sessionInterim
+          ? mergeTranscripts(currentConfirmed, sessionInterim)
+          : currentConfirmed;
 
         if (fullDisplay) {
           setInterviewAnswerText(fullDisplay);
           setIsStudentSpeakingAudio(true);
-          const previewWord = (currentInterim.trim() || currentFinal.trim());
-          setSpeechTip("● Live: " + previewWord);
+          const previewTip = sessionInterim || sessionFinal.split(/\s+/).slice(-3).join(' ');
+          setSpeechTip("● " + (sessionInterim ? `Listening: "${previewTip}"` : `Transcribed: "${previewTip}"`));
         }
       };
 
       recognition.onerror = (event: any) => {
+        isStartingRecognitionRef.current = false;
+        if (recognitionRef.current !== recognition) return;
+
         const error = event.error;
         console.warn("SpeechRecognition error:", error);
 
@@ -789,21 +906,26 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
         } else if (error === 'network') {
           setSpeechTip("⚠️ Speech network error. Please check your internet connection.");
         } else if (error === 'no-speech') {
-          // Normal silence; do not cancel recording
           setSpeechTip("● Listening: No speech detected yet, please speak...");
         }
       };
 
       recognition.onend = () => {
-        // Save current answer text into baseTranscriptRef for seamless session continuity
-        setInterviewAnswerText((prev) => {
-          if (prev) {
-            baseTranscriptRef.current = prev;
-          }
-          return prev;
-        });
+        isStartingRecognitionRef.current = false;
+        if (recognitionRef.current !== recognition) return;
 
-        // If user still intends to record and interview has not been submitted, restart with a fresh instance
+        // Commit this session's finalized text permanently into committedTextRef
+        if (lastSessionFinalRef.current.trim()) {
+          committedTextRef.current = mergeTranscripts(committedTextRef.current, lastSessionFinalRef.current.trim());
+          lastSessionFinalRef.current = '';
+        }
+        currentInterimRef.current = '';
+
+        if (committedTextRef.current.trim()) {
+          setInterviewAnswerText(committedTextRef.current.trim());
+        }
+
+        // Auto-restart if user still wants to record and interview is not yet submitted
         if (userRequestedRecordingRef.current && !isInterviewSubmittedRef.current) {
           if (speechRestartTimerRef.current) clearTimeout(speechRestartTimerRef.current);
           speechRestartTimerRef.current = setTimeout(() => {
@@ -818,9 +940,9 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
         }
       };
 
-      recognitionRef.current = recognition;
       recognition.start();
     } catch (err: any) {
+      isStartingRecognitionRef.current = false;
       console.warn("initAndStartRecognition exception:", err);
       setIsInterviewRecording(false);
       isInterviewRecordingRef.current = false;
@@ -1063,7 +1185,9 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     }
     setActiveInterviewQ(qNum);
     setInterviewAnswerText('');
-    baseTranscriptRef.current = '';
+    committedTextRef.current = '';
+    lastSessionFinalRef.current = '';
+    currentInterimRef.current = '';
     setEvaluationResult(null);
     setIsPass(null);
     setIsInterviewSubmitted(false);
@@ -1938,7 +2062,9 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                         type="button"
                         onClick={() => {
                           setInterviewAnswerText('');
-                          baseTranscriptRef.current = '';
+                          committedTextRef.current = '';
+                          lastSessionFinalRef.current = '';
+                          currentInterimRef.current = '';
                         }}
                         className="text-slate-400 hover:text-rose-500 text-[10px] font-bold cursor-pointer shrink-0 ml-2"
                       >
@@ -1953,8 +2079,11 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   rows={3}
                   value={interviewAnswerText}
                   onChange={(e) => {
-                    setInterviewAnswerText(e.target.value);
-                    baseTranscriptRef.current = e.target.value;
+                    const val = e.target.value;
+                    setInterviewAnswerText(val);
+                    committedTextRef.current = val;
+                    lastSessionFinalRef.current = '';
+                    currentInterimRef.current = '';
                   }}
                   placeholder="Start speaking or type your answer here..."
                   className="w-full text-xs text-slate-800 bg-transparent border-none focus:outline-none placeholder:text-slate-400 font-medium resize-none leading-relaxed min-h-[64px]"
@@ -2274,7 +2403,9 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                     setIsInterviewSubmitted(false);
                     isInterviewSubmittedRef.current = false;
                     setInterviewAnswerText('');
-                    baseTranscriptRef.current = '';
+                    committedTextRef.current = '';
+                    lastSessionFinalRef.current = '';
+                    currentInterimRef.current = '';
                     setEvaluationResult(null);
                     handleSpeakQuestion(selectedHr, activeInterviewQ);
                   }}
