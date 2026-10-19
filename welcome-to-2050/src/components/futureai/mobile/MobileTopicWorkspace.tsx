@@ -419,13 +419,85 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   const [isInterviewSubmitted, setIsInterviewSubmitted] = useState<boolean>(false);
   const [isCameraOn, setIsCameraOn] = useState<boolean>(true);
   const [interviewTimeLeft, setInterviewTimeLeft] = useState<number>(592); // 09:52
+  const [isHrSpeaking, setIsHrSpeaking] = useState<boolean>(false);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+
+  // Real device camera video ref & stream ref
+  const userCameraVideoRef = useRef<HTMLVideoElement>(null);
+  const userMediaStreamRef = useRef<MediaStream | null>(null);
+
+  const startCameraStream = async () => {
+    try {
+      setCameraError(null);
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setCameraError("Camera API not supported on this browser");
+        setHasCameraPermission(false);
+        return;
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+        audio: true,
+      });
+      userMediaStreamRef.current = stream;
+      if (userCameraVideoRef.current) {
+        userCameraVideoRef.current.srcObject = stream;
+        userCameraVideoRef.current.play().catch(() => {});
+      }
+      setHasCameraPermission(true);
+      setIsCameraOn(true);
+    } catch (err: any) {
+      console.warn("Camera/mic permission error:", err);
+      setCameraError(err.message || "Permission denied");
+      setHasCameraPermission(false);
+      setIsCameraOn(false);
+    }
+  };
+
+  const stopCameraStream = () => {
+    if (userMediaStreamRef.current) {
+      userMediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      userMediaStreamRef.current = null;
+    }
+    if (userCameraVideoRef.current) {
+      userCameraVideoRef.current.srcObject = null;
+    }
+  };
+
+  // Re-attach video stream if camera is toggled back on
+  useEffect(() => {
+    if (isCameraOn && userMediaStreamRef.current && userCameraVideoRef.current) {
+      userCameraVideoRef.current.srcObject = userMediaStreamRef.current;
+      userCameraVideoRef.current.play().catch(() => {});
+    }
+  }, [isCameraOn, hasCameraPermission]);
 
   useEffect(() => {
-    if (activeStep !== 'interview') return;
+    if (activeStep !== 'interview') {
+      stopCameraStream();
+      return;
+    }
+
+    // Auto-request camera & microphone when entering Mock Interview
+    startCameraStream();
+
     const timer = setInterval(() => {
       setInterviewTimeLeft((prev) => (prev > 0 ? prev - 1 : 600));
     }, 1000);
-    return () => clearInterval(timer);
+
+    // Auto-speak HR Question
+    const speechTimeout = setTimeout(() => {
+      handleSpeakQuestion();
+    }, 600);
+
+    return () => {
+      clearInterval(timer);
+      clearTimeout(speechTimeout);
+      stopCameraStream();
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
   }, [activeStep]);
 
   const formatInterviewTime = (secs: number) => {
@@ -440,7 +512,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      alert("Microphone recognition is not supported in this browser. Please type your answer.");
+      alert("Microphone speech recognition is not supported in this browser. Please type or edit your answer directly.");
       return;
     }
 
@@ -473,11 +545,22 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     playTactile();
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(
-      "What is programming and can you give one real-life example?"
-    );
-    utterance.rate = 0.95;
+    const questionText =
+      "Namaste! Welcome to your technical mock interview. Question 1: What is programming and can you give one real-life example?";
+    const utterance = new SpeechSynthesisUtterance(questionText);
+    utterance.rate = 0.93;
     utterance.pitch = 1.0;
+
+    const voices = window.speechSynthesis.getVoices();
+    const indianVoice = voices.find(
+      (v) => v.lang.includes('en-IN') || v.name.includes('India') || v.lang.includes('hi')
+    );
+    if (indianVoice) utterance.voice = indianVoice;
+
+    utterance.onstart = () => setIsHrSpeaking(true);
+    utterance.onend = () => setIsHrSpeaking(false);
+    utterance.onerror = () => setIsHrSpeaking(false);
+
     window.speechSynthesis.speak(utterance);
   };
 
@@ -503,7 +586,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#f3f8fe] text-slate-900 pb-32 select-none text-left font-sans">
+    <div className="w-full min-h-screen bg-[#f3f8fe] text-slate-900 pb-36 text-left font-sans overflow-y-auto overscroll-y-contain">
       {/* ═════════════════════════════════════════════════════════════════════════
           TOP GLOBAL HEADER (Matching all 3 reference screenshots)
           ═════════════════════════════════════════════════════════════════════════ */}
@@ -699,25 +782,11 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
           ═════════════════════════════════════════════════════════════════════════ */}
       {activeStep === 'learn' && (
         <div className="max-w-md mx-auto px-3.5 pt-3 space-y-3">
-          {/* Title & Tags */}
-          <div className="space-y-1.5">
+          {/* Title */}
+          <div>
             <h1 className="text-sm font-black text-slate-900 leading-tight">
               {currentTopic.id}.1 {firstLesson.title}
             </h1>
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[9px] flex items-center gap-1">
-                <span>🌱</span>
-                <span>Chapter {currentTopic.id}</span>
-              </span>
-              <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200 font-bold text-[9px] flex items-center gap-1">
-                <span>⚡</span>
-                <span>Bunny Video Stream</span>
-              </span>
-              <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200 font-bold text-[9px] flex items-center gap-1">
-                <span>🎮</span>
-                <span>Auto Game Next</span>
-              </span>
-            </div>
           </div>
 
           {/* Video Player Card (Bunny.net Stream Embed with HTML5 Fallback) */}
@@ -931,47 +1000,6 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             </button>
             <span>&gt;</span>
             <span className="text-slate-800 truncate">Introduction to Programming &amp; Python Thinking</span>
-          </div>
-
-          {/* Game Hero Banner (Matching Screenshot with 3D Boy) */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-sky-400 via-blue-500 to-indigo-600 p-3.5 text-white shadow-md">
-            <div className="relative z-10 space-y-1.5 max-w-[65%]">
-              <div className="flex items-center gap-1.5">
-                <Gamepad2 className="w-5 h-5 text-amber-300" />
-                <h1 className="text-base font-black tracking-tight">
-                  Practice <span className="text-amber-300">Game</span>
-                </h1>
-              </div>
-
-              <p className="text-[9.5px] text-blue-50 font-semibold leading-tight">
-                Learn by Playing • 10 Unique Challenges • Earn Points • Auto-Interview Next
-              </p>
-
-              {/* 3 Stat Badges */}
-              <div className="flex items-center gap-1.5 pt-1">
-                <div className="px-2 py-0.5 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 text-center">
-                  <div className="text-[9.5px] font-black">10</div>
-                  <div className="text-[7.5px] font-semibold text-blue-100">Levels</div>
-                </div>
-                <div className="px-2 py-0.5 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 text-center">
-                  <div className="text-[9.5px] font-black">10</div>
-                  <div className="text-[7.5px] font-semibold text-blue-100">Distinct</div>
-                </div>
-                <div className="px-2 py-0.5 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 text-center">
-                  <div className="text-[9.5px] font-black">+100</div>
-                  <div className="text-[7.5px] font-semibold text-blue-100">Points</div>
-                </div>
-              </div>
-            </div>
-
-            {/* 3D Boy Graphic / Python Badge on Right */}
-            <div className="absolute right-1 bottom-0 w-32 h-32 pointer-events-none">
-              <img
-                src="/images/python_hero_student.png"
-                alt="Python Game Boy"
-                className="w-full h-full object-contain"
-              />
-            </div>
           </div>
 
           {/* Level Selector Circles (All 10 Distinct Levels 1 to 10) */}
@@ -1226,10 +1254,12 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             </div>
           </div>
 
-          {/* ── SPLIT VIDEO CALL UI (Matches Screenshot Exact Layout) ── */}
+          {/* ── SPLIT VIDEO CALL UI (Interactive HR Video + Real Student Camera) ── */}
           <div className="space-y-2">
             {/* Top Video: Subodh Kumar (HR) */}
-            <div className="relative overflow-hidden rounded-2xl bg-slate-900 border border-slate-300 shadow-sm aspect-video">
+            <div className={`relative overflow-hidden rounded-2xl bg-slate-900 border shadow-sm aspect-video transition-all ${
+              isHrSpeaking ? 'border-blue-500 ring-4 ring-blue-500/30' : 'border-slate-300'
+            }`}>
               <img
                 src="/images/interviewer_female_1.jpg"
                 onError={(e) => {
@@ -1242,60 +1272,116 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               {/* Overlay Top Bar: HR Name + Time Left */}
               <div className="absolute top-2 left-2 right-2 flex items-center justify-between text-white text-[9.5px] font-black">
                 <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/80 backdrop-blur-md border border-white/20">
-                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                  <span className={`w-2 h-2 rounded-full ${isHrSpeaking ? 'bg-cyan-400 animate-ping' : 'bg-blue-500 animate-pulse'}`}></span>
                   <span>Subodh Kumar (HR)</span>
                   <span className="text-slate-300 text-[8px] font-medium">• Indian English</span>
                 </div>
 
-                <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-slate-900/80 backdrop-blur-md border border-white/20 text-sky-400">
-                  <Clock className="w-3 h-3" />
-                  <span>{formatInterviewTime(interviewTimeLeft)} TIME LEFT</span>
-                </div>
+                {/* Listen to HR Question Button */}
+                <button
+                  type="button"
+                  onClick={handleSpeakQuestion}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-xl backdrop-blur-md text-[9px] font-black cursor-pointer transition-all ${
+                    isHrSpeaking
+                      ? 'bg-blue-600 text-white shadow-md shadow-blue-500/40 animate-pulse'
+                      : 'bg-slate-900/80 text-sky-300 border border-white/20 hover:bg-slate-800'
+                  }`}
+                >
+                  <Volume2 className="w-3 h-3" />
+                  <span>{isHrSpeaking ? 'Speaking...' : 'Listen Question'}</span>
+                </button>
               </div>
 
               {/* Bottom HR Subtitle / Speech Banner */}
-              <div className="absolute bottom-2 inset-x-2 p-2 rounded-xl bg-slate-900/85 backdrop-blur-md border border-white/20 text-white flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center shrink-0">
-                  🔊
-                </span>
-                <p className="text-[9.5px] font-bold leading-tight">
-                  Namaste! Welcome to your technical mock interview. Let us begin with your first question.
-                </p>
+              <div className="absolute bottom-2 inset-x-2 p-2 rounded-xl bg-slate-900/85 backdrop-blur-md border border-white/20 text-white flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
+                    isHrSpeaking ? 'bg-cyan-500 text-white animate-bounce' : 'bg-blue-600 text-white'
+                  }`}>
+                    🔊
+                  </span>
+                  <p className="text-[9.5px] font-bold leading-tight truncate">
+                    {isHrSpeaking
+                      ? "HR: What is programming and can you give one real-life example?"
+                      : "Namaste! Welcome to your technical mock interview. Question 1:"}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleSpeakQuestion}
+                  className="px-2 py-0.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-[8.5px] font-black text-white shrink-0 cursor-pointer"
+                >
+                  Ask Again
+                </button>
               </div>
             </div>
 
-            {/* Bottom Video: You (Student) */}
-            <div className="relative overflow-hidden rounded-2xl bg-slate-800 border border-slate-300 shadow-sm aspect-video">
-              {isCameraOn ? (
-                <img
-                  src="/images/python_hero_student.png"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=250&fit=crop&crop=faces';
-                  }}
-                  alt="You (Student)"
-                  className="w-full h-full object-cover"
+            {/* Bottom Video: Real Student Front Camera Feed */}
+            <div className="relative overflow-hidden rounded-2xl bg-slate-900 border border-slate-300 shadow-sm aspect-video">
+              {isCameraOn && hasCameraPermission ? (
+                <video
+                  ref={userCameraVideoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className="w-full h-full object-cover transform -scale-x-100"
                 />
               ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-1 bg-slate-900">
-                  <VideoOff className="w-6 h-6" />
-                  <span className="text-[10px] font-bold">Camera is Off</span>
+                <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-2 bg-slate-950 p-4 text-center">
+                  <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-rose-400">
+                    <VideoOff className="w-5 h-5" />
+                  </div>
+                  <div className="text-[11px] font-black text-white leading-tight">
+                    {cameraError ? "Camera / Mic Permission Needed" : "Camera is Turned Off"}
+                  </div>
+                  <p className="text-[8.5px] text-slate-400 max-w-[85%] leading-tight">
+                    Live video call interview ke liye apne mobile ka camera allow kijiye.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={startCameraStream}
+                    className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[9.5px] font-black flex items-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer"
+                  >
+                    <Video className="w-3.5 h-3.5" />
+                    <span>Allow Camera &amp; Mic Permission</span>
+                  </button>
                 </div>
               )}
 
               {/* Top Left: Student Name Badge */}
               <div className="absolute top-2 left-2 flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/80 backdrop-blur-md border border-white/20 text-white text-[9.5px] font-black">
                 <Video className="w-3 h-3 text-emerald-400" />
-                <span>You (Student)</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>You ({userName || 'Student'})</span>
+                <span className={`w-1.5 h-1.5 rounded-full ${hasCameraPermission ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'}`}></span>
               </div>
 
               {/* Top Right: Camera Switcher */}
               <button
                 type="button"
-                onClick={() => setIsCameraOn(!isCameraOn)}
-                className="absolute top-2 right-2 w-7 h-7 rounded-xl bg-slate-900/80 backdrop-blur-md border border-white/20 text-white flex items-center justify-center cursor-pointer"
+                onClick={() => {
+                  playTactile();
+                  if (isCameraOn && hasCameraPermission) {
+                    setIsCameraOn(false);
+                    stopCameraStream();
+                  } else {
+                    startCameraStream();
+                  }
+                }}
+                className="absolute top-2 right-2 px-2 py-1 rounded-xl bg-slate-900/80 backdrop-blur-md border border-white/20 text-white text-[9px] font-bold flex items-center gap-1 cursor-pointer"
+                title="Toggle Camera"
               >
-                {isCameraOn ? <Video className="w-3.5 h-3.5" /> : <VideoOff className="w-3.5 h-3.5 text-rose-400" />}
+                {isCameraOn && hasCameraPermission ? (
+                  <>
+                    <Video className="w-3 h-3 text-emerald-400" />
+                    <span>Cam On</span>
+                  </>
+                ) : (
+                  <>
+                    <VideoOff className="w-3 h-3 text-rose-400" />
+                    <span>Cam Off</span>
+                  </>
+                )}
               </button>
 
               {/* Right Side: Audio Equalizer Level Bars */}
@@ -1303,8 +1389,8 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <span
                     key={i}
-                    className={`w-1 h-1.5 rounded-full ${
-                      isInterviewRecording ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'
+                    className={`w-1 h-1.5 rounded-full transition-all ${
+                      isInterviewRecording ? 'bg-emerald-400 animate-pulse h-2.5' : 'bg-slate-600'
                     }`}
                   />
                 ))}
