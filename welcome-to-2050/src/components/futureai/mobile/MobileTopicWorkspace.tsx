@@ -561,7 +561,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   const speechRestartTimerRef = useRef<any>(null);
   const speechSpeakingTimerRef = useRef<any>(null);
   const [isStudentSpeakingAudio, setIsStudentSpeakingAudio] = useState<boolean>(false);
-  const speechAccumulatedRef = useRef<string>('');
+  const baseTranscriptRef = useRef<string>('');
   const autoNextTimerRef = useRef<any>(null);
   const [autoNextCountdown, setAutoNextCountdown] = useState<number | null>(null);
   const isInterviewRecordingRef = useRef<boolean>(false);
@@ -745,28 +745,27 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       };
 
       recognition.onresult = (event: any) => {
-        let interimTranscript = '';
-        let newlyFinalized = '';
+        let currentFinal = '';
+        let currentInterim = '';
 
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
+        for (let i = 0; i < event.results.length; ++i) {
           const res = event.results[i];
           const text = res[0]?.transcript || '';
           if (res.isFinal) {
-            newlyFinalized += text + ' ';
+            currentFinal += text + ' ';
           } else {
-            interimTranscript += text;
+            currentInterim += text;
           }
         }
 
-        if (newlyFinalized.trim()) {
-          speechAccumulatedRef.current = (speechAccumulatedRef.current + ' ' + newlyFinalized.trim()).trim();
-        }
+        const sessionCombined = (currentFinal.trim() + (currentInterim.trim() ? ' ' + currentInterim.trim() : '')).trim();
+        const base = baseTranscriptRef.current.trim();
+        const fullDisplay = (base ? base + ' ' + sessionCombined : sessionCombined).trim();
 
-        const liveText = (speechAccumulatedRef.current + (interimTranscript ? ' ' + interimTranscript.trim() : '')).trim();
-        if (liveText) {
-          setInterviewAnswerText(liveText);
+        if (fullDisplay) {
+          setInterviewAnswerText(fullDisplay);
           setIsStudentSpeakingAudio(true);
-          const previewWord = (interimTranscript.trim() || newlyFinalized.trim());
+          const previewWord = (currentInterim.trim() || currentFinal.trim());
           setSpeechTip("● Live: " + previewWord);
         }
       };
@@ -796,6 +795,14 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       };
 
       recognition.onend = () => {
+        // Save current answer text into baseTranscriptRef for seamless session continuity
+        setInterviewAnswerText((prev) => {
+          if (prev) {
+            baseTranscriptRef.current = prev;
+          }
+          return prev;
+        });
+
         // If user still intends to record and interview has not been submitted, restart with a fresh instance
         if (userRequestedRecordingRef.current && !isInterviewSubmittedRef.current) {
           if (speechRestartTimerRef.current) clearTimeout(speechRestartTimerRef.current);
@@ -1056,7 +1063,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     }
     setActiveInterviewQ(qNum);
     setInterviewAnswerText('');
-    speechAccumulatedRef.current = '';
+    baseTranscriptRef.current = '';
     setEvaluationResult(null);
     setIsPass(null);
     setIsInterviewSubmitted(false);
@@ -1894,18 +1901,18 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               {/* Current Question Card */}
               <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 shadow-2xs space-y-2 text-left">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-xs font-black text-slate-900">
-                    <span className="w-5 h-5 rounded-md bg-blue-100 text-blue-600 flex items-center justify-center text-[10px]">
-                      Q{activeInterviewQ}
-                    </span>
-                    <span>Question {activeInterviewQ} of 5</span>
+                  <div className="flex items-center gap-2 text-xs font-black text-slate-900">
+                    <div className="w-5 h-5 rounded-md bg-blue-600 text-white flex items-center justify-center shadow-2xs">
+                      <FileText className="w-3 h-3 text-white" />
+                    </div>
+                    <span>Question <strong className="text-blue-600">{activeInterviewQ}</strong> of 5</span>
                   </div>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[9px] font-black border border-emerald-200">
+                  <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-600 text-[10px] font-black border border-blue-100">
                     {currentInterviewQData.topic} ({currentInterviewQData.difficulty})
                   </span>
                 </div>
 
-                <p className="text-xs font-black text-blue-950 leading-snug">
+                <p className="text-xs font-black text-slate-900 leading-snug">
                   {selectedHr === 'female' && currentInterviewQData.questionHi
                     ? currentInterviewQData.questionHi
                     : currentInterviewQData.questionEn}
@@ -1917,107 +1924,80 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                 )}
               </div>
 
-              {/* Your Answer (Live Transcription) Card with Live Speaking Typing */}
+              {/* Clean Answer Card matching uploaded design media_1792420010202_0d4d9265.png */}
               <div
                 ref={answerSectionRef}
-                className={`bg-white rounded-2xl p-3.5 shadow-2xs space-y-2.5 text-left transition-all ${
-                  isMicHighlighted ? 'border-2 border-emerald-400 ring-4 ring-emerald-100 shadow-md' : 'border border-slate-200/90'
-                }`}
+                className="bg-white border border-slate-200/90 rounded-2xl p-3.5 shadow-2xs space-y-3 text-left transition-all"
               >
-                {/* Header: Title + Speech Indicator + Auto-Fill + Clear */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-xs font-black text-blue-900">
-                    <FileText className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Your Answer (Live Transcription)</span>
-                  </div>
-
-                  <div className="flex items-center gap-1.5">
-                    <div className="flex items-center gap-1 text-[9px] font-bold text-rose-500">
-                      <span className={`w-2 h-2 rounded-full bg-rose-500 ${isInterviewRecording || isStudentSpeakingAudio ? 'animate-ping' : ''}`} />
-                      <span>Transcribed from speech</span>
-                      <span className="text-xs">〰️</span>
-                    </div>
-
+                {/* Live Speech Feedback Tag if active */}
+                {speechTip && (
+                  <div className="flex items-center justify-between text-[10px] font-semibold text-slate-500 px-1">
+                    <span className="truncate">{speechTip}</span>
                     {interviewAnswerText && (
                       <button
                         type="button"
                         onClick={() => {
                           setInterviewAnswerText('');
-                          speechAccumulatedRef.current = '';
+                          baseTranscriptRef.current = '';
                         }}
-                        className="p-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 cursor-pointer"
-                        title="Clear Answer"
+                        className="text-slate-400 hover:text-rose-500 text-[10px] font-bold cursor-pointer shrink-0 ml-2"
                       >
-                        <Trash2 className="w-3 h-3" />
+                        Clear
                       </button>
                     )}
                   </div>
-                </div>
-
-                {/* 🎙️ Direct User Tap-to-Speak Button (Guarantees Android Chrome Mic Permission) 🎙️ */}
-                <button
-                  type="button"
-                  onClick={toggleSpeechRecording}
-                  className={`w-full py-3 px-3 rounded-xl text-xs font-black flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all active:scale-95 ${
-                    isInterviewRecording
-                      ? 'bg-rose-600 text-white animate-pulse shadow-rose-600/40 ring-4 ring-rose-300'
-                      : isMicHighlighted
-                      ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl shadow-emerald-500/40 ring-4 ring-emerald-300 ring-offset-2 animate-pulse'
-                      : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-blue-600/25'
-                  }`}
-                >
-                  <Mic className={`w-4 h-4 text-white ${isMicHighlighted ? 'animate-bounce' : ''}`} />
-                  <span>
-                    {isInterviewRecording
-                      ? '🔴 Mic On: Listening... (Tap to Pause)'
-                      : isMicHighlighted
-                      ? '🎙️ Tap to Speak (अब आप बोलें — माइक ऑन करें)'
-                      : '🎙️ Tap to Speak (माइक ऑन करें और बोलें)'}
-                  </span>
-                </button>
-
-                {/* Live Speech Prompt Banner */}
-                {speechTip && (
-                  <div className="p-2 rounded-xl bg-blue-50/80 border border-blue-200 text-[10px] font-semibold text-blue-900 flex items-center justify-between">
-                    <span>{speechTip}</span>
-                  </div>
                 )}
 
-                {/* Live Answer Box with Mic Icon & Real-Time Typing */}
-                <div className="flex items-start gap-2 p-2 rounded-xl bg-slate-50/90 border border-slate-200 focus-within:border-blue-500 transition-all">
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 shadow-xs transition-all ${
-                    isInterviewRecording || isStudentSpeakingAudio
-                      ? 'bg-rose-500 text-white animate-pulse'
-                      : 'bg-slate-200 text-slate-500'
-                  }`}>
-                    <Mic className="w-3.5 h-3.5 text-white" />
+                {/* Textarea for spoken / typed answer */}
+                <textarea
+                  rows={3}
+                  value={interviewAnswerText}
+                  onChange={(e) => {
+                    setInterviewAnswerText(e.target.value);
+                    baseTranscriptRef.current = e.target.value;
+                  }}
+                  placeholder="Start speaking or type your answer here..."
+                  className="w-full text-xs text-slate-800 bg-transparent border-none focus:outline-none placeholder:text-slate-400 font-medium resize-none leading-relaxed min-h-[64px]"
+                />
+
+                {/* Bottom Row inside Answer Card: Circular Mic on Left, Send + Submit on Right */}
+                <div className="flex items-center justify-between pt-1 border-t border-slate-100/80">
+                  {/* Left: Circular Mic Button */}
+                  <button
+                    type="button"
+                    onClick={toggleSpeechRecording}
+                    className={`w-11 h-11 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-90 ${
+                      isInterviewRecording
+                        ? 'bg-rose-500 text-white shadow-rose-500/50 ring-4 ring-rose-300 animate-pulse'
+                        : isMicHighlighted
+                        ? 'bg-rose-500 text-white shadow-rose-500/50 ring-4 ring-emerald-400 animate-bounce'
+                        : 'bg-rose-500 hover:bg-rose-600 text-white shadow-rose-500/30'
+                    }`}
+                    title="Speak Answer"
+                  >
+                    <Mic className="w-5 h-5 text-white" />
+                  </button>
+
+                  {/* Right: Paper Plane + Green Submit Button */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handleSubmitInterviewAnswer}
+                      className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center cursor-pointer shadow-2xs active:scale-95 transition-all"
+                      title="Submit Answer"
+                    >
+                      <Send className="w-4 h-4 -rotate-45 ml-0.5 text-slate-600" />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleSubmitInterviewAnswer}
+                      className="px-4 py-2.5 rounded-xl bg-[#10b981] hover:bg-emerald-600 text-white font-bold text-xs shadow-md shadow-emerald-500/25 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <span>Submit Answer</span>
+                    </button>
                   </div>
-
-                  <textarea
-                    rows={2}
-                    value={interviewAnswerText}
-                    onChange={(e) => {
-                      setInterviewAnswerText(e.target.value);
-                      speechAccumulatedRef.current = e.target.value;
-                    }}
-                    placeholder={
-                      selectedHr === 'female'
-                        ? "माइक में बोलें... आपके बोलने से यहाँ लाइव टाइप होगा..."
-                        : "Speak into your mic... your spoken words will type here in real time..."
-                    }
-                    className="w-full text-xs text-slate-900 bg-transparent border-none focus:outline-none leading-relaxed placeholder:text-slate-400 font-medium resize-none min-h-[50px]"
-                  />
                 </div>
-
-                {/* 🚀 SUBMIT ANSWER BUTTON 🚀 */}
-                <button
-                  type="button"
-                  onClick={handleSubmitInterviewAnswer}
-                  className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black text-xs flex items-center justify-center gap-2 shadow-lg shadow-blue-500/30 active:scale-98 transition-all cursor-pointer"
-                >
-                  <span>🚀 Submit Answer (Evaluate &amp; View Result)</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
               </div>
             </div>
           )}
@@ -2294,7 +2274,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                     setIsInterviewSubmitted(false);
                     isInterviewSubmittedRef.current = false;
                     setInterviewAnswerText('');
-                    speechAccumulatedRef.current = '';
+                    baseTranscriptRef.current = '';
                     setEvaluationResult(null);
                     handleSpeakQuestion(selectedHr, activeInterviewQ);
                   }}
