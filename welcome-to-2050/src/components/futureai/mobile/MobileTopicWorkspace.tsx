@@ -530,11 +530,11 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
   const HR_PROFILES = {
     male: {
-      name: "Subodh Kumar (Senior HR Lead)",
-      shortName: "Subodh Kumar",
+      name: "Technical Mentor (Senior AI Guide)",
+      shortName: "Mentor",
       avatar: "/images/hr_subodh_kumar.jpg",
-      role: "Technical Recruiter",
-      badge: "Senior HR",
+      role: "Technical Mentor",
+      badge: "Mentor",
       accent: "Indian English",
       gender: "male" as const,
     },
@@ -573,95 +573,103 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     }
   };
 
-  const startLiveVoiceFallbackTyper = (existingStream?: MediaStream) => {
+  const getIndianVoice = (isFem: boolean) => {
+    if (!('speechSynthesis' in window)) return null;
+    const voices = window.speechSynthesis.getVoices();
+    if (!voices || voices.length === 0) return null;
+
+    if (isFem) {
+      // 1. Indian Female Voice (Heera, Aditi, Sangeeta, Google en-IN Female, hi-IN Female)
+      const inFem = voices.find((v) => {
+        const lang = (v.lang || '').toLowerCase().replace('_', '-');
+        const name = (v.name || '').toLowerCase();
+        const isIndian = lang.startsWith('en-in') || lang.startsWith('hi') || name.includes('india') || name.includes('hindi');
+        const isFemTag =
+          name.includes('female') ||
+          name.includes('heera') ||
+          name.includes('aditi') ||
+          name.includes('zira') ||
+          name.includes('sangeeta') ||
+          name.includes('kavya') ||
+          name.includes('ananya') ||
+          name.includes('priya') ||
+          name.includes('#female');
+        return isIndian && isFemTag;
+      });
+      if (inFem) return inFem;
+
+      // 2. Any Indian voice without male tag
+      const anyIn = voices.find((v) => {
+        const lang = (v.lang || '').toLowerCase().replace('_', '-');
+        const name = (v.name || '').toLowerCase();
+        return (lang.startsWith('en-in') || name.includes('india')) && !name.includes('male') && !name.includes('ravi') && !name.includes('rishi');
+      });
+      if (anyIn) return anyIn;
+
+      // 3. Fallback female
+      return (
+        voices.find((v) => {
+          const name = (v.name || '').toLowerCase();
+          return name.includes('female') || name.includes('zira') || name.includes('samantha');
+        }) || null
+      );
+    } else {
+      // 1. Indian Male Voice (Ravi, Rishi, Google en-IN Male, hi-IN Male)
+      const inMale = voices.find((v) => {
+        const lang = (v.lang || '').toLowerCase().replace('_', '-');
+        const name = (v.name || '').toLowerCase();
+        const isIndian = lang.startsWith('en-in') || lang.startsWith('hi') || name.includes('india') || name.includes('hindi');
+        const isMaleTag =
+          name.includes('male') ||
+          name.includes('ravi') ||
+          name.includes('rishi') ||
+          name.includes('neerja') ||
+          name.includes('madhav') ||
+          name.includes('rohit') ||
+          name.includes('#male');
+        return isIndian && isMaleTag;
+      });
+      if (inMale) return inMale;
+
+      // 2. Any Indian voice without female tag
+      const anyIn = voices.find((v) => {
+        const lang = (v.lang || '').toLowerCase().replace('_', '-');
+        const name = (v.name || '').toLowerCase();
+        return (lang.startsWith('en-in') || name.includes('india')) && !name.includes('female') && !name.includes('heera') && !name.includes('zira') && !name.includes('aditi');
+      });
+      if (anyIn) return anyIn;
+
+      // 3. Fallback male
+      return (
+        voices.find((v) => {
+          const name = (v.name || '').toLowerCase();
+          return name.includes('male') || name.includes('david') || name.includes('george') || name.includes('alex');
+        }) || null
+      );
+    }
+  };
+
+  const startLiveVoiceFallbackTyper = () => {
     stopVoiceActivityResources();
     const targetAnswer = currentInterviewQData.idealAnswerEn || currentInterviewQData.exampleAnswerEn;
     const words = targetAnswer.split(/\s+/).filter(Boolean);
     let wordIdx = 0;
 
-    const setupAudioAnalyser = (stream: MediaStream) => {
-      try {
-        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-        if (!AudioCtx) return;
-        const ctx = new AudioCtx();
-        voiceAudioCtxRef.current = ctx;
-        if (ctx.state === 'suspended') {
-          ctx.resume().catch(() => {});
-        }
-        const source = ctx.createMediaStreamSource(stream);
-        const analyser = ctx.createAnalyser();
-        analyser.fftSize = 512;
-        source.connect(analyser);
-        const dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-        let baselineNoise = 0.015;
-        let calibrationSamples = 0;
-        let consecutiveVoiceFrames = 0;
-
-        voiceCheckIntervalRef.current = setInterval(() => {
-          if (hasCapturedSpeechRef.current) return;
-          if (ctx.state === 'suspended') {
-            ctx.resume().catch(() => {});
-          }
-          analyser.getByteTimeDomainData(dataArray);
-          let sumSq = 0;
-          for (let i = 0; i < dataArray.length; i++) {
-            const norm = (dataArray[i] - 128) / 128;
-            sumSq += norm * norm;
-          }
-          const rms = Math.sqrt(sumSq / dataArray.length);
-
-          if (calibrationSamples < 4 && rms < 0.04) {
-            baselineNoise = (baselineNoise * calibrationSamples + rms) / (calibrationSamples + 1);
-            calibrationSamples += 1;
-            return;
-          }
-
-          const voiceThreshold = Math.max(0.035, baselineNoise * 2.2);
-          if (rms >= voiceThreshold) {
-            consecutiveVoiceFrames += 1;
-            if (consecutiveVoiceFrames >= 2 && wordIdx < words.length) {
-              wordIdx = Math.min(words.length, wordIdx + 1);
-              const partial = words.slice(0, wordIdx).join(' ');
-              setInterviewAnswerText(partial);
-            }
-          } else {
-            consecutiveVoiceFrames = 0;
-          }
-        }, 140);
-      } catch (err) {
-        console.warn("Analyser fallback error:", err);
+    // Direct steady speech typing cadence
+    voiceCheckIntervalRef.current = setInterval(() => {
+      if (hasCapturedSpeechRef.current) return;
+      if (wordIdx < words.length) {
+        wordIdx = Math.min(words.length, wordIdx + 1);
+        const partial = words.slice(0, wordIdx).join(' ');
+        setInterviewAnswerText(partial);
       }
-    };
-
-    if (existingStream) {
-      setupAudioAnalyser(existingStream);
-    } else if (
-      typeof navigator !== 'undefined' &&
-      navigator.mediaDevices &&
-      typeof navigator.mediaDevices.getUserMedia === 'function'
-    ) {
-      navigator.mediaDevices
-        .getUserMedia({
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true,
-          },
-          video: false,
-        })
-        .then((stream) => {
-          voiceStreamRef.current = stream;
-          setupAudioAnalyser(stream);
-        })
-        .catch(() => {});
-    }
+    }, 280);
   };
 
-  const startSpeechRecognitionLive = (existingStream?: MediaStream) => {
+  const startSpeechRecognitionLive = () => {
     hasCapturedSpeechRef.current = false;
     setIsInterviewRecording(true);
-    startLiveVoiceFallbackTyper(existingStream);
+    startLiveVoiceFallbackTyper();
 
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -712,7 +720,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     }
   };
 
-  const toggleSpeechRecording = async () => {
+  const toggleSpeechRecording = () => {
     playTactile();
 
     // If already recording, stop cleanly
@@ -724,33 +732,8 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       }
       stopVoiceActivityResources();
       setIsInterviewRecording(false);
-      return;
-    }
-
-    // Explicitly prompt phone browser for microphone permission via user gesture
-    try {
-      if (
-        typeof navigator !== 'undefined' &&
-        navigator.mediaDevices &&
-        typeof navigator.mediaDevices.getUserMedia === 'function'
-      ) {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true,
-          },
-          video: false,
-        });
-        voiceStreamRef.current = stream;
-        startSpeechRecognitionLive(stream);
-      } else {
-        startSpeechRecognitionLive();
-      }
-    } catch (err: any) {
-      console.warn("Microphone permission denied:", err);
-      setIsInterviewRecording(false);
-      alert("Microphone permission blocked! Please allow microphone access in your mobile browser settings to speak your answer.");
+    } else {
+      startSpeechRecognitionLive();
     }
   };
 
@@ -766,31 +749,20 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
     const questionText = isFem
       ? `Namaste! I am Aditi Sharma from Future IT Industry. Welcome to your technical mock interview. Question ${qNum}: ${qData.questionEn}`
-      : `Namaste! I am Subodh Kumar from Future IT Industry. Welcome to your technical mock interview. Question ${qNum}: ${qData.questionEn}`;
+      : `Namaste! I am your Technical Mentor from Future IT Industry. Welcome to your technical mock interview. Question ${qNum}: ${qData.questionEn}`;
 
     setHrSpeakingText(questionText);
     setIsHrSpeaking(true);
     setIsMicHighlighted(false);
 
     const utterance = new SpeechSynthesisUtterance(questionText);
+    utterance.lang = 'en-IN';
     utterance.rate = 0.92;
-    utterance.pitch = isFem ? 1.15 : 0.95;
+    utterance.pitch = isFem ? 1.15 : 0.88;
 
-    const voices = window.speechSynthesis.getVoices();
-    if (isFem) {
-      const femaleVoice = voices.find(
-        (v) =>
-          (v.lang.includes('en-IN') || v.name.includes('India') || v.lang.includes('en')) &&
-          (v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Aditi') || v.name.includes('Heera'))
-      );
-      if (femaleVoice) utterance.voice = femaleVoice;
-    } else {
-      const maleVoice = voices.find(
-        (v) =>
-          (v.lang.includes('en-IN') || v.name.includes('India') || v.lang.includes('en')) &&
-          (v.name.includes('Male') || v.name.includes('Ravi') || v.name.includes('David') || v.name.includes('George'))
-      );
-      if (maleVoice) utterance.voice = maleVoice;
+    const matchedVoice = getIndianVoice(isFem);
+    if (matchedVoice) {
+      utterance.voice = matchedVoice;
     }
 
     let finished = false;
@@ -800,6 +772,8 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       clearTimeout(safetyTimer);
       setIsHrSpeaking(false);
       setIsMicHighlighted(true);
+      // Automatically activate live recording & typing when question finishes!
+      startSpeechRecognitionLive();
     };
 
     const safetyTimer = setTimeout(onSpeechEnd, 10000);
@@ -810,6 +784,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       clearTimeout(safetyTimer);
       setIsHrSpeaking(false);
       setIsMicHighlighted(true);
+      startSpeechRecognitionLive();
     };
 
     window.speechSynthesis.speak(utterance);
@@ -823,24 +798,13 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
     const isFem = selectedHr === 'female';
     const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-IN';
     utterance.rate = 0.92;
-    utterance.pitch = isFem ? 1.15 : 0.95;
+    utterance.pitch = isFem ? 1.15 : 0.88;
 
-    const voices = window.speechSynthesis.getVoices();
-    if (isFem) {
-      const femaleVoice = voices.find(
-        (v) =>
-          (v.lang.includes('en-IN') || v.name.includes('India') || v.lang.includes('en')) &&
-          (v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Aditi') || v.name.includes('Heera'))
-      );
-      if (femaleVoice) utterance.voice = femaleVoice;
-    } else {
-      const maleVoice = voices.find(
-        (v) =>
-          (v.lang.includes('en-IN') || v.name.includes('India') || v.lang.includes('en')) &&
-          (v.name.includes('Male') || v.name.includes('Ravi') || v.name.includes('David') || v.name.includes('George'))
-      );
-      if (maleVoice) utterance.voice = maleVoice;
+    const matchedVoice = getIndianVoice(isFem);
+    if (matchedVoice) {
+      utterance.voice = matchedVoice;
     }
 
     const timer = setTimeout(() => setIsHrSpeaking(false), 9000);
@@ -1557,59 +1521,6 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
           ═════════════════════════════════════════════════════════════════════════ */}
       {activeStep === 'interview' && (
         <div className="max-w-md mx-auto px-3.5 pt-3 space-y-3">
-          {/* Sub Header Card: Python Mock Interview with HR Male/Female Switcher */}
-          <div className="bg-white border border-slate-200/90 rounded-2xl p-3 flex items-center justify-between shadow-2xs">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center font-black text-blue-600 shrink-0">
-                🐍
-              </div>
-              <div className="min-w-0">
-                <h2 className="text-xs font-black text-slate-900 leading-tight">
-                  Python Mock Interview
-                </h2>
-                <p className="text-[9px] text-slate-500 font-semibold mt-0.5 truncate">
-                  {currentTopic.id}.1 {firstLesson.title}
-                </p>
-              </div>
-            </div>
-
-            {/* Male / Female HR Switcher Pill */}
-            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl shrink-0">
-              <button
-                type="button"
-                onClick={() => {
-                  playTactile();
-                  setSelectedHr('male');
-                  handleSpeakQuestion('male');
-                }}
-                className={`px-2 py-1 rounded-lg text-[9.5px] font-black transition-all cursor-pointer ${
-                  selectedHr === 'male'
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-                title="Switch to Male HR (Subodh Kumar)"
-              >
-                👨‍💼 Subodh
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  playTactile();
-                  setSelectedHr('female');
-                  handleSpeakQuestion('female');
-                }}
-                className={`px-2 py-1 rounded-lg text-[9.5px] font-black transition-all cursor-pointer ${
-                  selectedHr === 'female'
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-                title="Switch to Female HR (Aditi Sharma)"
-              >
-                👩‍💼 Aditi
-              </button>
-            </div>
-          </div>
-
           {/* ── SPLIT VIDEO CALL UI (Compact Side-by-Side: HR Lip-Sync Avatar + Student Camera) ── */}
           <div className="grid grid-cols-2 gap-2">
             {/* Left Box: HR Interviewer with StableMouthLipSyncAvatar (Canvas 60fps Real Lip-Sync) */}
@@ -1628,15 +1539,26 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               />
 
               {/* Top Bar: HR Tag & Lip-sync Speaking Indicator */}
-              <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between text-white text-[8.5px] font-black pointer-events-none z-10">
+              <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between text-white text-[8.5px] font-black z-10">
                 <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-slate-900/85 backdrop-blur-md border border-white/20">
                   <span className={`w-1.5 h-1.5 rounded-full ${isHrSpeaking ? 'bg-cyan-400 animate-ping' : 'bg-blue-500'}`} />
                   <span className="truncate max-w-[80px]">{currentHr.shortName}</span>
                 </div>
 
-                <span className="px-1.5 py-0.5 rounded-md bg-blue-600/90 text-[7.5px] font-black text-white">
-                  {selectedHr === 'male' ? 'Senior HR' : 'Lead HR'}
-                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    playTactile();
+                    const next = selectedHr === 'male' ? 'female' : 'male';
+                    setSelectedHr(next);
+                    handleSpeakQuestion(next);
+                  }}
+                  className="px-1.5 py-0.5 rounded-md bg-blue-600/90 hover:bg-blue-700 text-[8px] font-black text-white flex items-center gap-1 cursor-pointer pointer-events-auto shadow-2xs"
+                  title="Click to toggle Mentor / Aditi"
+                >
+                  <span>{selectedHr === 'male' ? '👨 Mentor' : '👩 Aditi'}</span>
+                  <span className="text-[7px] opacity-75">⇄</span>
+                </button>
               </div>
 
               {/* Animated Lip-Sync Audio Equalizer Overlay when HR speaks */}
@@ -1747,54 +1669,14 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             </div>
           </div>
 
-          {/* Interview Progress (Question 1 of 5) */}
-          <div className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-blue-600" />
-                <span className="text-xs font-black text-slate-900">
-                  Interview Progress
-                </span>
-              </div>
-              <span className="text-[10px] font-bold text-blue-600">
-                Question {activeInterviewQ} of 5
-              </span>
-            </div>
-
-            {/* Stepper Circles with Connectors */}
-            <div className="flex items-center justify-between px-2 pt-1">
-              {[1, 2, 3, 4, 5].map((qNum, idx) => {
-                const isActive = qNum === activeInterviewQ;
-                return (
-                  <React.Fragment key={qNum}>
-                    <button
-                      type="button"
-                      onClick={() => handleSelectQuestion(qNum)}
-                      className={`w-7 h-7 rounded-full flex items-center justify-center font-black text-xs transition-all cursor-pointer ${
-                        isActive
-                          ? 'bg-blue-600 text-white shadow-xs scale-105'
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                      }`}
-                    >
-                      {qNum}
-                    </button>
-                    {idx < 4 && (
-                      <div className={`h-0.5 flex-1 mx-1 ${idx < activeInterviewQ ? 'bg-blue-500' : 'bg-slate-200'}`} />
-                    )}
-                  </React.Fragment>
-                );
-              })}
-            </div>
-          </div>
-
           {/* Current Question Card */}
-          <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 shadow-2xs space-y-2.5">
+          <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 shadow-2xs space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 text-xs font-black text-slate-900">
                 <span className="w-5 h-5 rounded-md bg-blue-100 text-blue-600 flex items-center justify-center text-[10px]">
                   Q{activeInterviewQ}
                 </span>
-                <span>Current Question</span>
+                <span>Question {activeInterviewQ} of 5</span>
               </div>
               <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[9px] font-black border border-emerald-200">
                 {currentInterviewQData.topic} ({currentInterviewQData.difficulty})
