@@ -844,9 +844,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       clearTimeout(safetyTimer);
       setIsHrSpeaking(false);
       setIsMicHighlighted(true);
-      // Automatically activate live recording & speech recognition once HR completes question
-      startSpeechRecognitionLive(isFem ? 'hi-IN' : 'en-IN');
-      setSpeechTip("🎙️ Mentor finished! Speak your answer now...");
+      setSpeechTip("🎙️ Mentor question complete! Tap 'Speak Answer' to speak into mic");
     };
 
     const safetyTimer = setTimeout(onSpeechEnd, 12000);
@@ -857,8 +855,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       clearTimeout(safetyTimer);
       setIsHrSpeaking(false);
       setIsMicHighlighted(true);
-      startSpeechRecognitionLive(isFem ? 'hi-IN' : 'en-IN');
-      setSpeechTip("🎙️ Speak your answer now...");
+      setSpeechTip("🎙️ Tap 'Speak Answer' below to answer into mic");
     };
 
     window.speechSynthesis.speak(utterance);
@@ -892,18 +889,6 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     };
 
     window.speechSynthesis.speak(utterance);
-  };
-
-  const handleInsertInterviewExample = () => {
-    playTactile();
-    const ans =
-      selectedHr === 'female' && currentInterviewQData.exampleAnswerHi
-        ? currentInterviewQData.exampleAnswerHi
-        : currentInterviewQData.exampleAnswerEn ||
-          "Programming is giving step-by-step instructions to a computer to perform a specific task. A real-life example is an ATM machine: when you insert a card and enter a PIN, the system follows a programmed algorithm to verify your credentials, check balance, dispense cash, and update your account.";
-    setInterviewAnswerText(ans);
-    speechAccumulatedRef.current = ans;
-    setSpeechTip("✓ Sample Answer auto-filled! Click 'Submit Answer' to test Speedometer.");
   };
 
   const handleSubmitInterviewAnswer = () => {
@@ -1858,16 +1843,6 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                       <span className="text-xs">〰️</span>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={handleInsertInterviewExample}
-                      className="px-2 py-0.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-[9.5px] font-black flex items-center gap-1 active:scale-95 cursor-pointer shadow-2xs"
-                      title="1-tap fill benchmark answer"
-                    >
-                      <Sparkles className="w-2.5 h-2.5 text-emerald-600" />
-                      <span>⚡ Auto-Fill</span>
-                    </button>
-
                     {interviewAnswerText && (
                       <button
                         type="button"
@@ -1884,17 +1859,30 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   </div>
                 </div>
 
+                {/* 🎙️ Direct User Tap-to-Speak Button (Guarantees Android Chrome Mic Permission) 🎙️ */}
+                <button
+                  type="button"
+                  onClick={toggleSpeechRecording}
+                  className={`w-full py-2.5 px-3 rounded-xl text-xs font-black flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all active:scale-98 ${
+                    isInterviewRecording
+                      ? 'bg-rose-600 text-white animate-pulse shadow-rose-600/40 ring-4 ring-rose-300'
+                      : isMicHighlighted
+                      ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-emerald-600/30 ring-2 ring-emerald-300'
+                      : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-blue-600/25'
+                  }`}
+                >
+                  <Mic className="w-4 h-4 text-white" />
+                  <span>
+                    {isInterviewRecording
+                      ? '🔴 Mic On: Listening... (Tap to Pause)'
+                      : '🎙️ Tap to Speak (माइक ऑन करें और बोलें)'}
+                  </span>
+                </button>
+
                 {/* Live Speech Prompt Banner */}
                 {speechTip && (
                   <div className="p-2 rounded-xl bg-blue-50/80 border border-blue-200 text-[10px] font-semibold text-blue-900 flex items-center justify-between">
                     <span>{speechTip}</span>
-                    <button
-                      type="button"
-                      onClick={toggleSpeechRecording}
-                      className="text-[10px] font-bold text-blue-700 underline cursor-pointer ml-2"
-                    >
-                      {isInterviewRecording ? 'Stop Mic' : 'Start Mic'}
-                    </button>
                   </div>
                 )}
 
