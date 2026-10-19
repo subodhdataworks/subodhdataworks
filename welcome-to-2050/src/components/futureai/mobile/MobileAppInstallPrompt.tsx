@@ -48,8 +48,14 @@ export const MobileAppInstallPrompt: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  // Do not show if already opened in standalone mode (no browser bar) or already installed
-  if (isStandalone || isInstalled || isDismissed) {
+  // Do not show if already opened in standalone mode, already installed, dismissed, or during interview/workspace
+  const isInterviewOrWorkspace =
+    typeof window !== 'undefined' &&
+    (window.location.hash.includes('interview') ||
+      window.location.hash.includes('workspace') ||
+      window.location.hash.includes('practice'));
+
+  if (isStandalone || isInstalled || isDismissed || isInterviewOrWorkspace) {
     return null;
   }
 
