@@ -2131,8 +2131,8 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
                   <span>Job Offer</span>
                 </div>
               </div>
-              <div className="scd-sos-pap-price">₹18,000</div>
-              <div className="scd-sos-pap-sub">Remaining Program Fee</div>
+              <div className="scd-sos-pap-price">700+</div>
+              <div className="scd-sos-pap-sub">Hiring Companies</div>
             </div>
 
             {/* Right: Golden Unlock Capsule Button */}

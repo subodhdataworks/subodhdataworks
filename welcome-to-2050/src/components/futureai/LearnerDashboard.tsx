@@ -92,6 +92,7 @@ import { MobileGameArenaHub } from './mobile/MobileGameArenaHub';
 import { MobileDataAnalystHub } from './mobile/MobileDataAnalystHub';
 import { FutureAuthModal } from './FutureAuthModal';
 import { WalletWithdrawModal } from './WalletWithdrawModal';
+import { CurriculumModal } from './CurriculumModal';
 
 // =========================================================================
 // 10 AUTHENTIC 3D-STYLE VECTOR ICONS MATCHING media_1790589591068.jpg
@@ -355,6 +356,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   const [moduleFilter, setModuleFilter] = useState<'all' | 'in-progress' | 'not-started' | 'completed'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [curriculumModalOpen, setCurriculumModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [currentUserName, setCurrentUserName] = useState<string>(() => {
     if (typeof window !== 'undefined') {
@@ -2160,10 +2162,31 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                   if (typeof window !== 'undefined') window.location.hash = '#earnings';
                 }}
                 onOpenAdvisor={onOpenAdvisor}
-                onOpenLockedModule={(courseTitle) => {
+                                onOpenLockedModule={(courseTitle) => {
                   playClick();
-                  setSelectedLockedModule(courseTitle);
-                  setUnlockModalOpen(true);
+                  playCinema();
+                  const titleLower = (courseTitle || '').toLowerCase();
+                  if (titleLower.includes('react') || titleLower.includes('front')) {
+                    setCurriculumModalOpen(true);
+                  } else if (titleLower.includes('sql')) {
+                    setSelectedModuleView('sql');
+                    if (typeof window !== 'undefined') window.location.hash = '#sql';
+                  } else if (titleLower.includes('excel') || titleLower.includes('copilot') || titleLower.includes('office')) {
+                    setSelectedModuleView('excel');
+                    if (typeof window !== 'undefined') window.location.hash = '#excel';
+                  } else if (titleLower.includes('power') || titleLower.includes('bi')) {
+                    setSelectedModuleView('powerbi');
+                    if (typeof window !== 'undefined') window.location.hash = '#powerbi';
+                  } else if (titleLower.includes('stat')) {
+                    setSelectedModuleView('stats');
+                    if (typeof window !== 'undefined') window.location.hash = '#stats';
+                  } else if (titleLower.includes('genai') || titleLower.includes('agent') || titleLower.includes('prompt')) {
+                    setSelectedModuleView('genai');
+                    if (typeof window !== 'undefined') window.location.hash = '#genai';
+                  } else {
+                    setSelectedModuleView('data_analyst');
+                    if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+                  }
                 }}
               />
             </div>
@@ -2680,6 +2703,17 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         }}
         onOpenLogin={() => setAuthModalOpen(true)}
         onOpenAdvisor={onOpenAdvisor}
+      />
+
+      {/* ─── REACT FRONT END & FULL CURRICULUM MODAL ─── */}
+      <CurriculumModal
+        isOpen={curriculumModalOpen}
+        onClose={() => setCurriculumModalOpen(false)}
+        onEnroll={() => {
+          setCurriculumModalOpen(false);
+          setSelectedModuleView('data_analyst');
+          if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+        }}
       />
 
       {/* ─── WALLET WITHDRAWAL MODAL (CENTER POPUP) ─── */}

@@ -645,14 +645,14 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
             </button>
           </div>
 
-          {/* Right Floating Card: Pay After Job Offer ₹18,000 */}
+          {/* Right Floating Card: Placement Support */}
           <div className="absolute right-3 bottom-3 bg-white/95 backdrop-blur-md border border-white/95 rounded-2xl p-2.5 shadow-md text-right max-w-[130px]">
-            <div className="flex items-center justify-end gap-1 text-[9px] font-bold text-amber-900">
-              <Briefcase className="w-3 h-3 text-amber-700 shrink-0" />
-              <span className="leading-tight">Pay After Job Offer</span>
+            <div className="flex items-center justify-end gap-1 text-[9px] font-bold text-emerald-900">
+              <Briefcase className="w-3 h-3 text-emerald-700 shrink-0" />
+              <span className="leading-tight">Placement Support</span>
             </div>
-            <div className="text-base font-black text-rose-600 leading-none mt-1">₹18,000</div>
-            <div className="text-[8px] font-semibold text-slate-400 mt-0.5 leading-tight">Remaining Program Fee</div>
+            <div className="text-base font-black text-emerald-600 leading-none mt-1">700+</div>
+            <div className="text-[8px] font-semibold text-slate-500 mt-0.5 leading-tight">Hiring Partners</div>
           </div>
         </div>
       </div>

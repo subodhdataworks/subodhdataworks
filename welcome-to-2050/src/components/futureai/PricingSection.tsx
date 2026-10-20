@@ -90,8 +90,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
               </div>
 
               <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700 leading-relaxed">
-                <span className="font-bold text-slate-900">Remaining Balance: </span>
-                ₹28,000 after receiving an eligible job offer letter, according to the applicable payment terms.
+                <span className="font-bold text-slate-900">Career Assistance: </span>Dedicated placement assistance with 700+ hiring partners and AI career guidance.
               </div>
             </div>
           </div>
@@ -132,7 +131,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
             <div className="flex items-start gap-2">
               <AlertCircle className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
               <p className="text-[11px] text-slate-500 leading-relaxed font-normal">
-                <strong>Important Notice &amp; Terms:</strong> Future.AI does not promise guaranteed placement or fixed salary compensation. The remaining balance of ₹28,000 is payable exclusively upon receiving an eligible job offer letter, strictly subject to the defined program eligibility criteria and payment agreement terms.
+                <strong>Important Notice &amp; Terms:</strong> Future.AI does not promise guaranteed placement or fixed salary compensation. Future.AI provides complete 10-module curriculum access, interactive coding simulators, real-world portfolio projects and placement assistance.
               </p>
             </div>
           </div>

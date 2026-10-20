@@ -31,7 +31,7 @@ export const FuturePlanAndFaqSection: React.FC<FuturePlanAndFaqSectionProps> = (
     },
     {
       q: 'How does the payment after placement work?',
-      a: 'Start with just ₹987 enrollment to begin learning. You pay the remaining ₹18,000 only after you receive an eligible job offer letter, payable in easy monthly installments.',
+      a: 'Start with just ₹987 enrollment to begin learning. You get complete lifetime access to all 10 modules, real-world projects, certifications, and placement assistance with 700+ hiring partners.',
     },
     {
       q: 'Will I get a certificate?',

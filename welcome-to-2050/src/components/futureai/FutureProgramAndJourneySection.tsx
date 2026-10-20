@@ -86,15 +86,15 @@ export const FutureProgramAndJourneySection: React.FC<FutureProgramAndJourneyPro
                   </div>
                 </div>
 
-                {/* Price Box 2: ₹18,000 */}
+                {/* Price Box 2: Placement Support */}
                 <div className="pap-price-box">
                   <div className="pap-price-icon-wrap bg-emerald-100 text-emerald-600">
                     <Briefcase className="w-5 h-5" />
                   </div>
                   <div className="pap-price-info">
-                    <strong className="pap-price-amount">₹18,000</strong>
-                    <span className="pap-price-label">After you get job</span>
-                    <span className="pap-price-note">(Easy installments)</span>
+                    <strong className="pap-price-amount">100%</strong>
+                    <span className="pap-price-label">Placement Support</span>
+                    <span className="pap-price-note">(Guaranteed Assistance)</span>
                   </div>
                 </div>
 
@@ -454,9 +454,9 @@ export const FutureProgramAndJourneySection: React.FC<FutureProgramAndJourneyPro
                   </div>
                 </div>
                 <div className="step-text-wrap">
-                  <strong className="step-title">Pay After Placement</strong>
-                  <strong className="step-val-large-blue">₹18,000</strong>
-                  <span className="step-desc-small">(Only after you get job)</span>
+                  <strong className="step-title">Placement Assistance</strong>
+                  <strong className="step-val-large-blue">700+ Partners</strong>
+                  <span className="step-desc-small">(Top Tech Hiring Drives)</span>
                 </div>
               </div>
 

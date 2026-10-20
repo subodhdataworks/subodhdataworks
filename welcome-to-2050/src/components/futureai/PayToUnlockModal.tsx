@@ -64,9 +64,9 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
 
         {/* Main Title & Locked Target */}
         <div className="space-y-1 mb-4">
-          <div className="flex items-center gap-2 text-rose-500 text-xs font-bold">
-            <Lock className="w-3.5 h-3.5" />
-            <span>Target Module: {targetModuleName} (Locked)</span>
+          <div className="flex items-center gap-2 text-sky-600 text-xs font-bold">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Selected Program: {targetModuleName}</span>
           </div>
 
           <h3 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">
@@ -74,7 +74,7 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
           </h3>
 
           <p className="text-xs sm:text-sm font-semibold text-slate-600">
-            Ek hi payment me <strong className="text-slate-900 font-extrabold">All 10 Modules Unlock</strong> honge! Pay remaining <strong className="text-slate-900 font-extrabold">₹18,000</strong> only AFTER you get a <span className="text-emerald-600 font-bold">6 – 15 LPA job!</span>
+            Ek hi payment me <strong className="text-slate-900 font-extrabold">All 10 Modules Unlock</strong> honge! Complete Lifetime Access + <span className="text-emerald-600 font-bold">100% Placement Support with 700+ Hiring Partners!</span>
           </p>
         </div>
 
@@ -166,9 +166,9 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
           </div>
 
           <div className="text-right">
-            <span className="text-[11px] font-semibold text-slate-500 block">Remaining ₹18,000</span>
+            <span className="text-[11px] font-semibold text-emerald-600 block">100% Full Access</span>
             <strong className="text-xs font-bold text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-md">
-              Only After 6 – 15 LPA Job
+              Zero Hidden Charges
             </strong>
           </div>
         </div>

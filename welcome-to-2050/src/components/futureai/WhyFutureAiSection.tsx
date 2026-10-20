@@ -596,7 +596,7 @@ export const WhyFutureAiSection: React.FC<WhyFutureAiSectionProps> = ({
             </h3>
 
             <p className="banner-sub-statement">
-              Pay remaining <strong className="text-highlight-green">₹18,000</strong> only after you get a <strong className="text-highlight-blue">6–15 LPA job!</strong>
+              Unlock All 10 Modules + 100% Placement Support for a <strong className="text-highlight-blue">6–15 LPA job!</strong>
             </p>
           </div>
 
@@ -653,14 +653,14 @@ export const WhyFutureAiSection: React.FC<WhyFutureAiSectionProps> = ({
                 </div>
               </div>
 
-              {/* 4. Pay Remaining ₹18,000 */}
+              {/* 4. Placement Assistance */}
               <div className="trust-four-item" onMouseEnter={playHover}>
                 <div className="trust-four-icon icon-bg-amber">
                   <Coins className="w-3.5 h-3.5 text-amber-600" />
                 </div>
                 <div className="trust-four-text">
-                  <strong className="trust-title-dark">Pay Remaining<br />₹18,000</strong>
-                  <span className="trust-sub-grey">Only After You Get<br />a 6–15 LPA Job</span>
+                  <strong className="trust-title-dark">700+ Hiring<br />Partners</strong>
+                  <span className="trust-sub-grey">Dedicated Placement<br />Drive Assistance</span>
                 </div>
               </div>
 

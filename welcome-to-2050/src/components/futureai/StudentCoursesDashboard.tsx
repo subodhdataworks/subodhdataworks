@@ -291,7 +291,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             <div className="scd-nhb-offer-sep" />
             <div className="scd-nhb-offer-pap">
               <Sparkles className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Pay <strong className="scd-nhb-offer-pap-amt">₹18,000</strong> After Getting a Job Offer*</span>
+              <span>100% Placement Support with <strong className="scd-nhb-offer-pap-amt">700+ Hiring Partners</strong></span>
             </div>
           </div>
 
@@ -728,8 +728,8 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                   <span>Job Offer</span>
                 </div>
               </div>
-              <div className="scd-sos-pap-price">₹18,000</div>
-              <div className="scd-sos-pap-sub">Remaining Program Fee</div>
+              <div className="scd-sos-pap-price">700+</div>
+              <div className="scd-sos-pap-sub">Hiring Partners</div>
             </div>
 
             {/* Right: Golden Unlock Capsule Button */}
