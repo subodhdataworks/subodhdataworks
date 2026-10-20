@@ -396,9 +396,9 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       shortDesc: 'Modern React 19, Redux Toolkit, Tailwind CSS, TypeScript & fast Vite tooling.',
       salaryRange: '₹7 LPA - ₹16 LPA',
       courseFee: '₹19,999',
-      image: '/images/pot3_sharp_poster.jpg',
-      holoImage: '/images/pot3_sharp_poster.jpg',
-      video: '/videos/what_is_programming_lesson.mp4',
+      image: '/images/react_frontend_development_poster.jpg',
+      holoImage: '/images/react_frontend_development_poster.jpg',
+      video: '/videos/react_frontend_development.mp4',
       potTheme: 'blue' as const,
       skillsList: ['React 19', 'TypeScript', 'Redux Toolkit', 'Tailwind CSS', 'Vite'],
       themeStyles: {
