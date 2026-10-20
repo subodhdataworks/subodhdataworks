@@ -33,3 +33,7 @@ dist-ssr
 /verify_*.cjs
 /test-results/
 /.playwright-mcp/
+
+# Environment files with secrets
+.env.local
+.env.*.local

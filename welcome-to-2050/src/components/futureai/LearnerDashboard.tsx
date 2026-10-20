@@ -1247,6 +1247,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             isOpen={unlockModalOpen}
             onClose={() => setUnlockModalOpen(false)}
             targetModuleName={selectedLockedModule}
+            courseId={selectedLockedModule.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}
+            courseTitle={selectedLockedModule}
+            price={987}
             onSimulateUnlock={() => {
               setIsNewStudentMode(false);
               setUnlockModalOpen(false);
@@ -1458,6 +1461,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           isOpen={unlockModalOpen}
           onClose={() => setUnlockModalOpen(false)}
           targetModuleName={selectedLockedModule}
+          courseId={selectedLockedModule.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}
+          courseTitle={selectedLockedModule}
+          price={987}
           onSimulateUnlock={() => {
             setIsNewStudentMode(false);
             setUnlockModalOpen(false);
@@ -2741,8 +2747,10 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         courseId={selectedDetailCourseId || 'react-frontend-dev'}
         onClose={() => setSelectedDetailCourseId(null)}
         onUnlock={() => {
+          const cId = selectedDetailCourseId || 'course';
           setSelectedDetailCourseId(null);
-          alert('🎉 Congratulations! Course unlocked with your ₹987 Master Pass.');
+          setSelectedLockedModule(cId.toUpperCase());
+          setUnlockModalOpen(true);
         }}
       />
 
@@ -2781,11 +2789,14 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       />
 
 
-      {/* ₹999 Pay After Placement Unlock Modal */}
+      {/* ₹987 Pay to Unlock Modal — Real PayU Payment */}
       <PayToUnlockModal
         isOpen={unlockModalOpen}
         onClose={() => setUnlockModalOpen(false)}
         targetModuleName={selectedLockedModule}
+        courseId={selectedLockedModule.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}
+        courseTitle={selectedLockedModule}
+        price={987}
         onSimulateUnlock={() => {
           setIsNewStudentMode(false);
           alert('🎉 Congratulations! All 10 Modules have been unlocked in your dashboard.');
