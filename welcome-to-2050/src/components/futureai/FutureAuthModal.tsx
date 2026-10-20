@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   X,
   ArrowRight,
@@ -34,7 +34,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const [authMethod, setAuthMethod] = useState<'mobile' | 'email'>('mobile');
+  const [activeTab, setActiveTab] = useState<'mobile' | 'email'>('mobile');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
@@ -49,6 +49,8 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
 
+  const videoRef = useRef<HTMLVideoElement>(null);
+
   // Resend Countdown timer
   useEffect(() => {
     let interval: any = null;
@@ -60,12 +62,11 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
     return () => clearInterval(interval);
   }, [resendTimer]);
 
-  // Reset on open
+  // Reset on open & ensure video plays
   useEffect(() => {
     if (isOpen) {
       setValidationError(null);
       setIsSubmitting(false);
-      setAuthMethod('mobile');
       setMobileStep('INPUT_PHONE');
       setMobileInput('');
       setOtpInput('');
@@ -73,6 +74,9 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
       setPasswordInput('');
       setConfirmationResult(null);
       loadGoogleScript().catch(() => {});
+      if (videoRef.current) {
+        videoRef.current.play().catch(() => {});
+      }
     }
   }, [isOpen]);
 
@@ -104,7 +108,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
     onClose();
   };
 
-  // Send OTP
+  // 1. Mobile OTP Submit
   const handleSendOtp = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setValidationError(null);
@@ -123,22 +127,20 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
     } catch (err: any) {
       setIsSubmitting(false);
       if (err.code === 'auth/operation-not-allowed') {
-        setValidationError('Phone Auth is activating on server. Please use Google Login or Email Login.');
+        setValidationError('Phone OTP is activating. Please use Google Login or Email Login.');
       } else if (err.code === 'auth/too-many-requests') {
-        setValidationError('Too many requests. Please wait a few minutes and try again.');
+        setValidationError('Too many requests. Please wait a few minutes.');
       } else if (err.code === 'auth/app-not-authorized') {
         setValidationError('Domain not authorized. Please try Google or Email Login.');
-      } else if (err.code === 'auth/captcha-check-failed' || err.code === 'auth/recaptcha-not-enabled') {
-        setValidationError('Verification failed. Please refresh and try again.');
       } else if (err.code === 'auth/quota-exceeded') {
-        setValidationError('SMS quota reached for today. Please use Email Login.');
+        setValidationError('SMS limit reached. Please use Google or Email Login.');
       } else {
-        setValidationError(err.message || 'Failed to send OTP. Please try Email Login.');
+        setValidationError(err.message || 'Failed to send OTP. Please try Email or Google Login.');
       }
     }
   };
 
-  // Verify OTP
+  // 2. Verify OTP
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setValidationError(null);
@@ -164,7 +166,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
     }
   };
 
-  // Email & Password Submit
+  // 3. Email & Password Submit
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setValidationError(null);
@@ -187,7 +189,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
     }
   };
 
-  // Google 1-Click Login
+  // 4. Google 1-Click Login
   const handleGoogleSignInClick = async () => {
     setIsSubmitting(true);
     setValidationError(null);
@@ -224,7 +226,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
         completeLogin(finalName, fbUser.email, finalAvatar, finalRole);
       } catch {
         setIsSubmitting(false);
-        setValidationError('Google sign-in closed. Please continue with your Mobile Number below.');
+        setValidationError('Google sign-in closed. Please choose Mobile or Email login below.');
       }
     }
   };
@@ -234,58 +236,47 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
       {/* Invisible reCAPTCHA */}
       <div id="recaptcha-container" />
 
-      {/* ── CARD: 1:1 Matching User Reference Design ── */}
-      <div className="relative w-full max-w-[410px] bg-white rounded-[32px] shadow-[0_20px_60px_rgba(0,0,0,0.22)] p-6 sm:p-7 text-center border border-slate-100 my-auto animate-scaleUp">
+      {/* ── CARD: Clean, Compact, Sleek with Video Header ── */}
+      <div className="relative w-full max-w-[410px] bg-white rounded-[32px] shadow-[0_20px_60px_rgba(0,0,0,0.22)] p-5 sm:p-6 text-center border border-slate-100 my-auto animate-scaleUp overflow-hidden">
 
         {/* Circular Close Button at Top-Right */}
         <button
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute top-4 right-4 sm:top-5 sm:right-5 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-600 hover:text-slate-900 flex items-center justify-center transition-all cursor-pointer z-20"
+          className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 w-8 h-8 rounded-full bg-slate-100/90 hover:bg-slate-200 active:scale-95 text-slate-600 hover:text-slate-900 flex items-center justify-center transition-all cursor-pointer z-30 shadow-xs"
         >
           <X className="w-4 h-4 stroke-[2.5]" />
         </button>
 
-        {/* ── 3D Floating Google Plate & Education Elements ── */}
-        <div className="relative mb-2 flex justify-center items-center">
-          <img
-            src="/images/auth_welcome_illustration.png"
-            alt="Welcome to Future IT Industry"
-            className="w-52 sm:w-56 h-auto object-contain select-none pointer-events-none drop-shadow-sm"
+        {/* ── 3D VIDEO HEADER (Replacing Static Image, No Duplicate Text!) ── */}
+        <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden bg-slate-50 mb-3 shadow-2xs">
+          <video
+            ref={videoRef}
+            src="/videos/auth_login_video.mp4"
+            poster="/videos/auth_login_video_poster.jpg"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover object-center select-none pointer-events-none"
           />
-        </div>
-
-        {/* ── Greeting Typography ── */}
-        <div className="mb-4">
-          <div className="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-none mb-1">
-            Welcome to
-          </div>
-          <h2 className="text-2xl sm:text-[28px] font-black tracking-tight leading-tight bg-clip-text text-transparent bg-gradient-to-r from-[#0066FF] to-[#7928CA]">
-            Future IT Industry
-          </h2>
-          <div className="text-xs font-semibold text-slate-500 tracking-wide mt-1">
-            Learn • Play • Build • Grow
-          </div>
-          <p className="text-xs font-medium text-slate-400 mt-1">
-            Sign in to access your learning dashboard
-          </p>
         </div>
 
         {/* ── Error Banner (if any) ── */}
         {validationError && (
-          <div className="mb-3.5 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-1.5 text-left shadow-2xs">
+          <div className="mb-3 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-1.5 text-left shadow-2xs">
             <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
             <span className="font-semibold leading-snug">{validationError}</span>
           </div>
         )}
 
-        {/* ── Continue with Google Button (1:1 Pill with G Logo & Arrow) ── */}
+        {/* ── 1. CONTINUE WITH GOOGLE (Primary 1-Click Button) ── */}
         <button
           type="button"
           onClick={handleGoogleSignInClick}
           disabled={isSubmitting}
-          className="w-full mb-3.5 py-3 px-4 rounded-2xl bg-white hover:bg-slate-50/80 active:scale-[0.98] border border-slate-200 hover:border-slate-300 shadow-xs transition-all flex items-center justify-between cursor-pointer disabled:opacity-60"
+          className="w-full mb-3 py-2.5 px-4 rounded-2xl bg-white hover:bg-slate-50 active:scale-[0.98] border border-slate-200 hover:border-slate-300 shadow-xs transition-all flex items-center justify-between cursor-pointer disabled:opacity-60"
         >
           {/* Multi-Color Google G */}
           <div className="flex items-center gap-3">
@@ -309,34 +300,68 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                 />
               </svg>
             </div>
-            <div className="w-[1px] h-5 bg-slate-200" />
+            <div className="w-[1px] h-4 bg-slate-200" />
             <span className="font-bold text-xs sm:text-sm text-slate-800">
               Continue with Google
             </span>
           </div>
 
-          <ArrowRight className="w-4 h-4 text-slate-700 stroke-[2.5]" />
+          <ArrowRight className="w-4 h-4 text-slate-600 stroke-[2.5]" />
         </button>
 
         {/* ── OR Divider ── */}
-        <div className="relative my-3">
+        <div className="relative my-2.5">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-slate-200" />
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-white px-3 text-[11px] font-bold text-slate-400 tracking-wider">
+            <span className="bg-white px-3 text-[10px] font-bold text-slate-400 tracking-wider">
               OR
             </span>
           </div>
         </div>
 
-        {/* ── CONDITIONAL: MOBILE NUMBER vs EMAIL LOGIN ── */}
-        {authMethod === 'mobile' ? (
+        {/* ── 2 & 3. SEGMENTED TABS: Mobile Number vs Email Login ── */}
+        <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-100 rounded-xl mb-3">
+          <button
+            type="button"
+            onClick={() => {
+              setActiveTab('mobile');
+              setValidationError(null);
+            }}
+            className={`py-1.5 px-2 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              activeTab === 'mobile'
+                ? 'bg-white text-blue-700 shadow-xs'
+                : 'text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <Phone className="w-3.5 h-3.5 text-blue-600" />
+            <span>Mobile OTP</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setActiveTab('email');
+              setValidationError(null);
+            }}
+            className={`py-1.5 px-2 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              activeTab === 'email'
+                ? 'bg-white text-blue-700 shadow-xs'
+                : 'text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <Mail className="w-3.5 h-3.5 text-blue-600" />
+            <span>Email Login</span>
+          </button>
+        </div>
+
+        {/* ── TAB 1: MOBILE NUMBER OTP FLOW ── */}
+        {activeTab === 'mobile' && (
           <>
-            {/* ── MOBILE PHONE INPUT FLOW ── */}
             {mobileStep === 'INPUT_PHONE' ? (
-              <form onSubmit={handleSendOtp} className="space-y-3">
-                {/* Input Box matching reference: [ 📞 +91 ▾ | Enter your mobile number ] */}
+              <form onSubmit={handleSendOtp} className="space-y-2.5">
+                {/* Mobile Input Box: [ 📞 +91 ▾ | Enter your mobile number ] */}
                 <div className="flex items-center border border-slate-200 focus-within:border-blue-500 rounded-2xl bg-white px-3.5 py-2.5 transition-all shadow-2xs">
                   <Phone className="w-4 h-4 text-slate-600 mr-2 shrink-0" />
                   <span className="text-xs sm:text-sm font-bold text-slate-800 mr-1">
@@ -356,11 +381,11 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                   />
                 </div>
 
-                {/* Blue Pill Button: Continue with Mobile Number → */}
+                {/* Continue with Mobile Number Button */}
                 <button
                   type="submit"
                   disabled={isSubmitting || mobileInput.length < 10}
-                  className="w-full py-3 px-4 rounded-2xl text-white font-black text-xs sm:text-sm shadow-md shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="w-full py-2.5 px-4 rounded-2xl text-white font-black text-xs sm:text-sm shadow-md shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   style={{
                     background: 'linear-gradient(135deg, #0080FF 0%, #0066FF 100%)',
                   }}
@@ -368,25 +393,11 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                   <span>{isSubmitting ? 'Sending OTP...' : 'Continue with Mobile Number'}</span>
                   <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                 </button>
-
-                {/* Switch to Email Login Link */}
-                <div className="text-center pt-0.5">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAuthMethod('email');
-                      setValidationError(null);
-                    }}
-                    className="text-[11px] font-bold text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-colors"
-                  >
-                    ✉️ Login with Email &amp; Password instead
-                  </button>
-                </div>
               </form>
             ) : (
               /* Step 1B: Enter 6-Digit OTP */
-              <form onSubmit={handleVerifyOtp} className="space-y-3">
-                <div className="p-2.5 rounded-2xl bg-blue-50/80 border border-blue-200 flex items-center justify-between text-xs">
+              <form onSubmit={handleVerifyOtp} className="space-y-2.5">
+                <div className="p-2 rounded-xl bg-blue-50/80 border border-blue-200 flex items-center justify-between text-xs">
                   <div className="text-left">
                     <span className="text-slate-500 block text-[10px]">OTP sent to:</span>
                     <strong className="text-slate-900 font-mono text-xs">+91 {mobileInput}</strong>
@@ -418,7 +429,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting || otpInput.length < 6}
-                  className="w-full py-3 px-4 rounded-2xl text-white font-black text-xs sm:text-sm shadow-md shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="w-full py-2.5 px-4 rounded-2xl text-white font-black text-xs sm:text-sm shadow-md shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   style={{
                     background: 'linear-gradient(135deg, #0080FF 0%, #0066FF 100%)',
                   }}
@@ -447,15 +458,17 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
               </form>
             )}
           </>
-        ) : (
-          /* ── EMAIL & PASSWORD LOGIN FLOW ── */
-          <form onSubmit={handleEmailSubmit} className="space-y-3">
+        )}
+
+        {/* ── TAB 2: EMAIL & PASSWORD LOGIN FLOW ── */}
+        {activeTab === 'email' && (
+          <form onSubmit={handleEmailSubmit} className="space-y-2.5">
             {/* Email Input */}
             <div className="flex items-center border border-slate-200 focus-within:border-blue-500 rounded-2xl bg-white px-3.5 py-2.5 transition-all shadow-2xs">
               <Mail className="w-4 h-4 text-slate-600 mr-2.5 shrink-0" />
               <input
                 type="email"
-                placeholder="name@example.com"
+                placeholder="Enter email address"
                 value={emailInput}
                 onChange={(e) => setEmailInput(e.target.value)}
                 className="w-full text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent text-left"
@@ -469,7 +482,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
               <Lock className="w-4 h-4 text-slate-600 mr-2.5 shrink-0" />
               <input
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Enter password"
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
                 className="w-full text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent text-left"
@@ -481,7 +494,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting || !emailInput || passwordInput.length < 6}
-              className="w-full py-3 px-4 rounded-2xl text-white font-black text-xs sm:text-sm shadow-md shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full py-2.5 px-4 rounded-2xl text-white font-black text-xs sm:text-sm shadow-md shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               style={{
                 background: 'linear-gradient(135deg, #0080FF 0%, #0066FF 100%)',
               }}
@@ -489,34 +502,20 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
               <span>{isSubmitting ? 'Signing In...' : 'Continue with Email'}</span>
               <ArrowRight className="w-4 h-4 stroke-[2.5]" />
             </button>
-
-            {/* Switch back to Mobile */}
-            <div className="text-center pt-0.5">
-              <button
-                type="button"
-                onClick={() => {
-                  setAuthMethod('mobile');
-                  setValidationError(null);
-                }}
-                className="text-[11px] font-bold text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-colors"
-              >
-                📱 Back to Mobile Login
-              </button>
-            </div>
           </form>
         )}
 
-        {/* ── 3 Value Props with Vertical Dividers (1:1 Exact Match) ── */}
-        <div className="grid grid-cols-3 gap-0 mt-5 pt-4 border-t border-slate-100">
+        {/* ── 3 Value Props with Vertical Dividers ── */}
+        <div className="grid grid-cols-3 gap-0 mt-4 pt-3.5 border-t border-slate-100">
           {/* Column 1: Fast & Secure */}
           <div className="flex flex-col items-center text-center px-1">
-            <div className="w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center mb-1 text-[#0070F3]">
-              <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
+            <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center mb-1 text-[#0070F3]">
+              <ShieldCheck className="w-3.5 h-3.5 stroke-[2.5]" />
             </div>
-            <div className="text-xs font-bold text-slate-800 leading-tight">
+            <div className="text-[11px] font-bold text-slate-800 leading-tight">
               Fast &amp; Secure
             </div>
-            <div className="text-[10px] text-slate-400 font-medium leading-tight mt-0.5">
+            <div className="text-[9px] text-slate-400 font-medium leading-tight mt-0.5">
               One click login
             </div>
           </div>
@@ -524,32 +523,32 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
           {/* Column 2: No Extra Steps (with left & right border lines) */}
           <div className="flex flex-col items-center text-center px-1 border-x border-slate-100">
             <div className="w-7 h-7 rounded-full bg-purple-50 flex items-center justify-center mb-1 text-[#7928CA]">
-              <Users className="w-4 h-4 stroke-[2.5]" />
+              <Users className="w-3.5 h-3.5 stroke-[2.5]" />
             </div>
-            <div className="text-xs font-bold text-slate-800 leading-tight">
+            <div className="text-[11px] font-bold text-slate-800 leading-tight">
               No Extra Steps
             </div>
-            <div className="text-[10px] text-slate-400 font-medium leading-tight mt-0.5">
+            <div className="text-[9px] text-slate-400 font-medium leading-tight mt-0.5">
               Quick access
             </div>
           </div>
 
           {/* Column 3: Your Data is Safe */}
           <div className="flex flex-col items-center text-center px-1">
-            <div className="w-7 h-7 rounded-full bg-emerald-50 flex items-center justify-center mb-1 text-[#00CC88]">
-              <Lock className="w-4 h-4 stroke-[2.5]" />
+            <div className="w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center mb-1 text-[#00CC88]">
+              <Lock className="w-3.5 h-3.5 stroke-[2.5]" />
             </div>
-            <div className="text-xs font-bold text-slate-800 leading-tight">
+            <div className="text-[11px] font-bold text-slate-800 leading-tight">
               Your Data is Safe
             </div>
-            <div className="text-[10px] text-slate-400 font-medium leading-tight mt-0.5">
-              We never share your information
+            <div className="text-[9px] text-slate-400 font-medium leading-tight mt-0.5">
+              We never share
             </div>
           </div>
         </div>
 
         {/* ── Footer Terms Notice ── */}
-        <div className="mt-4 pt-3 border-t border-slate-100 text-[10px] text-slate-400 font-medium leading-relaxed">
+        <div className="mt-3 pt-2.5 border-t border-slate-100 text-[10px] text-slate-400 font-medium leading-relaxed">
           By continuing, you agree to our{' '}
           <a href="#terms" className="text-blue-600 hover:underline">Terms of Service</a>{' '}
           and{' '}
