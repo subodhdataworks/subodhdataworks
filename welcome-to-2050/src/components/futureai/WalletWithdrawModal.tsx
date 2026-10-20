@@ -44,8 +44,8 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  // Balance: starts from actual wallet or fallback to 3.28 to match user's design
-  const [balance, setBalance] = useState<number>(3.28);
+  // Balance: starts from actual wallet (0 for fresh student, no fake demo data!)
+  const [balance, setBalance] = useState<number>(0);
   const [amount, setAmount] = useState<string>('');
 
   // Payout details - EMPTY BY DEFAULT! Only populated when student adds or if saved in localStorage
@@ -82,13 +82,13 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
       setAmount('');
 
       if (typeof window !== 'undefined') {
-        // Read real balance from wallet
+        // Read real balance from wallet (defaults to 0 for fresh student!)
         const customWallet = localStorage.getItem('futureai_user_wallet');
         if (customWallet !== null && !isNaN(parseFloat(customWallet))) {
           const parsed = parseFloat(customWallet);
-          setBalance(parsed > 0 ? parsed : 3.28);
+          setBalance(parsed >= 0 ? parsed : 0);
         } else {
-          setBalance(3.28);
+          setBalance(0);
         }
 
         // Read stored payout details - NO HARDCODED DEFAULTS!

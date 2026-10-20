@@ -8,12 +8,13 @@ import { getFirestore } from 'firebase/firestore';
  * VITE_FIREBASE_API_KEY, VITE_FIREBASE_AUTH_DOMAIN, VITE_FIREBASE_PROJECT_ID, etc.
  */
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyDemoKeyFutureITIndustry2050',
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'future-it-industry.firebaseapp.com',
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'future-it-industry',
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'future-it-industry.appspot.com',
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '1029384756',
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:1029384756:web:abcdef123456',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyBdTLJDfImm3hZ06k4W7YJi2IJjXU5ogGY',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'future-it-industry-f97af.firebaseapp.com',
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'future-it-industry-f97af',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'future-it-industry-f97af.firebasestorage.app',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '477155157030',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:477155157030:web:b4852986a1f288dd8b32e7',
+  measurementId: 'G-EEKG701HBP',
 };
 
 // Singleton Firebase initialization

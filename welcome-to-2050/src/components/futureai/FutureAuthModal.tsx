@@ -8,20 +8,23 @@ import {
   Sparkles,
   AlertCircle,
   GraduationCap,
-  BookOpen,
   Phone,
   Mail,
   User,
   CheckCircle2,
+  KeyRound,
+  RotateCcw,
+  Check,
 } from 'lucide-react';
+import { ConfirmationResult } from 'firebase/auth';
 import { loadGoogleScript, requestGoogleAccountLogin } from '../../services/googleAuthService';
 import {
   recordUserInDatabase,
   loginWithGooglePopup,
   findExistingUser,
   loginWithEmailFirebase,
-  loginWithMobileFirebase,
 } from '../../services/realAuthService';
+import { sendOtpToPhone, verifyOtpAndLogin } from '../../services/firebasePhoneAuth';
 
 interface FutureAuthModalProps {
   isOpen: boolean;
@@ -38,21 +41,41 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  // Form states
+  // Mobile Auth Flow state: 'INPUT_PHONE' | 'INPUT_OTP'
+  const [mobileStep, setMobileStep] = useState<'INPUT_PHONE' | 'INPUT_OTP'>('INPUT_PHONE');
   const [mobileInput, setMobileInput] = useState('');
   const [nameInput, setNameInput] = useState('');
+  const [otpInput, setOtpInput] = useState('');
+  const [resendTimer, setResendTimer] = useState(0);
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+
+  // Email state
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
 
-  // Preload Google Auth SDK on open
+  // Countdown timer for OTP resend
+  useEffect(() => {
+    let interval: any = null;
+    if (resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer((t) => (t > 0 ? t - 1 : 0));
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [resendTimer]);
+
+  // Reset states on modal open
   useEffect(() => {
     if (isOpen) {
       setValidationError(null);
       setIsSubmitting(false);
+      setMobileStep('INPUT_PHONE');
       setMobileInput('');
       setNameInput('');
+      setOtpInput('');
       setEmailInput('');
       setPasswordInput('');
+      setConfirmationResult(null);
       loadGoogleScript().catch(() => {});
     }
   }, [isOpen]);
@@ -73,6 +96,11 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
       localStorage.setItem('futureai_user_role', userRole);
       localStorage.setItem('futureai_logged_in', 'true');
 
+      // Guarantee clean zero balance if new student
+      if (!localStorage.getItem('futureai_user_wallet')) {
+        localStorage.setItem('futureai_user_wallet', '0');
+      }
+
       if (userRole === 'influencer') {
         window.location.hash = '#income';
       } else {
@@ -85,29 +113,68 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
     onClose();
   };
 
-  // 1. Mobile Number Login (Fastest & 100% reliable for Android students)
-  const handleMobileSubmit = async (e: React.FormEvent) => {
+  // 1A. SEND REAL SMS OTP via Firebase
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setValidationError(null);
 
-    const cleanPhone = mobileInput.replace(/\D/g, '');
-    if (cleanPhone.length < 10) {
+    const clean = mobileInput.replace(/\D/g, '');
+    if (clean.length < 10) {
       setValidationError('Please enter a valid 10-digit mobile number.');
       return;
     }
 
     setIsSubmitting(true);
+
     try {
-      const res = await loginWithMobileFirebase(cleanPhone, nameInput.trim() || undefined);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('futureai_user_phone', cleanPhone);
-      }
-      completeLogin(res.name, res.email, res.avatar, 'student');
+      const result = await sendOtpToPhone(clean, 'recaptcha-container');
+      setConfirmationResult(result);
+      setMobileStep('INPUT_OTP');
+      setResendTimer(45);
+      setIsSubmitting(false);
     } catch (err: any) {
-      console.warn('Mobile login fallback:', err);
-      // Fallback direct entry so student is never stuck
-      const fallbackName = (nameInput.trim() || `Student ${cleanPhone.slice(-4)}`);
-      completeLogin(fallbackName, `student_${cleanPhone.slice(-4)}@futureitindustry.com`, '', 'student');
+      console.warn('Firebase SMS OTP notice:', err);
+      setIsSubmitting(false);
+
+      if (err.code === 'auth/operation-not-allowed') {
+        setValidationError('Phone Auth is not enabled in Firebase Console yet. Please turn ON Phone in Authentication -> Sign-in method -> Phone.');
+      } else if (err.code === 'auth/too-many-requests') {
+        setValidationError('Too many SMS requests sent. Please try again after a few minutes.');
+      } else if (err.code === 'auth/app-not-authorized') {
+        setValidationError('Domain not authorized in Firebase Console -> Authentication -> Settings -> Authorized Domains.');
+      } else {
+        setValidationError(err.message || 'Failed to send SMS OTP. Please check your mobile number.');
+      }
+    }
+  };
+
+  // 1B. VERIFY 6-DIGIT REAL SMS OTP
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setValidationError(null);
+
+    const cleanOtp = otpInput.replace(/\D/g, '');
+    if (cleanOtp.length < 6) {
+      setValidationError('Please enter the 6-digit OTP code received on your mobile.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const res = await verifyOtpAndLogin(cleanOtp, nameInput.trim() || undefined, confirmationResult || undefined);
+      const studentEmail = `student_${res.phone.slice(-4)}@futureitindustry.com`;
+      completeLogin(res.name, studentEmail, '', 'student');
+    } catch (err: any) {
+      console.warn('OTP Verification failed:', err);
+      setIsSubmitting(false);
+      if (err.code === 'auth/invalid-verification-code') {
+        setValidationError('Invalid OTP code. Please enter the correct 6-digit code received on SMS.');
+      } else if (err.code === 'auth/code-expired') {
+        setValidationError('OTP code has expired. Please click "Resend OTP" to get a new code.');
+      } else {
+        setValidationError(err.message || 'Failed to verify OTP. Please try again.');
+      }
     }
   };
 
@@ -179,28 +246,17 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
       } catch (fbErr: any) {
         console.warn('Google popup blocked on Android:', fbErr);
         setIsSubmitting(false);
-        setValidationError('Google popup was closed by your browser. Please enter your Mobile or Email below to sign in:');
+        setValidationError('Google popup was closed by your browser. Please enter your Mobile number above to get an instant SMS OTP:');
         setActiveTab('mobile');
       }
     }
   };
 
-  // Instant fallback for mobile webview
-  const handleInstantBypass = async () => {
-    setIsSubmitting(true);
-    const guestEmail = `learner_${Math.floor(1000 + Math.random() * 9000)}@futureitindustry.com`;
-    await recordUserInDatabase({
-      uid: `usr_${Date.now()}`,
-      name: 'Future Learner',
-      email: guestEmail,
-      role: 'student',
-      source: 'Direct',
-    });
-    completeLogin('Future Learner', guestEmail, '', 'student');
-  };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-md animate-fadeIn overflow-y-auto">
+      {/* Invisible reCAPTCHA container required for Firebase Phone Auth */}
+      <div id="recaptcha-container" />
+
       {/* Main Authentication Card */}
       <div className="relative max-w-[440px] w-full bg-white rounded-[28px] sm:rounded-[32px] p-5 sm:p-7 shadow-[0_25px_60px_rgba(0,0,0,0.25)] border border-slate-100 text-left transition-all duration-300 my-auto">
 
@@ -216,19 +272,19 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
 
         {/* ── Header: Title & Subtitle ── */}
         <div className="mb-4 pr-6">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-[10px] font-black text-blue-700 uppercase tracking-wide mb-1.5">
-            <GraduationCap className="w-3.5 h-3.5 text-blue-600" />
-            <span>Student Portal • Firebase Login</span>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-black text-emerald-700 uppercase tracking-wide mb-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Real Student Login • Live Verified</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-snug">
             Welcome to FUTURE IT
           </h2>
           <p className="text-slate-500 font-medium text-xs mt-0.5">
-            Sign in with Mobile number or Email to access all courses.
+            Enter mobile number for real SMS OTP or login with Email.
           </p>
         </div>
 
-        {/* ── Segmented Tabs: Mobile Number vs Email ID ── */}
+        {/* ── Segmented Tabs: Mobile OTP vs Email ID ── */}
         <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-100/90 rounded-2xl mb-4 border border-slate-200/80">
           <button
             type="button"
@@ -238,12 +294,12 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
             }}
             className={`py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               activeTab === 'mobile'
-                ? 'bg-white text-blue-700 shadow-sm border border-slate-200/80'
+                ? 'bg-white text-emerald-700 shadow-sm border border-slate-200/80'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             <Phone className="w-3.5 h-3.5" />
-            <span>Mobile Login</span>
+            <span>Mobile OTP Login</span>
           </button>
 
           <button
@@ -254,7 +310,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
             }}
             className={`py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               activeTab === 'email'
-                ? 'bg-white text-blue-700 shadow-sm border border-slate-200/80'
+                ? 'bg-white text-emerald-700 shadow-sm border border-slate-200/80'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -273,66 +329,140 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
           </div>
         )}
 
-        {/* ── TAB 1: MOBILE NUMBER LOGIN (Android Friendly, Zero Popups) ── */}
+        {/* ── TAB 1: MOBILE NUMBER OTP FLOW ── */}
         {activeTab === 'mobile' && (
-          <form onSubmit={handleMobileSubmit} className="space-y-3">
-            <div>
-              <label className="text-xs font-bold text-slate-800 block mb-1">
-                Mobile Number
-              </label>
-              <div className="flex items-center border border-slate-200 rounded-xl bg-white px-3 py-2.5 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100 transition-all shadow-2xs">
-                <span className="text-xs font-bold text-slate-600 mr-2 flex items-center gap-1">
-                  <span>🇮🇳</span>
-                  <span>+91</span>
-                </span>
-                <input
-                  type="tel"
-                  maxLength={10}
-                  placeholder="Enter 10-digit mobile number"
-                  value={mobileInput}
-                  onChange={(e) => setMobileInput(e.target.value.replace(/\D/g, ''))}
-                  className="w-full text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent"
-                  required
-                  autoFocus
-                />
-              </div>
-            </div>
+          <>
+            {mobileStep === 'INPUT_PHONE' ? (
+              /* Step 1A: Enter Phone & Name */
+              <form onSubmit={handleSendOtp} className="space-y-3">
+                <div>
+                  <label className="text-xs font-bold text-slate-800 block mb-1">
+                    Mobile Number <span className="text-emerald-600 font-semibold">(Real SMS OTP)</span>
+                  </label>
+                  <div className="flex items-center border border-slate-200 rounded-xl bg-white px-3 py-2.5 focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-100 transition-all shadow-2xs">
+                    <span className="text-xs font-bold text-slate-600 mr-2 flex items-center gap-1">
+                      <span>🇮🇳</span>
+                      <span>+91</span>
+                    </span>
+                    <input
+                      type="tel"
+                      maxLength={10}
+                      placeholder="Enter 10-digit mobile number"
+                      value={mobileInput}
+                      onChange={(e) => setMobileInput(e.target.value.replace(/\D/g, ''))}
+                      className="w-full text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent"
+                      required
+                      autoFocus
+                    />
+                  </div>
+                </div>
 
-            <div>
-              <label className="text-xs font-bold text-slate-800 block mb-1">
-                Your Name <span className="text-slate-400 font-normal">(Optional)</span>
-              </label>
-              <div className="flex items-center border border-slate-200 rounded-xl bg-white px-3 py-2.5 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100 transition-all shadow-2xs">
-                <User className="w-4 h-4 text-slate-400 mr-2" />
-                <input
-                  type="text"
-                  placeholder="Enter your full name"
-                  value={nameInput}
-                  onChange={(e) => setNameInput(e.target.value)}
-                  className="w-full text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent"
-                />
-              </div>
-            </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-800 block mb-1">
+                    Student Full Name <span className="text-slate-400 font-normal">(for certificate &amp; portal)</span>
+                  </label>
+                  <div className="flex items-center border border-slate-200 rounded-xl bg-white px-3 py-2.5 focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-100 transition-all shadow-2xs">
+                    <User className="w-4 h-4 text-slate-400 mr-2" />
+                    <input
+                      type="text"
+                      placeholder="e.g. Subodh Kumar"
+                      value={nameInput}
+                      onChange={(e) => setNameInput(e.target.value)}
+                      className="w-full text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent"
+                      required
+                    />
+                  </div>
+                </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-blue-500/25 active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60"
-            >
-              <span>{isSubmitting ? 'Signing In...' : 'Continue with Mobile Number'}</span>
-              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-            </button>
-          </form>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-3 px-4 rounded-xl bg-[#00a86b] hover:bg-[#00925d] text-white font-bold text-xs sm:text-sm shadow-md shadow-emerald-500/25 active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60"
+                >
+                  <span>{isSubmitting ? 'Sending SMS OTP...' : 'Send 6-Digit SMS OTP'}</span>
+                  <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                </button>
+              </form>
+            ) : (
+              /* Step 1B: Enter 6-Digit OTP */
+              <form onSubmit={handleVerifyOtp} className="space-y-3">
+                <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between text-xs">
+                  <div>
+                    <span className="text-slate-500 block">OTP sent to:</span>
+                    <strong className="text-slate-900 font-mono text-sm">+91 {mobileInput}</strong>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileStep('INPUT_PHONE');
+                      setOtpInput('');
+                      setValidationError(null);
+                    }}
+                    className="text-xs font-bold text-emerald-700 hover:underline cursor-pointer"
+                  >
+                    Edit Number
+                  </button>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-800 block mb-1">
+                    Enter 6-Digit SMS OTP Code
+                  </label>
+                  <div className="flex items-center border-2 border-emerald-500 rounded-xl bg-white px-3 py-2.5 shadow-2xs">
+                    <KeyRound className="w-4 h-4 text-emerald-600 mr-2" />
+                    <input
+                      type="text"
+                      maxLength={6}
+                      placeholder="Enter 6-digit OTP (e.g. 123456)"
+                      value={otpInput}
+                      onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, ''))}
+                      className="w-full text-base font-black tracking-widest text-slate-900 placeholder:text-slate-400 placeholder:font-normal placeholder:tracking-normal outline-none bg-transparent"
+                      required
+                      autoFocus
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting || otpInput.length < 6}
+                  className="w-full py-3 px-4 rounded-xl bg-[#00a86b] hover:bg-[#00925d] text-white font-bold text-xs sm:text-sm shadow-md shadow-emerald-500/25 active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  <Check className="w-4 h-4 stroke-[3]" />
+                  <span>{isSubmitting ? 'Verifying OTP...' : 'Verify OTP & Enter Dashboard'}</span>
+                </button>
+
+                {/* Resend OTP button with timer */}
+                <div className="text-center pt-1">
+                  {resendTimer > 0 ? (
+                    <span className="text-[11px] text-slate-400 font-medium">
+                      Resend OTP in <strong>{resendTimer}s</strong>
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleSendOtp}
+                      disabled={isSubmitting}
+                      className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:text-emerald-800 cursor-pointer"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>Resend SMS OTP</span>
+                    </button>
+                  )}
+                </div>
+              </form>
+            )}
+          </>
         )}
 
-        {/* ── TAB 2: EMAIL LOGIN (Firebase Auth) ── */}
+        {/* ── TAB 2: EMAIL LOGIN ── */}
         {activeTab === 'email' && (
           <form onSubmit={handleEmailSubmit} className="space-y-3">
             <div>
               <label className="text-xs font-bold text-slate-800 block mb-1">
                 Email Address
               </label>
-              <div className="flex items-center border border-slate-200 rounded-xl bg-white px-3 py-2.5 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100 transition-all shadow-2xs">
+              <div className="flex items-center border border-slate-200 rounded-xl bg-white px-3 py-2.5 focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-100 transition-all shadow-2xs">
                 <Mail className="w-4 h-4 text-slate-400 mr-2" />
                 <input
                   type="email"
@@ -350,7 +480,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
               <label className="text-xs font-bold text-slate-800 block mb-1">
                 Password <span className="text-slate-400 font-normal">(or 4-digit PIN)</span>
               </label>
-              <div className="flex items-center border border-slate-200 rounded-xl bg-white px-3 py-2.5 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100 transition-all shadow-2xs">
+              <div className="flex items-center border border-slate-200 rounded-xl bg-white px-3 py-2.5 focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-100 transition-all shadow-2xs">
                 <Lock className="w-4 h-4 text-slate-400 mr-2" />
                 <input
                   type="password"
@@ -367,7 +497,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
               <label className="text-xs font-bold text-slate-800 block mb-1">
                 Your Name <span className="text-slate-400 font-normal">(Optional)</span>
               </label>
-              <div className="flex items-center border border-slate-200 rounded-xl bg-white px-3 py-2.5 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100 transition-all shadow-2xs">
+              <div className="flex items-center border border-slate-200 rounded-xl bg-white px-3 py-2.5 focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-100 transition-all shadow-2xs">
                 <User className="w-4 h-4 text-slate-400 mr-2" />
                 <input
                   type="text"
@@ -382,7 +512,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-blue-500/25 active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60"
+              className="w-full py-3 px-4 rounded-xl bg-[#00a86b] hover:bg-[#00925d] text-white font-bold text-xs sm:text-sm shadow-md shadow-emerald-500/25 active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60"
             >
               <span>{isSubmitting ? 'Signing In...' : 'Continue with Email'}</span>
               <ArrowRight className="w-4 h-4 stroke-[2.5]" />
@@ -435,30 +565,19 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
           </span>
         </button>
 
-        {/* ── Instant Fallback for 1-Click Guest Access ── */}
-        <button
-          type="button"
-          onClick={handleInstantBypass}
-          disabled={isSubmitting}
-          className="w-full mt-2 py-2 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-700 font-semibold text-[11px] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-        >
-          <Sparkles className="w-3 h-3 text-amber-500" />
-          <span>Instant 1-Click Guest Access</span>
-        </button>
-
         {/* ── 3 Security Badges ── */}
         <div className="grid grid-cols-3 gap-2 mt-4 pt-3.5 border-t border-slate-100 text-center">
           <div className="flex flex-col items-center">
-            <ShieldCheck className="w-4 h-4 text-blue-600 mb-0.5" />
-            <span className="text-[10px] font-bold text-slate-700">Firebase Safe</span>
+            <ShieldCheck className="w-4 h-4 text-emerald-600 mb-0.5" />
+            <span className="text-[10px] font-bold text-slate-700">Firebase Auth</span>
           </div>
           <div className="flex flex-col items-center">
-            <Users className="w-4 h-4 text-purple-600 mb-0.5" />
-            <span className="text-[10px] font-bold text-slate-700">Instant Access</span>
+            <Users className="w-4 h-4 text-blue-600 mb-0.5" />
+            <span className="text-[10px] font-bold text-slate-700">Separate Dashboard</span>
           </div>
           <div className="flex flex-col items-center">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 mb-0.5" />
-            <span className="text-[10px] font-bold text-slate-700">Data Protected</span>
+            <CheckCircle2 className="w-4 h-4 text-purple-600 mb-0.5" />
+            <span className="text-[10px] font-bold text-slate-700">Live &amp; Secure</span>
           </div>
         </div>
 
