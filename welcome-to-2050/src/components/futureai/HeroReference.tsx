@@ -286,7 +286,30 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
             </div>
 
             {/* ── 2. ANIMATED ATTENTION-GRABBING FREE ATS RESUME CHECKER CTA BUTTON ── */}
-            <div className="hero-3d-btn-wrap">
+            <div className="hero-ats-cta-column flex flex-col items-start gap-2">
+              {/* Placement & Guarantee Hero Banner directly above Free ATS Checker Button */}
+              <div
+                onClick={() => {
+                  playClick();
+                  if (onOpenAtsChecker) {
+                    onOpenAtsChecker();
+                  } else if (typeof window !== 'undefined') {
+                    window.location.hash = '#courses';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
+                className="w-full max-w-[340px] sm:max-w-[380px] cursor-pointer active:scale-[0.98] transition-transform select-none rounded-2xl overflow-hidden shadow-xs hover:shadow-md border border-amber-200/60"
+                title="Learn. Practice. Build. Get Placed."
+              >
+                <img
+                  src="/images/banner_learn_practice_get_placed.png"
+                  alt="Learn. Practice. Build. Get Placed. No Need to Spend ₹2 Lakh"
+                  className="w-full h-auto block rounded-2xl"
+                  loading="lazy"
+                />
+              </div>
+
+              <div className="hero-3d-btn-wrap">
               {/* Outer pulsing neon aura */}
               <span className="btn3d-ats-aura" aria-hidden="true" />
 
@@ -324,6 +347,7 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
                 </span>
                 <span className="btn3d-bottom btn3d-bottom-purple" />
               </button>
+            </div>
             </div>
           </div>
 
