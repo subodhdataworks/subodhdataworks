@@ -275,29 +275,25 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse ml-0.5" />
               </div>
 
-              <div className="hero-3d-btn-wrap hero-get-started-wrap w-full sm:w-auto">
-              <button
-                onClick={() => {
-                  playClick();
-                  _onStartJourney();
-                }}
-                onMouseEnter={playHover}
-                className="hero-3d-game-btn hero-get-started-3d-btn"
-                aria-label="Start Your Journey Today"
-              >
-                <span className="btn3d-shine" />
-                <span className="btn3d-content btn3d-content-premium-yellow">
+                            <div className="w-full sm:w-auto">
+                <button
+                  onClick={() => {
+                    playClick();
+                    _onStartJourney();
+                  }}
+                  onMouseEnter={playHover}
+                  className="hero-clean-3d-yellow-btn w-full sm:w-auto cursor-pointer"
+                  aria-label="Start Your Journey Today"
+                >
                   <span className="btn3d-icon-sparkle-box-yellow" aria-hidden="true">
                     <Sparkles className="w-4 h-4 text-amber-950" />
                   </span>
-                  <span className="btn3d-label btn3d-label-premium-yellow">Start Your Journey Today</span>
-                  <span className="btn3d-arrow-pill btn3d-arrow-pill-yellow" aria-hidden="true">
+                  <span className="btn3d-label-premium-yellow">Start Your Journey Today</span>
+                  <span className="btn3d-arrow-pill-yellow" aria-hidden="true">
                     <ArrowRight className="btn3d-arrow w-4 h-4 text-amber-300" />
                   </span>
-                </span>
-                <span className="btn3d-bottom btn3d-bottom-premium-yellow" />
-              </button>
-            </div>
+                </button>
+              </div>
             </div>
 
             {/* ── 2. ANIMATED ATTENTION-GRABBING FREE ATS RESUME CHECKER CTA BUTTON ── */}
