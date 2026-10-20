@@ -216,114 +216,56 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-md animate-fadeIn overflow-y-auto">
       {/* Invisible reCAPTCHA */}
       <div id="recaptcha-container" />
 
       {/* Modal Card */}
-      <div className="relative w-full sm:max-w-[420px] bg-white sm:rounded-[28px] rounded-t-[28px] shadow-2xl overflow-hidden max-h-[95vh] overflow-y-auto">
+      <div className="relative w-full max-w-[440px] bg-white rounded-[28px] sm:rounded-[32px] shadow-[0_25px_60px_rgba(0,0,0,0.35)] overflow-hidden my-auto border border-slate-100">
 
-        {/* ── HEADER: Gradient Banner ── */}
-        <div
-          className="relative overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, #1a237e 0%, #1565c0 40%, #7b1fa2 100%)' }}
-        >
-          {/* Close Button */}
+        {/* ── HEADER: Visual 1:1 Matching User Reference ── */}
+        <div className="relative w-full aspect-[602/305] overflow-hidden bg-slate-900 select-none">
+          <img
+            src="/images/auth_modal_header.jpg"
+            alt="Welcome Back to FUTURE IT INDUSTRY"
+            className="w-full h-full object-cover object-top"
+          />
+
+          {/* Close Button positioned over top-right X */}
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all cursor-pointer"
+            aria-label="Close"
+            className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 w-8 h-8 rounded-full bg-white/20 hover:bg-white/40 active:scale-95 text-white flex items-center justify-center transition-all cursor-pointer z-20 backdrop-blur-xs"
           >
             <X className="w-4 h-4 stroke-[2.5]" />
           </button>
-
-          {/* Decorative circles */}
-          <div className="absolute -top-8 -left-8 w-32 h-32 rounded-full bg-white/5" />
-          <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full bg-white/5" />
-
-          <div className="flex items-stretch px-5 pt-5 pb-0 relative z-10">
-            {/* Left: Logo + text + icons */}
-            <div className="flex-1 pr-2">
-              {/* Logo row */}
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-                  <img src="/assets/reference/future_ai_logo.png" alt="F" className="w-6 h-6 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                </div>
-                <div>
-                  <div className="text-white font-black text-sm leading-none">FUTURE IT</div>
-                  <div className="text-blue-200 text-[9px] font-semibold tracking-wider">INDUSTRY — Learn Today. Earn Tomorrow.</div>
-                </div>
-              </div>
-
-              {/* Welcome text */}
-              <h2 className="text-white font-black text-xl sm:text-2xl leading-tight mb-1">
-                Welcome Back! 👋
-              </h2>
-              <p className="text-blue-100 text-[11px] font-medium leading-snug mb-3">
-                Login to continue your learning journey and get closer to your dream career.
-              </p>
-
-              {/* Feature pills */}
-              <div className="grid grid-cols-4 gap-1 mb-4">
-                {[
-                  { icon: '📚', label: 'Learn', sub: 'All Courses' },
-                  { icon: '🎮', label: 'Practice', sub: 'with Fun' },
-                  { icon: '🛠️', label: 'Build', sub: 'Real Projects' },
-                  { icon: '💼', label: 'Get', sub: 'Job-Ready' },
-                ].map((item) => (
-                  <div key={item.label} className="flex flex-col items-center text-center">
-                    <div className="w-8 h-8 rounded-xl bg-white/15 flex items-center justify-center text-base mb-0.5">
-                      {item.icon}
-                    </div>
-                    <span className="text-white font-bold text-[9px] leading-none">{item.label}</span>
-                    <span className="text-blue-200 text-[8px] leading-none mt-0.5">{item.sub}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right: Robot mascot */}
-            <div className="w-[110px] shrink-0 flex items-end justify-center">
-              <div className="relative">
-                <div className="absolute -top-1 right-0 bg-yellow-400 text-[8px] font-black text-yellow-900 px-1.5 py-0.5 rounded-full whitespace-nowrap shadow-sm">
-                  Your Future<br />Starts Here! ⭐
-                </div>
-                <img
-                  src="/images/dashboard/mascot_right_clean.png"
-                  alt="AI Mascot"
-                  className="w-[100px] object-contain drop-shadow-xl"
-                  onError={(e) => {
-                    const img = e.target as HTMLImageElement;
-                    img.src = '/images/interview_robot_companion.png';
-                  }}
-                />
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* ── FORM SECTION ── */}
-        <div className="px-5 py-4 bg-white">
+        <div className="px-5 sm:px-6 pt-4 pb-5 bg-white">
 
           {/* Error Banner */}
           {validationError && (
-            <div className="mb-3 p-3 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-              <span className="font-medium">{validationError}</span>
+            <div className="mb-3.5 p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2 shadow-2xs">
+              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <span className="font-semibold leading-relaxed">{validationError}</span>
             </div>
           )}
 
-          {/* ── Google Button (TOP, prominent) ── */}
+          {/* ── Google Button (TOP, Prominent Pill with G Logo + Arrow) ── */}
           <button
             type="button"
             onClick={handleGoogleSignInClick}
             disabled={isSubmitting}
-            className="w-full mb-3 py-3 px-4 rounded-2xl flex items-center justify-between gap-3 cursor-pointer active:scale-[0.98] transition-all disabled:opacity-60"
-            style={{ background: 'linear-gradient(135deg, #1565c0, #7b1fa2)' }}
+            className="w-full mb-3.5 p-2 pr-3 rounded-2xl flex items-center justify-between gap-3 cursor-pointer active:scale-[0.98] transition-all disabled:opacity-60 shadow-md shadow-blue-500/20"
+            style={{
+              background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 55%, #7c3aed 100%)',
+            }}
           >
             <div className="flex items-center gap-3">
-              {/* Google G */}
-              <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shrink-0">
+              {/* Google G icon in white rounded box */}
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs">
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                   <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -332,59 +274,79 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                 </svg>
               </div>
               <div className="text-left">
-                <div className="text-white font-black text-sm">Continue with Google</div>
-                <div className="text-blue-200 text-[10px] font-medium">Quick • Secure • One Click Login</div>
+                <div className="text-white font-black text-sm tracking-tight leading-tight">
+                  Continue with Google
+                </div>
+                <div className="text-sky-100 text-[10px] font-medium leading-tight">
+                  Quick • Secure • One Click Login
+                </div>
               </div>
             </div>
-            <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
+
+            {/* Circular Arrow Button */}
+            <div className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center shrink-0">
               <ArrowRight className="w-4 h-4 text-white stroke-[2.5]" />
             </div>
           </button>
 
-          {/* OR Divider */}
-          <div className="relative mb-3">
+          {/* ── OR Divider ── */}
+          <div className="relative my-3">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-200" />
             </div>
             <div className="relative flex justify-center">
-              <span className="bg-white px-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">OR</span>
+              <span className="bg-white px-3 text-[11px] font-bold text-slate-400 tracking-wider">
+                OR
+              </span>
             </div>
           </div>
 
-          {/* ── Tabs: Mobile OTP / Email Login ── */}
-          <div className="grid grid-cols-2 gap-2 mb-4">
+          {/* ── Segmented Tabs: Mobile OTP vs Email Login ── */}
+          <div className="grid grid-cols-2 gap-2 mb-3.5">
             <button
               type="button"
               onClick={() => { setActiveTab('mobile'); setValidationError(null); }}
-              className={`py-2.5 px-3 rounded-2xl font-bold text-xs flex flex-col items-center gap-0.5 transition-all cursor-pointer border ${
+              className={`py-2 px-3 rounded-2xl font-bold text-xs flex flex-col items-center justify-center gap-0.5 transition-all cursor-pointer border ${
                 activeTab === 'mobile'
-                  ? 'text-white border-transparent shadow-md'
-                  : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+                  ? 'text-white border-transparent shadow-md shadow-blue-500/20'
+                  : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
               }`}
-              style={activeTab === 'mobile' ? { background: 'linear-gradient(135deg, #7b1fa2, #1565c0)' } : {}}
+              style={
+                activeTab === 'mobile'
+                  ? { background: 'linear-gradient(135deg, #1d4ed8 0%, #4338ca 60%, #6d28d9 100%)' }
+                  : {}
+              }
             >
               <div className="flex items-center gap-1.5">
                 <Phone className="w-3.5 h-3.5" />
-                <span>Mobile OTP</span>
+                <span className="font-extrabold text-xs">Mobile OTP</span>
               </div>
-              <span className={`text-[9px] font-medium ${activeTab === 'mobile' ? 'text-purple-200' : 'text-slate-400'}`}>Login with Mobile</span>
+              <span className={`text-[9px] font-medium ${activeTab === 'mobile' ? 'text-indigo-200' : 'text-slate-400'}`}>
+                Login with Mobile
+              </span>
             </button>
 
             <button
               type="button"
               onClick={() => { setActiveTab('email'); setValidationError(null); }}
-              className={`py-2.5 px-3 rounded-2xl font-bold text-xs flex flex-col items-center gap-0.5 transition-all cursor-pointer border ${
+              className={`py-2 px-3 rounded-2xl font-bold text-xs flex flex-col items-center justify-center gap-0.5 transition-all cursor-pointer border ${
                 activeTab === 'email'
-                  ? 'text-white border-transparent shadow-md'
-                  : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+                  ? 'text-white border-transparent shadow-md shadow-blue-500/20'
+                  : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
               }`}
-              style={activeTab === 'email' ? { background: 'linear-gradient(135deg, #1565c0, #7b1fa2)' } : {}}
+              style={
+                activeTab === 'email'
+                  ? { background: 'linear-gradient(135deg, #1d4ed8 0%, #4338ca 60%, #6d28d9 100%)' }
+                  : {}
+              }
             >
               <div className="flex items-center gap-1.5">
                 <Mail className="w-3.5 h-3.5" />
-                <span>Email Login</span>
+                <span className="font-extrabold text-xs">Email Login</span>
               </div>
-              <span className={`text-[9px] font-medium ${activeTab === 'email' ? 'text-blue-200' : 'text-slate-400'}`}>Login with Email</span>
+              <span className={`text-[9px] font-medium ${activeTab === 'email' ? 'text-indigo-200' : 'text-slate-400'}`}>
+                Login with Email
+              </span>
             </button>
           </div>
 
@@ -393,17 +355,19 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
             <>
               {mobileStep === 'INPUT_PHONE' ? (
                 <form onSubmit={handleSendOtp} className="space-y-3">
-                  {/* Mobile Number */}
+                  {/* Mobile Number Input */}
                   <div>
-                    <label className="text-xs font-bold text-slate-800 block mb-1.5 flex items-center gap-1.5">
-                      Mobile Number
-                      <span className="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full">
-                        ✅ Real SMS OTP
+                    <label className="text-xs font-bold text-slate-800 block mb-1 flex items-center gap-1.5">
+                      <span>Mobile Number</span>
+                      <span className="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        <Check className="w-3 h-3 stroke-[3]" />
+                        (Real SMS OTP)
                       </span>
                     </label>
-                    <div className="flex items-center border-2 border-slate-200 focus-within:border-blue-500 rounded-2xl bg-white px-3 py-2.5 transition-all">
-                      <span className="text-xs font-bold text-slate-600 mr-2 flex items-center gap-1 border-r border-slate-200 pr-2">
-                        <span>🇮🇳</span>
+
+                    <div className="flex items-center border-2 border-slate-200 focus-within:border-blue-600 rounded-2xl bg-white px-3.5 py-2.5 transition-all shadow-2xs">
+                      <span className="text-xs font-black text-slate-700 mr-2.5 flex items-center gap-1.5 border-r border-slate-200 pr-2.5">
+                        <span className="text-sm">🇮🇳</span>
                         <span>+91</span>
                       </span>
                       <input
@@ -412,69 +376,75 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                         placeholder="Enter 10-digit mobile number"
                         value={mobileInput}
                         onChange={(e) => setMobileInput(e.target.value.replace(/\D/g, ''))}
-                        className="w-full text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent"
+                        className="w-full text-sm font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent"
                         required
                         autoFocus
                       />
                     </div>
                   </div>
 
-                  {/* Name */}
+                  {/* Student Full Name Input */}
                   <div>
-                    <label className="text-xs font-bold text-slate-800 block mb-1.5 flex items-center gap-1.5">
-                      Student Full Name
-                      <span className="text-slate-400 font-normal text-[10px]">(for certificate &amp; portal)</span>
+                    <label className="text-xs font-bold text-slate-800 block mb-1 flex items-center gap-1">
+                      <span>Student Full Name</span>
+                      <span className="text-slate-400 font-normal text-[10px]">👤 (for certificate &amp; portal)</span>
                     </label>
-                    <div className="flex items-center border-2 border-slate-200 focus-within:border-blue-500 rounded-2xl bg-white px-3 py-2.5 transition-all">
-                      <User className="w-4 h-4 text-slate-400 mr-2" />
+
+                    <div className="flex items-center border-2 border-slate-200 focus-within:border-blue-600 rounded-2xl bg-white px-3.5 py-2.5 transition-all shadow-2xs">
+                      <User className="w-4 h-4 text-slate-400 mr-2.5 shrink-0" />
                       <input
                         type="text"
                         placeholder="e.g. Subodh Kumar"
                         value={nameInput}
                         onChange={(e) => setNameInput(e.target.value)}
-                        className="w-full text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent"
+                        className="w-full text-sm font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent"
                         required
                       />
                     </div>
                   </div>
 
-                  {/* Send OTP Button */}
+                  {/* Send OTP Button (Matching reference gradient + paperplane + arrow) */}
                   <button
                     type="submit"
                     disabled={isSubmitting || mobileInput.length < 10}
-                    className="w-full py-3.5 px-4 rounded-2xl text-white font-black text-sm shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                    style={{ background: 'linear-gradient(135deg, #1565c0, #7b1fa2)' }}
+                    className="w-full py-3 px-4 rounded-2xl text-white font-black text-sm shadow-lg shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    style={{
+                      background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #9333ea 100%)',
+                    }}
                   >
                     <Send className="w-4 h-4" />
-                    <span>{isSubmitting ? 'Sending OTP...' : 'Send 6-Digit SMS OTP'}</span>
+                    <span>{isSubmitting ? 'Sending 6-Digit SMS OTP...' : 'Send 6-Digit SMS OTP'}</span>
                     {!isSubmitting && <ArrowRight className="w-4 h-4 stroke-[2.5]" />}
                   </button>
 
-                  <p className="text-center text-[10px] text-slate-400 flex items-center justify-center gap-1">
-                    🔒 We'll send a 6-digit OTP to your mobile number
-                  </p>
+                  {/* Lock helper text */}
+                  <div className="text-center pt-0.5">
+                    <span className="inline-flex items-center gap-1 text-[11px] text-slate-400 font-medium">
+                      🔒 We'll send a 6-digit OTP to your mobile number
+                    </span>
+                  </div>
                 </form>
               ) : (
-                /* OTP Input Step */
+                /* Step 1B: Verify OTP */
                 <form onSubmit={handleVerifyOtp} className="space-y-3">
                   <div className="p-3 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-between text-xs">
                     <div>
-                      <span className="text-slate-500 block text-[10px]">OTP sent to:</span>
-                      <strong className="text-slate-900 font-mono">+91 {mobileInput}</strong>
+                      <span className="text-slate-500 block text-[10px]">OTP sent via SMS to:</span>
+                      <strong className="text-slate-900 font-mono text-sm">+91 {mobileInput}</strong>
                     </div>
                     <button
                       type="button"
                       onClick={() => { setMobileStep('INPUT_PHONE'); setOtpInput(''); setValidationError(null); }}
                       className="text-xs font-bold text-blue-600 hover:underline cursor-pointer"
                     >
-                      Edit
+                      Edit Number
                     </button>
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-800 block mb-1.5">Enter 6-Digit SMS OTP Code</label>
-                    <div className="flex items-center border-2 border-blue-500 rounded-2xl bg-white px-3 py-3 shadow-sm">
-                      <KeyRound className="w-4 h-4 text-blue-500 mr-2" />
+                    <label className="text-xs font-bold text-slate-800 block mb-1">Enter 6-Digit SMS OTP Code</label>
+                    <div className="flex items-center border-2 border-blue-600 rounded-2xl bg-white px-3.5 py-3 shadow-2xs">
+                      <KeyRound className="w-4 h-4 text-blue-600 mr-2.5 shrink-0" />
                       <input
                         type="text"
                         inputMode="numeric"
@@ -492,16 +462,20 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                   <button
                     type="submit"
                     disabled={isSubmitting || otpInput.length < 6}
-                    className="w-full py-3.5 px-4 rounded-2xl text-white font-black text-sm shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                    style={{ background: 'linear-gradient(135deg, #1565c0, #7b1fa2)' }}
+                    className="w-full py-3 px-4 rounded-2xl text-white font-black text-sm shadow-lg shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    style={{
+                      background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #9333ea 100%)',
+                    }}
                   >
                     <Check className="w-4 h-4 stroke-[3]" />
-                    <span>{isSubmitting ? 'Verifying...' : 'Verify OTP & Enter Dashboard'}</span>
+                    <span>{isSubmitting ? 'Verifying OTP...' : 'Verify OTP & Enter Dashboard'}</span>
                   </button>
 
-                  <div className="text-center">
+                  <div className="text-center pt-0.5">
                     {resendTimer > 0 ? (
-                      <span className="text-[11px] text-slate-400">Resend OTP in <strong>{resendTimer}s</strong></span>
+                      <span className="text-[11px] text-slate-400 font-medium">
+                        Resend OTP in <strong>{resendTimer}s</strong>
+                      </span>
                     ) : (
                       <button
                         type="button"
@@ -509,8 +483,8 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                         disabled={isSubmitting}
                         className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-800 cursor-pointer"
                       >
-                        <RotateCcw className="w-3 h-3" />
-                        Resend SMS OTP
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        <span>Resend SMS OTP</span>
                       </button>
                     )}
                   </div>
@@ -523,15 +497,15 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
           {activeTab === 'email' && (
             <form onSubmit={handleEmailSubmit} className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-slate-800 block mb-1.5">Email Address</label>
-                <div className="flex items-center border-2 border-slate-200 focus-within:border-blue-500 rounded-2xl bg-white px-3 py-2.5 transition-all">
-                  <Mail className="w-4 h-4 text-slate-400 mr-2" />
+                <label className="text-xs font-bold text-slate-800 block mb-1">Email Address</label>
+                <div className="flex items-center border-2 border-slate-200 focus-within:border-blue-600 rounded-2xl bg-white px-3.5 py-2.5 transition-all shadow-2xs">
+                  <Mail className="w-4 h-4 text-slate-400 mr-2.5 shrink-0" />
                   <input
                     type="email"
                     placeholder="name@example.com"
                     value={emailInput}
                     onChange={(e) => setEmailInput(e.target.value)}
-                    className="w-full text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent"
+                    className="w-full text-sm font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent"
                     required
                     autoFocus
                   />
@@ -539,32 +513,33 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-800 block mb-1.5">Password</label>
-                <div className="flex items-center border-2 border-slate-200 focus-within:border-blue-500 rounded-2xl bg-white px-3 py-2.5 transition-all">
-                  <span className="text-slate-400 mr-2 text-base">🔑</span>
+                <label className="text-xs font-bold text-slate-800 block mb-1">Password</label>
+                <div className="flex items-center border-2 border-slate-200 focus-within:border-blue-600 rounded-2xl bg-white px-3.5 py-2.5 transition-all shadow-2xs">
+                  <KeyRound className="w-4 h-4 text-slate-400 mr-2.5 shrink-0" />
                   <input
                     type="password"
                     placeholder="Enter password"
                     value={passwordInput}
                     onChange={(e) => setPasswordInput(e.target.value)}
-                    className="w-full text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent"
+                    className="w-full text-sm font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-800 block mb-1.5">
-                  Your Name <span className="text-slate-400 font-normal">(optional)</span>
+                <label className="text-xs font-bold text-slate-800 block mb-1 flex items-center gap-1">
+                  <span>Student Full Name</span>
+                  <span className="text-slate-400 font-normal text-[10px]">(optional)</span>
                 </label>
-                <div className="flex items-center border-2 border-slate-200 focus-within:border-blue-500 rounded-2xl bg-white px-3 py-2.5 transition-all">
-                  <User className="w-4 h-4 text-slate-400 mr-2" />
+                <div className="flex items-center border-2 border-slate-200 focus-within:border-blue-600 rounded-2xl bg-white px-3.5 py-2.5 transition-all shadow-2xs">
+                  <User className="w-4 h-4 text-slate-400 mr-2.5 shrink-0" />
                   <input
                     type="text"
                     placeholder="Enter your full name"
                     value={nameInput}
                     onChange={(e) => setNameInput(e.target.value)}
-                    className="w-full text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent"
+                    className="w-full text-sm font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent"
                   />
                 </div>
               </div>
@@ -572,8 +547,10 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3.5 px-4 rounded-2xl text-white font-black text-sm shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
-                style={{ background: 'linear-gradient(135deg, #1565c0, #7b1fa2)' }}
+                className="w-full py-3 px-4 rounded-2xl text-white font-black text-sm shadow-lg shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                style={{
+                  background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #9333ea 100%)',
+                }}
               >
                 <span>{isSubmitting ? 'Signing In...' : 'Continue with Email'}</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
@@ -581,30 +558,36 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
             </form>
           )}
 
-          {/* ── Trust Badges ── */}
-          <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-slate-100">
-            <div className="flex flex-col items-center text-center gap-1">
-              <div className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+          {/* ── 3 Trust Badges (Matching User Reference Exactly) ── */}
+          <div className="grid grid-cols-3 gap-2 mt-4 pt-3.5 border-t border-slate-100">
+            {/* 1. Secure & Verified */}
+            <div className="flex flex-col items-center text-center p-2 rounded-2xl bg-emerald-50/60 border border-emerald-100/80">
+              <div className="w-7 h-7 rounded-xl bg-emerald-500 flex items-center justify-center mb-1 shadow-xs">
+                <ShieldCheck className="w-4 h-4 text-white stroke-[2.5]" />
               </div>
-              <span className="text-[10px] font-bold text-slate-700">Secure &amp; Verified</span>
-              <span className="text-[9px] text-slate-400">Your data is safe</span>
+              <span className="text-[10px] font-black text-slate-800 leading-tight">Secure &amp; Verified</span>
+              <span className="text-[8px] font-medium text-slate-500 leading-tight mt-0.5">Your data is safe</span>
             </div>
-            <div className="flex flex-col items-center text-center gap-1">
-              <div className="w-8 h-8 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-center">
-                <Users className="w-4 h-4 text-purple-600" />
+
+            {/* 2. Separate Dashboard */}
+            <div className="flex flex-col items-center text-center p-2 rounded-2xl bg-purple-50/60 border border-purple-100/80">
+              <div className="w-7 h-7 rounded-xl bg-purple-600 flex items-center justify-center mb-1 shadow-xs">
+                <Users className="w-4 h-4 text-white stroke-[2.5]" />
               </div>
-              <span className="text-[10px] font-bold text-slate-700">Separate Dashboard</span>
-              <span className="text-[9px] text-slate-400">Personalized learning</span>
+              <span className="text-[10px] font-black text-slate-800 leading-tight">Separate Dashboard</span>
+              <span className="text-[8px] font-medium text-slate-500 leading-tight mt-0.5">Personalized learning</span>
             </div>
-            <div className="flex flex-col items-center text-center gap-1">
-              <div className="w-8 h-8 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center">
-                <Award className="w-4 h-4 text-amber-600" />
+
+            {/* 3. Certificate Ready */}
+            <div className="flex flex-col items-center text-center p-2 rounded-2xl bg-amber-50/60 border border-amber-100/80">
+              <div className="w-7 h-7 rounded-xl bg-amber-500 flex items-center justify-center mb-1 shadow-xs">
+                <Award className="w-4 h-4 text-white stroke-[2.5]" />
               </div>
-              <span className="text-[10px] font-bold text-slate-700">Certificate Ready</span>
-              <span className="text-[9px] text-slate-400">For real students</span>
+              <span className="text-[10px] font-black text-slate-800 leading-tight">Certificate Ready</span>
+              <span className="text-[8px] font-medium text-slate-500 leading-tight mt-0.5">For real students</span>
             </div>
           </div>
+
         </div>
       </div>
     </div>
