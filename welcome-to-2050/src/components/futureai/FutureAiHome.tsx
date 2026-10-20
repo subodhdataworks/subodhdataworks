@@ -12,6 +12,7 @@ import { FutureFooter } from './FutureFooter';
 import { FutureAuthModal } from './FutureAuthModal';
 import { AdvisorModal } from './AdvisorModal';
 import { CurriculumModal } from './CurriculumModal';
+import { CourseDetailPopupModal } from './CourseDetailPopupModal';
 import { VideoCinemaModal } from './VideoCinemaModal';
 import { MobileHomeCoursesGrid } from './mobile/MobileHomeCoursesGrid';
 import { FutureInteractiveBar } from './FutureInteractiveBar';
@@ -57,6 +58,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [advisorModalOpen, setAdvisorModalOpen] = useState(false);
   const [curriculumModalOpen, setCurriculumModalOpen] = useState(false);
+  const [selectedDetailCourseId, setSelectedDetailCourseId] = useState<string | null>(null);
   const [videoCinemaOpen, setVideoCinemaOpen] = useState(false);
   const [mobileProfileOpen, setMobileProfileOpen] = useState(false);
   const [mobileTab, setMobileTab] = useState<MobileTab>('home');
@@ -91,6 +93,11 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
   };
 
   // Smart CTA routing logic
+  const userIsLoggedIn = Boolean(
+    isLoggedIn ||
+    (typeof window !== 'undefined' && (localStorage.getItem('futureai_user') || localStorage.getItem('futureai_active_user')))
+  );
+
   const handleStartJourney = () => {
     if (!isLoggedIn) {
       // Not logged in → show Login / Sign Up
@@ -154,13 +161,19 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         {/* 2.15 Mobile Courses Grid: 2 Courses at a time, Compact ("Chota Chota") above "You Will Get Job" */}
         <MobileHomeCoursesGrid
           onStartCourse={(courseId) => {
-            if (courseId === 'react-frontend-dev') {
-              setCurriculumModalOpen(true);
+            if (!userIsLoggedIn) {
+              setAuthModalOpen(true);
             } else {
-              handleStartJourney();
+              setSelectedDetailCourseId(courseId);
             }
           }}
-          onOpenCurriculum={() => setCurriculumModalOpen(true)}
+          onOpenCurriculum={() => {
+            if (!userIsLoggedIn) {
+              setAuthModalOpen(true);
+            } else {
+              setSelectedDetailCourseId('react-frontend-dev');
+            }
+          }}
         />
 
         {/* 2.2 Placement Support: You Will Get Job From 700+ Companies Banner */}
