@@ -14,6 +14,7 @@ import {
   AlertCircle,
   ShieldCheck,
   Save,
+  QrCode,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { ReferralEngine } from '../../services/referralEngine';
@@ -27,9 +28,11 @@ interface WalletWithdrawModalProps {
 interface WithdrawalRecord {
   id: string;
   amount: number;
-  bankName: string;
-  accountNumber: string;
-  ifsc: string;
+  method: 'BANK' | 'UPI';
+  bankName?: string;
+  accountNumber?: string;
+  ifsc?: string;
+  upiId?: string;
   accountHolder: string;
   date: string;
   timestamp: number;
@@ -41,22 +44,26 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  // Balance: uses actual wallet or fallback to 3.28 to match user's design reference
+  // Balance: starts from actual wallet or fallback to 3.28 to match user's design
   const [balance, setBalance] = useState<number>(3.28);
   const [amount, setAmount] = useState<string>('');
 
-  // Bank Account details
-  const [accountHolder, setAccountHolder] = useState<string>('SUBODH KUMAR');
-  const [bankName, setBankName] = useState<string>('State Bank of India');
-  const [accountNumber, setAccountNumber] = useState<string>('987654327786');
-  const [ifscCode, setIfscCode] = useState<string>('SBIN0001234');
+  // Payout details - EMPTY BY DEFAULT! Only populated when student adds or if saved in localStorage
+  const [payoutType, setPayoutType] = useState<'BANK' | 'UPI'>('BANK');
+  const [accountHolder, setAccountHolder] = useState<string>('');
+  const [bankName, setBankName] = useState<string>('');
+  const [accountNumber, setAccountNumber] = useState<string>('');
+  const [ifscCode, setIfscCode] = useState<string>('');
+  const [upiId, setUpiId] = useState<string>('');
 
-  // Edit Bank details state
-  const [isEditingBank, setIsEditingBank] = useState<boolean>(false);
+  // Form edit states
+  const [isEditingAccount, setIsEditingAccount] = useState<boolean>(false);
+  const [editPayoutType, setEditPayoutType] = useState<'BANK' | 'UPI'>('BANK');
   const [editHolder, setEditHolder] = useState<string>('');
   const [editBank, setEditBank] = useState<string>('');
   const [editAcc, setEditAcc] = useState<string>('');
   const [editIfsc, setEditIfsc] = useState<string>('');
+  const [editUpi, setEditUpi] = useState<string>('');
 
   // UI state
   const [error, setError] = useState<string | null>(null);
@@ -70,7 +77,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
       setError(null);
       setSubmittedData(null);
       setIsSubmitting(false);
-      setIsEditingBank(false);
+      setIsEditingAccount(false);
       setCopiedTxn(false);
       setAmount('');
 
@@ -84,70 +91,117 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
           setBalance(3.28);
         }
 
-        // Read stored bank and user data
-        const storedName =
-          localStorage.getItem('futureai_user_name') ||
-          localStorage.getItem('future_user_name');
-        if (storedName && storedName.trim()) {
-          setAccountHolder(storedName.trim().toUpperCase());
+        // Read stored payout details - NO HARDCODED DEFAULTS!
+        const savedAcc = localStorage.getItem('futureai_bank_acc');
+        const savedBank = localStorage.getItem('futureai_bank_name');
+        const savedIfsc = localStorage.getItem('futureai_bank_ifsc');
+        const savedHolder = localStorage.getItem('futureai_bank_holder');
+        const savedUpi = localStorage.getItem('futureai_user_upi');
+        const savedType = localStorage.getItem('futureai_payout_type');
+
+        if (savedAcc && savedAcc.trim()) {
+          setAccountNumber(savedAcc.trim());
+          if (savedBank) setBankName(savedBank.trim());
+          if (savedIfsc) setIfscCode(savedIfsc.trim().toUpperCase());
+          if (savedHolder) setAccountHolder(savedHolder.trim().toUpperCase());
+        } else {
+          setAccountNumber('');
+          setBankName('');
+          setIfscCode('');
+          setAccountHolder(savedHolder ? savedHolder.trim().toUpperCase() : '');
         }
 
-        const storedBank = localStorage.getItem('futureai_bank_name');
-        if (storedBank) setBankName(storedBank);
+        if (savedUpi && savedUpi.trim()) {
+          setUpiId(savedUpi.trim());
+        } else {
+          setUpiId('');
+        }
 
-        const storedAcc = localStorage.getItem('futureai_bank_acc');
-        if (storedAcc) setAccountNumber(storedAcc);
-
-        const storedIfsc = localStorage.getItem('futureai_bank_ifsc');
-        if (storedIfsc) setIfscCode(storedIfsc);
+        if (savedType === 'UPI' || savedType === 'BANK') {
+          setPayoutType(savedType);
+        }
       }
     }
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const handleOpenEditBank = () => {
-    setEditHolder(accountHolder);
+  // Open Edit Form
+  const handleOpenEdit = () => {
+    setEditPayoutType(payoutType);
+    setEditHolder(accountHolder || (typeof window !== 'undefined' ? localStorage.getItem('futureai_user_name') || '' : ''));
     setEditBank(bankName);
     setEditAcc(accountNumber);
     setEditIfsc(ifscCode);
-    setIsEditingBank(true);
+    setEditUpi(upiId);
+    setIsEditingAccount(true);
     setError(null);
   };
 
-  const handleSaveBank = (e: React.FormEvent) => {
+  // Save Bank or UPI Details
+  const handleSaveAccount = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editHolder.trim()) {
-      setError('Please enter Account Holder Name.');
-      return;
-    }
-    if (!editAcc.trim() || editAcc.trim().length < 8) {
-      setError('Please enter a valid Account Number (minimum 8 digits).');
-      return;
-    }
-    if (!editIfsc.trim() || editIfsc.trim().length < 5) {
-      setError('Please enter a valid IFSC code.');
+    setError(null);
+
+    const cleanHolder = editHolder.trim().toUpperCase();
+    if (!cleanHolder) {
+      setError('Please enter Account Holder / Recipient Name.');
       return;
     }
 
-    const finalHolder = editHolder.trim().toUpperCase();
-    const finalBank = editBank.trim() || 'State Bank of India';
-    const finalAcc = editAcc.trim();
-    const finalIfsc = editIfsc.trim().toUpperCase();
+    if (editPayoutType === 'BANK') {
+      const cleanAcc = editAcc.trim();
+      const cleanIfsc = editIfsc.trim().toUpperCase();
+      if (!cleanAcc || cleanAcc.length < 8) {
+        setError('Please enter a valid Bank Account Number (minimum 8 digits).');
+        return;
+      }
+      if (!cleanIfsc || cleanIfsc.length < 5) {
+        setError('Please enter a valid Bank IFSC Code (e.g. SBIN0001234).');
+        return;
+      }
 
-    setAccountHolder(finalHolder);
-    setBankName(finalBank);
-    setAccountNumber(finalAcc);
-    setIfscCode(finalIfsc);
+      setAccountHolder(cleanHolder);
+      setBankName(editBank.trim() || 'State Bank of India');
+      setAccountNumber(cleanAcc);
+      setIfscCode(cleanIfsc);
+      setPayoutType('BANK');
 
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('futureai_bank_holder', finalHolder);
-      localStorage.setItem('futureai_bank_name', finalBank);
-      localStorage.setItem('futureai_bank_acc', finalAcc);
-      localStorage.setItem('futureai_bank_ifsc', finalIfsc);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('futureai_payout_type', 'BANK');
+        localStorage.setItem('futureai_bank_holder', cleanHolder);
+        localStorage.setItem('futureai_bank_name', editBank.trim() || 'State Bank of India');
+        localStorage.setItem('futureai_bank_acc', cleanAcc);
+        localStorage.setItem('futureai_bank_ifsc', cleanIfsc);
+      }
+    } else {
+      // UPI validation
+      const cleanUpi = editUpi.trim();
+      if (!cleanUpi || !cleanUpi.includes('@') || cleanUpi.length < 5) {
+        setError('Please enter a valid UPI ID (e.g. 9876543210@paytm, name@okhdfcbank, or name@ybl).');
+        return;
+      }
+
+      setAccountHolder(cleanHolder);
+      setUpiId(cleanUpi);
+      setPayoutType('UPI');
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('futureai_payout_type', 'UPI');
+        localStorage.setItem('futureai_bank_holder', cleanHolder);
+        localStorage.setItem('futureai_user_upi', cleanUpi);
+      }
     }
 
-    setIsEditingBank(false);
+    // Also save UPI if entered optionally in Bank mode
+    if (editUpi.trim()) {
+      setUpiId(editUpi.trim());
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('futureai_user_upi', editUpi.trim());
+      }
+    }
+
+    setIsEditingAccount(false);
     setError(null);
   };
 
@@ -173,6 +227,16 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
     e.preventDefault();
     setError(null);
 
+    // Verify account exists
+    const hasBank = accountNumber && accountNumber.length >= 8;
+    const hasUpi = upiId && upiId.includes('@');
+
+    if (!hasBank && !hasUpi) {
+      setError('Please add your Bank Account or UPI ID first.');
+      handleOpenEdit();
+      return;
+    }
+
     const numAmt = parseFloat(amount);
     if (isNaN(numAmt) || numAmt <= 0) {
       setError('Please enter a valid withdrawal amount.');
@@ -197,13 +261,17 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
         minute: '2-digit',
       });
 
+      const effectiveMethod = payoutType === 'UPI' && hasUpi ? 'UPI' : 'BANK';
+
       const record: WithdrawalRecord = {
         id: txnId,
         amount: numAmt,
-        bankName: bankName,
+        method: effectiveMethod,
+        bankName: bankName || 'Bank Account',
         accountNumber: accountNumber,
         ifsc: ifscCode,
-        accountHolder: accountHolder,
+        upiId: upiId,
+        accountHolder: accountHolder || 'Student',
         date: dateStr,
         timestamp: now.getTime(),
         status: 'Processing',
@@ -229,10 +297,11 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
 
       // ReferralEngine sync
       try {
-        ReferralEngine.requestWithdrawal(numAmt, 'BANK_TRANSFER', {
+        ReferralEngine.requestWithdrawal(numAmt, effectiveMethod === 'UPI' ? 'UPI' : 'BANK_TRANSFER', {
           accountHolder: record.accountHolder,
           accountNumber: record.accountNumber,
           ifsc: record.ifsc,
+          upiId: record.upiId,
         });
       } catch {}
 
@@ -261,9 +330,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
     }
   };
 
-  const maskedAccount = accountNumber && accountNumber.length >= 4
-    ? `**** **** **** ${accountNumber.slice(-4)}`
-    : '**** **** **** 7786';
+  const hasPayoutMethod = Boolean(accountNumber && accountNumber.length >= 8) || Boolean(upiId && upiId.includes('@'));
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-xs animate-fadeIn p-0 sm:p-4">
@@ -284,7 +351,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
               Withdrawal Request Placed!
             </h3>
             <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed max-w-xs mx-auto">
-              Your funds are being transferred directly to your verified bank account.
+              Your funds are being transferred directly to your verified payout account.
             </p>
 
             {/* Receipt Card */}
@@ -296,13 +363,13 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-500 font-medium">Bank Account</span>
-                <span className="font-bold text-slate-800 font-mono">
-                  **** {submittedData.accountNumber.slice(-4)}
+                <span className="text-slate-500 font-medium">Payout Method</span>
+                <span className="font-bold text-slate-800">
+                  {submittedData.method === 'UPI' ? `UPI (${submittedData.upiId})` : `${submittedData.bankName} (**** ${submittedData.accountNumber?.slice(-4)})`}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-500 font-medium">Account Holder</span>
+                <span className="text-slate-500 font-medium">Recipient</span>
                 <span className="font-bold text-slate-800">{submittedData.accountHolder}</span>
               </div>
               <div className="flex items-center justify-between">
@@ -336,7 +403,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
           </div>
         ) : (
           /* ══════════════════════════════════════════════════
-              SCREEN 1: WITHDRAW FUNDS (EXACT MATCH TO REFERENCE)
+              SCREEN 1: WITHDRAW FUNDS
              ══════════════════════════════════════════════════ */
           <div>
             {/* ── 1. TOP HEADER: Back Arrow + Title + Secure & Safe ── */}
@@ -356,7 +423,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                     Withdraw Funds
                   </h2>
                   <p className="text-xs text-slate-500 font-medium mt-0.5">
-                    Transfer your earnings to your bank account
+                    Transfer your earnings to your bank account or UPI
                   </p>
                 </div>
               </div>
@@ -455,16 +522,16 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
               </div>
             </div>
 
-            {/* ── 4. SELECT BANK ACCOUNT SECTION ── */}
+            {/* ── 4. SELECT BANK / UPI ACCOUNT SECTION ── */}
             <div className="mb-6">
               <div className="flex items-center justify-between mb-2.5">
                 <h3 className="text-sm font-bold text-slate-800">
-                  Select Bank Account
+                  Select Payout Account
                 </h3>
 
                 <button
                   type="button"
-                  onClick={handleOpenEditBank}
+                  onClick={handleOpenEdit}
                   className="text-xs font-bold text-[#00a86b] hover:text-[#00925d] flex items-center gap-1 cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -472,8 +539,8 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                 </button>
               </div>
 
-              {/* Bank Account Selection Card (Exact match to screenshot) */}
-              {!isEditingBank ? (
+              {/* Mode A: Saved Payout Card (Shown ONLY when student has added bank or UPI) */}
+              {!isEditingAccount && hasPayoutMethod ? (
                 <div className="rounded-2xl border-2 border-[#10b981] bg-[#f0fdf6] p-3.5 flex items-center justify-between shadow-2xs">
                   <div className="flex items-center gap-3">
                     {/* Selected Radio Button */}
@@ -481,101 +548,205 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                       <div className="w-2.5 h-2.5 rounded-full bg-[#10b981]" />
                     </div>
 
-                    {/* Blue Pillar Bank Icon */}
-                    <div className="w-10 h-10 rounded-xl bg-[#e0f2fe] flex items-center justify-center text-[#0284c7] shrink-0">
-                      <Building2 className="w-5 h-5 stroke-[2.2]" />
-                    </div>
+                    {/* Icon: Bank or UPI */}
+                    {payoutType === 'UPI' && upiId ? (
+                      <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600 shrink-0">
+                        <QrCode className="w-5 h-5 stroke-[2.2]" />
+                      </div>
+                    ) : (
+                      <div className="w-10 h-10 rounded-xl bg-[#e0f2fe] flex items-center justify-center text-[#0284c7] shrink-0">
+                        <Building2 className="w-5 h-5 stroke-[2.2]" />
+                      </div>
+                    )}
 
                     {/* Account Details */}
                     <div>
                       <h4 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-tight leading-tight">
-                        {accountHolder}
+                        {accountHolder || 'STUDENT ACCOUNT'}
                       </h4>
-                      <p className="text-[11px] text-slate-400 font-medium">
-                        Bank Account
+                      <p className="text-[11px] text-slate-500 font-medium">
+                        {payoutType === 'UPI' && upiId ? (
+                          <span className="text-purple-700 font-bold font-mono">{upiId}</span>
+                        ) : (
+                          <span>{bankName || 'Bank Account'}</span>
+                        )}
                       </p>
-                      <p className="text-xs font-mono font-semibold text-slate-600">
-                        {maskedAccount}
-                      </p>
+                      {accountNumber && (
+                        <p className="text-xs font-mono font-semibold text-slate-600">
+                          **** **** **** {accountNumber.slice(-4)}
+                        </p>
+                      )}
                     </div>
                   </div>
 
                   {/* Edit Button */}
                   <button
                     type="button"
-                    onClick={handleOpenEditBank}
+                    onClick={handleOpenEdit}
                     className="bg-white border border-slate-200 hover:border-emerald-300 rounded-lg px-2.5 py-1 text-xs font-bold text-[#00a86b] flex items-center gap-1 shadow-2xs hover:bg-slate-50 cursor-pointer"
                   >
                     <Pencil className="w-3 h-3" />
                     <span>Edit</span>
                   </button>
                 </div>
+              ) : !isEditingAccount ? (
+                /* Mode B: Empty State (By default - No account preset!) */
+                <div
+                  onClick={handleOpenEdit}
+                  className="rounded-2xl border-2 border-dashed border-emerald-300 bg-emerald-50/30 p-4 text-center cursor-pointer hover:bg-emerald-50/60 transition-all group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-emerald-100 text-[#00a86b] flex items-center justify-center mx-auto mb-2 group-hover:scale-105 transition-transform">
+                    <Plus className="w-5 h-5 stroke-[2.5]" />
+                  </div>
+                  <h4 className="text-xs sm:text-sm font-bold text-slate-800">
+                    No Payout Method Added Yet
+                  </h4>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    Tap here to add Bank Account or UPI ID to withdraw
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleOpenEdit}
+                    className="mt-2.5 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#00a86b] text-white font-bold text-xs shadow-xs"
+                  >
+                    <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>Add Bank Account / UPI</span>
+                  </button>
+                </div>
               ) : (
-                /* Inline Edit / Add Bank Form */
-                <form onSubmit={handleSaveBank} className="p-3.5 rounded-2xl border border-emerald-300 bg-emerald-50/40 space-y-2.5 text-xs">
+                /* Mode C: Inline Add / Edit Form (Bank + UPI Support) */
+                <form onSubmit={handleSaveAccount} className="p-3.5 rounded-2xl border border-emerald-300 bg-emerald-50/40 space-y-3 text-xs">
+                  {/* Payout Method Toggle: Bank Account vs UPI ID */}
+                  <div className="grid grid-cols-2 gap-1.5 p-1 bg-white rounded-xl border border-slate-200">
+                    <button
+                      type="button"
+                      onClick={() => setEditPayoutType('BANK')}
+                      className={`py-1.5 px-2 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        editPayoutType === 'BANK'
+                          ? 'bg-emerald-500 text-white shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      <Building2 className="w-3.5 h-3.5" />
+                      <span>Bank Account</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditPayoutType('UPI')}
+                      className={`py-1.5 px-2 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        editPayoutType === 'UPI'
+                          ? 'bg-purple-600 text-white shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      <QrCode className="w-3.5 h-3.5" />
+                      <span>UPI ID</span>
+                    </button>
+                  </div>
+
+                  {/* Account Holder Name */}
                   <div>
-                    <label className="font-bold text-slate-700 block mb-1">Account Holder Name</label>
+                    <label className="font-bold text-slate-700 block mb-1">
+                      Account Holder / Recipient Name
+                    </label>
                     <input
                       type="text"
                       value={editHolder}
                       onChange={(e) => setEditHolder(e.target.value)}
-                      placeholder="SUBODH KUMAR"
-                      className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-bold uppercase outline-none focus:border-emerald-500"
+                      placeholder="e.g. SUBODH KUMAR"
+                      className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white font-bold uppercase outline-none focus:border-emerald-500"
                       required
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="font-bold text-slate-700 block mb-1">Bank Name</label>
-                      <input
-                        type="text"
-                        value={editBank}
-                        onChange={(e) => setEditBank(e.target.value)}
-                        placeholder="State Bank of India"
-                        className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white outline-none focus:border-emerald-500"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="font-bold text-slate-700 block mb-1">IFSC Code</label>
-                      <input
-                        type="text"
-                        value={editIfsc}
-                        onChange={(e) => setEditIfsc(e.target.value)}
-                        placeholder="SBIN0001234"
-                        className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white uppercase font-mono outline-none focus:border-emerald-500"
-                        required
-                      />
-                    </div>
-                  </div>
+                  {/* Bank Account Fields */}
+                  {editPayoutType === 'BANK' ? (
+                    <>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="font-bold text-slate-700 block mb-1">Bank Name</label>
+                          <input
+                            type="text"
+                            value={editBank}
+                            onChange={(e) => setEditBank(e.target.value)}
+                            placeholder="e.g. State Bank of India"
+                            className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white outline-none focus:border-emerald-500"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label className="font-bold text-slate-700 block mb-1">IFSC Code</label>
+                          <input
+                            type="text"
+                            value={editIfsc}
+                            onChange={(e) => setEditIfsc(e.target.value)}
+                            placeholder="e.g. SBIN0001234"
+                            className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white uppercase font-mono outline-none focus:border-emerald-500"
+                            required
+                          />
+                        </div>
+                      </div>
 
-                  <div>
-                    <label className="font-bold text-slate-700 block mb-1">Account Number</label>
-                    <input
-                      type="text"
-                      value={editAcc}
-                      onChange={(e) => setEditAcc(e.target.value)}
-                      placeholder="987654327786"
-                      className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-mono outline-none focus:border-emerald-500"
-                      required
-                    />
-                  </div>
+                      <div>
+                        <label className="font-bold text-slate-700 block mb-1">Account Number</label>
+                        <input
+                          type="text"
+                          value={editAcc}
+                          onChange={(e) => setEditAcc(e.target.value)}
+                          placeholder="Enter 9-18 digit account number"
+                          className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white font-mono outline-none focus:border-emerald-500"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="font-bold text-slate-700 block mb-1">
+                          UPI ID <span className="text-slate-400 font-normal">(Optional for faster transfer)</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={editUpi}
+                          onChange={(e) => setEditUpi(e.target.value)}
+                          placeholder="e.g. 9876543210@paytm or name@okhdfcbank"
+                          className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-mono outline-none focus:border-emerald-500"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    /* UPI Mode Fields */
+                    <div>
+                      <label className="font-bold text-slate-700 block mb-1">
+                        UPI ID (VPA)
+                      </label>
+                      <input
+                        type="text"
+                        value={editUpi}
+                        onChange={(e) => setEditUpi(e.target.value)}
+                        placeholder="e.g. 9876543210@paytm or yourname@okhdfcbank"
+                        className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white font-mono outline-none focus:border-purple-500"
+                        required
+                        autoFocus
+                      />
+                      <p className="text-[10px] text-slate-500 mt-1">
+                        Compatible with PhonePe, Google Pay, Paytm, BHIM and all bank UPI apps.
+                      </p>
+                    </div>
+                  )}
 
                   <div className="flex items-center gap-2 pt-1">
                     <button
                       type="button"
-                      onClick={() => setIsEditingBank(false)}
-                      className="flex-1 py-1.5 rounded-lg border border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50 cursor-pointer"
+                      onClick={() => setIsEditingAccount(false)}
+                      className="flex-1 py-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-600 hover:bg-slate-50 cursor-pointer"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="flex-1 py-1.5 rounded-lg bg-[#00a86b] hover:bg-[#00925d] text-white font-bold flex items-center justify-center gap-1 cursor-pointer"
+                      className="flex-1 py-2 rounded-lg bg-[#00a86b] hover:bg-[#00925d] text-white font-bold flex items-center justify-center gap-1 cursor-pointer shadow-xs"
                     >
                       <Save className="w-3.5 h-3.5" />
-                      <span>Save Bank</span>
+                      <span>Save Details</span>
                     </button>
                   </div>
                 </form>
