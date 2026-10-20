@@ -95,7 +95,11 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
   // Smart CTA routing logic
   const userIsLoggedIn = Boolean(
     isLoggedIn ||
-    (typeof window !== 'undefined' && (localStorage.getItem('futureai_user') || localStorage.getItem('futureai_active_user')))
+    (typeof window !== 'undefined' && (
+      localStorage.getItem('futureai_logged_in') === 'true' ||
+      localStorage.getItem('futureai_user_name') ||
+      localStorage.getItem('futureai_user')
+    ))
   );
 
   const handleStartJourney = () => {

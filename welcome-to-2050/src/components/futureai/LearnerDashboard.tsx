@@ -93,6 +93,7 @@ import { MobileDataAnalystHub } from './mobile/MobileDataAnalystHub';
 import { FutureAuthModal } from './FutureAuthModal';
 import { WalletWithdrawModal } from './WalletWithdrawModal';
 import { CurriculumModal } from './CurriculumModal';
+import { CourseDetailPopupModal } from './CourseDetailPopupModal';
 
 // =========================================================================
 // 10 AUTHENTIC 3D-STYLE VECTOR ICONS MATCHING media_1790589591068.jpg
@@ -357,6 +358,26 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [curriculumModalOpen, setCurriculumModalOpen] = useState(false);
+  const [selectedDetailCourseId, setSelectedDetailCourseId] = useState<string | null>(null);
+
+  const handleOpenCourseDetail = (courseIdOrTitle: string) => {
+    playClick();
+    const t = (courseIdOrTitle || '').toLowerCase();
+    let resolvedId = 'react-frontend-dev';
+    if (t.includes('react') || t.includes('front')) resolvedId = 'react-frontend-dev';
+    else if (t.includes('data analyst') || t.includes('analyst')) resolvedId = 'data-analyst-genai';
+    else if (t.includes('python') || t.includes('dsa')) resolvedId = 'python-dsa';
+    else if (t.includes('sql') || t.includes('database')) resolvedId = 'sql-databases';
+    else if (t.includes('power') || t.includes('bi')) resolvedId = 'powerbi-analytics';
+    else if (t.includes('data science') || t.includes('agent')) resolvedId = 'data-science-agentic-ai';
+    else if (t.includes('ml') || t.includes('machine')) resolvedId = 'ml-engineering';
+    else if (t.includes('full stack') || t.includes('web')) resolvedId = 'full-stack-web-dev';
+    else if (t.includes('ui') || t.includes('ux') || t.includes('figma')) resolvedId = 'ui-ux-design-ai';
+    else if (t.includes('office') || t.includes('copilot') || t.includes('msoffice')) resolvedId = 'msoffice-365-copilot';
+    else if (t.includes('career') || t.includes('accelerator')) resolvedId = 'ai-career-accelerator';
+    else if (t.includes('sprint') || t.includes('30 day') || t.includes('techies')) resolvedId = 'ai-for-techies-30days';
+    setSelectedDetailCourseId(resolvedId);
+  };
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [currentUserName, setCurrentUserName] = useState<string>(() => {
     if (typeof window !== 'undefined') {
@@ -2163,30 +2184,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 }}
                 onOpenAdvisor={onOpenAdvisor}
                                 onOpenLockedModule={(courseTitle) => {
-                  playClick();
-                  playCinema();
-                  const titleLower = (courseTitle || '').toLowerCase();
-                  if (titleLower.includes('react') || titleLower.includes('front')) {
-                    setCurriculumModalOpen(true);
-                  } else if (titleLower.includes('sql')) {
-                    setSelectedModuleView('sql');
-                    if (typeof window !== 'undefined') window.location.hash = '#sql';
-                  } else if (titleLower.includes('excel') || titleLower.includes('copilot') || titleLower.includes('office')) {
-                    setSelectedModuleView('excel');
-                    if (typeof window !== 'undefined') window.location.hash = '#excel';
-                  } else if (titleLower.includes('power') || titleLower.includes('bi')) {
-                    setSelectedModuleView('powerbi');
-                    if (typeof window !== 'undefined') window.location.hash = '#powerbi';
-                  } else if (titleLower.includes('stat')) {
-                    setSelectedModuleView('stats');
-                    if (typeof window !== 'undefined') window.location.hash = '#stats';
-                  } else if (titleLower.includes('genai') || titleLower.includes('agent') || titleLower.includes('prompt')) {
-                    setSelectedModuleView('genai');
-                    if (typeof window !== 'undefined') window.location.hash = '#genai';
-                  } else {
-                    setSelectedModuleView('data_analyst');
-                    if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-                  }
+                  handleOpenCourseDetail(courseTitle);
                 }}
               />
             </div>
@@ -2713,6 +2711,17 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           setCurriculumModalOpen(false);
           setSelectedModuleView('data_analyst');
           if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+        }}
+      />
+
+      {/* Course Detail Popup Modal: Headline, Subject Covered, Course Content, Download Syllabus & Unlock Now Rs 987 */}
+      <CourseDetailPopupModal
+        isOpen={Boolean(selectedDetailCourseId)}
+        courseId={selectedDetailCourseId || 'react-frontend-dev'}
+        onClose={() => setSelectedDetailCourseId(null)}
+        onUnlock={() => {
+          setSelectedDetailCourseId(null);
+          alert('🎉 Congratulations! Course unlocked with your ₹987 Master Pass.');
         }}
       />
 
