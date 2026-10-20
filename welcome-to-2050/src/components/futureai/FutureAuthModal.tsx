@@ -137,13 +137,19 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
       setIsSubmitting(false);
 
       if (err.code === 'auth/operation-not-allowed') {
-        setValidationError('Phone Auth is not enabled in Firebase Console yet. Please turn ON Phone in Authentication -> Sign-in method -> Phone.');
+        setValidationError('SMS OTP is activating on new server (takes 5-10 min). Please use Email Login tab or Sign In with Google for now.');
+        // Auto-switch to email tab as fallback
+        setTimeout(() => setActiveTab('email'), 2500);
       } else if (err.code === 'auth/too-many-requests') {
-        setValidationError('Too many SMS requests sent. Please try again after a few minutes.');
+        setValidationError('Too many OTP requests. Please wait a few minutes and try again.');
       } else if (err.code === 'auth/app-not-authorized') {
-        setValidationError('Domain not authorized in Firebase Console -> Authentication -> Settings -> Authorized Domains.');
+        setValidationError('Domain not authorized. Please contact support.');
+      } else if (err.code === 'auth/captcha-check-failed' || err.code === 'auth/recaptcha-not-enabled') {
+        setValidationError('reCAPTCHA verification failed. Please refresh the page and try again.');
+      } else if (err.code === 'auth/quota-exceeded') {
+        setValidationError('SMS quota exceeded for today. Please try again tomorrow or use Email Login.');
       } else {
-        setValidationError(err.message || 'Failed to send SMS OTP. Please check your mobile number.');
+        setValidationError(err.message || 'Failed to send SMS OTP. Please try Email Login instead.');
       }
     }
   };
