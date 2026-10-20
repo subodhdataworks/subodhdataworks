@@ -79,18 +79,19 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? 'py-3 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-xs'
-            : 'py-4 bg-white/70 backdrop-blur-md border-b border-transparent'
+            ? 'py-2 sm:py-3 bg-white/95 backdrop-blur-xl border-b border-slate-200/80 shadow-xs'
+            : 'py-2.5 sm:py-4 bg-white/90 backdrop-blur-md border-b border-slate-100/60'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-1.5 sm:gap-3">
           
           {/* Exact Brand Logo matching Reference */}
           <div
             onClick={() => onNavigateSection('hero')}
-            className="cursor-pointer hover:opacity-95 transition-opacity"
+            className="cursor-pointer hover:opacity-95 transition-opacity shrink-0"
           >
-            <FutureLogo size="md" />
+            <FutureLogo size="sm" className="sm:hidden" />
+            <FutureLogo size="md" className="hidden sm:inline-flex" />
           </div>
 
           {/* Desktop Navigation Links */}
@@ -146,7 +147,7 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
           </nav>
 
           {/* Right Header Actions: Search, Login Pill, Vibrant Gradient 'Get Started ->' Pill */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 sm:gap-3 shrink-0">
             {/* Search Icon */}
             <button
               onClick={() => {
@@ -154,10 +155,10 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
                 setSearchOpen(true);
               }}
               onMouseEnter={playHover}
-              className="w-9 h-9 rounded-full flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer shrink-0"
               title="Search FUTURE IT INDUSTRY"
             >
-              <Search className="w-4 h-4" />
+              <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
 
             {/* Login or Dashboard Pill Button (Visible on both Mobile & Desktop) */}
@@ -168,16 +169,16 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
                   onOpenDashboard?.();
                 }}
                 onMouseEnter={playHover}
-                className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-semibold text-sky-950 bg-sky-50 hover:bg-sky-100 border border-sky-300 shadow-2xs transition-all cursor-pointer"
+                className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-sm font-semibold text-sky-950 bg-sky-50 hover:bg-sky-100 border border-sky-300 shadow-2xs transition-all cursor-pointer shrink-0"
                 title="Go to Learner Dashboard"
               >
                 <img 
                   src="/images/avatar-subodh-kumar.jpg" 
                   alt={userName} 
-                  className="w-5 h-5 rounded-full object-cover border border-sky-400"
+                  className="w-4 h-4 sm:w-5 sm:h-5 rounded-full object-cover border border-sky-400"
                 />
                 <span className="font-bold hidden sm:inline">{userName}</span>
-                <span className="text-[10px] font-bold text-sky-600 bg-white px-1.5 py-0.5 rounded-full border border-sky-200">App ➔</span>
+                <span className="text-[9px] sm:text-[10px] font-bold text-sky-600 bg-white px-1.5 py-0.5 rounded-full border border-sky-200">App ➔</span>
               </button>
             ) : (
               <button
@@ -186,7 +187,7 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
                   onOpenLogin();
                 }}
                 onMouseEnter={playHover}
-                className="inline-flex items-center px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 shadow-2xs hover:border-slate-400 transition-all cursor-pointer"
+                className="inline-flex items-center px-2.5 sm:px-5 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-bold text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 shadow-2xs hover:border-slate-400 transition-all cursor-pointer shrink-0"
               >
                 Login
               </button>
@@ -199,10 +200,10 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
                 onGetStarted();
               }}
               onMouseEnter={playHover}
-              className={`inline-flex items-center gap-1.5 sm:gap-2 px-3.5 py-1.5 sm:px-6 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold text-white bg-gradient-to-r ${accentConfig.btnGradient} ${accentConfig.btnHoverGradient} shadow-md ${accentConfig.shadowClass} hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer`}
+              className={`inline-flex items-center gap-1 sm:gap-2 px-2.5 py-1 sm:px-6 sm:py-2.5 rounded-full text-[11px] sm:text-sm font-bold text-white bg-gradient-to-r ${accentConfig.btnGradient} ${accentConfig.btnHoverGradient} shadow-md ${accentConfig.shadowClass} hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shrink-0 leading-tight text-center`}
             >
               <span>Get Started Free</span>
-              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 hidden xs:inline shrink-0" />
             </button>
 
             {/* Mobile Menu Toggle */}
@@ -212,10 +213,10 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
                 setMobileMenuOpen(!mobileMenuOpen);
               }}
               onMouseEnter={playHover}
-              className="lg:hidden p-1.5 text-slate-700 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
+              className="lg:hidden p-1 sm:p-1.5 text-slate-700 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors shrink-0"
               aria-label="Toggle navigation menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
             </button>
           </div>
         </div>

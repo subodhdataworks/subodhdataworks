@@ -12,6 +12,7 @@
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
+  padding-top: 68px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -807,6 +808,7 @@
 @media (max-width: 768px) {
   .hero-2050-section {
     min-height: 650px;
+    padding-top: 60px;
   }
 
   .hero-bg-video {
@@ -824,7 +826,14 @@
   }
 
   .hero-2050-container {
-    padding: 36px 16px 24px;
+    padding: 20px 16px 24px;
+  }
+
+  .hero-badge-img {
+    height: auto;
+    max-height: 52px;
+    max-width: 100%;
+    object-fit: contain;
   }
 
   .hero-2050-content {
