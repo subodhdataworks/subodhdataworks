@@ -1111,3 +1111,80 @@
 
 
 
+
+/* ── ULTRA-PREMIUM 3D GOLDEN YELLOW "START YOUR JOURNEY TODAY" BUTTON ── */
+.btn3d-content-premium-yellow {
+  background: linear-gradient(135deg, #FFE873 0%, #FFC800 48%, #FFA000 100%) !important;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+  border-bottom: 1.5px solid rgba(180, 83, 9, 0.35) !important;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.9),
+    0 8px 24px rgba(245, 158, 11, 0.45) !important;
+  padding: 0.78rem 1.45rem 0.78rem 1.15rem !important;
+  border-radius: 9999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.65rem !important;
+  color: #0f172a !important;
+}
+
+.hero-3d-game-btn:hover .btn3d-content-premium-yellow {
+  background: linear-gradient(135deg, #FFF099 0%, #FFD000 48%, #FFAC1C 100%) !important;
+  box-shadow:
+    inset 0 1px 3px rgba(255, 255, 255, 1),
+    0 12px 32px rgba(245, 158, 11, 0.65) !important;
+}
+
+.btn3d-icon-sparkle-box-yellow {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+.btn3d-label-premium-yellow {
+  color: #0f172a !important;
+  font-weight: 950 !important;
+  font-size: 1.02rem !important;
+  letter-spacing: -0.01em !important;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) !important;
+  white-space: nowrap !important;
+}
+
+.btn3d-arrow-pill-yellow {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #0f172a !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.25) !important;
+}
+
+.btn3d-bottom-premium-yellow {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: #B45309;
+  transform: translateY(4px);
+  z-index: 1;
+}
+
+.btn3d-get-started-aura-yellow {
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.55) 0%, rgba(245, 158, 11, 0.3) 50%, rgba(217, 119, 6, 0) 75%);
+  filter: blur(12px);
+  z-index: 0;
+  animation: atsAuraPulse 2.4s ease-in-out infinite;
+  pointer-events: none;
+}

@@ -206,6 +206,14 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
                 </div>
                 <Gamepad2 className="w-4 h-4 text-sky-400 ml-1" />
               </div>
+                        </div>
+
+            {/* India's Most Affordable AI Learning Platform Badge */}
+            <div className="hero-affordable-badge inline-flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 border border-amber-300 shadow-xs">
+              <span className="w-4 h-4 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white flex items-center justify-center text-[10px] font-black shrink-0 shadow-2xs">🇮🇳</span>
+              <span className="text-[10px] sm:text-[11px] font-black text-amber-950 tracking-tight leading-none">
+                India's Most Affordable AI Learning Platform
+              </span>
             </div>
 
             {/* Shifted Watch 1-Min Tour to an attractive header spot */}
@@ -280,7 +288,7 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
           <div className="hero-cta-buttons-row">
             {/* ── 1. PRIMARY HIGH-CONVERTING "GET STARTED FREE →" BUTTON (PREMIUM 3D CYBER BLUE) ── */}
             <div className="hero-3d-btn-wrap hero-get-started-wrap">
-              <span className="btn3d-get-started-aura" aria-hidden="true" />
+              <span className="btn3d-get-started-aura-yellow" aria-hidden="true" />
               <button
                 onClick={() => {
                   playClick();
@@ -288,20 +296,20 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
                 }}
                 onMouseEnter={playHover}
                 className="hero-3d-game-btn hero-get-started-3d-btn"
-                aria-label="Get Started Free"
+                aria-label="Start Your Journey Today"
               >
                 <span className="btn3d-shine" />
-                <span className="btn3d-border-glow glow-blue" aria-hidden="true" />
-                <span className="btn3d-content btn3d-content-premium-blue">
-                  <span className="btn3d-icon-sparkle-box" aria-hidden="true">
-                    <Sparkles className="w-4 h-4 text-white" />
+                <span className="btn3d-border-glow glow-yellow" aria-hidden="true" />
+                <span className="btn3d-content btn3d-content-premium-yellow">
+                  <span className="btn3d-icon-sparkle-box-yellow" aria-hidden="true">
+                    <Sparkles className="w-4 h-4 text-amber-950" />
                   </span>
-                  <span className="btn3d-label btn3d-label-premium">Get Started Free</span>
-                  <span className="btn3d-arrow-pill btn3d-arrow-pill-premium" aria-hidden="true">
-                    <ArrowRight className="btn3d-arrow w-4 h-4 text-white" />
+                  <span className="btn3d-label btn3d-label-premium-yellow">Start Your Journey Today</span>
+                  <span className="btn3d-arrow-pill btn3d-arrow-pill-yellow" aria-hidden="true">
+                    <ArrowRight className="btn3d-arrow w-4 h-4 text-amber-300" />
                   </span>
                 </span>
-                <span className="btn3d-bottom btn3d-bottom-premium-blue" />
+                <span className="btn3d-bottom btn3d-bottom-premium-yellow" />
               </button>
             </div>
 

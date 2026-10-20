@@ -48,8 +48,9 @@ export const WhyFutureAiSection: React.FC<WhyFutureAiSectionProps> = ({
     <section id="why-future-ai" className="why-compare-section scroll-mt-24">
       <div className="why-compare-container">
 
-        {/* ================= MASTER COMPARISON POSTER CARD ================= */}
-        <div className="why-compare-card">
+        {/* ================= MASTER COMPARISON POSTER CARD (DESKTOP) ================= */}
+        <div className="hidden md:block">
+          <div className="why-compare-card">
 
           {/* MAIN COMPARISON STAGE (EXACT 1:1 RECREATION OF media_1790572423666.jpg) */}
           <div className="why-stage-grid">
@@ -410,6 +411,19 @@ export const WhyFutureAiSection: React.FC<WhyFutureAiSectionProps> = ({
 
           </div>
 
+        </div>
+        </div>
+
+        {/* ================= MOBILE / ANDROID APP COMPARISON POSTER (IMAGE) ================= */}
+        <div className="block md:hidden mb-6 px-1">
+          <div className="rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-sky-200/90 bg-white">
+            <img 
+              src="/images/why_future_ai_vs_others_mobile.jpg" 
+              alt="Other Institutes vs FUTURE IT INDUSTRY" 
+              className="w-full h-auto block select-none pointer-events-none"
+              loading="lazy"
+            />
+          </div>
         </div>
 
         {/* ================= 2-TAB / 40PX SEPARATION SPACING ================= */}
