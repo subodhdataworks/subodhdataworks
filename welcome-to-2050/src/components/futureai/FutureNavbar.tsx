@@ -187,24 +187,11 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
                   onOpenLogin();
                 }}
                 onMouseEnter={playHover}
-                className="inline-flex items-center px-2.5 sm:px-5 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-bold text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 shadow-2xs hover:border-slate-400 transition-all cursor-pointer shrink-0"
+                className="inline-flex items-center px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 shadow-2xs hover:border-slate-400 transition-all cursor-pointer shrink-0"
               >
                 Login
               </button>
             )}
-
-            {/* Dynamic Accent Gradient Pill Button: Scaled for mobile */}
-            <button
-              onClick={() => {
-                playClick();
-                onGetStarted();
-              }}
-              onMouseEnter={playHover}
-              className={`inline-flex items-center gap-1 sm:gap-2 px-2.5 py-1 sm:px-6 sm:py-2.5 rounded-full text-[11px] sm:text-sm font-bold text-white bg-gradient-to-r ${accentConfig.btnGradient} ${accentConfig.btnHoverGradient} shadow-md ${accentConfig.shadowClass} hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shrink-0 leading-tight text-center`}
-            >
-              <span>Get Started Free</span>
-              <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 hidden xs:inline shrink-0" />
-            </button>
 
             {/* Mobile Menu Toggle */}
             <button
