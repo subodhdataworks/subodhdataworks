@@ -508,9 +508,9 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       shortDesc: 'Supercharge your tech career: Standout portfolio, GitHub profile, mock interview mastery & 1:1 mentorship.',
       salaryRange: '₹10 LPA - ₹25 LPA',
       courseFee: '₹27,999',
-      image: '/images/cta_accelerate_banner_full.png',
-      holoImage: '/images/cta_accelerate_banner_full.png',
-      video: '/videos/accelerate_journey_video.mp4',
+      image: '/images/ai_career_accelerator_poster.jpg',
+      holoImage: '/images/ai_career_accelerator_poster.jpg',
+      video: '/videos/ai_career_accelerator.mp4',
       potTheme: 'blue' as const,
       skillsList: ['Career Strategy', 'Portfolio SaaS', 'Mock Interviews', '1:1 Mentorship'],
       themeStyles: {
