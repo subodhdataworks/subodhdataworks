@@ -86,6 +86,11 @@
 
 /* ── 3. WORLD'S FIRST GAME LEARNING PLATFORM BADGE ── */
 .hero-badge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  width: 100%;
   animation: heroFadeSlideIn 0.5s ease-out both;
 }
 
@@ -807,50 +812,104 @@
 
 @media (max-width: 768px) {
   .hero-2050-section {
-    min-height: 650px;
-    padding-top: 60px;
-  }
-
-  .hero-bg-video {
-    object-position: 70% center;
-  }
-
-  .hero-video-gradient-overlay {
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.98) 0%,
-      rgba(255, 255, 255, 0.92) 55%,
-      rgba(255, 255, 255, 0.45) 85%,
-      rgba(255, 255, 255, 0.15) 100%
-    );
+    min-height: auto;
+    padding-top: 52px;
   }
 
   .hero-2050-container {
-    padding: 20px 16px 24px;
+    padding: 12px 14px 24px;
+  }
+
+  .hero-2050-content {
+    gap: 0.65rem;
+  }
+
+  .hero-badge-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 0.15rem;
+  }
+
+  .hero-world-first-badge {
+    flex-shrink: 1;
+    min-width: 0;
   }
 
   .hero-badge-img {
-    height: auto;
-    max-height: 52px;
+    height: 38px;
+    max-height: 38px;
+    width: auto;
     max-width: 100%;
     object-fit: contain;
   }
 
-  .hero-2050-content {
+  .hero-header-tour-btn {
+    padding: 4px 10px;
+    font-size: 10px;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+
+  .tour-play-circle-small {
+    width: 18px;
+    height: 18px;
+  }
+
+  .hero-top-guarantee-banner {
+    width: 100%;
     max-width: 100%;
+    margin: 0.15rem 0 0.25rem;
   }
 
   .hero-2050-headline {
-    font-size: clamp(34px, 8vw, 44px);
+    font-size: clamp(23px, 6.4vw, 30px);
+    line-height: 1.16;
+    letter-spacing: -0.02em;
+    gap: 2px;
+  }
+
+  .headline-gradient,
+  .headline-dark {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .headline-dream-job-wrap {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    white-space: nowrap;
+    min-height: 1.2em;
+  }
+
+  .headline-dream-job-animated {
+    display: inline;
+  }
+
+  .hero-2050-description {
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: #475569;
+    margin-top: 0.1rem;
   }
 
   .hero-journey-pills-row {
     grid-template-columns: repeat(3, 1fr);
     gap: 0.35rem;
+    margin-top: 0.1rem;
+  }
+
+  .journey-pill-card {
+    padding: 0.35rem 0.4rem;
+    border-radius: 12px;
   }
 
   .journey-pill-title {
-    font-size: 0.62rem;
+    font-size: 0.65rem;
+    font-weight: 800;
   }
 
   .journey-pill-sub {
@@ -860,6 +919,7 @@
   .hero-cta-buttons-row {
     flex-direction: column;
     width: 100%;
+    gap: 0.75rem;
   }
 
   .hero-primary-cta-btn,

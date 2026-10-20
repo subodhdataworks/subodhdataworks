@@ -142,8 +142,8 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           isLoggedIn={isLoggedIn}
         />
 
-        {/* 2.1 Industry-Recognized Certifications: IBM & Microsoft Banner */}
-        <div className="my-6 sm:my-8">
+        {/* 2.1 Industry-Recognized Certifications: IBM & Microsoft Banner (Hidden on Mobile) */}
+        <div className="hidden md:block my-6 sm:my-8">
           <IndustryCertificationsSection
             onExploreTracks={() => setCurriculumModalOpen(true)}
             onWatchRecording={() => setVideoCinemaOpen(true)}
