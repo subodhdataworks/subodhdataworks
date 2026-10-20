@@ -631,12 +631,12 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
               type="button"
               onClick={() => {
                 playClick?.();
-                onOpenLockedModule('All 4 Courses Bundle');
+                onOpenLockedModule('All Premium Courses Bundle');
               }}
               className="mt-2.5 bg-white hover:bg-slate-50 border border-sky-300 shadow-sm rounded-full py-1.5 px-3 flex items-center gap-2 cursor-pointer active:scale-95 transition-all"
             >
               <div className="text-left leading-none">
-                <div className="text-[9px] font-bold text-slate-500">Enroll in All 4 Courses for Just</div>
+                <div className="text-[9px] font-bold text-slate-500">Unlock All Premium Courses for Just</div>
                 <div className="text-sm font-black text-blue-600 mt-0.5">₹987</div>
               </div>
               <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0">
@@ -1016,7 +1016,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       </div>
 
       {/* =========================================================================
-          5. PROMO STRIP BANNER: "Get All 4 Courses for Just ₹987"
+          5. PROMO STRIP BANNER: "Unlock All Premium Courses"
           ========================================================================= */}
       <div className="relative p-3.5 rounded-3xl bg-gradient-to-r from-sky-50 via-blue-50 to-indigo-50 border border-sky-200 shadow-xs flex items-center justify-between gap-2">
         {/* 3D Gift Box Left */}
@@ -1030,10 +1030,10 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
             <span>LIMITED-TIME OFFER</span>
           </div>
           <div className="text-xs font-black text-slate-900 leading-tight mt-0.5">
-            Get All 4 Courses for Just
+            Unlock All Premium Courses
           </div>
           <div className="text-[9px] text-slate-500 font-semibold truncate leading-tight">
-            Access Data Analyst, Data Science, ML &amp; AI Engineering
+            Access All 13 Industry Programs, Certificates &amp; AI Projects
           </div>
         </div>
 
@@ -1042,7 +1042,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
           type="button"
           onClick={() => {
             playClick?.();
-            onOpenLockedModule('All 4 Courses Bundle');
+            onOpenLockedModule('All Premium Courses Bundle');
           }}
           className="bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-[10px] px-3 py-2 rounded-2xl shadow-sm active:scale-95 transition-all flex items-center gap-1 shrink-0 cursor-pointer"
         >
@@ -1050,6 +1050,24 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
           <span>UNLOCK ALL ₹987</span>
           <ArrowRight className="w-3 h-3 text-slate-950" />
         </button>
+      </div>
+
+      {/* =========================================================================
+          5B. PLACEMENT & BENEFIT BANNER: "Learn. Practice. Build. Get Placed."
+          ========================================================================= */}
+      <div
+        onClick={() => {
+          playClick?.();
+          onOpenLockedModule('All Premium Courses Bundle');
+        }}
+        className="relative w-full cursor-pointer active:scale-[0.98] transition-transform select-none rounded-2xl overflow-hidden shadow-xs hover:shadow-md"
+      >
+        <img
+          src="/images/banner_learn_practice_get_placed.png"
+          alt="Learn. Practice. Build. Get Placed. No Need to Spend ₹2 Lakh"
+          className="w-full h-auto block rounded-2xl border border-amber-200/50"
+          loading="lazy"
+        />
       </div>
 
       {/* =========================================================================
