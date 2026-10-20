@@ -14,6 +14,8 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { ConfirmationResult } from 'firebase/auth';
+import { getRedirectResult } from 'firebase/auth';
+import { auth } from '../../services/firebase';
 import { loadGoogleScript, requestGoogleAccountLogin } from '../../services/googleAuthService';
 import {
   recordUserInDatabase,
@@ -79,6 +81,26 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
       }
     }
   }, [isOpen]);
+
+  // Handle Android redirect result — check on every modal open
+  useEffect(() => {
+    getRedirectResult(auth)
+      .then(async (result) => {
+        if (!result?.user) return;
+        const user = result.user;
+        const name = user.displayName || user.email?.split('@')[0] || 'Learner';
+        const email = user.email || '';
+        const avatar = user.photoURL || '';
+        const uid = user.uid;
+        const existing = await findExistingUser(email, uid);
+        const finalName = existing?.name || name;
+        const finalRole = existing?.role || 'student';
+        await recordUserInDatabase({ uid, name: finalName, email, avatar, role: finalRole, source: 'Google' });
+        completeLogin(finalName, email, avatar, finalRole);
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!isOpen) return null;
 
@@ -211,20 +233,28 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
     } catch (err: any) {
       try {
         const fbUser = await loginWithGooglePopup();
-        const existing = await findExistingUser(fbUser.email, fbUser.uid);
-        const finalName = existing?.name || fbUser.name || fbUser.email?.split('@')[0] || 'Learner';
-        const finalRole = existing?.role || 'student';
-        const finalAvatar = fbUser.avatar || existing?.avatar || '';
-        await recordUserInDatabase({
-          uid: fbUser.uid,
-          name: finalName,
-          email: fbUser.email,
-          avatar: finalAvatar,
-          role: finalRole,
-          source: 'Google',
-        });
-        completeLogin(finalName, fbUser.email, finalAvatar, finalRole);
-      } catch {
+        // REDIRECT_INITIATED = Android redirect flow started — page is redirecting, just show loading
+        if (fbUser) {
+          const existing = await findExistingUser(fbUser.email, fbUser.uid);
+          const finalName = existing?.name || fbUser.name || fbUser.email?.split('@')[0] || 'Learner';
+          const finalRole = existing?.role || 'student';
+          const finalAvatar = fbUser.avatar || existing?.avatar || '';
+          await recordUserInDatabase({
+            uid: fbUser.uid,
+            name: finalName,
+            email: fbUser.email,
+            avatar: finalAvatar,
+            role: finalRole,
+            source: 'Google',
+          });
+          completeLogin(finalName, fbUser.email, finalAvatar, finalRole);
+        }
+      } catch (fbErr: any) {
+        if (fbErr?.message === 'REDIRECT_INITIATED') {
+          // Android redirect is in progress — show a loading message, page will reload
+          setValidationError('Redirecting to Google... Please wait ⏳');
+          return; // Don't reset isSubmitting — page will reload
+        }
         setIsSubmitting(false);
         setValidationError('Google sign-in closed. Please choose Mobile or Email login below.');
       }

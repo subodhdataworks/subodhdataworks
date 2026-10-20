@@ -164,20 +164,8 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
 
         {/* 2.15 Mobile Courses Grid: 2 Courses at a time, Compact ("Chota Chota") above "You Will Get Job" */}
         <MobileHomeCoursesGrid
-          onStartCourse={(courseId) => {
-            if (!userIsLoggedIn) {
-              setAuthModalOpen(true);
-            } else {
-              setSelectedDetailCourseId(courseId);
-            }
-          }}
-          onOpenCurriculum={() => {
-            if (!userIsLoggedIn) {
-              setAuthModalOpen(true);
-            } else {
-              setSelectedDetailCourseId('react-frontend-dev');
-            }
-          }}
+          onStartCourse={(courseId) => setSelectedDetailCourseId(courseId)}
+          onOpenCurriculum={() => setSelectedDetailCourseId('react-frontend-dev')}
         />
 
         {/* 2.2 Placement Support: You Will Get Job From 700+ Companies Banner */}

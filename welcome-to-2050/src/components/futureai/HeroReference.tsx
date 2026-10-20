@@ -185,32 +185,21 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
           
           {/* 1. World First Game Learning Platform Badge & Shifted 1-Min Tour Video */}
           <div className="hero-badge-wrap">
-            <div className="hero-world-first-badge" onMouseEnter={playHover}>
-              <img
-                src="/images/worlds_first_badge.png"
-                alt="World's First Game Learning Platform"
-                className="hero-badge-img"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                  const fallback = document.getElementById('badge-svg-fallback');
-                  if (fallback) fallback.style.display = 'inline-flex';
-                }}
-              />
-
-              {/* Accessible and Configurable Fallback */}
-              <div id="badge-svg-fallback" className="hero-badge-fallback">
-                <span className="badge-crown">👑</span>
-                <div className="badge-text-group">
-                  <span className="badge-top-title">{WORLD_FIRST_BADGE_TITLE}</span>
-                  <span className="badge-sub-title">{WORLD_FIRST_BADGE_SUB}</span>
+            <div className="hero-world-first-badge" onMouseEnter={playHover} role="banner" aria-label="World's First Game Learning Platform">
+              <div className="premium-wf-pill">
+                <div className="premium-wf-shine" />
+                <div className="premium-wf-left">
+                  <span className="premium-wf-crown">👑</span>
+                  <span className="premium-wf-gold-title">{WORLD_FIRST_BADGE_TITLE}</span>
                 </div>
-                <Gamepad2 className="w-4 h-4 text-sky-400 ml-1" />
+                <span className="premium-wf-dot">•</span>
+                <div className="premium-wf-right">
+                  <span className="premium-wf-sub">{WORLD_FIRST_BADGE_SUB}</span>
+                  <Gamepad2 className="premium-wf-gamepad" />
+                </div>
               </div>
-                        </div>
-
-
-
-                    </div>
+            </div>
+          </div>
 
           {/* 1B. Value Banner: "Learn. Practice. Build. Get Placed. No Need to Spend ₹2 Lakh" */}
           <div

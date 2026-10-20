@@ -1175,13 +1175,6 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       <>
         {/* Mobile (< 768px): Native Android Mobile Game Arena Hub */}
         <div className="md:hidden min-h-screen bg-slate-50">
-          <MobileTopBar
-            userName={currentUserName}
-            telemetry={telemetry}
-            onOpenProfile={() => setMobileProfileSheetOpen(true)}
-            onOpenWallet={() => setIsWithdrawModalOpen(true)}
-            onOpenLogin={() => setAuthModalOpen(true)}
-          />
           <MobileGameArenaHub
             userName={userName}
             onPlayPython={() => {}}
@@ -2234,7 +2227,32 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         {/* ─── TAB: GAME ARENA HUB (1:1 with media_1791313375552.jpg) ─── */}
         {dockTab === 'game' && selectedModuleView === null && (
           <div className="col-span-full">
-            <GameArenaHub
+            {/* Mobile (< 768px): Exact Match to Reference Image (media_1792498440204_03b1cee0.jpg) */}
+            <div className="md:hidden">
+              <MobileGameArenaHub
+                userName={userName}
+                onPlayPython={(topicId) => {
+                  setIntroGameLevelId(topicId || 1);
+                  setSelectedModuleView('python_intro_game');
+                  if (typeof window !== 'undefined') window.location.hash = `#intro-game?level=${topicId || 1}`;
+                }}
+                onLockedGame={(gameName) => {
+                  setSelectedLockedModule(gameName);
+                  setUnlockModalOpen(true);
+                }}
+                onNavigateBack={() => {
+                  setDockTab('home');
+                  setSelectedModuleView(null);
+                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+                }}
+                onOpenAdvisor={onOpenAdvisor}
+                onOpenLogin={() => setAuthModalOpen(true)}
+              />
+            </div>
+
+            {/* Desktop (>= 768px): GameArenaHub */}
+            <div className="hidden md:block">
+              <GameArenaHub
               userName={userName}
               isNewStudentMode={isNewStudentMode}
               onPlayPython={(topicId) => {
@@ -2266,6 +2284,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               }}
               onOpenAdvisor={onOpenAdvisor}
             />
+            </div>
           </div>
         )}
 

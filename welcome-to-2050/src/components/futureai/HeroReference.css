@@ -84,7 +84,7 @@
   gap: 1.1rem;
 }
 
-/* ── 3. WORLD'S FIRST GAME LEARNING PLATFORM BADGE ── */
+/* ── 3. WORLD'S FIRST GAME LEARNING PLATFORM BADGE (PREMIUM RESPONSIVE) ── */
 .hero-badge-wrap {
   display: flex;
   align-items: center;
@@ -98,55 +98,163 @@
   display: inline-flex;
   align-items: center;
   cursor: pointer;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s ease;
+  max-width: 100%;
 }
 
 .hero-world-first-badge:hover {
   transform: translateY(-2px) scale(1.02);
+  filter: drop-shadow(0 6px 24px rgba(245, 158, 11, 0.3));
 }
 
-.hero-badge-img {
-  height: clamp(80px, 6.5vw, 105px);
-  width: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 6px 20px rgba(0, 112, 243, 0.35));
-}
-
-/* Fallback badge styling */
-.hero-badge-fallback {
-  display: none;
+.premium-wf-pill {
+  position: relative;
+  display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  padding: 0.45rem 1rem;
-  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
-  border: 1.5px solid #38bdf8;
+  padding: 0.38rem 0.95rem 0.38rem 0.42rem;
+  background: linear-gradient(135deg, #090d16 0%, #0f172a 45%, #1e1b4b 100%);
+  border: 1.5px solid rgba(245, 158, 11, 0.65);
   border-radius: 9999px;
-  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.3);
+  box-shadow: 
+    0 4px 18px rgba(245, 158, 11, 0.2),
+    0 2px 10px rgba(14, 165, 233, 0.18),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-.badge-crown {
-  font-size: 1.15rem;
+/* Sweeping metallic light reflection */
+.premium-wf-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.25) 50%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  animation: premiumBadgeShimmer 4s ease-in-out infinite;
+  pointer-events: none;
 }
 
-.badge-text-group {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
+@keyframes premiumBadgeShimmer {
+  0%, 60% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
 }
 
-.badge-top-title {
-  font-size: 0.65rem;
+.premium-wf-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.3) 0%, rgba(217, 119, 6, 0.2) 100%);
+  border: 1px solid rgba(251, 191, 36, 0.6);
+  padding: 0.22rem 0.6rem;
+  border-radius: 9999px;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.premium-wf-crown {
+  font-size: 0.95rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.6));
+}
+
+.premium-wf-gold-title {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.72rem;
   font-weight: 900;
-  color: #fbbf24;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  white-space: nowrap;
+  text-shadow: 0 0 14px rgba(245, 158, 11, 0.5);
 }
 
-.badge-sub-title {
-  font-size: 0.82rem;
+.premium-wf-dot {
+  color: rgba(245, 158, 11, 0.85);
+  font-size: 0.85rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.premium-wf-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  white-space: nowrap;
+}
+
+.premium-wf-sub {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.8rem;
   font-weight: 800;
-  color: #ffffff;
   letter-spacing: -0.01em;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.premium-wf-gamepad {
+  width: 0.95rem;
+  height: 0.95rem;
+  color: #38bdf8;
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.7));
+  flex-shrink: 0;
+}
+
+/* Mobile responsive scaling */
+@media (max-width: 480px) {
+  .premium-wf-pill {
+    gap: 0.35rem;
+    padding: 0.3rem 0.75rem 0.3rem 0.35rem;
+  }
+  .premium-wf-left {
+    padding: 0.16rem 0.42rem;
+    gap: 0.25rem;
+  }
+  .premium-wf-crown {
+    font-size: 0.82rem;
+  }
+  .premium-wf-gold-title {
+    font-size: 0.63rem;
+    letter-spacing: 0.06em;
+  }
+  .premium-wf-dot {
+    font-size: 0.75rem;
+  }
+  .premium-wf-sub {
+    font-size: 0.72rem;
+  }
+  .premium-wf-gamepad {
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .premium-wf-pill {
+    padding: 0.24rem 0.55rem 0.24rem 0.3rem;
+    gap: 0.25rem;
+  }
+  .premium-wf-gold-title {
+    font-size: 0.58rem;
+  }
+  .premium-wf-sub {
+    font-size: 0.66rem;
+  }
 }
 
 /* ── 4. MAIN HEADLINE ── */

@@ -1,10 +1,21 @@
 import {
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signOut,
   User,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from 'firebase/auth';
+
+/**
+ * Detect if user is on Android or mobile browser where popups are blocked
+ */
+function isAndroidOrMobile(): boolean {
+  if (typeof window === 'undefined') return false;
+  const ua = navigator.userAgent.toLowerCase();
+  return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
+}
 import { doc, setDoc, getDoc, collection, getDocs, query, where, serverTimestamp, increment } from 'firebase/firestore';
 import { auth, db, googleProvider } from './firebase';
 
@@ -111,6 +122,8 @@ export async function recordUserInDatabase(userData: {
 
 /**
  * Real Google 1-Click Login via Firebase
+ * Android/Mobile: uses signInWithRedirect (popups blocked on Android Chrome)
+ * Desktop: uses signInWithPopup for instant single-tab experience
  */
 export async function loginWithGooglePopup(): Promise<{
   name: string;
@@ -119,8 +132,26 @@ export async function loginWithGooglePopup(): Promise<{
   uid: string;
 }> {
   try {
-    const result = await signInWithPopup(auth, googleProvider);
-    const user: User = result.user;
+    let user: User;
+
+    if (isAndroidOrMobile()) {
+      // Android / Mobile — use redirect flow (popup is blocked on Android Chrome)
+      // First check if we're returning from a redirect
+      const redirectResult = await getRedirectResult(auth);
+      if (redirectResult?.user) {
+        user = redirectResult.user;
+      } else {
+        // Trigger redirect to Google sign-in page
+        await signInWithRedirect(auth, googleProvider);
+        // Page will redirect — this line won't be reached
+        throw new Error('REDIRECT_INITIATED');
+      }
+    } else {
+      // Desktop — use popup for seamless experience
+      const result = await signInWithPopup(auth, googleProvider);
+      user = result.user;
+    }
+
     const name = user.displayName || user.email?.split('@')[0] || 'Learner';
     const email = user.email || '';
     const avatar = user.photoURL || '';
@@ -137,7 +168,8 @@ export async function loginWithGooglePopup(): Promise<{
 
     return { name, email, avatar, uid };
   } catch (error: any) {
-    console.warn('Firebase Google popup issue, using resilient Google credential selector:', error);
+    if (error?.message === 'REDIRECT_INITIATED') throw error;
+    console.warn('Firebase Google login issue:', error);
     throw error;
   }
 }

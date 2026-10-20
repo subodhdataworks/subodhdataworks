@@ -212,7 +212,11 @@ export const App: React.FC = () => {
             isLoggedIn={isLoggedIn}
             userName={userName}
           />
-        ) : isLoggedIn ? (
+        ) : (() => {
+            const baseH = (typeof window !== 'undefined' ? window.location.hash : currentHash).split('?')[0].toLowerCase();
+            const appRoutes = ['#dashboard', '#game', '#games', '#arena', '#gamezone', '#coding_game', '#placement', '#income', '#referral', '#python', '#sql', '#excel', '#powerbi', '#genai', '#stats', '#data-analyst', '#intro-game', '#pyintro', '#earnings', '#wallet', '#withdraw'];
+            return isLoggedIn || appRoutes.includes(baseH);
+          })() ? (
           <LearnerDashboard
             userName={userName}
             onLogout={handleLogout}

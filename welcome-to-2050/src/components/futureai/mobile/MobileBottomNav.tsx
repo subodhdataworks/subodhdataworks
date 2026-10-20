@@ -129,10 +129,10 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
           </button>
           <span
             className={`text-[9.5px] font-black tracking-tight mt-1 transition-colors ${
-              isTabActive('game') ? 'text-blue-600' : 'text-slate-700'
+              isTabActive('game') ? 'text-purple-600' : 'text-slate-700'
             }`}
           >
-            Game
+            Game Zone
           </span>
         </div>
 
