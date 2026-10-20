@@ -536,9 +536,9 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       shortDesc: 'Intensive 30-day coding sprint: Python core, OOP, NumPy, Pandas & practical AI scripting.',
       salaryRange: '₹8 LPA - ₹18 LPA',
       courseFee: '₹9,999',
-      image: '/images/python_mastery_compact_banner.jpg',
-      holoImage: '/images/python_mastery_compact_banner.jpg',
-      video: '/videos/card_video_python.mp4',
+      image: '/images/ai_for_techies_poster.jpg',
+      holoImage: '/images/ai_for_techies_poster.jpg',
+      video: '/videos/ai_for_techies_python_sprint.mp4',
       potTheme: 'emerald' as const,
       skillsList: ['Python 3', 'OOP', 'NumPy', 'Pandas', 'AI Scripting'],
       themeStyles: {
