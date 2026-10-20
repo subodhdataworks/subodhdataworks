@@ -480,9 +480,9 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       shortDesc: 'Master SEO, Google Ads, Meta Campaigns, High-Converting Funnels & AI Copywriting.',
       salaryRange: '₹5 LPA - ₹14 LPA',
       courseFee: '₹16,999',
-      image: '/images/affiliate_hero_banner.jpg',
-      holoImage: '/images/affiliate_hero_banner.jpg',
-      video: '/videos/affiliate_banner_bg.mp4',
+      image: '/images/digital_marketing_poster.jpg',
+      holoImage: '/images/digital_marketing_poster.jpg',
+      video: '/videos/digital_marketing_ai.mp4',
       potTheme: 'purple' as const,
       skillsList: ['SEO', 'Google Ads', 'Meta Ads', 'Funnels', 'AI Copywriting'],
       themeStyles: {
