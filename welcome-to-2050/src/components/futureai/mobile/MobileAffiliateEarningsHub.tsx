@@ -1160,7 +1160,7 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
         isOpen={isWithdrawSheetOpen}
         onClose={() => setIsWithdrawSheetOpen(false)}
         onSuccess={() => {
-          setIsWithdrawSheetOpen(false);
+          // Keep modal open so user sees Screen 2 (Submitted receipt); will close when user taps 'OK, Got it'
         }}
       />
 
