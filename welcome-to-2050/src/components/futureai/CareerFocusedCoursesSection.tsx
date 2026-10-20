@@ -542,20 +542,16 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
                         </div>
 
                         <div className="scd-pot-bottom-actions-row">
-                          <div className="scd-pot-slashed-price-wrap">
-                            <span className="scd-pot-slashed-daam">Rs {c.courseFee.replace('₹', '')}</span>
-                          </div>
-
                           <button
                             type="button"
-                            className="scd-pot-circle-arrow-btn cursor-pointer"
+                            className="scd-pot-circle-arrow-btn cursor-pointer w-full justify-between"
                             aria-label="Start Learning"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleCourseClick(c.id);
                             }}
                           >
-                            <span className="scd-pot-unlock-text">Start Learning</span>
+                            <span className="scd-pot-unlock-text">Explore Curriculum</span>
                             <span className="scd-pot-arrow-icon-circle">
                               <ArrowRight className="w-3.5 h-3.5 stroke-[2.8]" />
                             </span>
@@ -640,8 +636,8 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
                 All Courses ({courses.length})
               </h3>
             </div>
-            <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-              ₹987 Pass Access
+            <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+              Industry Ready
             </span>
           </div>
 
@@ -744,10 +740,9 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
 
                   {/* Bottom Actions Row */}
                   <div className="mt-3.5 pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] text-slate-400 line-through font-bold block">{c.courseFee}</span>
-                      <span className="text-xs font-black text-emerald-600">Included in ₹987 Pass</span>
-                    </div>
+                    <span className="text-xs font-bold text-slate-500">
+                      Full Curriculum
+                    </span>
 
                     <button
                       type="button"
@@ -757,7 +752,7 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
                       }}
                       className="px-4 py-2 rounded-xl text-xs font-black text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 shadow-md shadow-blue-500/25 flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
                     >
-                      <span>Start Learning</span>
+                      <span>Explore</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>

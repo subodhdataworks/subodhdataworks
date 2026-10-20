@@ -301,13 +301,9 @@ export const MobileHomeCoursesGrid: React.FC<MobileHomeCoursesGridProps> = ({
               </div>
 
               {/* Mini CTA Footer */}
-              <div className="mt-1.5 pt-1.5 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-[9px] font-black text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                  ₹987 Pass
-                </span>
-
+              <div className="mt-1.5 pt-1.5 border-t border-slate-100 flex items-center justify-end">
                 <span className="inline-flex items-center gap-1 text-[10px] font-black text-blue-600 group-hover:translate-x-1 transition-transform">
-                  <span>Details</span>
+                  <span>View Details</span>
                   <ArrowRight className="w-2.5 h-2.5 stroke-[2.5]" />
                 </span>
               </div>
