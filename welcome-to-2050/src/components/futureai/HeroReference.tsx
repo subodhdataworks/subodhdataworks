@@ -291,7 +291,6 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
               </div>
 
               <div className="hero-3d-btn-wrap hero-get-started-wrap w-full sm:w-auto">
-              <span className="btn3d-get-started-aura-yellow" aria-hidden="true" />
               <button
                 onClick={() => {
                   playClick();
@@ -302,7 +301,6 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
                 aria-label="Start Your Journey Today"
               >
                 <span className="btn3d-shine" />
-                <span className="btn3d-border-glow glow-yellow" aria-hidden="true" />
                 <span className="btn3d-content btn3d-content-premium-yellow">
                   <span className="btn3d-icon-sparkle-box-yellow" aria-hidden="true">
                     <Sparkles className="w-4 h-4 text-amber-950" />
@@ -318,7 +316,7 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
             </div>
 
             {/* ── 2. ANIMATED ATTENTION-GRABBING FREE ATS RESUME CHECKER CTA BUTTON ── */}
-            <div className="hero-3d-btn-wrap">
+            <div className="hero-3d-btn-wrap mt-3 sm:mt-0">
               {/* Outer pulsing neon aura */}
               <span className="btn3d-ats-aura" aria-hidden="true" />
 

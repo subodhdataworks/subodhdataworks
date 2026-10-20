@@ -168,8 +168,8 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           />
         </div>
 
-        {/* 4. Section: Career-Focused Courses (CAREER-FOCUSED LEARNING - 4 3D Holographic Pots + Typewriter Title) */}
-        <div className="mt-4 mb-1 sm:mt-6 sm:mb-1">
+        {/* 4. Section: Career-Focused Courses (Hidden on Mobile without login) */}
+        <div className="hidden md:block mt-4 mb-1 sm:mt-6 sm:mb-1">
           <CareerFocusedCoursesSection
             onStartCourse={() => handleStartJourney()}
             onEnroll={() => setCurriculumModalOpen(true)}
