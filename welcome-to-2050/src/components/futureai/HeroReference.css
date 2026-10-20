@@ -1114,68 +1114,85 @@
 
 /* ── ULTRA-PREMIUM 3D GOLDEN YELLOW "START YOUR JOURNEY TODAY" BUTTON ── */
 .btn3d-content-premium-yellow {
-  background: linear-gradient(135deg, #FFE873 0%, #FFC800 48%, #FFA000 100%) !important;
-  border-top: 1.5px solid rgba(255, 255, 255, 0.95) !important;
-  border-bottom: 1.5px solid rgba(180, 83, 9, 0.35) !important;
+  background: linear-gradient(180deg, #FFF699 0%, #FFD600 36%, #FFA200 82%, #FF8F00 100%) !important;
+  border-top: 2px solid rgba(255, 255, 255, 0.98) !important;
+  border-bottom: 2px solid rgba(180, 83, 9, 0.55) !important;
+  border-left: 1.5px solid rgba(255, 255, 255, 0.65) !important;
+  border-right: 1.5px solid rgba(255, 255, 255, 0.65) !important;
   box-shadow:
-    inset 0 1px 2px rgba(255, 255, 255, 0.9),
-    0 8px 24px rgba(245, 158, 11, 0.45) !important;
-  padding: 0.78rem 1.45rem 0.78rem 1.15rem !important;
+    inset 0 2px 3px rgba(255, 255, 255, 0.95),
+    inset 0 -2px 4px rgba(180, 83, 9, 0.4),
+    0 10px 30px rgba(251, 191, 36, 0.55),
+    0 2px 6px rgba(0, 0, 0, 0.15) !important;
+  padding: 0.82rem 1.6rem 0.82rem 1.25rem !important;
   border-radius: 9999px !important;
   display: inline-flex !important;
   align-items: center !important;
-  gap: 0.65rem !important;
-  color: #0f172a !important;
+  gap: 0.75rem !important;
+  color: #1a0f00 !important;
+  position: relative !important;
+  z-index: 2 !important;
 }
 
 .hero-3d-game-btn:hover .btn3d-content-premium-yellow {
-  background: linear-gradient(135deg, #FFF099 0%, #FFD000 48%, #FFAC1C 100%) !important;
+  background: linear-gradient(180deg, #FFFFB8 0%, #FFE01A 36%, #FFB000 82%, #FFA000 100%) !important;
   box-shadow:
-    inset 0 1px 3px rgba(255, 255, 255, 1),
-    0 12px 32px rgba(245, 158, 11, 0.65) !important;
+    inset 0 2px 4px rgba(255, 255, 255, 1),
+    inset 0 -2px 4px rgba(180, 83, 9, 0.4),
+    0 14px 40px rgba(251, 191, 36, 0.75),
+    0 4px 10px rgba(0, 0, 0, 0.2) !important;
+  transform: translateY(-1px);
+}
+
+.hero-3d-game-btn:active .btn3d-content-premium-yellow {
+  transform: translateY(3px) !important;
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.2),
+    0 4px 12px rgba(251, 191, 36, 0.4) !important;
 }
 
 .btn3d-icon-sparkle-box-yellow {
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(255, 240, 160, 0.5) 100%);
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 2px 4px rgba(180, 83, 9, 0.3);
 }
 
 .btn3d-label-premium-yellow {
-  color: #0f172a !important;
+  color: #1a0f00 !important;
   font-weight: 950 !important;
-  font-size: 1.02rem !important;
-  letter-spacing: -0.01em !important;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) !important;
+  font-size: 1.05rem !important;
+  letter-spacing: -0.015em !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) !important;
   white-space: nowrap !important;
 }
 
 .btn3d-arrow-pill-yellow {
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  background: #0f172a !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  background: #1a0f00 !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.25) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35) !important;
 }
 
 .btn3d-bottom-premium-yellow {
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  background: #B45309;
-  transform: translateY(4px);
+  background: linear-gradient(180deg, #D97706 0%, #92400E 100%) !important;
+  transform: translateY(5px);
   z-index: 1;
+  box-shadow: 0 8px 18px rgba(180, 83, 9, 0.45);
 }
 
 .btn3d-get-started-aura-yellow {
@@ -1187,4 +1204,55 @@
   z-index: 0;
   animation: atsAuraPulse 2.4s ease-in-out infinite;
   pointer-events: none;
+}
+
+/* ── CONTINUOUS SCROLLING LOGO MARQUEE FOR TRUSTED BY 50,000+ ── */
+.trust-marquee-wrapper {
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);
+  padding: 0.25rem 0;
+}
+
+.trust-marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  width: max-content;
+  white-space: nowrap;
+  animation: trustMarqueeScroll 20s linear infinite;
+  will-change: transform;
+}
+
+.trust-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes trustMarqueeScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.logo-text.meta {
+  color: #0668E1;
+  font-weight: 800;
+}
+
+/* ── HIDE HERO BACKGROUND VIDEO ON MOBILE (< 768px) ── */
+@media (max-width: 768px) {
+  .hero-bg-video-wrapper,
+  .hero-bg-video,
+  .hero-video-gradient-overlay {
+    display: none !important;
+  }
+  .hero-2050-section {
+    background: linear-gradient(180deg, #F0F7FF 0%, #F8FAFC 50%, #FFFFFF 100%) !important;
+  }
 }

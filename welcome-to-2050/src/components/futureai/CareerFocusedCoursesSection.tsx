@@ -9,7 +9,9 @@ import {
   TrendingUp,
   BarChart3,
   Users,
-  Briefcase
+  Briefcase,
+  Play,
+  CheckCircle2
 } from 'lucide-react';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
 import './LearnerHomeHub.css';
@@ -21,10 +23,12 @@ interface CareerFocusedCoursesProps {
 
 export type CourseFilterType = 'all' | 'in-progress' | 'not-started' | 'completed';
 export type CourseViewModeType = 'grid' | 'list';
+export type MobileCourseCategoryType = 'all' | 'flagship' | 'core' | 'ai';
 
-interface CourseItem {
+export interface CourseItem {
   id: string;
   badgeNum: number;
+  category: 'flagship' | 'core' | 'ai';
   statusTag: string;
   title: string;
   subtitle: string;
@@ -37,8 +41,10 @@ interface CourseItem {
   image: string;
   holoImage: string;
   video: string;
-  potTheme: 'blue' | 'purple' | 'gold' | 'emerald';
+  potTheme: 'blue' | 'purple' | 'gold' | 'emerald' | 'pink' | 'amber';
   skillsList: string[];
+  lessonsText: string;
+  projectsText: string;
 }
 
 export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = ({
@@ -48,6 +54,7 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
   const { playClick, playHover } = useThemeAccent();
   const [filter, setFilter] = useState<CourseFilterType>('all');
   const [viewMode, setViewMode] = useState<CourseViewModeType>('grid');
+  const [mobileCategory, setMobileCategory] = useState<MobileCourseCategoryType>('all');
 
   // Continuous Typewriter Effect for "Career-Focused Courses"
   const typewriterPhrases = [
@@ -84,11 +91,13 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
     return () => clearTimeout(timeout);
   }, [typedText, isDeleting, phraseIdx]);
 
+  // COMPLETE 12 HIGH-PAYING COURSES CATALOG
   const courses: CourseItem[] = [
     {
       id: 'data-analyst-genai',
       badgeNum: 1,
-      statusTag: 'ENROLLED • ACTIVE',
+      category: 'flagship',
+      statusTag: '🔥 FLAGSHIP • ACTIVE',
       title: 'Data Analyst',
       subtitle: 'with GenAI',
       fullName: 'Data Analyst with GenAI Flagship Program',
@@ -102,10 +111,13 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
       video: '/videos/data_analyst_genai_v2.mp4',
       potTheme: 'blue',
       skillsList: ['Python', 'SQL', 'Excel', 'Power BI', 'GenAI'],
+      lessonsText: '260 Lessons',
+      projectsText: '28 Projects',
     },
     {
       id: 'data-science-agentic-ai',
       badgeNum: 2,
+      category: 'flagship',
       statusTag: 'HIGH DEMAND',
       title: 'Data Science',
       subtitle: '& Agentic AI',
@@ -120,10 +132,34 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
       video: '/videos/data_science_agentic_ai_course.mp4',
       potTheme: 'purple',
       skillsList: ['Data Science', 'ML', 'Deep Learning', 'RAG', 'Agentic AI'],
+      lessonsText: '320 Lessons',
+      projectsText: '25 Projects',
+    },
+    {
+      id: 'full-stack-web-ai',
+      badgeNum: 3,
+      category: 'flagship',
+      statusTag: 'HOT CAREER TRACK',
+      title: 'Full Stack',
+      subtitle: 'Web & AI Dev',
+      fullName: 'Full Stack Web & AI Development Program',
+      shortDesc: 'Build modern responsive full-stack apps with React, Node, Next.js & GenAI integrations.',
+      descLine1: 'React • Next.js • TypeScript • Node.js • PostgreSQL • GenAI APIs',
+      descLine2: 'Full-Stack Production Deployments • Real Startup Projects',
+      salaryRange: '₹8 LPA – ₹20 LPA',
+      courseFee: '₹24,999',
+      image: '/images/dashboard/poster_python.jpg',
+      holoImage: '/images/dashboard/poster_python.jpg',
+      video: '/videos/card_video_python.mp4',
+      potTheme: 'emerald',
+      skillsList: ['React', 'Next.js', 'Node.js', 'PostgreSQL', 'GenAI'],
+      lessonsText: '290 Lessons',
+      projectsText: '18 Projects',
     },
     {
       id: 'ml-engineering',
-      badgeNum: 3,
+      badgeNum: 4,
+      category: 'flagship',
       statusTag: 'ADVANCED TECH',
       title: 'ML',
       subtitle: 'Engineering',
@@ -138,10 +174,13 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
       video: '/videos/ml_engineering_course.mp4',
       potTheme: 'gold',
       skillsList: ['PyTorch', 'TensorFlow', 'MLOps', 'Docker', 'Cloud AI'],
+      lessonsText: '280 Lessons',
+      projectsText: '20 Projects',
     },
     {
       id: 'ai-engineering',
-      badgeNum: 4,
+      badgeNum: 5,
+      category: 'flagship',
       statusTag: 'FLAGSHIP 2050',
       title: 'AI',
       subtitle: 'Engineering',
@@ -156,6 +195,155 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
       video: '/videos/ai_engineering_course.mp4',
       potTheme: 'emerald',
       skillsList: ['LLMs', 'LangChain', 'Vector DBs', 'Fine-Tuning', 'OpenAI'],
+      lessonsText: '240 Lessons',
+      projectsText: '16 Projects',
+    },
+    {
+      id: 'python-mastery',
+      badgeNum: 6,
+      category: 'core',
+      statusTag: 'CORE PILLAR 01',
+      title: 'Python Mastery',
+      subtitle: 'Zero to Advanced',
+      fullName: 'Python for Data Analytics & AI — Zero to Advanced',
+      shortDesc: 'From zero logic to handling millions of records with NumPy, Pandas and automation.',
+      descLine1: 'Variables • Data Types • Indexing • Functions • NumPy • Pandas',
+      descLine2: 'Interactive Coding Games • 15+ Industry Projects • Automation',
+      salaryRange: '₹5 LPA – ₹12 LPA',
+      courseFee: '₹9,999',
+      image: '/images/dashboard/poster_python.jpg',
+      holoImage: '/images/dashboard/poster_python.jpg',
+      video: '/videos/card_video_python.mp4',
+      potTheme: 'blue',
+      skillsList: ['Syntax', 'NumPy', 'Pandas', 'Automation', 'OOP'],
+      lessonsText: '260 Lessons',
+      projectsText: '15+ Projects',
+    },
+    {
+      id: 'sql-mastery',
+      badgeNum: 7,
+      category: 'core',
+      statusTag: 'CORE PILLAR 02',
+      title: 'SQL Master',
+      subtitle: 'Zero to Advanced',
+      fullName: 'SQL: Zero to Advanced Query Mastery',
+      shortDesc: 'Real-world databases, complex analytical queries, CTEs, Window Functions & index tuning.',
+      descLine1: 'SELECT • WHERE • GROUP BY • Multi-table JOINs • Window Functions',
+      descLine2: 'CTEs • Database Indexing • Query Performance Tuning',
+      salaryRange: '₹5 LPA – ₹14 LPA',
+      courseFee: '₹9,999',
+      image: '/images/dashboard/poster_sql.jpg',
+      holoImage: '/images/dashboard/poster_sql.jpg',
+      video: '/videos/card_video_sql.mp4',
+      potTheme: 'purple',
+      skillsList: ['Queries', 'JOINs', 'Window Functions', 'CTEs', 'Subqueries'],
+      lessonsText: '280 Lessons',
+      projectsText: '20+ Projects',
+    },
+    {
+      id: 'excel-automation',
+      badgeNum: 8,
+      category: 'core',
+      statusTag: 'CORE PILLAR 03',
+      title: 'Advanced Excel',
+      subtitle: '& Business Automation',
+      fullName: 'Advanced Microsoft Excel & Business Automation',
+      shortDesc: 'Master dynamic formulas, XLOOKUP, pivot tables, Power Query and C-Suite dashboards.',
+      descLine1: 'VLOOKUP • XLOOKUP • INDEX/MATCH • Pivot Tables • Dynamic Slicers',
+      descLine2: 'Power Query Automation • Financial & Statistical Modeling',
+      salaryRange: '₹4.5 LPA – ₹10 LPA',
+      courseFee: '₹7,999',
+      image: '/images/dashboard/poster_excel.jpg',
+      holoImage: '/images/dashboard/poster_excel.jpg',
+      video: '/videos/card_video_excel.mp4',
+      potTheme: 'emerald',
+      skillsList: ['Formulas', 'XLOOKUP', 'PivotTables', 'Power Query', 'KPIs'],
+      lessonsText: '280 Lessons',
+      projectsText: '20+ Projects',
+    },
+    {
+      id: 'powerbi-analytics',
+      badgeNum: 9,
+      category: 'core',
+      statusTag: 'CORE PILLAR 04',
+      title: 'Power BI',
+      subtitle: '& Visual Analytics',
+      fullName: 'Power BI & Visual Analytics Master Track',
+      shortDesc: 'Data modeling, star schemas, advanced DAX measures and executive visual dashboards.',
+      descLine1: 'Data Modeling • Star Schemas • DAX Measures • Calculated Columns',
+      descLine2: 'Executive C-Suite KPI Dashboards • Power BI Service Publishing',
+      salaryRange: '₹6 LPA – ₹16 LPA',
+      courseFee: '₹11,999',
+      image: '/images/dashboard/poster_powerbi.jpg',
+      holoImage: '/images/dashboard/poster_powerbi.jpg',
+      video: '/videos/card_video_powerbi.mp4',
+      potTheme: 'amber',
+      skillsList: ['DAX', 'Star Schemas', 'KPIs', 'Reports', 'Service'],
+      lessonsText: '240 Lessons',
+      projectsText: '18+ Projects',
+    },
+    {
+      id: 'applied-statistics',
+      badgeNum: 10,
+      category: 'core',
+      statusTag: 'CORE PILLAR 05',
+      title: 'Statistics',
+      subtitle: 'for Data Science',
+      fullName: 'Applied Statistics & Probability for Data Analytics',
+      shortDesc: 'Learn descriptive and inferential statistics, hypothesis testing, A/B testing and regression.',
+      descLine1: 'Descriptive & Inferential Stats • Probability Distributions',
+      descLine2: 'Hypothesis Testing (A/B Testing) • Confidence Intervals • Regression',
+      salaryRange: '₹6 LPA – ₹15 LPA',
+      courseFee: '₹8,999',
+      image: '/images/dashboard/poster_stats.jpg',
+      holoImage: '/images/dashboard/poster_stats.jpg',
+      video: '/videos/card_video_stats.mp4',
+      potTheme: 'pink',
+      skillsList: ['Probability', 'Hypothesis Testing', 'A/B Testing', 'Regression'],
+      lessonsText: '200 Lessons',
+      projectsText: '15+ Projects',
+    },
+    {
+      id: 'genai-prompt-eng',
+      badgeNum: 11,
+      category: 'ai',
+      statusTag: 'FUTURE TECH 06',
+      title: 'GenAI & LLMs',
+      subtitle: 'for Analytics',
+      fullName: 'Generative AI & LLM Automation for Data Analytics',
+      shortDesc: 'Prompt engineering for analytics, automated SQL generation, and building custom AI agents.',
+      descLine1: 'Prompt Engineering • Automated SQL & Python Code Generation',
+      descLine2: 'Synthesizing Documents • Building Custom AI Analytics Agents',
+      salaryRange: '₹10 LPA – ₹25 LPA',
+      courseFee: '₹14,999',
+      image: '/images/dashboard/poster_genai.jpg',
+      holoImage: '/images/dashboard/poster_genai.jpg',
+      video: '/videos/card_video_genai.mp4',
+      potTheme: 'emerald',
+      skillsList: ['Prompt Engineering', 'LangChain', 'OpenAI', 'Autonomous Agents'],
+      lessonsText: '160 Lessons',
+      projectsText: '12+ Projects',
+    },
+    {
+      id: 'real-hr-interview',
+      badgeNum: 12,
+      category: 'ai',
+      statusTag: 'CAREER PILLAR 07',
+      title: 'Mock Interview',
+      subtitle: 'Live AI Room',
+      fullName: 'Real HR Interview Question — Live AI Mock Room',
+      shortDesc: 'Practice live HR & technical interviews with instant AI feedback and real company questions.',
+      descLine1: '1-on-1 AI Mock Interviews • Technical & Behavioral Questions',
+      descLine2: 'Instant AI Evaluation • Resume & LinkedIn ATS Optimization',
+      salaryRange: 'Guaranteed Job-Ready',
+      courseFee: '₹6,999',
+      image: '/images/dashboard/poster_real_hr_question.jpg',
+      holoImage: '/images/dashboard/poster_real_hr_question.jpg',
+      video: '/videos/card_video_stats.mp4',
+      potTheme: 'gold',
+      skillsList: ['HR Questions', 'Technical Rounds', 'Live AI Feedback', 'ATS Check'],
+      lessonsText: '140 Lessons',
+      projectsText: '10+ Real Mocks',
     },
   ];
 
@@ -168,10 +356,16 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
     }
   };
 
-  const visibleCourses = courses.filter((c) => {
-    if (filter === 'in-progress') return c.id === 'data-analyst-genai';
-    if (filter === 'not-started') return c.id !== 'data-analyst-genai';
-    if (filter === 'completed') return false;
+  // 4 Primary Flagships for Desktop Cylinders
+  const desktopPotCourses = courses.filter((c) =>
+    ['data-analyst-genai', 'data-science-agentic-ai', 'ml-engineering', 'ai-engineering'].includes(c.id)
+  );
+
+  // Filtered list for Mobile View
+  const filteredMobileCourses = courses.filter((c) => {
+    if (mobileCategory === 'flagship') return c.category === 'flagship';
+    if (mobileCategory === 'core') return c.category === 'core';
+    if (mobileCategory === 'ai') return c.category === 'ai';
     return true;
   });
 
@@ -238,252 +432,340 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
         </div>
 
         {/* =========================================================================
-            EXACT COPY OF "4 HIGH-PAYING INDUSTRY COURSES" SECTION HEADER & CONTROLS
+            DESKTOP VIEW: 4 HIGH-PAYING INDUSTRY COURSES (CYLINDRICAL NEON POTS)
             ========================================================================= */}
-        <div className="lhh-modules-section scd-transparent-pots-section" style={{ padding: 0, margin: 0, background: 'transparent' }}>
-          <div className="lhh-section-header" style={{ marginBottom: '1.5rem' }}>
-            <div className="lhh-section-left">
-              <div className="lhh-layer-icon-box">
-                <Layers className="w-5 h-5 text-blue-600" />
+        <div className="hidden md:block">
+          <div className="lhh-modules-section scd-transparent-pots-section" style={{ padding: 0, margin: 0, background: 'transparent' }}>
+            <div className="lhh-section-header" style={{ marginBottom: '1.5rem' }}>
+              <div className="lhh-section-left">
+                <div className="lhh-layer-icon-box">
+                  <Layers className="w-5 h-5 text-blue-600" />
+                </div>
+                <div className="lhh-section-title-wrap">
+                  <h2 className="lhh-section-title">High-Paying Industry Career Tracks</h2>
+                </div>
               </div>
-              <div className="lhh-section-title-wrap">
-                <h2 className="lhh-section-title">4 High-Paying Industry Courses</h2>
+
+              <div className="lhh-controls-group">
+                <div className="lhh-view-toggle-capsule">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playClick();
+                      setViewMode('grid');
+                    }}
+                    className={`lhh-view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                    aria-label="Grid view"
+                  >
+                    <LayoutGrid className="w-3.5 h-3.5" />
+                    <span>Grid</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playClick();
+                      setViewMode('list');
+                    }}
+                    className={`lhh-view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+                    aria-label="List view"
+                  >
+                    <List className="w-3.5 h-3.5" />
+                    <span>List</span>
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div className="lhh-controls-group">
-              <div className="lhh-filter-pills-row">
-                <button
-                  type="button"
-                  onClick={() => {
-                    playClick();
-                    setFilter('all');
-                  }}
-                  className={`lhh-filter-pill ${filter === 'all' ? 'active' : ''}`}
-                >
-                  All (4)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    playClick();
-                    setFilter('in-progress');
-                  }}
-                  className={`lhh-filter-pill ${filter === 'in-progress' ? 'active' : ''}`}
-                >
-                  In Progress (1)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    playClick();
-                    setFilter('not-started');
-                  }}
-                  className={`lhh-filter-pill ${filter === 'not-started' ? 'active' : ''}`}
-                >
-                  Explore (3)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    playClick();
-                    setFilter('completed');
-                  }}
-                  className={`lhh-filter-pill ${filter === 'completed' ? 'active' : ''}`}
-                >
-                  Completed
-                </button>
-              </div>
+            {viewMode === 'grid' ? (
+              <div className="scd-pots-4grid home-compact-pots">
+                {desktopPotCourses.map((c) => (
+                  <article
+                    key={c.id}
+                    className={`scd-pot-card scd-pot-${c.potTheme}`}
+                    onClick={() => handleCourseClick(c.id)}
+                    onMouseEnter={playHover}
+                  >
+                    <div className="scd-pot-flow-stage">
+                      <div className="scd-pot-rising-energy" />
+                      <div className="scd-pot-particles">
+                        <span className="scd-pt p1" />
+                        <span className="scd-pt p2" />
+                        <span className="scd-pt p3" />
+                        <span className="scd-pt p4" />
+                        <span className="scd-pt p5" />
+                        <span className="scd-pt p6" />
+                      </div>
 
-              <div className="lhh-view-toggle-capsule">
-                <button
-                  type="button"
-                  onClick={() => {
-                    playClick();
-                    setViewMode('grid');
-                  }}
-                  className={`lhh-view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
-                  aria-label="Grid view"
-                >
-                  <LayoutGrid className="w-3.5 h-3.5" />
-                  <span>Grid</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    playClick();
-                    setViewMode('list');
-                  }}
-                  className={`lhh-view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
-                  aria-label="List view"
-                >
-                  <List className="w-3.5 h-3.5" />
-                  <span>List</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* =========================================================================
-              4 3D CYLINDRICAL GLOWING NEON POTS (EXACT COPY FROM STUDENT DASHBOARD)
-              ========================================================================= */}
-          {viewMode === 'grid' ? (
-            <div className="scd-pots-4grid home-compact-pots">
-              {visibleCourses.map((c) => (
-                <article
-                  key={c.id}
-                  className={`scd-pot-card scd-pot-${c.potTheme}`}
-                  onClick={() => handleCourseClick(c.id)}
-                  onMouseEnter={playHover}
-                >
-                  {/* TOP HOLOGRAM / VIDEO DOME FLOWING UP OUT OF THE POT */}
-                  <div className="scd-pot-flow-stage">
-                    <div className="scd-pot-rising-energy" />
-                    <div className="scd-pot-particles">
-                      <span className="scd-pt p1" />
-                      <span className="scd-pt p2" />
-                      <span className="scd-pt p3" />
-                      <span className="scd-pt p4" />
-                      <span className="scd-pt p5" />
-                      <span className="scd-pt p6" />
+                      <div className="scd-pot-holo-dome">
+                        <video
+                          src={c.video}
+                          poster={c.holoImage}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          preload="auto"
+                          className="scd-pot-holo-video is-always-on"
+                        />
+                        <div className="scd-pot-holo-glass-frame" />
+                      </div>
                     </div>
 
-                    <div className="scd-pot-holo-dome">
+                    <div className="scd-pot-cylinder-wrap">
+                      <div className="scd-pot-top-rim">
+                        <div className="scd-pot-mouth-vortex" />
+                        <div className="scd-pot-rim-neon-ring" />
+                      </div>
+
+                      <div className="scd-pot-cylinder-body">
+                        <span className="scd-pot-side-rib left" />
+                        <span className="scd-pot-side-rib right" />
+
+                        <div className="scd-pot-top-tags">
+                          <span className="scd-pot-status-pill">{c.statusTag}</span>
+                          <span className="scd-pot-ctc-pill">{c.salaryRange}</span>
+                        </div>
+
+                        <h3 className="scd-pot-title">
+                          <span className="scd-title-brighter">{c.title}</span>{' '}
+                          <span className="scd-title-future">{c.subtitle}</span>
+                        </h3>
+
+                        <p className="scd-pot-desc">{c.shortDesc}</p>
+
+                        <div className="scd-pot-skills-row">
+                          {c.skillsList.map((s) => (
+                            <span key={s} className="scd-pot-skill-tag">
+                              {s}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="scd-pot-bottom-actions-row">
+                          <div className="scd-pot-slashed-price-wrap">
+                            <span className="scd-pot-slashed-daam">Rs {c.courseFee.replace('₹', '')}</span>
+                          </div>
+
+                          <button
+                            type="button"
+                            className="scd-pot-circle-arrow-btn cursor-pointer"
+                            aria-label="Start Learning"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleCourseClick(c.id);
+                            }}
+                          >
+                            <span className="scd-pot-unlock-text">Start Learning</span>
+                            <span className="scd-pot-arrow-icon-circle">
+                              <ArrowRight className="w-3.5 h-3.5 stroke-[2.8]" />
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="scd-pot-bottom-base">
+                        <div className="scd-pot-bottom-neon-ring" />
+                        <div className="scd-pot-metallic-plinth" />
+                        <div className="scd-pot-floor-glow" />
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <div className="lhh-modules-list">
+                {courses.map((c) => (
+                  <div
+                    key={c.id}
+                    className="lhh-list-card cursor-pointer"
+                    onClick={() => handleCourseClick(c.id)}
+                  >
+                    {c.video ? (
                       <video
                         src={c.video}
-                        poster={c.holoImage}
-                        autoPlay
+                        poster={c.image}
                         loop
                         muted
                         playsInline
-                        preload="auto"
-                        className="scd-pot-holo-video is-always-on"
+                        preload="metadata"
+                        className="lhh-list-thumb"
                       />
-                      <div className="scd-pot-holo-glass-frame" />
+                    ) : (
+                      <img
+                        src={c.image}
+                        alt={c.title}
+                        className="lhh-list-thumb"
+                      />
+                    )}
+                    <div className="lhh-list-info">
+                      <h3 className="lhh-list-title">{c.title} {c.subtitle}</h3>
+                      <p className="lhh-list-desc">
+                        {c.descLine1} • {c.descLine2}
+                      </p>
+                      <div className="lhh-list-meta-row">
+                        <span className="lhh-meta-pill ctc">{c.salaryRange}</span>
+                        <span className="lhh-meta-pill tag">{c.statusTag}</span>
+                      </div>
                     </div>
+                    <button
+                      type="button"
+                      className="lhh-list-action-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCourseClick(c.id);
+                      }}
+                    >
+                      <span>Start Learning</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
                   </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
 
-                  {/* BOTTOM 3D CYLINDRICAL NEON POT */}
-                  <div className="scd-pot-cylinder-wrap">
-                    <div className="scd-pot-top-rim">
-                      <div className="scd-pot-mouth-vortex" />
-                      <div className="scd-pot-rim-neon-ring" />
-                    </div>
-
-                    <div className="scd-pot-cylinder-body">
-                      <span className="scd-pot-side-rib left" />
-                      <span className="scd-pot-side-rib right" />
-
-                      <div className="scd-pot-top-tags">
-                        <span className="scd-pot-status-pill">{c.statusTag}</span>
-                        <span className="scd-pot-ctc-pill">{c.salaryRange}</span>
-                      </div>
-
-                      <h3 className="scd-pot-title">
-                        <span className="scd-title-brighter">{c.title}</span>{' '}
-                        <span className="scd-title-future">{c.subtitle}</span>
-                      </h3>
-
-                      <p className="scd-pot-desc">{c.shortDesc}</p>
-
-                      <div className="scd-pot-skills-row">
-                        {c.skillsList.map((s) => (
-                          <span key={s} className="scd-pot-skill-tag">
-                            {s}
-                          </span>
-                        ))}
-                      </div>
-
-                      <div className="scd-pot-bottom-actions-row">
-                        <div className="scd-pot-slashed-price-wrap">
-                          <span className="scd-pot-slashed-daam">Rs {c.courseFee.replace('₹', '')}</span>
-                        </div>
-
-                        <button
-                          type="button"
-                          className="scd-pot-circle-arrow-btn cursor-pointer"
-                          aria-label="Start Learning"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCourseClick(c.id);
-                          }}
-                        >
-                          <span className="scd-pot-unlock-text">Start Learning</span>
-                          <span className="scd-pot-arrow-icon-circle">
-                            <ArrowRight className="w-3.5 h-3.5 stroke-[2.8]" />
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="scd-pot-bottom-base">
-                      <div className="scd-pot-bottom-neon-ring" />
-                      <div className="scd-pot-metallic-plinth" />
-                      <div className="scd-pot-floor-glow" />
-                    </div>
-                  </div>
-                </article>
-              ))}
+        {/* =========================================================================
+            MOBILE VIEW: COMPLETE 12 COURSES SHOWCASE IN ULTRA-PREMIUM STYLE
+            ========================================================================= */}
+        <div className="block md:hidden mt-2 mb-8">
+          
+          {/* Header Title with Layers icon */}
+          <div className="flex items-center justify-between mb-3 px-1">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
+                <Layers className="w-4 h-4" />
+              </div>
+              <h3 className="text-base font-black text-slate-900 tracking-tight">
+                All Courses ({courses.length})
+              </h3>
             </div>
-          ) : (
-            /* List View */
-            <div className="lhh-modules-list">
-              {visibleCourses.map((c) => (
-                <div
-                  key={c.id}
-                  className="lhh-list-card cursor-pointer"
-                  onClick={() => handleCourseClick(c.id)}
-                  onMouseEnter={(e) => {
-                    const vid = e.currentTarget.querySelector<HTMLVideoElement>('video');
-                    if (vid) vid.play().catch(() => {});
-                  }}
-                  onMouseLeave={(e) => {
-                    const vid = e.currentTarget.querySelector<HTMLVideoElement>('video');
-                    if (vid) vid.pause();
-                  }}
-                >
+            <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+              ₹987 Pass Access
+            </span>
+          </div>
+
+          {/* Category Tabs Scrollbar */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-2.5 mb-4 scrollbar-none px-1">
+            {[
+              { id: 'all', label: `All (${courses.length})` },
+              { id: 'flagship', label: 'Flagship Tracks (5)' },
+              { id: 'core', label: 'Core Analytics (5)' },
+              { id: 'ai', label: 'AI & Mock Room (2)' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => {
+                  playClick();
+                  setMobileCategory(tab.id as MobileCourseCategoryType);
+                }}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-2xs cursor-pointer ${
+                  mobileCategory === tab.id
+                    ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white shadow-sm shadow-blue-500/25 scale-[1.02]'
+                    : 'bg-white text-slate-700 border border-slate-200 hover:border-slate-300'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* 12 Courses Premium Cards */}
+          <div className="space-y-4 px-1">
+            {filteredMobileCourses.map((c) => (
+              <article
+                key={c.id}
+                onClick={() => handleCourseClick(c.id)}
+                className="rounded-3xl bg-white border border-slate-200/90 shadow-md hover:shadow-xl transition-all overflow-hidden relative cursor-pointer active:scale-[0.99]"
+              >
+                {/* 16:9 Thumbnail / Video Header with floating badges */}
+                <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-950">
                   {c.video ? (
                     <video
                       src={c.video}
                       poster={c.image}
+                      autoPlay
                       loop
                       muted
                       playsInline
                       preload="metadata"
-                      className="lhh-list-thumb"
+                      className="w-full h-full object-cover"
                     />
                   ) : (
                     <img
                       src={c.image}
                       alt={c.title}
-                      className="lhh-list-thumb"
+                      className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   )}
-                  <div className="lhh-list-info">
-                    <h3 className="lhh-list-title">{c.title} {c.subtitle}</h3>
-                    <p className="lhh-list-desc">
-                      {c.descLine1} • {c.descLine2}
-                    </p>
-                    <div className="lhh-list-meta-row">
-                      <span className="lhh-meta-pill ctc">{c.salaryRange}</span>
-                      <span className="lhh-meta-pill tag">{c.statusTag}</span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/35 pointer-events-none" />
+
+                  {/* Top Tags Overlay */}
+                  <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2 z-10">
+                    <span className="px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wide uppercase bg-black/60 text-white backdrop-blur-md border border-white/20">
+                      {c.statusTag}
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-tight bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-xs">
+                      {c.salaryRange}
+                    </span>
+                  </div>
+
+                  {/* Bottom Stats Overlay */}
+                  <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[10px] font-bold z-10">
+                    <div className="flex items-center gap-1.5">
+                      <span className="bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-md">{c.lessonsText}</span>
+                      <span className="bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-md">{c.projectsText}</span>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    className="lhh-list-action-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCourseClick(c.id);
-                    }}
-                  >
-                    <span>Start Learning</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
                 </div>
-              ))}
-            </div>
-          )}
+
+                {/* Card Content Body */}
+                <div className="p-4">
+                  <h3 className="text-base font-black text-slate-900 tracking-tight leading-snug">
+                    <span>{c.title}</span> <span className="text-blue-600">{c.subtitle}</span>
+                  </h3>
+                  <p className="text-xs text-slate-600 font-medium mt-1 line-clamp-2 leading-relaxed">
+                    {c.shortDesc}
+                  </p>
+
+                  {/* Skills Pills */}
+                  <div className="flex flex-wrap gap-1 mt-2.5">
+                    {c.skillsList.map((skill) => (
+                      <span
+                        key={skill}
+                        className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200/80"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Bottom Actions Row */}
+                  <div className="mt-3.5 pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] text-slate-400 line-through font-bold block">{c.courseFee}</span>
+                      <span className="text-xs font-black text-emerald-600">Included in ₹987 Pass</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCourseClick(c.id);
+                      }}
+                      className="px-4 py-2 rounded-xl text-xs font-black text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 shadow-md shadow-blue-500/25 flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
+                    >
+                      <span>Start Learning</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
         </div>
 
       </div>

@@ -155,7 +155,7 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
     <section id="hero" className="hero-2050-section" aria-label="Future.AI Hero">
       
       {/* ── BACKGROUND VIDEO CONTAINER ── */}
-      <div className="hero-bg-video-wrapper">
+      <div className="hero-bg-video-wrapper hidden md:block">
         <video
           ref={videoRef}
           className={`hero-bg-video ${videoLoaded ? 'loaded' : ''}`}
@@ -208,13 +208,6 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
               </div>
                         </div>
 
-            {/* India's Most Affordable AI Learning Platform Badge */}
-            <div className="hero-affordable-badge inline-flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 border border-amber-300 shadow-xs">
-              <span className="w-4 h-4 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white flex items-center justify-center text-[10px] font-black shrink-0 shadow-2xs">🇮🇳</span>
-              <span className="text-[10px] sm:text-[11px] font-black text-amber-950 tracking-tight leading-none">
-                India's Most Affordable AI Learning Platform
-              </span>
-            </div>
 
             {/* Shifted Watch 1-Min Tour to an attractive header spot */}
             <button
@@ -286,8 +279,18 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
 
           {/* 5. CTA Buttons Row */}
           <div className="hero-cta-buttons-row">
-            {/* ── 1. PRIMARY HIGH-CONVERTING "GET STARTED FREE →" BUTTON (PREMIUM 3D CYBER BLUE) ── */}
-            <div className="hero-3d-btn-wrap hero-get-started-wrap">
+            {/* ── 1. PRIMARY HIGH-CONVERTING "START YOUR JOURNEY TODAY" BUTTON (PREMIUM 3D YELLOW) ── */}
+            <div className="flex flex-col items-center sm:items-start w-full sm:w-auto">
+              {/* India's Most Affordable AI Learning Platform Badge Directly Above Button */}
+              <div className="hero-cta-affordable-pill mb-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-100 via-yellow-100 to-amber-200 border border-amber-300/90 shadow-xs">
+                <span className="w-4 h-4 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white flex items-center justify-center text-[10px] font-black shrink-0 shadow-2xs">🇮🇳</span>
+                <span className="text-[11px] sm:text-xs font-black text-amber-950 tracking-tight leading-none">
+                  India's Most Affordable AI Learning Platform
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse ml-0.5" />
+              </div>
+
+              <div className="hero-3d-btn-wrap hero-get-started-wrap w-full sm:w-auto">
               <span className="btn3d-get-started-aura-yellow" aria-hidden="true" />
               <button
                 onClick={() => {
@@ -311,6 +314,7 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
                 </span>
                 <span className="btn3d-bottom btn3d-bottom-premium-yellow" />
               </button>
+            </div>
             </div>
 
             {/* ── 2. ANIMATED ATTENTION-GRABBING FREE ATS RESUME CHECKER CTA BUTTON ── */}
@@ -384,16 +388,31 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
           
           <div className="trust-left-group">
             <span className="trust-title">Trusted by 50,000+ Learners</span>
-            <div className="trust-logos-row">
-              <span className="logo-text google">Google</span>
-              <span className="logo-text msft">Microsoft</span>
-              <span className="logo-text amazon">amazon</span>
-              <span className="logo-text deloitte">Deloitte.</span>
-              <span className="logo-text accenture">accenture</span>
-              <span className="logo-text tcs">TCS</span>
-              <span className="logo-text infosys">Infosys</span>
-              <span className="logo-text ibm">IBM</span>
-              <span className="logo-text wipro">wipro</span>
+            <div className="trust-marquee-wrapper overflow-hidden w-full relative">
+              <div className="trust-marquee-track">
+                {/* 1st Loop */}
+                <span className="logo-text google">Google</span>
+                <span className="logo-text msft">Microsoft</span>
+                <span className="logo-text amazon">amazon</span>
+                <span className="logo-text deloitte">Deloitte.</span>
+                <span className="logo-text accenture">accenture</span>
+                <span className="logo-text tcs">TCS</span>
+                <span className="logo-text infosys">Infosys</span>
+                <span className="logo-text ibm">IBM</span>
+                <span className="logo-text wipro">wipro</span>
+                <span className="logo-text meta">Meta</span>
+                {/* 2nd Loop for Seamless Infinite Marquee Scroll */}
+                <span className="logo-text google">Google</span>
+                <span className="logo-text msft">Microsoft</span>
+                <span className="logo-text amazon">amazon</span>
+                <span className="logo-text deloitte">Deloitte.</span>
+                <span className="logo-text accenture">accenture</span>
+                <span className="logo-text tcs">TCS</span>
+                <span className="logo-text infosys">Infosys</span>
+                <span className="logo-text ibm">IBM</span>
+                <span className="logo-text wipro">wipro</span>
+                <span className="logo-text meta">Meta</span>
+              </div>
             </div>
           </div>
 

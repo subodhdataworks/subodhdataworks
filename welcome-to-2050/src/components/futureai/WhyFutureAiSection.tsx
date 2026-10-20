@@ -2,6 +2,7 @@ import React from 'react';
 import './WhyFutureAiSection.css';
 import { 
   GraduationCap,
+  Building2,
   Coins,
   BookOpen,
   FileText,
@@ -414,15 +415,160 @@ export const WhyFutureAiSection: React.FC<WhyFutureAiSectionProps> = ({
         </div>
         </div>
 
-        {/* ================= MOBILE / ANDROID APP COMPARISON POSTER (IMAGE) ================= */}
-        <div className="block md:hidden mb-6 px-1">
-          <div className="rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-sky-200/90 bg-white">
-            <img 
-              src="/images/why_future_ai_vs_others_mobile.jpg" 
-              alt="Other Institutes vs FUTURE IT INDUSTRY" 
-              className="w-full h-auto block select-none pointer-events-none"
-              loading="lazy"
-            />
+        {/* ================= MOBILE / ANDROID APP COMPARISON (NATIVE GENERATED UI) ================= */}
+        <div className="block md:hidden mb-8 px-1">
+          <div className="why-mobile-generated-comparison space-y-3.5">
+            
+            {/* ── CARD 1: OTHER INSTITUTES (PAIN POINTS & TENSION) ── */}
+            <div className="rounded-3xl p-4 sm:p-5 bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#111827] border-1.5 border-red-500/35 shadow-xl text-white relative overflow-hidden">
+              <div className="absolute -top-16 -right-16 w-36 h-36 bg-red-600/15 rounded-full blur-3xl pointer-events-none" />
+              
+              {/* Header */}
+              <div className="flex items-start justify-between gap-2 pb-3.5 border-b border-red-500/20">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-2xl bg-red-950/80 border border-red-500/40 flex items-center justify-center text-red-400 shrink-0 shadow-xs">
+                    <Building2 className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-base font-black text-slate-100 tracking-tight leading-none">Other Institutes</h4>
+                    <span className="text-[11px] text-red-400 font-bold tracking-tight">Pay Karke Bhi Tension...</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-sm font-black text-red-400 line-through tracking-tight">₹50,000 – ₹1,00,000+</span>
+                  <div className="text-[9px] text-slate-400 font-medium">Often on EMI</div>
+                </div>
+              </div>
+
+              {/* 5 Negative Comparison Points */}
+              <div className="space-y-2 mt-3.5">
+                {[
+                  { icon: Clock, title: 'High Fees', desc: '₹50,000 – ₹1,00,000+ Often on EMI.' },
+                  { icon: BookOpen, title: 'Mostly Theory', desc: 'More time on concepts, less hands-on practice.' },
+                  { icon: FileText, title: 'Limited Real-World Projects', desc: 'Few industry-style projects, often outdated datasets.' },
+                  { icon: HelpCircle, title: 'Guidance Issues', desc: 'Doubts not solved properly, you are on your own.' },
+                  { icon: Frown, title: 'Still Uncertain', desc: 'No clear interview practice or career support.' }
+                ].map((item, idx) => {
+                  const Icon = item.icon;
+                  return (
+                    <div key={idx} className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.07] transition-colors">
+                      <div className="w-6 h-6 rounded-xl bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400 shrink-0 mt-0.5">
+                        <Icon className="w-3.5 h-3.5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <strong className="text-xs font-black text-slate-200 block tracking-tight leading-snug">{item.title}</strong>
+                        <span className="text-[10px] text-slate-400 leading-tight block mt-0.5">{item.desc}</span>
+                      </div>
+                      <div className="w-5 h-5 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center shrink-0 mt-0.5">
+                        <X className="w-3 h-3 text-red-400 stroke-[3]" />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Bottom Negative Tags */}
+              <div className="grid grid-cols-2 gap-1.5 mt-3.5 pt-3 border-t border-white/[0.08]">
+                {['THEORY', 'OLD CONTENT', 'NO SUPPORT', 'STILL UNEMPLOYED'].map((tag) => (
+                  <div key={tag} className="text-[9px] font-mono font-black py-1 px-2 rounded-lg bg-red-950/70 border border-red-500/30 text-red-300 text-center flex items-center justify-center gap-1">
+                    <span>❌</span>
+                    <span>{tag}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── CENTER 3D VS BADGE ── */}
+            <div className="flex items-center justify-center -my-3 relative z-10">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 text-white font-black text-xs shadow-lg shadow-blue-500/35 border-2 border-white tracking-widest animate-pulse">
+                <span>⚡</span>
+                <span className="text-sm">VS</span>
+                <span>⚡</span>
+              </div>
+            </div>
+
+            {/* ── CARD 2: FUTURE IT INDUSTRY (HIGH-TECH SOLUTION & TENSION FREE) ── */}
+            <div className="rounded-3xl p-4 sm:p-5 bg-gradient-to-br from-white via-sky-50/70 to-emerald-50/60 border-2 border-sky-400/70 shadow-2xl relative overflow-hidden">
+              <div className="absolute -top-16 -right-16 w-36 h-36 bg-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
+
+              {/* Header */}
+              <div className="flex items-start justify-between gap-2 pb-3.5 border-b border-sky-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-sky-500 via-teal-500 to-emerald-500 text-white flex items-center justify-center font-black text-base shadow-md shadow-sky-500/30 shrink-0">
+                    ⚡
+                  </div>
+                  <div>
+                    <h4 className="text-base font-black text-slate-950 tracking-tight leading-none">FUTURE IT INDUSTRY</h4>
+                    <span className="text-[11px] text-teal-700 font-extrabold tracking-tight">High-Tech Padhai, Tension Free!</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-sm font-black text-emerald-700 bg-emerald-100/90 px-2.5 py-1 rounded-xl border border-emerald-300 shadow-xs block">
+                    ₹987 to Start
+                  </span>
+                  <span className="text-[9px] text-slate-500 font-medium">Learn Today. Earn Tomorrow.</span>
+                </div>
+              </div>
+
+              {/* AI-Powered Learning Path Strip */}
+              <div className="flex items-center justify-between gap-1 p-2 rounded-2xl bg-gradient-to-r from-sky-500/15 via-teal-500/15 to-emerald-500/15 border border-sky-300/60 text-[10px] font-black text-sky-950 my-3 shadow-2xs">
+                <span className="flex items-center gap-1"><Check className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" /> Learn</span>
+                <span className="text-sky-300">•</span>
+                <span className="flex items-center gap-1"><Check className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" /> Practice</span>
+                <span className="text-sky-300">•</span>
+                <span className="flex items-center gap-1"><Check className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" /> Build Projects</span>
+                <span className="text-sky-300">•</span>
+                <span className="flex items-center gap-1"><Check className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" /> Get Job-Ready</span>
+              </div>
+
+              {/* 6 Positive Comparison Points */}
+              <div className="space-y-2 mt-2">
+                {[
+                  { icon: Zap, title: 'AI-Powered Learning', desc: 'Get instant doubt solving, explanations like a personal tutor.' },
+                  { icon: Database, title: 'Real Datasets & Projects', desc: 'Work on industry-style projects and build a portfolio.' },
+                  { icon: Gamepad2, title: 'Practice Games & Quizzes', desc: 'Learn by doing. Make practice fun and engaging.' },
+                  { icon: BarChart3, title: 'In-Demand Skills', desc: 'Python, SQL, Excel, Power BI, GenAI with hands-on practice.' },
+                  { icon: Video, title: 'Interview Practice', desc: 'Mock interviews, AI feedback and real questions.' },
+                  { icon: Users, title: 'Career Support', desc: 'Resume building, guidance and job preparation.' }
+                ].map((item, idx) => {
+                  const Icon = item.icon;
+                  return (
+                    <div key={idx} className="flex items-start gap-2.5 p-2.5 rounded-2xl bg-white border border-sky-100 shadow-xs hover:border-sky-300 transition-colors">
+                      <div className="w-6 h-6 rounded-xl bg-gradient-to-br from-teal-50 to-sky-50 border border-teal-200 flex items-center justify-center text-teal-700 shrink-0 mt-0.5">
+                        <Icon className="w-3.5 h-3.5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <strong className="text-xs font-black text-slate-900 block tracking-tight leading-snug">{item.title}</strong>
+                        <span className="text-[10px] text-slate-600 leading-tight block mt-0.5">{item.desc}</span>
+                      </div>
+                      <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                        <Check className="w-3 h-3 text-white stroke-[3.5]" />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Bottom In-Demand Skills Pill Row */}
+              <div className="flex flex-wrap gap-1.5 mt-3.5 pt-3 border-t border-sky-100">
+                {['Python', 'SQL', 'Excel', 'Power BI', 'GenAI'].map((skill) => (
+                  <span key={skill} className="text-[10px] font-bold px-2.5 py-0.5 rounded-lg bg-sky-50 text-sky-800 border border-sky-200 shadow-2xs">
+                    ✓ {skill}
+                  </span>
+                ))}
+              </div>
+
+              {/* Call-to-Action Button */}
+              <button
+                onClick={handleAction}
+                className="w-full mt-3 py-3 rounded-2xl font-black text-xs text-white bg-gradient-to-r from-teal-500 via-sky-600 to-blue-600 shadow-lg shadow-sky-500/30 flex items-center justify-center gap-2 active:scale-98 transition-transform cursor-pointer"
+              >
+                <span>Start Learning for Just ₹987</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+
+            </div>
+
           </div>
         </div>
 
