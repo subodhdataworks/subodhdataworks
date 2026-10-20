@@ -4,8 +4,8 @@ import { useThemeAccent } from '../../../context/ThemeAccentContext';
 
 export interface MobileHomeCourseItem {
   id: string;
-  badge: string;
-  badgeColor: string;
+  badge?: string;
+  badgeColor?: string;
   glowColor: string;
   accentBorder: string;
   floatDelay: string;
@@ -13,9 +13,9 @@ export interface MobileHomeCourseItem {
   subtitle: string;
   image: string;
   video: string;
-  ctc: string;
-  lessons: string;
-  projects: string;
+  ctc?: string;
+  lessons?: string;
+  projects?: string;
 }
 
 interface MobileHomeCoursesGridProps {
@@ -265,8 +265,8 @@ export const MobileHomeCoursesGrid: React.FC<MobileHomeCoursesGridProps> = ({
             style={{ animationDelay: c.floatDelay }}
             className={`group rounded-2xl bg-white border border-slate-200/90 shadow-[0_6px_20px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_32px_${c.glowColor}] transition-all duration-300 overflow-hidden flex flex-col justify-between cursor-pointer active:scale-[0.98] relative course-floating-card ${c.accentBorder}`}
           >
-            {/* Top Video Preview Stage (Continuous AutoPlay Looping Video) */}
-            <div className="relative aspect-[16/11] w-full overflow-hidden bg-slate-950">
+            {/* Top Video Preview Stage (Continuous AutoPlay Looping Video - Clean & Uncluttered) */}
+            <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-950">
               {/* Continuous Background Video */}
               <video
                 src={c.video}
@@ -280,36 +280,17 @@ export const MobileHomeCoursesGrid: React.FC<MobileHomeCoursesGridProps> = ({
               />
 
               {/* Shimmer Ambient Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-black/35 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20 pointer-events-none" />
 
-              {/* Top Left Badge Ribbon */}
-              <div className="absolute top-1.5 left-1.5 z-10">
-                <span className={`px-2 py-0.5 rounded-md text-[9px] font-black tracking-tight shadow-md backdrop-blur-md flex items-center gap-1 ${c.badgeColor}`}>
-                  {c.badge}
-                </span>
-              </div>
-
-              {/* Top Right CTC Pill */}
-              <div className="absolute top-1.5 right-1.5 z-10">
-                <span className="px-2 py-0.5 rounded-md text-[9px] font-black bg-black/75 text-emerald-300 backdrop-blur-md border border-white/15 shadow-xs">
-                  {c.ctc}
-                </span>
-              </div>
-
-              {/* Mini Pulsing Live Video Icon at Bottom Left */}
-              <div className="absolute bottom-1.5 left-1.5 z-10 flex items-center gap-1 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded text-[8px] text-white font-bold">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
-                <span>LIVE PREVIEW</span>
-              </div>
-
-              {/* Bottom Right Lessons Stat */}
-              <div className="absolute bottom-1.5 right-1.5 z-10 text-[9px] text-slate-200 font-semibold bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded">
-                {c.lessons}
+              {/* Minimal Live Video Tag at Bottom Left */}
+              <div className="absolute bottom-1 left-1.5 z-10 flex items-center gap-1 bg-black/60 backdrop-blur-xs px-1.5 py-0.5 rounded text-[8px] text-white/95 font-bold tracking-wider">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                <span>LIVE</span>
               </div>
             </div>
 
-            {/* Bottom Card Content with Luminous Border */}
-            <div className="p-2.5 sm:p-3 flex-1 flex flex-col justify-between bg-gradient-to-b from-white via-slate-50/50 to-slate-100/50">
+            {/* Bottom Card Content - Compact & Space-Saving */}
+            <div className="p-2 sm:p-2.5 flex-1 flex flex-col justify-between bg-gradient-to-b from-white via-slate-50/50 to-slate-100/50">
               <div>
                 <h3 className="text-xs sm:text-[13px] font-black text-slate-900 leading-snug line-clamp-1 group-hover:text-blue-600 transition-colors">
                   {c.title}
@@ -320,7 +301,7 @@ export const MobileHomeCoursesGrid: React.FC<MobileHomeCoursesGridProps> = ({
               </div>
 
               {/* Mini CTA Footer */}
-              <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between">
+              <div className="mt-1.5 pt-1.5 border-t border-slate-100 flex items-center justify-between">
                 <span className="text-[9px] font-black text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
                   ₹987 Pass
                 </span>

@@ -38,9 +38,9 @@ export interface CourseDetailData {
 export const ALL_COURSES_DETAIL: Record<string, CourseDetailData> = {
   'react-frontend-dev': {
     id: 'react-frontend-dev',
-    badge: '⭐ 36 Chapters • High Demand',
+    badge: '⭐ Front-End & AI Specialization',
     headlineTitle: 'React Front-End Development with AI',
-    headlineSubtitle: 'Complete 36-Chapter Roadmap covering Web Fundamentals, HTML, CSS, JavaScript, React 19, Tailwind, UI/UX, AI-Assisted Dev & Deployment.',
+    headlineSubtitle: 'Complete Roadmap covering Web Fundamentals, HTML, CSS, JavaScript, React 19, Tailwind, UI/UX, AI-Assisted Dev & Deployment.',
     salaryRange: '₹8 LPA – ₹20 LPA',
     subjectsCovered: [
       'HTML5 & Semantic Web',
@@ -117,7 +117,7 @@ export const ALL_COURSES_DETAIL: Record<string, CourseDetailData> = {
   },
   'sql-databases': {
     id: 'sql-databases',
-    badge: '📊 High Demand • Core Tech',
+    badge: '📊 Database Engineering & SQL',
     headlineTitle: 'SQL & Database Engineering',
     headlineSubtitle: 'Master queries, schema architecture, performance tuning, indexing and analytical data pipelines.',
     salaryRange: '₹7 LPA – ₹15 LPA',
