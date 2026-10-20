@@ -21,21 +21,36 @@ export function setupRecaptcha(containerId: string = 'recaptcha-container'): Rec
     throw new Error('Window is not defined');
   }
 
-  // Clear any existing verifier instance
+  // Clear any existing verifier + grecaptcha widget to avoid conflicts on mobile
   if (window.recaptchaVerifier) {
     try {
       window.recaptchaVerifier.clear();
     } catch {}
-    delete window.recaptchaVerifier;
+    window.recaptchaVerifier = undefined;
+  }
+
+  // Ensure container exists in DOM, create if missing
+  let container = document.getElementById(containerId);
+  if (!container) {
+    container = document.createElement('div');
+    container.id = containerId;
+    document.body.appendChild(container);
+  } else {
+    // Clear previous widget render
+    container.innerHTML = '';
   }
 
   const verifier = new RecaptchaVerifier(auth, containerId, {
     size: 'invisible',
     callback: () => {
-      // reCAPTCHA solved - will proceed with submit
+      // reCAPTCHA solved automatically
     },
     'expired-callback': () => {
-      console.warn('reCAPTCHA expired');
+      console.warn('reCAPTCHA expired - will retry on next OTP send');
+      if (window.recaptchaVerifier) {
+        try { window.recaptchaVerifier.clear(); } catch {}
+        window.recaptchaVerifier = undefined;
+      }
     },
   });
 
@@ -60,6 +75,14 @@ export async function sendOtpToPhone(
     : `+91${clean.slice(-10)}`;
 
   const verifier = setupRecaptcha(containerId);
+
+  // Explicitly render reCAPTCHA before calling signInWithPhoneNumber (fixes mobile issues)
+  try {
+    await verifier.render();
+  } catch {
+    // render() may throw if already rendered — safe to ignore
+  }
+
   const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, verifier);
   window.confirmationResult = confirmationResult;
   return confirmationResult;
