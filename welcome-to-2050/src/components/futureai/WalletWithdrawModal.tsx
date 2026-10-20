@@ -1,21 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {
   X,
-  Wallet,
   Check,
-  CheckCircle2,
   AlertCircle,
   Building2,
-  ChevronDown,
   User,
   Phone,
-  ShieldCheck,
   Copy,
   Clock,
   Info,
-  ArrowRight,
   History,
-  Sparkles,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { ReferralEngine } from '../../services/referralEngine';
@@ -34,6 +28,7 @@ interface WithdrawalRecord {
   method: WithdrawalMethod;
   bankName?: string;
   accountNumber?: string;
+  ifsc?: string;
   upiId?: string;
   accountHolder: string;
   mobile: string;
@@ -47,22 +42,22 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  // Current wallet balance
-  const [balance, setBalance] = useState<number>(10250);
+  // Current wallet balance: starts at 0 for new user, never hardcoded!
+  const [balance, setBalance] = useState<number>(0);
   const [method, setMethod] = useState<WithdrawalMethod>('BANK');
-  const [amount, setAmount] = useState<string>('10000');
+  const [amount, setAmount] = useState<string>('');
 
-  // Bank fields
-  const [bankName, setBankName] = useState<string>('State Bank of India (SBI)');
-  const [accountNumber, setAccountNumber] = useState<string>('XXXX XXXX 1234');
-  const [isBankDropdownOpen, setIsBankDropdownOpen] = useState(false);
+  // Bank fields - user inputs their own details
+  const [bankName, setBankName] = useState<string>('');
+  const [accountNumber, setAccountNumber] = useState<string>('');
+  const [ifscCode, setIfscCode] = useState<string>('');
 
   // UPI fields
   const [upiId, setUpiId] = useState<string>('');
 
-  // Personal fields
-  const [accountHolder, setAccountHolder] = useState<string>('Subodh Kumar');
-  const [mobileNumber, setMobileNumber] = useState<string>('98765 43210');
+  // Personal fields - pulled from auth session if available, else blank
+  const [accountHolder, setAccountHolder] = useState<string>('');
+  const [mobileNumber, setMobileNumber] = useState<string>('');
 
   // UI state
   const [error, setError] = useState<string | null>(null);
@@ -74,7 +69,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
   // Submitted receipt data
   const [submittedData, setSubmittedData] = useState<WithdrawalRecord | null>(null);
 
-  // Sync balance whenever modal opens
+  // Sync state whenever modal opens
   useEffect(() => {
     if (isOpen) {
       setError(null);
@@ -82,26 +77,29 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
       setIsSubmitting(false);
       setShowHistory(false);
       setCopiedTxn(false);
+      setAmount('');
 
       if (typeof window !== 'undefined') {
-        let currentBal = 10250; // default initial demo balance
+        // Read real balance - defaults to 0 for any new user
+        let currentBal = 0;
         const customWallet = localStorage.getItem('futureai_user_wallet');
         if (customWallet !== null && !isNaN(parseInt(customWallet, 10))) {
           currentBal = parseInt(customWallet, 10);
-        } else {
-          // If no wallet saved yet, initialize with 10250 as shown in the user's reference mockup
-          localStorage.setItem('futureai_user_wallet', '10250');
         }
+        setBalance(currentBal);
 
-        // Try getting user profile name if available
-        const savedProfile = localStorage.getItem('futureai_user_profile');
-        if (savedProfile) {
-          try {
-            const parsed = JSON.parse(savedProfile);
-            if (parsed.name) setAccountHolder(parsed.name);
-            if (parsed.phone) setMobileNumber(parsed.phone);
-          } catch {}
-        }
+        // Read real user data from auth session
+        const storedName =
+          localStorage.getItem('futureai_user_name') ||
+          localStorage.getItem('future_user_name') ||
+          '';
+        const storedPhone =
+          localStorage.getItem('futureai_user_phone') ||
+          localStorage.getItem('future_user_phone') ||
+          '';
+
+        if (storedName) setAccountHolder(storedName);
+        if (storedPhone) setMobileNumber(storedPhone);
 
         // Load past withdrawal history
         const savedHistory = localStorage.getItem('futureai_withdrawals_history');
@@ -110,16 +108,13 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
             setHistoryList(JSON.parse(savedHistory));
           } catch {}
         }
-
-        setBalance(currentBal);
-        setAmount(currentBal >= 10000 ? '10000' : currentBal > 0 ? currentBal.toString() : '500');
       }
     }
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  // Format date helper: "19 Oct 2026, 05:38 PM"
+  // Format date helper: "20 Oct 2026, 05:38 PM"
   const formatDateTime = (dateObj: Date) => {
     const day = dateObj.getDate();
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -129,23 +124,25 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
     const minutes = dateObj.getMinutes().toString().padStart(2, '0');
     const ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12;
-    hours = hours ? hours : 12; // 0 should be 12
+    hours = hours ? hours : 12;
     const strHours = hours.toString().padStart(2, '0');
     return `${day} ${month} ${year}, ${strHours}:${minutes} ${ampm}`;
   };
 
-  // Generate Transaction ID: "WD" + YYYYMMDDHHMMSS
+  // Generate 100% Unique Transaction ID: "WD" + YYYYMMDD + 6 Random Digits
   const generateTxnId = (dateObj: Date) => {
     const y = dateObj.getFullYear();
     const m = (dateObj.getMonth() + 1).toString().padStart(2, '0');
     const d = dateObj.getDate().toString().padStart(2, '0');
-    const h = dateObj.getHours().toString().padStart(2, '0');
-    const min = dateObj.getMinutes().toString().padStart(2, '0');
-    const s = dateObj.getSeconds().toString().padStart(2, '0');
-    return `WD${y}${m}${d}${h}${min}${s}`;
+    const randomSuffix = Math.floor(100000 + Math.random() * 900000);
+    return `WD${y}${m}${d}${randomSuffix}`;
   };
 
   const handleAllClick = () => {
+    if (balance <= 0) {
+      setError('Available balance is ₹0. Please refer students or complete challenges to earn.');
+      return;
+    }
     setAmount(balance.toString());
   };
 
@@ -177,21 +174,41 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
       return;
     }
 
+    // Validate based on user's chosen method
     if (method === 'BANK') {
-      if (!accountHolder.trim()) {
-        setError('Please enter account holder name.');
+      if (!bankName.trim()) {
+        setError('Please enter your Bank Name (e.g. State Bank of India, HDFC, ICICI).');
         return;
       }
-      if (!mobileNumber.trim() || mobileNumber.replace(/\D/g, '').length < 10) {
-        setError('Please enter a valid 10-digit registered mobile number.');
+      if (!accountNumber.trim() || accountNumber.trim().length < 8) {
+        setError('Please enter a valid Bank Account Number (minimum 8 digits).');
+        return;
+      }
+      if (!ifscCode.trim() || ifscCode.trim().length < 5) {
+        setError('Please enter a valid Bank IFSC Code (e.g. SBIN0001234).');
         return;
       }
     } else {
-      const upiVal = (upiId || mobileNumber).trim();
-      if (!upiVal) {
-        setError('Please enter a valid UPI ID or PhonePe number.');
+      const cleanUpi = upiId.trim();
+      if (!cleanUpi) {
+        setError(
+          method === 'PHONEPE'
+            ? 'Please enter your PhonePe Mobile Number or UPI ID (e.g. 9876543210@ybl).'
+            : 'Please enter your UPI ID (VPA) (e.g. name@okhdfcbank).'
+        );
         return;
       }
+    }
+
+    if (!accountHolder.trim()) {
+      setError('Please enter Account Holder Name.');
+      return;
+    }
+
+    const cleanMobile = mobileNumber.replace(/\D/g, '');
+    if (cleanMobile.length < 10) {
+      setError('Please enter a valid 10-digit registered mobile number.');
+      return;
     }
 
     setIsSubmitting(true);
@@ -205,11 +222,12 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
         id: txnId,
         amount: numAmt,
         method: method,
-        bankName: bankName,
-        accountNumber: accountNumber,
-        upiId: upiId || `${mobileNumber.replace(/\s+/g, '')}@ybl`,
-        accountHolder: accountHolder.trim() || 'Subodh Kumar',
-        mobile: mobileNumber.trim() || '98765 43210',
+        bankName: method === 'BANK' ? bankName.trim() : undefined,
+        accountNumber: method === 'BANK' ? accountNumber.trim() : undefined,
+        ifsc: method === 'BANK' ? ifscCode.trim().toUpperCase() : undefined,
+        upiId: method !== 'BANK' ? upiId.trim() : undefined,
+        accountHolder: accountHolder.trim(),
+        mobile: cleanMobile,
         date: formattedDate,
         timestamp: now.getTime(),
         status: 'Processing',
@@ -220,7 +238,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
       if (typeof window !== 'undefined') {
         localStorage.setItem('futureai_user_wallet', newBal.toString());
 
-        // Update history
+        // Save submitted history
         const currentHist: WithdrawalRecord[] = historyList ? [...historyList] : [];
         currentHist.unshift(record);
         localStorage.setItem('futureai_withdrawals_history', JSON.stringify(currentHist));
@@ -231,11 +249,12 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
         window.dispatchEvent(new Event('storage'));
       }
 
-      // ReferralEngine integration
+      // ReferralEngine sync
       try {
         ReferralEngine.requestWithdrawal(numAmt, method === 'BANK' ? 'BANK_TRANSFER' : 'UPI', {
           accountHolder: record.accountHolder,
           accountNumber: record.accountNumber,
+          ifsc: record.ifsc,
           upiId: record.upiId,
         });
       } catch {}
@@ -244,7 +263,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
       setIsSubmitting(false);
       setSubmittedData(record);
 
-      // Trigger Confetti!
+      // Trigger Confetti
       try {
         confetti({
           particleCount: 80,
@@ -257,13 +276,6 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
       onSuccess?.();
     }, 600);
   };
-
-  const bankOptions = [
-    { name: 'State Bank of India (SBI)', account: 'XXXX XXXX 1234' },
-    { name: 'HDFC Bank', account: 'XXXX XXXX 5678' },
-    { name: 'ICICI Bank', account: 'XXXX XXXX 9012' },
-    { name: 'Punjab National Bank (PNB)', account: 'XXXX XXXX 3456' },
-  ];
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn overflow-y-auto">
@@ -282,12 +294,12 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
 
         {/* ══════════════════════════════════════════════════
             SCREEN 2: WITHDRAWAL REQUEST SUBMITTED!
+            (Reflects 100% Real User Inputs from Step 1)
            ══════════════════════════════════════════════════ */}
         {submittedData ? (
           <div className="pt-2 pb-1 animate-scaleUp">
             {/* Top Confetti & Green Check Badge */}
             <div className="relative flex justify-center items-center py-2">
-              {/* Confetti Decorative Dots */}
               <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
                 <span className="absolute top-0 left-12 w-2 h-2 rounded-full bg-rose-400 opacity-80" />
                 <span className="absolute top-2 left-24 w-2.5 h-1 rounded-sm bg-purple-500 rotate-45 opacity-80" />
@@ -299,7 +311,6 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
 
               {/* Glowing Outer Mint Circle */}
               <div className="w-20 h-20 rounded-full bg-[#dcfce7] flex items-center justify-center shadow-lg shadow-emerald-500/10">
-                {/* Inner Emerald Circle */}
                 <div className="w-14 h-14 rounded-full bg-[#10b981] flex items-center justify-center text-white shadow-md">
                   <Check className="w-8 h-8 stroke-[3.5]" />
                 </div>
@@ -318,7 +329,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
 
             {/* Request Details Card */}
             <div className="rounded-2xl border border-blue-100 bg-[#f8fbff] p-4 text-xs space-y-2.5">
-              {/* Card Header */}
+              {/* Header */}
               <div className="flex items-center gap-2 text-slate-900 font-black text-sm pb-1 border-b border-blue-100/60">
                 <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center">
                   <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
@@ -328,7 +339,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                 <span>Request Details</span>
               </div>
 
-              {/* Rows */}
+              {/* Amount */}
               <div className="flex items-center justify-between text-slate-500 pt-1">
                 <span className="font-medium">Withdrawal Amount</span>
                 <span className="text-slate-900 font-black text-sm">
@@ -336,6 +347,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                 </span>
               </div>
 
+              {/* Method */}
               <div className="flex items-center justify-between text-slate-500">
                 <span className="font-medium">Withdrawal Method</span>
                 <div className="flex items-center gap-1.5 font-bold text-slate-900">
@@ -364,33 +376,50 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-start justify-between text-slate-500">
-                <span className="font-medium">{submittedData.method === 'BANK' ? 'Bank Account' : 'UPI ID'}</span>
-                <div className="text-right">
-                  <div className="font-bold text-slate-900">
-                    {submittedData.method === 'BANK' ? submittedData.bankName : submittedData.upiId}
+              {/* Dynamic Destination Field: Bank or UPI */}
+              {submittedData.method === 'BANK' ? (
+                <>
+                  <div className="flex items-start justify-between text-slate-500">
+                    <span className="font-medium">Bank Account</span>
+                    <div className="text-right">
+                      <div className="font-bold text-slate-900">{submittedData.bankName}</div>
+                      <div className="text-[11px] text-slate-500 font-mono">
+                        A/C: {submittedData.accountNumber}
+                      </div>
+                      {submittedData.ifsc && (
+                        <div className="text-[10px] text-slate-400 font-mono">IFSC: {submittedData.ifsc}</div>
+                      )}
+                    </div>
                   </div>
-                  {submittedData.method === 'BANK' && (
-                    <div className="text-[11px] text-slate-400 font-mono">{submittedData.accountNumber}</div>
-                  )}
+                </>
+              ) : (
+                <div className="flex items-center justify-between text-slate-500">
+                  <span className="font-medium">
+                    {submittedData.method === 'PHONEPE' ? 'PhonePe UPI ID' : 'UPI ID (VPA)'}
+                  </span>
+                  <span className="font-bold text-slate-900 font-mono">{submittedData.upiId}</span>
                 </div>
-              </div>
+              )}
 
+              {/* Account Holder Name */}
               <div className="flex items-center justify-between text-slate-500">
                 <span className="font-medium">Account Holder Name</span>
                 <span className="font-bold text-slate-900">{submittedData.accountHolder}</span>
               </div>
 
+              {/* Registered Mobile Number */}
               <div className="flex items-center justify-between text-slate-500">
                 <span className="font-medium">Registered Mobile Number</span>
                 <span className="font-bold text-slate-900">{submittedData.mobile}</span>
               </div>
 
+              {/* Request Date */}
               <div className="flex items-center justify-between text-slate-500">
                 <span className="font-medium">Request Date</span>
                 <span className="font-bold text-slate-900">{submittedData.date}</span>
               </div>
 
+              {/* Transaction ID */}
               <div className="flex items-center justify-between text-slate-500">
                 <span className="font-medium">Transaction ID</span>
                 <div className="flex items-center gap-1.5 font-mono font-bold text-slate-900">
@@ -410,6 +439,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                 </div>
               </div>
 
+              {/* Status */}
               <div className="flex items-center justify-between text-slate-500 pt-1 border-t border-blue-100/60">
                 <span className="font-medium">Status</span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#fffbeb] border border-[#fef3c7] text-[#d97706] font-bold text-xs">
@@ -436,7 +466,6 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                   </span>
                 </div>
 
-                {/* Connector Line 1 */}
                 <div className="flex-1 h-[2px] border-t-2 border-dashed border-slate-300 mx-1 -mt-7" />
 
                 {/* Step 2: Processing */}
@@ -452,7 +481,6 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                   </span>
                 </div>
 
-                {/* Connector Line 2 */}
                 <div className="flex-1 h-[2px] border-t-2 border-dashed border-slate-300 mx-1 -mt-7" />
 
                 {/* Step 3: Amount Transferred */}
@@ -525,7 +553,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                       <span className="text-[11px] text-slate-500">{item.date}</span>
                     </div>
                     <div className="text-[11px] text-slate-500">
-                      To: <strong>{item.method === 'BANK' ? item.bankName : item.upiId}</strong> ({item.accountHolder})
+                      To: <strong>{item.method === 'BANK' ? `${item.bankName} (${item.accountNumber})` : item.upiId}</strong> ({item.accountHolder})
                     </div>
                   </div>
                 ))
@@ -548,14 +576,12 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
             {/* Header: 3D Blue Wallet Icon + Title */}
             <div className="flex items-start gap-3 mb-4 pr-7">
               <div className="relative w-12 h-12 shrink-0">
-                {/* 3D Wallet SVG Graphic Matching Mockup */}
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0088ff] to-[#0055d4] p-2 flex items-center justify-center shadow-lg shadow-blue-500/30 text-white relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-8 h-8 bg-white/20 rounded-full blur-xs" />
                   <div className="relative z-10 flex flex-col items-center">
                     <span className="text-base font-black leading-none">₹</span>
                     <div className="w-4 h-1.5 bg-yellow-400 rounded-sm mt-0.5 shadow-xs" />
                   </div>
-                  {/* Gold Coins Peeking */}
                   <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-tr from-yellow-500 to-amber-300 border border-white/60 shadow-xs flex items-center justify-center text-[9px] font-black text-amber-900">
                     ₹
                   </div>
@@ -594,7 +620,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
             </div>
 
             {/* Withdraw Form */}
-            <form onSubmit={handleSubmit} className="space-y-3.5">
+            <form onSubmit={handleSubmit} className="space-y-3">
               
               {/* Withdrawal Amount Input */}
               <div>
@@ -606,7 +632,6 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                   <input
                     type="number"
                     min="500"
-                    max={balance > 0 ? balance : undefined}
                     placeholder="Enter amount to withdraw"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
@@ -635,7 +660,10 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                   {/* Bank Account */}
                   <button
                     type="button"
-                    onClick={() => setMethod('BANK')}
+                    onClick={() => {
+                      setMethod('BANK');
+                      setError(null);
+                    }}
                     className={`py-2 px-2 rounded-xl border flex items-center justify-center gap-1.5 text-xs font-bold transition-all cursor-pointer ${
                       method === 'BANK'
                         ? 'border-2 border-blue-600 bg-blue-50/20 text-slate-900 shadow-2xs'
@@ -649,7 +677,10 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                   {/* PhonePe */}
                   <button
                     type="button"
-                    onClick={() => setMethod('PHONEPE')}
+                    onClick={() => {
+                      setMethod('PHONEPE');
+                      setError(null);
+                    }}
                     className={`py-2 px-2 rounded-xl border flex items-center justify-center gap-1.5 text-xs font-bold transition-all cursor-pointer ${
                       method === 'PHONEPE'
                         ? 'border-2 border-blue-600 bg-blue-50/20 text-slate-900 shadow-2xs'
@@ -665,7 +696,10 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                   {/* Other UPI */}
                   <button
                     type="button"
-                    onClick={() => setMethod('UPI')}
+                    onClick={() => {
+                      setMethod('UPI');
+                      setError(null);
+                    }}
                     className={`py-2 px-2 rounded-xl border flex items-center justify-center gap-1.5 text-xs font-bold transition-all cursor-pointer ${
                       method === 'UPI'
                         ? 'border-2 border-blue-600 bg-blue-50/20 text-slate-900 shadow-2xs'
@@ -680,67 +714,75 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                 </div>
               </div>
 
-              {/* Bank Details / Method Input */}
+              {/* DYNAMIC FIELDS BASED ON SELECTED METHOD */}
               {method === 'BANK' ? (
-                <div>
-                  <label className="text-xs font-bold text-slate-800 block mb-1">
-                    Bank Details
-                  </label>
-                  <div className="relative">
-                    <button
-                      type="button"
-                      onClick={() => setIsBankDropdownOpen(!isBankDropdownOpen)}
-                      className="w-full flex items-center justify-between p-2.5 rounded-xl border border-slate-200 bg-white hover:border-slate-300 text-left cursor-pointer transition-all shadow-2xs"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                          <Building2 className="w-4 h-4 stroke-[2.2]" />
-                        </div>
-                        <div>
-                          <div className="text-xs font-bold text-slate-900">{bankName}</div>
-                          <div className="text-[11px] text-slate-400 font-mono">{accountNumber}</div>
-                        </div>
-                      </div>
-                      <ChevronDown className="w-4 h-4 text-slate-400" />
-                    </button>
+                /* ── Bank Account Fields: User types Bank Name, Account Number & IFSC ── */
+                <div className="space-y-2.5 p-3 rounded-xl bg-slate-50/80 border border-slate-200/80">
+                  <div className="text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
+                    <Building2 className="w-3.5 h-3.5 text-blue-600" />
+                    <span>Enter Bank Details</span>
+                  </div>
 
-                    {/* Bank Selection Dropdown */}
-                    {isBankDropdownOpen && (
-                      <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-slate-200 rounded-xl shadow-xl z-30 p-1.5 space-y-1">
-                        {bankOptions.map((opt) => (
-                          <button
-                            key={opt.name}
-                            type="button"
-                            onClick={() => {
-                              setBankName(opt.name);
-                              setAccountNumber(opt.account);
-                              setIsBankDropdownOpen(false);
-                            }}
-                            className="w-full p-2 text-left rounded-lg hover:bg-blue-50 flex items-center justify-between text-xs cursor-pointer"
-                          >
-                            <div>
-                              <div className="font-bold text-slate-800">{opt.name}</div>
-                              <div className="text-[10px] text-slate-400 font-mono">{opt.account}</div>
-                            </div>
-                            {bankName === opt.name && (
-                              <Check className="w-4 h-4 text-blue-600 stroke-[3]" />
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    )}
+                  {/* Bank Name Input */}
+                  <div>
+                    <label className="text-[11px] font-semibold text-slate-600 block mb-0.5">
+                      Bank Name *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. State Bank of India, HDFC, ICICI, Axis"
+                      value={bankName}
+                      onChange={(e) => setBankName(e.target.value)}
+                      className="w-full text-xs font-semibold text-slate-900 placeholder:text-slate-400 bg-white border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:border-blue-600 shadow-2xs"
+                      required
+                    />
+                  </div>
+
+                  {/* Account Number Input */}
+                  <div>
+                    <label className="text-[11px] font-semibold text-slate-600 block mb-0.5">
+                      Bank Account Number *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter 9 to 18 digit account number"
+                      value={accountNumber}
+                      onChange={(e) => setAccountNumber(e.target.value)}
+                      className="w-full text-xs font-mono font-semibold text-slate-900 placeholder:text-slate-400 bg-white border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:border-blue-600 shadow-2xs"
+                      required
+                    />
+                  </div>
+
+                  {/* IFSC Code Input */}
+                  <div>
+                    <label className="text-[11px] font-semibold text-slate-600 block mb-0.5">
+                      Bank IFSC Code *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. SBIN0001234 or HDFC0000123"
+                      value={ifscCode}
+                      onChange={(e) => setIfscCode(e.target.value.toUpperCase())}
+                      className="w-full text-xs font-mono uppercase font-semibold text-slate-900 placeholder:text-slate-400 bg-white border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:border-blue-600 shadow-2xs"
+                      required
+                    />
                   </div>
                 </div>
               ) : (
+                /* ── UPI Fields: User types UPI ID / PhonePe Number ── */
                 <div>
                   <label className="text-xs font-bold text-slate-800 block mb-1">
-                    {method === 'PHONEPE' ? 'PhonePe Mobile Number / UPI ID' : 'UPI ID (VPA)'}
+                    {method === 'PHONEPE' ? 'PhonePe UPI ID / Mobile Number *' : 'UPI ID (VPA) *'}
                   </label>
                   <div className="relative flex items-center border border-slate-200 rounded-xl bg-white px-3 py-2.5 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100 transition-all shadow-2xs">
                     <span className="text-xs font-black text-slate-400 mr-2">@</span>
                     <input
                       type="text"
-                      placeholder={method === 'PHONEPE' ? 'e.g. 9876543210@ybl' : 'e.g. yourname@okhdfcbank'}
+                      placeholder={
+                        method === 'PHONEPE'
+                          ? 'e.g. 9876543210@ybl or 9876543210'
+                          : 'e.g. yourname@okhdfcbank or mobile@paytm'
+                      }
                       value={upiId}
                       onChange={(e) => setUpiId(e.target.value)}
                       className="w-full text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none bg-transparent"
@@ -753,13 +795,13 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
               {/* Account Holder Name */}
               <div>
                 <label className="text-xs font-bold text-slate-800 block mb-1">
-                  Account Holder Name
+                  Account Holder Name *
                 </label>
                 <div className="relative flex items-center border border-slate-200 rounded-xl bg-white px-3 py-2.5 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100 transition-all shadow-2xs">
                   <User className="w-4 h-4 text-slate-400 mr-2.5 shrink-0" />
                   <input
                     type="text"
-                    placeholder="Enter account holder name (as per bank)"
+                    placeholder="Enter account holder name"
                     value={accountHolder}
                     onChange={(e) => setAccountHolder(e.target.value)}
                     className="w-full text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none bg-transparent"
@@ -771,13 +813,13 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
               {/* Registered Mobile Number */}
               <div>
                 <label className="text-xs font-bold text-slate-800 block mb-1">
-                  Registered Mobile Number
+                  Registered Mobile Number *
                 </label>
                 <div className="relative flex items-center border border-slate-200 rounded-xl bg-white px-3 py-2.5 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100 transition-all shadow-2xs">
                   <Phone className="w-4 h-4 text-slate-400 mr-2.5 shrink-0" />
                   <input
                     type="tel"
-                    placeholder="Enter 10 digit mobile number"
+                    placeholder="Enter 10-digit mobile number"
                     value={mobileNumber}
                     onChange={(e) => setMobileNumber(e.target.value)}
                     className="w-full text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none bg-transparent"
@@ -792,7 +834,9 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                   <Check className="w-3 h-3 stroke-[3]" />
                 </div>
                 <p className="text-[11px] sm:text-xs text-[#065f46] font-medium leading-snug">
-                  Amount will be transferred to your registered bank account within 2-3 business days.
+                  {method === 'BANK'
+                    ? 'Amount will be transferred to your registered bank account within 2-3 business days.'
+                    : 'Amount will be transferred to your registered UPI ID within 2-3 business days.'}
                 </p>
               </div>
 
