@@ -440,7 +440,7 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
       <header className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-3.5 py-2.5 flex items-center justify-between shadow-2xs">
         {/* Brand Logo */}
         <div className="flex items-center gap-2">
-          <FutureLogo size="sm" showText={true} />
+          <FutureLogo size="sm" variant="full" />
         </div>
 
         {/* Right Actions: Search, Login Button, Hamburger Menu */}
@@ -519,7 +519,7 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
               type="button"
               onClick={() => {
                 playClick?.();
-                alert(`⭐ Your Gaming Points: ${telemetry?.totalXp || 450} XP!\nComplete challenges to level up.`);
+                alert(`⭐ Your Gaming Points: ${((telemetry?.coins || 0) * 10) || 450} XP!\nComplete challenges to level up.`);
               }}
               className="w-full h-full cursor-pointer active:scale-95 transition-transform"
               aria-label="Earn Points"
