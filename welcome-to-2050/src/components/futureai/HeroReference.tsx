@@ -209,22 +209,7 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
                         </div>
 
 
-            {/* Shifted Watch 1-Min Tour to an attractive header spot */}
-            <button
-              onClick={() => {
-                playCinema();
-                onWatchVideo();
-              }}
-              onMouseEnter={playHover}
-              className="hero-header-tour-btn"
-              aria-label="Watch 1-Min Tour"
-            >
-              <div className="tour-play-circle-small">
-                <Play className="w-2.5 h-2.5 fill-current ml-0.5 text-blue-600" />
-              </div>
-              <span>Watch 1-Min Tour</span>
-              <span className="tour-badge-pill">VIDEO</span>
-            </button>
+
                     </div>
 
           {/* 1B. Value Banner: "Learn. Practice. Build. Get Placed. No Need to Spend ₹2 Lakh" */}

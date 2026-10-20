@@ -1006,23 +1006,26 @@
 
 /* ── Free ATS Resume Checker Button Content ── */
 .btn3d-content-ats {
-  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 45%, #312e81 100%) !important;
-  border-top: 1.5px solid rgba(147, 197, 253, 0.65) !important;
+  background: linear-gradient(135deg, #00d2ff 0%, #0070f3 50%, #0052cc 100%) !important;
+  border-top: 2px solid rgba(255, 255, 255, 0.95) !important;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.25) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.6) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.6) !important;
   box-shadow:
-    inset 0 1px 2px rgba(255, 255, 255, 0.4),
-    0 8px 24px rgba(30, 27, 75, 0.45) !important;
+    inset 0 2px 3px rgba(255, 255, 255, 0.9),
+    0 10px 28px rgba(0, 112, 243, 0.5) !important;
   color: #ffffff !important;
 }
 
 .hero-3d-game-btn:hover .btn3d-content-ats {
-  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #4338ca 100%) !important;
+  background: linear-gradient(135deg, #38bdf8 0%, #0080ff 50%, #0060e6 100%) !important;
   box-shadow:
-    inset 0 1px 2px rgba(255, 255, 255, 0.5),
-    0 12px 30px rgba(79, 70, 229, 0.55) !important;
+    inset 0 2px 4px rgba(255, 255, 255, 1),
+    0 14px 36px rgba(0, 112, 243, 0.7) !important;
 }
 
 .btn3d-bottom-purple {
-  background: #020617 !important;
+  background: linear-gradient(180deg, #0044cc 0%, #002b80 100%) !important;
 }
 
 .glow-blue {
