@@ -564,9 +564,9 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       shortDesc: 'Tailored enterprise corporate training: Upskill your workforce, automate business workflows & deploy private LLMs.',
       salaryRange: 'Custom Enterprise Quote',
       courseFee: '₹49,999',
-      image: '/images/future_it_industries_hq_real.jpg',
-      holoImage: '/images/future_it_industries_hq_real.jpg',
-      video: '/videos/courses_hero_banner_v2.mp4',
+      image: '/images/train_your_business_poster.jpg',
+      holoImage: '/images/train_your_business_poster.jpg',
+      video: '/videos/train_your_business_corporate_ai.mp4',
       potTheme: 'gold' as const,
       skillsList: ['Corporate AI', 'Workflow Automation', 'Team Upskilling', 'Enterprise LLMs'],
       themeStyles: {
