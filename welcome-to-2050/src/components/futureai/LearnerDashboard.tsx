@@ -913,7 +913,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       exercises: '5 Exercises',
       project: '1 Project',
       icon: <img src="/images/icons3d/icon_07_dataclean.png" alt="Data Cleaning 3D" className="w-full h-full object-contain" />,
-      isLocked: isNewStudentMode ? true : false,
+      isLocked: false,
       tag: 'ETL & Prep',
       color: '#0284c7'
     },
@@ -927,7 +927,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       exercises: '5 Exercises',
       project: '1 Project',
       icon: <img src="/images/icons3d/icon_08_bizanalytics.png" alt="Business Analytics 3D" className="w-full h-full object-contain" />,
-      isLocked: isNewStudentMode ? true : false,
+      isLocked: false,
       tag: 'Strategy',
       color: '#ef4444'
     },
@@ -941,7 +941,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       exercises: '5 Exercises',
       project: '1 Project',
       icon: <img src="/images/icons3d/icon_09_interview.png" alt="AI Interview 3D" className="w-full h-full object-contain" />,
-      isLocked: isNewStudentMode ? true : false,
+      isLocked: false,
       tag: 'Placement',
       color: '#8b5cf6',
       spanCol: true // Span across 2 columns in row 3!
@@ -955,7 +955,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       lessons: '6 Lessons',
       project: '1 Project',
       icon: <img src="/images/icons3d/icon_10_capstone.png" alt="Capstone Trophy 3D" className="w-full h-full object-contain" />,
-      isLocked: isNewStudentMode ? true : false,
+      isLocked: false,
       tag: 'Portfolio',
       color: '#eab308',
       spanCol: true // Span across 2 columns in row 3!
@@ -982,42 +982,35 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
   const handleModuleClick = (m: typeof modules[0]) => {
     playClick();
-    if (m.isLocked) {
-      setSelectedLockedModule(m.title);
-      setUnlockModalOpen(true);
+    playCinema();
+    const titleLower = (m.title || '').toLowerCase();
+    if (m.id === 'mod-1' || titleLower.includes('python') || titleLower.includes('data clean')) {
+      setSelectedModuleView('python');
+      if (typeof window !== 'undefined') window.location.hash = '#python';
+    } else if (m.id === 'mod-2' || titleLower.includes('sql')) {
+      setSelectedModuleView('sql');
+      if (typeof window !== 'undefined') window.location.hash = '#sql';
+    } else if (m.id === 'mod-3' || titleLower.includes('excel') || titleLower.includes('business')) {
+      setSelectedModuleView('excel');
+      if (typeof window !== 'undefined') window.location.hash = '#excel';
+    } else if (m.id === 'mod-4' || titleLower.includes('power bi') || titleLower.includes('powerbi')) {
+      setSelectedModuleView('powerbi');
+      if (typeof window !== 'undefined') window.location.hash = '#powerbi';
+    } else if (m.id === 'mod-5' || titleLower.includes('stat')) {
+      setSelectedModuleView('stats');
+      if (typeof window !== 'undefined') window.location.hash = '#stats';
+    } else if (m.id === 'mod-6' || titleLower.includes('genai') || titleLower.includes('ai')) {
+      setSelectedModuleView('genai');
+      if (typeof window !== 'undefined') window.location.hash = '#genai';
+    } else if (m.id === 'mod-9' || titleLower.includes('interview')) {
+      setSelectedModuleView('python');
+      if (typeof window !== 'undefined') window.location.hash = '#mockinterview';
+    } else if (m.id === 'mod-10' || titleLower.includes('capstone') || titleLower.includes('project')) {
+      setSelectedModuleView('python');
+      if (typeof window !== 'undefined') window.location.hash = '#projects';
     } else {
-      playCinema();
-      if (m.id === 'mod-1' || m.title.toLowerCase().includes('python')) {
-        setSelectedModuleView('python');
-        if (typeof window !== 'undefined') {
-          window.location.hash = '#python';
-        }
-      } else if (m.id === 'mod-2' || m.title.toLowerCase().includes('sql')) {
-        setSelectedModuleView('sql');
-        if (typeof window !== 'undefined') {
-          window.location.hash = '#sql';
-        }
-      } else if (m.id === 'mod-3' || m.title.toLowerCase().includes('excel')) {
-        setSelectedModuleView('excel');
-        if (typeof window !== 'undefined') {
-          window.location.hash = '#excel';
-        }
-      } else if (m.id === 'mod-4' || m.title.toLowerCase().includes('power bi') || m.title.toLowerCase().includes('powerbi')) {
-        setSelectedModuleView('powerbi');
-        if (typeof window !== 'undefined') {
-          window.location.hash = '#powerbi';
-        }
-      } else if (m.id === 'mod-5' || m.title.toLowerCase().includes('stat') || m.title.toLowerCase().includes('statistic')) {
-        setSelectedModuleView('stats');
-        if (typeof window !== 'undefined') {
-          window.location.hash = '#stats';
-        }
-      } else if (m.id === 'mod-6' || m.title.toLowerCase().includes('genai') || m.title.toLowerCase().includes('ai')) {
-        setSelectedModuleView('genai');
-        if (typeof window !== 'undefined') {
-          window.location.hash = '#genai';
-        }
-      }
+      setSelectedModuleView('python');
+      if (typeof window !== 'undefined') window.location.hash = '#python';
     }
   };
 
@@ -1954,8 +1947,27 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 }}
                 onOpenLockedModule={(title) => {
                   playClick();
-                  setSelectedLockedModule(title);
-                  setUnlockModalOpen(true);
+                  playCinema();
+                  const t = (title || '').toLowerCase();
+                  if (t.includes('sql')) {
+                    setSelectedModuleView('sql');
+                    if (typeof window !== 'undefined') window.location.hash = '#sql';
+                  } else if (t.includes('excel') || t.includes('copilot')) {
+                    setSelectedModuleView('excel');
+                    if (typeof window !== 'undefined') window.location.hash = '#excel';
+                  } else if (t.includes('power') || t.includes('bi')) {
+                    setSelectedModuleView('powerbi');
+                    if (typeof window !== 'undefined') window.location.hash = '#powerbi';
+                  } else if (t.includes('stat')) {
+                    setSelectedModuleView('stats');
+                    if (typeof window !== 'undefined') window.location.hash = '#stats';
+                  } else if (t.includes('genai')) {
+                    setSelectedModuleView('genai');
+                    if (typeof window !== 'undefined') window.location.hash = '#genai';
+                  } else {
+                    setSelectedModuleView('python');
+                    if (typeof window !== 'undefined') window.location.hash = '#python';
+                  }
                 }}
                 onNavigateHome={() => {
                   playClick();
@@ -2169,8 +2181,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 }}
                 onOpenLockedCourse={(courseTitle) => {
                   playClick();
-                  setSelectedLockedModule(courseTitle);
-                  setUnlockModalOpen(true);
+                  playCinema();
+                  setSelectedModuleView('data_analyst');
+                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
                 }}
                 onOpenPythonDirect={() => {
                   playClick();

@@ -44,13 +44,9 @@ export const CourseCatalogView: React.FC<CourseCatalogViewProps> = ({
   const [selectedCourseId, setSelectedCourseId] = useState<string>('python');
 
   const activeCourse = COURSES_CATALOG.find((c) => c.id === selectedCourseId) || COURSES_CATALOG[0];
-  const isSubscribed = Boolean(profile.isSubscribed || profile.devModeUnlocked);
+  const isSubscribed = true;
 
-  const isTopicAccessible = (topic: CourseTopic) => {
-    if (topic.isFree) return true;
-    if (isSubscribed) return true;
-    return false;
-  };
+  const isTopicAccessible = (_topic: CourseTopic) => true;
 
   const getCourseIcon = (id: string) => {
     switch (id) {

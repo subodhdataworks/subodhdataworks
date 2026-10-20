@@ -261,6 +261,22 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
           <ArrowRight className="w-5 h-5 text-slate-700 group-hover:translate-x-1 transition-transform shrink-0" />
         </button>
 
+        {/* ── 1-Tap Quick Access for Mobile (Zero Popups, 100% Reliable) ── */}
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={handleInstantBypass}
+            disabled={isSubmitting}
+            className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-sky-50 to-blue-50 hover:from-sky-100 hover:to-blue-100 border border-sky-200 text-sky-800 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-[0.99] transition-all"
+          >
+            <Sparkles className="w-4 h-4 text-sky-600 shrink-0" />
+            <span>⚡ Instant 1-Tap Student Access (Mobile Direct)</span>
+          </button>
+          <p className="text-[10px] text-slate-400 mt-1.5 font-medium">
+            📱 Mobile tip: If Google popup closes automatically, tap above for instant entry.
+          </p>
+        </div>
+
         {/* ── 3 Feature Pillars Row matching mockup exactly ── */}
         <div className="grid grid-cols-3 gap-2 mt-8 mb-6 pt-6 border-t border-slate-100">
           

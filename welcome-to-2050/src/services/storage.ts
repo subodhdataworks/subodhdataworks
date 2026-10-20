@@ -18,7 +18,8 @@ const DEFAULT_PROFILE: LearnerProfile = {
   currentStepIndex: 0,
   completedSteps: [],
   createdAt: new Date().toISOString(),
-  devModeUnlocked: false,
+  devModeUnlocked: true,
+  isSubscribed: true,
 };
 
 export class StorageService {

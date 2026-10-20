@@ -101,21 +101,21 @@ export const LiquidFloatingNavBar: React.FC<LiquidFloatingNavBarProps> = ({
       label: 'Industrial Training',
       shortLabel: 'Training',
       color: '#0284c7',
-      isLocked: true,
+      isLocked: false,
     },
     {
       id: 'internship',
       label: 'Internship',
       shortLabel: 'Intern',
       color: '#059669',
-      isLocked: true,
+      isLocked: false,
     },
     {
       id: 'placement',
       label: 'Placement',
       shortLabel: 'Placement',
       color: '#e11d48',
-      isLocked: true,
+      isLocked: false,
     },
   ];
 
