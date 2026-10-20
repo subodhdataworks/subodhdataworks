@@ -13,6 +13,7 @@ import { FutureAuthModal } from './FutureAuthModal';
 import { AdvisorModal } from './AdvisorModal';
 import { CurriculumModal } from './CurriculumModal';
 import { VideoCinemaModal } from './VideoCinemaModal';
+import { MobileHomeCoursesGrid } from './mobile/MobileHomeCoursesGrid';
 import { FutureInteractiveBar } from './FutureInteractiveBar';
 import { SupportedLanguage } from '../../services/powerGreenAIService';
 import { LearnerProfile } from '../../types';
@@ -149,6 +150,18 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             onWatchRecording={() => setVideoCinemaOpen(true)}
           />
         </div>
+
+        {/* 2.15 Mobile Courses Grid: 2 Courses at a time, Compact ("Chota Chota") above "You Will Get Job" */}
+        <MobileHomeCoursesGrid
+          onStartCourse={(courseId) => {
+            if (courseId === 'react-frontend-dev') {
+              setCurriculumModalOpen(true);
+            } else {
+              handleStartJourney();
+            }
+          }}
+          onOpenCurriculum={() => setCurriculumModalOpen(true)}
+        />
 
         {/* 2.2 Placement Support: You Will Get Job From 700+ Companies Banner */}
         <div className="my-6 sm:my-8">
