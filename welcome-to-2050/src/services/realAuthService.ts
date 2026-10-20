@@ -122,8 +122,8 @@ export async function recordUserInDatabase(userData: {
 
 /**
  * Real Google 1-Click Login via Firebase
- * Android/Mobile: uses signInWithRedirect (popups blocked on Android Chrome)
- * Desktop: uses signInWithPopup for instant single-tab experience
+ * Tries signInWithPopup first (works on desktop, Android Chrome, iOS Safari).
+ * Falls back to signInWithRedirect on mobile only when the popup is blocked/unsupported.
  */
 export async function loginWithGooglePopup(): Promise<{
   name: string;
@@ -134,22 +134,28 @@ export async function loginWithGooglePopup(): Promise<{
   try {
     let user: User;
 
-    if (isAndroidOrMobile()) {
-      // Android / Mobile — use redirect flow (popup is blocked on Android Chrome)
-      // First check if we're returning from a redirect
-      const redirectResult = await getRedirectResult(auth);
-      if (redirectResult?.user) {
-        user = redirectResult.user;
-      } else {
-        // Trigger redirect to Google sign-in page
-        await signInWithRedirect(auth, googleProvider);
-        // Page will redirect — this line won't be reached
-        throw new Error('REDIRECT_INITIATED');
-      }
+    // Returning from an earlier redirect?
+    const redirectResult = await getRedirectResult(auth).catch(() => null);
+    if (redirectResult?.user) {
+      user = redirectResult.user;
     } else {
-      // Desktop — use popup for seamless experience
-      const result = await signInWithPopup(auth, googleProvider);
-      user = result.user;
+      try {
+        // Popup works on desktop + Android Chrome + iOS Safari (opens new tab)
+        const result = await signInWithPopup(auth, googleProvider);
+        user = result.user;
+      } catch (popupErr: any) {
+        const code = popupErr?.code || '';
+        const popupUnusable =
+          code === 'auth/popup-blocked' ||
+          code === 'auth/operation-not-supported-in-this-environment' ||
+          code === 'auth/web-storage-unsupported';
+        // Android in-app WebViews (Instagram/WhatsApp/FB browser) or blocked popups → redirect fallback
+        if (popupUnusable && isAndroidOrMobile()) {
+          await signInWithRedirect(auth, googleProvider);
+          throw new Error('REDIRECT_INITIATED');
+        }
+        throw popupErr;
+      }
     }
 
     const name = user.displayName || user.email?.split('@')[0] || 'Learner';

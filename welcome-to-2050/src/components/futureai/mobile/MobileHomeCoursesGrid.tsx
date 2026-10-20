@@ -13,6 +13,10 @@ export interface MobileHomeCourseItem {
   subtitle: string;
   image: string;
   video: string;
+  /** Optional crisp text banner rendered over the video (for videos without baked-in titles) */
+  bannerTitle?: string;
+  bannerSub?: string;
+  bannerTheme?: 'purple' | 'amber';
   ctc?: string;
   lessons?: string;
   projects?: string;
@@ -117,6 +121,9 @@ export const MobileHomeCoursesGrid: React.FC<MobileHomeCoursesGridProps> = ({
       subtitle: '& Agentic AI',
       image: '/images/pot2_sharp_poster.jpg',
       video: '/videos/data_science_agentic_ai_course.mp4',
+      bannerTitle: 'Data Science',
+      bannerSub: '& Agentic AI',
+      bannerTheme: 'purple',
       ctc: '₹12–25 LPA',
       lessons: '320 Lessons',
       projects: '16+ Projects',
@@ -132,6 +139,9 @@ export const MobileHomeCoursesGrid: React.FC<MobileHomeCoursesGridProps> = ({
       subtitle: '& PyTorch Pipelines',
       image: '/images/pot3_sharp_poster.jpg',
       video: '/videos/ml_engineering_course.mp4',
+      bannerTitle: 'ML Engineering',
+      bannerSub: 'PyTorch & MLOps',
+      bannerTheme: 'amber',
       ctc: '₹12–28 LPA',
       lessons: '280 Lessons',
       projects: '14+ Projects',
@@ -281,6 +291,36 @@ export const MobileHomeCoursesGrid: React.FC<MobileHomeCoursesGridProps> = ({
 
               {/* Shimmer Ambient Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20 pointer-events-none" />
+
+              {/* Crisp Title Banner Overlay (for videos without baked-in titles) */}
+              {c.bannerTitle && (
+                <div className="absolute inset-x-0 top-0 z-10 flex flex-col items-center pt-2 px-1.5 pointer-events-none bg-gradient-to-b from-slate-950/75 via-slate-950/35 to-transparent pb-5">
+                  <span
+                    className="text-[15px] sm:text-[17px] font-black leading-none tracking-tight text-center whitespace-nowrap"
+                    style={{
+                      color: c.bannerTheme === 'amber' ? '#fde68a' : '#ffffff',
+                      WebkitTextStroke: c.bannerTheme === 'amber' ? '0.4px #92400e' : '0.4px #1e3a8a',
+                      textShadow:
+                        c.bannerTheme === 'amber'
+                          ? '0 2px 0 #b45309, 0 0 12px rgba(251,191,36,0.75)'
+                          : '0 2px 0 #1d4ed8, 0 0 12px rgba(96,165,250,0.8)',
+                    }}
+                  >
+                    {c.bannerTitle}
+                  </span>
+                  {c.bannerSub && (
+                    <span
+                      className={`mt-1 px-2 py-[2px] rounded-full text-[8.5px] sm:text-[9.5px] font-extrabold text-white whitespace-nowrap shadow-md ring-1 ring-white/40 ${
+                        c.bannerTheme === 'amber'
+                          ? 'bg-gradient-to-r from-amber-500 to-orange-600'
+                          : 'bg-gradient-to-r from-purple-600 to-fuchsia-500'
+                      }`}
+                    >
+                      {c.bannerSub}
+                    </span>
+                  )}
+                </div>
+              )}
 
               {/* Minimal Live Video Tag at Bottom Left */}
               <div className="absolute bottom-1 left-1.5 z-10 flex items-center gap-1 bg-black/60 backdrop-blur-xs px-1.5 py-0.5 rounded text-[8px] text-white/95 font-bold tracking-wider">
