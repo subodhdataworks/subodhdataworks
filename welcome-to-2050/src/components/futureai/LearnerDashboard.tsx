@@ -1498,19 +1498,21 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   return (
     <div className="dock-dashboard-page">
       
-      {/* ── Android Native Top App Bar on Mobile (< 768px) ── */}
-      <div className="md:hidden">
-        <MobileTopBar
-          userName={currentUserName}
-          telemetry={telemetry}
-          onOpenProfile={() => setMobileProfileSheetOpen(true)}
-          onOpenWallet={() => setIsWithdrawModalOpen(true)}
-          onOpenNotifications={() => {
-            alert('🔔 Welcome to FUTURE IT INDUSTRY Android App Portal! Continue learning Python & earning commissions.');
-          }}
-          onOpenLogin={() => setAuthModalOpen(true)}
-        />
-      </div>
+      {/* ── Android Native Top App Bar on Mobile (< 768px) (Hidden on Game Zone to prevent duplicate header) ── */}
+      {dockTab !== 'game' && (
+        <div className="md:hidden">
+          <MobileTopBar
+            userName={currentUserName}
+            telemetry={telemetry}
+            onOpenProfile={() => setMobileProfileSheetOpen(true)}
+            onOpenWallet={() => setIsWithdrawModalOpen(true)}
+            onOpenNotifications={() => {
+              alert('🔔 Welcome to FUTURE IT INDUSTRY Android App Portal! Continue learning Python & earning commissions.');
+            }}
+            onOpenLogin={() => setAuthModalOpen(true)}
+          />
+        </div>
+      )}
 
       {/* =========================================================================
           1. TOP APP HEADER BAR (Desktop only >= 768px)

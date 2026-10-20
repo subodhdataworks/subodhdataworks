@@ -74,6 +74,17 @@ export interface GameCourseItem {
   };
 }
 
+// Helper to format skills into clean lines matching reference image
+const getFormattedSkills = (skills: string): string[] => {
+  const parts = skills.split(' • ');
+  if (parts.length <= 2) return [skills];
+  if (parts.length === 3) return [parts.slice(0, 2).join(' • '), parts[2]];
+  if (parts.length === 4) return [parts.slice(0, 2).join(' • '), parts.slice(2).join(' • ')];
+  if (parts.length === 5) return [parts.slice(0, 3).join(' • '), parts.slice(3).join(' • ')];
+  if (parts.length >= 6) return [parts.slice(0, 3).join(' • '), parts.slice(3, 5).join(' • '), parts.slice(5).join(' • ')];
+  return [skills];
+};
+
 export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
   userName = 'Learner',
   onPlayPython,
@@ -423,7 +434,7 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
     : gameCourses.filter(c => c.category === selectedCategory);
 
   return (
-    <div className="w-full min-h-screen bg-[#f8fbff] text-slate-900 pb-28 select-none font-sans">
+    <div className="w-full min-h-screen bg-[#f8fbff] text-slate-900 pb-36 select-none font-sans">
       
       {/* ── 1. EXACT TOP APP HEADER (Logo, Search, Login, Menu) ── */}
       <header className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-3.5 py-2.5 flex items-center justify-between shadow-2xs">
@@ -480,10 +491,9 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
       </header>
 
       {/* ── 2. HERO BANNER: GAME ZONE (1:1 with Reference Image) ── */}
-      <section className="px-3 pt-3 pb-2">
-        <div className="relative w-full rounded-2xl overflow-hidden shadow-lg border border-indigo-900/30 bg-gradient-to-r from-[#070b1e] via-[#0d163a] to-[#1a134d] text-white">
-          
-          {/* High-Resolution Background Graphic */}
+      <section className="px-2.5 pt-2.5 pb-1">
+        <div className="relative w-full rounded-2xl overflow-hidden shadow-md border border-indigo-900/30 bg-gradient-to-r from-[#070b1e] via-[#0d163a] to-[#1a134d] text-white">
+          {/* High-Resolution Background Graphic Matching Reference */}
           <img
             src="/images/gamezone/game_zone_hero_banner.jpg"
             alt="Game Zone: Learn by Playing. Grow by Doing."
@@ -494,69 +504,55 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
             }}
           />
 
-          {/* Subtle Ambient Shimmer Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent pointer-events-none" />
-        </div>
-
-        {/* 4 Interactive Feature Badges below the image */}
-        <div className="grid grid-cols-4 gap-1.5 mt-2.5">
-          <button
-            type="button"
-            onClick={() => {
-              playClick?.();
-              if (onPlayPython) onPlayPython(1);
-            }}
-            className="p-1.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-center justify-center gap-1 text-[10px] font-bold text-slate-700 active:scale-95 transition-transform hover:border-blue-300"
-          >
-            <Trophy className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-            <span className="truncate">Play Game</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              playClick?.();
-              alert(`⭐ Your Gaming Points: ${telemetry?.totalXp || 450} XP!\nComplete challenges to level up.`);
-            }}
-            className="p-1.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-center justify-center gap-1 text-[10px] font-bold text-slate-700 active:scale-95 transition-transform hover:border-emerald-300"
-          >
-            <Zap className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            <span className="truncate">Earn Points</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              playClick?.();
-              alert('🎖️ Unlocked Badges:\n• 👑 Code Rookie (Level 1)\n• 🐍 Python Explorer\n• ⚡ 7-Day Streak Master');
-            }}
-            className="p-1.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-center justify-center gap-1 text-[10px] font-bold text-slate-700 active:scale-95 transition-transform hover:border-purple-300"
-          >
-            <Award className="w-3.5 h-3.5 text-purple-500 shrink-0" />
-            <span className="truncate">Badges</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              playClick?.();
-              alert('🎁 Win Real Rewards:\nComplete 5 games this week to win ₹100 cash voucher + verified game certificate!');
-            }}
-            className="p-1.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-center justify-center gap-1 text-[10px] font-bold text-slate-700 active:scale-95 transition-transform hover:border-rose-300"
-          >
-            <Gift className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-            <span className="truncate">Rewards</span>
-          </button>
+          {/* Interactive Click Hotspots over the 4 Pills inside the banner */}
+          <div className="absolute bottom-1 inset-x-2 h-7 grid grid-cols-4 gap-1 z-10">
+            <button
+              type="button"
+              onClick={() => {
+                playClick?.();
+                if (onPlayPython) onPlayPython(1);
+              }}
+              className="w-full h-full cursor-pointer active:scale-95 transition-transform"
+              aria-label="Play Game"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                playClick?.();
+                alert(`⭐ Your Gaming Points: ${telemetry?.totalXp || 450} XP!\nComplete challenges to level up.`);
+              }}
+              className="w-full h-full cursor-pointer active:scale-95 transition-transform"
+              aria-label="Earn Points"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                playClick?.();
+                alert('🎖️ Unlocked Badges:\n• 👑 Code Rookie (Level 1)\n• 🐍 Python Explorer\n• ⚡ 7-Day Streak Master');
+              }}
+              className="w-full h-full cursor-pointer active:scale-95 transition-transform"
+              aria-label="Badges"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                playClick?.();
+                alert('🎁 Win Real Rewards:\nComplete 5 games this week to win ₹100 cash voucher + verified game certificate!');
+              }}
+              className="w-full h-full cursor-pointer active:scale-95 transition-transform"
+              aria-label="Rewards"
+            />
+          </div>
         </div>
       </section>
 
       {/* ── 3. SECTION TITLE & FILTER ROW (1:1 with Reference Image) ── */}
-      <section className="px-3 pt-3 pb-2 flex items-center justify-between">
+      <section className="px-2.5 pt-2 pb-1.5 flex items-center justify-between">
         <div>
-          <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-snug">
+          <h2 className="text-[15px] sm:text-base font-black text-slate-900 tracking-tight leading-snug">
             Choose Your <span className="text-blue-600">Course Game</span>
           </h2>
-          <p className="text-[10px] sm:text-xs text-slate-500 font-semibold mt-0.5">
+          <p className="text-[9.5px] sm:text-[10px] text-slate-500 font-medium leading-tight">
             Play course-wise games, complete challenges and level up your skills.
           </p>
         </div>
@@ -569,7 +565,7 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
               playClick?.();
               setIsFilterDropdownOpen(prev => !prev);
             }}
-            className="px-2.5 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold shadow-2xs flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
+            className="px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-slate-700 text-[11px] font-bold shadow-2xs flex items-center gap-1 active:scale-95 transition-transform cursor-pointer"
           >
             <Layers className="w-3.5 h-3.5 text-blue-600" />
             <span>13 Courses</span>
@@ -640,61 +636,144 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
       </section>
 
       {/* ── 4. 2-COLUMN COURSE GAME CARDS GRID (1:1 with Reference Image) ── */}
-      <section className="px-3 pt-1">
-        <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+      <section className="px-2.5 pt-0.5">
+        <div className="grid grid-cols-2 gap-2">
           {filteredCourses.map((c) => {
             const isFullWidth = c.num === 13;
+            
+            // Format title into 2 clean lines if it contains 'with' or '&' or 'Development' or 'Training'
+            let titleLine1 = c.title;
+            let titleLine2 = '';
+            if (c.title.includes('\n')) {
+              const parts = c.title.split('\n');
+              titleLine1 = parts[0];
+              titleLine2 = parts.slice(1).join(' ');
+            } else if (c.title.includes(' with ')) {
+              const parts = c.title.split(' with ');
+              titleLine1 = parts[0];
+              titleLine2 = `with ${parts[1]}`;
+            } else if (c.title.includes(' & ')) {
+              const parts = c.title.split(' & ');
+              titleLine1 = parts[0];
+              titleLine2 = `& ${parts[1]}`;
+            } else if (c.title.includes(' Development')) {
+              const parts = c.title.split(' Development');
+              titleLine1 = parts[0];
+              titleLine2 = 'Development';
+            } else if (c.title.includes(' Accelerator')) {
+              const parts = c.title.split(' Accelerator');
+              titleLine1 = parts[0];
+              titleLine2 = 'Accelerator';
+            } else if (c.title.includes(' for Business')) {
+              const parts = c.title.split(' for Business');
+              titleLine1 = parts[0];
+              titleLine2 = 'for Business';
+            }
+
+            // Full-width Card 13 layout
+            if (isFullWidth) {
+              return (
+                <article
+                  key={c.id}
+                  onClick={() => handleCardClick(c)}
+                  className="col-span-2 relative rounded-2xl bg-white border border-slate-200/90 p-2 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer active:scale-[0.98] flex items-center justify-between overflow-hidden"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                    {/* Left Thumbnail */}
+                    <div className="relative w-16 h-12 rounded-xl overflow-hidden shrink-0 bg-slate-900 border border-slate-100 shadow-2xs">
+                      <img
+                        src={c.image}
+                        alt={c.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                      <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-md ${c.badgeBg} ${c.badgeColor} flex items-center justify-center font-black text-[9px] shadow-sm leading-none`}>
+                        {c.num}
+                      </div>
+                    </div>
+
+                    {/* Middle Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className={`w-4 h-4 rounded-full ${c.iconBg} ${c.iconColor} flex items-center justify-center shrink-0 text-[8.5px] font-black`}>
+                          {c.num}
+                        </span>
+                        <h3 className="text-[11px] font-black text-slate-900 leading-tight group-hover:text-blue-600 transition-colors truncate">
+                          {c.title.replace('\n', ' ')}
+                        </h3>
+                      </div>
+                      <p className="text-[8.5px] font-medium text-slate-500 leading-tight truncate">
+                        {c.skills.replace(/\n/g, ' • ')}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right Arrow Button */}
+                  <div className="shrink-0 ml-2 w-5 h-5 rounded-full border border-blue-200/90 bg-blue-50/80 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <ArrowRight className="w-2.5 h-2.5 stroke-[2.5]" />
+                  </div>
+                </article>
+              );
+            }
+
+            // 2-Column Cards (Cards 1 to 12)
             return (
               <article
                 key={c.id}
                 onClick={() => handleCardClick(c)}
-                className={`group rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md transition-all duration-200 overflow-hidden cursor-pointer active:scale-[0.98] flex flex-col justify-between ${
-                  isFullWidth ? 'col-span-2' : ''
-                }`}
+                className="group relative rounded-2xl bg-white border border-slate-200/90 p-1.5 sm:p-2 shadow-2xs hover:shadow-md transition-all duration-200 overflow-hidden cursor-pointer active:scale-[0.98] flex flex-col justify-between min-h-[96px]"
               >
-                {/* Horizontal Card Top Layout: Left 3D Thumbnail + Right Info */}
-                <div className="p-2 sm:p-2.5 flex items-start gap-2">
+                {/* Horizontal Card Layout: Left Thumbnail + Right Info */}
+                <div className="flex items-start gap-1.5">
                   
                   {/* Left: 3D Image Preview with Floating Number Badge */}
-                  <div className="relative w-20 sm:w-24 aspect-[4/3] rounded-xl overflow-hidden shrink-0 bg-slate-900 border border-slate-100 shadow-2xs">
+                  <div className="relative w-[52px] sm:w-[58px] h-[60px] sm:h-[66px] rounded-xl overflow-hidden shrink-0 bg-slate-900 border border-slate-100 shadow-2xs">
                     <img
                       src={c.image}
                       alt={c.title}
-                      className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"
                     />
 
                     {/* Number Badge Tag at Top-Left */}
-                    <div className={`absolute top-1 left-1 w-4 h-4 sm:w-5 sm:h-5 rounded-md ${c.badgeBg} ${c.badgeColor} flex items-center justify-center font-black text-[9px] sm:text-[10px] shadow-sm leading-none`}>
+                    <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-md ${c.badgeBg} ${c.badgeColor} flex items-center justify-center font-black text-[9px] shadow-sm leading-none`}>
                       {c.num}
                     </div>
                   </div>
 
-                  {/* Right: Subject Icon + Title + Topics */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start gap-1 mb-1">
-                      {/* Subject Icon Box */}
-                      <span className={`w-4 h-4 rounded-md ${c.iconBg} ${c.iconColor} flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-black`}>
+                  {/* Right: Icon + Title + Topics */}
+                  <div className="flex-1 min-w-0 pr-4">
+                    {/* Title with Category Icon */}
+                    <div className="flex items-start gap-1 mb-0.5">
+                      <span className={`w-3.5 h-3.5 rounded-full ${c.iconBg} ${c.iconColor} flex items-center justify-center shrink-0 mt-0.5 text-[7.5px] font-black`}>
                         {c.num}
                       </span>
-                      {/* Title */}
-                      <h3 className="text-[11px] sm:text-xs font-black text-slate-900 leading-tight group-hover:text-blue-600 transition-colors line-clamp-2">
-                        {c.title}
-                      </h3>
+                      <div className="min-w-0">
+                        <h3 className="text-[10px] sm:text-[10.5px] font-black text-slate-900 leading-[1.15] group-hover:text-blue-600 transition-colors">
+                          {titleLine1}
+                        </h3>
+                        {titleLine2 && (
+                          <div className="text-[9.5px] sm:text-[10px] font-black text-slate-800 leading-[1.15]">
+                            {titleLine2}
+                          </div>
+                        )}
+                      </div>
                     </div>
 
-                    {/* Subtext / Skills */}
-                    <p className="text-[9px] sm:text-[9.5px] font-semibold text-slate-500 leading-tight line-clamp-2 mt-0.5">
-                      {c.skills}
-                    </p>
+                    {/* Skills list with compact styling matching reference image */}
+                    <div className="text-[7.5px] sm:text-[8px] font-medium text-slate-500 leading-[1.25] mt-0.5 space-y-0.5">
+                      {getFormattedSkills(c.skills).map((line, idx) => (
+                        <div key={idx} className="whitespace-nowrap">
+                          {line}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                {/* Card Bottom: Mini Circle Arrow Button */}
-                <div className="px-2 pb-2 pt-0.5 flex items-center justify-end">
-                  <div className="w-5 h-5 rounded-full border border-blue-200/90 bg-blue-50/70 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                    <ArrowRight className="w-2.5 h-2.5 stroke-[2.5]" />
-                  </div>
+                {/* Card Bottom-Right: Arrow Button */}
+                <div className="absolute bottom-1.5 right-1.5 w-4.5 h-4.5 rounded-full border border-blue-200/90 bg-blue-50/80 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                  <ArrowRight className="w-2.5 h-2.5 stroke-[2.5]" />
                 </div>
               </article>
             );
