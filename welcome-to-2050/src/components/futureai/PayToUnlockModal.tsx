@@ -1,26 +1,32 @@
-import React from 'react';
-import { 
-  X, 
-  Sparkles, 
-  Lock, 
-  Unlock, 
-  CheckCircle2, 
-  ShieldCheck, 
-  ArrowRight, 
-  Zap, 
-  GraduationCap, 
-  Briefcase, 
-  Bot, 
+import React, { useState } from 'react';
+import {
+  X,
+  Sparkles,
+  Lock,
+  Unlock,
+  CheckCircle2,
+  ShieldCheck,
+  ArrowRight,
+  Zap,
+  GraduationCap,
+  Briefcase,
+  Bot,
   Award,
-  CreditCard
+  CreditCard,
+  Loader2,
+  AlertCircle,
 } from 'lucide-react';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
+import { initiatePayUPayment, getCurrentUserForPayment } from '../../services/payuService';
 
 interface PayToUnlockModalProps {
   isOpen: boolean;
   onClose: () => void;
   targetModuleName?: string;
   onSimulateUnlock?: () => void;
+  courseId?: string;
+  courseTitle?: string;
+  price?: number;
 }
 
 export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
@@ -28,17 +34,60 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
   onClose,
   targetModuleName = 'SQL & Databases',
   onSimulateUnlock,
+  courseId = 'data-analyst-genai',
+  courseTitle,
+  price = 987,
 }) => {
   const { playClick } = useThemeAccent();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [phone, setPhone] = useState('');
+  const [showPhoneInput, setShowPhoneInput] = useState(false);
+
+  const displayTitle = courseTitle || targetModuleName;
 
   if (!isOpen) return null;
 
+  const handlePayUPayment = async () => {
+    playClick();
+    setError(null);
+
+    // Get user details
+    const user = getCurrentUserForPayment();
+
+    // If email is empty, we need it for PayU
+    if (!user.email) {
+      setError('Please login first to proceed with payment.');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await initiatePayUPayment({
+        amount: price.toFixed(2),
+        productinfo: `FUTURE IT INDUSTRY - ${displayTitle}`,
+        firstname: user.name,
+        email: user.email,
+        phone: phone || undefined,
+        udf1: courseId,
+        udf2: targetModuleName,
+        successUrl: `${window.location.origin}/#payment-success`,
+        failureUrl: `${window.location.origin}/#payment-failure`,
+      });
+      // Form submits → browser navigates to PayU — so no further code executes
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Payment failed. Please try again.';
+      setError(msg);
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md animate-fadeIn">
-      <div className="max-w-xl w-full bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-sky-100 relative overflow-y-auto max-h-[90vh] text-left"
+      <div
+        className="max-w-xl w-full bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-sky-100 relative overflow-y-auto max-h-[90vh] text-left"
         style={{ scrollbarWidth: 'thin', scrollbarColor: '#c4b5fd #f5f3ff' }}
       >
-        
         {/* Glow decoration */}
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-sky-400/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-emerald-400/20 rounded-full blur-3xl pointer-events-none" />
@@ -66,28 +115,29 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
         <div className="space-y-1 mb-4">
           <div className="flex items-center gap-2 text-sky-600 text-xs font-bold">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Selected Program: {targetModuleName}</span>
+            <span>Selected Program: {displayTitle}</span>
           </div>
 
           <h3 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">
-            Single Enrollment for <span className="text-sky-600">₹987</span>
+            Single Enrollment for <span className="text-sky-600">₹{price.toLocaleString('en-IN')}</span>
           </h3>
 
           <p className="text-xs sm:text-sm font-semibold text-slate-600">
-            Ek hi payment me <strong className="text-slate-900 font-extrabold">All 10 Modules Unlock</strong> honge! Complete Lifetime Access + <span className="text-emerald-600 font-bold">100% Placement Support with 700+ Hiring Partners!</span>
+            Ek hi payment me <strong className="text-slate-900 font-extrabold">All 10 Modules Unlock</strong> honge! Complete Lifetime Access +{' '}
+            <span className="text-emerald-600 font-bold">100% Placement Support with 700+ Hiring Partners!</span>
           </p>
         </div>
 
         {/* Clear Reassurance Pill */}
         <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-2.5 mb-4 flex items-center gap-2 text-xs font-bold text-emerald-800">
           <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-          <span>No per-module fees! Single ₹987 unlocks entire course + all 10 modules + AI mentorship.</span>
+          <span>No per-module fees! Single ₹{price.toLocaleString('en-IN')} unlocks entire course + all 10 modules + AI mentorship.</span>
         </div>
 
         {/* What You Get Grid */}
-        <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 space-y-2.5 mb-6">
+        <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 space-y-2.5 mb-4">
           <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
-            What You Unlock with Single ₹987 Enrollment:
+            What You Unlock with Single ₹{price.toLocaleString('en-IN')} Enrollment:
           </span>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-semibold text-slate-700">
@@ -95,30 +145,25 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
               <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
               <span>Unlock all 10 Modules (SQL, Excel, Power BI, GenAI, Capstone)</span>
             </div>
-
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-              <span>24/7 AI Mentor &amp; 1-on-1 Doubt Solving</span>
+              <span>24/7 AI Mentor & 1-on-1 Doubt Solving</span>
             </div>
-
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
               <span>15+ Industry Real-World Projects on GitHub</span>
             </div>
-
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
               <span>700+ Hiring Partners Placement Assistance</span>
             </div>
-
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-              <span>IBM &amp; Microsoft Course Certifications</span>
+              <span>IBM & Microsoft Course Certifications</span>
             </div>
-
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-              <span>AI Mock Interviews &amp; Resume Optimization</span>
+              <span>AI Mock Interviews & Resume Optimization</span>
             </div>
           </div>
         </div>
@@ -155,16 +200,37 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
           </div>
         )}
 
+        {/* Optional Phone Number Input */}
+        {showPhoneInput && (
+          <div className="mb-4">
+            <label className="text-xs font-bold text-slate-600 mb-1 block">Mobile Number (for OTP & receipt)</label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={e => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+              placeholder="10-digit mobile number"
+              className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-400"
+            />
+          </div>
+        )}
+
+        {/* Error message */}
+        {error && (
+          <div className="mb-4 flex items-center gap-2 text-xs font-semibold text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
         {/* Price Breakdown Summary */}
         <div className="flex items-center justify-between p-3.5 bg-gradient-to-r from-sky-50 to-teal-50 border border-sky-100 rounded-xl mb-6">
           <div>
             <span className="text-[11px] font-semibold text-slate-500 block">Enrollment Payment</span>
             <div className="flex items-baseline gap-1.5">
-              <strong className="text-2xl font-black text-sky-900">₹987</strong>
+              <strong className="text-2xl font-black text-sky-900">₹{price.toLocaleString('en-IN')}</strong>
               <span className="text-xs text-slate-400 line-through">₹25,000</span>
             </div>
           </div>
-
           <div className="text-right">
             <span className="text-[11px] font-semibold text-emerald-600 block">100% Full Access</span>
             <strong className="text-xs font-bold text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-md">
@@ -175,19 +241,36 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
 
         {/* Actions */}
         <div className="space-y-2.5">
+          {/* Main PayU Button */}
           <button
-            onClick={() => {
-              playClick();
-              alert(`Redirecting to Secure Payment Gateway for ₹987...\n\nProgram: Data Analyst with GenAI\nModule: ${targetModuleName}`);
-              onSimulateUnlock?.();
-              onClose();
-            }}
-            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-sky-600 via-teal-500 to-emerald-500 text-white font-extrabold text-sm shadow-lg shadow-sky-500/25 hover:opacity-95 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer"
+            onClick={handlePayUPayment}
+            disabled={isLoading}
+            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-sky-600 via-teal-500 to-emerald-500 text-white font-extrabold text-sm shadow-lg shadow-sky-500/25 hover:opacity-95 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            <CreditCard className="w-4 h-4" />
-            <span>Pay ₹987 &amp; Unlock Entire Program (All 10 Modules)</span>
-            <ArrowRight className="w-4 h-4" />
+            {isLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Redirecting to Secure Payment...</span>
+              </>
+            ) : (
+              <>
+                <CreditCard className="w-4 h-4" />
+                <span>Pay ₹{price.toLocaleString('en-IN')} — Secure PayU Gateway</span>
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
           </button>
+
+          {/* Add phone toggle */}
+          {!showPhoneInput && (
+            <button
+              type="button"
+              onClick={() => setShowPhoneInput(true)}
+              className="w-full text-xs font-semibold text-slate-500 hover:text-sky-600 transition-colors py-1"
+            >
+              + Add mobile number for OTP verification
+            </button>
+          )}
 
           {/* Quick Demo Simulator for Instant Testing */}
           <button
@@ -200,16 +283,29 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
             className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <Unlock className="w-3.5 h-3.5 text-emerald-600" />
-            <span>⚡ 1-Click Demo Simulator: Unlock All 10 Modules Now</span>
+            <span>⚡ Demo Simulator: Unlock All 10 Modules (Test)</span>
           </button>
         </div>
 
-        {/* Security badge */}
-        <div className="flex items-center justify-center gap-2 mt-4 text-[11px] text-slate-400">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-          <span>100% Secure Payment • Instant Course Access • Official FUTURE IT INDUSTRY Guarantee</span>
+        {/* Payment badges */}
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+          <div className="flex items-center gap-1 text-[11px] text-slate-400">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+            <span>256-bit SSL Secure</span>
+          </div>
+          <div className="flex items-center gap-1 text-[11px] text-slate-400">
+            <CreditCard className="w-3.5 h-3.5 text-sky-500" />
+            <span>UPI • Cards • NetBanking • Wallets</span>
+          </div>
+          <div className="flex items-center gap-1 text-[11px] text-slate-400">
+            <Award className="w-3.5 h-3.5 text-amber-500" />
+            <span>Powered by PayU</span>
+          </div>
         </div>
 
+        <p className="text-center text-[10px] text-slate-400 mt-2">
+          Official FUTURE IT INDUSTRY Guarantee • Instant Course Access after Payment
+        </p>
       </div>
     </div>
   );

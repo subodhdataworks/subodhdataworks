@@ -13,6 +13,7 @@ import { MobileAppInstallPrompt } from './components/futureai/mobile/MobileAppIn
 import { AdminControlCenter } from './components/admin/controlcenter/AdminControlCenter';
 import { ContactUsView } from './components/legal/ContactUsView';
 import { TermsAndConditionsView } from './components/legal/TermsAndConditionsView';
+import { PaymentResultModal } from './components/futureai/PaymentResultModal';
 
 export const App: React.FC = () => {
   const profile = StorageService.getProfile();
@@ -274,6 +275,13 @@ export const App: React.FC = () => {
             if (typeof window !== 'undefined' && (window.location.hash.includes('#admin-leads') || window.location.hash.includes('#leads'))) {
               window.location.hash = isLoggedIn ? '#dashboard' : '#home';
             }
+          }}
+        />
+
+        {/* PayU Payment Result Handler — detects #payment-success / #payment-failure in URL */}
+        <PaymentResultModal
+          onGoHome={() => {
+            window.location.hash = isLoggedIn ? '#dashboard' : '#home';
           }}
         />
 
