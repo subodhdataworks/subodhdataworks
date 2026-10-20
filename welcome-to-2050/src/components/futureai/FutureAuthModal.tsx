@@ -3,6 +3,7 @@ import {
   X,
   ArrowRight,
   Phone,
+  Mail,
   KeyRound,
   RotateCcw,
   Check,
@@ -18,6 +19,7 @@ import {
   recordUserInDatabase,
   loginWithGooglePopup,
   findExistingUser,
+  loginWithEmailFirebase,
 } from '../../services/realAuthService';
 import { sendOtpToPhone, verifyOtpAndLogin } from '../../services/firebasePhoneAuth';
 
@@ -32,6 +34,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
   onClose,
   onSuccess,
 }) => {
+  const [authMethod, setAuthMethod] = useState<'mobile' | 'email'>('mobile');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
@@ -41,6 +44,10 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
   const [otpInput, setOtpInput] = useState('');
   const [resendTimer, setResendTimer] = useState(0);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+
+  // Email & Password Auth Flow
+  const [emailInput, setEmailInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
 
   // Resend Countdown timer
   useEffect(() => {
@@ -58,9 +65,12 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
     if (isOpen) {
       setValidationError(null);
       setIsSubmitting(false);
+      setAuthMethod('mobile');
       setMobileStep('INPUT_PHONE');
       setMobileInput('');
       setOtpInput('');
+      setEmailInput('');
+      setPasswordInput('');
       setConfirmationResult(null);
       loadGoogleScript().catch(() => {});
     }
@@ -113,17 +123,17 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
     } catch (err: any) {
       setIsSubmitting(false);
       if (err.code === 'auth/operation-not-allowed') {
-        setValidationError('Phone Auth is activating on server. Please use Google Login for instant access.');
+        setValidationError('Phone Auth is activating on server. Please use Google Login or Email Login.');
       } else if (err.code === 'auth/too-many-requests') {
         setValidationError('Too many requests. Please wait a few minutes and try again.');
       } else if (err.code === 'auth/app-not-authorized') {
-        setValidationError('Domain not authorized. Please try Google Login.');
+        setValidationError('Domain not authorized. Please try Google or Email Login.');
       } else if (err.code === 'auth/captcha-check-failed' || err.code === 'auth/recaptcha-not-enabled') {
         setValidationError('Verification failed. Please refresh and try again.');
       } else if (err.code === 'auth/quota-exceeded') {
-        setValidationError('SMS quota reached for today. Please use Google Login.');
+        setValidationError('SMS quota reached for today. Please use Email Login.');
       } else {
-        setValidationError(err.message || 'Failed to send OTP. Please try Google Login.');
+        setValidationError(err.message || 'Failed to send OTP. Please try Email Login.');
       }
     }
   };
@@ -151,6 +161,29 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
       } else {
         setValidationError(err.message || 'OTP verification failed. Please try again.');
       }
+    }
+  };
+
+  // Email & Password Submit
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setValidationError(null);
+    const cleanEmail = emailInput.trim().toLowerCase();
+    if (!cleanEmail || !cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+      setValidationError('Please enter a valid email address.');
+      return;
+    }
+    if (!passwordInput || passwordInput.trim().length < 6) {
+      setValidationError('Password must be at least 6 characters.');
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const res = await loginWithEmailFirebase(cleanEmail, passwordInput.trim());
+      completeLogin(res.name, res.email, res.avatar, 'student');
+    } catch (err: any) {
+      setIsSubmitting(false);
+      setValidationError(err.message || 'Email login failed. Please check credentials.');
     }
   };
 
@@ -297,102 +330,178 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
           </div>
         </div>
 
-        {/* ── MOBILE PHONE INPUT FLOW ── */}
-        {mobileStep === 'INPUT_PHONE' ? (
-          <form onSubmit={handleSendOtp} className="space-y-3">
-            {/* Input Box matching reference: [ 📞 +91 ▾ | Enter your mobile number ] */}
+        {/* ── CONDITIONAL: MOBILE NUMBER vs EMAIL LOGIN ── */}
+        {authMethod === 'mobile' ? (
+          <>
+            {/* ── MOBILE PHONE INPUT FLOW ── */}
+            {mobileStep === 'INPUT_PHONE' ? (
+              <form onSubmit={handleSendOtp} className="space-y-3">
+                {/* Input Box matching reference: [ 📞 +91 ▾ | Enter your mobile number ] */}
+                <div className="flex items-center border border-slate-200 focus-within:border-blue-500 rounded-2xl bg-white px-3.5 py-2.5 transition-all shadow-2xs">
+                  <Phone className="w-4 h-4 text-slate-600 mr-2 shrink-0" />
+                  <span className="text-xs sm:text-sm font-bold text-slate-800 mr-1">
+                    +91
+                  </span>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 mr-2 shrink-0" />
+                  <div className="w-[1px] h-5 bg-slate-200 mr-3" />
+                  <input
+                    type="tel"
+                    maxLength={10}
+                    placeholder="Enter your mobile number"
+                    value={mobileInput}
+                    onChange={(e) => setMobileInput(e.target.value.replace(/\D/g, ''))}
+                    className="w-full text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent text-left"
+                    required
+                    autoFocus
+                  />
+                </div>
+
+                {/* Blue Pill Button: Continue with Mobile Number → */}
+                <button
+                  type="submit"
+                  disabled={isSubmitting || mobileInput.length < 10}
+                  className="w-full py-3 px-4 rounded-2xl text-white font-black text-xs sm:text-sm shadow-md shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  style={{
+                    background: 'linear-gradient(135deg, #0080FF 0%, #0066FF 100%)',
+                  }}
+                >
+                  <span>{isSubmitting ? 'Sending OTP...' : 'Continue with Mobile Number'}</span>
+                  <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                </button>
+
+                {/* Switch to Email Login Link */}
+                <div className="text-center pt-0.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAuthMethod('email');
+                      setValidationError(null);
+                    }}
+                    className="text-[11px] font-bold text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-colors"
+                  >
+                    ✉️ Login with Email &amp; Password instead
+                  </button>
+                </div>
+              </form>
+            ) : (
+              /* Step 1B: Enter 6-Digit OTP */
+              <form onSubmit={handleVerifyOtp} className="space-y-3">
+                <div className="p-2.5 rounded-2xl bg-blue-50/80 border border-blue-200 flex items-center justify-between text-xs">
+                  <div className="text-left">
+                    <span className="text-slate-500 block text-[10px]">OTP sent to:</span>
+                    <strong className="text-slate-900 font-mono text-xs">+91 {mobileInput}</strong>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setMobileStep('INPUT_PHONE'); setOtpInput(''); setValidationError(null); }}
+                    className="text-xs font-bold text-blue-600 hover:underline cursor-pointer"
+                  >
+                    Change Number
+                  </button>
+                </div>
+
+                <div className="flex items-center border-2 border-blue-500 rounded-2xl bg-white px-3.5 py-2.5 shadow-2xs">
+                  <KeyRound className="w-4 h-4 text-blue-600 mr-2.5 shrink-0" />
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={6}
+                    placeholder="• • • • • •"
+                    value={otpInput}
+                    onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, ''))}
+                    className="w-full text-lg font-black tracking-[0.35em] text-slate-900 placeholder:text-slate-300 outline-none bg-transparent text-center"
+                    required
+                    autoFocus
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting || otpInput.length < 6}
+                  className="w-full py-3 px-4 rounded-2xl text-white font-black text-xs sm:text-sm shadow-md shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  style={{
+                    background: 'linear-gradient(135deg, #0080FF 0%, #0066FF 100%)',
+                  }}
+                >
+                  <Check className="w-4 h-4 stroke-[3]" />
+                  <span>{isSubmitting ? 'Verifying...' : 'Verify OTP & Enter'}</span>
+                </button>
+
+                <div className="text-center pt-0.5">
+                  {resendTimer > 0 ? (
+                    <span className="text-[11px] text-slate-400 font-medium">
+                      Resend in <strong>{resendTimer}s</strong>
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleSendOtp}
+                      disabled={isSubmitting}
+                      className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-800 cursor-pointer"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>Resend OTP</span>
+                    </button>
+                  )}
+                </div>
+              </form>
+            )}
+          </>
+        ) : (
+          /* ── EMAIL & PASSWORD LOGIN FLOW ── */
+          <form onSubmit={handleEmailSubmit} className="space-y-3">
+            {/* Email Input */}
             <div className="flex items-center border border-slate-200 focus-within:border-blue-500 rounded-2xl bg-white px-3.5 py-2.5 transition-all shadow-2xs">
-              <Phone className="w-4 h-4 text-slate-600 mr-2 shrink-0" />
-              <span className="text-xs sm:text-sm font-bold text-slate-800 mr-1">
-                +91
-              </span>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400 mr-2 shrink-0" />
-              <div className="w-[1px] h-5 bg-slate-200 mr-3" />
+              <Mail className="w-4 h-4 text-slate-600 mr-2.5 shrink-0" />
               <input
-                type="tel"
-                maxLength={10}
-                placeholder="Enter your mobile number"
-                value={mobileInput}
-                onChange={(e) => setMobileInput(e.target.value.replace(/\D/g, ''))}
+                type="email"
+                placeholder="name@example.com"
+                value={emailInput}
+                onChange={(e) => setEmailInput(e.target.value)}
                 className="w-full text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent text-left"
                 required
                 autoFocus
               />
             </div>
 
-            {/* Blue Pill Button: Continue with Mobile Number → */}
-            <button
-              type="submit"
-              disabled={isSubmitting || mobileInput.length < 10}
-              className="w-full py-3 px-4 rounded-2xl text-white font-black text-xs sm:text-sm shadow-md shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-              style={{
-                background: 'linear-gradient(135deg, #0080FF 0%, #0066FF 100%)',
-              }}
-            >
-              <span>{isSubmitting ? 'Sending OTP...' : 'Continue with Mobile Number'}</span>
-              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-            </button>
-          </form>
-        ) : (
-          /* Step 1B: Enter 6-Digit OTP */
-          <form onSubmit={handleVerifyOtp} className="space-y-3">
-            <div className="p-2.5 rounded-2xl bg-blue-50/80 border border-blue-200 flex items-center justify-between text-xs">
-              <div className="text-left">
-                <span className="text-slate-500 block text-[10px]">OTP sent to:</span>
-                <strong className="text-slate-900 font-mono text-xs">+91 {mobileInput}</strong>
-              </div>
-              <button
-                type="button"
-                onClick={() => { setMobileStep('INPUT_PHONE'); setOtpInput(''); setValidationError(null); }}
-                className="text-xs font-bold text-blue-600 hover:underline cursor-pointer"
-              >
-                Change Number
-              </button>
-            </div>
-
-            <div className="flex items-center border-2 border-blue-500 rounded-2xl bg-white px-3.5 py-2.5 shadow-2xs">
-              <KeyRound className="w-4 h-4 text-blue-600 mr-2.5 shrink-0" />
+            {/* Password Input */}
+            <div className="flex items-center border border-slate-200 focus-within:border-blue-500 rounded-2xl bg-white px-3.5 py-2.5 transition-all shadow-2xs">
+              <Lock className="w-4 h-4 text-slate-600 mr-2.5 shrink-0" />
               <input
-                type="text"
-                inputMode="numeric"
-                maxLength={6}
-                placeholder="• • • • • •"
-                value={otpInput}
-                onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, ''))}
-                className="w-full text-lg font-black tracking-[0.35em] text-slate-900 placeholder:text-slate-300 outline-none bg-transparent text-center"
+                type="password"
+                placeholder="Enter your password"
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                className="w-full text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent text-left"
                 required
-                autoFocus
               />
             </div>
 
+            {/* Continue with Email Button */}
             <button
               type="submit"
-              disabled={isSubmitting || otpInput.length < 6}
+              disabled={isSubmitting || !emailInput || passwordInput.length < 6}
               className="w-full py-3 px-4 rounded-2xl text-white font-black text-xs sm:text-sm shadow-md shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               style={{
                 background: 'linear-gradient(135deg, #0080FF 0%, #0066FF 100%)',
               }}
             >
-              <Check className="w-4 h-4 stroke-[3]" />
-              <span>{isSubmitting ? 'Verifying...' : 'Verify OTP & Enter'}</span>
+              <span>{isSubmitting ? 'Signing In...' : 'Continue with Email'}</span>
+              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
             </button>
 
+            {/* Switch back to Mobile */}
             <div className="text-center pt-0.5">
-              {resendTimer > 0 ? (
-                <span className="text-[11px] text-slate-400 font-medium">
-                  Resend in <strong>{resendTimer}s</strong>
-                </span>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  disabled={isSubmitting}
-                  className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-800 cursor-pointer"
-                >
-                  <RotateCcw className="w-3 h-3" />
-                  <span>Resend OTP</span>
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthMethod('mobile');
+                  setValidationError(null);
+                }}
+                className="text-[11px] font-bold text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-colors"
+              >
+                📱 Back to Mobile Login
+              </button>
             </div>
           </form>
         )}
