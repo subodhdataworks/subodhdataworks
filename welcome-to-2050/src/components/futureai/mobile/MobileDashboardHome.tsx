@@ -424,9 +424,9 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       shortDesc: 'Create wireframes, high-fidelity prototypes, design systems & AI UI generation.',
       salaryRange: '₹6 LPA - ₹18 LPA',
       courseFee: '₹21,999',
-      image: '/images/pot4_sharp_poster.jpg',
-      holoImage: '/images/pot4_sharp_poster.jpg',
-      video: '/videos/navigation_game_banner.mp4',
+      image: '/images/ui_ux_design_poster.jpg',
+      holoImage: '/images/ui_ux_design_poster.jpg',
+      video: '/videos/ui_ux_design_figma_ai.mp4',
       potTheme: 'purple' as const,
       skillsList: ['Figma AI', 'Wireframing', 'Prototyping', 'Design Systems', 'UX Research'],
       themeStyles: {
