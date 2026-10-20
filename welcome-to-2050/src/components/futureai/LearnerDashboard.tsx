@@ -91,6 +91,7 @@ import { MobileExcelChapterView } from './mobile/MobileExcelChapterView';
 import { MobileGameArenaHub } from './mobile/MobileGameArenaHub';
 import { MobileDataAnalystHub } from './mobile/MobileDataAnalystHub';
 import { FutureAuthModal } from './FutureAuthModal';
+import { WalletWithdrawModal } from './WalletWithdrawModal';
 
 // =========================================================================
 // 10 AUTHENTIC 3D-STYLE VECTOR ICONS MATCHING media_1790589591068.jpg
@@ -354,6 +355,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   const [moduleFilter, setModuleFilter] = useState<'all' | 'in-progress' | 'not-started' | 'completed'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [currentUserName, setCurrentUserName] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('futureai_user_name') || userName || 'Learner';
@@ -1161,6 +1163,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             userName={currentUserName}
             telemetry={telemetry}
             onOpenProfile={() => setMobileProfileSheetOpen(true)}
+            onOpenWallet={() => setIsWithdrawModalOpen(true)}
             onOpenLogin={() => setAuthModalOpen(true)}
           />
           <MobileGameArenaHub
@@ -1492,6 +1495,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           userName={currentUserName}
           telemetry={telemetry}
           onOpenProfile={() => setMobileProfileSheetOpen(true)}
+          onOpenWallet={() => setIsWithdrawModalOpen(true)}
           onOpenNotifications={() => {
             alert('🔔 Welcome to FUTURE IT INDUSTRY Android App Portal! Continue learning Python & earning commissions.');
           }}
@@ -1529,6 +1533,18 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
         {/* Right Actions: Coins, Gems, Ask AI Mentor + Notifications + User Profile (media_1791313375552.jpg) */}
         <div className="flex items-center gap-3">
+          {/* Wallet Balance & Instant Withdraw Button */}
+          <button
+            type="button"
+            onClick={() => setIsWithdrawModalOpen(true)}
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-50 to-amber-100 hover:from-amber-100 hover:to-amber-200 border border-amber-300 text-amber-950 font-black text-xs shadow-xs cursor-pointer active:scale-95 transition-all"
+            title="Click to Withdraw Wallet Balance"
+          >
+            <Wallet className="w-4 h-4 text-amber-700 shrink-0" />
+            <span>₹{(typeof window !== 'undefined' ? parseInt(localStorage.getItem('futureai_user_wallet') || '0', 10) : 0).toLocaleString('en-IN')}</span>
+            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-600 text-white font-black ml-0.5">Withdraw</span>
+          </button>
+
           {/* Gaming Coins & Gems badges (Dynamic real telemetry starting at 0) */}
           <div className="hidden md:flex items-center gap-2">
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200/90 text-amber-800 text-xs font-black shadow-xs">
@@ -2651,6 +2667,13 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         }}
         onOpenLogin={() => setAuthModalOpen(true)}
         onOpenAdvisor={onOpenAdvisor}
+      />
+
+      {/* ─── WALLET WITHDRAWAL MODAL (CENTER POPUP) ─── */}
+      <WalletWithdrawModal
+        isOpen={isWithdrawModalOpen}
+        onClose={() => setIsWithdrawModalOpen(false)}
+        onSuccess={() => setTelemetry(getLearnerTelemetry())}
       />
 
       {/* ─── EMAIL-ONLY / GOOGLE AUTH MODAL ─── */}

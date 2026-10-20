@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
+import { WalletWithdrawModal } from '../WalletWithdrawModal';
 import {
   Link2,
   Copy,
@@ -319,7 +320,7 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
             {bannerSlides.map((slide) => (
               <div 
                 key={slide.id} 
-                className="w-full shrink-0 relative aspect-[16/9] sm:aspect-[16/8.2] cursor-pointer"
+                className="w-full shrink-0 relative h-[120px] sm:h-[135px] cursor-pointer overflow-hidden rounded-2xl"
                 onClick={slide.action}
               >
                 {/* 100% Real Human Photography */}
@@ -333,19 +334,19 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
 
                 {/* Top Badge */}
-                <div className="absolute top-2.5 left-2.5 z-10">
-                  <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wide shadow-sm backdrop-blur-md ${slide.badgeColor}`}>
+                <div className="absolute top-2 left-2.5 z-10">
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black tracking-wide shadow-sm backdrop-blur-md ${slide.badgeColor}`}>
                     {slide.badge}
                   </span>
                 </div>
 
                 {/* Bottom Overlay Info & Action */}
-                <div className="absolute bottom-3 left-3 right-3 z-10 flex items-end justify-between gap-2">
-                  <div className="max-w-[72%]">
-                    <h2 className="text-sm sm:text-base font-black text-white tracking-tight leading-tight drop-shadow-md">
+                <div className="absolute bottom-2 left-2.5 right-2.5 z-10 flex items-end justify-between gap-2">
+                  <div className="max-w-[70%]">
+                    <h2 className="text-xs sm:text-sm font-black text-white tracking-tight leading-tight drop-shadow-md">
                       {slide.title}
                     </h2>
-                    <p className="text-[10px] sm:text-[11px] font-medium text-slate-200 line-clamp-1 leading-tight mt-0.5 drop-shadow-sm">
+                    <p className="text-[9.5px] font-medium text-slate-200 line-clamp-1 leading-tight mt-0.5 drop-shadow-sm">
                       {slide.desc}
                     </p>
                   </div>
@@ -356,7 +357,7 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
                       playTactile();
                       slide.action();
                     }}
-                    className="shrink-0 py-1.5 px-3 rounded-xl bg-white/95 hover:bg-white text-slate-900 font-extrabold text-[11px] shadow-md active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                    className="shrink-0 py-1 px-2.5 rounded-lg bg-white/95 hover:bg-white text-slate-900 font-extrabold text-[10px] shadow-md active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
                   >
                     <span>{slide.ctaText}</span>
                   </button>
@@ -1154,86 +1155,14 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
 
       </div>
 
-      {/* ─── 8. BOTTOM SHEET: WITHDRAWAL FORM ─── */}
-      {isWithdrawSheetOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center">
-          <div
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"
-            onClick={() => setIsWithdrawSheetOpen(false)}
-          />
-
-          <div className="relative w-full max-w-md bg-white border-t border-slate-200 rounded-t-3xl p-5 shadow-2xl z-10 space-y-4 animate-slideUp">
-            <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto" />
-
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-base font-black text-slate-900">Withdraw Earnings</h3>
-                <p className="text-[11px] text-slate-500">Instant UPI transfer directly to your bank</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsWithdrawSheetOpen(false)}
-                className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Balance Badge */}
-            <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
-              <span className="text-xs font-bold text-emerald-800">Available to Withdraw:</span>
-              <strong className="text-base font-black text-emerald-700">₹{availableBalance.toLocaleString('en-IN')}</strong>
-            </div>
-
-            <form onSubmit={handleWithdrawSubmit} className="space-y-3.5">
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">
-                  Withdrawal Amount (₹)
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3.5 top-2.5 text-slate-400 font-bold text-sm">₹</span>
-                  <input
-                    type="number"
-                    value={withdrawAmtInput}
-                    onChange={(e) => setWithdrawAmtInput(e.target.value)}
-                    placeholder="Enter amount (min ₹100)"
-                    min="100"
-                    max={availableBalance}
-                    className="w-full pl-8 pr-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">
-                  UPI ID (VPA)
-                </label>
-                <input
-                  type="text"
-                  value={upiIdInput}
-                  onChange={(e) => setUpiIdInput(e.target.value)}
-                  placeholder="e.g. yourname@okaxis or 9876543210@paytm"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                />
-              </div>
-
-              {withdrawError && (
-                <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>{withdrawError}</span>
-                </div>
-              )}
-
-              <button
-                type="submit"
-                className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-sm shadow-md active:scale-95 transition-all cursor-pointer"
-              >
-                Confirm Payout Request
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* ─── 8. CENTER POPUP: WITHDRAWAL REQUEST & SUBMISSION RECEIPT (1:1 with media_1792461817194_f9a153e3.jpg) ─── */}
+      <WalletWithdrawModal
+        isOpen={isWithdrawSheetOpen}
+        onClose={() => setIsWithdrawSheetOpen(false)}
+        onSuccess={() => {
+          setIsWithdrawSheetOpen(false);
+        }}
+      />
 
       {/* ─── 9. BOTTOM SHEET: QR CODE / FLYER ─── */}
       {isQrSheetOpen && (
