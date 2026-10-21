@@ -23,8 +23,6 @@ export const HERO_VIDEO_LOCAL_FALLBACK = '/videos/hero_background.mp4';
 export const HERO_VIDEO_POSTER = '/images/hero_video_poster.jpg';
 
 // Configurable Badge Text
-export const WORLD_FIRST_BADGE_TITLE = "WORLD'S FIRST";
-export const WORLD_FIRST_BADGE_SUB = "Coding Practice Platform";
 
 interface HeroReferenceProps {
   onStartJourney: () => void;
@@ -182,25 +180,6 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
       {/* ── MAIN CONTENT CONTAINER (LEFT 40-45%) ── */}
       <div className="hero-2050-container">
         <div className="hero-2050-content">
-          
-          {/* 1. World First Game Learning Platform Badge & Shifted 1-Min Tour Video */}
-          <div className="hero-badge-wrap">
-            <div className="hero-world-first-badge" onMouseEnter={playHover} role="banner" aria-label="World's First Coding Practice Platform">
-              <div className="premium-wf-pill">
-                <div className="premium-wf-shine" />
-                <div className="premium-wf-left">
-                  <span className="premium-wf-crown">👑</span>
-                  <span className="premium-wf-gold-title">{WORLD_FIRST_BADGE_TITLE}</span>
-                </div>
-                <span className="premium-wf-dot">•</span>
-                <div className="premium-wf-right">
-                  <span className="premium-wf-sub">{WORLD_FIRST_BADGE_SUB}</span>
-                  <Code2 className="premium-wf-gamepad" />
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* 1B. Value Banner: "Learn. Practice. Build. Get Placed. No Need to Spend ₹2 Lakh" */}
           <div
             onClick={() => {
