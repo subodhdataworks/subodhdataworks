@@ -2170,9 +2170,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 }}
                 onOpenLockedCourse={(courseTitle) => {
                   playClick();
-                  playCinema();
-                  setSelectedModuleView('data_analyst');
-                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+                  handleOpenCourseDetail(courseTitle);
                 }}
                 onOpenPythonDirect={() => {
                   playClick();

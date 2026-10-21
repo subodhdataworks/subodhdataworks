@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
 import { RealSuccessStoriesShowcase } from './RealSuccessStoriesShowcase';
+import { ALL_PLATFORM_COURSES, PlatformCourseItem } from '../../data/allPlatformCourses';
 import './LearnerHomeHub.css';
 
 export interface StudentCoursesDashboardProps {
@@ -78,116 +79,10 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
 }) => {
   const { playClick } = useThemeAccent();
   const [filter, setFilter] = useState<CourseFilterType>('all');
+  const [categoryTab, setCategoryTab] = useState<'all' | 'flagship' | 'core' | 'ai'>('all');
   const [viewMode, setViewMode] = useState<CourseViewModeType>('grid');
 
-  const courses: (FlagshipCourseItem & {
-    potTheme: 'blue' | 'purple' | 'gold' | 'emerald';
-    holoImage: string;
-    shortDesc: string;
-  })[] = [
-    {
-      id: 'data-analyst-genai',
-      badgeNum: 1,
-      statusTag: 'ENROLLED • ACTIVE',
-      title: 'Data Analyst with GenAI',
-      fullName: 'Data Analyst with GenAI Flagship Program',
-      shortDesc: 'Master Python, SQL, Power BI, Excel & GenAI Analytics.',
-      descLine1: 'Python • SQL • Advanced Excel • Power BI • Statistics • GenAI',
-      descLine2: '28 Real-World Projects • Coding Games • AI Mock Interviews',
-      salaryRange: '₹6 LPA – ₹15 LPA',
-      courseFee: '₹18,999',
-      modulesCount: '6 Modules',
-      lessonsText: '1,420 Lessons',
-      image: '/images/pot1_sharp_poster.jpg',
-      holoImage: '/images/pot1_sharp_poster.jpg',
-      video: '/videos/data_analyst_genai_v2.mp4',
-      progress: 0,
-      btnText: 'Start Course →',
-      isUnlocked: true,
-      potTheme: 'blue',
-      themeColor: '#00f2fe',
-      btnGradient: 'linear-gradient(90deg, #0284c7 0%, #00f2fe 100%)',
-      badgeBg: 'rgba(0, 242, 254, 0.15)',
-      skillsList: ['Python', 'SQL', 'Excel', 'Power BI', 'GenAI'],
-    },
-    {
-      id: 'data-science-agentic-ai',
-      badgeNum: 2,
-      statusTag: 'HIGH DEMAND',
-      title: 'Data Science & Agentic AI',
-      fullName: 'Data Science & Agentic AI Mastery Program',
-      shortDesc: 'Explore Machine Learning, Deep Learning, RAG & AI Agents.',
-      descLine1: 'Python • Machine Learning • Deep Learning • NLP • Agentic AI',
-      descLine2: 'RAG Pipelines • Autonomous AI Agents • Industry Capstone Projects',
-      salaryRange: '₹10 LPA – ₹22 LPA',
-      courseFee: '₹29,999',
-      modulesCount: '8 Modules',
-      lessonsText: '1,680 Lessons',
-      image: '/images/pot2_sharp_poster.jpg',
-      holoImage: '/images/pot2_sharp_poster.jpg',
-      video: '/videos/data_science_agentic_ai_course.mp4',
-      progress: 0,
-      btnText: 'Start Course →',
-      isUnlocked: true,
-      potTheme: 'purple',
-      themeColor: '#c084fc',
-      btnGradient: 'linear-gradient(90deg, #7c3aed 0%, #c084fc 100%)',
-      badgeBg: 'rgba(192, 132, 252, 0.15)',
-      skillsList: ['Data Science', 'ML', 'Deep Learning', 'RAG', 'Agentic AI'],
-    },
-    {
-      id: 'ml-engineering',
-      badgeNum: 3,
-      statusTag: 'ADVANCED TECH',
-      title: 'ML Engineering',
-      fullName: 'Machine Learning Engineering & MLOps Program',
-      shortDesc: 'Build & deploy scalable ML models, PyTorch & MLOps pipelines.',
-      descLine1: 'Scikit-Learn • TensorFlow • PyTorch • MLOps • Cloud Deployment',
-      descLine2: 'Distributed Training • Docker & Kubernetes • Production ML Pipelines',
-      salaryRange: '₹12 LPA – ₹28 LPA',
-      courseFee: '₹39,999',
-      modulesCount: '8 Modules',
-      lessonsText: '1,540 Lessons',
-      image: '/images/pot3_sharp_poster.jpg',
-      holoImage: '/images/pot3_sharp_poster.jpg',
-      video: '/videos/ml_engineering_course.mp4',
-      progress: 0,
-      btnText: 'Start Course →',
-      isUnlocked: true,
-      potTheme: 'gold',
-      themeColor: '#fbbf24',
-      btnGradient: 'linear-gradient(90deg, #d97706 0%, #fbbf24 100%)',
-      badgeBg: 'rgba(251, 191, 36, 0.15)',
-      skillsList: ['PyTorch', 'TensorFlow', 'MLOps', 'Docker', 'Cloud AI'],
-    },
-    {
-      id: 'ai-engineering',
-      badgeNum: 4,
-      statusTag: 'FLAGSHIP 2050',
-      title: 'AI Engineering',
-      fullName: 'Full-Stack AI & LLM Engineering Program',
-      shortDesc: 'Design intelligent systems, LLMs, Vector DBs & Multi-Agents.',
-      descLine1: 'LLMs • LangChain • Vector Databases • Fine-Tuning • Multimodal AI',
-      descLine2: 'Enterprise AI Architecture • Multi-Agent Systems • Live AI Apps',
-      salaryRange: '₹15 LPA – ₹35 LPA',
-      courseFee: '₹49,999',
-      modulesCount: '10 Modules',
-      lessonsText: '1,850 Lessons',
-      image: '/images/pot4_sharp_poster.jpg',
-      holoImage: '/images/pot4_sharp_poster.jpg',
-      video: '/videos/ai_engineering_course.mp4',
-      progress: 0,
-      btnText: 'Start Course →',
-      isUnlocked: true,
-      potTheme: 'emerald',
-      themeColor: '#34d399',
-      btnGradient: 'linear-gradient(90deg, #059669 0%, #34d399 100%)',
-      badgeBg: 'rgba(52, 211, 153, 0.15)',
-      skillsList: ['LLMs', 'LangChain', 'Vector DBs', 'Fine-Tuning', 'OpenAI'],
-    },
-  ];
-
-  // Continuous Typewriter effect for "Pay After Placement." ("likh kr aata rhe hamesa")
+  // Continuous Typewriter effect for "Pay After Placement."
   const fullPapText = 'Pay After Placement.';
   const [papDisplayText, setPapDisplayText] = useState(fullPapText);
   const [isPapDeleting, setIsPapDeleting] = useState(false);
@@ -217,24 +112,25 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
     return () => clearTimeout(timeout);
   }, [papCharIndex, isPapDeleting, fullPapText]);
 
-  const visibleCourses = courses.filter((c) => {
+  const visibleCourses = ALL_PLATFORM_COURSES.filter((c) => {
+    if (categoryTab !== 'all' && c.category !== categoryTab) return false;
     if (filter === 'in-progress') return c.progress > 0;
     if (filter === 'not-started') return c.progress === 0;
     if (filter === 'completed') return c.progress === 100;
     return true;
   });
 
-  const handleCourseClick = (c: FlagshipCourseItem) => {
+  const handleCourseClick = (c: PlatformCourseItem) => {
     playClick();
     if (c.id === 'data-analyst-genai') {
       onOpenDataAnalystCourse();
     } else {
-      onOpenLockedCourse(c.fullName);
+      onOpenLockedCourse(c.fullName || c.title);
     }
   };
 
   const handleSubAction = (
-    c: FlagshipCourseItem,
+    c: PlatformCourseItem,
     type: 'modules' | 'games' | 'interview' | 'project'
   ) => {
     playClick();
@@ -244,7 +140,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
       else if (type === 'interview') onOpenMockInterview ? onOpenMockInterview() : onOpenDataAnalystCourse();
       else if (type === 'project') onOpenDataAnalystCourse();
     } else {
-      onOpenLockedCourse(c.fullName);
+      onOpenLockedCourse(c.fullName || c.title);
     }
   };
 
@@ -403,52 +299,34 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
               <Layers className="w-5 h-5 text-blue-600" />
             </div>
             <div className="lhh-section-title-wrap">
-              <h2 className="lhh-section-title">4 High-Paying Industry Courses</h2>
+              <h2 className="lhh-section-title">All Career-Focused Industry Courses ({visibleCourses.length})</h2>
             </div>
           </div>
 
           <div className="lhh-controls-group">
-            <div className="lhh-filter-pills-row">
-              <button
-                type="button"
-                onClick={() => {
-                  playClick();
-                  setFilter('all');
-                }}
-                className={`lhh-filter-pill ${filter === 'all' ? 'active' : ''}`}
-              >
-                All (4)
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  playClick();
-                  setFilter('in-progress');
-                }}
-                className={`lhh-filter-pill ${filter === 'in-progress' ? 'active' : ''}`}
-              >
-                In Progress (1)
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  playClick();
-                  setFilter('not-started');
-                }}
-                className={`lhh-filter-pill ${filter === 'not-started' ? 'active' : ''}`}
-              >
-                Explore (3)
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  playClick();
-                  setFilter('completed');
-                }}
-                className={`lhh-filter-pill ${filter === 'completed' ? 'active' : ''}`}
-              >
-                Completed
-              </button>
+            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-1">
+              {[
+                { id: 'all', label: `All (${ALL_PLATFORM_COURSES.length})` },
+                { id: 'flagship', label: `Flagship Tracks (${ALL_PLATFORM_COURSES.filter(c => c.category === 'flagship').length})` },
+                { id: 'core', label: `Core Analytics (${ALL_PLATFORM_COURSES.filter(c => c.category === 'core').length})` },
+                { id: 'ai', label: `AI & Next-Gen (${ALL_PLATFORM_COURSES.filter(c => c.category === 'ai').length})` },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => {
+                    playClick();
+                    setCategoryTab(tab.id as any);
+                  }}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                    categoryTab === tab.id
+                      ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white shadow-sm shadow-blue-500/25 scale-[1.02]'
+                      : 'bg-white text-slate-700 border border-slate-200 hover:border-slate-300'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
 
             <div className="lhh-view-toggle-capsule">
@@ -547,30 +425,8 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
 
                     {/* Centered Course Title — Two-Tone 'Brighter Future' Style */}
                     <h3 className="scd-pot-title">
-                      {c.id === 'data-analyst-genai' && (
-                        <>
-                          <span className="scd-title-brighter">Data Analyst</span>{' '}
-                          <span className="scd-title-future">with GenAI</span>
-                        </>
-                      )}
-                      {c.id === 'data-science-agentic-ai' && (
-                        <>
-                          <span className="scd-title-brighter">Data Science</span>{' '}
-                          <span className="scd-title-future">&amp; Agentic AI</span>
-                        </>
-                      )}
-                      {c.id === 'ml-engineering' && (
-                        <>
-                          <span className="scd-title-brighter">ML</span>{' '}
-                          <span className="scd-title-future">Engineering</span>
-                        </>
-                      )}
-                      {c.id === 'ai-engineering' && (
-                        <>
-                          <span className="scd-title-brighter">AI</span>{' '}
-                          <span className="scd-title-future">Engineering</span>
-                        </>
-                      )}
+                      <span className="scd-title-brighter">{c.title}</span>{' '}
+                      {c.subtitle && <span className="scd-title-future">{c.subtitle}</span>}
                     </h3>
 
                     {/* Centered Short Description */}
@@ -712,7 +568,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 <span className="scd-sos-price-989">₹987</span>
               </div>
               <p className="scd-sos-subtitle">
-                Access Data Analyst, Data Science, ML Engineering &amp; AI Engineering
+                Access Data Analyst, Data Science, ML Engineering, AI Engineering &amp; All 21 Courses
               </p>
             </div>
 
@@ -744,7 +600,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 }}
               >
                 <Lock className="w-5 h-5 fill-slate-900 stroke-slate-900" />
-                <span>UNLOCK ALL 4 COURSES ₹987</span>
+                <span>UNLOCK ALL COURSES ₹987</span>
                 <ArrowRight className="w-5 h-5 stroke-[3]" />
               </button>
             </div>
@@ -758,7 +614,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
               </div>
               <div className="scd-sos-ftext">
                 <strong>Full Access</strong>
-                <span>to All 4 Courses</span>
+                <span>to All Courses</span>
               </div>
             </div>
 
