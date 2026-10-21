@@ -114,7 +114,7 @@ export const MobilePythonChapterView: React.FC<MobilePythonChapterViewProps> = (
               </span>
             </h1>
             <p className="text-[10px] text-slate-500 font-semibold">
-              Tap any topic to play video, game & mock interview
+              Tap any topic for video, coding practice & mock interview
             </p>
           </div>
         </div>
@@ -159,7 +159,7 @@ export const MobilePythonChapterView: React.FC<MobilePythonChapterViewProps> = (
                   Python Mastery Curriculum
                 </h2>
                 <p className="text-[10px] text-blue-200 font-semibold drop-shadow-sm">
-                  Video Lessons ➔ Interactive Coding Game ➔ AI Mock Interview
+                  Video Lessons ➔ Interactive Coding Practice ➔ AI Mock Interview
                 </p>
               </div>
             </div>

@@ -42,7 +42,7 @@ export const CareerJourney: React.FC<CareerJourneyProps> = ({
       color: 'from-cyan-500 to-sky-600',
       description: 'Solve real-world coding challenges and micro-missions with real-time feedback and diagnostic error detection.',
       deliverable: '100+ Coding Sandbox Drills',
-      details: 'Hands-on practice game missions, dynamic syntax debugging, and spaced repetition workouts.',
+      details: 'Hands-on coding practice missions, dynamic syntax debugging, and spaced repetition workouts.',
     },
     {
       step: 3,

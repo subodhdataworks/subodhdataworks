@@ -73,7 +73,7 @@ export const MobileHomeCoursesGrid: React.FC<MobileHomeCoursesGridProps> = ({
       accentBorder: 'hover:border-blue-400 group-hover:shadow-[0_0_24px_rgba(37,99,235,0.35)]',
       floatDelay: '2.4s',
       title: 'Python Mastery',
-      subtitle: '& Coding Games',
+      subtitle: '& Coding Practice',
       image: '/images/dashboard/poster_python.jpg',
       video: '/videos/card_video_python.mp4',
       ctc: '₹7–16 LPA',

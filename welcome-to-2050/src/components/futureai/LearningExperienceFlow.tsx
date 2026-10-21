@@ -29,7 +29,7 @@ export const LearningExperienceFlow: React.FC<LearningExperienceFlowProps> = ({
     { name: 'WATCH', hindiName: 'देखें', desc: '5-min high-impact concept breakdown' },
     { name: 'UNDERSTAND', hindiName: 'समझें', desc: 'Mental models & PowerGreen AI analogies' },
     { name: 'PRACTICE', hindiName: 'अभ्यास', desc: 'Immediate browser-based coding sandbox' },
-    { name: 'PLAY', hindiName: 'खेलें', desc: '2050 interactive coding mission games' },
+    { name: 'PRACTICE', hindiName: 'अभ्यास', desc: '2050 interactive coding practice missions' },
     { name: 'INTERVIEW', hindiName: 'इंटरव्यू', desc: 'Real-time AI voice technical interviews' },
     { name: 'ANALYZE', hindiName: 'विश्लेषण', desc: 'Diagnostic evaluation of error patterns' },
     { name: 'IMPROVE', hindiName: 'सुधारें', desc: 'Spaced repetition workouts targeting gaps' },
@@ -49,7 +49,7 @@ export const LearningExperienceFlow: React.FC<LearningExperienceFlowProps> = ({
       description: 'Diagnostic multiple-choice questions that identify why you chose an option and explain the misconception.',
     },
     {
-      title: 'Practice Game',
+      title: 'Coding Practice',
       icon: Gamepad2,
       color: 'from-emerald-500 to-green-600',
       description: 'Futuristic coding simulations where you fix real syntax bugs, optimize data models, and earn XP.',

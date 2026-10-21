@@ -2391,7 +2391,7 @@ export const PythonCourseDetailView: React.FC<PythonCourseDetailViewProps> = ({
                 <div className="pcd-tool-icon-sq bg-orange-50 text-orange-600 border border-orange-200">
                   <Gamepad2 className="w-4 h-4" />
                 </div>
-                <span className="pcd-tool-name">Play Game</span>
+                <span className="pcd-tool-name">Coding Practice</span>
               </div>
 
               <div 

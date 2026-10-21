@@ -1333,7 +1333,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             }`}>
               2
             </span>
-            <span>Practice Game</span>
+            <span>Coding Practice</span>
           </button>
 
           <span className="text-slate-400 font-bold text-xs shrink-0">&gt;</span>
@@ -1454,7 +1454,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               onClick={handleCloseVideoAndPlayGame}
               className="px-3 py-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black border border-blue-600 flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-xs"
             >
-              <span>Play Practice Game</span>
+              <span>Start Coding Practice</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -1560,7 +1560,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               className="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 via-sky-500 to-blue-600 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-blue-500/30 active:scale-98 transition-transform cursor-pointer"
             >
               <Gamepad2 className="w-4 h-4" />
-              <span>Video Finished ➔ Start Practice Game</span>
+              <span>Video Finished ➔ Start Coding Practice</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -1615,7 +1615,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               </div>
               <div>
                 <h3 className="text-xs font-black text-slate-900 leading-tight">
-                  Practice Game {activeGameLevel} — {currentChallenge.tag}
+                  Coding Practice {activeGameLevel} — {currentChallenge.tag}
                 </h3>
                 <p className="text-[9px] text-slate-500 font-semibold leading-tight mt-0.5">
                   {currentChallenge.concept} • Challenge {activeGameLevel} of 10
@@ -1748,7 +1748,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                       onClick={handleNextGameLevel}
                       className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-blue-500/25 active:scale-98 transition-transform cursor-pointer"
                     >
-                      <span>Next Level: Practice Game {activeGameLevel + 1} of 10 →</span>
+                      <span>Next Level: Coding Practice {activeGameLevel + 1} of 10 →</span>
                     </button>
                   ) : (
                     <button
@@ -1757,7 +1757,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                       className="w-full py-3 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-emerald-500/30 active:scale-98 transition-transform cursor-pointer animate-pulse"
                     >
                       <Mic className="w-4 h-4" />
-                      <span>🎉 Complete Practice Game ➔ Start Video Call Interview</span>
+                      <span>🎉 Complete Coding Practice ➔ Start Video Call Interview</span>
                     </button>
                   )}
 
@@ -1790,7 +1790,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             <div className="flex flex-col items-center">
               <span className="text-base">⭐</span>
               <span className="text-[9.5px] font-black text-purple-600 mt-0.5">Level {activeGameLevel}</span>
-              <span className="text-[7.5px] font-semibold text-slate-400">Game</span>
+              <span className="text-[7.5px] font-semibold text-slate-400">Practice</span>
             </div>
             <div className="flex flex-col items-center">
               <span className="text-base">📊</span>

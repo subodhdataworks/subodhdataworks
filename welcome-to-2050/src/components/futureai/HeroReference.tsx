@@ -4,7 +4,7 @@ import {
   Play,
   ArrowRight,
   CheckCircle2,
-  Gamepad2,
+  Code2,
   Code,
   Users,
   Briefcase,
@@ -24,7 +24,7 @@ export const HERO_VIDEO_POSTER = '/images/hero_video_poster.jpg';
 
 // Configurable Badge Text
 export const WORLD_FIRST_BADGE_TITLE = "WORLD'S FIRST";
-export const WORLD_FIRST_BADGE_SUB = "Game Learning Platform";
+export const WORLD_FIRST_BADGE_SUB = "Coding Practice Platform";
 
 interface HeroReferenceProps {
   onStartJourney: () => void;
@@ -113,11 +113,11 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
       id: 'play-game',
       icon: (
         <div className="journey-icon-img-wrap">
-          <img src="/images/icon_game.png" alt="Play Game" className="journey-pill-icon-img" />
+          <Code2 className="w-5 h-5 text-indigo-400" />
         </div>
       ),
-      title: 'Play Game',
-      subtitle: 'Learn with Fun'
+      title: 'Coding Practice',
+      subtitle: 'Learn by Doing'
     },
     {
       id: 'practice-code',
@@ -185,7 +185,7 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
           
           {/* 1. World First Game Learning Platform Badge & Shifted 1-Min Tour Video */}
           <div className="hero-badge-wrap">
-            <div className="hero-world-first-badge" onMouseEnter={playHover} role="banner" aria-label="World's First Game Learning Platform">
+            <div className="hero-world-first-badge" onMouseEnter={playHover} role="banner" aria-label="World's First Coding Practice Platform">
               <div className="premium-wf-pill">
                 <div className="premium-wf-shine" />
                 <div className="premium-wf-left">
@@ -195,7 +195,7 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
                 <span className="premium-wf-dot">•</span>
                 <div className="premium-wf-right">
                   <span className="premium-wf-sub">{WORLD_FIRST_BADGE_SUB}</span>
-                  <Gamepad2 className="premium-wf-gamepad" />
+                  <Code2 className="premium-wf-gamepad" />
                 </div>
               </div>
             </div>
@@ -223,7 +223,7 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
 
           {/* 2. Main Headline */}
           <h1 className="hero-2050-headline">
-            <span className="headline-gradient">Play Coding Games. 🎮</span>
+            <span className="headline-gradient">Coding Practice. 💻</span>
             <span className="headline-dark">Build Real Skills. 🚀</span>
             <span className="headline-dream-job-wrap">
               <span className="headline-dream-job-animated">{typedText || '\u00A0'}</span>
@@ -235,7 +235,7 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
           {/* 3. Description */}
           <p className="hero-2050-description">
             Master Python, SQL, Excel, Power BI &amp; Statistics with AI-powered learning,
-            real projects, games, coding practice and mock interviews — all in one platform.
+            real projects, interactive coding practice and mock interviews — all in one platform.
           </p>
 
           {/* 4. Six Learning Journey Feature Pills */}
@@ -339,7 +339,7 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
             </div>
             <div className="benefit-item">
               <CheckCircle2 className="w-4 h-4 text-blue-600 fill-blue-50" />
-              <span>Game-Based Learning</span>
+              <span>Coding Practice</span>
             </div>
             <div className="benefit-item">
               <CheckCircle2 className="w-4 h-4 text-blue-600 fill-blue-50" />

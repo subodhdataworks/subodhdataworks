@@ -185,7 +185,7 @@ export const TopicMasteryScoreLab: React.FC<TopicMasteryScoreLabProps> = ({
             {[
               { id: 'learn', num: '1', title: 'Video', isDone: true, isActive: false },
               { id: 'practice', num: '2', title: 'MCQ', isDone: true, isActive: false },
-              { id: 'play', num: '3', title: 'Game', isDone: true, isActive: false },
+              { id: 'play', num: '3', title: 'Practice', isDone: true, isActive: false },
               { id: 'code', num: '4', title: 'Code Practice', isDone: true, isActive: false },
               { id: 'interview', num: '5', title: 'Interview', isDone: true, isActive: false },
               { id: 'score', num: '6', title: 'Score & Next', isDone: false, isActive: true },
@@ -456,7 +456,7 @@ export const TopicMasteryScoreLab: React.FC<TopicMasteryScoreLabProps> = ({
                   <div className="fai-section-type-icon purple">
                     <Gamepad2 className="w-3.5 h-3.5 text-purple-600" />
                   </div>
-                  <span className="fai-section-name">Game</span>
+                  <span className="fai-section-name">Coding Practice</span>
                 </div>
 
                 <div className="fai-section-score">18/20</div>
@@ -541,7 +541,7 @@ export const TopicMasteryScoreLab: React.FC<TopicMasteryScoreLabProps> = ({
                 </li>
                 <li className="fai-insight-item strengths">
                   <span className="fai-bullet-check">✓</span>
-                  <span>High accuracy in MCQ and Game</span>
+                  <span>High accuracy in MCQ and Practice</span>
                 </li>
                 <li className="fai-insight-item strengths">
                   <span className="fai-bullet-check">✓</span>
@@ -587,7 +587,7 @@ export const TopicMasteryScoreLab: React.FC<TopicMasteryScoreLabProps> = ({
               {[
                 '✓ Video 100%',
                 '✓ MCQ ≥ 60%',
-                '✓ Game ≥ 60%',
+                '✓ Practice ≥ 60%',
                 '✓ Code ≥ 60%',
                 '✓ Interview ≥ 60%',
                 '✓ Overall ≥ 70%'

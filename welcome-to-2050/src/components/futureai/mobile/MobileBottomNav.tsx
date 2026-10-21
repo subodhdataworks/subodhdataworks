@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, GraduationCap, Gamepad2, Briefcase } from 'lucide-react';
+import { Home, GraduationCap, Code2, Briefcase } from 'lucide-react';
 import { useThemeAccent } from '../../../context/ThemeAccentContext';
 
 export type MobileTab = 'home' | 'learn' | 'game' | 'arena' | 'earn' | 'placement' | 'profile';
@@ -114,7 +114,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                 ? 'shadow-[0_8px_24px_rgba(37,99,235,0.45)]'
                 : 'shadow-[0_6px_20px_rgba(15,23,42,0.18)]'
             }`}
-            aria-label="Coding Games"
+            aria-label="Coding Practice"
           >
             {/* Shimmer Outer Ring */}
             <span className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyan-400 via-blue-500 to-indigo-600 animate-pulse" />
@@ -124,7 +124,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
             <span className="relative w-full h-full rounded-full bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-700 flex items-center justify-center text-white overflow-hidden shadow-inner">
               {/* Gloss highlight */}
               <span className="absolute top-0 inset-x-0 h-1/2 bg-gradient-to-b from-white/35 to-transparent rounded-t-full pointer-events-none" />
-              <Gamepad2 className="w-6 h-6 stroke-[2.3] relative z-10 drop-shadow-sm" />
+              <Code2 className="w-6 h-6 stroke-[2.3] relative z-10 drop-shadow-sm" />
             </span>
           </button>
           <span
@@ -132,7 +132,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               isTabActive('game') ? 'text-purple-600' : 'text-slate-700'
             }`}
           >
-            Game Zone
+            Coding Practice
           </span>
         </div>
 

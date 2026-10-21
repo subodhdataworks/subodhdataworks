@@ -9,7 +9,7 @@ import {
   IndianRupee,
   ChevronRight,
   Bot,
-  Gamepad2,
+  Code2,
   CheckCircle2,
   Award,
   TrendingUp,
@@ -408,7 +408,7 @@ export const MobilePlacementHub: React.FC<MobilePlacementHubProps> = ({
               },
               {
                 step: '2',
-                title: 'Coding Games & 8 Projects',
+                title: 'Coding Practice & 8 Projects',
                 desc: 'Build real-world automation, Pandas and SQL projects',
                 status: 'In Progress',
                 color: 'bg-sky-500',
@@ -457,8 +457,8 @@ export const MobilePlacementHub: React.FC<MobilePlacementHubProps> = ({
             }}
             className="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all border border-slate-700"
           >
-            <Gamepad2 className="w-4 h-4" />
-            <span>Level Up with Python Games →</span>
+            <Code2 className="w-4 h-4" />
+            <span>Level Up with Coding Practice →</span>
           </button>
         </div>
 

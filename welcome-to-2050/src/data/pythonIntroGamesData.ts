@@ -83,7 +83,7 @@ export const PYTHON_INTRO_GAMES: PythonGame[] = [
   {
     id: 1,
     gameType: 'code_puzzle',
-    title: 'Game 1 — Puzzle Quest',
+    title: 'Practice 1 — Puzzle Quest',
     shortTitle: 'Puzzle Quest',
     subtitle: '10 Questions — Test your understanding of computing and programming foundations.',
     badge: '1',
@@ -293,7 +293,7 @@ export const PYTHON_INTRO_GAMES: PythonGame[] = [
   {
     id: 2,
     gameType: 'fill_blank',
-    title: 'Game 2 — Fill in the Blank',
+    title: 'Practice 2 — Fill in the Blank',
     shortTitle: 'Fill in the Blank',
     subtitle: '10 Questions — Fill in the missing programming concept.',
     badge: '2',
@@ -513,7 +513,7 @@ export const PYTHON_INTRO_GAMES: PythonGame[] = [
   {
     id: 3,
     gameType: 'match_code',
-    title: 'Game 3 — Match the Code',
+    title: 'Practice 3 — Match the Code',
     shortTitle: 'Match the Code',
     subtitle: 'Is game mein code likhna nahi hai. Bas code ya tool ko uske purpose se match karo.',
     badge: '3',
@@ -743,7 +743,7 @@ export const PYTHON_INTRO_GAMES: PythonGame[] = [
   {
     id: 4,
     gameType: 'output_predictor',
-    title: 'Game 4 — Think: Quantum Output Predictor',
+    title: 'Practice 4 — Think: Quantum Output Predictor',
     shortTitle: 'Output Predictor',
     subtitle: '10 Questions — Trace instructions and predict the program behavior.',
     badge: '4',
@@ -953,7 +953,7 @@ export const PYTHON_INTRO_GAMES: PythonGame[] = [
   {
     id: 5,
     gameType: 'bug_hunter',
-    title: 'Game 5 — Debug: Cyber Bug Hunter',
+    title: 'Practice 5 — Debug: Cyber Bug Hunter',
     shortTitle: 'Bug Hunter',
     subtitle: '10 Questions — Identify misconceptions, logical bugs and syntax fallacies.',
     badge: '5',
@@ -1163,7 +1163,7 @@ export const PYTHON_INTRO_GAMES: PythonGame[] = [
   {
     id: 6,
     gameType: 'blueprint_builder',
-    title: 'Game 6 — Build: Component Blueprint Machine',
+    title: 'Practice 6 — Build: Component Blueprint Machine',
     shortTitle: 'Blueprint Builder',
     subtitle: 'Choose the best component for each blueprint. No coding required.',
     badge: '6',
@@ -1373,7 +1373,7 @@ export const PYTHON_INTRO_GAMES: PythonGame[] = [
   {
     id: 7,
     gameType: 'logic_builder',
-    title: 'Game 7 — Logic Builder',
+    title: 'Practice 7 — Logic Builder',
     shortTitle: 'Logic Builder',
     subtitle: '10 Questions — Build algorithmic thinking and sequential reasoning.',
     badge: '7',
@@ -1583,7 +1583,7 @@ export const PYTHON_INTRO_GAMES: PythonGame[] = [
   {
     id: 8,
     gameType: 'boss_fight',
-    title: 'Game 8 — BOSS FIGHT: The Cyber Sentinel',
+    title: 'Practice 8 — BOSS FIGHT: The Cyber Sentinel',
     shortTitle: 'Boss Fight',
     subtitle: 'Boss level: mixed concepts from Chapter 1. Strike the Sentinel to win!',
     badge: '8',

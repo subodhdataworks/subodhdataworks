@@ -193,7 +193,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
 
           {/* 3. Subtitle */}
           <p className="scd-nhb-subtitle">
-            Master Data Analytics, Data Science, ML &amp; AI Engineering with coding games, real projects &amp; AI HR interviews.
+            Master Data Analytics, Data Science, ML &amp; AI Engineering with coding practice, real projects &amp; AI HR interviews.
           </p>
 
           {/* 4. 4 Interactive Glassmorphism Course Cards with Course Fee */}
@@ -275,7 +275,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             </span>
             <span className="scd-nhb-feature-chip">
               <Gamepad2 className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-              <span>Coding Games</span>
+              <span>Coding Practice</span>
             </span>
             <span className="scd-nhb-feature-chip">
               <Sparkles className="w-3.5 h-3.5 text-purple-600 shrink-0" />
@@ -634,7 +634,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 <Gamepad2 className="w-5 h-5" />
               </div>
               <div className="scd-sos-ftext">
-                <strong>Coding Games</strong>
+                <strong>Coding Practice</strong>
                 <span>&amp; Practice</span>
               </div>
             </div>

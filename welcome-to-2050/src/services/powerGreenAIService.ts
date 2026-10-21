@@ -87,7 +87,7 @@ export class PowerGreenReasoningProvider implements AIProvider {
       actionIntent = 'EXPLAIN_FUNCTIONS';
     } else if (cleanPrompt.includes('start mcq') || cleanPrompt.includes('एमसीक्यू') || cleanPrompt.includes('quiz') || cleanPrompt.includes('practice question')) {
       actionIntent = 'START_MCQ';
-    } else if (cleanPrompt.includes('play practice game') || cleanPrompt.includes('practice game') || cleanPrompt.includes('coding game') || cleanPrompt.includes('codequest') || cleanPrompt.includes('गेम खेलें')) {
+    } else if (cleanPrompt.includes('play practice game') || cleanPrompt.includes('practice game') || cleanPrompt.includes('coding game') || cleanPrompt.includes('codequest') || cleanPrompt.includes('कोडिंग प्रैक्टिस')) {
       actionIntent = 'PLAY_GAME';
     } else if (cleanPrompt.includes('start interview') || cleanPrompt.includes('mock interview') || cleanPrompt.includes('voice interview') || cleanPrompt.includes('इंटरव्यू शुरू')) {
       actionIntent = 'START_INTERVIEW';

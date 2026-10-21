@@ -797,9 +797,9 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
             <button
               className="py-step-arena-back-btn"
               onClick={onNextStep || onBackToArena}
-              title="Exit Game"
+              title="Back to Learning"
             >
-              <span>Exit Game</span>
+              <span>Back to Learning</span>
             </button>
           </div>
         </header>
@@ -808,7 +808,7 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
       {/* ─────────────────────────────────────────────────────────────
           2. STEP INDICATOR BAR (1 TO 8 CIRCLES WITH ACTIVE COLORS) — UNLOCKED FOR ALL 8 GAMES
           ───────────────────────────────────────────────────────────── */}
-      <nav className="py-step-indicator-bar" aria-label="Game progress steps">
+      <nav className="py-step-indicator-bar" aria-label="Practice progress steps">
         {gamesList.map((game) => {
           const isActive = game.id === activeGameId;
           const isUnlocked = true; // All 8 games fully unlocked per user request
@@ -826,7 +826,7 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                 setActiveGameId(game.id);
                 setActiveChallengeNum(1);
               }}
-              title={`${game.title} (Click to play Game ${game.id})`}
+              title={`${game.title} (Click to start Practice ${game.id})`}
             >
               <span className="py-step-num-text">{game.badge}</span>
             </button>

@@ -10,7 +10,7 @@ export const PYTHON_VARIABLES_GAMES: PythonGame[] = [
   {
     "id": 1,
     "gameType": "code_puzzle",
-    "title": "Game 1 — Puzzle Quest: Variable Vault",
+    "title": "Practice 1 — Puzzle Quest: Variable Vault",
     "shortTitle": "Variable Vault",
     "subtitle": "10 Questions • Master variables, naming rules, reassignment, and types.",
     "badge": "1",
@@ -466,7 +466,7 @@ export const PYTHON_VARIABLES_GAMES: PythonGame[] = [
   {
     "id": 2,
     "gameType": "fill_blank",
-    "title": "Game 2 — Fill in the Blank",
+    "title": "Practice 2 — Fill in the Blank",
     "shortTitle": "Blank Solver",
     "subtitle": "10 Questions • Complete core definitions of Python data types & syntax.",
     "badge": "2",
@@ -852,7 +852,7 @@ export const PYTHON_VARIABLES_GAMES: PythonGame[] = [
   {
     "id": 3,
     "gameType": "match_code",
-    "title": "Game 3 — Match the Code",
+    "title": "Practice 3 — Match the Code",
     "shortTitle": "Milan Matcher",
     "subtitle": "10 Questions • Connect code snippets with their accurate data types and operations.",
     "badge": "3",
@@ -1338,7 +1338,7 @@ export const PYTHON_VARIABLES_GAMES: PythonGame[] = [
   {
     "id": 4,
     "gameType": "output_predictor",
-    "title": "Game 4 — Think: Quantum Output Predictor",
+    "title": "Practice 4 — Think: Quantum Output Predictor",
     "shortTitle": "Quantum Predictor",
     "subtitle": "10 Questions • Predict the exact runtime values and types of Python statements.",
     "badge": "4",
@@ -1764,7 +1764,7 @@ export const PYTHON_VARIABLES_GAMES: PythonGame[] = [
   {
     "id": 5,
     "gameType": "bug_hunter",
-    "title": "Game 5 — Debug: Cyber Bug Hunter",
+    "title": "Practice 5 — Debug: Cyber Bug Hunter",
     "shortTitle": "Bug Hunter",
     "subtitle": "10 Questions • Hunt down variable naming violations and type mismatches.",
     "badge": "5",
@@ -2160,7 +2160,7 @@ export const PYTHON_VARIABLES_GAMES: PythonGame[] = [
   {
     "id": 6,
     "gameType": "blueprint_builder",
-    "title": "Game 6 — Build: Component Blueprint Machine",
+    "title": "Practice 6 — Build: Component Blueprint Machine",
     "shortTitle": "Blueprint Architect",
     "subtitle": "10 Questions • Design optimal data architectures for real business applications.",
     "badge": "6",
@@ -2656,7 +2656,7 @@ export const PYTHON_VARIABLES_GAMES: PythonGame[] = [
   {
     "id": 7,
     "gameType": "logic_builder",
-    "title": "Game 7 — Logic Builder",
+    "title": "Practice 7 — Logic Builder",
     "shortTitle": "Logic Builder",
     "subtitle": "10 Questions • Formulate real-world data handling and type safety logic.",
     "badge": "7",
@@ -3242,7 +3242,7 @@ export const PYTHON_VARIABLES_GAMES: PythonGame[] = [
   {
     "id": 8,
     "gameType": "boss_fight",
-    "title": "Game 8 — BOSS FIGHT: Data Type Guardian",
+    "title": "Practice 8 — BOSS FIGHT: Data Type Guardian",
     "shortTitle": "Boss: Data Guardian",
     "subtitle": "10 Boss Challenges • Defeat the Cyber Guardian with mastery of variables and types!",
     "badge": "8",

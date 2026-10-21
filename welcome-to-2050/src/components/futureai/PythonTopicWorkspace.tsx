@@ -269,7 +269,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
       videoWatchTimer = setTimeout(() => {
         setIsVideoCompleted(true);
         if (effectiveTopicId === 1) {
-          triggerAutoAdvanceToStep('play', '🎮 Video Completed! Starting Python Level 1 Game (8 Interactive Games)', 3);
+          triggerAutoAdvanceToStep('play', '💻 Video Completed! Starting Python Level 1 Coding Practice (8 Interactive Practice Challenges)', 3);
         } else {
           triggerAutoAdvanceToStep('practice', '🎉 Video Completed! Starting MCQ', 3);
         }
@@ -1813,7 +1813,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
       ],
       suggestions: [
         'Practice more coding problems and improve interview answers',
-        'Replay the CodeQuest game to strengthen code structure',
+        'Replay the Coding Practice module to strengthen code structure',
         'Focus on interview answers and real-world explanations',
         'Review quiz questions to reinforce tricky syntax',
         'Spend 15 mins daily on hands-on terminal practice',
@@ -1890,7 +1890,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
       suggestions: [
         'Rewatch the video carefully with notes open',
         'Practice more MCQ and write code slowly',
-        'Replay the CodeQuest game to see how syntax fits together',
+        'Replay the Coding Practice module to see how syntax fits together',
         'Prepare bullet points for interview questions',
         'Use the Ask AI Mentor button for friendly 1-on-1 tutoring',
       ],
@@ -1926,7 +1926,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
       { key: 'interview', score: scores.interview, text: 'Practice a few more interview questions and improve your explanation skills' },
       { key: 'code', score: scores.code, text: 'Practice more real-world coding examples' },
       { key: 'mcq', score: scores.mcq, text: 'Improve speed in MCQ questions' },
-      { key: 'game', score: scores.game, text: 'Replay the CodeQuest game to strengthen code structure' },
+      { key: 'game', score: scores.game, text: 'Replay the Coding Practice module to strengthen code structure' },
       { key: 'video', score: scores.video, text: 'Rewatch the video lessons attentively to solidify foundations' },
     ];
     items.sort((a, b) => a.score - b.score);
@@ -2111,7 +2111,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
             onClick={() => handleSelectTab('play')}
           >
             <span className="pill-num">{['code', 'interview', 'score'].includes(activeStep) ? '✓' : '2'}</span>
-            <span className="pill-label">{effectiveTopicId === 1 ? 'Level 1 Game' : 'Game'}</span>
+            <span className="pill-label">{effectiveTopicId === 1 ? 'Coding Practice' : 'Practice'}</span>
           </button>
 
           <span className="pill-connector">→</span>
@@ -2176,7 +2176,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                         onEnded={() => {
                           setIsVideoCompleted(true);
                           if (effectiveTopicId === 1) {
-                            triggerAutoAdvanceToStep('play', '🎮 Video Completed! Starting Python Level 1 Game (8 Interactive Games)', 3);
+                            triggerAutoAdvanceToStep('play', '💻 Video Completed! Starting Python Level 1 Coding Practice (8 Practice Challenges)', 3);
                           } else {
                             triggerAutoAdvanceToStep('practice', '🎉 Video Completed! Starting MCQ', 3);
                           }
@@ -2469,7 +2469,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                     transition: 'all 0.2s ease',
                   }}
                 >
-                  <span>{effectiveTopicId === 1 ? 'Start Python Level 1 Game (8 Interactive Games) 🎮' : 'Proceed to MCQ Practice →'}</span>
+                  <span>{effectiveTopicId === 1 ? 'Start Python Level 1 Coding Practice (8 Challenges) 💻' : 'Proceed to MCQ Practice →'}</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
@@ -3192,7 +3192,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                         handleSelectTab('play');
                       }}
                     >
-                      <span>Proceed to Step 3: Play Game →</span>
+                      <span>Proceed to Step 3: Coding Practice →</span>
                     </button>
                   </div>
                 </div>

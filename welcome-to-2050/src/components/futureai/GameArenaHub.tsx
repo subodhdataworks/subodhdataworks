@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import './GameArenaHub.css';
 import './SqlChapterView.css';
-import {
-  Gamepad2,
-  Home,
+import {  Home,
   BookOpen,
   Bot,
   FolderKanban,
@@ -80,16 +78,16 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
       name: 'Python',
       icon: '🐍',
       badge: 'Python',
-      title: 'Python Game Arena',
+      title: 'Python Coding Practice',
       image: '/images/arena/subjects/game_card_python.jpg',
-      description: 'Master variables, loops, functions, OOP, and data structures through interactive puzzles and games.',
-      gamesCount: '29 Levels',
+      description: 'Master variables, loops, functions, OOP, and data structures through interactive puzzles and hands-on practice.',
+      gamesCount: '29 Practice Levels',
       tagColor: '#0ea5e9',
       gradient: 'linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%)',
       accentBg: '#e0f2fe',
       accentBorder: '#bae6fd',
       topics: ['Foundations (L1-L15)', 'Advanced & Data (L16-L29)', 'Real Code Sandbox', 'Level Badges'],
-      progressText: '29 Levels Available • 100% Free',
+      progressText: '29 Practice Levels Available • 100% Free',
       progressPct: 0,
     },
     {
@@ -100,13 +98,13 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
       title: 'SQL Database Quest',
       image: '/images/arena/subjects/game_card_sql.jpg',
       description: 'Query databases, master JOINs, aggregates, subqueries, and window functions hands-on.',
-      gamesCount: '8 Games',
+      gamesCount: '8 Practice Tracks',
       tagColor: '#8b5cf6',
       gradient: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
       accentBg: '#f3e8ff',
       accentBorder: '#e9d5ff',
       topics: ['SELECT & Filters', 'Multi-table JOINs', 'Aggregations', 'Window Functions'],
-      progressText: '8 Games Available • 100% Free',
+      progressText: '8 Practice Tracks Available • 100% Free',
       progressPct: 0,
     },
     {
@@ -117,13 +115,13 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
       title: 'Excel Formula Arena',
       image: '/images/arena/subjects/game_card_excel.jpg',
       description: 'Conquer formulas, XLOOKUP, pivot tables, data cleaning, and executive dashboarding.',
-      gamesCount: '8 Games',
+      gamesCount: '8 Practice Tracks',
       tagColor: '#10b981',
       gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
       accentBg: '#d1fae5',
       accentBorder: '#a7f3d0',
       topics: ['XLOOKUP & MATCH', 'Pivot Dashboards', 'Data Cleaning', 'Formula Auditing'],
-      progressText: '8 Games Available • 100% Free',
+      progressText: '8 Practice Tracks Available • 100% Free',
       progressPct: 0,
     },
     {
@@ -134,13 +132,13 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
       title: 'Power BI Visual League',
       image: '/images/arena/subjects/game_card_powerbi.jpg',
       description: 'Build interactive visual reports, data models, DAX measures, and business dashboards.',
-      gamesCount: '8 Games',
+      gamesCount: '8 Practice Tracks',
       tagColor: '#f59e0b',
       gradient: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
       accentBg: '#fef3c7',
       accentBorder: '#fde68a',
       topics: ['Data Modeling', 'DAX Measures', 'Interactive Visuals', 'KPI Executive Cards'],
-      progressText: '8 Games Available • 100% Free',
+      progressText: '8 Practice Tracks Available • 100% Free',
       progressPct: 0,
     },
     {
@@ -148,16 +146,16 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
       name: 'Statistics',
       icon: '∑',
       badge: 'Statistics',
-      title: 'Statistics & Math Arcade',
+      title: 'Statistics & Math Practice',
       image: '/images/arena/subjects/game_card_stats.jpg',
       description: 'Understand distributions, probability, hypothesis testing, p-values, and statistical power.',
-      gamesCount: '8 Games',
+      gamesCount: '8 Practice Tracks',
       tagColor: '#ec4899',
       gradient: 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)',
       accentBg: '#fce7f3',
       accentBorder: '#fbcfe8',
       topics: ['Normal Distribution', 'Z-Scores & Skew', 'Hypothesis p-value', 'A/B Testing Experiments'],
-      progressText: '8 Games Available • 100% Free',
+      progressText: '8 Practice Tracks Available • 100% Free',
       progressPct: 0,
     },
     {
@@ -168,13 +166,13 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
       title: 'Gen AI & Prompt Labs',
       image: '/images/arena/subjects/game_card_genai.jpg',
       description: 'Explore LLMs, prompt engineering, RAG pipelines, fine-tuning, and AI agent workflows.',
-      gamesCount: '8 Games',
+      gamesCount: '8 Practice Tracks',
       tagColor: '#06b6d4',
       gradient: 'linear-gradient(135deg, #06b6d4 0%, #4f46e5 100%)',
       accentBg: '#cffafe',
       accentBorder: '#a5f3fc',
       topics: ['Few-Shot Prompting', 'Vector Embeddings', 'RAG Retrieval', 'Autonomous AI Agents'],
-      progressText: '8 Games Available • 100% Free',
+      progressText: '8 Practice Tracks Available • 100% Free',
       progressPct: 0,
     },
   ];
@@ -1228,7 +1226,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
   // Learning flow steps in Advanced
   const learningFlowSteps = [
     { num: 1, title: 'Watch Lesson', sub: 'Short & Easy Videos', icon: <Video className="w-5 h-5 text-white" />, bg: '#8b5cf6' },
-    { num: 2, title: 'Play Game', sub: 'Solve Fun Challenges', icon: <Gamepad2 className="w-5 h-5 text-white" />, bg: '#a855f7' },
+    { num: 2, title: 'Coding Practice', sub: 'Solve Fun Challenges', icon: <Code2 className="w-5 h-5 text-white" />, bg: '#a855f7' },
     { num: 3, title: 'Write Code', sub: 'In-Built Code Editor', icon: <Code2 className="w-5 h-5 text-white" />, bg: '#3b82f6' },
     { num: 4, title: 'Take Quiz', sub: 'Test Your Knowledge', icon: <FileCode2 className="w-5 h-5 text-white" />, bg: '#ec4899' },
     { num: 5, title: 'Earn Rewards', sub: 'XP, Coins & Badges', icon: <Trophy className="w-5 h-5 text-white" />, bg: '#f59e0b' },
@@ -1294,14 +1292,14 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
             <div className="py-cs-header">
               <div className="py-cs-header-left">
                 <h2 className="py-cs-main-heading">
-                  <Gamepad2 className="w-4 h-4 text-cyan-500 inline mr-1.5" />
-                  Choose a Subject to Play
-                  <span className="py-cs-sub-heading-inline"> — Select a topic to start playing games &amp; earn points</span>
+                  <Code2 className="w-4 h-4 text-cyan-500 inline mr-1.5" />
+                  Choose a Subject for Coding Practice
+                  <span className="py-cs-sub-heading-inline"> — Select a topic for hands-on coding practice &amp; earn points</span>
                 </h2>
               </div>
               <div className="py-cs-badge-stat">
                 <Trophy className="w-3.5 h-3.5 text-amber-500" />
-                <span>6 Subjects • 65+ Interactive Games</span>
+                <span>6 Subjects • 65+ Practice Challenges</span>
               </div>
             </div>
 
@@ -1311,7 +1309,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                 className={`py-cs-filter-pill ${selectedSubject === 'all' ? 'active' : ''}`}
                 onClick={() => { playClick(); setSelectedSubject('all'); }}
               >
-                🎮 All Games
+                💻 All Practice Modules
               </button>
               {subjectsData.map((subj) => (
                 <button
@@ -1323,7 +1321,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                 >
-                  <span>{subj.icon}</span> {subj.name} Game
+                  <span>{subj.icon}</span> {subj.name} Practice
                 </button>
               ))}
             </div>
@@ -1348,7 +1346,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                       <img src={subj.image} alt={subj.name} className="py-sc-artwork-img" />
                       <div className="py-sc-overlay-glow" />
                       <span className="py-sc-game-count-badge">
-                        <Gamepad2 className="w-3 h-3 inline mr-1" />
+                        <Code2 className="w-3 h-3 inline mr-1" />
                         {subj.gamesCount}
                       </span>
                       <span className="py-sc-topic-tag" style={{ color: subj.tagColor }}>
@@ -1360,7 +1358,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                     <div className="py-sc-body">
                       <div className="py-sc-title-row">
                         <span className="py-sc-icon-emoji">{subj.icon}</span>
-                        <h3 className="py-sc-title">{subj.name} Game</h3>
+                        <h3 className="py-sc-title">{subj.name} Practice</h3>
                       </div>
 
                       {/* Progress / Status Strip */}
@@ -1447,7 +1445,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                     }}
                   >
                     <span className="py-slim-tab-dot"></span>
-                    <Gamepad2 className="w-3.5 h-3.5" />
+                    <Code2 className="w-3.5 h-3.5" />
                     <span className="py-slim-tab-title">Basics (Levels 1–15)</span>
                     <span className="py-slim-tab-badge">15 Levels</span>
                   </button>
@@ -1461,7 +1459,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                     }}
                   >
                     <span className="py-slim-tab-dot"></span>
-                    <Gamepad2 className="w-3.5 h-3.5" />
+                    <Code2 className="w-3.5 h-3.5" />
                     <span className="py-slim-tab-title">Advanced &amp; Data (Levels 16–29)</span>
                     <span className="py-slim-tab-badge adv-badge">14 Levels</span>
                   </button>
@@ -1569,7 +1567,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                             onPlayPython(game.id);
                           }}
                         >
-                          <Gamepad2 className="w-3.5 h-3.5 mr-1" />
+                          <Code2 className="w-3.5 h-3.5 mr-1" />
                           <span>PLAY</span>
                         </button>
                       </div>
@@ -1617,7 +1615,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                             onPlayPython(game.id);
                           }}
                         >
-                          <Gamepad2 className="w-3.5 h-3.5 mr-1" />
+                          <Code2 className="w-3.5 h-3.5 mr-1" />
                           <span>PLAY</span>
                         </button>
                       </div>
@@ -1670,7 +1668,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                 <div className="py-slim-flow-banner">
                   <div className="py-sfb-label">
                     <span className="py-sfb-tag">4-STEP FLOW</span>
-                    <strong className="py-sfb-title">Game Learning Path</strong>
+                    <strong className="py-sfb-title">Coding Practice Path</strong>
                   </div>
 
                   <div className="py-sfb-steps">
@@ -1705,7 +1703,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                       <div>
                         <div className="flex items-center gap-2">
                           <h2 className="py-sth-title text-white">{currentSubjectObj.title}</h2>
-                          <span className="py-sth-pill-free">100% Free • 8 Games</span>
+                          <span className="py-sth-pill-free">100% Free • 8 Practice Tracks</span>
                         </div>
                         <p className="py-sth-sub text-white/85">
                           {currentSubjectObj.description}
@@ -1763,7 +1761,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                             style={{ background: currentSubjectObj.gradient }}
                             onClick={() => handleOpenGameChallenge(game)}
                           >
-                            Play Game →
+                            Coding Practice →
                           </button>
                         </div>
                       </div>
@@ -1991,7 +1989,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                 <div className="py-mc-icon bg-sky-500 text-white">$</div>
                 <div>
                   <strong className="text-xs font-black text-slate-800">0</strong>
-                  <span className="block text-[9px] text-slate-500 font-semibold">Games Done</span>
+                  <span className="block text-[9px] text-slate-500 font-semibold">Practice Done</span>
                 </div>
               </div>
 
@@ -2021,7 +2019,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                     {activeTrack === 'basics' ? 'Daily Challenge' : 'Daily Mission'}
                   </strong>
                   <span className="block text-[11px] text-slate-500 font-semibold">
-                    {activeTrack === 'basics' ? 'Complete 3 Python games today' : 'Complete 2 advanced Python games today'}
+                    {activeTrack === 'basics' ? 'Complete 3 coding challenges today' : 'Complete 2 advanced coding challenges today'}
                   </span>
                 </div>
               </div>
@@ -2068,28 +2066,28 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                       <Star className="w-5 h-5 text-white fill-amber-100" />
                     </div>
                     <strong className="py-badge-name">First Step</strong>
-                    <span className="py-badge-sub">Play 1 game</span>
+                    <span className="py-badge-sub">Solve 1 challenge</span>
                   </div>
                   <div className="py-badge-item">
                     <div className="py-svg-badge blue-shield">
                       <Flame className="w-5 h-5 text-white fill-sky-200" />
                     </div>
                     <strong className="py-badge-name">7 Day Streak</strong>
-                    <span className="py-badge-sub">Play for 7 days</span>
+                    <span className="py-badge-sub">Practice for 7 days</span>
                   </div>
                   <div className="py-badge-item">
                     <div className="py-svg-badge purple-shield">
                       <Code2 className="w-5 h-5 text-white" />
                     </div>
                     <strong className="py-badge-name">Python Pro</strong>
-                    <span className="py-badge-sub">Complete 5 games</span>
+                    <span className="py-badge-sub">Complete 5 challenges</span>
                   </div>
                   <div className="py-badge-item opacity-60">
                     <div className="py-svg-badge lock-shield">
                       <Lock className="w-5 h-5 text-slate-300" />
                     </div>
                     <strong className="py-badge-name">Code Master</strong>
-                    <span className="py-badge-sub">Complete 15 games</span>
+                    <span className="py-badge-sub">Complete 15 challenges</span>
                   </div>
                 </>
               ) : (
@@ -2099,7 +2097,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                       <Star className="w-5 h-5 text-white fill-amber-100" />
                     </div>
                     <strong className="py-badge-name">Python Pro</strong>
-                    <span className="py-badge-sub">Complete 5 games</span>
+                    <span className="py-badge-sub">Complete 5 challenges</span>
                   </div>
                   <div className="py-badge-item">
                     <div className="py-svg-badge blue-shield">

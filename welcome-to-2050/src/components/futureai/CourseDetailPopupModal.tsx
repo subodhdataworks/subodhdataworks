@@ -93,12 +93,12 @@ export const ALL_COURSES_DETAIL: Record<string, CourseDetailData> = {
   'python-dsa': {
     id: 'python-dsa',
     badge: '🐍 Most Popular • Zero to Hero',
-    headlineTitle: 'Python Mastery & Coding Games',
-    headlineSubtitle: 'Learn Python through gamified challenges, problem solving, data structures, algorithms and practical automation scripts.',
+    headlineTitle: 'Python Mastery & Coding Practice',
+    headlineSubtitle: 'Learn Python through hands-on coding challenges, problem solving, data structures, algorithms and practical automation scripts.',
     salaryRange: '₹7 LPA – ₹16 LPA',
     subjectsCovered: [
       'Python Syntax & OOP',
-      'Interactive Coding Games',
+      'Interactive Coding Practice',
       'Data Structures (Arrays, Trees, Graphs)',
       'Sorting & Searching Algorithms',
       'Time & Space Complexity (Big-O)',
@@ -313,7 +313,7 @@ export const ALL_COURSES_DETAIL: Record<string, CourseDetailData> = {
       '30 Daily Coding Challenges & Projects'
     ],
     courseContent: [
-      { num: '01', title: 'Week 1: Core Logic & Speed Coding', topics: ['Python Syntax, Loops & Functions', 'Data Structures & Algorithmic Thinking', 'Daily Hands-On Mini-Games'] },
+      { num: '01', title: 'Week 1: Core Logic & Speed Coding', topics: ['Python Syntax, Loops & Functions', 'Data Structures & Algorithmic Thinking', 'Daily Hands-On Practice Labs'] },
       { num: '02', title: 'Week 2: Data Wrangling & Parsing', topics: ['Pandas Data Cleaning & Aggregations', 'Working with JSON, CSV & Excel Data', 'Automated Report Generation'] },
       { num: '03', title: 'Week 3: APIs & Cloud Connectivity', topics: ['Connecting to Web APIs with Requests', 'Database Connectivity with SQLite/Postgres', 'Scraping Data for Competitive Insights'] },
       { num: '04', title: 'Week 4: AI Scripting & Capstone Sprint', topics: ['Integrating LLM APIs (OpenAI, Gemini)', 'Building an Automated AI Assistant Tool', 'Deployment & Final Sprint Certificate'] }

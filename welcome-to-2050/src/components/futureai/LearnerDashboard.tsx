@@ -1540,7 +1540,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           <Search className="w-4 h-4 text-sky-500 shrink-0" />
           <input
             type="text"
-            placeholder={dockTab === 'game' ? 'Search Python games, challenges, or skills...' : 'Search for topics, modules, projects, interview questions or anything...'}
+            placeholder={dockTab === 'game' ? 'Search Python coding practice, challenges, or skills...' : 'Search for topics, modules, projects, interview questions or anything...'}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="dock-search-input"
@@ -1642,7 +1642,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer"
                     >
                       <Gamepad2 className="w-4 h-4 text-purple-500" />
-                      <span>Coding Games Arena</span>
+                      <span>Coding Practice Arena</span>
                     </button>
 
                     <button
@@ -2561,7 +2561,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                   <div className="flex flex-col gap-3">
                     {[
                       { step: '1', title: 'Python & Foundation Mastery', status: 'Completed', color: 'bg-emerald-500' },
-                      { step: '2', title: '5-Level Coding Game & Projects', status: 'In Progress (Level 4)', color: 'bg-sky-500' },
+                      { step: '2', title: '5-Level Coding Practice & Projects', status: 'In Progress (Level 4)', color: 'bg-sky-500' },
                       { step: '3', title: 'NOVA AI Mock Interview Clearance', status: 'Next Step', color: 'bg-amber-500' },
                       { step: '4', title: 'Direct Partner Hiring & Offer Letter', status: 'Locked', color: 'bg-slate-300' }
                     ].map((st) => (
@@ -2588,7 +2588,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                     className="w-full mt-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white font-black text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <Gamepad2 className="w-4 h-4" />
-                    <span>Level Up with Python Games →</span>
+                    <span>Level Up with Coding Practice →</span>
                   </button>
                 </div>
 

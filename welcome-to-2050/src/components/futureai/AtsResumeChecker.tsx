@@ -35,7 +35,7 @@ import {
   LayoutDashboard,
   Lock,
   GraduationCap,
-  Gamepad2,
+  Code2,
   Copy,
   User,
   Mail,
@@ -2276,10 +2276,10 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
 
             <div className="scd-sos-feature-item">
               <div className="scd-sos-ficon-box scd-ficon-green">
-                <Gamepad2 className="w-5 h-5" />
+                <Code2 className="w-5 h-5" />
               </div>
               <div className="scd-sos-ftext">
-                <strong>Coding Games</strong>
+                <strong>Coding Practice</strong>
                 <span>&amp; Practice</span>
               </div>
             </div>

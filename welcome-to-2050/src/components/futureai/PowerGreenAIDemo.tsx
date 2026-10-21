@@ -123,7 +123,7 @@ export const PowerGreenAIDemo: React.FC<PowerGreenAIDemoProps> = ({
       if (command === 'Start Python') query = 'पायथन शुरू करें';
       else if (command === 'Explain variables') query = 'वेरिएबल समझाएं';
       else if (command === 'Start MCQ') query = 'एमसीक्यू शुरू करें';
-      else if (command === 'Play practice game') query = 'प्रैक्टिस गेम खेलें';
+      else if (command === 'Start coding practice') query = 'कोडिंग प्रैक्टिस शुरू करें';
       else if (command === 'Start interview') query = 'इंटरव्यू शुरू करें';
       else if (command === 'Continue where I stopped') query = 'जहाँ रुका था वहीं से जारी रखें';
     }
@@ -376,7 +376,7 @@ export const PowerGreenAIDemo: React.FC<PowerGreenAIDemoProps> = ({
                 'Start Python',
                 'Explain variables',
                 'Start MCQ',
-                'Play practice game',
+                'Start coding practice',
                 'Start interview',
                 'Continue where I stopped',
               ].map((cmd) => (

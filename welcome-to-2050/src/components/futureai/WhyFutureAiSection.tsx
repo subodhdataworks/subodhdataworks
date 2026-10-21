@@ -11,7 +11,7 @@ import {
   X,
   Zap, 
   Database, 
-  Gamepad2, 
+  Code2, 
   BarChart3, 
   Video, 
   Users, 
@@ -286,7 +286,7 @@ export const WhyFutureAiSection: React.FC<WhyFutureAiSectionProps> = ({
             <div className="holo-badge-right holo-vertical-actions">
               <div className="action-step"><GraduationCap className="w-3.5 h-3.5 text-cyan-400" /><span>Learn</span></div>
               <div className="action-step"><Laptop className="w-3.5 h-3.5 text-cyan-400" /><span>Build</span></div>
-              <div className="action-step"><Gamepad2 className="w-3.5 h-3.5 text-cyan-400" /><span>Practice</span></div>
+              <div className="action-step"><Code2 className="w-3.5 h-3.5 text-cyan-400" /><span>Practice</span></div>
               <div className="action-step"><Rocket className="w-3.5 h-3.5 text-cyan-400" /><span>Grow</span></div>
             </div>
 
@@ -353,10 +353,10 @@ export const WhyFutureAiSection: React.FC<WhyFutureAiSectionProps> = ({
                 {/* 3. Practice Games & Quizzes */}
                 <div className="comp-item-row" onMouseEnter={playHover}>
                   <div className="comp-item-icon-wrap icon-cyan">
-                    <Gamepad2 className="w-4 h-4 text-cyan-600" />
+                    <Code2 className="w-4 h-4 text-cyan-600" />
                   </div>
                   <div className="comp-item-text">
-                    <strong className="comp-item-title title-navy">Practice Games & Quizzes</strong>
+                    <strong className="comp-item-title title-navy">Coding Practice & Quizzes</strong>
                     <span className="comp-item-desc">Learn by doing. Make practice<br />fun and engaging.</span>
                   </div>
                   <div className="comp-badge-status badge-tick">
@@ -526,7 +526,7 @@ export const WhyFutureAiSection: React.FC<WhyFutureAiSectionProps> = ({
                 {[
                   { icon: Zap, title: 'AI-Powered Learning', desc: 'Get instant doubt solving, explanations like a personal tutor.' },
                   { icon: Database, title: 'Real Datasets & Projects', desc: 'Work on industry-style projects and build a portfolio.' },
-                  { icon: Gamepad2, title: 'Practice Games & Quizzes', desc: 'Learn by doing. Make practice fun and engaging.' },
+                  { icon: Code2, title: 'Coding Practice & Quizzes', desc: 'Learn by doing. Make practice hands-on and engaging.' },
                   { icon: BarChart3, title: 'In-Demand Skills', desc: 'Python, SQL, Excel, Power BI, GenAI with hands-on practice.' },
                   { icon: Video, title: 'Interview Practice', desc: 'Mock interviews, AI feedback and real questions.' },
                   { icon: Users, title: 'Career Support', desc: 'Resume building, guidance and job preparation.' }
