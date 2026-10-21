@@ -14,6 +14,9 @@ import { AdminControlCenter } from './components/admin/controlcenter/AdminContro
 import { ContactUsView } from './components/legal/ContactUsView';
 import { TermsAndConditionsView } from './components/legal/TermsAndConditionsView';
 import { PaymentResultModal } from './components/futureai/PaymentResultModal';
+import { auth } from './services/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { findExistingUser, recordUserInDatabase } from './services/realAuthService';
 
 export const App: React.FC = () => {
   const profile = StorageService.getProfile();
@@ -33,6 +36,30 @@ export const App: React.FC = () => {
         recordReferralClick(refCode.trim());
       }
     }
+  }, []);
+
+  // Permanent Firebase Session Sync (IndexedDB Auto-Recovery)
+  // Ensures Google session persists permanently and never logs user out after 30 mins
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const storedName = localStorage.getItem('futureai_user_name');
+        const fallbackName = user.displayName || user.email?.split('@')[0] || 'Learner';
+        const finalName = (storedName && storedName !== 'Learner') ? storedName : fallbackName;
+        
+        setUserName(finalName);
+        setIsLoggedIn(true);
+
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('futureai_logged_in', 'true');
+          localStorage.setItem('futureai_user_name', finalName);
+          if (user.email) localStorage.setItem('futureai_user_email', user.email);
+          if (user.photoURL) localStorage.setItem('futureai_user_avatar', user.photoURL);
+        }
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   // Initialize login state strictly from localStorage
@@ -153,7 +180,12 @@ export const App: React.FC = () => {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+    } catch (e) {
+      console.warn('Firebase signout error:', e);
+    }
     setIsLoggedIn(false);
     setUserName('Learner');
     if (typeof window !== 'undefined') {
