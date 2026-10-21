@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
 import { initiatePayUPayment, getCurrentUserForPayment } from '../../services/payuService';
+import { startPaytmCheckout } from '../../services/paytmService';
 
 interface PayToUnlockModalProps {
   isOpen: boolean;
@@ -63,6 +64,19 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
 
     setIsLoading(true);
     try {
+      // 1. Primary: Start Paytm Checkout flow with test credentials
+      try {
+        await startPaytmCheckout({
+          amount: price,
+          courseTitle: displayTitle,
+          custId: user.email ? `USER_${user.email.replace(/[^a-zA-Z0-9]/g, '_')}` : undefined,
+        });
+        return;
+      } catch (paytmErr) {
+        console.warn('Paytm checkout failed, trying PayU fallback:', paytmErr);
+      }
+
+      // 2. Fallback: PayU flow
       await initiatePayUPayment({
         amount: price.toFixed(2),
         productinfo: `FUTURE IT INDUSTRY - ${displayTitle}`,
@@ -74,7 +88,6 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
         successUrl: `${window.location.origin}/#payment-success`,
         failureUrl: `${window.location.origin}/#payment-failure`,
       });
-      // Form submits → browser navigates to PayU — so no further code executes
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Payment failed. Please try again.';
       setError(msg);
@@ -255,7 +268,7 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
             ) : (
               <>
                 <CreditCard className="w-4 h-4" />
-                <span>Pay ₹{price.toLocaleString('en-IN')} — Secure PayU Gateway</span>
+                <span>Pay ₹{price.toLocaleString('en-IN')} — Paytm / UPI Gateway</span>
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
