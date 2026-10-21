@@ -24,7 +24,7 @@ export async function onRequestPost(context) {
     const channelId = env.PAYTM_CHANNEL_ID || 'WEB';
 
     const url = new URL(request.url);
-    const callbackUrl = `${url.origin}/#payment-success`;
+    const callbackUrl = `${url.origin}/api/paytm-callback`;
 
     const paytmParams = {
       MID: mid,

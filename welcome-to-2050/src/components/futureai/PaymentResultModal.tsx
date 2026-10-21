@@ -19,22 +19,24 @@ export const PaymentResultModal: React.FC<PaymentResultModalProps> = ({ onGoHome
   const [amount, setAmount] = useState<string>('');
 
   useEffect(() => {
-    const hash = window.location.hash;
+    const hash = window.location.hash || '';
+    const searchStr = (hash.split('?')[1] || '') || (window.location.search ? window.location.search.replace(/^\?/, '') : '');
+    const params = new URLSearchParams(searchStr);
 
-    if (hash.includes('payment-success')) {
+    if (hash.includes('payment-success') || params.get('status') === 'TXN_SUCCESS' || params.get('status') === 'success') {
       setStatus('success');
-      // Parse query params from URL after hash
-      const search = hash.split('?')[1] || '';
-      const params = new URLSearchParams(search);
-      setTxnId(params.get('txnid') || params.get('mihpayid') || '');
-      setAmount(params.get('amount') || '987');
-      // Clean up URL
-      setTimeout(() => { window.history.replaceState(null, '', window.location.pathname); }, 2000);
-    } else if (hash.includes('payment-failure')) {
+      const resolvedTxn = params.get('txnid') || params.get('txnId') || params.get('TXNID') || params.get('mihpayid') || params.get('orderId') || params.get('ORDERID') || '';
+      const resolvedAmt = params.get('amount') || params.get('TXNAMOUNT') || '987';
+      setTxnId(resolvedTxn);
+      setAmount(resolvedAmt);
+      try {
+        localStorage.setItem('futureai_student_enrolled', 'true');
+      } catch (e) {}
+      setTimeout(() => { window.history.replaceState(null, '', window.location.pathname); }, 2500);
+    } else if (hash.includes('payment-failure') || hash.includes('payment-failed') || params.get('status') === 'TXN_FAILURE' || params.get('status') === 'failure') {
       setStatus('failure');
-      const search = hash.split('?')[1] || '';
-      const params = new URLSearchParams(search);
-      setTxnId(params.get('txnid') || '');
+      const resolvedTxn = params.get('txnid') || params.get('txnId') || params.get('TXNID') || params.get('orderId') || params.get('ORDERID') || '';
+      setTxnId(resolvedTxn);
     }
   }, []);
 
