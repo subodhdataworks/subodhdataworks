@@ -64,30 +64,13 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
 
     setIsLoading(true);
     try {
-      // 1. Primary: Start Paytm Checkout flow with test credentials
-      try {
-        await startPaytmCheckout({
-          amount: price,
-          courseTitle: displayTitle,
-          custId: user.email ? `USER_${user.email.replace(/[^a-zA-Z0-9]/g, '_')}` : undefined,
-        });
-        return;
-      } catch (paytmErr) {
-        console.warn('Paytm checkout failed, trying PayU fallback:', paytmErr);
-      }
-
-      // 2. Fallback: PayU flow
-      await initiatePayUPayment({
-        amount: price.toFixed(2),
-        productinfo: `FUTURE IT INDUSTRY - ${displayTitle}`,
-        firstname: user.name,
-        email: user.email,
-        phone: phone || undefined,
-        udf1: courseId,
-        udf2: targetModuleName,
-        successUrl: `${window.location.origin}/#payment-success`,
-        failureUrl: `${window.location.origin}/#payment-failure`,
+      // Start Paytm Checkout flow with test credentials
+      await startPaytmCheckout({
+        amount: price,
+        courseTitle: displayTitle,
+        custId: user.email ? `USER_${user.email.replace(/[^a-zA-Z0-9]/g, '_')}` : undefined,
       });
+      // Browser redirects to Paytm
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Payment failed. Please try again.';
       setError(msg);

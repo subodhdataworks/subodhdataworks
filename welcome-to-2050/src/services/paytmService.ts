@@ -2,15 +2,6 @@
  * Paytm Payment Gateway Service (Staging & Production)
  */
 
-export interface PaytmInitResponse {
-  success: boolean;
-  txnToken?: string;
-  mid?: string;
-  orderId?: string;
-  amount?: string;
-  error?: string;
-}
-
 export function generatePaytmOrderId(): string {
   const time = Date.now().toString(36).toUpperCase();
   const rand = Math.random().toString(36).substring(2, 7).toUpperCase();
@@ -29,7 +20,7 @@ export async function startPaytmCheckout(params: {
   const orderId = params.orderId || generatePaytmOrderId();
   const amtStr = typeof params.amount === 'number' ? params.amount.toFixed(2) : parseFloat(params.amount).toFixed(2);
 
-  const res = await fetch('/api/paytm-initiate', {
+  const res = await fetch('/api/paytm-checksum', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -39,35 +30,30 @@ export async function startPaytmCheckout(params: {
     }),
   });
 
-  const data: PaytmInitResponse = await res.json();
-
-  if (!data.success || !data.txnToken || !data.mid || !data.orderId) {
-    throw new Error(data.error || 'Unable to initialize Paytm payment session.');
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || 'Failed to initialize Paytm payment session.');
   }
 
-  // Create form post and redirect to Paytm Staging
+  const data = await res.json();
+
+  if (!data.success || !data.params) {
+    throw new Error(data.error || 'Failed to initialize Paytm payment session.');
+  }
+
+  // Create form and auto-submit to Paytm Staging
   const form = document.createElement('form');
   form.method = 'POST';
-  form.action = `https://securegw-stage.paytm.in/theia/api/v1/showPaymentPage?mid=${data.mid}&orderId=${data.orderId}`;
+  form.action = data.paytmUrl || 'https://securegw-stage.paytm.in/theia/processTransaction';
   form.style.display = 'none';
 
-  const hiddenMid = document.createElement('input');
-  hiddenMid.type = 'hidden';
-  hiddenMid.name = 'mid';
-  hiddenMid.value = data.mid;
-  form.appendChild(hiddenMid);
-
-  const hiddenOrderId = document.createElement('input');
-  hiddenOrderId.type = 'hidden';
-  hiddenOrderId.name = 'orderId';
-  hiddenOrderId.value = data.orderId;
-  form.appendChild(hiddenOrderId);
-
-  const hiddenToken = document.createElement('input');
-  hiddenToken.type = 'hidden';
-  hiddenToken.name = 'txnToken';
-  hiddenToken.value = data.txnToken;
-  form.appendChild(hiddenToken);
+  Object.entries(data.params).forEach(([key, value]) => {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;
+    input.value = String(value);
+    form.appendChild(input);
+  });
 
   document.body.appendChild(form);
   form.submit();
