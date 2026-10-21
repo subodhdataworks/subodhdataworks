@@ -218,20 +218,6 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
             <Search className="w-4 h-4" />
           </button>
 
-          {/* 2. Wallet Pill with Amount (Shows ₹ Amount right in header) */}
-          <button
-            type="button"
-            onClick={handleWalletClick}
-            className="h-8 px-2.5 rounded-full bg-gradient-to-r from-amber-50 to-amber-100/90 hover:from-amber-100 hover:to-amber-200 border border-amber-300 text-amber-950 flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs shrink-0"
-            aria-label="Wallet & Earnings"
-            title={`Wallet Balance: ₹${walletBalance}`}
-          >
-            <Wallet className="w-3.5 h-3.5 text-amber-700 shrink-0" />
-            <span className="text-xs font-black text-amber-950 leading-none">
-              ₹{walletBalance.toLocaleString('en-IN')}
-            </span>
-          </button>
-
           {/* 3. Notification Bell (Only show badge when unread > 0, default 0) */}
           <button
             type="button"

@@ -1548,41 +1548,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           <span className="dock-kbd-hint">Ctrl K</span>
         </div>
 
-        {/* Right Actions: Coins, Gems, Ask AI Mentor + Notifications + User Profile (media_1791313375552.jpg) */}
+        {/* Right Actions: Notifications + User Profile (media_1791313375552.jpg) */}
         <div className="flex items-center gap-3">
-          {/* Wallet Balance & Instant Withdraw Button */}
-          <button
-            type="button"
-            onClick={() => setIsWithdrawModalOpen(true)}
-            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-50 to-amber-100 hover:from-amber-100 hover:to-amber-200 border border-amber-300 text-amber-950 font-black text-xs shadow-xs cursor-pointer active:scale-95 transition-all"
-            title="Click to Withdraw Wallet Balance"
-          >
-            <Wallet className="w-4 h-4 text-amber-700 shrink-0" />
-            <span>₹{(typeof window !== 'undefined' ? parseInt(localStorage.getItem('futureai_user_wallet') || '0', 10) : 0).toLocaleString('en-IN')}</span>
-            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-600 text-white font-black ml-0.5">Withdraw</span>
-          </button>
-
-          {/* Gaming Coins & Gems badges (Dynamic real telemetry starting at 0) */}
-          <div className="hidden md:flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200/90 text-amber-800 text-xs font-black shadow-xs">
-              <Coins className="w-4 h-4 text-amber-500 fill-amber-400" />
-              <span>{telemetry.coins}</span>
-            </div>
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-fuchsia-50 border border-fuchsia-200/90 text-fuchsia-800 text-xs font-black shadow-xs">
-              <Gem className="w-4 h-4 text-fuchsia-500 fill-fuchsia-400" />
-              <span>{telemetry.gems}</span>
-            </div>
-          </div>
-
-          {/* Ask AI Mentor button */}
-          <button 
-            className="dock-ask-ai-btn"
-            onClick={() => onOpenAdvisor?.()}
-          >
-            <Bot className="w-4 h-4" />
-            <span className="hidden sm:inline">Ask AI Mentor</span>
-          </button>
-
           {/* Notifications bell */}
           <div className="relative cursor-pointer p-1.5 rounded-full hover:bg-sky-50 text-slate-600 transition-colors">
             <Bell className="w-5 h-5" />

@@ -86,8 +86,8 @@ export const LiquidFloatingNavBar: React.FC<LiquidFloatingNavBarProps> = ({
     },
     {
       id: 'earning',
-      label: 'My Earning',
-      shortLabel: 'Earn',
+      label: 'Affiliate',
+      shortLabel: 'Affiliate',
       color: '#d97706',
     },
     {

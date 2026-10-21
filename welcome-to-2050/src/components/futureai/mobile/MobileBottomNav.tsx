@@ -165,7 +165,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                 : 'font-semibold text-slate-500'
             }`}
           >
-            Earn
+            Affiliate
           </span>
           {isTabActive('earn') ? (
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.9)] mt-0.5" />
