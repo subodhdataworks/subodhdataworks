@@ -1269,14 +1269,14 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
               <div className="py-arena-cinema-banner-wrapper">
                 <img
                   className="py-arena-cinema-banner-backdrop"
-                  src="/images/arena/navigation_game_banner_poster.jpg"
+                  src="/images/arena/coding_practice_hero_banner.jpg"
                   alt=""
                   aria-hidden="true"
                 />
                 <video
                   className="py-arena-cinema-banner-video"
-                  src="/videos/navigation_game_banner.mp4"
-                  poster="/images/arena/navigation_game_banner_poster.jpg"
+                  src="/videos/coding_practice_banner.mp4"
+                  poster="/images/arena/coding_practice_hero_banner.jpg"
                   autoPlay
                   loop
                   muted
@@ -1405,14 +1405,14 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
               <div className="py-python-cinema-banner-wrapper">
                 <img
                   className="py-python-cinema-banner-backdrop"
-                  src="/images/arena/python_banner_poster.jpg"
+                  src="/images/arena/coding_practice_hero_banner.jpg"
                   alt=""
                   aria-hidden="true"
                 />
                 <video
                   className="py-python-cinema-banner-video"
-                  src="/videos/python_banner_video.mp4"
-                  poster="/images/arena/python_banner_poster.jpg"
+                  src="/videos/coding_practice_banner.mp4"
+                  poster="/images/arena/coding_practice_hero_banner.jpg"
                   autoPlay
                   loop
                   muted

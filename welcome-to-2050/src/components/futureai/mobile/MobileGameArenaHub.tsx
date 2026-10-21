@@ -491,85 +491,54 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
 
       {/* ── 2. HERO BANNER: CODING PRACTICE ── */}
       <section className="px-2.5 pt-2.5 pb-1">
-        <div className="relative w-full rounded-2xl overflow-hidden shadow-lg border border-indigo-900/40 bg-gradient-to-r from-[#070b1e] via-[#0d163a] to-[#1a134d] text-white p-3.5">
-          {/* Subtle Cyber Grid Accent */}
-          <div className="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px] opacity-15 pointer-events-none" />
-          
-          <div className="relative z-10 flex items-center justify-between gap-3">
-            {/* Left Content */}
-            <div className="flex-1 min-w-0">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-400/40 text-cyan-300 text-[10px] font-black uppercase tracking-wider mb-1.5 shadow-sm">
-                <Code2 className="w-3 h-3 text-cyan-400" />
-                <span>Coding Practice</span>
-              </div>
-              <h1 className="text-base sm:text-lg font-black tracking-tight leading-tight text-white">
-                Learn by Doing. <br />
-                <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-300 bg-clip-text text-transparent">
-                  Build Real Skills.
-                </span>
-              </h1>
-              <p className="text-[10px] text-slate-300 font-medium mt-1 leading-snug">
-                13 Practice Tracks • Real Challenges • Earn Certificates
-              </p>
-            </div>
-
-            {/* Right Mascot Visual */}
-            <div className="w-20 sm:w-24 h-20 sm:h-24 shrink-0 relative flex items-center justify-center">
-              <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-xl animate-pulse" />
-              <img
-                src="/images/python_mascot_3d.png"
-                alt="AI Practice Mascot"
-                className="w-full h-full object-contain relative z-10 drop-shadow-md"
-                onError={(e) => {
-                  (e.target as HTMLElement).style.display = 'none';
-                }}
-              />
-            </div>
-          </div>
-
-          {/* 4 Interactive Quick Action Pills */}
-          <div className="grid grid-cols-4 gap-1.5 mt-3 pt-2.5 border-t border-indigo-800/40">
+        <div className="relative w-full rounded-2xl overflow-hidden shadow-md border border-indigo-900/30 bg-gradient-to-r from-[#070b1e] via-[#0d163a] to-[#1a134d]">
+          {/* AI-Generated Coding Practice Banner Image */}
+          <img
+            src="/images/gamezone/coding_practice_mobile_banner.jpg"
+            alt="Coding Practice: Learn by Doing. Build Real Skills."
+            className="w-full h-auto block object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = 'none';
+            }}
+          />
+          {/* 4 Invisible Hotspot Buttons at Bottom */}
+          <div className="absolute bottom-1 inset-x-2 h-7 grid grid-cols-4 gap-1 z-10">
             <button
               type="button"
+              aria-label="Start Practice"
               onClick={() => {
                 playClick?.();
                 if (onPlayPython) onPlayPython(1);
               }}
-              className="py-1 px-1 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-400/30 text-[9px] font-bold text-center text-cyan-300 flex items-center justify-center gap-1 active:scale-95 transition-transform cursor-pointer"
-            >
-              <Code2 className="w-2.5 h-2.5" />
-              <span className="truncate">Practice</span>
-            </button>
+              className="rounded-lg opacity-0 hover:opacity-10 bg-white active:opacity-20 transition-opacity cursor-pointer"
+            />
             <button
               type="button"
+              aria-label="Earn XP Points"
               onClick={() => {
                 playClick?.();
                 alert(`⭐ Your Practice Points: ${((telemetry?.coins || 0) * 10) || 450} XP!\nComplete challenges to level up.`);
               }}
-              className="py-1 px-1 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-400/30 text-[9px] font-bold text-center text-amber-300 flex items-center justify-center gap-1 active:scale-95 transition-transform cursor-pointer"
-            >
-              <span className="truncate">⭐ Earn XP</span>
-            </button>
+              className="rounded-lg opacity-0 hover:opacity-10 bg-white active:opacity-20 transition-opacity cursor-pointer"
+            />
             <button
               type="button"
+              aria-label="View Badges"
               onClick={() => {
                 playClick?.();
                 alert('🎖️ Unlocked Badges:\n• 👑 Code Rookie (Level 1)\n• 🐍 Python Explorer\n• ⚡ 7-Day Streak Master');
               }}
-              className="py-1 px-1 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-400/30 text-[9px] font-bold text-center text-purple-300 flex items-center justify-center gap-1 active:scale-95 transition-transform cursor-pointer"
-            >
-              <span className="truncate">🎖️ Badges</span>
-            </button>
+              className="rounded-lg opacity-0 hover:opacity-10 bg-white active:opacity-20 transition-opacity cursor-pointer"
+            />
             <button
               type="button"
+              aria-label="Win Rewards"
               onClick={() => {
                 playClick?.();
                 alert('🎁 Win Real Rewards:\nComplete 5 practice modules this week to win ₹100 cash voucher + verified skill certificate!');
               }}
-              className="py-1 px-1 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-400/30 text-[9px] font-bold text-center text-emerald-300 flex items-center justify-center gap-1 active:scale-95 transition-transform cursor-pointer"
-            >
-              <span className="truncate">🎁 Rewards</span>
-            </button>
+              className="rounded-lg opacity-0 hover:opacity-10 bg-white active:opacity-20 transition-opacity cursor-pointer"
+            />
           </div>
         </div>
       </section>
