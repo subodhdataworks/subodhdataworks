@@ -386,15 +386,12 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
 
                   {/* Translucent 3D Arched Hologram Shield emerging from the pot */}
                   <div className="scd-pot-holo-dome">
-                    <video
-                      src={c.video}
-                      poster={c.holoImage}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload="auto"
-                      className="scd-pot-holo-video is-always-on"
+                    <img
+                      src={c.holoImage || c.image}
+                      alt={c.title}
+                      loading="lazy"
+                      decoding="async"
+                      className="scd-pot-holo-img"
                     />
                     {/* Holographic inner arch frame & upward energy blend */}
                     <div className="scd-pot-holo-glass-frame" />
@@ -497,7 +494,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                     loop
                     muted
                     playsInline
-                    preload="metadata"
+                    preload="none"
                     className="lhh-list-thumb"
                     onClick={() => handleCourseClick(c)}
                   />

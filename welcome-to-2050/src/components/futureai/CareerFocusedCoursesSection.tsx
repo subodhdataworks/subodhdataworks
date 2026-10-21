@@ -695,15 +695,12 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
                       </div>
 
                       <div className="scd-pot-holo-dome">
-                        <video
-                          src={c.video}
-                          poster={c.holoImage}
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          preload="auto"
-                          className="scd-pot-holo-video is-always-on"
+                        <img
+                          src={c.holoImage || c.image}
+                          alt={c.title}
+                          loading="lazy"
+                          decoding="async"
+                          className="scd-pot-holo-img"
                         />
                         <div className="scd-pot-holo-glass-frame" />
                       </div>
@@ -781,7 +778,7 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
                         loop
                         muted
                         playsInline
-                        preload="metadata"
+                        preload="none"
                         className="lhh-list-thumb"
                       />
                     ) : (
@@ -875,25 +872,13 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
               >
                 {/* 16:9 Thumbnail / Video Header with floating badges */}
                 <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-950">
-                  {c.video ? (
-                    <video
-                      src={c.video}
-                      poster={c.image}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload="metadata"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <img
-                      src={c.image}
-                      alt={c.title}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                  )}
+                  <img
+                    src={c.image || c.holoImage}
+                    alt={c.title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/35 pointer-events-none" />
 
                   {/* Top Tags Overlay */}

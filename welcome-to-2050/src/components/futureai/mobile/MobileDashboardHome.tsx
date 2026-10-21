@@ -927,16 +927,13 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
                         <span>{c.statusTag}</span>
                       </span>
 
-                      {/* Autoplaying Course Video */}
-                      <video
-                        src={c.video}
-                        poster={c.holoImage}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        preload="auto"
-                        className="fii-stage-video"
+                      {/* Optimized Crisp Course Card Visual */}
+                      <img
+                        src={c.holoImage || c.image}
+                        alt={c.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="fii-stage-video object-cover"
                       />
                     </div>
 

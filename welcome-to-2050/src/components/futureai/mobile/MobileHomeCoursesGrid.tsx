@@ -277,15 +277,12 @@ export const MobileHomeCoursesGrid: React.FC<MobileHomeCoursesGridProps> = ({
           >
             {/* Top Video Preview Stage (Continuous AutoPlay Looping Video - Clean & Uncluttered) */}
             <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-950">
-              {/* Continuous Background Video */}
-              <video
-                src={c.video}
-                poster={c.image}
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="metadata"
+              {/* Crisp Poster Image with Lazy Loading */}
+              <img
+                src={c.image}
+                alt={c.title}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
               />
 
