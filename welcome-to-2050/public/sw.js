@@ -1,5 +1,5 @@
 // FUTURE AI Service Worker for PWA Offline & Install Support
-const CACHE_NAME = 'futureai-pwa-v3';
+const CACHE_NAME = 'futureai-pwa-v4';
 const PRECACHE_ASSETS = [
   '/',
   '/manifest.json',
