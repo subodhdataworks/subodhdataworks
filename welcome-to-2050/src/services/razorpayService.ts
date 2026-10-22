@@ -124,25 +124,36 @@ export async function startRazorpayCheckout(params: {
 }
 
 /**
- * Get current logged-in user details for pre-filling checkout
+ * Get current logged-in user details for pre-filling checkout.
+ * Supports Firebase auth, Google One-Tap (GIS), Mobile OTP and Email login
+ * (all of which persist the session in localStorage `futureai_*` keys).
  */
-export function getCurrentUserForPayment(): { name: string; email: string } {
-  const user = auth.currentUser;
-  if (user) {
-    return {
-      name: user.displayName || user.email?.split('@')[0] || 'Student',
-      email: user.email || '',
-    };
-  }
-
-  const stored = localStorage.getItem('fii_user_profile');
-  if (stored) {
+export function getCurrentUserForPayment(): {
+  name: string;
+  email: string;
+  phone: string;
+  isLoggedIn: boolean;
+} {
+  const ls = (k: string) => {
     try {
-      const p = JSON.parse(stored);
-      return { name: p.displayName || p.name || 'Student', email: p.email || '' };
+      return localStorage.getItem(k) || '';
     } catch {
-      // ignore
+      return '';
     }
-  }
-  return { name: 'Student', email: '' };
+  };
+
+  const fbUser = auth.currentUser;
+  const email = fbUser?.email || ls('futureai_user_email');
+  const storedName = ls('futureai_user_name');
+  const name =
+    fbUser?.displayName ||
+    (storedName && storedName !== 'Learner' ? storedName : '') ||
+    email.split('@')[0] ||
+    'Student';
+  const rawPhone = (fbUser?.phoneNumber || ls('futureai_user_phone')).replace(/\D/g, '');
+  const phone = rawPhone.length >= 10 ? rawPhone.slice(-10) : '';
+
+  const isLoggedIn = Boolean(fbUser || email || phone || ls('futureai_logged_in') === 'true');
+
+  return { name, email, phone, isLoggedIn };
 }

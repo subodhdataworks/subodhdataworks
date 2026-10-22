@@ -55,7 +55,7 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
     // Get user details
     const user = getCurrentUserForPayment();
 
-    if (!user.email) {
+    if (!user.isLoggedIn) {
       setError('Please login first to proceed with payment.');
       return;
     }
@@ -68,7 +68,7 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
         courseTitle: displayTitle,
         name: user.name,
         email: user.email,
-        phone: phone.length === 10 ? phone : undefined,
+        phone: phone.length === 10 ? phone : user.phone || undefined,
       });
 
       try {

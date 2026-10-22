@@ -38,6 +38,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'mobile' | 'email'>('mobile');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
   // Mobile Auth Flow: 'INPUT_PHONE' | 'INPUT_OTP'
@@ -69,6 +70,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
     if (isOpen) {
       setValidationError(null);
       setIsSubmitting(false);
+      setIsGoogleLoading(false);
       setMobileStep('INPUT_PHONE');
       setMobileInput('');
       setOtpInput('');
@@ -126,6 +128,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
       }
     }
     setIsSubmitting(false);
+    setIsGoogleLoading(false);
     onSuccess(name, userEmail, avatar, userRole);
     onClose();
   };
@@ -214,6 +217,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
   // 4. Google 1-Click Login
   const handleGoogleSignInClick = async () => {
     setIsSubmitting(true);
+    setIsGoogleLoading(true);
     setValidationError(null);
     try {
       const user = await requestGoogleAccountLogin();
@@ -256,6 +260,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
           return; // Don't reset isSubmitting — page will reload
         }
         setIsSubmitting(false);
+        setIsGoogleLoading(false);
         setValidationError('Google sign-in closed. Please choose Mobile or Email login below.');
       }
     }
@@ -332,7 +337,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
             </div>
             <div className="w-[1px] h-4 bg-slate-200" />
             <span className="font-bold text-xs sm:text-sm text-slate-800">
-              Continue with Google
+              {isGoogleLoading ? 'Signing in with Google...' : 'Continue with Google'}
             </span>
           </div>
 
@@ -420,7 +425,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                     background: 'linear-gradient(135deg, #0080FF 0%, #0066FF 100%)',
                   }}
                 >
-                  <span>{isSubmitting ? 'Sending OTP...' : 'Continue with Mobile Number'}</span>
+                  <span>{isSubmitting && !isGoogleLoading ? 'Sending OTP...' : 'Continue with Mobile Number'}</span>
                   <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                 </button>
               </form>
@@ -465,7 +470,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                   }}
                 >
                   <Check className="w-4 h-4 stroke-[3]" />
-                  <span>{isSubmitting ? 'Verifying...' : 'Verify OTP & Enter'}</span>
+                  <span>{isSubmitting && !isGoogleLoading ? 'Verifying...' : 'Verify OTP & Enter'}</span>
                 </button>
 
                 <div className="text-center pt-0.5">
@@ -529,7 +534,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                 background: 'linear-gradient(135deg, #0080FF 0%, #0066FF 100%)',
               }}
             >
-              <span>{isSubmitting ? 'Signing In...' : 'Continue with Email'}</span>
+              <span>{isSubmitting && !isGoogleLoading ? 'Signing In...' : 'Continue with Email'}</span>
               <ArrowRight className="w-4 h-4 stroke-[2.5]" />
             </button>
           </form>
