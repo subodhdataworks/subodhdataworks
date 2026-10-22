@@ -17,8 +17,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
-import { initiatePayUPayment, getCurrentUserForPayment } from '../../services/payuService';
-import { startPaytmCheckout } from '../../services/paytmService';
+import { startRazorpayCheckout, getCurrentUserForPayment } from '../../services/razorpayService';
 
 interface PayToUnlockModalProps {
   isOpen: boolean;
@@ -49,14 +48,13 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handlePayUPayment = async () => {
+  const handleRazorpayPayment = async () => {
     playClick();
     setError(null);
 
     // Get user details
     const user = getCurrentUserForPayment();
 
-    // If email is empty, we need it for PayU
     if (!user.email) {
       setError('Please login first to proceed with payment.');
       return;
@@ -64,16 +62,32 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
 
     setIsLoading(true);
     try {
-      // Start Paytm Checkout flow with test credentials
-      await startPaytmCheckout({
+      const result = await startRazorpayCheckout({
         amount: price,
+        courseId,
         courseTitle: displayTitle,
-        custId: user.email ? `USER_${user.email.replace(/[^a-zA-Z0-9]/g, '_')}` : undefined,
+        name: user.name,
+        email: user.email,
+        phone: phone.length === 10 ? phone : undefined,
       });
-      // Browser redirects to Paytm
+
+      try {
+        localStorage.setItem('futureai_student_enrolled', 'true');
+        localStorage.setItem('futureai_payment_order_id', result.orderId);
+        localStorage.setItem('futureai_payment_txn_id', result.paymentId);
+      } catch {
+        // ignore storage errors
+      }
+
+      onSimulateUnlock?.();
+      onClose();
+      // Show success modal (handled by PaymentResultModal)
+      window.location.hash = `payment-success?txnid=${encodeURIComponent(result.paymentId)}&amount=${result.amount}`;
+      window.location.reload();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Payment failed. Please try again.';
       setError(msg);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -237,21 +251,21 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
 
         {/* Actions */}
         <div className="space-y-2.5">
-          {/* Main PayU Button */}
+          {/* Main Razorpay Button */}
           <button
-            onClick={handlePayUPayment}
+            onClick={handleRazorpayPayment}
             disabled={isLoading}
             className="w-full py-3.5 rounded-xl bg-gradient-to-r from-sky-600 via-teal-500 to-emerald-500 text-white font-extrabold text-sm shadow-lg shadow-sky-500/25 hover:opacity-95 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Redirecting to Secure Payment...</span>
+                <span>Opening Secure Payment...</span>
               </>
             ) : (
               <>
                 <CreditCard className="w-4 h-4" />
-                <span>Pay ₹{price.toLocaleString('en-IN')} — Paytm / UPI Gateway</span>
+                <span>Pay ₹{price.toLocaleString('en-IN')} — UPI / Cards / NetBanking</span>
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
@@ -295,7 +309,7 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
           </div>
           <div className="flex items-center gap-1 text-[11px] text-slate-400">
             <Award className="w-3.5 h-3.5 text-amber-500" />
-            <span>Powered by PayU</span>
+            <span>Powered by Razorpay</span>
           </div>
         </div>
 

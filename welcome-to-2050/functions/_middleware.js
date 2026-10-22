@@ -8,7 +8,7 @@ export async function onRequest(context) {
   const { request, next } = context;
   const url = new URL(request.url);
 
-  // If a POST request hits the root or static pages (like Paytm returning to /),
+  // If a POST request hits the root or static pages (e.g. payment gateway redirects),
   // handle the form submission safely to prevent HTTP 405 error.
   if (request.method === 'POST' && (url.pathname === '/' || url.pathname === '')) {
     try {

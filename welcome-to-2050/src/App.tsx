@@ -313,7 +313,7 @@ export const App: React.FC = () => {
           }}
         />
 
-        {/* PayU Payment Result Handler — detects #payment-success / #payment-failure in URL */}
+        {/* Razorpay Payment Result Handler — detects #payment-success / #payment-failure in URL */}
         <PaymentResultModal
           onGoHome={() => {
             window.location.hash = isLoggedIn ? '#dashboard' : '#home';

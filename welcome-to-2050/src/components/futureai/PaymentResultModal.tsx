@@ -8,10 +8,10 @@ interface PaymentResultModalProps {
 }
 
 /**
- * Handles PayU redirect back to our app after payment.
- * PayU redirects to:
- *   Success: /#payment-success?txnid=...&status=success&amount=...
- *   Failure: /#payment-failure?txnid=...&status=failure
+ * Shows payment result after Razorpay checkout completes.
+ * Triggered via URL hash:
+ *   Success: /#payment-success?txnid=...&amount=...
+ *   Failure: /#payment-failure?txnid=...
  */
 export const PaymentResultModal: React.FC<PaymentResultModalProps> = ({ onGoHome }) => {
   const [status, setStatus] = useState<PaymentStatus>(null);

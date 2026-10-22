@@ -2754,7 +2754,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       />
 
 
-      {/* ₹987 Pay to Unlock Modal — Real PayU Payment */}
+      {/* ₹987 Pay to Unlock Modal — Razorpay Payment */}
       <PayToUnlockModal
         isOpen={unlockModalOpen}
         onClose={() => setUnlockModalOpen(false)}
