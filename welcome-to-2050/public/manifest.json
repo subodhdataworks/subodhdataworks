@@ -6,7 +6,7 @@
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#030712",
+  "background_color": "#070c1e",
   "theme_color": "#0B1638",
   "categories": ["education", "finance", "productivity"],
   "icons": [
@@ -17,7 +17,7 @@
       "purpose": "any"
     },
     {
-      "src": "/pwa-192x192.png",
+      "src": "/pwa-maskable-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
@@ -29,7 +29,7 @@
       "purpose": "any"
     },
     {
-      "src": "/pwa-512x512.png",
+      "src": "/pwa-maskable-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -49,16 +49,16 @@
       "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Coding Arena",
-      "short_name": "Arena",
-      "description": "Play interactive coding games",
-      "url": "/#intro-games",
+      "name": "Coding Practice",
+      "short_name": "Practice",
+      "description": "Daily interactive coding challenges",
+      "url": "/#coding_game",
       "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Affiliate & Earnings Hub",
-      "short_name": "Earnings",
-      "description": "Check wallet & UPI withdrawal",
+      "name": "Affiliate Income Hub",
+      "short_name": "Earn Income",
+      "description": "Track your referral income & rewards",
       "url": "/#income",
       "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
     }

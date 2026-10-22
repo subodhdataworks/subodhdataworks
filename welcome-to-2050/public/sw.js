@@ -1,12 +1,14 @@
 // FUTURE AI Service Worker for PWA Offline & Install Support
-const CACHE_NAME = 'futureai-pwa-v2';
+const CACHE_NAME = 'futureai-pwa-v3';
 const PRECACHE_ASSETS = [
   '/',
   '/manifest.json',
   '/favicon.png',
   '/favicon.ico',
   '/pwa-192x192.png',
+  '/pwa-maskable-192x192.png',
   '/pwa-512x512.png',
+  '/pwa-maskable-512x512.png',
   '/apple-touch-icon.png'
 ];
 

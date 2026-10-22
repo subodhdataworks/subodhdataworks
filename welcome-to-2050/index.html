@@ -19,20 +19,6 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body class="bg-[#FAFCFE] text-[#0F172A] min-h-screen font-sans antialiased selection:bg-sky-500/20 selection:text-sky-900 overflow-x-hidden">
-    <!-- Instant App Launch Video Splash Screen (Plays immediately on open, no white flash or static image!) -->
-    <div id="pwa-launch-splash" style="position:fixed;inset:0;background:#030712;z-index:99999;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-      <video id="pwa-splash-video" src="/videos/app_intro_splash.mp4" poster="/videos/app_intro_splash_poster.jpg" autoplay muted playsinline webkit-playsinline style="width:100%;height:100%;object-fit:cover;object-position:center;"></video>
-      <button id="pwa-splash-skip" onclick="var s=document.getElementById('pwa-launch-splash');if(s){s.style.opacity='0';s.style.pointerEvents='none';setTimeout(function(){s.remove();},500);try{sessionStorage.setItem('futureai_app_splash_shown','true');}catch(e){}}" style="position:absolute;top:16px;right:16px;z-index:100000;background:rgba(15,23,42,0.8);color:#fff;border:1px solid rgba(56,189,248,0.4);padding:6px 14px;border-radius:9999px;font-size:12px;font-weight:800;backdrop-filter:blur(8px);cursor:pointer;font-family:sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.4);">Skip &rarr;</button>
-    </div>
-    <script>
-      try {
-        var h = window.location.hash || '';
-        if (sessionStorage.getItem('futureai_app_splash_shown') === 'true' && !h.includes('splash')) {
-          var sp = document.getElementById('pwa-launch-splash');
-          if (sp) sp.style.display = 'none';
-        }
-      } catch(e) {}
-    </script>
     <div id="root"></div>
     <script>
       // Register Service Worker for PWA Add-to-Home-Screen support & immediate update check

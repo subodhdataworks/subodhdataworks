@@ -14,7 +14,6 @@ import { AdminControlCenter } from './components/admin/controlcenter/AdminContro
 import { ContactUsView } from './components/legal/ContactUsView';
 import { TermsAndConditionsView } from './components/legal/TermsAndConditionsView';
 import { PaymentResultModal } from './components/futureai/PaymentResultModal';
-import { AppSplashScreen } from './components/common/AppSplashScreen';
 import { auth } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { findExistingUser, recordUserInDatabase } from './services/realAuthService';
@@ -22,18 +21,6 @@ import { findExistingUser, recordUserInDatabase } from './services/realAuthServi
 export const App: React.FC = () => {
   const profile = StorageService.getProfile();
   const [payModalOpen, setPayModalOpen] = useState(false);
-  // App Opening Video Splash Screen for Android / Mobile & Web
-  const [showSplash, setShowSplash] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    const hash = window.location.hash.toLowerCase();
-    if (hash.includes('admin') || hash.includes('terms') || hash.includes('contact')) return false;
-    if (hash.includes('splash')) return true;
-    try {
-      return sessionStorage.getItem('futureai_app_splash_shown') !== 'true';
-    } catch {
-      return true;
-    }
-  });
 
   // Check referral code in URL immediately on page load
   useEffect(() => {
@@ -335,11 +322,6 @@ export const App: React.FC = () => {
 
         {/* Global PWA Android App Installation Banner / Modal for Mobile (< 768px) */}
         <MobileAppInstallPrompt />
-
-        {/* App Opening Video Splash Screen (Plays video on launch, auto-dismisses on finish) */}
-        {showSplash && (
-          <AppSplashScreen onFinish={() => setShowSplash(false)} />
-        )}
 
       </div>
     </ThemeAccentProvider>
