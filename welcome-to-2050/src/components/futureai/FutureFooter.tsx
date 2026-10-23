@@ -1,6 +1,5 @@
 import { 
   BookOpen, 
-  Headphones, 
   FileText, 
   Leaf, 
   ChevronRight 
@@ -154,8 +153,8 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
 
           </div>
 
-          {/* 3 RIGHT COLUMNS: EXPLORE, STUDENT SUPPORT, LEGAL (col-span-12 md:col-span-7) */}
-          <div className="md:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-4 lg:gap-6 pt-2">
+                    {/* 2 RIGHT COLUMNS: EXPLORE & LEGAL (col-span-12 md:col-span-7) */}
+          <div className="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-6 lg:gap-10 pt-2">
             
             {/* Column 1: Explore */}
             <div>
@@ -209,50 +208,7 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
               </ul>
             </div>
 
-            {/* Column 2: Student Support */}
-            <div>
-              {/* Header with Purple Badge */}
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-8 h-8 rounded-xl bg-[#6366f1] text-white flex items-center justify-center shadow-xs shrink-0">
-                  <Headphones className="w-4 h-4 stroke-[2.4]" />
-                </div>
-                <h4 className="text-base font-black text-slate-900 tracking-tight">
-                  Student Support
-                </h4>
-              </div>
-
-              <ul className="space-y-2.5 text-xs sm:text-[13px] font-semibold text-slate-700">
-                <li>
-                  <button
-                    onClick={() => onNavigateSection('future-plan')}
-                    className="hover:text-indigo-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer"
-                  >
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 transition-transform group-hover:translate-x-0.5" />
-                    <span>FAQs</span>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => onNavigateSection('why-future-ai')}
-                    className="hover:text-indigo-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer"
-                  >
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 transition-transform group-hover:translate-x-0.5" />
-                    <span>Eligibility Guidelines</span>
-                  </button>
-                </li>
-                <li>
-                  <a
-                    href="#contact-us"
-                    className="hover:text-indigo-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer"
-                  >
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 transition-transform group-hover:translate-x-0.5" />
-                    <span>Contact Us</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Column 3: Legal */}
+            {/* Column 2: Legal (Prominent & Mandatory Policies) */}
             <div>
               {/* Header with Green Badge */}
               <div className="flex items-center gap-2.5 mb-4">
@@ -264,7 +220,7 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
                 </h4>
               </div>
 
-              <ul className="space-y-2.5 text-xs sm:text-[13px] font-semibold text-slate-700">
+              <ul className="space-y-3 text-xs sm:text-[13px] font-semibold text-slate-700">
                 <li>
                   <a
                     href="#contact-us"
@@ -296,6 +252,11 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
                 <li>
                   <a
                     href="#privacy"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.hash = '#privacy';
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
                     className="hover:text-emerald-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer"
                   >
                     <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transition-transform group-hover:translate-x-0.5" />
@@ -324,7 +285,7 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
                       window.location.hash = '#about-us';
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    className="hover:text-emerald-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer text-emerald-700 font-bold"
+                    className="hover:text-emerald-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer text-emerald-800 font-bold"
                   >
                     <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transition-transform group-hover:translate-x-0.5" />
                     <span>About Us (Power Green Industries)</span>
