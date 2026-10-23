@@ -40,6 +40,7 @@ export interface CourseItem {
   salaryRange: string;
   courseFee: string;
   marketPrice?: string;
+  payAfterJob?: string;
   image: string;
   holoImage: string;
   video: string;
@@ -160,7 +161,6 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
 
           <p className="text-xs sm:text-sm text-slate-600 font-medium mt-2 leading-relaxed">
             Choose the right path for your future. Learn practical skills with real-world projects.
-          <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-2 leading-relaxed max-w-2xl mx-auto">* Price column uses a middle-of-the-road planning estimate for a comparable structured online course, rather than a very low or very high range. These are indicative estimates, not verified quotes for each exact course.</p>
           </p>
 
           {/* 4 Feature Pills in a Row */}
@@ -435,7 +435,7 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
           </div>
 
           {/* 12 Courses Premium Cards */}
-          <div className="space-y-4 px-1">
+          <div className="space-y-2 px-1">
             {filteredMobileCourses.map((c) => (
               <article
                 key={c.id}
@@ -443,7 +443,7 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
                 className="rounded-3xl bg-white border border-slate-200/90 shadow-md hover:shadow-xl transition-all overflow-hidden relative cursor-pointer active:scale-[0.99]"
               >
                 {/* 16:9 Thumbnail / Video Header with floating badges */}
-                <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-950">
+                <div className="relative aspect-[16/6] w-full overflow-hidden bg-slate-950">
                   <img
                     src={c.image || c.holoImage}
                     alt={c.title}
