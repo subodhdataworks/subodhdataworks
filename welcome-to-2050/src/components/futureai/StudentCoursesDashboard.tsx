@@ -300,6 +300,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             </div>
             <div className="lhh-section-title-wrap">
               <h2 className="lhh-section-title">All Career-Focused Industry Courses ({visibleCourses.length})</h2>
+              <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-1 leading-relaxed max-w-3xl">* Price column uses a middle-of-the-road planning estimate for a comparable structured online course, rather than a very low or very high range. These are indicative estimates, not verified quotes for each exact course.</p>
             </div>
           </div>
 
@@ -440,8 +441,9 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
 
                     {/* Horizontal Action Row: Left Slashed Price (Red Cut) + Right Start Learning Button */}
                     <div className="scd-pot-bottom-actions-row">
-                      <div className="scd-pot-slashed-price-wrap">
-                        <span className="scd-pot-slashed-daam">Rs {c.courseFee.replace('₹', '')}</span>
+                      <div className="scd-pot-slashed-price-wrap flex items-center gap-1.5">
+                        <span className="scd-pot-slashed-daam" title="Suggested average market price">{c.marketPrice || "Rs 6,000"}</span>
+                        <span className="text-emerald-700 font-black text-xs sm:text-sm bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-300 shadow-2xs whitespace-nowrap">{c.courseFee}</span>
                       </div>
 
                       <button
@@ -511,12 +513,16 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                   <p className="lhh-list-desc">
                     {c.descLine1} • {c.descLine2}
                   </p>
-                  <div className="lhh-list-meta">
+                  <div className="lhh-list-meta flex flex-wrap items-center gap-2">
                     <span style={{ color: c.themeColor }}>
                       {c.modulesCount} ({c.lessonsText})
                     </span>
                     <span>•</span>
-                    <span className="text-emerald-600 font-bold">CTC: {c.salaryRange}</span>
+                    <span className="line-through text-slate-400 font-semibold text-xs">Market: {c.marketPrice || "Rs 6,000"}</span>
+                    <span>•</span>
+                    <span className="text-emerald-600 font-black text-xs sm:text-sm bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Fee: {c.courseFee}</span>
+                    <span>•</span>
+                    <span className="text-slate-600 font-semibold text-xs">CTC: {c.salaryRange}</span>
                     <span>•</span>
                     <span style={{ color: c.progress > 0 ? c.themeColor : '#94a3b8' }}>
                       Progress: {c.progress}%
