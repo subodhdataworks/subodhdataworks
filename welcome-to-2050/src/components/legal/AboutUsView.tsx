@@ -182,7 +182,7 @@ export const AboutUsView: React.FC<AboutUsViewProps> = ({ onBack }) => {
                   <span>Our Vision</span>
                 </div>
                 <p className="text-emerald-950/80 leading-relaxed text-xs sm:text-[13px]">
-                  To build India's premier gamified EdTech ecosystem where students learn practical software engineering, build real portfolio projects, and secure rewarding placements.
+                  To build India's premier digital skill education platform where students learn practical software engineering, build real portfolio projects, and secure rewarding placements.
                 </p>
               </div>
             </div>
@@ -201,43 +201,23 @@ export const AboutUsView: React.FC<AboutUsViewProps> = ({ onBack }) => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-              <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
-                <BookOpen className="w-4 h-4" />
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+              <div className="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
+                <BookOpen className="w-5 h-5" />
               </div>
-              <h4 className="font-bold text-slate-900 text-sm">Industrial IT Programs</h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Hands-on courses in Python Mastery, Data Analytics, Full Stack Web Development, Machine Learning, and Agentic AI designed to align with current industry demands.
+              <h4 className="font-bold text-slate-900 text-base">Industrial IT Programs</h4>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Comprehensive training tracks in Python Mastery, Data Analytics, Full Stack Web Development, Machine Learning, and Enterprise AI designed to align with current multinational corporate hiring standards.
               </p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-              <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
-                <Sparkles className="w-4 h-4" />
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+              <div className="w-9 h-9 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold">
+                <Briefcase className="w-5 h-5" />
               </div>
-              <h4 className="font-bold text-slate-900 text-sm">Gamified Practice Arena</h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Learn-by-doing coding labs, interactive MCQ challenges, automated test evaluations, and milestone achievements that keep learners engaged and motivated.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-              <div className="w-8 h-8 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold">
-                <Briefcase className="w-4 h-4" />
-              </div>
-              <h4 className="font-bold text-slate-900 text-sm">Placement &amp; Career Prep</h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Smart ATS resume scoring and optimization, real-time AI mock interview rooms with live voice feedback, and dedicated referral partnerships.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-              <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
-                <Users className="w-4 h-4" />
-              </div>
-              <h4 className="font-bold text-slate-900 text-sm">Learn &amp; Earn Ecosystem</h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Transparent student reward model where active learners and community ambassadors earn verified incentives while helping peers upskill.
+              <h4 className="font-bold text-slate-900 text-base">Placement &amp; Career Prep</h4>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Dedicated career transformation suite including intelligent ATS resume evaluation, industry mock interviews with real-time feedback, and active hiring network placement assistance.
               </p>
             </div>
           </div>
