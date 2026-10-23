@@ -13,6 +13,8 @@ import { MobileAppInstallPrompt } from './components/futureai/mobile/MobileAppIn
 import { AdminControlCenter } from './components/admin/controlcenter/AdminControlCenter';
 import { ContactUsView } from './components/legal/ContactUsView';
 import { TermsAndConditionsView } from './components/legal/TermsAndConditionsView';
+import { PrivacyPolicyView } from './components/legal/PrivacyPolicyView';
+import { RefundPolicyView } from './components/legal/RefundPolicyView';
 import { PaymentResultModal } from './components/futureai/PaymentResultModal';
 import { auth } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -221,6 +223,18 @@ export const App: React.FC = () => {
           />
         ) : ['#terms', '#terms-and-conditions', '#termsandconditions', '#terms-conditions'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#TermsAndConditions' ? (
           <TermsAndConditionsView
+            onBack={() => {
+              window.location.hash = isMobile ? '#dashboard' : '#home';
+            }}
+          />
+        ) : ['#privacy', '#privacy-policy', '#privacypolicy'].includes(currentHash.split('?')[0].toLowerCase()) ? (
+          <PrivacyPolicyView
+            onBack={() => {
+              window.location.hash = isMobile ? '#dashboard' : '#home';
+            }}
+          />
+        ) : ['#refund', '#refund-policy', '#refundpolicy', '#cancellation', '#cancellation-policy'].includes(currentHash.split('?')[0].toLowerCase()) ? (
+          <RefundPolicyView
             onBack={() => {
               window.location.hash = isMobile ? '#dashboard' : '#home';
             }}
