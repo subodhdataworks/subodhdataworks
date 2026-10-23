@@ -156,7 +156,7 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
                               {/* 2 RIGHT COLUMNS: LEGAL (FIRST) & EXPLORE (col-span-12 md:col-span-7) */}
           <div className="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-6 lg:gap-10 pt-2">
             
-            {/* Column 1: Legal (Prominent & Mandatory Policies First) */}
+            {/* Column 1: Legal */}
             <div>
               {/* Header with Green Badge */}
               <div className="flex items-center gap-2.5 mb-4">
@@ -180,7 +180,7 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
                     className="hover:text-emerald-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer font-bold text-blue-600"
                   >
                     <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transition-transform group-hover:translate-x-0.5" />
-                    <span>Contact Us (Mandatory Policy)</span>
+                    <span>Contact Us</span>
                   </a>
                 </li>
                 <li>
@@ -194,7 +194,7 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
                     className="hover:text-emerald-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer font-bold text-blue-600"
                   >
                     <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transition-transform group-hover:translate-x-0.5" />
-                    <span>Terms & Conditions (Mandatory Policy)</span>
+                    <span>Terms & Conditions</span>
                   </a>
                 </li>
                 <li>
