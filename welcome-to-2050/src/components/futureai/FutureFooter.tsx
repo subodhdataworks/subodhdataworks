@@ -153,62 +153,10 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
 
           </div>
 
-                    {/* 2 RIGHT COLUMNS: EXPLORE & LEGAL (col-span-12 md:col-span-7) */}
+                              {/* 2 RIGHT COLUMNS: LEGAL (FIRST) & EXPLORE (col-span-12 md:col-span-7) */}
           <div className="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-6 lg:gap-10 pt-2">
             
-            {/* Column 1: Explore */}
-            <div>
-              {/* Header with Blue Badge */}
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
-                  <BookOpen className="w-4 h-4 stroke-[2.4]" />
-                </div>
-                <h4 className="text-base font-black text-slate-900 tracking-tight">
-                  Explore
-                </h4>
-              </div>
-
-              <ul className="space-y-2.5 text-xs sm:text-[13px] font-semibold text-slate-700">
-                <li>
-                  <button
-                    onClick={() => onNavigateSection('courses')}
-                    className="hover:text-blue-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer"
-                  >
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-transform group-hover:translate-x-0.5" />
-                    <span>All Courses</span>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => onNavigateSection('courses')}
-                    className="hover:text-blue-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer"
-                  >
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-transform group-hover:translate-x-0.5" />
-                    <span>Training Programs</span>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => onNavigateSection('placement-support')}
-                    className="hover:text-blue-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer"
-                  >
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-transform group-hover:translate-x-0.5" />
-                    <span>Career Support</span>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => onNavigateSection('real-success')}
-                    className="hover:text-blue-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer"
-                  >
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-transform group-hover:translate-x-0.5" />
-                    <span>Success Stories</span>
-                  </button>
-                </li>
-              </ul>
-            </div>
-
-            {/* Column 2: Legal (Prominent & Mandatory Policies) */}
+            {/* Column 1: Legal (Prominent & Mandatory Policies First) */}
             <div>
               {/* Header with Green Badge */}
               <div className="flex items-center gap-2.5 mb-4">
@@ -290,6 +238,58 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
                     <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transition-transform group-hover:translate-x-0.5" />
                     <span>About Us (Power Green Industries)</span>
                   </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 2: Explore */}
+            <div>
+              {/* Header with Blue Badge */}
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                  <BookOpen className="w-4 h-4 stroke-[2.4]" />
+                </div>
+                <h4 className="text-base font-black text-slate-900 tracking-tight">
+                  Explore
+                </h4>
+              </div>
+
+              <ul className="space-y-2.5 text-xs sm:text-[13px] font-semibold text-slate-700">
+                <li>
+                  <button
+                    onClick={() => onNavigateSection('courses')}
+                    className="hover:text-blue-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-transform group-hover:translate-x-0.5" />
+                    <span>All Courses</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => onNavigateSection('courses')}
+                    className="hover:text-blue-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-transform group-hover:translate-x-0.5" />
+                    <span>Training Programs</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => onNavigateSection('placement-support')}
+                    className="hover:text-blue-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-transform group-hover:translate-x-0.5" />
+                    <span>Career Support</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => onNavigateSection('real-success')}
+                    className="hover:text-blue-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-transform group-hover:translate-x-0.5" />
+                    <span>Success Stories</span>
+                  </button>
                 </li>
               </ul>
             </div>
