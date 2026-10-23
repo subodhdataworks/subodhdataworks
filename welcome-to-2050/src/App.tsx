@@ -15,6 +15,7 @@ import { ContactUsView } from './components/legal/ContactUsView';
 import { TermsAndConditionsView } from './components/legal/TermsAndConditionsView';
 import { PrivacyPolicyView } from './components/legal/PrivacyPolicyView';
 import { RefundPolicyView } from './components/legal/RefundPolicyView';
+import { AboutUsView } from './components/legal/AboutUsView';
 import { PaymentResultModal } from './components/futureai/PaymentResultModal';
 import { auth } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -235,6 +236,12 @@ export const App: React.FC = () => {
           />
         ) : ['#refund', '#refund-policy', '#refundpolicy', '#cancellation', '#cancellation-policy'].includes(currentHash.split('?')[0].toLowerCase()) ? (
           <RefundPolicyView
+            onBack={() => {
+              window.location.hash = isMobile ? '#dashboard' : '#home';
+            }}
+          />
+        ) : ['#about', '#about-us', '#aboutus', '#company'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#AboutUs' ? (
+          <AboutUsView
             onBack={() => {
               window.location.hash = isMobile ? '#dashboard' : '#home';
             }}

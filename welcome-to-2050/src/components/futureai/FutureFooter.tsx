@@ -83,9 +83,17 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
                 <div className="w-5 h-5 rounded-full bg-emerald-600 flex items-center justify-center text-white shrink-0 shadow-xs">
                   <Leaf className="w-3 h-3 fill-white" />
                 </div>
-                <span className="text-sm font-extrabold text-emerald-800 tracking-tight">
+                <a
+                  href="#about-us"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.hash = '#about-us';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="text-sm font-extrabold text-emerald-800 tracking-tight hover:text-emerald-600 underline decoration-emerald-400/50 underline-offset-2 cursor-pointer"
+                >
                   Power Green Industries
-                </span>
+                </a>
               </div>
             </div>
 
@@ -294,6 +302,34 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
                     <span>Privacy Policy</span>
                   </a>
                 </li>
+                <li>
+                  <a
+                    href="#refund"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.hash = '#refund';
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="hover:text-emerald-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transition-transform group-hover:translate-x-0.5" />
+                    <span>Refund & Cancellation Policy</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#about-us"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.hash = '#about-us';
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="hover:text-emerald-600 transition-colors flex items-center gap-1.5 group text-left cursor-pointer text-emerald-700 font-bold"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transition-transform group-hover:translate-x-0.5" />
+                    <span>About Us (Power Green Industries)</span>
+                  </a>
+                </li>
               </ul>
             </div>
 
@@ -309,6 +345,18 @@ export const FutureFooter: React.FC<FutureFooterProps> = ({
             © 2026 FUTURE IT INDUSTRY. All rights reserved.
           </div>
           <div className="flex flex-wrap items-center gap-3">
+            <a
+              href="#about-us"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.hash = '#about-us';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="hover:text-blue-600 transition-colors underline underline-offset-2 font-bold"
+            >
+              About Us
+            </a>
+            <span className="text-slate-300">·</span>
             <a
               href="#contact-us"
               onClick={(e) => {

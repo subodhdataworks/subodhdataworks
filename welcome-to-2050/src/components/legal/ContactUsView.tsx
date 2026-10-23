@@ -392,6 +392,17 @@ export const ContactUsView: React.FC<ContactUsViewProps> = ({ onBack }) => {
           <p className="text-[11px]">
             FUTURE IT INDUSTRY • 4, Varma house, Bakarpur, Bihar, PIN: 844127 • Tel: 8210778369
           </p>
+          <div className="flex items-center justify-center gap-3 text-[11px] text-slate-500 pt-1">
+            <a href="#about-us" className="hover:text-blue-600 transition-colors">About Us</a>
+            <span>•</span>
+            <a href="#contact-us" className="text-blue-600 font-bold">Contact Us</a>
+            <span>•</span>
+            <a href="#terms" className="hover:text-blue-600 transition-colors">Terms</a>
+            <span>•</span>
+            <a href="#privacy" className="hover:text-blue-600 transition-colors">Privacy</a>
+            <span>•</span>
+            <a href="#refund" className="hover:text-blue-600 transition-colors">Refund</a>
+          </div>
         </div>
 
       </main>
