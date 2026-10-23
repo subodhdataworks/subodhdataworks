@@ -139,7 +139,7 @@ export const TermsAndConditionsView: React.FC<TermsAndConditionsViewProps> = ({ 
 
         {/* Footer */}
         <div className="text-center pt-2 pb-8 text-slate-400 text-xs font-medium space-y-1">
-          <p>© 2026 Future IT Industry. All rights reserved.</p>
+          <p>© 2026 POWER GREEN INDUSTRIES. All rights reserved.</p>
         </div>
       </main>
     </div>

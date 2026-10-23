@@ -37,7 +37,7 @@ export const ContactUsView: React.FC<ContactUsViewProps> = ({ onBack }) => {
     e.preventDefault();
     setSubmitted(true);
     setTimeout(() => {
-      alert(`Thank you ${formData.name}! Your message has been sent to Subodh Kumar support team. We will contact you at ${formData.email} or ${formData.phone} within 2-4 hours.`);
+      alert(`Thank you ${formData.name}! Your message has been sent to POWER GREEN INDUSTRIES support team. We will contact you at ${formData.email} or ${formData.phone} within 2-4 hours.`);
       setFormData({ name: '', email: '', phone: '', subject: 'Course / Payment Query', message: '' });
       setSubmitted(false);
     }, 800);
@@ -135,7 +135,7 @@ export const ContactUsView: React.FC<ContactUsViewProps> = ({ onBack }) => {
                   Legal Entity Name
                 </span>
                 <h3 className="text-base font-black text-slate-900">
-                  SUBODH KUMAR
+                  POWER GREEN INDUSTRIES
                 </h3>
               </div>
             </div>
@@ -388,7 +388,7 @@ export const ContactUsView: React.FC<ContactUsViewProps> = ({ onBack }) => {
 
         {/* ─── Footer Disclaimer ─── */}
         <div className="text-center pt-4 pb-8 space-y-1 text-slate-400 text-xs font-medium">
-          <p>© 2026 SUBODH KUMAR. All rights reserved.</p>
+          <p>© 2026 POWER GREEN INDUSTRIES. All rights reserved.</p>
           <p className="text-[11px]">
             FUTURE IT INDUSTRY • 4, Varma house, Bakarpur, Bihar, PIN: 844127 • Tel: 8210778369
           </p>
