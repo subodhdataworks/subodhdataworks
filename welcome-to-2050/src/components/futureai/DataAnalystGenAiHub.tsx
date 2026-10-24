@@ -189,16 +189,12 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
       {/* =========================================================================
           MAIN BODY: 2-COLUMN LAYOUT (LEFT CONTENT 73% • RIGHT SIDEBAR 27%)
           ========================================================================= */}
-      <main className="max-w-[1520px] mx-auto px-4 sm:px-6 pt-5">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          
-          {/* ─────────────────────────────────────────────────────────────────────
-              LEFT COLUMN: HERO BANNER + 8 TABS + CURRICULUM ACCORDION (Cols 1-8/9)
-              ───────────────────────────────────────────────────────────────────── */}
-          <div className="lg:col-span-8 xl:col-span-9 space-y-4">
-            
-            {/* 1. HERO BANNER: Data Analyst with GenAI */}
-            <section className="relative rounded-2xl overflow-hidden shadow-lg border border-slate-800 bg-slate-950 text-white">
+      <main className="max-w-[1520px] mx-auto px-4 sm:px-6 pt-5 space-y-5">
+        
+        {/* =========================================================================
+            1. TOP HERO BANNER: 100% FULL WIDTH (No sidebar beside it!)
+            ========================================================================= */}
+        <section className="w-full relative rounded-2xl overflow-hidden shadow-lg border border-slate-800 bg-slate-950 text-white">
               {/* Background Campus Photo */}
               <img
                 src="/images/data_analyst_reference_full.jpg"
@@ -340,8 +336,17 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                 </div>
 
               </div>
-            </section>
+        </section>
 
+        {/* =========================================================================
+            2. LOWER SECTION: 2-COLUMN LAYOUT (LEFT: 8 TABS + CURRICULUM • RIGHT: SIDEBAR)
+            ========================================================================= */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          
+          {/* ─────────────────────────────────────────────────────────────────────
+              LEFT COLUMN: 8 TABS + ACTIVE TAB ACCORDION (Cols 1-8 / 1-9)
+              ───────────────────────────────────────────────────────────────────── */}
+          <div className="lg:col-span-8 xl:col-span-9 space-y-4">
 
             {/* 2. THE 8 HORIZONTAL TABS (Exact 1:1 Match with Screenshot) */}
             <div id="curriculum-tabs-map" className="overflow-x-auto scrollbar-none pb-1">
