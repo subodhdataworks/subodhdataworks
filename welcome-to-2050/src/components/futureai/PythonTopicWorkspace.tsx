@@ -174,8 +174,11 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
     }
   }, [topicId]);
   const topicHierarchy = useMemo(() => getTopicHierarchyInfo(effectiveTopicId), [effectiveTopicId]);
-  const isTopicWithoutCoding = effectiveTopicId === 1;
-  const isTopicWithoutMcq = effectiveTopicId === 1;
+  const isTab1Topic = useMemo(() => {
+    return (effectiveTopicId >= 1 && effectiveTopicId <= 26) || !!getTopicQuestionBank(1, effectiveTopicId);
+  }, [effectiveTopicId]);
+  const isTopicWithoutCoding = isTab1Topic;
+  const isTopicWithoutMcq = isTab1Topic;
 
   // Auto-redirect if skipped steps are selected on Topic 1
   useEffect(() => {
@@ -2161,7 +2164,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
       </div>
 
       {/* ── 3. Main Content Area ── */}
-      <div className={`ptw-main-grid-layout ${activeStep === 'practice' ? 'is-mcq-step' : ''} ${activeStep === 'play' ? 'is-game-step' : ''} ${activeStep === 'play' && effectiveTopicId === 1 ? 'is-topic1-game' : ''} ${activeStep === 'interview' ? 'is-interview-step' : ''} ${activeStep === 'code' ? 'is-code-step' : ''} ${activeStep === 'score' ? 'is-score-step' : ''}`}>
+      <div className={`ptw-main-grid-layout ${activeStep === 'practice' ? 'is-mcq-step' : ''} ${activeStep === 'play' ? 'is-game-step' : ''} ${activeStep === 'play' && isTab1Topic ? 'is-topic1-game' : ''} ${activeStep === 'interview' ? 'is-interview-step' : ''} ${activeStep === 'code' ? 'is-code-step' : ''} ${activeStep === 'score' ? 'is-score-step' : ''}`}>
         {/* ═════════════════════════════════════════════════════════════════
             TAB 1: VIDEO (Exact match to media_1791213637074.jpg)
             ═════════════════════════════════════════════════════════════════ */}
@@ -2427,7 +2430,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                   onClick={() => {
                     soundEffects.playClick();
                     setIsVideoCompleted(true);
-                    handleSelectTab(effectiveTopicId === 1 ? 'play' : 'practice');
+                    handleSelectTab(isTab1Topic ? 'play' : 'practice');
                   }}
                   style={{
                     width: '100%',
@@ -2448,7 +2451,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                     transition: 'all 0.2s ease',
                   }}
                 >
-                  <span>{effectiveTopicId === 1 ? 'Start Python Level 1 Coding Practice (8 Challenges) 💻' : 'Proceed to MCQ Practice →'}</span>
+                  <span>{isTab1Topic ? 'Start Gamified Practice (4 Games) 🎮' : 'Proceed to MCQ Practice →'}</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
@@ -3187,7 +3190,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
             TAB 3: 2035 5-LEVEL FUTURISTIC GAMIFIED PRACTICE ARENA
             ═════════════════════════════════════════════════════════════════ */}
         {activeStep === 'play' && (
-          effectiveTopicId === 1 ? (
+          isTab1Topic ? (
             <div className="plw-game-main-col" style={{ width: '100%', maxWidth: '100%', flex: '1 1 100%' }}>
               <PythonPracticeArena4Games
                 userName={userName}

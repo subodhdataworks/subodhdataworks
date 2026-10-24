@@ -1932,20 +1932,12 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 }}
                 onStartTopic={(topicId, title, step = 'learn') => {
                   playClick();
-                  if (topicId.startsWith('t-10') || topicId.startsWith('t-11') || topicId.startsWith('t-12')) {
-                    playCinema();
-                    setSelectedModuleView('python');
-                    setActiveTopicWs(1);
-                    setTargetStep(step as any);
-                    if (typeof window !== 'undefined') window.location.hash = `#${step}`;
-                  } else if (topicId.startsWith('t-7') || topicId.startsWith('t-8') || topicId.startsWith('t-9')) {
+                  const numericTopicId = parseInt(topicId.replace(/\D/g, ''), 10) || 1;
+
+                  if (topicId.startsWith('t-7') || topicId.startsWith('t-8') || topicId.startsWith('t-9')) {
                     playCinema();
                     setSelectedModuleView('sql');
                     if (typeof window !== 'undefined') window.location.hash = '#sql';
-                  } else if (topicId.startsWith('t-4') || topicId.startsWith('t-5') || topicId.startsWith('t-6')) {
-                    playCinema();
-                    setSelectedModuleView('python');
-                    if (typeof window !== 'undefined') window.location.hash = '#python';
                   } else if (topicId.startsWith('t-13') || topicId.startsWith('t-14') || topicId.startsWith('t-15')) {
                     playCinema();
                     setSelectedModuleView('powerbi');
@@ -1955,10 +1947,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                     setSelectedModuleView('genai');
                     if (typeof window !== 'undefined') window.location.hash = '#genai';
                   } else {
+                    playCinema();
                     setSelectedModuleView('python');
-                    setActiveTopicWs(1);
+                    setActiveTopicWs(numericTopicId);
                     setTargetStep(step as any);
-                    if (typeof window !== 'undefined') window.location.hash = `#${step}`;
+                    if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}`;
                   }
                 }}
               />

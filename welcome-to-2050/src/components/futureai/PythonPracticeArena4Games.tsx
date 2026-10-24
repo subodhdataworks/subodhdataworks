@@ -1358,6 +1358,40 @@ print(result)`
             <h3 className="ppa-pic-title">{registeredBank?.tabName || 'Data Analytics'}</h3>
             <p className="ppa-pic-subtitle">{registeredBank ? `${registeredBank.topicKey} ${registeredBank.topicTitle}` : 'Introduction to Programming'}</p>
 
+            {tab1Topics.length > 0 && (
+              <div className="ppa-topic-quick-switch" style={{ marginTop: '8px', marginBottom: '8px' }}>
+                <label style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#64748b', display: 'block', marginBottom: '4px' }}>
+                  Select Topic ({tab1Topics.length} Available):
+                </label>
+                <select
+                  value={numericTopicId}
+                  onChange={(e) => {
+                    const nextId = Number(e.target.value);
+                    if (onSelectTopic) onSelectTopic(nextId);
+                  }}
+                  style={{
+                    width: '100%',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    background: '#ffffff',
+                    color: '#0f172a',
+                    border: '1px solid #cbd5e1',
+                    borderRadius: '8px',
+                    padding: '6px 8px',
+                    cursor: 'pointer',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                  }}
+                  title="Switch Topic in Tab 1"
+                >
+                  {tab1Topics.map((t) => (
+                    <option key={t.topicKey} value={t.id}>
+                      {t.topicKey} {t.topicTitle}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             <div className="ppa-pic-progress-wrap">
               <div className="ppa-pic-progress-bar">
                 <div className="ppa-pic-progress-fill" style={{ width: '20%' }} />
