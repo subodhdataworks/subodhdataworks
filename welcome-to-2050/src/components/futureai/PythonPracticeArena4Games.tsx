@@ -284,12 +284,22 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     };
   };
 
-  // Full-volume Indian Text-To-Speech (TTS)
-  const speakWithFullVoice = (textToSpeak: string, gender: 'female' | 'male') => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+  // Full-volume Indian Text-To-Speech (TTS) with completion callback
+  const speakWithFullVoice = (
+    textToSpeak: string,
+    gender: 'female' | 'male',
+    onComplete?: () => void
+  ) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      if (onComplete) onComplete();
+      return;
+    }
     try {
       window.speechSynthesis.cancel();
-      if (!textToSpeak) return;
+      if (!textToSpeak) {
+        if (onComplete) onComplete();
+        return;
+      }
       const utterance = new SpeechSynthesisUtterance(textToSpeak);
       utterance.volume = 1.0; // Full Awaz
       utterance.rate = 0.94; // Clear natural Indian pace
@@ -299,14 +309,36 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
       if (voice) utterance.voice = voice;
       utterance.pitch = pitch;
 
+      let finished = false;
+      const handleFinish = () => {
+        if (!finished) {
+          finished = true;
+          setIsSpeaking(false);
+          if (onComplete) {
+            // Wait 600ms after answer sentence ends before advancing to next question
+            setTimeout(() => {
+              onComplete();
+            }, 600);
+          }
+        }
+      };
+
       utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
+      utterance.onend = () => handleFinish();
+      utterance.onerror = () => handleFinish();
 
       window.speechSynthesis.speak(utterance);
+
+      // Safety fallback: if speech synthesis is blocked or silent in browser, advance gracefully
+      const wordCount = textToSpeak.split(' ').length;
+      const maxDuration = Math.max(5000, wordCount * 600 + 2000);
+      setTimeout(() => {
+        handleFinish();
+      }, maxDuration);
     } catch (err) {
       console.warn('Speech error:', err);
       setIsSpeaking(false);
+      if (onComplete) onComplete();
     }
   };
 
@@ -351,7 +383,7 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     soundEffects.playClick();
   };
 
-  // 2. SUBMIT ANSWER (User requirement: submit answer click krne pr hi hoga, full awaz explanation aayega)
+  // 2. SUBMIT ANSWER (User requirement: ans khatam hone ke baad hi next question aayega)
   const handleSubmitAnswer = () => {
     if (!selectedQuizKey || quizFeedback === 'correct') return;
     const currQ: any = quizQuestions[quizIdx];
@@ -374,11 +406,8 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
       const cleanQ = currQ.question.replace(/\.{2,}/g, '').trim();
       const rightAnswerAnnouncement = `Right answer! ${cleanQ} is ${selectedOptionText}.`;
 
-      // Full volume speech announcement
-      speakWithFullVoice(rightAnswerAnnouncement, currentVoiceGender);
-
-      // Advance smoothly after explanation speech finishes (3.2 seconds)
-      setTimeout(() => {
+      // Function to advance ONLY AFTER voice announcement ends completely
+      const advanceAfterVoiceEnds = () => {
         setSelectedQuizKey(null);
         setQuizFeedback(null);
         setQuizSeconds(25);
@@ -394,7 +423,10 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
             setActiveGame(2);
           }, 1500);
         }
-      }, 3200);
+      };
+
+      // Speak with full volume and pass callback to wait until speech finishes
+      speakWithFullVoice(rightAnswerAnnouncement, currentVoiceGender, advanceAfterVoiceEnds);
     } else {
       setQuizFeedback('wrong');
       soundEffects.playQuizWrong();
