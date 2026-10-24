@@ -243,7 +243,7 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
             </div>
 
             {viewMode === 'grid' ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+              <div className="scd-pots-4grid home-compact-pots">
                 {CAREER_COURSES_12.map((c) => (
                   <CareerCourseCard
                     key={c.id}
@@ -411,10 +411,10 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
           width: 95% !important;
         }
         .scd-pots-4grid .scd-pot-cylinder-body {
-          min-height: unset !important;
+          min-height: 240px !important;
           margin-top: -15px !important;
-          padding: 18px 12px 14px !important;
-          gap: 6px !important;
+          padding: 16px 12px 14px !important;
+          gap: 7px !important;
           display: flex !important;
           flex-direction: column !important;
           justify-content: space-between !important;

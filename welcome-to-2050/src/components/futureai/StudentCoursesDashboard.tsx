@@ -297,7 +297,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             3. 4 FLAGSHIP COURSES — 3D CYLINDRICAL GLOWING NEON POTS (NO WHITE BG)
             ========================================================================= */}
         {viewMode === 'grid' ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+          <div className="scd-pots-4grid">
             {CAREER_COURSES_12.map((c) => (
               <CareerCourseCard
                 key={c.id}
