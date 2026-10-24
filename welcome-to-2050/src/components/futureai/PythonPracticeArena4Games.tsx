@@ -20,7 +20,10 @@ import {
   HelpCircle,
   Languages,
   Flag,
-  AlertTriangle
+  AlertTriangle,
+  Flame,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundEffects } from '../../services/soundEffects';
@@ -45,10 +48,16 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
 }) => {
   const topicHierarchy = useMemo(() => getTopicHierarchyInfo(topicId), [topicId]);
   const topicData: TopicAssessmentData = useMemo(() => getModule01TopicData(topicId), [topicId]);
+  const hindiActivity = useMemo(() => getHindiTopicActivity(topicId), [topicId]);
 
   // Active game (1: Quick Quiz, 2: Puzzle Challenge, 3: Match the Code, 4: Real-Life Mission)
   const [activeGame, setActiveGame] = useState<number>(1);
   const [unlockedGame, setUnlockedGame] = useState<number>(1);
+
+  // Gamification: Streak, XP toast & Sound Toggle
+  const [streak, setStreak] = useState<number>(0);
+  const [floatingXp, setFloatingXp] = useState<string | null>(null);
+  const [soundOn, setSoundOn] = useState<boolean>(soundEffects.getSoundEnabled());
 
   // ─────────────────────────────────────────────────────────────────────────────
   // HELP SYSTEM & SKIP QUESTION STATE
@@ -59,9 +68,6 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
   const [reportReason, setReportReason] = useState<string>('');
   const [reportDetails, setReportDetails] = useState<string>('');
   const [reportSuccess, setReportSuccess] = useState<boolean>(false);
-
-  const hindiActivity = useMemo(() => getHindiTopicActivity(topicId), [topicId]);
-
 
   // ─────────────────────────────────────────────────────────────────────────────
   // GAME 1: QUICK QUIZ STATE (5 Questions)
@@ -88,6 +94,9 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
         ],
         correct: 0,
         explanation: 'Programming is the process of creating a set of instructions that tell a computer how to perform a task.',
+        hint: 'Think about what code actually tells a computer to execute.',
+        realWorldContext: 'Every software application consists of computer instructions.',
+        codeSnippet: '# Programming = instructions\nprint("Execute step by step")',
       },
       {
         id: 2,
@@ -100,6 +109,9 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
         ],
         correct: 1,
         explanation: 'Guido van Rossum created Python in 1991 at CWI in the Netherlands.',
+        hint: 'He is a Dutch computer programmer named Guido.',
+        realWorldContext: 'Guido designed Python to be clean and readable.',
+        codeSnippet: '# Python was created by Guido van Rossum\nauthor = "Guido van Rossum"',
       },
       {
         id: 3,
@@ -112,6 +124,9 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
         ],
         correct: 2,
         explanation: 'print() is Python standard built-in function to display text and data values.',
+        hint: 'It prints text directly to your console.',
+        realWorldContext: 'Used by every developer to test and show results.',
+        codeSnippet: 'print("Hello, Python!")',
       },
       {
         id: 4,
@@ -124,6 +139,9 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
         ],
         correct: 1,
         explanation: 'Python script source files always use the .py extension.',
+        hint: 'It is a 2-letter extension starting with p.',
+        realWorldContext: 'Operating systems associate .py files with the Python interpreter.',
+        codeSnippet: '# filename: app.py',
       },
       {
         id: 5,
@@ -136,6 +154,9 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
         ],
         correct: 1,
         explanation: 'Python clean readability and massive libraries (Pandas, NumPy, PyTorch) make it the global standard for AI.',
+        hint: 'English-like readability and rich packages.',
+        realWorldContext: 'Used worldwide in ChatGPT, Google DeepMind, and Tesla Autopilot.',
+        codeSnippet: 'import pandas as pd\nimport torch',
       },
     ];
   }, [topicData]);
@@ -155,13 +176,16 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     setSelectedQuizKey(key);
     soundEffects.playClick();
 
-    const currQ = quizQuestions[quizIdx];
+    const currQ: any = quizQuestions[quizIdx];
     const isRight = optIdx === currQ.correct;
 
     if (isRight) {
       setQuizFeedback('correct');
       soundEffects.playQuizCorrect();
       setQuizScore((s) => s + 10);
+      setStreak((s) => s + 1);
+      setFloatingXp('+10 XP ✨');
+      setTimeout(() => setFloatingXp(null), 1200);
 
       // Auto advance to next question after 1.2s
       setTimeout(() => {
@@ -184,6 +208,7 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     } else {
       setQuizFeedback('wrong');
       soundEffects.playQuizWrong();
+      setStreak(0);
     }
   };
 
@@ -191,7 +216,6 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
   // GAME 2: PUZZLE CHALLENGE STATE (3 Challenges)
   // ─────────────────────────────────────────────────────────────────────────────
   const [puzzleIdx, setPuzzleIdx] = useState<number>(0);
-  const [puzzleSeconds, setPuzzleSeconds] = useState<number>(150);
   const [placedSlots, setPlacedSlots] = useState<(string | null)[]>([null, null, null, null]);
   const [puzzleAvailableTokens, setPuzzleAvailableTokens] = useState<string[]>([
     'print',
@@ -274,6 +298,9 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
       setPuzzleStatus('correct');
       soundEffects.playQuizCorrect();
       confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
+      setStreak((s) => s + 1);
+      setFloatingXp('+15 XP ✨');
+      setTimeout(() => setFloatingXp(null), 1200);
 
       setTimeout(() => {
         if (puzzleIdx < puzzleChallenges.length - 1) {
@@ -289,6 +316,7 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     } else {
       setPuzzleStatus('wrong');
       soundEffects.playQuizWrong();
+      setStreak(0);
     }
   };
 
@@ -337,7 +365,6 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
 
   const [selectedSnippet, setSelectedSnippet] = useState<string | null>(null);
   const [matchedPairs, setMatchedPairs] = useState<Record<number, string>>({});
-  const [matchStatus, setMatchStatus] = useState<'idle' | 'correct' | 'wrong'>('idle');
 
   const handleSelectSnippet = (snippet: string) => {
     soundEffects.playClick();
@@ -356,10 +383,11 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
       setMatchedPairs(nextMatches);
       setSelectedSnippet(null);
       soundEffects.playQuizCorrect();
+      setFloatingXp('+10 XP ✨');
+      setTimeout(() => setFloatingXp(null), 1000);
 
       // Check if all 5 matched
       if (Object.keys(nextMatches).length === matchPairs.length) {
-        setMatchStatus('correct');
         confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
         soundEffects.playCelebration();
         setUnlockedGame((prev) => Math.max(prev, 4));
@@ -374,7 +402,6 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     soundEffects.playClick();
     setMatchedPairs({});
     setSelectedSnippet(null);
-    setMatchStatus('idle');
   };
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -382,7 +409,7 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
   // ─────────────────────────────────────────────────────────────────────────────
   const [missionIdx, setMissionIdx] = useState<number>(0);
   const [missionCode, setMissionCode] = useState<string>(
-    `products = [
+`products = [
   {"name": "Laptop", "price": 45000},
   {"name": "Mouse", "price": 299},
   {"name": "Keyboard", "price": 799},
@@ -412,6 +439,8 @@ print(result)`
     soundEffects.playCelebration();
     confetti({ particleCount: 100, spread: 100, origin: { y: 0.5 } });
     setMissionDone(true);
+    setFloatingXp('+25 XP 🏆');
+    setTimeout(() => setFloatingXp(null), 1500);
 
     if (missionIdx === 0) {
       setTimeout(() => {
@@ -419,7 +448,6 @@ print(result)`
         setMissionDone(false);
       }, 1500);
     } else {
-      // All 4 games completed!
       if (onNextToInterview) {
         setTimeout(onNextToInterview, 1800);
       }
@@ -429,7 +457,32 @@ print(result)`
   // ─────────────────────────────────────────────────────────────────────────────
   // PROGRESS CALCULATIONS (0% -> 25% -> 50% -> 75% -> 100%)
   // ─────────────────────────────────────────────────────────────────────────────
-  
+  const totalProgressPercent = useMemo(() => {
+    let p = 0;
+    if (unlockedGame >= 2) p += 25;
+    if (unlockedGame >= 3) p += 25;
+    if (unlockedGame >= 4) p += 25;
+    if (missionDone) p += 25;
+    return p;
+  }, [unlockedGame, missionDone]);
+
+  // AI Mentor Dynamic Hint
+  const currentMentorHint = useMemo(() => {
+    if (activeGame === 1) {
+      return (
+        quizQuestions[quizIdx]?.explanation ||
+        'Think about the process of writing instructions that a computer can understand and execute.'
+      );
+    }
+    if (activeGame === 2) {
+      return currentPuzzle.hint;
+    }
+    if (activeGame === 3) {
+      return 'Look at what each code does and match it with the correct meaning: variables, loops, and conditions.';
+    }
+    return 'Think about using a loop or list comprehension to check the price condition and create a new list with the matching products.';
+  }, [activeGame, quizIdx, currentPuzzle, quizQuestions]);
+
   // ─────────────────────────────────────────────────────────────────────────────
   // PRE-WRITTEN HINT, EXAMPLE, EXPLANATION & REPORT DATA (Zero AI Cost)
   // ─────────────────────────────────────────────────────────────────────────────
@@ -499,7 +552,6 @@ print(result)`
       };
     }
 
-    // ActiveGame 4 (Real-Life Mission)
     return {
       hintEn: 'Filter the list using a conditional check (if price > 500) inside a loop or comprehension.',
       hintHi: 'लिस्ट के हर प्रोडक्ट को चेक करने के लिए for loop और if condition का प्रयोग करें: if p["price"] > 500.',
@@ -569,50 +621,31 @@ print(result)`
     }, 1800);
   };
 
-  const totalProgressPercent = useMemo(() => {
-    let p = 0;
-    if (unlockedGame >= 2) p += 25;
-    if (unlockedGame >= 3) p += 25;
-    if (unlockedGame >= 4) p += 25;
-    if (missionDone) p += 25;
-    return p;
-  }, [unlockedGame, missionDone]);
-
-  // AI Mentor Dynamic Hint
-  const currentMentorHint = useMemo(() => {
-    if (activeGame === 1) {
-      return (
-        quizQuestions[quizIdx]?.explanation ||
-        'Think about the process of writing instructions that a computer can understand and execute.'
-      );
-    }
-    if (activeGame === 2) {
-      return currentPuzzle.hint;
-    }
-    if (activeGame === 3) {
-      return 'Look at what each code does and match it with the correct meaning: variables, loops, and conditions.';
-    }
-    return 'Think about using a loop or list comprehension to check the price condition and create a new list with the matching products.';
-  }, [activeGame, quizIdx, currentPuzzle, quizQuestions]);
-
   return (
     <div className="ppa-container">
+      {/* Floating XP Toast */}
+      {floatingXp && (
+        <div className="ppa-floating-xp-toast">
+          <span>{floatingXp}</span>
+        </div>
+      )}
+
       {/* ─────────────────────────────────────────────────────────────
-          1. TOP 5-STEP SUB-STEPPER BAR (Pills 1 to 5)
+          1. TOP 5-STEP SUB-STEPPER BAR (Pills 1 to 5 - Ultra Sleek)
           ───────────────────────────────────────────────────────────── */}
       <nav className="ppa-stepper-bar" aria-label="Practice Sub-Steps">
         {/* Step 1: Quick Quiz */}
         <button
           type="button"
           className={`ppa-step-item ${activeGame === 1 ? 'active' : ''}`}
-          onClick={() => setActiveGame(1)}
+          onClick={() => { soundEffects.playClick(); setActiveGame(1); }}
         >
           <div className={`ppa-step-circle-badge ${unlockedGame > 1 ? 'completed' : 'quiz'}`}>
-            {unlockedGame > 1 ? <Check className="w-4 h-4 stroke-[3]" /> : '1'}
+            {unlockedGame > 1 ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : '1'}
           </div>
           <div className="ppa-step-meta">
             <span className="ppa-step-name">Quick Quiz</span>
-            <span className="ppa-step-sub">{unlockedGame > 1 ? '5/5 Done' : '5 Questions'}</span>
+            <span className="ppa-step-sub">{unlockedGame > 1 ? '5/5 Done' : '5 Qs'}</span>
           </div>
         </button>
 
@@ -623,20 +656,20 @@ print(result)`
           type="button"
           className={`ppa-step-item ${activeGame === 2 ? 'active' : ''}`}
           disabled={unlockedGame < 2}
-          onClick={() => setActiveGame(2)}
+          onClick={() => { soundEffects.playClick(); setActiveGame(2); }}
         >
           <div className={`ppa-step-circle-badge ${unlockedGame > 2 ? 'completed' : unlockedGame >= 2 ? 'puzzle' : 'locked'}`}>
             {unlockedGame > 2 ? (
-              <Check className="w-4 h-4 stroke-[3]" />
+              <Check className="w-3.5 h-3.5 stroke-[3]" />
             ) : unlockedGame >= 2 ? (
-              <Puzzle className="w-4 h-4" />
+              <Puzzle className="w-3.5 h-3.5" />
             ) : (
-              <Lock className="w-3.5 h-3.5" />
+              <Lock className="w-3 h-3" />
             )}
           </div>
           <div className="ppa-step-meta">
             <span className="ppa-step-name">Puzzle Challenge</span>
-            <span className="ppa-step-sub">{unlockedGame > 2 ? '3/3 Done' : '3 Challenges'}</span>
+            <span className="ppa-step-sub">{unlockedGame > 2 ? '3/3 Done' : '3 Ch.'}</span>
           </div>
         </button>
 
@@ -647,20 +680,20 @@ print(result)`
           type="button"
           className={`ppa-step-item ${activeGame === 3 ? 'active' : ''}`}
           disabled={unlockedGame < 3}
-          onClick={() => setActiveGame(3)}
+          onClick={() => { soundEffects.playClick(); setActiveGame(3); }}
         >
           <div className={`ppa-step-circle-badge ${unlockedGame > 3 ? 'completed' : unlockedGame >= 3 ? 'match' : 'locked'}`}>
             {unlockedGame > 3 ? (
-              <Check className="w-4 h-4 stroke-[3]" />
+              <Check className="w-3.5 h-3.5 stroke-[3]" />
             ) : unlockedGame >= 3 ? (
-              <Code2 className="w-4 h-4" />
+              <Code2 className="w-3.5 h-3.5" />
             ) : (
-              <Lock className="w-3.5 h-3.5" />
+              <Lock className="w-3 h-3" />
             )}
           </div>
           <div className="ppa-step-meta">
-            <span className="ppa-step-name">Match the Code</span>
-            <span className="ppa-step-sub">{unlockedGame > 3 ? '5/5 Done' : '5 Matches'}</span>
+            <span className="ppa-step-name">Match Code</span>
+            <span className="ppa-step-sub">{unlockedGame > 3 ? '5/5 Done' : '5 Pairs'}</span>
           </div>
         </button>
 
@@ -671,15 +704,15 @@ print(result)`
           type="button"
           className={`ppa-step-item ${activeGame === 4 ? 'active' : ''}`}
           disabled={unlockedGame < 4}
-          onClick={() => setActiveGame(4)}
+          onClick={() => { soundEffects.playClick(); setActiveGame(4); }}
         >
           <div className={`ppa-step-circle-badge ${missionDone ? 'completed' : unlockedGame >= 4 ? 'mission' : 'locked'}`}>
             {missionDone ? (
-              <Check className="w-4 h-4 stroke-[3]" />
+              <Check className="w-3.5 h-3.5 stroke-[3]" />
             ) : unlockedGame >= 4 ? (
-              <Target className="w-4 h-4" />
+              <Target className="w-3.5 h-3.5" />
             ) : (
-              <Lock className="w-3.5 h-3.5" />
+              <Lock className="w-3 h-3" />
             )}
           </div>
           <div className="ppa-step-meta">
@@ -693,12 +726,12 @@ print(result)`
         {/* Step 5: Coding Practice (If Available) */}
         <button
           type="button"
-          className="ppa-step-item"
+          className="ppa-step-item opacity-60 cursor-not-allowed"
           disabled={true}
           title="Full IDE Coding Practice available in advanced chapters"
         >
           <div className="ppa-step-circle-badge locked">
-            <Lock className="w-3.5 h-3.5" />
+            <Lock className="w-3 h-3" />
           </div>
           <div className="ppa-step-meta">
             <span className="ppa-step-name">Coding Practice</span>
@@ -723,7 +756,7 @@ print(result)`
         {/* Center Column: Active Game Main Card */}
         <main className="ppa-main-card">
           {/* ════════════════════════════════════════════════════════════
-              HEADER ROW (Icon, Title, Subtitle, Timer, Progress, Points)
+              HEADER ROW (Icon, Title, Subtitle, Timer, Points, Streak, Sound)
               ════════════════════════════════════════════════════════════ */}
           <div className="ppa-card-header">
             <div className="ppa-header-left">
@@ -738,14 +771,13 @@ print(result)`
                     : 'mission'
                 }`}
               >
-                {activeGame === 1 && <FileText className="w-6 h-6" />}
-                {activeGame === 2 && <Puzzle className="w-6 h-6" />}
-                {activeGame === 3 && <Code2 className="w-6 h-6" />}
-                {activeGame === 4 && <Target className="w-6 h-6" />}
+                {activeGame === 1 && <FileText className="w-5 h-5" />}
+                {activeGame === 2 && <Puzzle className="w-5 h-5" />}
+                {activeGame === 3 && <Code2 className="w-5 h-5" />}
+                {activeGame === 4 && <Target className="w-5 h-5" />}
               </div>
 
               <div className="ppa-header-titles">
-                <span className="ppa-practice-counter-pill">Practice {activeGame} of 4</span>
                 <div className="ppa-card-title-row">
                   <h2 className="ppa-card-title">
                     {activeGame === 1 && 'Quick Quiz'}
@@ -761,18 +793,26 @@ print(result)`
                   </span>
                 </div>
                 <p className="ppa-card-desc">
-                  {activeGame === 1 && 'Test your understanding with 5 interactive questions.'}
-                  {activeGame === 2 && 'Arrange the code blocks in the correct order to complete the program.'}
-                  {activeGame === 3 && 'Match each Python code with its correct meaning, output or purpose.'}
-                  {activeGame === 4 && 'Solve real-world problems using your Python knowledge.'}
+                  {activeGame === 1 && 'Concepts test karo — correct answer select karte hi next question aayega.'}
+                  {activeGame === 2 && 'Logic aur sequence solve karo — arrange blocks in order.'}
+                  {activeGame === 3 && 'Code, meaning aur output match karo.'}
+                  {activeGame === 4 && 'Practical problem solve karo — filter product catalog.'}
                 </p>
               </div>
             </div>
 
             <div className="ppa-header-right">
+              {/* Streak Counter Pill */}
+              {streak > 1 && (
+                <div className="ppa-streak-pill" title={`${streak} correct in a row!`}>
+                  <Flame className="w-3.5 h-3.5 text-orange-500 fill-orange-500 animate-pulse" />
+                  <span>{streak}x Streak!</span>
+                </div>
+              )}
+
               {/* Clock Timer */}
               <div className="ppa-timer-pill">
-                <Clock className="w-4 h-4 text-slate-500" />
+                <Clock className="w-3.5 h-3.5 text-slate-500" />
                 <span>
                   {activeGame === 1 && `00:${quizSeconds < 10 ? '0' : ''}${quizSeconds}`}
                   {activeGame === 2 && '02:30'}
@@ -781,59 +821,62 @@ print(result)`
                 </span>
               </div>
 
-              {/* Progress counter & mini bar */}
-              <div className="ppa-progress-counter-box">
-                <span className="ppa-pcb-label">
-                  {activeGame === 1 && `Question ${quizIdx + 1} / 5`}
-                  {activeGame === 2 && `Challenge ${puzzleIdx + 1} / 3`}
-                  {activeGame === 3 && `Match ${Object.keys(matchedPairs).length} / 5`}
-                  {activeGame === 4 && `Mission ${missionIdx + 1} / 2`}
-                </span>
-                <div className="ppa-pcb-track">
-                  <div
-                    className="ppa-pcb-bar"
-                    style={{
-                      width:
-                        activeGame === 1
-                          ? `${((quizIdx + 1) / 5) * 100}%`
-                          : activeGame === 2
-                          ? `${((puzzleIdx + 1) / 3) * 100}%`
-                          : activeGame === 3
-                          ? `${(Object.keys(matchedPairs).length / 5) * 100}%`
-                          : `${((missionIdx + 1) / 2) * 100}%`,
-                    }}
-                  />
-                </div>
-              </div>
-
               {/* Points Pill */}
               <div className="ppa-points-pill">
-                <Star className="w-4 h-4 text-amber-500 fill-amber-400" />
+                <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
                 <span>
-                  {activeGame === 1 && '+10 Points for correct answer'}
-                  {activeGame === 2 && '+15 Points for correct answer'}
-                  {activeGame === 3 && '+10 Points for correct match'}
-                  {activeGame === 4 && '+25 Points for correct solution'}
+                  {activeGame === 1 && '+10 Pts'}
+                  {activeGame === 2 && '+15 Pts'}
+                  {activeGame === 3 && '+10 Pts'}
+                  {activeGame === 4 && '+25 Pts'}
                 </span>
               </div>
+
+              {/* Sound Toggle */}
+              <button
+                type="button"
+                className={`ppa-sound-toggle-btn ${soundOn ? 'active' : 'muted'}`}
+                onClick={() => {
+                  const next = soundEffects.toggleSound();
+                  setSoundOn(next);
+                }}
+                title={soundOn ? 'Mute Sound' : 'Enable Sound'}
+              >
+                {soundOn ? <Volume2 className="w-3.5 h-3.5 text-slate-600" /> : <VolumeX className="w-3.5 h-3.5 text-slate-400" />}
+              </button>
             </div>
           </div>
 
           {/* ════════════════════════════════════════════════════════════
-              GAME 1: QUICK QUIZ VIEW (Image 2 Match)
+              GAME 1: QUICK QUIZ VIEW (2x2 Grid - Zero Scroll Fit)
               ════════════════════════════════════════════════════════════ */}
           {activeGame === 1 && (
-            <div className="ppa-quiz-container flex flex-col gap-4">
+            <div className="ppa-quiz-container">
               <div className="ppa-prompt-banner">
-                <div className="ppa-prompt-tag">
-                  <Lightbulb className="w-3.5 h-3.5 fill-amber-300" />
-                  <span>QUESTION {quizIdx + 1} — CONCEPT CHALLENGE</span>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="ppa-prompt-tag">
+                    <Lightbulb className="w-3.5 h-3.5 fill-amber-300" />
+                    <span>QUESTION {quizIdx + 1} OF 5</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="ppa-btn-help"
+                    onClick={() => {
+                      setIsHelpOpen(true);
+                      setHelpTab('menu');
+                    }}
+                    title="Need Help? Choose how you want to understand this question"
+                  >
+                    <HelpCircle className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Need Help?</span>
+                  </button>
                 </div>
                 <h3 className="ppa-prompt-question">
                   {quizQuestions[quizIdx]?.question}
                 </h3>
               </div>
 
+              {/* 2x2 Clean Responsive Grid */}
               <div className="ppa-quiz-options-grid">
                 {quizQuestions[quizIdx]?.options.map((opt, optIdx) => {
                   const isSelected = selectedQuizKey === opt.key;
@@ -845,14 +888,15 @@ print(result)`
                       key={opt.key}
                       type="button"
                       className={`ppa-quiz-opt-btn ${isSelected ? 'selected' : ''} ${
-                        isCorrect ? 'correct' : ''
-                      } ${isWrong ? 'wrong' : ''}`}
+                        isCorrect ? 'correct animate-pulse-glow' : ''
+                      } ${isWrong ? 'wrong ppa-shake' : ''}`}
+                      onMouseEnter={() => soundEffects.playHover()}
                       onClick={() => handleSelectQuizOption(opt.key, optIdx)}
                       disabled={quizFeedback === 'correct'}
                     >
-                      <div className="ppa-opt-key-badge">{opt.key}</div>
-                      <span>{opt.text}</span>
-                      {isCorrect && <Check className="w-4 h-4 text-emerald-600 ml-auto" />}
+                      <div className={`ppa-opt-key-badge badge-${opt.key.toLowerCase()}`}>{opt.key}</div>
+                      <span className="ppa-opt-text">{opt.text}</span>
+                      {isCorrect && <Check className="w-4 h-4 text-emerald-600 ml-auto shrink-0" />}
                     </button>
                   );
                 })}
@@ -861,14 +905,28 @@ print(result)`
           )}
 
           {/* ════════════════════════════════════════════════════════════
-              GAME 2: PUZZLE CHALLENGE VIEW (Image 1 Match)
+              GAME 2: PUZZLE CHALLENGE VIEW (Compact Fit)
               ════════════════════════════════════════════════════════════ */}
           {activeGame === 2 && (
-            <div className="ppa-puzzle-container flex flex-col gap-4">
+            <div className="ppa-puzzle-container">
               <div className="ppa-prompt-banner">
-                <div className="ppa-prompt-tag">
-                  <Lightbulb className="w-3.5 h-3.5 fill-amber-300" />
-                  <span>{currentPuzzle.title}</span>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="ppa-prompt-tag">
+                    <Lightbulb className="w-3.5 h-3.5 fill-amber-300" />
+                    <span>{currentPuzzle.title}</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="ppa-btn-help"
+                    onClick={() => {
+                      setIsHelpOpen(true);
+                      setHelpTab('menu');
+                    }}
+                    title="Need Help? Choose how you want to understand this question"
+                  >
+                    <HelpCircle className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Need Help?</span>
+                  </button>
                 </div>
                 <h3 className="ppa-prompt-question">{currentPuzzle.prompt}</h3>
               </div>
@@ -876,12 +934,13 @@ print(result)`
               <div className="ppa-puzzle-grid">
                 {/* Left: Code Blocks */}
                 <div className="ppa-puzzle-col">
-                  <span className="ppa-puzzle-col-title">Code Blocks (Drag or tap to arrange)</span>
+                  <span className="ppa-puzzle-col-title">Available Tokens (Tap to place)</span>
                   <div className="ppa-blocks-deck">
                     {puzzleAvailableTokens.map((tok, i) => (
                       <div
                         key={i}
                         className="ppa-puzzle-block-pill"
+                        onMouseEnter={() => soundEffects.playHover()}
                         onClick={() => handleAddPuzzleToken(tok, i)}
                         title="Tap to place in answer"
                       >
@@ -890,8 +949,8 @@ print(result)`
                       </div>
                     ))}
                     {puzzleAvailableTokens.length === 0 && (
-                      <div className="p-3 text-center text-xs text-slate-400 italic">
-                        All blocks placed in slots!
+                      <div className="p-2 text-center text-xs text-slate-400 italic">
+                        All blocks placed!
                       </div>
                     )}
                   </div>
@@ -899,12 +958,13 @@ print(result)`
 
                 {/* Right: Drop Slots */}
                 <div className="ppa-puzzle-col">
-                  <span className="ppa-puzzle-col-title">Your Answer (Drop blocks here in correct order)</span>
+                  <span className="ppa-puzzle-col-title">Your Sequence (Tap to remove)</span>
                   <div className="ppa-slots-deck">
                     {placedSlots.map((tok, i) => (
                       <div
                         key={i}
                         className={`ppa-puzzle-slot-row ${tok ? 'filled' : ''}`}
+                        onMouseEnter={() => soundEffects.playHover()}
                         onClick={() => tok && handleRemovePuzzleSlot(i)}
                         title={tok ? 'Tap to remove block' : 'Drop slot'}
                       >
@@ -912,7 +972,7 @@ print(result)`
                         {tok ? (
                           <span className="font-mono text-xs font-bold text-purple-900">{tok}</span>
                         ) : (
-                          <span className="ppa-slot-placeholder-text">Drop a block here</span>
+                          <span className="ppa-slot-placeholder-text">Empty slot</span>
                         )}
                       </div>
                     ))}
@@ -923,24 +983,38 @@ print(result)`
           )}
 
           {/* ════════════════════════════════════════════════════════════
-              GAME 3: MATCH THE CODE VIEW (Image 3 Match)
+              GAME 3: MATCH THE CODE VIEW (Compact Fit)
               ════════════════════════════════════════════════════════════ */}
           {activeGame === 3 && (
-            <div className="ppa-match-container flex flex-col gap-4">
+            <div className="ppa-match-container">
               <div className="ppa-prompt-banner">
-                <div className="ppa-prompt-tag">
-                  <Lightbulb className="w-3.5 h-3.5 fill-amber-300" />
-                  <span>MATCH 1 TO 5 — PYTHON SYNTAX &amp; CONCEPTS</span>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="ppa-prompt-tag">
+                    <Lightbulb className="w-3.5 h-3.5 fill-amber-300" />
+                    <span>MATCH 1 TO 5 — PYTHON SYNTAX</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="ppa-btn-help"
+                    onClick={() => {
+                      setIsHelpOpen(true);
+                      setHelpTab('menu');
+                    }}
+                    title="Need Help? Choose how you want to understand this question"
+                  >
+                    <HelpCircle className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Need Help?</span>
+                  </button>
                 </div>
                 <h3 className="ppa-prompt-question">
-                  Tap a code snippet on the left, then tap its matching purpose on the right.
+                  Select a snippet on the left, then click its matching meaning on the right.
                 </h3>
               </div>
 
               <div className="ppa-match-grid">
                 {/* Left: Code Snippets */}
                 <div>
-                  <span className="ppa-puzzle-col-title">Code Snippets</span>
+                  <span className="ppa-puzzle-col-title">Snippets</span>
                   {matchPairs.map((pair) => {
                     const isSelected = selectedSnippet === pair.snippet;
                     const isAlreadyMatched = Object.values(matchedPairs).includes(pair.snippet);
@@ -950,6 +1024,7 @@ print(result)`
                       <div
                         key={pair.id}
                         className={`ppa-snippet-card ${pair.cls} ${isSelected ? 'ring-2 ring-blue-500 scale-102' : ''}`}
+                        onMouseEnter={() => soundEffects.playHover()}
                         onClick={() => handleSelectSnippet(pair.snippet)}
                         title="Click to select this snippet"
                       >
@@ -959,21 +1034,22 @@ print(result)`
                     );
                   })}
                   {Object.keys(matchedPairs).length === matchPairs.length && (
-                    <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-extrabold text-xs text-center">
-                      🎉 All 5 snippets matched perfectly!
+                    <div className="p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-extrabold text-xs text-center">
+                      🎉 All 5 matched perfectly!
                     </div>
                   )}
                 </div>
 
                 {/* Right: Meanings & Drop Slots */}
                 <div>
-                  <span className="ppa-puzzle-col-title">Meanings / Outputs (Drag the correct code here)</span>
+                  <span className="ppa-puzzle-col-title">Meanings</span>
                   {matchPairs.map((pair) => {
                     const matchedSnippet = matchedPairs[pair.id];
                     return (
                       <div
                         key={pair.id}
                         className="ppa-meaning-row"
+                        onMouseEnter={() => soundEffects.playHover()}
                         onClick={() => handlePlaceMatch(pair.id)}
                       >
                         <div className="ppa-meaning-left">
@@ -981,7 +1057,7 @@ print(result)`
                           <span className="ppa-meaning-text">{pair.meaning}</span>
                         </div>
                         <div className={`ppa-meaning-drop-slot ${matchedSnippet ? 'filled' : ''}`}>
-                          {matchedSnippet ? matchedSnippet : 'Drop code here'}
+                          {matchedSnippet ? matchedSnippet : 'Match here'}
                         </div>
                       </div>
                     );
@@ -992,27 +1068,35 @@ print(result)`
           )}
 
           {/* ════════════════════════════════════════════════════════════
-              GAME 4: REAL-LIFE MISSION VIEW (Image 4 Match)
+              GAME 4: REAL-LIFE MISSION VIEW (Compact Fit)
               ════════════════════════════════════════════════════════════ */}
           {activeGame === 4 && (
-            <div className="ppa-mission-container flex flex-col gap-4">
+            <div className="ppa-mission-container">
               <div className="ppa-mission-grid">
                 {/* Left: Scenario & Product List Table */}
                 <div className="ppa-scenario-card">
-                  <div className="ppa-scenario-title">
-                    <FileText className="w-4 h-4 text-blue-600" />
-                    <span>Scenario</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="ppa-scenario-title">
+                      <FileText className="w-4 h-4 text-blue-600" />
+                      <span>Scenario</span>
+                    </div>
+                    <button
+                      type="button"
+                      className="ppa-btn-help"
+                      onClick={() => {
+                        setIsHelpOpen(true);
+                        setHelpTab('menu');
+                      }}
+                      title="Need Help? Choose how you want to understand this question"
+                    >
+                      <HelpCircle className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Need Help?</span>
+                    </button>
                   </div>
                   <p className="ppa-scenario-desc">
-                    You are working with a small e-commerce company. They have a list of product prices and want to find:
+                    Find products with price &gt; ₹500 and show their names and prices.
                   </p>
-                  <div className="ppa-scenario-quote-box">
-                    &ldquo;Which products have a price greater than ₹500, and show their names and prices.&rdquo;
-                  </div>
 
-                  <strong className="text-xs font-bold text-slate-800 mt-2 block">
-                    Product List (products)
-                  </strong>
                   <table className="ppa-data-table">
                     <thead>
                       <tr>
@@ -1035,7 +1119,7 @@ print(result)`
                 <div className="ppa-ide-card">
                   <div className="ppa-ide-head">
                     <span className="ppa-ide-task-text">
-                      Your Task: Write Python code to filter and display products with price &gt; 500.
+                      Filter products &gt; 500
                     </span>
                     <button
                       type="button"
@@ -1049,15 +1133,14 @@ print(result)`
 
                   <textarea
                     className="ppa-ide-editor-area bg-transparent text-emerald-300 font-mono text-xs outline-none resize-none"
-                    rows={12}
+                    rows={8}
                     value={missionCode}
                     onChange={(e) => setMissionCode(e.target.value)}
                   />
 
                   {missionOutput && (
-                    <div className="p-3 bg-black/60 border-t border-slate-700 text-xs font-mono text-emerald-400">
-                      <strong>Console Output:</strong>
-                      <pre className="mt-1">{missionOutput}</pre>
+                    <div className="p-2 bg-black/60 border-t border-slate-700 text-xs font-mono text-emerald-400">
+                      <strong>Output:</strong> {missionOutput}
                     </div>
                   )}
                 </div>
@@ -1066,14 +1149,15 @@ print(result)`
           )}
 
           {/* ════════════════════════════════════════════════════════════
-              CARD FOOTER CONTROLS (Previous, Reset, Check / Submit)
+              CARD FOOTER CONTROLS: PREVIOUS, RESET, SKIP, SUBMIT
+              (All strictly visible together without scrolling)
               ════════════════════════════════════════════════════════════ */}
           <div className="ppa-card-footer">
             <button
               type="button"
               className="ppa-btn-prev"
               disabled={activeGame === 1}
-              onClick={() => setActiveGame((g) => Math.max(1, g - 1))}
+              onClick={() => { soundEffects.playClick(); setActiveGame((g) => Math.max(1, g - 1)); }}
             >
               <ChevronLeft className="w-4 h-4" />
               <span>Previous</span>
@@ -1101,78 +1185,81 @@ print(result)`
               </button>
             )}
 
-            {/* Skip Question Button */}
-            <button
-              type="button"
-              className="ppa-btn-skip"
-              onClick={handleSkipQuestion}
-              title="Skip this question and move to next"
-            >
-              <RotateCcw className="w-3.5 h-3.5 rotate-180" />
-              <span>Skip Question ↷</span>
-            </button>
-
-            {/* Action Button: Check Answer / Submit */}
-            {activeGame === 1 && (
+            <div className="flex items-center gap-2 ml-auto">
+              {/* Compact Skip Button */}
               <button
                 type="button"
-                className="ppa-btn-submit-action"
-                disabled={!selectedQuizKey}
-                onClick={() => {
-                  const optIdx = quizQuestions[quizIdx]?.options.findIndex((o) => o.key === selectedQuizKey);
-                  if (optIdx !== -1 && selectedQuizKey) {
-                    handleSelectQuizOption(selectedQuizKey, optIdx);
-                  }
-                }}
+                className="ppa-btn-skip-compact"
+                onClick={handleSkipQuestion}
+                onMouseEnter={() => soundEffects.playHover()}
+                title="Skip this question"
               >
-                <span>Submit Answer</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>Skip ↷</span>
               </button>
-            )}
 
-            {activeGame === 2 && (
-              <button
-                type="button"
-                className="ppa-btn-submit-action"
-                disabled={placedSlots.some((s) => s === null)}
-                onClick={handleCheckPuzzleAnswer}
-              >
-                <span>Check Answer</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            )}
+              {/* Action Button: Check Answer / Submit */}
+              {activeGame === 1 && (
+                <button
+                  type="button"
+                  className="ppa-btn-submit-action"
+                  disabled={!selectedQuizKey}
+                  onClick={() => {
+                    const optIdx = quizQuestions[quizIdx]?.options.findIndex((o) => o.key === selectedQuizKey);
+                    if (optIdx !== -1 && selectedQuizKey) {
+                      handleSelectQuizOption(selectedQuizKey, optIdx);
+                    }
+                  }}
+                >
+                  <span>Submit Answer</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
 
-            {activeGame === 3 && (
-              <button
-                type="button"
-                className="ppa-btn-submit-action"
-                disabled={Object.keys(matchedPairs).length < matchPairs.length}
-                onClick={() => {
-                  setUnlockedGame(4);
-                  setActiveGame(4);
-                }}
-              >
-                <span>Next to Mission</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            )}
+              {activeGame === 2 && (
+                <button
+                  type="button"
+                  className="ppa-btn-submit-action"
+                  disabled={placedSlots.some((s) => s === null)}
+                  onClick={handleCheckPuzzleAnswer}
+                >
+                  <span>Check Answer</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
 
-            {activeGame === 4 && (
-              <button
-                type="button"
-                className="ppa-btn-submit-action"
-                onClick={handleSubmitMissionSolution}
-              >
-                <Check className="w-4 h-4 stroke-[2.5]" />
-                <span>Submit Solution</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            )}
+              {activeGame === 3 && (
+                <button
+                  type="button"
+                  className="ppa-btn-submit-action"
+                  disabled={Object.keys(matchedPairs).length < matchPairs.length}
+                  onClick={() => {
+                    setUnlockedGame(4);
+                    setActiveGame(4);
+                  }}
+                >
+                  <span>Next to Mission</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
+
+              {activeGame === 4 && (
+                <button
+                  type="button"
+                  className="ppa-btn-submit-action"
+                  onClick={handleSubmitMissionSolution}
+                >
+                  <Check className="w-4 h-4 stroke-[2.5]" />
+                  <span>Submit Solution</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
+            </div>
           </div>
         </main>
 
         {/* ─────────────────────────────────────────────────────────────
             3. RIGHT COLUMN: AI MENTOR HINT & YOUR PROGRESS
+            (Watch Explanation Video removed as requested)
             ───────────────────────────────────────────────────────────── */}
         <aside className="ppa-sidebar-col">
           {/* Card 1: AI Mentor Hint with Mascot Boy */}
@@ -1193,12 +1280,15 @@ print(result)`
 
             <button
               type="button"
-              className="ppa-watch-video-btn"
-              onClick={onBackToVideo}
-              title="Watch Explanation Video"
+              className="ppa-mentor-help-cta-btn"
+              onClick={() => {
+                setIsHelpOpen(true);
+                setHelpTab('menu');
+              }}
+              title="Need Help? Choose how you want to understand this question"
             >
-              <Play className="w-3.5 h-3.5 fill-current" />
-              <span>Watch Explanation Video</span>
+              <HelpCircle className="w-3.5 h-3.5 text-blue-600" />
+              <span>Need Help? (4 Options)</span>
             </button>
           </div>
 
@@ -1227,11 +1317,13 @@ print(result)`
                     d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                   />
                 </svg>
-                <span className="ppa-donut-percentage">{totalProgressPercent}%</span>
+                <div className="ppa-donut-center-text">
+                  <span className="ppa-donut-percent">{totalProgressPercent}%</span>
+                </div>
               </div>
 
-              {/* Checklist */}
-              <div className="ppa-progress-checklist">
+              {/* Progress Live Checklist */}
+              <div className="ppa-checklist-items">
                 <div className={`ppa-check-item ${unlockedGame > 1 ? 'completed' : activeGame === 1 ? 'active' : ''}`}>
                   <div className="ppa-check-dot-icon">
                     {unlockedGame > 1 ? '✓' : ''}
@@ -1250,7 +1342,7 @@ print(result)`
                   <div className="ppa-check-dot-icon">
                     {unlockedGame > 3 ? '✓' : ''}
                   </div>
-                  <span>Match the Code ({Object.keys(matchedPairs).length}/5)</span>
+                  <span>Match Code ({Object.keys(matchedPairs).length}/5)</span>
                 </div>
 
                 <div className={`ppa-check-item ${missionDone ? 'completed' : activeGame === 4 ? 'active' : ''}`}>
@@ -1604,7 +1696,6 @@ print(result)`
           </div>
         </div>
       )}
-
     </div>
   );
 };

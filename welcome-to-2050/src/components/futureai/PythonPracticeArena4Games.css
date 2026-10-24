@@ -1,15 +1,16 @@
 /* ============================================================================
-   PYTHON PRACTICE ARENA 4 GAMES — EXACT MATCH TO SCREENSHOTS
-   Game 1: Quick Quiz (5 Questions)
-   Game 2: Puzzle Challenge (3 Challenges)
-   Game 3: Match the Code (5 Matches)
-   Game 4: Real-Life Mission (2 Missions)
+   PYTHON PRACTICE ARENA 4 GAMES — ZERO-SCROLL RESPONSIVE GAMIFIED STUDIO
+   - All critical elements (Question, Options, Skip, Submit) strictly visible together
+   - 2x2 Clean Option Grid to eliminate scrolling
+   - Floating XP particles, combo streak badges, and crisp web audio
+   - Sleek AI Mentor hint card and progress donut without empty gaps
    ============================================================================ */
 
 .ppa-container {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
   width: 100%;
   max-width: 1380px;
   margin: 0 auto;
@@ -19,32 +20,34 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
-   1. TOP SUB-STEPPER BAR (Pills 1 to 5)
+   1. TOP SUB-STEPPER BAR (Pills 1 to 5 - Ultra Sleek & Compact)
    ───────────────────────────────────────────────────────────── */
 .ppa-stepper-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 6px;
   background: rgba(255, 255, 255, 0.95);
   border: 1.5px solid #e2e8f0;
-  border-radius: 50px;
-  padding: 10px 24px;
-  box-shadow: 0 4px 20px rgba(0, 100, 220, 0.06);
-  backdrop-filter: blur(12px);
+  border-radius: 40px;
+  padding: 4px 16px;
+  box-shadow: 0 3px 14px rgba(0, 100, 220, 0.05);
+  backdrop-filter: blur(10px);
   overflow-x: auto;
+  height: 42px;
+  box-sizing: border-box;
 }
 
 .ppa-step-item {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
   background: transparent;
   border: none;
-  padding: 4px 8px;
-  border-radius: 30px;
-  transition: all 0.2s ease;
+  padding: 2px 6px;
+  border-radius: 20px;
+  transition: all 0.18s ease;
   flex-shrink: 0;
 }
 
@@ -54,17 +57,17 @@
 }
 
 .ppa-step-circle-badge {
-  width: 36px;
-  height: 36px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 0.88rem;
+  font-weight: 900;
+  font-size: 0.74rem;
   color: #ffffff;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .ppa-step-circle-badge.quiz {
@@ -84,8 +87,8 @@
 }
 
 .ppa-step-circle-badge.locked {
-  background: #94a3b8;
-  color: #f1f5f9;
+  background: #cbd5e1;
+  color: #64748b;
 }
 
 .ppa-step-circle-badge.completed {
@@ -101,10 +104,10 @@
 }
 
 .ppa-step-name {
-  font-size: 0.88rem;
+  font-size: 0.78rem;
   font-weight: 800;
   color: #1e293b;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .ppa-step-item.active .ppa-step-name {
@@ -112,9 +115,10 @@
 }
 
 .ppa-step-sub {
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   font-weight: 700;
   color: #64748b;
+  line-height: 1;
 }
 
 .ppa-step-item.active .ppa-step-sub {
@@ -122,32 +126,32 @@
 }
 
 .ppa-step-arrow {
-  color: #94a3b8;
-  font-size: 1rem;
-  font-weight: 700;
+  color: #cbd5e1;
+  font-size: 0.82rem;
+  font-weight: 800;
   user-select: none;
 }
 
 /* ─────────────────────────────────────────────────────────────
-   2. MAIN 3-COLUMN ARENA STAGE
+   2. MAIN 3-COLUMN ARENA STAGE (Guaranteed Zero-Scroll Fit)
    ───────────────────────────────────────────────────────────── */
 .ppa-arena-stage {
   display: grid;
-  grid-template-columns: 140px 1fr 310px;
-  gap: 16px;
-  align-items: start;
+  grid-template-columns: 80px minmax(0, 1fr) 260px;
+  gap: 10px;
+  align-items: stretch;
 }
 
 @media (max-width: 1200px) {
   .ppa-arena-stage {
-    grid-template-columns: 1fr 300px;
+    grid-template-columns: minmax(0, 1fr) 240px;
   }
   .ppa-pedestal-col {
     display: none;
   }
 }
 
-@media (max-width: 960px) {
+@media (max-width: 900px) {
   .ppa-arena-stage {
     grid-template-columns: 1fr;
   }
@@ -158,32 +162,35 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 40px;
+  padding-top: 10px;
 }
 
 .ppa-pedestal-img {
   width: 100%;
-  max-width: 130px;
+  max-width: 75px;
   object-fit: contain;
-  filter: drop-shadow(0 15px 25px rgba(0, 100, 220, 0.25));
+  filter: drop-shadow(0 10px 18px rgba(0, 100, 220, 0.22));
   animation: ppaFloatPedestal 4s ease-in-out infinite alternate;
 }
 
 @keyframes ppaFloatPedestal {
   0% { transform: translateY(0); }
-  100% { transform: translateY(-8px); }
+  100% { transform: translateY(-6px); }
 }
 
 /* Center Main Game Card */
 .ppa-main-card {
   background: #ffffff;
   border: 1.5px solid #e2e8f0;
-  border-radius: 24px;
-  padding: 24px;
-  box-shadow: 0 10px 35px rgba(0, 70, 180, 0.07);
+  border-radius: 18px;
+  padding: 12px 18px;
+  box-shadow: 0 6px 25px rgba(0, 70, 180, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 440px;
+  box-sizing: border-box;
 }
 
 /* Header inside Main Card */
@@ -191,45 +198,48 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding-bottom: 16px;
+  gap: 8px;
+  padding-bottom: 8px;
   border-bottom: 1.5px solid #f1f5f9;
 }
 
 .ppa-header-left {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
 .ppa-card-icon-bubble {
-  width: 48px;
-  height: 48px;
-  border-radius: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
-.ppa-card-icon-bubble.quiz { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-.ppa-card-icon-bubble.puzzle { background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%); }
-.ppa-card-icon-bubble.match { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); }
-.ppa-card-icon-bubble.mission { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+.ppa-card-icon-bubble.quiz {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.ppa-card-icon-bubble.puzzle {
+  background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+}
+
+.ppa-card-icon-bubble.match {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+}
+
+.ppa-card-icon-bubble.mission {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
 
 .ppa-header-titles {
   display: flex;
   flex-direction: column;
-}
-
-.ppa-practice-counter-pill {
-  font-size: 0.72rem;
-  font-weight: 800;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .ppa-card-title-row {
@@ -239,534 +249,597 @@
 }
 
 .ppa-card-title {
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   font-weight: 900;
   color: #0f172a;
   margin: 0;
+  letter-spacing: -0.01em;
 }
 
 .ppa-card-count-badge {
-  font-size: 0.72rem;
-  font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 20px;
   background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-size: 0.7rem;
+  font-weight: 800;
   color: #475569;
 }
 
 .ppa-card-desc {
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: #64748b;
-  margin: 2px 0 0;
+  margin: 1px 0 0;
+  line-height: 1.25;
 }
 
 .ppa-header-right {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
+/* Streak Pill */
+.ppa-streak-pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  padding: 3px 8px;
+  font-size: 0.74rem;
+  font-weight: 900;
+  color: #ea580c;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.12);
+}
+
+/* Timer Pill */
 .ppa-timer-pill {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  border-radius: 20px;
-  padding: 6px 12px;
+  border-radius: 8px;
+  padding: 3px 8px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #334155;
   font-family: monospace;
-  font-size: 0.85rem;
-  font-weight: 800;
-  color: #1e293b;
 }
 
-.ppa-progress-counter-box {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 90px;
-}
-
-.ppa-pcb-label {
-  font-size: 0.72rem;
-  font-weight: 800;
-  color: #475569;
-}
-
-.ppa-pcb-track {
-  width: 100%;
-  height: 5px;
-  background: #e2e8f0;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.ppa-pcb-bar {
-  height: 100%;
-  background: #0284c7;
-  border-radius: 4px;
-  transition: width 0.3s ease;
-}
-
+/* Points Pill */
 .ppa-points-pill {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: #fffbeb;
   border: 1px solid #fde68a;
-  border-radius: 20px;
-  padding: 6px 12px;
-  font-size: 0.76rem;
+  border-radius: 8px;
+  padding: 3px 8px;
+  font-size: 0.74rem;
   font-weight: 800;
   color: #b45309;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   3. GAME 1: QUICK QUIZ STYLES
-   ───────────────────────────────────────────────────────────── */
-.ppa-prompt-banner {
-  background: #0f172a;
-  border-radius: 16px;
-  padding: 16px 20px;
+/* Sound Toggle */
+.ppa-sound-toggle-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ppa-sound-toggle-btn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+/* Floating XP Toast */
+.ppa-floating-xp-toast {
+  position: absolute;
+  top: 36%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   color: #ffffff;
+  padding: 6px 18px;
+  border-radius: 30px;
+  font-size: 0.95rem;
+  font-weight: 900;
+  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.35);
+  pointer-events: none;
+  z-index: 50;
+  animation: ppaFloatXp 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes ppaFloatXp {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -10px) scale(1.08);
+  }
+  80% {
+    opacity: 1;
+    transform: translate(-50%, -24px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -36px) scale(0.9);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   3. GAME 1: QUICK QUIZ (2x2 Zero-Scroll Grid)
+   ───────────────────────────────────────────────────────────── */
+.ppa-quiz-container {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+}
+
+.ppa-prompt-banner {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px 12px;
 }
 
 .ppa-prompt-tag {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.72rem;
+  gap: 5px;
+  font-size: 0.68rem;
   font-weight: 800;
-  color: #fbbf24;
-  letter-spacing: 0.5px;
+  color: #0284c7;
   text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .ppa-prompt-question {
-  font-size: 1rem;
+  font-size: 0.94rem;
   font-weight: 800;
-  color: #ffffff;
-  margin: 0;
-  line-height: 1.4;
+  color: #0f172a;
+  line-height: 1.35;
+  margin: 4px 0 0;
 }
 
+/* 2x2 Grid Layout */
 .ppa-quiz-options-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .ppa-quiz-options-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .ppa-quiz-opt-btn {
   display: flex;
   align-items: center;
-  gap: 14px;
-  background: #f8fafc;
+  gap: 10px;
+  background: #ffffff;
   border: 1.5px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 12px 18px;
-  font-size: 0.92rem;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 0.84rem;
   font-weight: 700;
   color: #1e293b;
   cursor: pointer;
-  transition: all 0.2s ease;
   text-align: left;
-  width: 100%;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 44px;
+  box-sizing: border-box;
 }
 
 .ppa-quiz-opt-btn:hover:not(:disabled) {
-  border-color: #0284c7;
-  background: #ffffff;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.08);
+  background: #f8fafc;
+  border-color: #38bdf8;
+  transform: translateY(-1.5px) scale(1.008);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.12);
 }
 
 .ppa-quiz-opt-btn.selected {
-  border-color: #0284c7;
   background: #f0f9ff;
-  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
+  border-color: #0284c7;
+  color: #0369a1;
+  font-weight: 800;
 }
 
 .ppa-quiz-opt-btn.correct {
-  border-color: #10b981;
-  background: #ecfdf5;
-  color: #065f46;
+  background: #ecfdf5 !important;
+  border-color: #10b981 !important;
+  color: #065f46 !important;
+  font-weight: 800;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.35);
 }
 
 .ppa-quiz-opt-btn.wrong {
-  border-color: #f43f5e;
-  background: #fff1f2;
-  color: #9f1239;
+  background: #fff1f2 !important;
+  border-color: #f43f5e !important;
+  color: #9f1239 !important;
+}
+
+.ppa-shake {
+  animation: ppaShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes ppaShake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+  40%, 60% { transform: translate3d(3px, 0, 0); }
 }
 
 .ppa-opt-key-badge {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #e2e8f0;
-  color: #334155;
-  font-weight: 800;
-  font-size: 0.8rem;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: 900;
+  font-size: 0.78rem;
   flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
-.ppa-quiz-opt-btn.selected .ppa-opt-key-badge {
-  background: #0284c7;
-  color: #ffffff;
+.badge-a {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
 }
 
-.ppa-quiz-opt-btn.correct .ppa-opt-key-badge {
-  background: #10b981;
-  color: #ffffff;
+.badge-b {
+  background: #fdf2f8;
+  color: #db2777;
+  border: 1px solid #fbcfe8;
 }
 
-.ppa-quiz-opt-btn.wrong .ppa-opt-key-badge {
-  background: #f43f5e;
-  color: #ffffff;
+.badge-c {
+  background: #f5f3ff;
+  color: #7c3aed;
+  border: 1px solid #ddd6fe;
+}
+
+.badge-d {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.ppa-opt-text {
+  flex: 1;
+  line-height: 1.25;
 }
 
 /* ─────────────────────────────────────────────────────────────
-   4. GAME 2: PUZZLE CHALLENGE (Code Blocks & Drop Slots)
+   4. GAME 2: PUZZLE CHALLENGE (Compact Fit)
    ───────────────────────────────────────────────────────────── */
+.ppa-puzzle-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .ppa-puzzle-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-@media (max-width: 768px) {
-  .ppa-puzzle-grid {
-    grid-template-columns: 1fr;
-  }
+  gap: 12px;
 }
 
 .ppa-puzzle-col-title {
-  font-size: 0.82rem;
+  font-size: 0.74rem;
   font-weight: 800;
   color: #475569;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   display: block;
 }
 
 .ppa-blocks-deck {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
 }
 
 .ppa-puzzle-block-pill {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: #f1f5f9;
+  gap: 8px;
+  background: #f8fafc;
   border: 1.5px solid #cbd5e1;
-  border-radius: 12px;
-  padding: 12px 16px;
+  border-radius: 10px;
+  padding: 7px 12px;
   font-family: monospace;
-  font-size: 0.92rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: #0f172a;
   cursor: grab;
-  transition: all 0.2s ease;
+  transition: all 0.18s ease;
   user-select: none;
 }
 
 .ppa-puzzle-block-pill:hover {
-  background: #e2e8f0;
+  background: #f1f5f9;
   border-color: #94a3b8;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .ppa-block-grip-dots {
   color: #94a3b8;
   font-weight: 900;
-  letter-spacing: -1px;
+  font-size: 0.7rem;
 }
 
 .ppa-slots-deck {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
 }
 
 .ppa-puzzle-slot-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   background: #ffffff;
-  border: 2px dashed #cbd5e1;
-  border-radius: 12px;
-  padding: 8px 14px;
-  min-height: 48px;
-  transition: all 0.2s ease;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 10px;
+  padding: 7px 12px;
+  min-height: 38px;
+  cursor: pointer;
+  transition: all 0.18s ease;
 }
 
 .ppa-puzzle-slot-row.filled {
   border-style: solid;
-  border-color: #a855f7;
+  border-color: #c084fc;
   background: #faf5ff;
 }
 
 .ppa-slot-index-pill {
-  font-size: 0.82rem;
-  font-weight: 800;
-  color: #64748b;
   width: 20px;
-  text-align: center;
+  height: 20px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 800;
 }
 
 .ppa-slot-placeholder-text {
-  font-size: 0.82rem;
+  font-size: 0.74rem;
   color: #94a3b8;
-  font-weight: 600;
   font-style: italic;
 }
 
 /* ─────────────────────────────────────────────────────────────
-   5. GAME 3: MATCH THE CODE (Snippets & Meanings)
+   5. GAME 3: MATCH THE CODE (Compact Fit)
    ───────────────────────────────────────────────────────────── */
-.ppa-match-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.3fr;
-  gap: 20px;
+.ppa-match-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-@media (max-width: 860px) {
-  .ppa-match-grid {
-    grid-template-columns: 1fr;
-  }
+.ppa-match-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
 .ppa-snippet-card {
   display: flex;
   align-items: center;
-  gap: 10px;
-  border-radius: 12px;
-  padding: 10px 14px;
-  font-family: monospace;
-  font-size: 0.88rem;
-  font-weight: 700;
+  gap: 8px;
+  border-radius: 10px;
+  padding: 6px 12px;
+  margin-bottom: 5px;
   cursor: pointer;
+  font-family: monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  transition: all 0.18s ease;
   border: 1.5px solid transparent;
-  transition: all 0.2s ease;
-  margin-bottom: 10px;
 }
 
-.ppa-snippet-card.c1 { background: #dcfce7; border-color: #86efac; color: #15803d; }
-.ppa-snippet-card.c2 { background: #fce7f3; border-color: #f472b6; color: #be185d; }
-.ppa-snippet-card.c3 { background: #e0f2fe; border-color: #7dd3fc; color: #0369a1; }
-.ppa-snippet-card.c4 { background: #fef3c7; border-color: #fcd34d; color: #b45309; }
-.ppa-snippet-card.c5 { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
+.ppa-snippet-card.c1 { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+.ppa-snippet-card.c2 { background: #fdf2f8; color: #9d174d; border-color: #fbcfe8; }
+.ppa-snippet-card.c3 { background: #f5f3ff; color: #5b21b6; border-color: #ddd6fe; }
+.ppa-snippet-card.c4 { background: #fff7ed; color: #9a3412; border-color: #fed7aa; }
+.ppa-snippet-card.c5 { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
 
 .ppa-snippet-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1.5px) scale(1.01);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .ppa-meaning-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  background: #ffffff;
+  gap: 8px;
+  padding: 5px 8px;
+  background: #f8fafc;
   border: 1.5px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 10px 14px;
-  margin-bottom: 10px;
+  border-radius: 10px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .ppa-meaning-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   flex: 1;
 }
 
 .ppa-meaning-text {
-  font-size: 0.82rem;
+  font-size: 0.74rem;
   font-weight: 700;
   color: #334155;
+  line-height: 1.2;
 }
 
 .ppa-meaning-drop-slot {
-  border: 2px dashed #cbd5e1;
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 0.78rem;
+  padding: 3px 8px;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.7rem;
   color: #94a3b8;
-  font-weight: 600;
-  min-width: 130px;
-  text-align: center;
+  font-family: monospace;
+  background: #ffffff;
 }
 
 .ppa-meaning-drop-slot.filled {
   border-style: solid;
-  border-color: #0284c7;
-  background: #f0f9ff;
-  color: #0369a1;
+  border-color: #10b981;
+  background: #ecfdf5;
+  color: #065f46;
   font-weight: 800;
-  font-family: monospace;
 }
 
 /* ─────────────────────────────────────────────────────────────
-   6. GAME 4: REAL-LIFE MISSION (Scenario, IDE, Hints & Output)
+   6. GAME 4: REAL-LIFE MISSION (Compact Fit)
    ───────────────────────────────────────────────────────────── */
-.ppa-mission-grid {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 16px;
+.ppa-mission-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-@media (max-width: 900px) {
-  .ppa-mission-grid {
-    grid-template-columns: 1fr;
-  }
+.ppa-mission-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
 .ppa-scenario-card {
   background: #f8fafc;
   border: 1.5px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 0.74rem;
 }
 
 .ppa-scenario-title {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.85rem;
   font-weight: 800;
   color: #0f172a;
+  font-size: 0.78rem;
 }
 
 .ppa-scenario-desc {
-  font-size: 0.78rem;
   color: #475569;
-  line-height: 1.4;
-  margin: 0;
-}
-
-.ppa-scenario-quote-box {
-  background: #faf5ff;
-  border: 1px solid #e9d5ff;
-  border-radius: 10px;
-  padding: 8px 12px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #7e22ce;
+  font-size: 0.72rem;
+  margin: 3px 0 6px;
+  line-height: 1.25;
 }
 
 .ppa-data-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
-.ppa-data-table th {
-  background: #e2e8f0;
-  color: #334155;
-  font-weight: 800;
-  padding: 6px 8px;
+.ppa-data-table th, .ppa-data-table td {
+  padding: 3px 6px;
+  border-bottom: 1px solid #e2e8f0;
   text-align: left;
 }
 
-.ppa-data-table td {
-  padding: 6px 8px;
-  border-bottom: 1px solid #f1f5f9;
-  color: #475569;
-  font-family: monospace;
-}
-
-/* Python Code IDE Box */
 .ppa-ide-card {
   background: #0f172a;
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
 }
 
 .ppa-ide-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 10px 16px;
+  padding: 6px 10px;
   background: #1e293b;
   border-bottom: 1px solid #334155;
 }
 
 .ppa-ide-task-text {
-  font-size: 0.82rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #e2e8f0;
 }
 
 .ppa-ide-run-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: #0284c7;
   border: none;
-  border-radius: 8px;
-  padding: 6px 14px;
+  border-radius: 6px;
+  padding: 4px 10px;
   color: #ffffff;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 800;
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.ppa-ide-run-btn:hover {
-  background: #0369a1;
-  transform: translateY(-1px);
 }
 
 .ppa-ide-editor-area {
-  padding: 14px 16px;
+  padding: 8px 10px;
   font-family: 'Fira Code', 'Courier New', monospace;
-  font-size: 0.85rem;
-  line-height: 1.5;
+  font-size: 0.76rem;
+  line-height: 1.35;
   color: #e2e8f0;
-  min-height: 200px;
+  min-height: 130px;
 }
 
 /* ─────────────────────────────────────────────────────────────
-   7. CARD FOOTER CONTROLS (Previous, Reset, Submit)
+   7. CARD FOOTER (All Action Controls Visible Simultaneously)
    ───────────────────────────────────────────────────────────── */
 .ppa-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 14px;
+  gap: 8px;
+  padding-top: 8px;
   border-top: 1.5px solid #f1f5f9;
 }
 
 .ppa-btn-prev {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: #f8fafc;
   border: 1.5px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 10px 18px;
-  font-size: 0.85rem;
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
   font-weight: 800;
   color: #475569;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .ppa-btn-prev:hover:not(:disabled) {
@@ -782,16 +855,16 @@
 .ppa-btn-reset {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: transparent;
   border: 1px solid #cbd5e1;
-  border-radius: 12px;
-  padding: 10px 18px;
-  font-size: 0.85rem;
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 0.76rem;
   font-weight: 700;
   color: #64748b;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .ppa-btn-reset:hover {
@@ -799,161 +872,194 @@
   color: #0f172a;
 }
 
+/* Compact Skip Button */
+.ppa-btn-skip-compact {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #b45309;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ppa-btn-skip-compact:hover {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #78350f;
+  transform: translateY(-1px);
+}
+
+/* Submit Action Button */
 .ppa-btn-submit-action {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
   background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
   border: none;
   border-radius: 12px;
-  padding: 11px 24px;
-  font-size: 0.92rem;
-  font-weight: 800;
+  padding: 8px 22px;
+  font-size: 0.86rem;
+  font-weight: 900;
   color: #ffffff;
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
-  transition: all 0.2s ease;
+  transition: all 0.18s ease;
 }
 
 .ppa-btn-submit-action:hover:not(:disabled) {
   background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.45);
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.45);
 }
 
 .ppa-btn-submit-action:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  transform: none;
   box-shadow: none;
 }
 
 /* ─────────────────────────────────────────────────────────────
-   8. RIGHT COLUMN: AI MENTOR HINT & YOUR PROGRESS CARDS
+   8. RIGHT COLUMN: AI MENTOR HINT & YOUR PROGRESS
    ───────────────────────────────────────────────────────────── */
 .ppa-sidebar-col {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 }
 
 /* AI Mentor Hint Card */
 .ppa-ai-mentor-card {
   background: #ffffff;
   border: 1.5px solid #e2e8f0;
-  border-radius: 20px;
-  padding: 16px;
-  box-shadow: 0 8px 25px rgba(0, 70, 180, 0.06);
-  position: relative;
-  overflow: hidden;
+  border-radius: 16px;
+  padding: 10px 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .ppa-mentor-head {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
-  font-weight: 900;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 800;
   color: #0f172a;
-  margin-bottom: 8px;
 }
 
 .ppa-mentor-content-row {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 8px;
 }
 
 .ppa-mentor-speech-text {
-  font-size: 0.78rem;
-  color: #475569;
-  line-height: 1.45;
-  margin: 0;
   flex: 1;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 6px 8px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #334155;
+  line-height: 1.3;
+  margin: 0;
 }
 
 .ppa-mentor-mascot-img {
-  width: 95px;
-  height: 95px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   object-fit: contain;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
   flex-shrink: 0;
-  border-radius: 12px;
 }
 
-.ppa-watch-video-btn {
-  width: 100%;
+.ppa-mentor-help-cta-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  background: #e0f2fe;
-  border: 1px solid #bae6fd;
-  border-radius: 12px;
-  padding: 8px 12px;
-  color: #0284c7;
-  font-size: 0.78rem;
+  gap: 6px;
+  background: #f8fafc;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.74rem;
   font-weight: 800;
+  color: #0284c7;
   cursor: pointer;
-  margin-top: 12px;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
+  width: 100%;
 }
 
-.ppa-watch-video-btn:hover {
-  background: #bae6fd;
-  color: #0369a1;
+.ppa-mentor-help-cta-btn:hover {
+  background: #f0f9ff;
+  border-color: #0284c7;
 }
 
-/* Your Progress Card */
+/* Progress Card */
 .ppa-progress-card {
   background: #ffffff;
   border: 1.5px solid #e2e8f0;
-  border-radius: 20px;
-  padding: 18px;
-  box-shadow: 0 8px 25px rgba(0, 70, 180, 0.06);
+  border-radius: 16px;
+  padding: 10px 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
 .ppa-progress-title {
-  font-size: 0.88rem;
-  font-weight: 900;
+  font-size: 0.78rem;
+  font-weight: 800;
   color: #0f172a;
-  margin-bottom: 14px;
+  margin: 0 0 6px;
 }
 
 .ppa-progress-body {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 12px;
 }
 
 .ppa-donut-circle-wrap {
-  width: 80px;
-  height: 80px;
   position: relative;
+  width: 52px;
+  height: 52px;
   flex-shrink: 0;
 }
 
-.ppa-donut-percentage {
+.ppa-donut-center-text {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 1.15rem;
-  font-weight: 900;
-  color: #0f172a;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.ppa-progress-checklist {
+.ppa-donut-percent {
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: #0284c7;
+}
+
+.ppa-checklist-items {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 3px;
   flex: 1;
 }
 
 .ppa-check-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.75rem;
+  gap: 6px;
+  font-size: 0.68rem;
   font-weight: 700;
   color: #64748b;
 }
@@ -969,21 +1075,20 @@
 }
 
 .ppa-check-dot-icon {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   border: 1.5px solid #cbd5e1;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 8px;
+  font-size: 7px;
   flex-shrink: 0;
 }
 
 .ppa-check-item.active .ppa-check-dot-icon {
   border-color: #0284c7;
   background: #0284c7;
-  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
 }
 
 .ppa-check-item.completed .ppa-check-dot-icon {
@@ -992,87 +1097,30 @@
   color: #ffffff;
 }
 
-
 /* ─────────────────────────────────────────────────────────────
-   8. HELP SYSTEM & SKIP QUESTION STYLES
+   9. HELP SYSTEM BUTTON & MODAL
    ───────────────────────────────────────────────────────────── */
-
-/* Skip Question Button in Footer */
-.ppa-btn-skip {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  background: #fffbeb;
-  border: 1.5px solid #fde68a;
-  border-radius: 12px;
-  padding: 10px 18px;
-  font-size: 0.85rem;
-  font-weight: 800;
-  color: #b45309;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.08);
-}
-
-.ppa-btn-skip:hover {
-  background: #fef3c7;
-  border-color: #f59e0b;
-  color: #92400e;
-  transform: translateY(-1.5px);
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.16);
-}
-
-/* Need Help Trigger Pill Button */
 .ppa-btn-help {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
   border: 1.5px solid #a7f3d0;
-  border-radius: 10px;
-  padding: 6px 14px;
-  font-size: 0.8rem;
+  border-radius: 8px;
+  padding: 3px 10px;
+  font-size: 0.74rem;
   font-weight: 800;
   color: #047857;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.12);
+  transition: all 0.15s ease;
 }
 
 .ppa-btn-help:hover {
-  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  background: #ecfdf5;
   border-color: #34d399;
-  color: #065f46;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
 }
 
-/* AI Mentor Card Extra Help Button */
-.ppa-mentor-help-cta-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  background: #f8fafc;
-  border: 1.5px dashed #cbd5e1;
-  border-radius: 10px;
-  padding: 8px 14px;
-  font-size: 0.78rem;
-  font-weight: 800;
-  color: #475569;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 6px;
-  width: 100%;
-}
-
-.ppa-mentor-help-cta-btn:hover {
-  background: #f1f5f9;
-  border-color: #0284c7;
-  color: #0284c7;
-}
-
-/* ── HELP MODAL OVERLAY ── */
 .ppa-help-backdrop {
   position: fixed;
   inset: 0;
@@ -1083,7 +1131,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
   animation: ppaFadeIn 0.2s ease-out;
 }
 
@@ -1092,78 +1140,67 @@
   to { opacity: 1; }
 }
 
-@keyframes ppaPopIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95) translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
 .ppa-help-modal {
   width: 100%;
-  max-width: 620px;
+  max-width: 580px;
   background: #ffffff;
   border: 1.5px solid #e2e8f0;
-  border-radius: 24px;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
-  padding: 24px;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  padding: 18px;
   overflow: hidden;
-  animation: ppaPopIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: ppaPopIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px;
 }
 
-/* Modal Header */
+@keyframes ppaPopIn {
+  from { opacity: 0; transform: scale(0.96) translateY(6px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
 .ppa-help-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1.5px solid #f1f5f9;
-  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 10px;
 }
 
 .ppa-help-header-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .ppa-help-icon-badge {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  border: 1px solid #fcd34d;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #fef3c7;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.15);
 }
 
 .ppa-help-title {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 900;
   color: #0f172a;
   margin: 0;
-  letter-spacing: -0.02em;
 }
 
 .ppa-help-subtitle {
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: #64748b;
-  margin: 2px 0 0;
+  margin: 1px 0 0;
 }
 
 .ppa-help-close-btn {
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: 1px solid #e2e8f0;
   background: #f8fafc;
@@ -1171,247 +1208,176 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
+  font-weight: 700;
 }
 
-.ppa-help-close-btn:hover {
-  background: #fee2e2;
-  border-color: #fca5a5;
-  color: #dc2626;
-  transform: rotate(90deg);
-}
-
-/* 4 Options Grid */
 .ppa-help-options-grid {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .ppa-help-option-card {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
+  gap: 12px;
+  padding: 10px 14px;
   background: #f8fafc;
   border: 1.5px solid #e2e8f0;
-  border-radius: 16px;
+  border-radius: 12px;
   cursor: pointer;
   text-align: left;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.18s ease;
   width: 100%;
 }
 
 .ppa-help-option-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
 }
 
-.ppa-help-option-card.card-hint:hover {
-  background: #fffbeb;
-  border-color: #fde68a;
-}
-
-.ppa-help-option-card.card-example:hover {
-  background: #f0f9ff;
-  border-color: #bae6fd;
-}
-
-.ppa-help-option-card.card-explain:hover {
-  background: #eef2ff;
-  border-color: #c7d2fe;
-}
-
-.ppa-help-option-card.card-report:hover {
-  background: #fff1f2;
-  border-color: #fecdd3;
-}
+.ppa-help-option-card.card-hint:hover { background: #fffbeb; border-color: #fde68a; }
+.ppa-help-option-card.card-example:hover { background: #f0f9ff; border-color: #bae6fd; }
+.ppa-help-option-card.card-explain:hover { background: #eef2ff; border-color: #c7d2fe; }
+.ppa-help-option-card.card-report:hover { background: #fff1f2; border-color: #fecdd3; }
 
 .ppa-help-card-icon-box {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-.ppa-help-card-icon-box.box-hint {
-  background: #fef3c7;
-  border: 1px solid #fde68a;
-}
-
-.ppa-help-card-icon-box.box-example {
-  background: #e0f2fe;
-  border: 1px solid #bae6fd;
-}
-
-.ppa-help-card-icon-box.box-explain {
-  background: #e0e7ff;
-  border: 1px solid #c7d2fe;
-}
-
-.ppa-help-card-icon-box.box-report {
-  background: #ffe4e6;
-  border: 1px solid #fecdd3;
-}
+.ppa-help-card-icon-box.box-hint { background: #fef3c7; }
+.ppa-help-card-icon-box.box-example { background: #e0f2fe; }
+.ppa-help-card-icon-box.box-explain { background: #e0e7ff; }
+.ppa-help-card-icon-box.box-report { background: #ffe4e6; }
 
 .ppa-help-card-title {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 800;
   color: #0f172a;
 }
 
 .ppa-help-card-sub {
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: #64748b;
-  margin-top: 1px;
 }
 
-/* Detail Views */
 .ppa-help-detail-view {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .ppa-help-back-link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: none;
   border: none;
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   font-weight: 800;
   color: #0284c7;
   cursor: pointer;
   padding: 0;
-  transition: all 0.2s ease;
-}
-
-.ppa-help-back-link:hover {
-  color: #0369a1;
-  text-decoration: underline;
 }
 
 .ppa-help-detail-card {
   background: #f8fafc;
   border: 1.5px solid #e2e8f0;
-  border-radius: 18px;
-  padding: 18px;
+  border-radius: 14px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
 .ppa-help-tag-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: 8px;
-  font-size: 0.72rem;
-  font-weight: 900;
-  letter-spacing: 0.04em;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.68rem;
+  font-weight: 800;
   text-transform: uppercase;
   width: fit-content;
 }
 
-.ppa-help-tag-pill.amber {
-  background: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fde68a;
-}
-
-.ppa-help-tag-pill.blue {
-  background: #e0f2fe;
-  color: #075985;
-  border: 1px solid #bae6fd;
-}
-
-.ppa-help-tag-pill.indigo {
-  background: #e0e7ff;
-  color: #3730a3;
-  border: 1px solid #c7d2fe;
-}
-
-.ppa-help-tag-pill.rose {
-  background: #ffe4e6;
-  color: #9f1239;
-  border: 1px solid #fecdd3;
-}
+.ppa-help-tag-pill.amber { background: #fef3c7; color: #92400e; }
+.ppa-help-tag-pill.blue { background: #e0f2fe; color: #075985; }
+.ppa-help-tag-pill.indigo { background: #e0e7ff; color: #3730a3; }
+.ppa-help-tag-pill.rose { background: #ffe4e6; color: #9f1239; }
 
 .ppa-help-mascot-speech-row {
   display: flex;
   align-items: flex-start;
-  gap: 14px;
+  gap: 10px;
 }
 
 .ppa-help-mascot-thumb {
-  width: 60px;
-  height: 60px;
-  border-radius: 16px;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
   object-fit: contain;
   background: #eff6ff;
-  border: 1.5px solid #bfdbfe;
-  padding: 4px;
+  border: 1px solid #bfdbfe;
   flex-shrink: 0;
 }
 
 .ppa-help-bubble {
   flex: 1;
   background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 12px 14px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px 10px;
 }
 
 .ppa-help-body-text {
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: #1e293b;
-  line-height: 1.5;
-  margin-top: 6px;
+  line-height: 1.35;
+  margin: 4px 0 0;
 }
 
 .ppa-help-hindi-sub-box {
-  margin-top: 8px;
-  padding-top: 8px;
+  margin-top: 6px;
+  padding-top: 6px;
   border-top: 1px dashed #e2e8f0;
-  font-size: 0.82rem;
-  line-height: 1.45;
+  font-size: 0.74rem;
+  line-height: 1.35;
 }
 
 .ppa-help-code-snippet {
   background: #0f172a;
-  border: 1px solid #334155;
-  border-radius: 12px;
-  padding: 12px 16px;
+  border-radius: 10px;
+  padding: 8px 12px;
   overflow-x: auto;
 }
 
 .ppa-help-code-snippet pre {
   margin: 0;
   font-family: 'Fira Code', 'Courier New', monospace;
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   color: #38bdf8;
-  line-height: 1.45;
+  line-height: 1.35;
 }
 
 .ppa-help-example-note {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 10px 14px;
-  font-size: 0.82rem;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 0.74rem;
   color: #475569;
-  line-height: 1.45;
+  line-height: 1.35;
 }
 
 .ppa-help-actions-row {
@@ -1422,24 +1388,16 @@
 .ppa-help-sub-action-btn {
   background: transparent;
   border: none;
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   font-weight: 800;
   color: #0284c7;
   cursor: pointer;
-  padding: 4px 8px;
-  transition: all 0.2s ease;
 }
 
-.ppa-help-sub-action-btn:hover {
-  color: #0369a1;
-  text-decoration: underline;
-}
-
-/* Language Switch */
 .ppa-help-lang-switch {
   display: inline-flex;
   background: #e2e8f0;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 2px;
   gap: 2px;
 }
@@ -1447,22 +1405,19 @@
 .ppa-lang-pill {
   background: transparent;
   border: none;
-  border-radius: 8px;
-  padding: 4px 10px;
-  font-size: 0.75rem;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 0.72rem;
   font-weight: 800;
   color: #64748b;
   cursor: pointer;
-  transition: all 0.15s ease;
 }
 
 .ppa-lang-pill.active {
   background: #ffffff;
   color: #0f172a;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
-/* Report Form */
 .ppa-report-form {
   display: flex;
   flex-direction: column;
@@ -1471,49 +1426,37 @@
 .ppa-report-reasons-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 6px;
+  margin-bottom: 8px;
 }
 
 .ppa-report-reason-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
+  gap: 8px;
+  padding: 6px 10px;
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  font-size: 0.82rem;
+  border-radius: 8px;
+  font-size: 0.76rem;
   font-weight: 700;
   color: #334155;
   cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.ppa-report-reason-item:hover {
-  background: #fff1f2;
-  border-color: #fca5a5;
 }
 
 .ppa-report-textarea {
   width: 100%;
   border: 1.5px solid #cbd5e1;
-  border-radius: 12px;
-  padding: 10px 12px;
-  font-size: 0.82rem;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 0.76rem;
   font-family: inherit;
   color: #1e293b;
   outline: none;
   resize: vertical;
-  transition: border-color 0.2s ease;
-}
-
-.ppa-report-textarea:focus {
-  border-color: #f43f5e;
-  box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.15);
 }
 
 .ppa-report-success-box {
-  padding: 24px 16px;
+  padding: 16px;
   text-align: center;
 }
