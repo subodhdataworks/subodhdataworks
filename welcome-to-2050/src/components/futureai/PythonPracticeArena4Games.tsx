@@ -81,6 +81,11 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
   const [quizScore, setQuizScore] = useState<number>(0);
   const [quizSeconds, setQuizSeconds] = useState<number>(25);
 
+  // Typewriter & Text-to-Speech (TTS) states
+  const [typedQuestion, setTypedQuestion] = useState<string>('');
+  const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
+
   const quizQuestions = useMemo(() => {
     if (topicId === 1) {
       return [
@@ -193,22 +198,105 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     return () => clearInterval(interval);
   }, [activeGame, quizIdx]);
 
+  const currentQuestionText = quizQuestions[quizIdx]?.question || '';
+
+  // Typewriter effect: types question character-by-character
+  useEffect(() => {
+    if (!currentQuestionText) return;
+    setTypedQuestion('');
+    setIsTyping(true);
+    let charIdx = 0;
+    const speed = 25; // 25ms per character
+    const timer = setInterval(() => {
+      charIdx++;
+      setTypedQuestion(currentQuestionText.slice(0, charIdx));
+      if (charIdx >= currentQuestionText.length) {
+        clearInterval(timer);
+        setIsTyping(false);
+      }
+    }, speed);
+
+    return () => clearInterval(timer);
+  }, [currentQuestionText, quizIdx]);
+
+  // Text-To-Speech (TTS) with Web Speech API
+  const speakQuestionText = (textToSpeak: string) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      if (!textToSpeak) return;
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      utterance.rate = 0.95;
+      utterance.pitch = 1.05;
+      utterance.lang = 'en-US';
+
+      const voices = window.speechSynthesis.getVoices();
+      const naturalVoice = voices.find(
+        (v) =>
+          v.lang.startsWith('en') &&
+          (v.name.includes('Natural') ||
+            v.name.includes('Google') ||
+            v.name.includes('Samantha') ||
+            v.name.includes('David') ||
+            v.name.includes('Zira'))
+      ) || voices.find((v) => v.lang.startsWith('en'));
+      if (naturalVoice) utterance.voice = naturalVoice;
+
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
+
+      window.speechSynthesis.speak(utterance);
+    } catch (err) {
+      console.warn('Speech error:', err);
+      setIsSpeaking(false);
+    }
+  };
+
+  // Auto-speak question on load / change if sound is enabled
+  useEffect(() => {
+    if (soundOn && currentQuestionText && activeGame === 1) {
+      const t = setTimeout(() => {
+        speakQuestionText(currentQuestionText);
+      }, 200);
+      return () => {
+        clearTimeout(t);
+        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+      };
+    }
+    return () => {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, [currentQuestionText, quizIdx, soundOn, activeGame]);
+
+  // Clean up speech on unmount
+  useEffect(() => {
+    return () => {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  // 1. SELECT OPTION ONLY (User requirement: apne aap submit nhi hoga)
+  const handleSelectQuizOption = (key: string) => {
+    if (quizFeedback === 'correct') return;
+    setSelectedQuizKey(key);
+    setQuizFeedback(null); // Reset feedback so user can change choice before submitting
+    soundEffects.playClick();
+  };
+
+  // 2. SUBMIT ANSWER (User requirement: submit answer click krne pr hi hoga)
   const handleSubmitAnswer = () => {
     if (!selectedQuizKey || quizFeedback === 'correct') return;
     const currQ: any = quizQuestions[quizIdx];
     const optIdx = currQ.options.findIndex((o: any) => o.key === selectedQuizKey);
-    if (optIdx !== -1) {
-      handleSelectQuizOption(selectedQuizKey, optIdx);
-    }
-  };
+    if (optIdx === -1) return;
 
-  // Handle Quiz Selection & Auto-Next
-  const handleSelectQuizOption = (key: string, optIdx: number) => {
-    if (quizFeedback === 'correct') return;
-    setSelectedQuizKey(key);
-    soundEffects.playClick();
-
-    const currQ: any = quizQuestions[quizIdx];
     const isRight = optIdx === currQ.correct;
 
     if (isRight) {
@@ -219,7 +307,7 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
       setFloatingXp('+10 XP ✨');
       setTimeout(() => setFloatingXp(null), 1200);
 
-      // Auto advance to next question after 1.2s
+      // Advance after submitting correct answer
       setTimeout(() => {
         setSelectedQuizKey(null);
         setQuizFeedback(null);
@@ -961,9 +1049,36 @@ print(result)`
                     <span>Need Help?</span>
                   </button>
                 </div>
-                <h3 className="ppa-prompt-question">
-                  {quizQuestions[quizIdx]?.question}
-                </h3>
+                <div className="ppa-prompt-question-row">
+                  <h3 className="ppa-prompt-question">
+                    {typedQuestion || currentQuestionText}
+                    {isTyping && <span className="ppa-typing-cursor">|</span>}
+                  </h3>
+                  <button
+                    type="button"
+                    className={`ppa-speech-btn ${isSpeaking ? 'speaking' : ''}`}
+                    onClick={() => {
+                      if (isSpeaking) {
+                        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+                          window.speechSynthesis.cancel();
+                        }
+                        setIsSpeaking(false);
+                      } else {
+                        speakQuestionText(currentQuestionText);
+                      }
+                    }}
+                    title={isSpeaking ? 'Mute voice' : 'Listen question (Bolo)'}
+                  >
+                    <Volume2 className={`w-4 h-4 ${isSpeaking ? 'text-sky-600 animate-pulse' : 'text-slate-500'}`} />
+                    {isSpeaking && (
+                      <span className="ppa-speaking-waves">
+                        <span className="sbar sbar-1"></span>
+                        <span className="sbar sbar-2"></span>
+                        <span className="sbar sbar-3"></span>
+                      </span>
+                    )}
+                  </button>
+                </div>
               </div>
 
               {/* 2x2 Clean Responsive Grid */}
@@ -981,7 +1096,7 @@ print(result)`
                         isCorrect ? 'correct animate-pulse-glow' : ''
                       } ${isWrong ? 'wrong ppa-shake' : ''}`}
                       onMouseEnter={() => soundEffects.playHover()}
-                      onClick={() => handleSelectQuizOption(opt.key, optIdx)}
+                      onClick={() => handleSelectQuizOption(opt.key)}
                       disabled={quizFeedback === 'correct'}
                     >
                       <div className={`ppa-opt-key-badge badge-${opt.key.toLowerCase()}`}>{opt.key}</div>
