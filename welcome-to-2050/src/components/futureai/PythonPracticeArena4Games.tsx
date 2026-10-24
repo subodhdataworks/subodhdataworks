@@ -16,12 +16,17 @@ import {
   Lightbulb,
   Lock,
   Sparkles,
-  Zap
+  Zap,
+  HelpCircle,
+  Languages,
+  Flag,
+  AlertTriangle
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundEffects } from '../../services/soundEffects';
 import { getTopicHierarchyInfo } from './PythonChapterView';
 import { getModule01TopicData, TopicAssessmentData } from './data/module01TopicContent';
+import { getHindiTopicActivity } from './data/hindiActivityContent';
 
 export interface PythonPracticeArena4GamesProps {
   userName?: string;
@@ -44,6 +49,19 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
   // Active game (1: Quick Quiz, 2: Puzzle Challenge, 3: Match the Code, 4: Real-Life Mission)
   const [activeGame, setActiveGame] = useState<number>(1);
   const [unlockedGame, setUnlockedGame] = useState<number>(1);
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // HELP SYSTEM & SKIP QUESTION STATE
+  // ─────────────────────────────────────────────────────────────────────────────
+  const [isHelpOpen, setIsHelpOpen] = useState<boolean>(false);
+  const [helpTab, setHelpTab] = useState<'menu' | 'hint' | 'example' | 'explain' | 'report'>('menu');
+  const [helpLang, setHelpLang] = useState<'hi' | 'en'>('hi');
+  const [reportReason, setReportReason] = useState<string>('');
+  const [reportDetails, setReportDetails] = useState<string>('');
+  const [reportSuccess, setReportSuccess] = useState<boolean>(false);
+
+  const hindiActivity = useMemo(() => getHindiTopicActivity(topicId), [topicId]);
+
 
   // ─────────────────────────────────────────────────────────────────────────────
   // GAME 1: QUICK QUIZ STATE (5 Questions)
@@ -411,6 +429,146 @@ print(result)`
   // ─────────────────────────────────────────────────────────────────────────────
   // PROGRESS CALCULATIONS (0% -> 25% -> 50% -> 75% -> 100%)
   // ─────────────────────────────────────────────────────────────────────────────
+  
+  // ─────────────────────────────────────────────────────────────────────────────
+  // PRE-WRITTEN HINT, EXAMPLE, EXPLANATION & REPORT DATA (Zero AI Cost)
+  // ─────────────────────────────────────────────────────────────────────────────
+  const currentHelpData = useMemo(() => {
+    if (activeGame === 1) {
+      const qNum = quizIdx + 1;
+      const currQ: any = quizQuestions[quizIdx];
+      const currH = hindiActivity?.mcqs ? hindiActivity.mcqs[qNum] : null;
+
+      return {
+        hintEn: currQ?.hint || currQ?.explanation || 'Think about the core concept of giving step-by-step instructions that a machine executes.',
+        hintHi: currH?.hint || 'सोचिए कि कोड कंप्यूटर को कौन सा काम करने का निर्देश देता है।',
+        exampleCode: currQ?.codeSnippet || '# Example instruction in Python\nprint("Hello, Python!")\nx = 10 + 20\nprint(x)',
+        exampleNote: currQ?.realWorldContext || 'Computer sequentially executes code from top to bottom, exactly as commanded.',
+        explainTitleEn: currQ?.question || 'Question Concept',
+        explainTitleHi: currH?.question || 'प्रोग्रामिंग संकल्पना (Concept)',
+        explainTextEn: currQ?.explanation || 'A program is a collection of instructions that tell the hardware how to perform computations and process data.',
+        explainTextHi: currH?.explanation || 'प्रोग्राम निर्देशों का एक समूह होता है जिसे कंप्यूटर स्टेप-बाय-स्टेप प्रोसेस करके सही परिणाम दिखाता है।',
+        realWorldEn: currQ?.realWorldContext || 'Every software system, from WhatsApp to Google Search, is driven by programmed instructions.',
+        realWorldHi: 'आजकल की सारी मोबाइल ऐप्स और AI मॉडल्स इसी बेसिक प्रोग्रामिंग इंस्ट्रक्शन्स पर चलते हैं।',
+      };
+    }
+
+    if (activeGame === 2) {
+      const puzzle = currentPuzzle;
+      const examples = [
+        '# Python print syntax\nprint("Hello, Python!")',
+        '# Variable assignment syntax\nuser_name = "Aman"\nprint(user_name)',
+        '# Calculation syntax\ntotal = 10 + 20\nprint("Total:", total)'
+      ];
+      const notes = [
+        'Function name comes first, then brackets (), and string is inside quotes.',
+        'Variable name on left, = in middle, value on right.',
+        'Expression on right (10 + 20) evaluates to 30 and gets assigned to total.'
+      ];
+
+      return {
+        hintEn: puzzle.hint,
+        hintHi: puzzleIdx === 0
+          ? 'Python में print() फ़ंक्शन पहले आएगा, फिर कोष्ठक ( ) के अंदर कोट्स में संदेश लिखा जाएगा।'
+          : puzzleIdx === 1
+          ? 'वेरिएबल बनाने का नियम: पहले वेरिएबल का नाम, फिर बराबर का निशान (=), फिर मान (value)।'
+          : 'गणित जोड़ (+) करने के बाद बराबर (=) से total वेरिएबल में सुरक्षित करें।',
+        exampleCode: examples[puzzleIdx] || examples[0],
+        exampleNote: notes[puzzleIdx] || notes[0],
+        explainTitleEn: puzzle.title,
+        explainTitleHi: 'पहेली की व्याख्या (Challenge Logic)',
+        explainTextEn: `In Python syntax, statement structure follows strict grammatical rules. For ${puzzle.title.toLowerCase()}, tokens must be placed in sequential order without misplaced parentheses or operators.`,
+        explainTextHi: 'Python में कोड लिखने का नियम बिल्कुल निश्चित होता है। पहले फ़ंक्शन का नाम या वेरिएबल, फिर ऑपरेटर, और ब्रैकेट्स को हमेशा सही तरह से जोड़ें।',
+        realWorldEn: 'Syntax errors represent 80% of beginner programming bugs; ordering tokens properly builds compiler-friendly logic.',
+        realWorldHi: 'कोडिंग सीखते समय ब्रैकेट या कॉमा की गलती सबसे आम होती है, इसलिए ब्लॉक्स को ध्यान से जोड़ें।',
+      };
+    }
+
+    if (activeGame === 3) {
+      return {
+        hintEn: 'Look at the keywords: "print" displays text, "=" assigns value, "for" loops, "if" tests conditions, "len()" calculates size.',
+        hintHi: 'कीवर्ड्स को ध्यान से देखें: print = स्क्रीन पर दिखाना, = = स्टोर करना, for = रिपीट करना, if = शर्त जांचना, len = लंबाई/गिनना।',
+        exampleCode: '# Quick Python Cheatsheet\nprint("Subodh")       # 1. Output\nroll = 45             # 2. Variable\nfor num in [1, 2, 3]: # 3. Loop\nif roll > 30:         # 4. Condition\nsize = len("Python")  # 5. Length = 6',
+        exampleNote: 'Each built-in keyword represents a distinct operation in the computer memory pipeline.',
+        explainTitleEn: 'Python Syntax & Keywords Meaning',
+        explainTitleHi: 'Python सिंटैक्स और कीवर्ड्स का अर्थ',
+        explainTextEn: 'Programming languages define high-level keywords (print, if, for, len) that translate human logic into binary machine code.',
+        explainTextHi: 'Python में हर कीवर्ड का एक निश्चित मतलब होता है। जैसे ही आप "print" लिखते हैं, Python OS को कंसोल आउटपुट भेजने का आदेश देता है।',
+        realWorldEn: 'Writing clean, idiomatic code helps team members quickly read and maintain production codebases.',
+        realWorldHi: 'सॉफ्टवेयर डेवलपमेंट कंपनियों में क्लीन कोड और सही कीवर्ड्स इस्तेमाल करने से कोड तेज गति से चलता है।',
+      };
+    }
+
+    // ActiveGame 4 (Real-Life Mission)
+    return {
+      hintEn: 'Filter the list using a conditional check (if price > 500) inside a loop or comprehension.',
+      hintHi: 'लिस्ट के हर प्रोडक्ट को चेक करने के लिए for loop और if condition का प्रयोग करें: if p["price"] > 500.',
+      exampleCode: '# Real-life data filtering example\nproducts = [\n    {"name": "Pen", "price": 20},\n    {"name": "Book", "price": 600},\n    {"name": "Bag", "price": 1200}\n]\n\n# Filter items above 500\nhigh_value = [p for p in products if p["price"] > 500]\nprint(high_value)',
+      exampleNote: 'List comprehension iterates through each dictionary and filters only items meeting the threshold price.',
+      explainTitleEn: 'E-Commerce Product Filtering Mission',
+      explainTitleHi: 'ई-कॉमर्स प्रोडक्ट फिल्टरिंग मिशन',
+      explainTextEn: 'In modern e-commerce platforms like Amazon or Flipkart, catalog filtering based on price ranges, ratings, and categories happens using high-performance array filters.',
+      explainTextHi: 'रियल-वर्ल्ड ई-कॉमर्स वेबसाइट में हजारों प्रोडक्ट्स में से फ़िल्टर करके सस्ते या महंगे सामान दिखाना एक अहम Python डेटा ऑपरेशन है।',
+      realWorldEn: 'Backend engineers process millions of JSON records daily using this exact filtering logic.',
+      realWorldHi: 'डेटा एनालिस्ट और सॉफ्टवेयर इंजीनियर हर दिन इसी तरह के फ़िल्टरिंग स्क्रिप्ट्स लिखते हैं।',
+    };
+  }, [activeGame, quizIdx, puzzleIdx, topicData, hindiActivity, quizQuestions, currentPuzzle]);
+
+  // Skip Question Handler
+  const handleSkipQuestion = () => {
+    soundEffects.playClick();
+    if (activeGame === 1) {
+      setSelectedQuizKey(null);
+      setQuizFeedback(null);
+      setQuizSeconds(25);
+      if (quizIdx < quizQuestions.length - 1) {
+        setQuizIdx((i) => i + 1);
+      } else {
+        setUnlockedGame((prev) => Math.max(prev, 2));
+        setActiveGame(2);
+      }
+    } else if (activeGame === 2) {
+      if (puzzleIdx < puzzleChallenges.length - 1) {
+        setPuzzleIdx((i) => i + 1);
+      } else {
+        setUnlockedGame((prev) => Math.max(prev, 3));
+        setActiveGame(3);
+      }
+    } else if (activeGame === 3) {
+      const allMatches: Record<number, string> = {};
+      matchPairs.forEach((p) => {
+        allMatches[p.id] = p.snippet;
+      });
+      setMatchedPairs(allMatches);
+      setUnlockedGame((prev) => Math.max(prev, 4));
+      setTimeout(() => setActiveGame(4), 500);
+    } else if (activeGame === 4) {
+      if (missionIdx === 0) {
+        setMissionIdx(1);
+      } else {
+        setMissionDone(true);
+        if (onNextToInterview) {
+          onNextToInterview();
+        }
+      }
+    }
+  };
+
+  // Report Question Handler
+  const handleReportSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reportReason) return;
+    soundEffects.playClick();
+    setReportSuccess(true);
+    setTimeout(() => {
+      setIsHelpOpen(false);
+      setReportSuccess(false);
+      setReportReason('');
+      setReportDetails('');
+      setHelpTab('menu');
+    }, 1800);
+  };
+
   const totalProgressPercent = useMemo(() => {
     let p = 0;
     if (unlockedGame >= 2) p += 25;
@@ -943,6 +1101,17 @@ print(result)`
               </button>
             )}
 
+            {/* Skip Question Button */}
+            <button
+              type="button"
+              className="ppa-btn-skip"
+              onClick={handleSkipQuestion}
+              title="Skip this question and move to next"
+            >
+              <RotateCcw className="w-3.5 h-3.5 rotate-180" />
+              <span>Skip Question ↷</span>
+            </button>
+
             {/* Action Button: Check Answer / Submit */}
             {activeGame === 1 && (
               <button
@@ -1100,6 +1269,342 @@ print(result)`
           </div>
         </aside>
       </div>
+
+      {/* ══════════════════════════════════════════════════════════════════
+          HELP SYSTEM MODAL: "Need Help? Choose how you want to understand this question."
+          ══════════════════════════════════════════════════════════════════ */}
+      {isHelpOpen && (
+        <div className="ppa-help-backdrop" onClick={() => setIsHelpOpen(false)}>
+          <div className="ppa-help-modal" onClick={(e) => e.stopPropagation()}>
+            {/* Modal Top Header */}
+            <div className="ppa-help-header">
+              <div className="ppa-help-header-info">
+                <div className="ppa-help-icon-badge">
+                  <HelpCircle className="w-6 h-6 text-amber-500" />
+                </div>
+                <div>
+                  <h3 className="ppa-help-title">Need Help?</h3>
+                  <p className="ppa-help-subtitle">
+                    Choose how you want to understand this question.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="ppa-help-close-btn"
+                onClick={() => setIsHelpOpen(false)}
+                title="Close help"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* View 1: 4 Options Menu */}
+            {helpTab === 'menu' && (
+              <div className="ppa-help-options-grid">
+                {/* Option 1: Get a Hint */}
+                <button
+                  type="button"
+                  className="ppa-help-option-card card-hint"
+                  onClick={() => setHelpTab('hint')}
+                >
+                  <div className="ppa-help-card-icon-box box-hint">
+                    <Sparkles className="w-5 h-5 text-amber-600" />
+                  </div>
+                  <div className="ppa-help-card-text">
+                    <div className="ppa-help-card-title">Get a Hint</div>
+                    <div className="ppa-help-card-sub">Ek chhota clue milega.</div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-400 ml-auto" />
+                </button>
+
+                {/* Option 2: See an Example */}
+                <button
+                  type="button"
+                  className="ppa-help-option-card card-example"
+                  onClick={() => setHelpTab('example')}
+                >
+                  <div className="ppa-help-card-icon-box box-example">
+                    <Code2 className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div className="ppa-help-card-text">
+                    <div className="ppa-help-card-title">See an Example</div>
+                    <div className="ppa-help-card-sub">Similar solved example dikhega.</div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-400 ml-auto" />
+                </button>
+
+                {/* Option 3: Explain in Hindi / English */}
+                <button
+                  type="button"
+                  className="ppa-help-option-card card-explain"
+                  onClick={() => setHelpTab('explain')}
+                >
+                  <div className="ppa-help-card-icon-box box-explain">
+                    <Languages className="w-5 h-5 text-indigo-600" />
+                  </div>
+                  <div className="ppa-help-card-text">
+                    <div className="ppa-help-card-title">Explain in Hindi / English</div>
+                    <div className="ppa-help-card-sub">Pehle se likhi hui explanation dikhegi.</div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-400 ml-auto" />
+                </button>
+
+                {/* Option 4: Report a Question */}
+                <button
+                  type="button"
+                  className="ppa-help-option-card card-report"
+                  onClick={() => setHelpTab('report')}
+                >
+                  <div className="ppa-help-card-icon-box box-report">
+                    <Flag className="w-5 h-5 text-rose-600" />
+                  </div>
+                  <div className="ppa-help-card-text">
+                    <div className="ppa-help-card-title">Report a Question</div>
+                    <div className="ppa-help-card-sub">Galat ya confusing question report kar sakega.</div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-400 ml-auto" />
+                </button>
+              </div>
+            )}
+
+            {/* View 2: Hint Detail */}
+            {helpTab === 'hint' && (
+              <div className="ppa-help-detail-view">
+                <button
+                  type="button"
+                  className="ppa-help-back-link"
+                  onClick={() => setHelpTab('menu')}
+                >
+                  ← Back to Help options
+                </button>
+
+                <div className="ppa-help-detail-card">
+                  <div className="ppa-help-mascot-speech-row">
+                    <img
+                      src="/images/dashboard/ai_mentor_boy_mascot.png"
+                      alt="AI Mentor Boy"
+                      className="ppa-help-mascot-thumb"
+                    />
+                    <div className="ppa-help-bubble">
+                      <span className="ppa-help-tag-pill amber">💡 Mentor's Clue</span>
+                      <p className="ppa-help-body-text">{currentHelpData.hintEn}</p>
+                      {currentHelpData.hintHi && (
+                        <div className="ppa-help-hindi-sub-box">
+                          <span className="font-bold text-slate-700">🇮🇳 सरल संकेत: </span>
+                          <span className="text-slate-700">{currentHelpData.hintHi}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="ppa-help-actions-row">
+                    <button
+                      type="button"
+                      className="ppa-help-sub-action-btn"
+                      onClick={() => setHelpTab('example')}
+                    >
+                      <span>Still stuck? See a Solved Example →</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* View 3: Example Detail */}
+            {helpTab === 'example' && (
+              <div className="ppa-help-detail-view">
+                <button
+                  type="button"
+                  className="ppa-help-back-link"
+                  onClick={() => setHelpTab('menu')}
+                >
+                  ← Back to Help options
+                </button>
+
+                <div className="ppa-help-detail-card">
+                  <span className="ppa-help-tag-pill blue">🔍 Similar Solved Example</span>
+                  <p className="text-xs text-slate-600 -mt-1">
+                    Ye example dekh kar samjho ki similar problem Python me kaise solve hoti hai:
+                  </p>
+
+                  <div className="ppa-help-code-snippet">
+                    <pre><code>{currentHelpData.exampleCode}</code></pre>
+                  </div>
+
+                  <div className="ppa-help-example-note">
+                    <strong className="text-slate-800">Kaise kaam karta hai: </strong>
+                    <span>{currentHelpData.exampleNote}</span>
+                  </div>
+
+                  <div className="ppa-help-actions-row">
+                    <button
+                      type="button"
+                      className="ppa-help-sub-action-btn"
+                      onClick={() => setHelpTab('explain')}
+                    >
+                      <span>Read detailed explanation in Hindi / English →</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* View 4: Explanation Detail (Bilingual Hindi / English) */}
+            {helpTab === 'explain' && (
+              <div className="ppa-help-detail-view">
+                <div className="flex items-center justify-between">
+                  <button
+                    type="button"
+                    className="ppa-help-back-link"
+                    onClick={() => setHelpTab('menu')}
+                  >
+                    ← Back to Help options
+                  </button>
+
+                  {/* Language Toggle: English vs Hindi */}
+                  <div className="ppa-help-lang-switch">
+                    <button
+                      type="button"
+                      className={`ppa-lang-pill ${helpLang === 'hi' ? 'active' : ''}`}
+                      onClick={() => setHelpLang('hi')}
+                    >
+                      🇮🇳 हिंदी
+                    </button>
+                    <button
+                      type="button"
+                      className={`ppa-lang-pill ${helpLang === 'en' ? 'active' : ''}`}
+                      onClick={() => setHelpLang('en')}
+                    >
+                      🇬🇧 English
+                    </button>
+                  </div>
+                </div>
+
+                <div className="ppa-help-detail-card">
+                  <span className="ppa-help-tag-pill indigo">
+                    {helpLang === 'hi' ? '📖 पूरी व्याख्या (Complete Explanation)' : '📖 Concept Breakdown'}
+                  </span>
+
+                  {helpLang === 'hi' ? (
+                    <div>
+                      <h4 className="font-bold text-sm text-slate-900 mb-1">
+                        {currentHelpData.explainTitleHi}
+                      </h4>
+                      <p className="text-slate-700 leading-relaxed text-xs whitespace-pre-line">
+                        {currentHelpData.explainTextHi}
+                      </p>
+                      {currentHelpData.realWorldHi && (
+                        <div className="mt-2.5 p-2.5 bg-indigo-50 border border-indigo-100 rounded-xl text-xs text-indigo-900">
+                          <strong>🌐 Real-Life Udaharan: </strong>
+                          {currentHelpData.realWorldHi}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div>
+                      <h4 className="font-bold text-sm text-slate-900 mb-1">
+                        {currentHelpData.explainTitleEn}
+                      </h4>
+                      <p className="text-slate-700 leading-relaxed text-xs whitespace-pre-line">
+                        {currentHelpData.explainTextEn}
+                      </p>
+                      {currentHelpData.realWorldEn && (
+                        <div className="mt-2.5 p-2.5 bg-indigo-50 border border-indigo-100 rounded-xl text-xs text-indigo-900">
+                          <strong>🌐 Real-World Context: </strong>
+                          {currentHelpData.realWorldEn}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* View 5: Report a Question */}
+            {helpTab === 'report' && (
+              <div className="ppa-help-detail-view">
+                <button
+                  type="button"
+                  className="ppa-help-back-link"
+                  onClick={() => setHelpTab('menu')}
+                >
+                  ← Back to Help options
+                </button>
+
+                <div className="ppa-help-detail-card">
+                  {reportSuccess ? (
+                    <div className="ppa-report-success-box">
+                      <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-2">
+                        <Check className="w-6 h-6 stroke-[3]" />
+                      </div>
+                      <h4 className="text-sm font-extrabold text-emerald-900">Report Submitted!</h4>
+                      <p className="text-xs text-emerald-700 mt-1 max-w-sm mx-auto">
+                        Shukriya! Humari academic team is question ko verify karke update karegi.
+                      </p>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleReportSubmit} className="ppa-report-form">
+                      <span className="ppa-help-tag-pill rose">🚩 Report Question</span>
+                      <p className="text-xs text-slate-600 mt-1 mb-2">
+                        Is question me kya dikkat hai? Sahi option choose karein:
+                      </p>
+
+                      <div className="ppa-report-reasons-list">
+                        {[
+                          'Galat answer marked hai (Wrong answer)',
+                          'Typo ya spelling mistake hai',
+                          'Question confusing ya adhura hai',
+                          'Buttons ya code display nahi ho raha',
+                          'Dusra issue (Other)'
+                        ].map((reason, idx) => (
+                          <label key={idx} className="ppa-report-reason-item">
+                            <input
+                              type="radio"
+                              name="reportReason"
+                              value={reason}
+                              checked={reportReason === reason}
+                              onChange={(e) => setReportReason(e.target.value)}
+                            />
+                            <span>{reason}</span>
+                          </label>
+                        ))}
+                      </div>
+
+                      <textarea
+                        className="ppa-report-textarea"
+                        placeholder="Aur detail likhna chahein toh yahan batayein (optional)..."
+                        rows={2}
+                        value={reportDetails}
+                        onChange={(e) => setReportDetails(e.target.value)}
+                      />
+
+                      <div className="flex items-center justify-end gap-2 mt-3">
+                        <button
+                          type="button"
+                          className="ppa-btn-reset"
+                          onClick={() => setHelpTab('menu')}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          className="ppa-btn-submit-action"
+                          disabled={!reportReason}
+                        >
+                          <span>Submit Report</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

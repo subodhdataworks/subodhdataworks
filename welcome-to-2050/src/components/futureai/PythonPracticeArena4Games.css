@@ -991,3 +991,529 @@
   background: #10b981;
   color: #ffffff;
 }
+
+
+/* ─────────────────────────────────────────────────────────────
+   8. HELP SYSTEM & SKIP QUESTION STYLES
+   ───────────────────────────────────────────────────────────── */
+
+/* Skip Question Button in Footer */
+.ppa-btn-skip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #b45309;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.08);
+}
+
+.ppa-btn-skip:hover {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #92400e;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.16);
+}
+
+/* Need Help Trigger Pill Button */
+.ppa-btn-help {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+  border: 1.5px solid #a7f3d0;
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #047857;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.12);
+}
+
+.ppa-btn-help:hover {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  border-color: #34d399;
+  color: #065f46;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+/* AI Mentor Card Extra Help Button */
+.ppa-mentor-help-cta-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: #f8fafc;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 6px;
+  width: 100%;
+}
+
+.ppa-mentor-help-cta-btn:hover {
+  background: #f1f5f9;
+  border-color: #0284c7;
+  color: #0284c7;
+}
+
+/* ── HELP MODAL OVERLAY ── */
+.ppa-help-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: ppaFadeIn 0.2s ease-out;
+}
+
+@keyframes ppaFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ppaPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.ppa-help-modal {
+  width: 100%;
+  max-width: 620px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 24px;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+  padding: 24px;
+  overflow: hidden;
+  animation: ppaPopIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Modal Header */
+.ppa-help-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1.5px solid #f1f5f9;
+  padding-bottom: 16px;
+}
+
+.ppa-help-header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ppa-help-icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 1px solid #fcd34d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.15);
+}
+
+.ppa-help-title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.ppa-help-subtitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+  margin: 2px 0 0;
+}
+
+.ppa-help-close-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ppa-help-close-btn:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #dc2626;
+  transform: rotate(90deg);
+}
+
+/* 4 Options Grid */
+.ppa-help-options-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ppa-help-option-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+}
+
+.ppa-help-option-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.08);
+}
+
+.ppa-help-option-card.card-hint:hover {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.ppa-help-option-card.card-example:hover {
+  background: #f0f9ff;
+  border-color: #bae6fd;
+}
+
+.ppa-help-option-card.card-explain:hover {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+}
+
+.ppa-help-option-card.card-report:hover {
+  background: #fff1f2;
+  border-color: #fecdd3;
+}
+
+.ppa-help-card-icon-box {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ppa-help-card-icon-box.box-hint {
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+}
+
+.ppa-help-card-icon-box.box-example {
+  background: #e0f2fe;
+  border: 1px solid #bae6fd;
+}
+
+.ppa-help-card-icon-box.box-explain {
+  background: #e0e7ff;
+  border: 1px solid #c7d2fe;
+}
+
+.ppa-help-card-icon-box.box-report {
+  background: #ffe4e6;
+  border: 1px solid #fecdd3;
+}
+
+.ppa-help-card-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.ppa-help-card-sub {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-top: 1px;
+}
+
+/* Detail Views */
+.ppa-help-detail-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ppa-help-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #0284c7;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.ppa-help-back-link:hover {
+  color: #0369a1;
+  text-decoration: underline;
+}
+
+.ppa-help-detail-card {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ppa-help-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+.ppa-help-tag-pill.amber {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.ppa-help-tag-pill.blue {
+  background: #e0f2fe;
+  color: #075985;
+  border: 1px solid #bae6fd;
+}
+
+.ppa-help-tag-pill.indigo {
+  background: #e0e7ff;
+  color: #3730a3;
+  border: 1px solid #c7d2fe;
+}
+
+.ppa-help-tag-pill.rose {
+  background: #ffe4e6;
+  color: #9f1239;
+  border: 1px solid #fecdd3;
+}
+
+.ppa-help-mascot-speech-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.ppa-help-mascot-thumb {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  object-fit: contain;
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.ppa-help-bubble {
+  flex: 1;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 12px 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.ppa-help-body-text {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.5;
+  margin-top: 6px;
+}
+
+.ppa-help-hindi-sub-box {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.ppa-help-code-snippet {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 12px 16px;
+  overflow-x: auto;
+}
+
+.ppa-help-code-snippet pre {
+  margin: 0;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: 0.82rem;
+  color: #38bdf8;
+  line-height: 1.45;
+}
+
+.ppa-help-example-note {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  color: #475569;
+  line-height: 1.45;
+}
+
+.ppa-help-actions-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ppa-help-sub-action-btn {
+  background: transparent;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #0284c7;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: all 0.2s ease;
+}
+
+.ppa-help-sub-action-btn:hover {
+  color: #0369a1;
+  text-decoration: underline;
+}
+
+/* Language Switch */
+.ppa-help-lang-switch {
+  display: inline-flex;
+  background: #e2e8f0;
+  border-radius: 10px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.ppa-lang-pill {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ppa-lang-pill.active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Report Form */
+.ppa-report-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.ppa-report-reasons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ppa-report-reason-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ppa-report-reason-item:hover {
+  background: #fff1f2;
+  border-color: #fca5a5;
+}
+
+.ppa-report-textarea {
+  width: 100%;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 0.82rem;
+  font-family: inherit;
+  color: #1e293b;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.ppa-report-textarea:focus {
+  border-color: #f43f5e;
+  box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.15);
+}
+
+.ppa-report-success-box {
+  padding: 24px 16px;
+  text-align: center;
+}
