@@ -59,12 +59,6 @@ import {
 import { FutureLogo } from './FutureLogo';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
 import { PayToUnlockModal } from './PayToUnlockModal';
-import { PythonChapterView } from './PythonChapterView';
-import { SqlChapterView } from './SqlChapterView';
-import { ExcelChapterView } from './ExcelChapterView';
-import { PowerBiChapterView } from './PowerBiChapterView';
-import { StatsChapterView } from './StatsChapterView';
-import { GenAiChapterView } from './GenAiChapterView';
 import { PythonTopicWorkspace, WorkspaceStepId } from './PythonTopicWorkspace';
 import { PowerGreenAI } from '../../services/powerGreenAIService';
 import { ReferralDashboard } from './referral/ReferralDashboard';
@@ -92,12 +86,8 @@ import { MobileBottomNav, MobileTab } from './mobile/MobileBottomNav';
 import { MobileProfileSheet } from './mobile/MobileProfileSheet';
 import { MobileDashboardHome } from './mobile/MobileDashboardHome';
 import { MobilePlacementHub } from './mobile/MobilePlacementHub';
-import { MobilePythonChapterView } from './mobile/MobilePythonChapterView';
 import { MobileTopicWorkspace } from './mobile/MobileTopicWorkspace';
-import { MobileSqlChapterView } from './mobile/MobileSqlChapterView';
-import { MobileExcelChapterView } from './mobile/MobileExcelChapterView';
 import { MobileGameArenaHub } from './mobile/MobileGameArenaHub';
-import { MobileDataAnalystHub } from './mobile/MobileDataAnalystHub';
 import { FutureAuthModal } from './FutureAuthModal';
 import { WalletWithdrawModal } from './WalletWithdrawModal';
 import { CurriculumModal } from './CurriculumModal';
@@ -537,11 +527,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   };
 
   // Sub-view: null = 4-Course Student Dashboard (#dashboard), 'data_analyst' = Data Analyst with GenAI 6-Module Hub (#data-analyst), 'python' = Python Module Detail Page, 'python_intro_game' = Python Introduction & Setup Game Workspace, 'sql' = SQL Chapter View, 'excel' = Excel Chapter View, 'powerbi' = Power BI Chapter View, 'stats' = Statistics Chapter View, 'genai' = GenAI Chapter View
-  const [selectedModuleView, setSelectedModuleView] = useState<'data_analyst' | 'data_science' | 'ml_engineering' | 'deep_learning' | 'ai_engineering' | 'ai_tools_prompt' | 'ms_office_copilot' | 'full_stack_mern' | 'python' | 'python_intro_game' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai' | null>(() => {
+  const [selectedModuleView, setSelectedModuleView] = useState<'data_analyst' | 'data_science' | 'ml_engineering' | 'deep_learning' | 'ai_engineering' | 'ai_tools_prompt' | 'ms_office_copilot' | 'full_stack_mern' | 'python_intro_game' | null>(() => {
     if (typeof window !== 'undefined') {
       const h = window.location.hash;
       const baseH = h.split('?')[0];
-      if (baseH === '#data-analyst' || baseH === '#data-analytics') {
+      if (baseH === '#data-analyst' || baseH === '#data-analytics' || baseH === '#python' || baseH === '#sql' || baseH === '#excel' || baseH === '#powerbi' || baseH === '#stats' || baseH === '#genai' || baseH === '#learn') {
         return 'data_analyst';
       }
       if (baseH === '#data-science' || baseH === '#data-science-agentic-ai' || baseH === '#datascience') {
@@ -559,24 +549,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       if (baseH === '#intro-game' || baseH === '#intro-games' || baseH === '#pyintro') {
         return 'python_intro_game';
       }
-      if (baseH === '#sql') {
-        return 'sql';
-      }
-      if (baseH === '#excel') {
-        return 'excel';
-      }
-      if (baseH === '#powerbi') {
-        return 'powerbi';
-      }
-      if (baseH === '#stats') {
-        return 'stats';
-      }
-      if (baseH === '#genai') {
-        return 'genai';
-      }
-      if (baseH === '#python' || baseH === '#practice' || baseH === '#mcq' || baseH === '#play' || baseH === '#codequest' || baseH === '#workspace' || baseH === '#code' || baseH === '#codepractice' || baseH === '#interview' || baseH === '#mockinterview' || baseH === '#score' || baseH === '#scorecard' || baseH === '#learn' || baseH === '#video') {
-        return 'python';
-      }
+
     }
     return null;
   });
@@ -631,7 +604,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       ? 'placement'
       : dockTab === 'income' || dockTab === 'referral' || dockTab === 'wallet' || dockTab === 'withdraw'
       ? 'earn'
-      : selectedModuleView === 'data_analyst' || selectedModuleView === 'data_science' || selectedModuleView === 'ml_engineering' || selectedModuleView === 'deep_learning' || selectedModuleView === 'ai_engineering' || selectedModuleView === 'ai_tools_prompt' || selectedModuleView === 'ms_office_copilot' || selectedModuleView === 'full_stack_mern' || selectedModuleView === 'python' || selectedModuleView === 'sql' || selectedModuleView === 'excel' || selectedModuleView === 'powerbi' || selectedModuleView === 'genai' || selectedModuleView === 'stats'
+      : selectedModuleView === 'data_analyst' || selectedModuleView === 'data_science' || selectedModuleView === 'ml_engineering' || selectedModuleView === 'deep_learning' || selectedModuleView === 'ai_engineering' || selectedModuleView === 'ai_tools_prompt' || selectedModuleView === 'ms_office_copilot' || selectedModuleView === 'full_stack_mern'
       ? 'learn'
       : 'home';
 
@@ -668,7 +641,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     const handleHash = () => {
       const h = window.location.hash;
       const baseH = h.split('?')[0];
-      if (baseH === '#data-analyst' || baseH === '#data-analytics') {
+      if (baseH === '#data-analyst' || baseH === '#data-analytics' || baseH === '#python' || baseH === '#sql' || baseH === '#excel' || baseH === '#powerbi' || baseH === '#stats' || baseH === '#genai' || baseH === '#learn') {
         setSelectedModuleView('data_analyst');
         setActiveTopicWs(null);
         setDockTab('home');
@@ -733,45 +706,6 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         setDockTab('withdraw');
       } else if (h === '#dashboard' || h === '#courses' || h === '#home' || !h) {
         setSelectedModuleView(null);
-        setActiveTopicWs(null);
-        setDockTab('home');
-      } else if (['#practice','#mcq','#play','#codequest','#workspace','#code','#codepractice','#interview','#mockinterview','#score','#scorecard','#learn','#video'].includes(baseH)) {
-        setSelectedModuleView('python');
-        const params = new URLSearchParams(h.includes('?') ? h.split('?')[1] : '');
-        const hashTopicId = params.get('topic');
-        if (hashTopicId) {
-          setActiveTopicWs(parseInt(hashTopicId, 10));
-        } else {
-          setActiveTopicWs(prev => prev ?? 1);
-        }
-        if (baseH === '#practice' || baseH === '#mcq') setTargetStep('practice');
-        else if (baseH === '#play' || baseH === '#codequest') setTargetStep('play');
-        else if (baseH === '#code' || baseH === '#codepractice' || baseH === '#workspace') setTargetStep('code');
-        else if (baseH === '#interview' || baseH === '#mockinterview') setTargetStep('interview');
-        else if (baseH === '#score' || baseH === '#scorecard') setTargetStep('score');
-        else setTargetStep('learn');
-      } else if (baseH === '#python') {
-        setSelectedModuleView('python');
-        setActiveTopicWs(null);
-        setDockTab('home');
-      } else if (baseH === '#sql') {
-        setSelectedModuleView('sql');
-        setActiveTopicWs(null);
-        setDockTab('home');
-      } else if (baseH === '#excel') {
-        setSelectedModuleView('excel');
-        setActiveTopicWs(null);
-        setDockTab('home');
-      } else if (baseH === '#powerbi') {
-        setSelectedModuleView('powerbi');
-        setActiveTopicWs(null);
-        setDockTab('home');
-      } else if (baseH === '#stats') {
-        setSelectedModuleView('stats');
-        setActiveTopicWs(null);
-        setDockTab('home');
-      } else if (baseH === '#genai') {
-        setSelectedModuleView('genai');
         setActiveTopicWs(null);
         setDockTab('home');
       }
@@ -1044,31 +978,31 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     playCinema();
     const titleLower = (m.title || '').toLowerCase();
     if (m.id === 'mod-1' || titleLower.includes('python') || titleLower.includes('data clean')) {
-      setSelectedModuleView('python');
+      setSelectedModuleView('data_analyst');
       if (typeof window !== 'undefined') window.location.hash = '#python';
     } else if (m.id === 'mod-2' || titleLower.includes('sql')) {
-      setSelectedModuleView('sql');
+      setSelectedModuleView('data_analyst');
       if (typeof window !== 'undefined') window.location.hash = '#sql';
     } else if (m.id === 'mod-3' || titleLower.includes('excel') || titleLower.includes('business')) {
-      setSelectedModuleView('excel');
+      setSelectedModuleView('data_analyst');
       if (typeof window !== 'undefined') window.location.hash = '#excel';
     } else if (m.id === 'mod-4' || titleLower.includes('power bi') || titleLower.includes('powerbi')) {
-      setSelectedModuleView('powerbi');
+      setSelectedModuleView('data_analyst');
       if (typeof window !== 'undefined') window.location.hash = '#powerbi';
     } else if (m.id === 'mod-5' || titleLower.includes('stat')) {
-      setSelectedModuleView('stats');
+      setSelectedModuleView('data_analyst');
       if (typeof window !== 'undefined') window.location.hash = '#stats';
     } else if (m.id === 'mod-6' || titleLower.includes('genai') || titleLower.includes('ai')) {
-      setSelectedModuleView('genai');
+      setSelectedModuleView('data_analyst');
       if (typeof window !== 'undefined') window.location.hash = '#genai';
     } else if (m.id === 'mod-9' || titleLower.includes('interview')) {
-      setSelectedModuleView('python');
+      setSelectedModuleView('data_analyst');
       if (typeof window !== 'undefined') window.location.hash = '#mockinterview';
     } else if (m.id === 'mod-10' || titleLower.includes('capstone') || titleLower.includes('project')) {
-      setSelectedModuleView('python');
+      setSelectedModuleView('data_analyst');
       if (typeof window !== 'undefined') window.location.hash = '#projects';
     } else {
-      setSelectedModuleView('python');
+      setSelectedModuleView('data_analyst');
       if (typeof window !== 'undefined') window.location.hash = '#python';
     }
   };
@@ -1148,28 +1082,28 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       setActiveTab('learning');
       if (typeof window !== 'undefined') window.location.hash = '#learning';
     } else if (route === 'python') {
-      setSelectedModuleView('python');
+      setSelectedModuleView('data_analyst');
       if (typeof window !== 'undefined') window.location.hash = '#python';
     } else if (route === 'sql') {
-      setSelectedModuleView('sql');
+      setSelectedModuleView('data_analyst');
       if (typeof window !== 'undefined') window.location.hash = '#sql';
     } else if (route === 'excel') {
-      setSelectedModuleView('excel');
+      setSelectedModuleView('data_analyst');
       if (typeof window !== 'undefined') window.location.hash = '#excel';
     } else if (route === 'powerbi') {
-      setSelectedModuleView('powerbi');
+      setSelectedModuleView('data_analyst');
       if (typeof window !== 'undefined') window.location.hash = '#powerbi';
     } else if (route === 'stats') {
-      setSelectedModuleView('stats');
+      setSelectedModuleView('data_analyst');
       if (typeof window !== 'undefined') window.location.hash = '#stats';
     } else if (route === 'genai') {
-      setSelectedModuleView('genai');
+      setSelectedModuleView('data_analyst');
       if (typeof window !== 'undefined') window.location.hash = '#genai';
     } else if (route === 'projects') {
       setSelectedLockedModule('Real-World Capstone Projects');
       setUnlockModalOpen(true);
     } else if (route === 'interview') {
-      setSelectedModuleView('python');
+      setSelectedModuleView('data_analyst');
       if (typeof window !== 'undefined') window.location.hash = '#mockinterview';
     } else if (route === 'placement') {
       setSelectedModuleView(null);
@@ -1253,7 +1187,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setDockTab('income');
                 if (typeof window !== 'undefined') window.location.hash = '#earnings';
               } else if (tab === 'learn' || tab === 'learning') {
-                setSelectedModuleView('python');
+                setSelectedModuleView('data_analyst');
                 if (typeof window !== 'undefined') window.location.hash = '#python';
               } else if (tab === 'internship') {
                 setLockedSectionTarget('Internship');
@@ -1308,226 +1242,6 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           />
         </div>
       </>
-    );
-  }
-
-  // Render Hands-on Python Lab Workspace when an interactive step is active
-  if (selectedModuleView === 'python' && activeTopicWs !== null) {
-    if (mobileTestingFrame) {
-      return (
-        <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-start py-4 px-2 sm:px-4">
-          {/* Top Control Bar for Mobile Testing */}
-          <div className="w-full max-w-[420px] mb-3 bg-slate-900 border border-slate-700/80 rounded-2xl px-4 py-2.5 shadow-xl flex items-center justify-between text-xs backdrop-blur-md">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400/50" />
-              <span className="font-bold text-slate-100 flex items-center gap-1.5">
-                <Smartphone className="w-3.5 h-3.5 text-cyan-400" />
-                Mobile Testing Size (390px)
-              </span>
-            </div>
-            <button
-              onClick={() => setMobileTestingFrame(false)}
-              className="px-2.5 py-1 rounded-lg bg-indigo-600/80 hover:bg-indigo-600 text-white font-medium text-[11px] flex items-center gap-1 transition-all cursor-pointer"
-              title="Switch to full desktop IDE view"
-            >
-              <Monitor className="w-3 h-3" />
-              Desktop IDE
-            </button>
-          </div>
-
-          {/* Centered Realistic Mobile Phone Frame (Scrollable on Desktop) */}
-          <div className="w-full max-w-[420px] max-h-[90vh] overflow-y-auto rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] border-4 border-slate-700 bg-white relative">
-            <MobileTopicWorkspace
-              userName={currentUserName}
-              topicId={activeTopicWs}
-              initialStep={targetStep}
-              onBack={() => {
-                setActiveTopicWs(null);
-                if (typeof window !== 'undefined') {
-                  window.location.hash = '#python';
-                }
-              }}
-              onOpenUnlockModal={(mod?: string) => {
-                setSelectedLockedModule(mod || 'Python Advanced Track');
-                setUnlockModalOpen(true);
-              }}
-              onOpenAdvisor={onOpenAdvisor}
-              onOpenProfile={() => setMobileProfileSheetOpen(true)}
-            />
-            <MobileProfileSheet
-              isOpen={mobileProfileSheetOpen}
-              onClose={() => setMobileProfileSheetOpen(false)}
-              userName={currentUserName}
-              telemetry={telemetry}
-              onLogout={onLogout}
-              onOpenEarn={() => {
-                setSelectedModuleView(null);
-                setActiveTopicWs(null);
-                setDockTab('income');
-                if (typeof window !== 'undefined') window.location.hash = '#earnings';
-              }}
-              onOpenPlacement={() => {
-                setSelectedModuleView(null);
-                setActiveTopicWs(null);
-                setDockTab('placement');
-                if (typeof window !== 'undefined') window.location.hash = '#placement';
-              }}
-              onOpenLogin={() => setAuthModalOpen(true)}
-              onOpenAdvisor={onOpenAdvisor}
-            />
-          </div>
-        </div>
-      );
-    }
-
-    if (isMobileScreen || mobileTestingFrame) {
-      return (
-        <div className="min-h-screen bg-slate-50">
-          <MobileTopicWorkspace
-            userName={currentUserName}
-            topicId={activeTopicWs}
-            initialStep={targetStep}
-            onBack={() => {
-              setActiveTopicWs(null);
-              if (typeof window !== 'undefined') {
-                window.location.hash = '#python';
-              }
-            }}
-            onOpenUnlockModal={(mod?: string) => {
-              setSelectedLockedModule(mod || 'Python Advanced Track');
-              setUnlockModalOpen(true);
-            }}
-            onOpenAdvisor={onOpenAdvisor}
-            onOpenProfile={() => setMobileProfileSheetOpen(true)}
-          />
-          <MobileProfileSheet
-            isOpen={mobileProfileSheetOpen}
-            onClose={() => setMobileProfileSheetOpen(false)}
-            userName={currentUserName}
-            telemetry={telemetry}
-            onLogout={onLogout}
-            onOpenEarn={() => {
-              setSelectedModuleView(null);
-              setActiveTopicWs(null);
-              setDockTab('income');
-              if (typeof window !== 'undefined') window.location.hash = '#earnings';
-            }}
-            onOpenPlacement={() => {
-              setSelectedModuleView(null);
-              setActiveTopicWs(null);
-              setDockTab('placement');
-              if (typeof window !== 'undefined') window.location.hash = '#placement';
-            }}
-            onOpenLogin={() => setAuthModalOpen(true)}
-            onOpenAdvisor={onOpenAdvisor}
-          />
-        </div>
-      );
-    }
-
-    return (
-      <div className="relative dock-dashboard-page">
-        <button
-          onClick={() => setMobileTestingFrame(true)}
-          className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 text-white px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 text-xs font-bold border-2 border-white/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"
-          title="Open in Mobile Size Phone Container"
-        >
-          <Smartphone className="w-4 h-4 text-emerald-300 animate-pulse" />
-          <span>📱 Test in Mobile View (390px)</span>
-        </button>
-
-        <PythonTopicWorkspace
-          userName={userName}
-          topicId={activeTopicWs}
-          initialStep={targetStep}
-          onBack={() => {
-            setActiveTopicWs(null);
-            setTargetStep('learn');
-            if (typeof window !== 'undefined') window.location.hash = '#python';
-          }}
-          onNavigateDock={(tab) => {
-            setActiveTopicWs(null);
-            if (tab === 'game') {
-              setSelectedModuleView(null);
-              setDockTab('game');
-              if (typeof window !== 'undefined') window.location.hash = '#game';
-            } else if (tab === 'home' || tab === 'dashboard') {
-              setSelectedModuleView(null);
-              setDockTab('home');
-              if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-            } else if (tab === 'learn' || tab === 'learning') {
-              setSelectedModuleView('python');
-              setActiveTopicWs(null);
-              if (typeof window !== 'undefined') window.location.hash = '#python';
-            } else if (tab === 'earning' || tab === 'income') {
-              setSelectedModuleView(null);
-              setDockTab('income');
-              if (typeof window !== 'undefined') window.location.hash = '#earnings';
-            } else if (tab === 'internship') {
-              setLockedSectionTarget('Internship');
-              setPlacementLockOpen(true);
-            } else if (tab === 'certificate' || tab === 'certificates') {
-              setLockedSectionTarget('Certificate');
-              setPlacementLockOpen(true);
-            } else if (tab === 'placement') {
-              setLockedSectionTarget('Placement');
-              setPlacementLockOpen(true);
-            } else {
-              setSelectedModuleView(null);
-              setDockTab(tab as any);
-              if (typeof window !== 'undefined') window.location.hash = '#' + tab;
-            }
-          }}
-          onOpenUnlockModal={(mod) => {
-            setSelectedLockedModule(mod || 'Python Hands-on Lab');
-            setUnlockModalOpen(true);
-          }}
-          onOpenAdvisor={onOpenAdvisor}
-          onNavigateNextTopic={() => {
-            setActiveTopicWs(2);
-            setTargetStep('learn');
-            if (typeof window !== 'undefined') window.location.hash = '#learn';
-          }}
-        />
-        <PayToUnlockModal
-          isOpen={unlockModalOpen}
-          onClose={() => setUnlockModalOpen(false)}
-          targetModuleName={selectedLockedModule}
-          courseId={selectedLockedModule.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}
-          courseTitle={selectedLockedModule}
-          price={987}
-          onSimulateUnlock={() => {
-            setIsNewStudentMode(false);
-            setUnlockModalOpen(false);
-          }}
-        />
-        <MobileProfileSheet
-          isOpen={mobileProfileSheetOpen}
-          onClose={() => setMobileProfileSheetOpen(false)}
-          userName={currentUserName}
-          telemetry={telemetry}
-          onLogout={onLogout}
-          onOpenEarn={() => {
-            setSelectedModuleView(null);
-            setActiveTopicWs(null);
-            setDockTab('income');
-            if (typeof window !== 'undefined') window.location.hash = '#earnings';
-          }}
-          onOpenPlacement={() => {
-            setSelectedModuleView(null);
-            setActiveTopicWs(null);
-            setDockTab('placement');
-            if (typeof window !== 'undefined') window.location.hash = '#placement';
-          }}
-          onOpenLogin={() => setAuthModalOpen(true)}
-          onOpenAdvisor={onOpenAdvisor}
-        />
-        <FutureAuthModal
-          isOpen={authModalOpen}
-          onClose={() => setAuthModalOpen(false)}
-          onSuccess={handleAuthSuccess}
-        />
-      </div>
     );
   }
 
@@ -1728,339 +1442,22 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           ========================================================================= */}
       <div className="dock-main-container">
 
-        {/* ─── TAB: PYTHON COURSE DETAIL VIEW (Exact match to media_1791029953384.jpg) ─── */}
-        {dockTab === 'home' && selectedModuleView === 'python' && (
-          <div className="col-span-full">
-            {/* Mobile View (< 768px) */}
-            <div className="md:hidden min-h-screen bg-slate-50">
-              <MobilePythonChapterView
-                userName={currentUserName}
-                onBack={() => {
-                  setSelectedModuleView(null);
-                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-                }}
-                onOpenTopic={(topicId, step = 'learn') => {
-                  setTargetStep(step);
-                  setActiveTopicWs(topicId);
-                  const map: Record<WorkspaceStepId, string> = {
-                    learn: '#learn',
-                    practice: '#practice',
-                    play: '#play',
-                    code: '#code',
-                    interview: '#interview',
-                    score: '#score',
-                  };
-                  const stepHash = map[step] || '#learn';
-                  if (typeof window !== 'undefined') window.location.hash = `${stepHash}?topic=${topicId}`;
-                }}
-                onOpenUnlockModal={(mod) => {
-                  setSelectedLockedModule(mod || 'Python Advanced Track');
-                  setUnlockModalOpen(true);
-                }}
-                onOpenAdvisor={onOpenAdvisor}
-              />
-            </div>
-
-            {/* Desktop View (>= 768px) */}
-            <div className="hidden md:block">
-              <PythonChapterView
-                userName={userName}
-                onBack={() => {
-                  setSelectedModuleView('data_analyst');
-                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-                }}
-                onOpenTopic={(topicId, step = 'learn') => {
-                  setTargetStep(step);
-                  setActiveTopicWs(topicId);
-                  const map: Record<WorkspaceStepId, string> = {
-                    learn: '#learn',
-                    practice: '#practice',
-                    play: '#play',
-                    code: '#code',
-                    interview: '#interview',
-                    score: '#score',
-                  };
-                  const stepHash = map[step] || '#learn';
-                  if (typeof window !== 'undefined') window.location.hash = `${stepHash}?topic=${topicId}`;
-                }}
-                onOpenUnlockModal={(mod) => {
-                  setSelectedLockedModule(mod || 'Python Advanced Track');
-                  setUnlockModalOpen(true);
-                }}
-                onOpenAdvisor={onOpenAdvisor}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* ─── TAB: SQL COURSE CHAPTER VIEW ─── */}
-        {dockTab === 'home' && selectedModuleView === 'sql' && (
-          <div className="col-span-full">
-            {/* Mobile View (< 768px) */}
-            <div className="md:hidden min-h-screen bg-slate-50">
-              <MobileSqlChapterView
-                userName={currentUserName}
-                onBack={() => {
-                  setSelectedModuleView(null);
-                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-                }}
-                onOpenUnlockModal={(mod) => {
-                  setSelectedLockedModule(mod || 'SQL & Databases');
-                  setUnlockModalOpen(true);
-                }}
-                onOpenAdvisor={onOpenAdvisor}
-              />
-            </div>
-
-            {/* Desktop View (>= 768px) */}
-            <div className="hidden md:block">
-              <SqlChapterView
-                userName={userName}
-                onBack={() => {
-                  setSelectedModuleView('data_analyst');
-                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-                }}
-                onOpenUnlockModal={(mod) => {
-                  setSelectedLockedModule(mod || 'SQL & Databases');
-                  setUnlockModalOpen(true);
-                }}
-                onOpenAdvisor={onOpenAdvisor}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* ─── TAB: EXCEL COURSE CHAPTER VIEW ─── */}
-        {dockTab === 'home' && selectedModuleView === 'excel' && (
-          <div className="col-span-full">
-            {/* Mobile View (< 768px) */}
-            <div className="md:hidden min-h-screen bg-slate-50">
-              <MobileExcelChapterView
-                userName={currentUserName}
-                onBack={() => {
-                  setSelectedModuleView(null);
-                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-                }}
-                onOpenUnlockModal={(mod) => {
-                  setSelectedLockedModule(mod || 'Advanced Excel');
-                  setUnlockModalOpen(true);
-                }}
-                onOpenAdvisor={onOpenAdvisor}
-              />
-            </div>
-
-            {/* Desktop View (>= 768px) */}
-            <div className="hidden md:block">
-              <ExcelChapterView
-                userName={userName}
-                onBack={() => {
-                  setSelectedModuleView('data_analyst');
-                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-                }}
-                onOpenUnlockModal={(mod) => {
-                  setSelectedLockedModule(mod || 'Advanced Excel');
-                  setUnlockModalOpen(true);
-                }}
-                onOpenAdvisor={onOpenAdvisor}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* ─── TAB: POWER BI COURSE CHAPTER VIEW ─── */}
-        {dockTab === 'home' && selectedModuleView === 'powerbi' && (
-          <div className="col-span-full">
-            <PowerBiChapterView
-              userName={userName}
-              onBack={() => {
-                setSelectedModuleView('data_analyst');
-                if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-              }}
-              onOpenUnlockModal={(mod) => {
-                setSelectedLockedModule(mod || 'Power BI & Data Visualization');
-                setUnlockModalOpen(true);
-              }}
-              onOpenAdvisor={onOpenAdvisor}
-            />
-          </div>
-        )}
-
-        {/* ─── TAB: STATISTICS COURSE CHAPTER VIEW ─── */}
-        {dockTab === 'home' && selectedModuleView === 'stats' && (
-          <div className="col-span-full">
-            <StatsChapterView
-              userName={userName}
-              onBack={() => {
-                setSelectedModuleView('data_analyst');
-                if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-              }}
-              onOpenUnlockModal={(mod) => {
-                setSelectedLockedModule(mod || 'Statistics for Data Analytics');
-                setUnlockModalOpen(true);
-              }}
-              onOpenAdvisor={onOpenAdvisor}
-            />
-          </div>
-        )}
-
-        {/* ─── TAB: GENAI COURSE CHAPTER VIEW ─── */}
-        {dockTab === 'home' && selectedModuleView === 'genai' && (
-          <div className="col-span-full">
-            <GenAiChapterView
-              userName={userName}
-              onBack={() => {
-                setSelectedModuleView('data_analyst');
-                if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-              }}
-              onOpenUnlockModal={(mod) => {
-                setSelectedLockedModule(mod || 'GenAI for Data Analytics');
-                setUnlockModalOpen(true);
-              }}
-              onOpenAdvisor={onOpenAdvisor}
-            />
-          </div>
-        )}
-
         {/* ─── COURSE 01 SUB-HUB: DATA ANALYST WITH GENAI (6 MODULES) (#data-analyst) ─── */}
         {dockTab === 'home' && selectedModuleView === 'data_analyst' && (
           <div className="col-span-full">
-            {/* Native Android Mobile Feed (< 768px): Data Analyst with GenAI 9-Module Hub */}
-            <div className="md:hidden">
-              <MobileDataAnalystHub
-                userName={currentUserName}
-                onOpenPython={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('python');
-                  if (typeof window !== 'undefined') window.location.hash = '#python';
-                }}
-                onOpenSql={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('sql');
-                  if (typeof window !== 'undefined') window.location.hash = '#sql';
-                }}
-                onOpenExcel={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('excel');
-                  if (typeof window !== 'undefined') window.location.hash = '#excel';
-                }}
-                onOpenPowerBi={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('powerbi');
-                  if (typeof window !== 'undefined') window.location.hash = '#powerbi';
-                }}
-                onOpenStats={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('stats');
-                  if (typeof window !== 'undefined') window.location.hash = '#stats';
-                }}
-                onOpenGenAi={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('genai');
-                  if (typeof window !== 'undefined') window.location.hash = '#genai';
-                }}
-                onOpenMockInterview={() => {
-                  playClick();
-                  if (typeof window !== 'undefined') window.location.hash = '#interview?topic=1';
-                }}
-                onOpenLockedModule={(title) => {
-                  playClick();
-                  playCinema();
-                  const t = (title || '').toLowerCase();
-                  if (t.includes('sql')) {
-                    setSelectedModuleView('sql');
-                    if (typeof window !== 'undefined') window.location.hash = '#sql';
-                  } else if (t.includes('excel') || t.includes('copilot')) {
-                    setSelectedModuleView('excel');
-                    if (typeof window !== 'undefined') window.location.hash = '#excel';
-                  } else if (t.includes('power') || t.includes('bi')) {
-                    setSelectedModuleView('powerbi');
-                    if (typeof window !== 'undefined') window.location.hash = '#powerbi';
-                  } else if (t.includes('stat')) {
-                    setSelectedModuleView('stats');
-                    if (typeof window !== 'undefined') window.location.hash = '#stats';
-                  } else if (t.includes('genai')) {
-                    setSelectedModuleView('genai');
-                    if (typeof window !== 'undefined') window.location.hash = '#genai';
-                  } else {
-                    setSelectedModuleView('python');
-                    if (typeof window !== 'undefined') window.location.hash = '#python';
-                  }
-                }}
-                onNavigateHome={() => {
-                  playClick();
-                  setSelectedModuleView(null);
-                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-                }}
-                onOpenArena={() => {
-                  playClick();
-                  setSelectedModuleView(null);
-                  setActiveTopicWs(null);
-                  setDockTab('game');
-                  if (typeof window !== 'undefined') window.location.hash = '#game';
-                }}
-                onOpenEarn={() => {
-                  playClick();
-                  setSelectedModuleView(null);
-                  setActiveTopicWs(null);
-                  setDockTab('income');
-                  if (typeof window !== 'undefined') window.location.hash = '#earnings';
-                }}
-                onOpenPlacement={() => {
-                  playClick();
-                  setPlacementLockOpen(true);
-                }}
-              />
-            </div>
-
-            {/* Desktop Experience (>= 768px) - 1:1 Reference Match Hub */}
-            <div className="hidden md:block">
-              <DataAnalystGenAiHub
-                userName={currentUserName || userName}
-                onBack={() => {
-                  playClick();
-                  setSelectedModuleView(null);
-                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-                }}
-                onStartTopic={(topicId, title) => {
-                  playClick();
-                  if (topicId.startsWith('t-10') || topicId.startsWith('t-11') || topicId.startsWith('t-12')) {
-                    playCinema();
-                    setSelectedModuleView('python');
-                    if (typeof window !== 'undefined') window.location.hash = '#python';
-                  } else if (topicId.startsWith('t-7') || topicId.startsWith('t-8') || topicId.startsWith('t-9')) {
-                    playCinema();
-                    setSelectedModuleView('sql');
-                    if (typeof window !== 'undefined') window.location.hash = '#sql';
-                  } else if (topicId.startsWith('t-4') || topicId.startsWith('t-5') || topicId.startsWith('t-6')) {
-                    playCinema();
-                    setSelectedModuleView('excel');
-                    if (typeof window !== 'undefined') window.location.hash = '#excel';
-                  } else if (topicId.startsWith('t-13') || topicId.startsWith('t-14') || topicId.startsWith('t-15')) {
-                    playCinema();
-                    setSelectedModuleView('powerbi');
-                    if (typeof window !== 'undefined') window.location.hash = '#powerbi';
-                  } else if (topicId.startsWith('t-16') || topicId.startsWith('t-17') || topicId.startsWith('t-18')) {
-                    playCinema();
-                    setSelectedModuleView('genai');
-                    if (typeof window !== 'undefined') window.location.hash = '#genai';
-                  } else {
-                    setSelectedModuleView('python');
-                    setActiveTopicWs(1);
-                    setTargetStep('learn');
-                    if (typeof window !== 'undefined') window.location.hash = '#learn';
-                  }
-                }}
-              />
-            </div>
+            <DataAnalystGenAiHub
+              userName={currentUserName || userName}
+              onBack={() => {
+                playClick();
+                setSelectedModuleView(null);
+                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+              }}
+              onStartTopic={(topicId, title) => {
+                playClick();
+              }}
+            />
           </div>
         )}
-
 
         {/* ─── COURSE 02 SUB-HUB: DATA SCIENCE & AGENTIC AI (#data-science) ─── */}
         {dockTab === 'home' && selectedModuleView === 'data_science' && (
@@ -2245,25 +1642,25 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 onOpenSql={() => {
                   playClick();
                   playCinema();
-                  setSelectedModuleView('sql');
+                  setSelectedModuleView('data_analyst');
                   if (typeof window !== 'undefined') window.location.hash = '#sql';
                 }}
                 onOpenExcel={() => {
                   playClick();
                   playCinema();
-                  setSelectedModuleView('excel');
+                  setSelectedModuleView('data_analyst');
                   if (typeof window !== 'undefined') window.location.hash = '#excel';
                 }}
                 onOpenPowerBi={() => {
                   playClick();
                   playCinema();
-                  setSelectedModuleView('powerbi');
+                  setSelectedModuleView('data_analyst');
                   if (typeof window !== 'undefined') window.location.hash = '#powerbi';
                 }}
                 onOpenGenAi={() => {
                   playClick();
                   playCinema();
-                  setSelectedModuleView('genai');
+                  setSelectedModuleView('data_analyst');
                   if (typeof window !== 'undefined') window.location.hash = '#genai';
                 }}
                 onOpenPlacement={() => {
@@ -2352,14 +1749,14 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 }}
                 onOpenPythonDirect={() => {
                   playClick();
-                  setSelectedModuleView('python');
+                  setSelectedModuleView('data_analyst');
                   setActiveTopicWs(1);
                   setTargetStep('code');
                   if (typeof window !== 'undefined') window.location.hash = '#code?topic=1';
                 }}
                 onOpenMockInterview={() => {
                   playClick();
-                  setSelectedModuleView('python');
+                  setSelectedModuleView('data_analyst');
                   setActiveTopicWs(1);
                   setTargetStep('interview');
                   if (typeof window !== 'undefined') window.location.hash = '#interview?topic=1';
@@ -2412,7 +1809,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                   setSelectedModuleView('python_intro_game');
                   if (typeof window !== 'undefined') window.location.hash = `#intro-game?level=${topicId}`;
                 } else {
-                  setSelectedModuleView('python');
+                  setSelectedModuleView('data_analyst');
                   setActiveTopicWs(topicId || 1);
                   setTargetStep('play');
                   if (typeof window !== 'undefined') window.location.hash = '#play';
@@ -2480,14 +1877,14 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 userName={userName}
                 onStartMockInterview={() => {
                   playClick();
-                  setSelectedModuleView('python');
+                  setSelectedModuleView('data_analyst');
                   setActiveTopicWs(1);
                   setTargetStep('interview');
                   if (typeof window !== 'undefined') window.location.hash = '#interview';
                 }}
                 onPlayGames={() => {
                   playClick();
-                  setSelectedModuleView('python');
+                  setSelectedModuleView('data_analyst');
                   setActiveTopicWs(1);
                   setTargetStep('play');
                   if (typeof window !== 'undefined') window.location.hash = '#play';
@@ -2528,7 +1925,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 <button
                   onClick={() => {
                     playClick();
-                    setSelectedModuleView('python');
+                    setSelectedModuleView('data_analyst');
                     setActiveTopicWs(1);
                     setTargetStep('interview');
                     if (typeof window !== 'undefined') window.location.hash = '#interview';
@@ -2715,7 +2112,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                           <button
                             onClick={() => {
                               playClick();
-                              setSelectedModuleView('python');
+                              setSelectedModuleView('data_analyst');
                               setActiveTopicWs(1);
                               setTargetStep('interview');
                               if (typeof window !== 'undefined') window.location.hash = '#interview';
@@ -2758,7 +2155,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                   <button
                     onClick={() => {
                       playClick();
-                      setSelectedModuleView('python');
+                      setSelectedModuleView('data_analyst');
                       setActiveTopicWs(1);
                       setTargetStep('play');
                       if (typeof window !== 'undefined') window.location.hash = '#play';
@@ -2915,7 +2312,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         }}
         onNavigateToModule={(modId) => {
           if (modId === 'python') {
-            setSelectedModuleView('python');
+            setSelectedModuleView('data_analyst');
             if (typeof window !== 'undefined') window.location.hash = '#python';
           } else {
             setSelectedLockedModule(modId.toUpperCase());
