@@ -341,7 +341,8 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
   const [activeTab, setActiveTab] = useState<'all' | 'basic' | 'intermediate' | 'advanced' | 'popular'>('all');
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<number>>(new Set());
   const [activeChallengeArenaTopic, setActiveChallengeArenaTopic] = useState<{ topicId: number; initialTaskId?: number } | null>(null);
-  const [topic1Expanded, setTopic1Expanded] = useState<boolean>(true);
+  const [selectedTopic1TaskId, setSelectedTopic1TaskId] = useState<number>(1);
+  const [topic1Expanded, setTopic1Expanded] = useState<boolean>(false);
 
   // Collapsible accordion states
   const [statusOpen, setStatusOpen] = useState<boolean>(true);
@@ -632,16 +633,40 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
                           {item.description}
                         </p>
 
-                        {/* View 10 challenges accordion toggle on Topic 1 */}
+                        {/* ─── Question Dropdown Selector ON THE CARD (BAHAR) ─── */}
                         {item.id === 1 && (
-                          <button
-                            type="button"
-                            onClick={() => setTopic1Expanded((prev) => !prev)}
-                            className="mt-2 text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1.5 cursor-pointer select-none"
-                          >
-                            <span>{topic1Expanded ? 'Hide 10 Challenges' : 'View All 10 Challenges (Topic 1)'}</span>
-                            {topic1Expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                          </button>
+                          <div className="mt-3.5 bg-gradient-to-r from-blue-50/80 via-sky-50/50 to-slate-50 border border-blue-200/80 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center gap-2.5 shadow-sm">
+                            <div className="flex items-center gap-2 shrink-0">
+                              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+                              <label htmlFor="topic1-task-select" className="text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">
+                                Choose Challenge:
+                              </label>
+                            </div>
+                            <div className="relative flex-1 min-w-0">
+                              <select
+                                id="topic1-task-select"
+                                value={selectedTopic1TaskId}
+                                onChange={(e) => setSelectedTopic1TaskId(Number(e.target.value))}
+                                className="w-full bg-white hover:bg-slate-50 border border-slate-300 text-slate-900 font-bold text-xs sm:text-sm px-3 py-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer transition-all"
+                              >
+                                {TOPIC_1_TASKS.map((task) => (
+                                  <option key={task.id} value={task.taskNumber}>
+                                    Question {task.taskNumber}: {task.title}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setActiveChallengeArenaTopic({ topicId: 1, initialTaskId: selectedTopic1TaskId });
+                              }}
+                              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-bold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0"
+                            >
+                              <span>Solve Challenge #{selectedTopic1TaskId}</span>
+                              <ArrowRight className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -665,7 +690,7 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
                         type="button"
                         onClick={() => {
                           if (item.id === 1) {
-                            setActiveChallengeArenaTopic({ topicId: 1, initialTaskId: 1 });
+                            setActiveChallengeArenaTopic({ topicId: 1, initialTaskId: selectedTopic1TaskId });
                           } else if (onSolveChallenge) {
                             onSolveChallenge(item.id, item.title);
                           } else {
@@ -679,56 +704,6 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
                       </button>
                     </div>
                   </div>
-
-                  {/* Expandable Sub-Tasks for Topic 1: 10 Challenges */}
-                  {item.id === 1 && topic1Expanded && (
-                    <div className="mt-4 pt-3.5 border-t border-slate-100 space-y-2">
-                      <div className="text-[11px] font-black text-slate-400 uppercase tracking-wider text-left mb-1.5">
-                        Topic 1 Practice Challenges (10 Tasks):
-                      </div>
-                      <div className="grid grid-cols-1 gap-2">
-                        {TOPIC_1_TASKS.map((subTask) => (
-                          <div
-                            key={subTask.id}
-                            className="bg-slate-50/80 hover:bg-blue-50/50 border border-slate-200/60 rounded-xl p-2.5 sm:p-3 flex items-center justify-between gap-3 transition-colors text-left"
-                          >
-                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                              <span className="w-6 h-6 rounded-lg bg-white text-slate-700 border border-slate-200 text-xs font-bold flex items-center justify-center shrink-0">
-                                {subTask.taskNumber}
-                              </span>
-                              <div className="min-w-0 flex-1">
-                                <div className="text-xs font-bold text-slate-800 truncate">
-                                  {subTask.title}
-                                </div>
-                                <div className="text-[11px] text-slate-500 truncate">
-                                  {subTask.description}
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-2 shrink-0">
-                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/40">
-                                +{subTask.maxScore} XP
-                              </span>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setActiveChallengeArenaTopic({
-                                    topicId: 1,
-                                    initialTaskId: subTask.taskNumber
-                                  })
-                                }
-                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#1a73e8] hover:bg-blue-700 text-white font-bold text-[11px] shadow-sm transition-all cursor-pointer whitespace-nowrap active:scale-95"
-                              >
-                                <span>Solve</span>
-                                <ArrowRight className="w-3 h-3" />
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               );
             })
