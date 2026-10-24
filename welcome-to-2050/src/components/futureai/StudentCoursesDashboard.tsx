@@ -37,6 +37,7 @@ export interface StudentCoursesDashboardProps {
   userName: string;
   isNewStudentMode?: boolean;
   onOpenDataAnalystCourse: () => void;
+  onOpenDataScienceCourse?: () => void;
   onOpenLockedCourse: (courseTitle: string) => void;
   onOpenPythonDirect?: () => void;
   onOpenMockInterview?: () => void;
@@ -75,6 +76,7 @@ interface FlagshipCourseItem {
 export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = ({
   userName = 'Subodh Kumar',
   onOpenDataAnalystCourse,
+  onOpenDataScienceCourse,
   onOpenLockedCourse,
   onOpenPythonDirect,
   onOpenMockInterview,
@@ -128,6 +130,9 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
     playClick();
     if (c.id === 'data-analyst-genai') {
       onOpenDataAnalystCourse();
+    } else if (c.id === 'data-science-agentic-ai') {
+      if (onOpenDataScienceCourse) onOpenDataScienceCourse();
+      else onOpenLockedCourse(c.fullName || c.title || 'Data Science & Agentic AI');
     } else {
       onOpenLockedCourse(c.fullName || c.title || 'Course');
     }
@@ -143,6 +148,9 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
       else if (type === 'games') onOpenGameArena ? onOpenGameArena() : onOpenDataAnalystCourse();
       else if (type === 'interview') onOpenMockInterview ? onOpenMockInterview() : onOpenDataAnalystCourse();
       else if (type === 'project') onOpenDataAnalystCourse();
+    } else if (c.id === 'data-science-agentic-ai') {
+      if (onOpenDataScienceCourse) onOpenDataScienceCourse();
+      else onOpenLockedCourse(c.fullName || c.title || 'Data Science & Agentic AI');
     } else {
       onOpenLockedCourse(c.fullName || c.title);
     }
