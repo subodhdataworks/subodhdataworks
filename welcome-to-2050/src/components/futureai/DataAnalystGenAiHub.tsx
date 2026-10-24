@@ -721,7 +721,7 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
         isOpen={isSuccessPlanOpen}
         onClose={() => setIsSuccessPlanOpen(false)}
         targetTopicTitle={selectedTargetTitle}
-        courseTitle="Data Scientist & Agentic AI"
+        courseTitle="Data Analyst with GenAI"
       />
 
     </div>

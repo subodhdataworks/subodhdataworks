@@ -49,6 +49,7 @@ export interface StudentCoursesDashboardProps {
   onOpenMockInterview?: () => void;
   onOpenGameArena?: () => void;
   onOpenAdvisor?: () => void;
+  onOpenLogin?: () => void;
 }
 
 export type CourseFilterType = 'all' | 'in-progress' | 'not-started' | 'completed';
@@ -93,6 +94,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
   onOpenMockInterview,
   onOpenGameArena,
   onOpenAdvisor,
+  onOpenLogin,
 }) => {
   const { playClick } = useThemeAccent();
   const [filter, setFilter] = useState<CourseFilterType>('all');
@@ -420,127 +422,21 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             SLIM PROMOTIONAL OFFER BANNER STRIP (DIRECTLY UNDER 4 COURSES)
             Matches media_1792140864467_fdb63c4c.png 1:1
             ========================================================================= */}
-        <div className="scd-slim-offer-strip" onClick={() => handleCourseClick(visibleCourses[0])}>
-          {/* TOP TIER: Glossy Cyan/White/Purple Gradient Card */}
-          <div className="scd-sos-top-card">
-            {/* Left: 3D Luxury Purple Gift Box with Golden Bow and Sparks */}
-            <div className="scd-sos-gift-col">
-              <img
-                src="/images/luxury_purple_gift_box.png"
-                alt="3D Luxury Gift Box"
-                className="scd-sos-gift-img"
-              />
-            </div>
-
-            {/* Left-Center: Limited-Time Offer Pill + Headline + Subtitle */}
-            <div className="scd-sos-title-col">
-              <div className="scd-sos-limited-pill">
-                <span className="scd-sos-pill-clock">⏰</span>
-                <span className="scd-sos-pill-text">LIMITED-TIME OFFER</span>
-              </div>
-              <div className="scd-sos-main-heading">
-                <span className="scd-sos-headline-lead">Get All 4 Courses for Just</span>{' '}
-                <span className="scd-sos-price-989">₹987</span>
-              </div>
-              <p className="scd-sos-subtitle">
-                Access Data Analyst, Data Science, ML Engineering, AI Engineering &amp; All 21 Courses
-              </p>
-            </div>
-
-            {/* Center Divider */}
-            <div className="scd-sos-vdivider" />
-
-            {/* Center-Right: Pay After Job Offer */}
-            <div className="scd-sos-pap-col">
-              <div className="scd-sos-pap-header">
-                <span className="scd-sos-briefcase-icon">💼</span>
-                <div className="scd-sos-pap-title">
-                  <span>Pay After</span>
-                  <span>Job Offer</span>
-                </div>
-              </div>
-              <div className="scd-sos-pap-price">700+</div>
-              <div className="scd-sos-pap-sub">Hiring Partners</div>
-            </div>
-
-            {/* Right: Golden Unlock Capsule Button */}
-            <div className="scd-sos-btn-col">
-              <button
-                type="button"
-                className="scd-sos-unlock-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  playClick();
-                  handleCourseClick(visibleCourses[0]);
-                }}
-              >
-                <Lock className="w-5 h-5 fill-slate-900 stroke-slate-900" />
-                <span>UNLOCK ALL COURSES ₹987</span>
-                <ArrowRight className="w-5 h-5 stroke-[3]" />
-              </button>
-            </div>
-          </div>
-
-          {/* BOTTOM TIER: Docked Dark Navy Blue Strip with 5 Feature Icons */}
-          <div className="scd-sos-bottom-strip">
-            <div className="scd-sos-feature-item">
-              <div className="scd-sos-ficon-box scd-ficon-blue">
-                <GraduationCap className="w-5 h-5" />
-              </div>
-              <div className="scd-sos-ftext">
-                <strong>Full Access</strong>
-                <span>to All Courses</span>
-              </div>
-            </div>
-
-            <div className="scd-sos-strip-sep" />
-
-            <div className="scd-sos-feature-item">
-              <div className="scd-sos-ficon-box scd-ficon-pink">
-                <FileText className="w-5 h-5" />
-              </div>
-              <div className="scd-sos-ftext">
-                <strong>Real-World</strong>
-                <span>Projects</span>
-              </div>
-            </div>
-
-            <div className="scd-sos-strip-sep" />
-
-            <div className="scd-sos-feature-item">
-              <div className="scd-sos-ficon-box scd-ficon-green">
-                <Gamepad2 className="w-5 h-5" />
-              </div>
-              <div className="scd-sos-ftext">
-                <strong>Coding Practice</strong>
-                <span>&amp; Practice</span>
-              </div>
-            </div>
-
-            <div className="scd-sos-strip-sep" />
-
-            <div className="scd-sos-feature-item">
-              <div className="scd-sos-ficon-box scd-ficon-yellow">
-                <Users className="w-5 h-5" />
-              </div>
-              <div className="scd-sos-ftext">
-                <strong>AI Mock</strong>
-                <span>Interviews</span>
-              </div>
-            </div>
-
-            <div className="scd-sos-strip-sep" />
-
-            <div className="scd-sos-feature-item">
-              <div className="scd-sos-ficon-box scd-ficon-cyan">
-                <TrendingUp className="w-5 h-5" />
-              </div>
-              <div className="scd-sos-ftext">
-                <strong>Placement</strong>
-                <span>Support</span>
-              </div>
-            </div>
-          </div>
+        <div
+          className="w-full relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl border border-blue-500/40 hover:border-cyan-400 transition-all duration-300 cursor-pointer group my-6 bg-[#001438]"
+          onClick={() => {
+            playClick();
+            if (onOpenLogin) onOpenLogin();
+            else onOpenDataAnalystCourse();
+          }}
+          title="India's Most Affordable AI Learning Platform - Create Free Account"
+        >
+          <img
+            src="/images/indias_most_affordable_ai_platform_banner.png"
+            alt="India's Most Affordable AI Learning Platform"
+            className="w-full h-auto object-cover block group-hover:scale-[1.008] transition-transform duration-300"
+          />
+          <div className="absolute inset-0 rounded-2xl md:rounded-3xl pointer-events-none ring-1 ring-inset ring-white/10 group-hover:ring-cyan-400/40 transition-all duration-300" />
         </div>
       </section>
 
