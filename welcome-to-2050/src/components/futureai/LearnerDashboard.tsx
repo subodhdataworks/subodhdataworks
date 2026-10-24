@@ -74,6 +74,7 @@ import './navigation/GlobalNavigation.css';
 import { AffiliateEarningsHub } from './AffiliateEarningsHub';
 import { GameArenaHub } from './GameArenaHub';
 import { LearnerHomeHub } from './LearnerHomeHub';
+import { DataAnalystGenAiHub } from './DataAnalystGenAiHub';
 import { StudentCoursesDashboard } from './StudentCoursesDashboard';
 import { PythonIntroGameWorkspace } from './PythonIntroGameWorkspace';
 import { LearningModulesProgressModal } from './LearningModulesProgressModal';
@@ -1986,99 +1987,42 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               />
             </div>
 
-            {/* Desktop Experience (>= 768px) */}
+            {/* Desktop Experience (>= 768px) - 1:1 Reference Match Hub */}
             <div className="hidden md:block">
-              <LearnerHomeHub
-                userName={userName}
-                isNewStudentMode={isNewStudentMode}
-                onBackToCourses={() => {
+              <DataAnalystGenAiHub
+                userName={currentUserName || userName}
+                onBack={() => {
                   playClick();
                   setSelectedModuleView(null);
                   if (typeof window !== 'undefined') window.location.hash = '#dashboard';
                 }}
-                onOpenPython={() => {
+                onStartTopic={(topicId, title) => {
                   playClick();
-                  playCinema();
-                  setSelectedModuleView('python');
-                  if (typeof window !== 'undefined') window.location.hash = '#python';
-                }}
-                onOpenLockedModule={(modTitle) => {
-                  playClick();
-                  if (modTitle === '__sql__') {
+                  if (topicId.startsWith('t-10') || topicId.startsWith('t-11') || topicId.startsWith('t-12')) {
+                    playCinema();
+                    setSelectedModuleView('python');
+                    if (typeof window !== 'undefined') window.location.hash = '#python';
+                  } else if (topicId.startsWith('t-7') || topicId.startsWith('t-8') || topicId.startsWith('t-9')) {
                     playCinema();
                     setSelectedModuleView('sql');
                     if (typeof window !== 'undefined') window.location.hash = '#sql';
-                  } else if (modTitle === '__excel__') {
+                  } else if (topicId.startsWith('t-4') || topicId.startsWith('t-5') || topicId.startsWith('t-6')) {
                     playCinema();
                     setSelectedModuleView('excel');
                     if (typeof window !== 'undefined') window.location.hash = '#excel';
-                  } else if (modTitle === '__powerbi__') {
+                  } else if (topicId.startsWith('t-13') || topicId.startsWith('t-14') || topicId.startsWith('t-15')) {
                     playCinema();
                     setSelectedModuleView('powerbi');
                     if (typeof window !== 'undefined') window.location.hash = '#powerbi';
-                  } else if (modTitle === '__stats__') {
-                    playCinema();
-                    setSelectedModuleView('stats');
-                    if (typeof window !== 'undefined') window.location.hash = '#stats';
-                  } else if (modTitle === '__genai__') {
+                  } else if (topicId.startsWith('t-16') || topicId.startsWith('t-17') || topicId.startsWith('t-18')) {
                     playCinema();
                     setSelectedModuleView('genai');
                     if (typeof window !== 'undefined') window.location.hash = '#genai';
                   } else {
-                    setSelectedLockedModule(modTitle);
-                    setUnlockModalOpen(true);
-                  }
-                }}
-                onOpenMockInterview={() => {
-                  playClick();
-                  setSelectedModuleView('python');
-                  if (typeof window !== 'undefined') window.location.hash = '#mockinterview';
-                }}
-                onOpenAdvisor={onOpenAdvisor}
-                onOpenVideo={(modId) => {
-                  playClick();
-                  if (modId === 'python' || !modId) {
                     setSelectedModuleView('python');
                     setActiveTopicWs(1);
                     setTargetStep('learn');
                     if (typeof window !== 'undefined') window.location.hash = '#learn';
-                  } else {
-                    setSelectedLockedModule(modId.toUpperCase());
-                    setUnlockModalOpen(true);
-                  }
-                }}
-                onOpenGame={(modId) => {
-                  playClick();
-                  if (modId === 'python' || !modId) {
-                    setSelectedModuleView('python_intro_game');
-                    if (typeof window !== 'undefined') window.location.hash = '#coding_game';
-                  } else {
-                    setSelectedLockedModule(modId.toUpperCase());
-                    setUnlockModalOpen(true);
-                  }
-                }}
-                onOpenQuiz={(modId) => {
-                  playClick();
-                  if (modId === 'python' || !modId) {
-                    setSelectedModuleView('python');
-                    setActiveTopicWs(1);
-                    setTargetStep('practice');
-                    if (typeof window !== 'undefined') window.location.hash = '#practice';
-                  } else {
-                    setSelectedLockedModule(modId.toUpperCase());
-                    setUnlockModalOpen(true);
-                  }
-                }}
-                onOpenProject={(modId) => {
-                  playClick();
-                  if (modId === 'python' || !modId) {
-                    setSelectedModuleView('python');
-                    setActiveTopicWs(1);
-                    setTargetStep('code');
-                    if (typeof window !== 'undefined') window.location.hash = '#code';
-                  } else {
-                    setSelectedLockedModule(modId.toUpperCase());
-                    setUnlockModalOpen(true);
                   }
                 }}
               />

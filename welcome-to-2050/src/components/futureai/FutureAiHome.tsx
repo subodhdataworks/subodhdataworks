@@ -12,6 +12,7 @@ import { FutureFooter } from './FutureFooter';
 import { FutureAuthModal } from './FutureAuthModal';
 import { AdvisorModal } from './AdvisorModal';
 import { CurriculumModal } from './CurriculumModal';
+import { DataAnalystGenAiHub } from './DataAnalystGenAiHub';
 import { CourseDetailPopupModal } from './CourseDetailPopupModal';
 import { VideoCinemaModal } from './VideoCinemaModal';
 import { MobileHomeCoursesGrid } from './mobile/MobileHomeCoursesGrid';
@@ -59,6 +60,24 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
   const [advisorModalOpen, setAdvisorModalOpen] = useState(false);
   const [curriculumModalOpen, setCurriculumModalOpen] = useState(false);
   const [selectedDetailCourseId, setSelectedDetailCourseId] = useState<string | null>(null);
+  const [dataAnalystHubOpen, setDataAnalystHubOpen] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.hash.startsWith('#data-analyst');
+    }
+    return false;
+  });
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const onHash = () => {
+        if (window.location.hash.startsWith('#data-analyst')) {
+          setDataAnalystHubOpen(true);
+        }
+      };
+      window.addEventListener('hashchange', onHash);
+      return () => window.removeEventListener('hashchange', onHash);
+    }
+  }, []);
   const [videoCinemaOpen, setVideoCinemaOpen] = useState(false);
   const [mobileProfileOpen, setMobileProfileOpen] = useState(false);
   const [mobileTab, setMobileTab] = useState<MobileTab>('home');
@@ -164,7 +183,14 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
 
         {/* 2.15 Mobile Courses Grid: 2 Courses at a time, Compact ("Chota Chota") above "You Will Get Job" */}
         <MobileHomeCoursesGrid
-          onStartCourse={(courseId) => setSelectedDetailCourseId(courseId)}
+          onStartCourse={(courseId) => {
+            if (courseId === 'data-analyst-genai') {
+              setDataAnalystHubOpen(true);
+              if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+            } else {
+              setSelectedDetailCourseId(courseId);
+            }
+          }}
           onOpenCurriculum={() => setSelectedDetailCourseId('react-frontend-dev')}
         />
 
