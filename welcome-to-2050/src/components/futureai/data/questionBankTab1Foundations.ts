@@ -408,270 +408,206 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
     ]
   },
   '1.3': {
-  "tabId": 1,
-  "tabName": "Data Analytics Foundations",
-  "moduleId": 1,
-  "moduleName": "Understanding Data and Analytics",
-  "topicKey": "1.3",
-  "id": 3,
-  "topicTitle": "Why Businesses Need Data Analytics",
-  "mode": "Non-coding",
-  "game1Quiz": [
-    {
-      "id": 1,
-      "question": "What is the main purpose of Why Businesses Need Data Analytics?",
-      "options": [
-        {
-          "key": "A",
-          "text": "To replace all human decisions"
-        },
-        {
-          "key": "B",
-          "text": "To make every result correct automatically"
-        },
-        {
-          "key": "C",
-          "text": "To skip understanding the problem"
-        },
-        {
-          "key": "D",
-          "text": "To perform or understand Why Businesses Need Data Analytics"
-        }
-      ],
-      "correct": 3,
-      "explanation": "The primary objective of learning Why Businesses Need Data Analytics is to perform and understand its principles within business analytics.",
-      "hint": "Think about what Why Businesses Need Data Analytics accomplishes in data analytics."
-    },
-    {
-      "id": 2,
-      "question": "Which action best fits a lesson on Why Businesses Need Data Analytics?",
-      "options": [
-        {
-          "key": "A",
-          "text": "Use an unrelated advanced topic"
-        },
-        {
-          "key": "B",
-          "text": "Apply Why Businesses Need Data Analytics to a relevant example"
-        },
-        {
-          "key": "C",
-          "text": "Ignore the task requirements"
-        },
-        {
-          "key": "D",
-          "text": "Assume every result is correct"
-        }
-      ],
-      "correct": 1,
-      "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Why Businesses Need Data Analytics.",
-      "hint": "Best learning practice always involves practical application to relevant examples."
-    },
-    {
-      "id": 3,
-      "question": "What should you do before applying Why Businesses Need Data Analytics?",
-      "options": [
-        {
-          "key": "A",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "B",
-          "text": "Guess without reading"
-        },
-        {
-          "key": "C",
-          "text": "Skip checking the result"
-        },
-        {
-          "key": "D",
-          "text": "Use an unintroduced feature"
-        }
-      ],
-      "correct": 0,
-      "explanation": "Before proceeding with Why Businesses Need Data Analytics, you must clearly understand the task objectives and the data available.",
-      "hint": "Always comprehend requirements and inputs before taking action."
-    },
-    {
-      "id": 4,
-      "question": "Which is a good practice when learning Why Businesses Need Data Analytics?",
-      "options": [
-        {
-          "key": "A",
-          "text": "Ignore errors"
-        },
-        {
-          "key": "B",
-          "text": "Use unrelated concepts"
-        },
-        {
-          "key": "C",
-          "text": "Check whether the result meets the task"
-        },
-        {
-          "key": "D",
-          "text": "Never explain your choice"
-        }
-      ],
-      "correct": 2,
-      "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
-      "hint": "Verify results to ensure accuracy."
-    },
-    {
-      "id": 5,
-      "question": "How can you show understanding of Why Businesses Need Data Analytics?",
-      "options": [
-        {
-          "key": "A",
-          "text": "Memorize an unrelated definition"
-        },
-        {
-          "key": "B",
-          "text": "Skip the example"
-        },
-        {
-          "key": "C",
-          "text": "Use a future lesson's concept"
-        },
-        {
-          "key": "D",
-          "text": "Explain or demonstrate it with a relevant example"
-        }
-      ],
-      "correct": 3,
-      "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Why Businesses Need Data Analytics.",
-      "hint": "Clear explanation and working examples prove mastery."
-    }
-  ],
-  "game2Puzzles": [
-    {
-      "id": 1,
-      "title": "CHALLENGE 1 — ARRANGE STEPS",
-      "prompt": "Arrange the steps for a task about this topic.",
-      "tokens": [
-        "Understand the question",
-        "Identify the lesson concept",
-        "Apply it to an example"
-      ],
-      "shuffled": [
-        "Apply it to an example",
-        "Understand the question",
-        "Identify the lesson concept"
-      ],
-      "expected": [
-        "Understand the question",
-        "Identify the lesson concept",
-        "Apply it to an example"
-      ],
-      "hint": "Understand -> identify -> apply."
-    },
-    {
-      "id": 2,
-      "title": "CHALLENGE 2 — SELECT BEST CARD",
-      "prompt": "Pick the best card for this topic.",
-      "tokens": [
-        "A relevant example of Why Businesses Need Data Analytics",
-        "An unrelated advanced topic",
-        "An unchecked guess"
-      ],
-      "shuffled": [
-        "An unchecked guess",
-        "A relevant example of Why Businesses Need Data Analytics",
-        "An unrelated advanced topic"
-      ],
-      "expected": [
-        "A relevant example of Why Businesses Need Data Analytics"
-      ],
-      "hint": "Choose the lesson-related example."
-    },
-    {
-      "id": 3,
-      "title": "CHALLENGE 3 — LEARNING SEQUENCE",
-      "prompt": "Complete the learning sequence.",
-      "tokens": [
-        "Read the scenario",
-        "Choose the taught concept",
-        "Explain why it fits"
-      ],
-      "shuffled": [
-        "Explain why it fits",
-        "Read the scenario",
-        "Choose the taught concept"
-      ],
-      "expected": [
-        "Read the scenario",
-        "Choose the taught concept",
-        "Explain why it fits"
-      ],
-      "hint": "Read -> choose -> explain."
-    }
-  ],
-  "game3MatchPairs": [
-    {
-      "id": 1,
-      "snippet": "Key idea",
-      "meaning": "Central concept of Why Businesses Need Data Analytics",
-      "cls": "c1"
-    },
-    {
-      "id": 2,
-      "snippet": "Purpose",
-      "meaning": "Why the concept/operation is useful",
-      "cls": "c2"
-    },
-    {
-      "id": 3,
-      "snippet": "Example",
-      "meaning": "A lesson-related real-world example",
-      "cls": "c3"
-    },
-    {
-      "id": 4,
-      "snippet": "Input/source",
-      "meaning": "Information or item the task starts with",
-      "cls": "c4"
-    },
-    {
-      "id": 5,
-      "snippet": "Check",
-      "meaning": "Confirm the answer fits the business task",
-      "cls": "c5"
-    }
-  ],
-  "game4Missions": [
-    {
-      "id": 1,
-      "title": "MISSION 1 — NETFLIX CONTENT INVESTMENT DECISION",
-      "scenario": "Netflix leadership must decide whether to invest $40 Million in producing Season 2 of an original thriller drama.",
-      "prompt": "How does Netflix utilize viewer completion rates, episode drop-off minutes, and social sentiment data instead of executive gut feelings to fund successful shows?",
-      "expectedResponse": "Evaluate user completion velocity and rewatch metrics to calculate projected subscriber retention value."
-    },
-    {
-      "id": 2,
-      "title": "MISSION 2 — ZARA FAST-FASHION INVENTORY RESTOCK",
-      "scenario": "Zara physical stores in Mumbai notice an unexpected surge in demand for linen jackets.",
-      "prompt": "Explain why real-time store sales analytics enables Zara to replenish fast-moving inventory within 48 hours instead of overproducing unsold stock.",
-      "expectedResponse": "Real-time sales velocity feeds direct production orders, eliminating unsold stock markdowns."
-    }
-  ],
-  "mockInterview": [
-    {
-      "id": 1,
-      "question": "How would you define Why Businesses Need Data Analytics?",
-      "sampleAnswer": "In simple terms, Why Businesses Need Data Analytics is an essential concept in data analytics used to understand and interpret business information accurately."
-    },
-    {
-      "id": 2,
-      "question": "Why is Why Businesses Need Data Analytics useful in real-world business analytics?",
-      "sampleAnswer": "It provides structured clarity, reduces errors in data interpretation, and directly enables data-driven decision making."
-    },
-    {
-      "id": 3,
-      "question": "Can you give an example of Why Businesses Need Data Analytics?",
-      "sampleAnswer": "A practical example is when an analytics team uses Why Businesses Need Data Analytics to transform raw numbers into meaningful business indicators that guide operational strategy."
-    }
-  ]
-},
+    tabId: 1,
+    tabName: 'Data Analytics Foundations',
+    moduleId: 1,
+    moduleName: 'Understanding Data and Analytics',
+    topicKey: '1.3',
+    id: 3,
+    topicTitle: 'Why Businesses Need Data Analytics',
+    mode: 'Non-coding',
+    game1Quiz: [
+      {
+        id: 1,
+        question: 'Why do businesses need data analytics?',
+        options: [
+          { key: 'A', text: 'To make reports look colourful only' },
+          { key: 'B', text: 'To make better-informed decisions' },
+          { key: 'C', text: 'To avoid customers' },
+          { key: 'D', text: 'To delete sales records' }
+        ],
+        correct: 1,
+        explanation: 'Businesses need data analytics to understand performance, identify trends, solve operational problems, and make better-informed decisions.',
+        hint: 'Think about making evidence-based decisions rather than relying on guesswork.'
+      },
+      {
+        id: 2,
+        question: "A shop's sales are falling. How can data analytics help?",
+        options: [
+          { key: 'A', text: 'Close the shop immediately' },
+          { key: 'B', text: 'Ignore customer behaviour' },
+          { key: 'C', text: 'Delete the sales history' },
+          { key: 'D', text: 'Find possible reasons for the sales drop' }
+        ],
+        correct: 3,
+        explanation: 'By examining sales history, product-level demand, and customer feedback, analytics reveals the root causes behind a sales decline.',
+        hint: 'Analytics helps uncover the root causes behind numbers going down.'
+      },
+      {
+        id: 3,
+        question: 'How can a business use customer feedback data?',
+        options: [
+          { key: 'A', text: 'Understand customer needs' },
+          { key: 'B', text: 'Guarantee every customer will return' },
+          { key: 'C', text: 'Remove all competition' },
+          { key: 'D', text: 'Predict every future event perfectly' }
+        ],
+        correct: 0,
+        explanation: 'Analyzing feedback ratings and reviews helps businesses understand customer expectations and improve product quality.',
+        hint: 'Reviews and ratings directly reveal what customers want and what needs fixing.'
+      },
+      {
+        id: 4,
+        question: 'A store wants to reduce wasted stock. Which data could help?',
+        options: [
+          { key: 'A', text: "The store's wall colour only" },
+          { key: 'B', text: "Employees' favourite songs" },
+          { key: 'C', text: 'Sales and inventory records' },
+          { key: 'D', text: 'The shop logo' }
+        ],
+        correct: 2,
+        explanation: 'Historical sales data combined with inventory tracking shows how quickly items sell, preventing over-ordering and perishable waste.',
+        hint: 'Tracking what items sell quickly and what sits on shelves helps plan orders.'
+      },
+      {
+        id: 5,
+        question: 'What is an important benefit of data analytics?',
+        options: [
+          { key: 'A', text: 'It guarantees success every time' },
+          { key: 'B', text: 'It supports evidence-based decisions' },
+          { key: 'C', text: 'It removes every risk' },
+          { key: 'D', text: 'It makes all decisions automatic' }
+        ],
+        correct: 1,
+        explanation: 'Data analytics provides concrete evidence and insights that guide leaders to make sound, realistic business decisions.',
+        hint: 'Decisions backed by data facts are evidence-based rather than guesses.'
+      }
+    ],
+    game2Puzzles: [
+      {
+        id: 1,
+        title: 'Puzzle 1: Falling Sales',
+        prompt: 'A shop sold 100 bags last week but only 60 this week. What should the owner do first?',
+        tokens: [
+          'Immediately shut down the shop',
+          'Investigate sales data and possible reasons',
+          'Ignore the change'
+        ],
+        shuffled: [
+          'Immediately shut down the shop',
+          'Investigate sales data and possible reasons',
+          'Ignore the change'
+        ],
+        expected: [
+          'Investigate sales data and possible reasons'
+        ],
+        hint: 'Investigate the numbers and find out why sales dropped before taking any drastic action.'
+      },
+      {
+        id: 2,
+        title: 'Puzzle 2: Too Much Stock',
+        prompt: 'A shop regularly throws away unsold food. Which data is most useful?',
+        tokens: [
+          "The shop's logo size",
+          'Sales and stock records',
+          'The colour of the shelves'
+        ],
+        shuffled: [
+          "The shop's logo size",
+          'Sales and stock records',
+          'The colour of the shelves'
+        ],
+        expected: [
+          'Sales and stock records'
+        ],
+        hint: 'Reviewing daily sales versus stock levels shows exactly how much food to prepare.'
+      },
+      {
+        id: 3,
+        title: 'Puzzle 3: Unhappy Customers',
+        prompt: 'Customer ratings have dropped. What could the business analyze?',
+        tokens: [
+          'Customer reviews and feedback',
+          "The owner's favourite movie",
+          'The office wall colour'
+        ],
+        shuffled: [
+          'Customer reviews and feedback',
+          "The owner's favourite movie",
+          'The office wall colour'
+        ],
+        expected: [
+          'Customer reviews and feedback'
+        ],
+        hint: 'Reading customer reviews reveals what went wrong and what needs improvement.'
+      }
+    ],
+    game3MatchPairs: [
+      {
+        id: 1,
+        snippet: 'Sales are falling',
+        meaning: 'Investigate sales trends',
+        cls: 'c1'
+      },
+      {
+        id: 2,
+        snippet: 'Customers complain about delivery delays',
+        meaning: 'Analyze delivery times and feedback',
+        cls: 'c2'
+      },
+      {
+        id: 3,
+        snippet: 'Too many products remain unsold',
+        meaning: 'Improve stock planning',
+        cls: 'c3'
+      },
+      {
+        id: 4,
+        snippet: 'The business wants to understand popular products',
+        meaning: 'Compare product sales',
+        cls: 'c4'
+      },
+      {
+        id: 5,
+        snippet: 'Managers must choose between two promotions',
+        meaning: 'Compare results and relevant costs',
+        cls: 'c5'
+      }
+    ],
+    game4Missions: [
+      {
+        id: 1,
+        title: '🛍️ Mission 1: Save the Shop',
+        scenario: "A shop's sales have fallen by 30% this month. The owner wants to understand why.",
+        prompt: 'Your task: Suggest two types of data the owner should check and explain how they could help.',
+        expectedResponse: '1. Product-level sales data: To see which specific items had lower sales.\n2. Customer footfall or receipt data: To see if fewer customers visited or if customers spent less per visit.'
+      },
+      {
+        id: 2,
+        title: '⭐ Mission 2: Make Customers Happier',
+        scenario: 'An online store receives many complaints about late deliveries.',
+        prompt: 'Your task: Suggest what data the store should collect and one decision it could make using the findings.',
+        expectedResponse: '1. Delivery time data (dispatch time, courier transit duration, pin code performance).\n2. Decision: Partner with a faster courier service or optimize warehouse dispatch for affected areas.'
+      }
+    ],
+    mockInterview: [
+      {
+        id: 1,
+        question: 'Why do businesses need data analytics?',
+        sampleAnswer: 'Businesses use data analytics to understand performance, identify trends, solve problems, and make better-informed decisions.'
+      },
+      {
+        id: 2,
+        question: 'How can data analytics help increase customer satisfaction?',
+        sampleAnswer: 'A business can analyze customer feedback and complaints to identify problems and improve its products or services.'
+      },
+      {
+        id: 3,
+        question: 'Can data analytics guarantee that a business will succeed?',
+        sampleAnswer: 'No. It supports better decisions, but success also depends on execution, competition, market conditions, and other factors.'
+      }
+    ]
+  },
   '1.4': {
   "tabId": 1,
   "tabName": "Data Analytics Foundations",

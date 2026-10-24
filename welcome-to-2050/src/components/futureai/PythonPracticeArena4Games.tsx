@@ -892,6 +892,82 @@ print(result)`
         };
       }
 
+      // ─── Topic 1.3 Quizzes ───
+      if (qText.includes('Why do businesses need data analytics?')) {
+        return {
+          hintEn: 'Businesses use analytics to guide choices with evidence rather than pure guesswork.',
+          hintHi: 'बिजनेस तुक्के लगाने के बजाय ठोस तथ्यों के आधार पर सही निर्णय (better-informed decisions) लेने के लिए डेटा का उपयोग करते हैं।',
+          exampleCode: '// Business Decision Making:\nGuesswork:  "Let us open 10 new branches randomly."\nAnalytics:  "Customer order data shows 80% demand in South Zone."\nDecision:   Open branches in South Zone first!',
+          exampleNote: 'Data analytics empowers leaders with actionable business intelligence.',
+          explainTitleEn: 'Why Businesses Need Data Analytics',
+          explainTitleHi: 'बिजनेस को डेटा एनालिटिक्स की जरूरत क्यों है?',
+          explainTextEn: 'Modern enterprises depend on data analytics to uncover customer behaviors, boost operational efficiency, minimize inventory waste, and make evidence-based decisions.',
+          explainTextHi: 'आज के दौर में कंपनियां ग्राहकों की पसंद समझने, नुकसान कम करने और मुनाफा बढ़ाने के लिए डेटा एनालिटिक्स का इस्तेमाल करती हैं।',
+          realWorldEn: 'Amazon attributes 35% of its overall revenue to algorithmic data-driven recommendations.',
+          realWorldHi: 'Amazon की 35% बिक्री डेटा एनालिटिक्स और प्रोडक्ट रिकमेंडेशन से होती है।',
+        };
+      }
+
+      if (qText.includes("sales are falling") || qText.includes("sales drop")) {
+        return {
+          hintEn: 'When sales decline, data analytics investigates transaction history to pinpoint the exact reasons.',
+          hintHi: 'जब बिक्री घटती है, तो डेटा एनालिटिक्स पुराने रिकॉर्ड्स की जांच करके गिरावट के मुख्य कारण (reasons) ढूंढता है।',
+          exampleCode: '// Sales Drop Diagnostic:\nProduct A Sales: Steady (-1%)\nProduct B Sales: Crashed by -55% after price hike!\n-> Immediate insight: Customers rejected Product B price rise.',
+          exampleNote: 'Diagnostic analytics answers the question: "Why did it happen?"',
+          explainTitleEn: 'Investigating Sales Declines',
+          explainTitleHi: 'बिक्री में गिरावट की जांच',
+          explainTextEn: 'Instead of panicking or closing down, a business uses data analytics to break down sales numbers by category, pricing, and footfall to diagnose the root cause.',
+          explainTextHi: 'दुकान बंद करने या नजरअंदाज करने के बजाय डेटा का विश्लेषण करने से पता चलता है कि किस सामान या वजह से बिक्री घटी।',
+          realWorldEn: 'Retail chains monitor daily store sales alerts to instantly investigate sudden revenue drops.',
+          realWorldHi: 'मॉल और सुपरमार्केट रोजाना बिक्री डेटा देखते हैं ताकि किसी भी गिरावट को तुरंत ठीक किया जा सके।',
+        };
+      }
+
+      if (qText.includes('customer feedback data') || qText.includes('customer feedback')) {
+        return {
+          hintEn: 'Feedback ratings and review text highlight what customers love and what needs improvement.',
+          hintHi: 'कस्टमर फीडबैक और रेटिंग्स से समझ आता है कि ग्राहक क्या चाहते हैं और उन्हें क्या परेशानी हो रही है।',
+          exampleCode: '// Customer Feedback Sentiment:\n⭐ 1-star: "Delivery took 7 days instead of 2."\n⭐ 5-star: "Product quality is awesome!"\n-> Business priority: Improve delivery logistics speed.',
+          exampleNote: 'Feedback analytics directly connects user opinions with product improvements.',
+          explainTitleEn: 'Leveraging Customer Feedback Data',
+          explainTitleHi: 'कस्टमर फीडबैक का सही उपयोग',
+          explainTextEn: 'Businesses analyze reviews, NPS scores, and survey responses to understand true customer requirements and systematically resolve service issues.',
+          explainTextHi: 'ग्राहक फीडबैक का विश्लेषण करके कंपनी अपनी सेवाओं में सुधार करती है ताकि ग्राहक संतुष्ट रहें।',
+          realWorldEn: 'Zomato and Swiggy use customer review NLP to flag restaurant hygiene and delivery speed issues.',
+          realWorldHi: 'Zomato और Swiggy कस्टमर रेटिंग्स देखकर खराब डिलीवरी और खाने की शिकायत दूर करते हैं।',
+        };
+      }
+
+      if (qText.includes('reduce wasted stock') || qText.includes('wasted stock')) {
+        return {
+          hintEn: 'To prevent perishable or excess stock from expiring, compare past sales velocities with inventory levels.',
+          hintHi: 'बेकार स्टॉक से बचने के लिए बिक्री और इन्वेंट्री (Sales & Inventory records) के आंकड़े देखे जाते हैं।',
+          exampleCode: '// Stock Waste Reduction:\nMilk stock ordered:  100 packets/day\nAverage daily sales:  60 packets/day\nWaste:                40 packets expired!\n-> New order rule:    Order 65 packets/day max.',
+          exampleNote: 'Inventory analytics balances holding costs and customer demand.',
+          explainTitleEn: 'Reducing Stock Waste with Analytics',
+          explainTitleHi: 'डेटा से स्टॉक की बर्बादी रोकना',
+          explainTextEn: 'Tracking sales velocity alongside warehouse stock data ensures businesses reorder just the right amount of goods, drastically cutting spoilage and holding costs.',
+          explainTextHi: 'बिक्री और स्टॉक रिकॉर्ड्स को देखने से सही मात्रा में सामान मंगाया जाता है और बर्बादी रुकती है।',
+          realWorldEn: 'Walmart uses predictive shelf-stocking algorithms to minimize perishable produce spoilage.',
+          realWorldHi: 'Walmart फल और सब्जियों की बर्बादी रोकने के लिए सटीक इन्वेंट्री डेटा का इस्तेमाल करता है।',
+        };
+      }
+
+      if (qText.includes('important benefit of data analytics') || qText.includes('benefit of data analytics')) {
+        return {
+          hintEn: 'Analytics does not guarantee instant magic or remove every risk, but it grounds decisions in solid evidence.',
+          hintHi: 'डेटा एनालिटिक्स हर जोखिम नहीं हटा सकता, लेकिन यह सबूतों पर आधारित सही निर्णय (evidence-based decisions) लेने में मदद करता है।',
+          exampleCode: '// Evidence-Based Decision Framework:\nObservation: 65% of app visits occur between 8 PM - 10 PM.\nAction:      Schedule flash sales at 8:30 PM with push notification.\nResult:      +35% conversion backed by user traffic evidence.',
+          exampleNote: 'Evidence-based strategies consistently outperform subjective opinions.',
+          explainTitleEn: 'Core Benefit: Evidence-Based Decisions',
+          explainTitleHi: 'डेटा एनालिटिक्स का सबसे बड़ा फायदा',
+          explainTextEn: 'The primary benefit of data analytics is transforming raw operations data into clear evidence, eliminating guesswork and giving decision-makers confidence.',
+          explainTextHi: 'डेटा एनालिटिक्स का मुख्य फायदा यह है कि निर्णय अंदाजे के बजाय ठोस आंकड़ों और सबूतों पर आधारित होते हैं।',
+          realWorldEn: 'Fortune 500 CEOs rely on predictive analytics dashboards for multi-billion dollar capital allocation.',
+          realWorldHi: 'बड़ी कंपनियां नए प्रोजेक्ट्स में पैसा लगाने से पहले डेटा एनालिटिक्स रिपोर्ट की जांच करती हैं।',
+        };
+      }
+
       // Universal Question Match for any other question
       return {
         hintEn: currQ?.hint || 'Review the core concept being asked in this question.',
@@ -999,6 +1075,52 @@ print(result)`
           explainTextHi: 'रिकॉर्ड किए गए हाजिरी डेटा की जांच करके यह समझना कि किस दिन सबसे ज्यादा छात्र अनुपस्थित रहते हैं, डेटा एनालिटिक्स कहलाता है।',
           realWorldEn: 'School districts allocate counseling and meal resources based on attendance trend dashboards.',
           realWorldHi: 'स्कूल प्रशासन अटेंडेंस डेटा देखकर तय करता है कि किस दिन छात्रों के लिए स्पेशल एक्टिविटी रखी जाए।',
+        };
+      }
+
+      // ─── Topic 1.3 Puzzles ───
+      if (puzzle?.prompt?.includes('100 bags last week') || pTitle.includes('Falling Sales')) {
+        return {
+          hintEn: 'When sales drop from 100 to 60, first investigate the data to identify why the decrease happened.',
+          hintHi: 'जब बैग्स की बिक्री 100 से घटकर 60 रह जाए, तो सबसे पहले सेल्स डेटा की जांच करें।',
+          exampleCode: '// Falling Sales Diagnosis:\nLast Week: 100 bags sold\nThis Week:  60 bags sold (-40% drop!)\nAction:    Investigate sales data, price, and competitor discounts.',
+          exampleNote: 'Always analyze the numbers before jumping to conclusions or shutting operations.',
+          explainTitleEn: 'Puzzle 1: Falling Sales Investigation',
+          explainTitleHi: 'पहेली 1: गिरती बिक्री की पड़ताल',
+          explainTextEn: 'The most rational first response to declining sales is to inspect sales records, pricing changes, and customer footfall to uncover the underlying cause.',
+          explainTextHi: 'अचानक बिक्री घटने पर दुकान बंद करने या अनदेखा करने के बजाय बिक्री डेटा की जांच करना सबसे समझदारी भरा कदम है।',
+          realWorldEn: 'Retail managers use daily sales anomaly detection to catch underperforming categories immediately.',
+          realWorldHi: 'दुकानदार पिछले हफ्ते और इस हफ्ते की बिक्री देखकर पता लगाते हैं कि ग्राहक क्यों कम आए।',
+        };
+      }
+
+      if (puzzle?.prompt?.includes('unsold food') || pTitle.includes('Too Much Stock')) {
+        return {
+          hintEn: 'To stop throwing away unsold food, examine daily sales records and inventory logs.',
+          hintHi: 'बचे हुए खाने की बर्बादी रोकने के लिए रोजाना की बिक्री और स्टॉक रिकॉर्ड्स (Sales & stock records) देखना जरूरी है।',
+          exampleCode: '// Daily Food Stock Optimization:\nUnsold Food Wasted: 25 kg/day\nSales Data Insight: Monday-Wednesday dinner traffic is 40% lower.\nAdjustment:         Prep 40% less food on weekdays.',
+          exampleNote: 'Sales and inventory records provide the exact demand quantities needed.',
+          explainTitleEn: 'Puzzle 2: Reducing Food Waste',
+          explainTitleHi: 'पहेली 2: स्टॉक और खाने की बर्बादी रोकना',
+          explainTextEn: 'Unsold food waste occurs due to a mismatch between prepared inventory and customer demand. Analyzing sales and stock records aligns production with actual consumption.',
+          explainTextHi: 'बिक्री और स्टॉक के रिकॉर्ड की जांच करके यह तय किया जाता है कि रोजाना कितना खाना बनाना चाहिए जिससे बर्बादी न हो।',
+          realWorldEn: 'Restaurants and bakeries cut food waste by up to 30% using daily inventory tracking software.',
+          realWorldHi: 'रेस्टोरेंट और बेकरी रोजाना का स्टॉक डेटा देखकर ही नया माल तैयार करते हैं।',
+        };
+      }
+
+      if (puzzle?.prompt?.includes('ratings have dropped') || pTitle.includes('Unhappy Customers')) {
+        return {
+          hintEn: 'When ratings fall, check customer reviews and feedback comments to see specific complaints.',
+          hintHi: 'जब कस्टमर रेटिंग गिरे, तो ग्राहकों के रिव्यू और फीडबैक (Customer reviews and feedback) का विश्लेषण करें।',
+          exampleCode: '// Customer Sentiment Analysis:\nAverage Rating: Dropped from 4.6 ★ to 3.2 ★\nTop Complaints: "Delivery delayed", "Packaging damaged"\nAction:         Upgrade packaging and switch delivery partner.',
+          exampleNote: 'Customer reviews contain direct qualitative feedback about product and service flaws.',
+          explainTitleEn: 'Puzzle 3: Analyzing Customer Feedback',
+          explainTitleHi: 'पहेली 3: असंतुष्ट ग्राहकों की समस्या हल करना',
+          explainTextEn: 'Customer reviews and ratings are the most direct source of customer sentiment. Analyzing feedback uncovers exact pain points such as poor quality or late delivery.',
+          explainTextHi: 'ग्राहकों की रेटिंग कम होने पर उनके रिव्यूज और कमेंट्स पढ़कर ही सही समस्या का पता लगाया जा सकता है।',
+          realWorldEn: 'E-commerce and app platforms monitor sentiment analysis dashboards to fix bugs and delivery issues within hours.',
+          realWorldHi: 'ऑनलाइन शॉपिंग वेबसाइट्स ग्राहकों के 1-स्टार रिव्यूज पढ़कर तुरंत कमियां सुधारती हैं।',
         };
       }
 
