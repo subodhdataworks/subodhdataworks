@@ -1,3 +1,4 @@
+import { getTopicHierarchyInfo } from '../PythonChapterView';
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Play, Pause, Volume2, VolumeX, Maximize2, Settings, Captions,

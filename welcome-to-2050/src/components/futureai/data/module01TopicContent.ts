@@ -1,3 +1,4 @@
+import { getTopicHierarchyInfo } from '../PythonChapterView';
 // ============================================================================
 // MODULE 01: INTRODUCTION TO PYTHON PROGRAMMING — TOPIC ASSESSMENT CONTENT
 // 100% Faithful to Future IT Industry Assessment Workbook (Pages 2–27)
@@ -5600,23 +5601,23 @@ const MODULE_02_TOPIC_TITLES: Record<number, { num: number; title: string; baseK
  * for any Module 01 or Module 02 topic.
  */
 export function getModule01TopicData(topicIdOrIndex: number): TopicAssessmentData {
+  const info = getTopicHierarchyInfo(topicIdOrIndex);
+  let base: TopicAssessmentData;
+
   if (MODULE_02_TOPIC_TITLES[topicIdOrIndex]) {
     const m2 = MODULE_02_TOPIC_TITLES[topicIdOrIndex];
-    const base = MODULE_01_TOPICS_CONTENT[m2.baseKey] || MODULE_01_TOPICS_CONTENT[1];
-    return {
-      ...base,
-      topicId: topicIdOrIndex,
-      topicNumber: m2.num,
-      topicTitle: m2.title,
-    };
+    base = MODULE_01_TOPICS_CONTENT[m2.baseKey] || MODULE_01_TOPICS_CONTENT[1];
+  } else if (TOPIC_INDEX_MAP[topicIdOrIndex] && MODULE_01_TOPICS_CONTENT[TOPIC_INDEX_MAP[topicIdOrIndex]]) {
+    base = MODULE_01_TOPICS_CONTENT[TOPIC_INDEX_MAP[topicIdOrIndex]];
+  } else if (MODULE_01_TOPICS_CONTENT[topicIdOrIndex]) {
+    base = MODULE_01_TOPICS_CONTENT[topicIdOrIndex];
+  } else {
+    base = MODULE_01_TOPICS_CONTENT[1];
   }
-  const mappedId = TOPIC_INDEX_MAP[topicIdOrIndex];
-  if (mappedId && MODULE_01_TOPICS_CONTENT[mappedId]) {
-    return MODULE_01_TOPICS_CONTENT[mappedId];
-  }
-  if (MODULE_01_TOPICS_CONTENT[topicIdOrIndex]) {
-    return MODULE_01_TOPICS_CONTENT[topicIdOrIndex];
-  }
-  // Default fallback to Topic 1
-  return MODULE_01_TOPICS_CONTENT[1];
+
+  return {
+    ...base,
+    topicId: topicIdOrIndex,
+    topicTitle: info.topicTitle,
+  };
 }

@@ -71,6 +71,7 @@ import { getModule01TopicData, TopicAssessmentData } from './data/module01TopicC
 import { getHindiTopicActivity } from './data/hindiActivityContent';
 import { Topic1GamePack } from './games/Topic1GamePack';
 import { PythonIntroGameWorkspace } from './PythonIntroGameWorkspace';
+import { getTopicHierarchyInfo } from './PythonChapterView';
 import { HrSettingsService, HrSettingsConfig, DEFAULT_HR_SETTINGS } from '../../services/hrSettingsService';
 import { StableMouthLipSyncAvatar } from './interview/StableMouthLipSyncAvatar';
 import { ZeroCostMockInterviewRoom } from './interview/ZeroCostMockInterviewRoom';
@@ -157,6 +158,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
   }, []);
 
   const effectiveTopicId = urlTopicId ?? topicId;
+  const topicHierarchy = useMemo(() => getTopicHierarchyInfo(effectiveTopicId), [effectiveTopicId]);
   const isTopicWithoutCoding = effectiveTopicId === 1;
   const isTopicWithoutMcq = effectiveTopicId === 1;
 
@@ -2080,13 +2082,9 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
             <ChevronRight className="w-3 h-3 text-slate-400" />
             <span className="crumb-link" onClick={onBack}>Python</span>
             <ChevronRight className="w-3 h-3 text-slate-400" />
-            <span className="crumb-link hidden xl:inline" onClick={onBack}>
-              {effectiveTopicId >= 1701 && effectiveTopicId <= 1799
-                ? 'Python Final Boss & Interview Preparation'
-                : 'Introduction to Programming & Python Thinking'}
-            </span>
-            <ChevronRight className="w-3 h-3 text-slate-400 hidden xl:inline" />
-            <strong className="crumb-current">{currentTopicData.topicTitle}</strong>
+            <span className="crumb-link" onClick={onBack}>{topicHierarchy.moduleTitle}</span>
+            <ChevronRight className="w-3 h-3 text-slate-400" />
+            <strong className="crumb-current">{topicHierarchy.topicTitle}</strong>
           </div>
         </div>
 
@@ -3214,6 +3212,8 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                 userName={userName}
                 levelId={1}
                 isEmbedded={true}
+                topicTitle={topicHierarchy.topicTitle}
+                moduleTitle={topicHierarchy.moduleTitle}
                 onBackToArena={() => handleSelectTab('interview')}
                 onNavigateDock={onNavigateDock || (() => {})}
                 onOpenUnlockModal={onOpenUnlockModal}

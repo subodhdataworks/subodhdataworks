@@ -48,6 +48,8 @@ export interface PythonIntroGameWorkspaceProps {
   levelId?: number;
   initialGameId?: number;
   isEmbedded?: boolean;
+  topicTitle?: string;
+  moduleTitle?: string;
   onBackToArena: () => void;
   onNavigateDock: (tab: string) => void;
   onOpenUnlockModal?: (title: string) => void;
@@ -67,6 +69,8 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
   levelId = 1,
   initialGameId = 1,
   isEmbedded = false,
+  topicTitle,
+  moduleTitle,
   onBackToArena,
   onNavigateDock,
   onOpenUnlockModal,
@@ -871,7 +875,7 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                 </div>
 
                 <div>
-                  <h2 className="py-card-title">{activeGame.title}</h2>
+                  <h2 className="py-card-title">{topicTitle ? `${topicTitle} — ${activeGame.title}` : activeGame.title}</h2>
                   <p className="py-card-subtitle">{activeGame.subtitle}</p>
                 </div>
               </div>

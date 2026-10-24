@@ -39,7 +39,7 @@ export const TOPICS: Topic[] = [
     desc: 'Foundations of coding: What is programming, Python overview, Real-world applications in analytics & AI, Python interpreter, VS Code & Jupyter setup, and your first Python program.',
     icon: <img src="/images/python_logo_3d_hd.png" alt="" className="w-full h-full object-contain" />,
     lessons: [
-      { title: '1.1 What Is Programming?', time: '07:40', status: 'todo' },
+      { title: '1.1 What is Programming? – Real-Life Examples', time: '07:40', status: 'todo' },
       { title: '1.2 What Is Python?', time: '06:15', status: 'todo' },
       { title: '1.3 Why Learn Python?', time: '05:45', status: 'todo' },
       { title: '1.4 Real-World Applications of Python', time: '06:10', status: 'todo' },
@@ -527,6 +527,86 @@ export const TOPICS: Topic[] = [
     ],
   },
 ];
+
+
+export interface TopicHierarchyInfo {
+  moduleId: number;
+  moduleTitle: string;
+  topicNumStr: string;
+  topicTitle: string;
+  fullBreadcrumb: string[];
+}
+
+export function getTopicHierarchyInfo(topicId: number = 1): TopicHierarchyInfo {
+  const tId = Number(topicId) || 1;
+
+  // 1. Module 1: topicId 1..10
+  if (tId >= 1 && tId <= 10) {
+    const mod = TOPICS[0];
+    const lesson = mod?.lessons[tId - 1];
+    let title = lesson ? lesson.title : `1.${tId} Lesson`;
+    if (tId === 1 && !title.includes('Real-Life Examples')) {
+      title = '1.1 What is Programming? – Real-Life Examples';
+    }
+    return {
+      moduleId: 1,
+      moduleTitle: mod?.title || 'Introduction to Programming & Python Thinking',
+      topicNumStr: `1.${tId}`,
+      topicTitle: title,
+      fullBreadcrumb: ['Home', 'Python', mod?.title || 'Introduction to Programming & Python Thinking', title],
+    };
+  }
+
+  // 2. Module 1 alternate: topicId 101..110
+  if (tId >= 101 && tId <= 110) {
+    const li = tId - 100;
+    const mod = TOPICS[0];
+    const lesson = mod?.lessons[li - 1];
+    let title = lesson ? lesson.title : `1.${li} Lesson`;
+    if (li === 1 && !title.includes('Real-Life Examples')) {
+      title = '1.1 What is Programming? – Real-Life Examples';
+    }
+    return {
+      moduleId: 1,
+      moduleTitle: mod?.title || 'Introduction to Programming & Python Thinking',
+      topicNumStr: `1.${li}`,
+      topicTitle: title,
+      fullBreadcrumb: ['Home', 'Python', mod?.title || 'Introduction to Programming & Python Thinking', title],
+    };
+  }
+
+  // 3. Module 2 to 26: topicId 201..2610
+  if (tId >= 200) {
+    const modId = Math.floor(tId / 100);
+    const lessonNum = tId % 100;
+    const mod = TOPICS.find((t) => t.id === modId);
+    if (mod) {
+      const lesson = mod.lessons[lessonNum - 1];
+      const title = lesson ? lesson.title : `${modId}.${lessonNum} Lesson`;
+      return {
+        moduleId: modId,
+        moduleTitle: mod.title,
+        topicNumStr: `${modId}.${lessonNum}`,
+        topicTitle: title,
+        fullBreadcrumb: ['Home', 'Python', mod.title, title],
+      };
+    }
+  }
+
+  // Default Fallback
+  return {
+    moduleId: 1,
+    moduleTitle: 'Introduction to Programming & Python Thinking',
+    topicNumStr: '1.1',
+    topicTitle: '1.1 What is Programming? – Real-Life Examples',
+    fullBreadcrumb: [
+      'Home',
+      'Python',
+      'Introduction to Programming & Python Thinking',
+      '1.1 What is Programming? – Real-Life Examples',
+    ],
+  };
+}
 
 const ACTIONS = [
   { step: 'learn' as WorkspaceStepId, label: 'Video', icon: <Play className="w-3 h-3" />, cls: 'act-video' },
