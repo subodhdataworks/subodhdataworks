@@ -295,27 +295,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
     setAutoFlowNotice(null);
   };
 
-  // Auto-advance from Video to MCQ/Game after learner watches video
-  useEffect(() => {
-    let videoWatchTimer: any = null;
-    if (activeStep === 'learn' && !isVideoCompleted) {
-      // Simulate video watch completion and start next step
-      videoWatchTimer = setTimeout(() => {
-        setIsVideoCompleted(true);
-        if (effectiveTopicId === 1) {
-          triggerAutoAdvanceToStep('play', '💻 Video Completed! Starting Python Level 1 Coding Practice (8 Interactive Practice Challenges)', 3);
-        } else {
-          triggerAutoAdvanceToStep('practice', '🎉 Video Completed! Starting MCQ', 3);
-        }
-      }, 14000); // 14 seconds auto-play preview before auto-launching
-    }
-    return () => {
-      if (videoWatchTimer) clearTimeout(videoWatchTimer);
-      if (autoFlowTimerRef.current) {
-        clearInterval(autoFlowTimerRef.current);
-      }
-    };
-  }, [activeStep, isVideoCompleted, effectiveTopicId]);
+  // Video completion is manual or on actual video end (no auto popup timer)
 
   // ─────────────────────────────────────────────────────────────────────────────
   // ─────────────────────────────────────────────────────────────────────────────
@@ -2184,11 +2164,6 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                         style={{ objectFit: 'contain', width: '100%', height: '100%', aspectRatio: '16/9' }}
                         onEnded={() => {
                           setIsVideoCompleted(true);
-                          if (effectiveTopicId === 1) {
-                            triggerAutoAdvanceToStep('play', '💻 Video Completed! Starting Python Level 1 Coding Practice (8 Practice Challenges)', 3);
-                          } else {
-                            triggerAutoAdvanceToStep('practice', '🎉 Video Completed! Starting MCQ', 3);
-                          }
                         }}
                       />
                     )}
@@ -2292,33 +2267,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                 )}
               </div>
 
-              {/* Auto Progression Notification Banner (If active) */}
-              {autoFlowNotice && (
-                <div className="plw-auto-mcq-countdown-banner">
-                  <div className="plw-amc-left">
-                    <span className="plw-amc-sparkle">🚀</span>
-                    <div>
-                      <strong className="plw-amc-title">{autoFlowNotice.title} (Starting in {autoFlowNotice.secondsRemaining}s...)</strong>
-                      <span className="plw-amc-sub">Next learning milestone loading automatically...</span>
-                    </div>
-                  </div>
-                  <div className="plw-amc-actions">
-                    <button
-                      className="plw-amc-now-btn"
-                      onClick={() => {
-                        const step = autoFlowNotice.targetStep;
-                        cancelAutoFlow();
-                        handleSelectTab(step);
-                      }}
-                    >
-                      Start Now →
-                    </button>
-                    <button className="plw-amc-cancel-btn" onClick={cancelAutoFlow}>
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )}
+{/* Auto Progression banner removed per user preference */}
 
               {/* Pro Tip Card Below Video */}
               <div className="plw-pro-tip-card">
