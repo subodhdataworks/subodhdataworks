@@ -8,6 +8,7 @@ import {
   Gauge, FileJson, PieChart, Share2
 } from 'lucide-react';
 import { MobileSqlChapterView } from './mobile/MobileSqlChapterView';
+import { CourseLessonVideoModal } from './CourseLessonVideoModal';
 import './SqlChapterView.css';
 
 interface Props {
@@ -580,6 +581,7 @@ export const SqlChapterView: React.FC<Props> = ({
   onOpenAdvisor,
 }) => {
   const [openId, setOpenId] = useState<number | null>(1);
+  const [activeVideoLesson, setActiveVideoLesson] = useState<{ title: string; module: string; videoSrc: string } | null>(null);
 
   const totalLessons = SQL_CHAPTERS.reduce((acc, c) => acc + c.lessons.length, 0);
   const doneLessons = SQL_CHAPTERS.reduce((acc, c) => acc + c.lessons.filter(l => l.status === 'completed').length, 0);

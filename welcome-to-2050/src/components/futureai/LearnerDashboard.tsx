@@ -59,6 +59,7 @@ import {
 import { FutureLogo } from './FutureLogo';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
 import { PayToUnlockModal } from './PayToUnlockModal';
+import { CourseLessonVideoModal } from './CourseLessonVideoModal';
 import { PythonTopicWorkspace, WorkspaceStepId } from './PythonTopicWorkspace';
 import { PowerGreenAI } from '../../services/powerGreenAIService';
 import { ReferralDashboard } from './referral/ReferralDashboard';
@@ -488,6 +489,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   const [isNewStudentMode, setIsNewStudentMode] = useState<boolean>(true);
   const [unlockModalOpen, setUnlockModalOpen] = useState(false);
   const [selectedLockedModule, setSelectedLockedModule] = useState<string>('SQL & Databases');
+  const [activeLessonVideo, setActiveLessonVideo] = useState<{
+    title: string;
+    course: string;
+    videoSrc: string;
+  } | null>(null);
 
   // Placement / Internship / Certificate Lock:
   // Placement is now unlocked as requested by user ("placment wala unlock kro")
@@ -1454,6 +1460,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               }}
               onStartTopic={(topicId, title) => {
                 playClick();
+                setActiveLessonVideo({
+                  title: title || 'What Is Data?',
+                  course: 'Data Analyst with GenAI',
+                  videoSrc: '/videos/data_analyst_genai_v2.mp4',
+                });
               }}
             />
           </div>
@@ -1471,6 +1482,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               }}
               onStartTopic={(topicId, title) => {
                 playClick();
+                setActiveLessonVideo({
+                  title: title || 'What Is Data Science?',
+                  course: 'Data Science & Agentic AI',
+                  videoSrc: '/videos/data_science_agentic_ai_course.mp4',
+                });
               }}
             />
           </div>
@@ -1489,6 +1505,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               }}
               onStartTopic={(topicId, title) => {
                 playClick();
+                setActiveLessonVideo({
+                  title: title || 'Introduction to Machine Learning',
+                  course: 'Machine Learning Engineering',
+                  videoSrc: '/videos/ml_engineering_course.mp4',
+                });
               }}
             />
           </div>
@@ -1507,6 +1528,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               }}
               onStartTopic={(topicId, title) => {
                 playClick();
+                setActiveLessonVideo({
+                  title: title || 'Deep Learning Fundamentals',
+                  course: 'Deep Learning',
+                  videoSrc: '/videos/ai_engineering_course.mp4',
+                });
               }}
             />
           </div>
@@ -1525,6 +1551,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               }}
               onStartTopic={(topicId, title) => {
                 playClick();
+                setActiveLessonVideo({
+                  title: title || 'AI Engineering Overview',
+                  course: 'AI Engineering',
+                  videoSrc: '/videos/ai_engineering_course.mp4',
+                });
               }}
             />
           </div>
@@ -1543,6 +1574,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               }}
               onStartTopic={(topicId, title) => {
                 playClick();
+                setActiveLessonVideo({
+                  title: title || 'AI Tools & Prompt Engineering',
+                  course: 'AI Tools & Prompt Engineering',
+                  videoSrc: '/videos/card_video_genai.mp4',
+                });
               }}
             />
           </div>
@@ -1561,6 +1597,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               }}
               onStartTopic={(topicId, title) => {
                 playClick();
+                setActiveLessonVideo({
+                  title: title || 'Introduction to Microsoft 365 & Copilot',
+                  course: 'Microsoft 365 with Copilot AI',
+                  videoSrc: '/videos/msoffice_365_copilot.mp4',
+                });
               }}
             />
           </div>
@@ -1578,6 +1619,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               }}
               onStartTopic={(topicId, title) => {
                 playClick();
+                setActiveLessonVideo({
+                  title: title || 'Introduction to Web Development',
+                  course: 'Full-Stack MERN Development with AI',
+                  videoSrc: '/videos/full_stack_web_development.mp4',
+                });
               }}
             />
           </div>
@@ -2334,6 +2380,22 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         onSimulateUnlock={() => {
           setIsNewStudentMode(false);
           alert('🎉 Congratulations! All 10 Modules have been unlocked in your dashboard.');
+        }}
+      />
+
+      {/* Course Lesson Video Modal (Plays 'What Is Data?' & Any Course Topic) */}
+      <CourseLessonVideoModal
+        isOpen={Boolean(activeLessonVideo)}
+        onClose={() => setActiveLessonVideo(null)}
+        lessonTitle={activeLessonVideo?.title || 'What Is Data?'}
+        courseTitle={activeLessonVideo?.course || 'Data Analyst with GenAI'}
+        videoSrc={activeLessonVideo?.videoSrc || '/videos/data_analyst_genai_v2.mp4'}
+        onOpenMcq={() => {
+          setActiveLessonVideo(null);
+        }}
+        onOpenInterview={() => {
+          setActiveLessonVideo(null);
+          if (typeof window !== 'undefined') window.location.hash = '#interview?topic=1';
         }}
       />
 

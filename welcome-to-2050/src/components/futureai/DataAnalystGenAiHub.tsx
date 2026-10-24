@@ -20,6 +20,7 @@ import {
 import { DATA_ANALYST_CURRICULUM, TabItem } from '../../data/dataAnalystCurriculum';
 import { ToolIcon } from './CourseToolIcons';
 import { SuccessPlanModal } from './SuccessPlanModal';
+import { CourseLessonVideoModal } from './CourseLessonVideoModal';
 
 interface DataAnalystGenAiHubProps {
   userName?: string;
@@ -39,6 +40,11 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
   });
   const [isSuccessPlanOpen, setIsSuccessPlanOpen] = useState<boolean>(false);
   const [selectedTargetTitle, setSelectedTargetTitle] = useState<string>('');
+  const [activeVideoLesson, setActiveVideoLesson] = useState<{
+    title: string;
+    module: string;
+    videoSrc?: string;
+  } | null>(null);
 
   const handleOpenSuccessPlan = (title?: string) => {
     setSelectedTargetTitle(title || 'Data Analyst with GenAI');
@@ -62,6 +68,12 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
       handleOpenSuccessPlan(topic.title);
     } else if (onStartTopic) {
       onStartTopic(topic.id, topic.title);
+    } else {
+      setActiveVideoLesson({
+        title: topic.title,
+        module: activeTab.title,
+        videoSrc: '/videos/data_analyst_genai_v2.mp4',
+      });
     }
   };
 
@@ -734,6 +746,23 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
         onClose={() => setIsSuccessPlanOpen(false)}
         targetTopicTitle={selectedTargetTitle}
         courseTitle="Data Analyst with GenAI"
+      />
+
+      {/* Course Lesson Video Modal Player */}
+      <CourseLessonVideoModal
+        isOpen={Boolean(activeVideoLesson)}
+        onClose={() => setActiveVideoLesson(null)}
+        lessonTitle={activeVideoLesson?.title || 'What Is Data?'}
+        courseTitle="Data Analyst with GenAI"
+        moduleTitle={activeVideoLesson?.module || 'Module 1: Understanding Data and Analytics'}
+        videoSrc={activeVideoLesson?.videoSrc || '/videos/data_analyst_genai_v2.mp4'}
+        onOpenMcq={() => {
+          setActiveVideoLesson(null);
+        }}
+        onOpenInterview={() => {
+          setActiveVideoLesson(null);
+          if (typeof window !== 'undefined') window.location.hash = '#interview?topic=1';
+        }}
       />
 
     </div>

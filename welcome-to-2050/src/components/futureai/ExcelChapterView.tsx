@@ -5,6 +5,7 @@ import {
   Timer, Bot, Sparkles, Circle, Table2, Layers, Cpu, TrendingUp
 } from 'lucide-react';
 import { MobileExcelChapterView } from './mobile/MobileExcelChapterView';
+import { CourseLessonVideoModal } from './CourseLessonVideoModal';
 import './SqlChapterView.css';
 
 interface Props {
@@ -572,6 +573,7 @@ const ACTIONS = [
 
 export const ExcelChapterView: React.FC<Props> = ({ userName, onBack, onOpenUnlockModal, onOpenAdvisor }) => {
   const [openId, setOpenId] = useState<number | null>(1);
+  const [activeVideoLesson, setActiveVideoLesson] = useState<{ title: string; module: string; videoSrc: string } | null>(null);
 
   const totalLessons = EXCEL_CHAPTERS.reduce((acc, c) => acc + c.lessons.length, 0);
   const doneLessons = EXCEL_CHAPTERS.reduce((acc, c) => acc + c.lessons.filter(l => l.status === 'completed').length, 0);
@@ -676,16 +678,43 @@ export const ExcelChapterView: React.FC<Props> = ({ userName, onBack, onOpenUnlo
                       return (
                         <div key={l.title} className="scv-lesson" title={`Open ${l.title}`}>
                           <span className="scv-lnum" style={{ color: c.color, fontWeight: 700 }}>{c.id}.{li + 1}</span>
-                          <button className="scv-lplay" style={{ background: c.color }} title={`Play ${l.title}`}>
+                          <button
+                            className="scv-lplay"
+                            style={{ background: c.color }}
+                            title={`Play ${l.title}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveVideoLesson({ title: l.title, module: c.title, videoSrc: '/videos/card_video_excel.mp4' });
+                            }}
+                          >
                             <Play />
                           </button>
-                          <span className="scv-ltitle" style={{ color: c.color }} title={`Click to start ${l.title}`}>
+                          <span
+                            className="scv-ltitle cursor-pointer hover:underline"
+                            style={{ color: c.color }}
+                            title={`Click to start ${l.title}`}
+                            onClick={() => {
+                              setActiveVideoLesson({ title: l.title, module: c.title, videoSrc: '/videos/card_video_excel.mp4' });
+                            }}
+                          >
                             {displayTitle}
                           </span>
                           <span className="scv-ltime"><Clock /> {l.time}</span>
                           <div className="scv-actions">
                             {ACTIONS.map(a => (
-                              <button key={a.step} className={`scv-act ${a.cls}`} title={`Open ${a.label} for ${l.title}`}>
+                              <button
+                                key={a.step}
+                                className={`scv-act ${a.cls}`}
+                                title={`Open ${a.label} for ${l.title}`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (a.step === 'interview') {
+                                    if (typeof window !== 'undefined') window.location.hash = '#interview?topic=1';
+                                  } else {
+                                    setActiveVideoLesson({ title: l.title, module: c.title, videoSrc: '/videos/card_video_excel.mp4' });
+                                  }
+                                }}
+                              >
                                 {a.icon}{a.label}
                               </button>
                             ))}
@@ -772,8 +801,20 @@ export const ExcelChapterView: React.FC<Props> = ({ userName, onBack, onOpenUnlo
       </aside>
         </div>
       </div>
+    
+      <CourseLessonVideoModal
+        isOpen={Boolean(activeVideoLesson)}
+        onClose={() => setActiveVideoLesson(null)}
+        lessonTitle={activeVideoLesson?.title || 'Microsoft Excel Lesson'}
+        courseTitle="Microsoft Excel for Data Analysis & AI"
+        moduleTitle={activeVideoLesson?.module || 'Module 1'}
+        videoSrc={activeVideoLesson?.videoSrc || '/videos/card_video_excel.mp4'}
+        onOpenInterview={() => {
+          setActiveVideoLesson(null);
+          if (typeof window !== 'undefined') window.location.hash = '#interview?topic=1';
+        }}
+      />
     </>
   );
 };
-
 export default ExcelChapterView;
