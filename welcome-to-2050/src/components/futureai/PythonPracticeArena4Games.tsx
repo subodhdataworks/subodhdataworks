@@ -70,8 +70,8 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
 
   const currentTabTopics = useMemo(() => getTopicListForTab(tabId), [tabId]);
 
-  const courseKey = tabId === 2 ? 'data_science' : 'data_analyst';
-  const courseTitle = tabId === 2 ? 'Data Science & Agentic AI' : 'Data Analyst with GenAI';
+  const courseKey = tabId === 3 ? 'ml_engineering' : tabId === 2 ? 'data_science' : 'data_analyst';
+  const courseTitle = tabId === 3 ? 'Machine Learning Engineering' : tabId === 2 ? 'Data Science & Agentic AI' : 'Data Analyst with GenAI';
 
   const [isCoursePaid, setIsCoursePaid] = useState<boolean>(() => isCourseUnlocked(courseKey));
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
@@ -1135,6 +1135,142 @@ print(result)`
           explainTextHi: 'पुराने सेल्स डेटा की मदद से कंपनियां अनुमान लगाती हैं कि अगले महीने कितने सामान की जरूरत पड़ेगी।',
           realWorldEn: 'Automobile makers like Maruti Suzuki forecast car demand 6 months ahead to procure parts and manage factories.',
           realWorldHi: 'मारुति सुजुकी 6 महीने पहले ही डेटा देखकर तय करती है कि कौन सी कार कितनी संख्या में बनानी है।',
+        };
+      }
+
+      // ─── Machine Learning Engineering Quizzes (Tab 3) ───
+      if (qText.includes('What is Machine Learning?')) {
+        return {
+          hintEn: 'Machine Learning teaches computers to discover patterns from historical data and examples rather than manually hardcoding every rule.',
+          hintHi: 'मशीन लर्निंग कंप्यूटर को डेटा और उदाहरणों (Patterns from data) से सीखना सिखाता है।',
+          exampleCode: '// Traditional Programming vs Machine Learning:\nTraditional: Data + Hardcoded Rules -> Output\nMachine Learning: Data + Expected Outputs -> Learned Rules (Model)',
+          exampleNote: 'ML algorithms automatically learn mapping functions from input features to output targets.',
+          explainTitleEn: 'What Is Machine Learning?',
+          explainTitleHi: 'मशीन लर्निंग क्या है?',
+          explainTextEn: 'Machine Learning is a subset of artificial intelligence where algorithms improve their performance at tasks through experience gained from analyzing historical data.',
+          explainTextHi: 'मशीन लर्निंग AI की वह शाखा है जिसमें कंप्यूटर बिना किसी मैनुअल कोडिंग के डेटा से खुद सीखता है।',
+          realWorldEn: 'Google Search, YouTube recommendations, and Tesla Autopilot all rely deeply on Machine Learning systems.',
+          realWorldHi: 'YouTube और Google Search यूजर के देखने के पैटर्न से सीखकर सबसे अच्छे परिणाम दिखाते हैं।',
+        };
+      }
+
+      if (qText.includes('What does an ML model learn from?') || qText.includes('model learn from')) {
+        return {
+          hintEn: 'Models require representative training data and real-world examples to deduce predictive relationships.',
+          hintHi: 'मशीन लर्निंग मॉडल डेटा और उदाहरणों (Data and examples) से सीखता है।',
+          exampleCode: '// Training Input Data:\nImages of Cats (10,000 photos) + Images of Dogs (10,000 photos)\n-> Neural Network Training\n-> Model successfully recognizes new unseen cat photos!',
+          exampleNote: 'High-quality, labeled training examples are the essential fuel of machine learning.',
+          explainTitleEn: 'What ML Models Learn From',
+          explainTitleHi: 'एमएल मॉडल किससे सीखता है?',
+          explainTextEn: 'An ML model updates its internal mathematical weights and decision boundaries by iteratively examining features and labels provided in training datasets.',
+          explainTextHi: 'मॉडल लाखों उदाहरणों और डेटा रिकॉर्ड्स को देखकर सही और गलत की पहचान करना सीखता है।',
+          realWorldEn: 'Speech recognition models like Siri and Alexa learn from thousands of hours of recorded human voices.',
+          realWorldHi: 'Siri और Alexa हजारों घंटों की इंसानी आवाज़ों के डेटा से सुनकर समझना सीखते हैं।',
+        };
+      }
+
+      if (qText.includes('Machine Learning example') || qText.includes('Which is a Machine Learning example')) {
+        return {
+          hintEn: 'Look for an intelligent software system that dynamically adapts to incoming patterns, such as email spam filtering.',
+          hintHi: 'ईमेल स्पैम डिटेक्शन (Email spam detection) मशीन लर्निंग का एक बेहतरीन उदाहरण है।',
+          exampleCode: '// Spam Classification Model:\nInput: "Congratulations! You won $1,000,000 lottery!"\nSpam Probability: 99.8%\nAction: Route to Spam Folder automatically.',
+          exampleNote: 'Spam filters continuously adapt as spammers change their wording over time.',
+          explainTitleEn: 'Real-World Machine Learning Application',
+          explainTitleHi: 'मशीन लर्निंग का वास्तविक उदाहरण',
+          explainTextEn: 'Email spam detection utilizes Natural Language Processing (NLP) classification models trained on millions of messages to automatically safeguard user inboxes.',
+          explainTextHi: 'ईमेल स्पैम फिल्टर पुराने स्पैम मैसेजेस को पहचानकर नए फर्जी ईमेल्स को इनबॉक्स में आने से रोकता है।',
+          realWorldEn: 'Gmail blocks over 99.9% of spam, phishing, and malware using machine learning classifiers.',
+          realWorldHi: 'Gmail हर रोज करोड़ों स्पैम ईमेल्स को मशीन लर्निंग की मदद से ब्लॉक करता है।',
+        };
+      }
+
+      if (qText.includes('prediction in Machine Learning')) {
+        return {
+          hintEn: 'A prediction is an informed inference or output produced by a trained model based on learned patterns.',
+          hintHi: 'प्रेडिक्शन का मतलब है सीखे गए पैटर्न के आधार पर लगाया गया अनुमान (Guess based on learned patterns)।',
+          exampleCode: '// Model Prediction Function:\nmodel.predict(house_features) -> Output: ₹75,00,000 Estimated Valuation',
+          exampleNote: 'Predictions output probabilities, regression values, or classification labels.',
+          explainTitleEn: 'Understanding ML Predictions',
+          explainTitleHi: 'मशीन लर्निंग में प्रेडिक्शन क्या है?',
+          explainTextEn: 'A prediction is the result generated when a trained model is provided with novel inputs and extrapolates the most probable outcome using its learned parameters.',
+          explainTextHi: 'मॉडल नए इनपुट को देखकर अपनी सीखी हुई जानकारी के अनुसार सबसे सटीक अनुमान बताता है।',
+          realWorldEn: 'Uber predicts ride pickup ETAs and fares in real time based on traffic and weather conditions.',
+          realWorldHi: 'Uber ट्रैफिक और मौसम देखकर बताता है कि कैब आने में कितने मिनट लगेंगे।',
+        };
+      }
+
+      if (qText.includes('main goal of ML engineering')) {
+        return {
+          hintEn: 'ML engineers bridge the gap between experimental prototypes and robust, reliable production software systems.',
+          hintHi: 'एमएल इंजीनियरिंग का मुख्य लक्ष्य उपयोगी एमएल सिस्टम बनाना और डिप्लॉय करना (Build and deploy useful ML systems) है।',
+          exampleCode: '// Production ML Engineering:\nPrototype Notebook (.ipynb) -> Containerized Microservice (Docker) -> Kubernetes Cluster -> 10,000 req/sec REST API',
+          exampleNote: 'ML engineering prioritizes uptime, latency, scalability, and automated retraining.',
+          explainTitleEn: 'Primary Goal of ML Engineering',
+          explainTitleHi: 'एमएल इंजीनियरिंग का मुख्य उद्देश्य',
+          explainTextEn: 'The purpose of ML engineering is to productionize machine learning models—ensuring they scale smoothly, stay accurate, and serve reliable predictions to end-users.',
+          explainTextHi: 'एमएल इंजीनियरिंग मॉडल्स को सिर्फ रिसर्च में न रखकर उन्हें असल सॉफ्टवेयर और ऐप्स में चलाती है।',
+          realWorldEn: 'Netflix ML engineers operate real-time streaming recommendation engines serving 260M+ subscribers 24/7.',
+          realWorldHi: 'Netflix के इंजीनियर्स 26 करोड़ से ज्यादा यूजर्स के लिए 24 घंटे बिना रुके रिकमेंडेशन सिस्टम चलाते हैं।',
+        };
+      }
+
+      if (qText.includes('responsibility of a data scientist') || qText.includes('responsibility of an ML engineer')) {
+        return {
+          hintEn: 'Data scientists explore data and discover business insights; ML engineers build, deploy, and scale production systems.',
+          hintHi: 'डेटा साइंटिस्ट डेटा का विश्लेषण करके इनसाइट्स निकालते हैं, जबकि एमएल इंजीनियर मॉडल्स को सिस्टम में डिप्लॉय करते हैं।',
+          exampleCode: '// Role Distinction:\nData Scientist:  Hypothesis testing, exploratory analysis, prototype modeling\nML Engineer:     MLOps, API deployment, latency optimization, model monitoring',
+          exampleNote: 'Both roles work together across the machine learning product lifecycle.',
+          explainTitleEn: 'Data Scientist vs ML Engineer Roles',
+          explainTitleHi: 'डेटा साइंटिस्ट और एमएल इंजीनियर में अंतर',
+          explainTextEn: 'Data scientists focus on statistical exploration and answering business questions. ML engineers build the software infrastructure to deploy and monitor models at scale.',
+          explainTextHi: 'डेटा साइंटिस्ट डेटा से बिजनेस को समझने में मदद करते हैं, और एमएल इंजीनियर उस मॉडल को ऐप में लाइव चलाते हैं।',
+          realWorldEn: 'At companies like Meta and Swiggy, data scientists discover what features matter and ML engineers deploy them.',
+          realWorldHi: 'Swiggy में डेटा साइंटिस्ट डिलीवरी के पैटर्न समझते हैं और एमएल इंजीनियर तुरंत लाइव डिलीवरी टाइम कैलकुलेट करने वाला सिस्टम बनाते हैं।',
+        };
+      }
+
+      if (qText.includes('early step in an ML product') || qText.includes('step in an ML product project')) {
+        return {
+          hintEn: 'Every successful machine learning project starts by defining the business problem, requirements, and target metrics.',
+          hintHi: 'सबसे पहला कदम समस्या और उसके लक्ष्यों को परिभाषित करना (Define the problem and its goals) होता है।',
+          exampleCode: '// Step 1 of ML Lifecycle:\nProblem: "Reduce customer support call wait times by 40% using automated intent recognition."\nSuccess Metric: >95% Classification Accuracy & <200ms Latency',
+          exampleNote: 'Starting without clear problem definitions leads to unusable models.',
+          explainTitleEn: 'Phase 1: Problem Definition',
+          explainTitleHi: 'पहला चरण: समस्या की परिभाषा',
+          explainTextEn: 'Before collecting data or choosing architectures, teams must align on the exact business objective and establish measurable KPIs for project success.',
+          explainTextHi: 'बिना समस्या समझे मॉडल बनाना गलत होता है; सबसे पहले लक्ष्य और सफलता के मानक तय किए जाते हैं।',
+          realWorldEn: 'Top tech companies spend the first 30% of project time scoping problem definitions with business leaders.',
+          realWorldHi: 'बड़ी कंपनियां कोडिंग शुरू करने से पहले पक्का करती हैं कि बिजनेस को असल में क्या चाहिए।',
+        };
+      }
+
+      if (qText.includes('evaluate a model before deployment')) {
+        return {
+          hintEn: 'Testing on held-out validation datasets confirms that the model generalizes to unseen data without catastrophic mistakes.',
+          hintHi: 'डिप्लॉय करने से पहले टेस्ट डेटा पर मॉडल के प्रदर्शन की जांच (Assess how well it performs on test data) जरूरी है।',
+          exampleCode: '// Model Evaluation Metrics:\nTrain Accuracy: 98% (Learned on training data)\nTest Accuracy:  94% (Evaluated on fresh unseen test data)\nVerdict:        Safe to deploy! ✓',
+          exampleNote: 'Evaluation prevents deploying overfitted or biased models.',
+          explainTitleEn: 'Pre-Deployment Model Evaluation',
+          explainTitleHi: 'डिप्लॉयमेंट से पहले मॉडल की जांच',
+          explainTextEn: 'Rigorous evaluation against holdout test sets guarantees the model meets precision, recall, and fairness thresholds before interacting with real users.',
+          explainTextHi: 'नए और अनदेखे डेटा पर टेस्ट करने से पता चलता है कि क्या मॉडल असल दुनिया में सही काम करेगा या नहीं।',
+          realWorldEn: 'Self-driving cars undergo millions of simulated test miles before autonomous firmware is pushed to vehicles.',
+          realWorldHi: 'गाड़ियों में ऑटोनॉमस सॉफ्टवेयर डालने से पहले लाखों मील के टेस्ट डेटा पर उसकी जांच की जाती है।',
+        };
+      }
+
+      if (qText.includes('What is model monitoring') || qText.includes('model monitoring?')) {
+        return {
+          hintEn: 'Monitoring continuously checks inference latency, prediction accuracy, and data drift after a model goes live.',
+          hintHi: 'लाइव मॉडल के व्यवहार और प्रदर्शन की लगातार जांच करना (Checking a deployed model\'s behaviour over time) मॉनिटरिंग है।',
+          exampleCode: '// MLOps Telemetry Dashboard:\nLive Requests: 4,500/min | P99 Latency: 48ms | Drift Alert: Normal (0.02)\nStatus: Health 100% OK',
+          exampleNote: 'Production monitoring alerts engineers when real-world trends diverge from training data.',
+          explainTitleEn: 'Production Model Monitoring',
+          explainTitleHi: 'मॉडल मॉनिटरिंग क्या है?',
+          explainTextEn: 'Model monitoring is the ongoing tracking of a deployed ML model’s operational health, prediction distributions, and accuracy in live production environments.',
+          explainTextHi: 'मॉडल लाइव होने के बाद भी यह देखना जरूरी है कि क्या वो सही समय पर सही जवाब दे रहा है या उसमें कोई गिरावट आई है।',
+          realWorldEn: 'Financial institutions monitor credit scoring models continuously to prevent lending discrimination or model drift.',
+          realWorldHi: 'बैंक लगातार मॉनिटर करते हैं ताकि लोन देने वाला AI मॉडल हमेशा सही और निष्पक्ष फैसले ले।',
         };
       }
 

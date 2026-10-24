@@ -1993,7 +1993,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setSelectedModuleView('python');
                 setActiveTopicWs(numericTopicId);
                 setTargetStep(step as any);
-                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&tab=2`;
+                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&tab=3`;
               }}
             />
           </div>
@@ -2017,7 +2017,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setSelectedModuleView('python');
                 setActiveTopicWs(numericTopicId);
                 setTargetStep(step as any);
-                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&tab=2`;
+                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&tab=4`;
               }}
             />
           </div>
@@ -2041,7 +2041,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setSelectedModuleView('python');
                 setActiveTopicWs(numericTopicId);
                 setTargetStep(step as any);
-                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&tab=2`;
+                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&tab=5`;
               }}
             />
           </div>
@@ -2065,7 +2065,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setSelectedModuleView('python');
                 setActiveTopicWs(numericTopicId);
                 setTargetStep(step as any);
-                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&tab=2`;
+                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&tab=6`;
               }}
             />
           </div>
@@ -2088,7 +2088,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setSelectedModuleView('python');
                 setActiveTopicWs(numericTopicId);
                 setTargetStep(step as any);
-                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&tab=2`;
+                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&tab=7`;
               }}
             />
           </div>
