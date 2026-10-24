@@ -14,10 +14,12 @@ import {
   FileText,
   Target,
   Check,
-  TrendingUp
+  TrendingUp,
+  RotateCcw
 } from 'lucide-react';
 import { DATA_ANALYST_CURRICULUM, TabItem } from '../../data/dataAnalystCurriculum';
 import { ToolIcon } from './CourseToolIcons';
+import { SuccessPlanModal } from './SuccessPlanModal';
 
 interface DataAnalystGenAiHubProps {
   userName?: string;
@@ -34,6 +36,33 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
   const [expandedChapters, setExpandedChapters] = useState<Record<string, boolean>>({
     'mod-1': true,
   });
+  const [isSuccessPlanOpen, setIsSuccessPlanOpen] = useState<boolean>(false);
+  const [selectedTargetTitle, setSelectedTargetTitle] = useState<string>('');
+
+  const handleOpenSuccessPlan = (title?: string) => {
+    setSelectedTargetTitle(title || 'Data Analyst with GenAI');
+    setIsSuccessPlanOpen(true);
+  };
+
+  const handleModuleHeaderClick = (chapter: { id: string; title: string; chapterNum: number }) => {
+    toggleChapter(chapter.id);
+    if (chapter.chapterNum >= 2) {
+      handleOpenSuccessPlan(chapter.title);
+    }
+  };
+
+  const handleTopicClick = (topic: { id: string; title: string; topicNum?: number; status?: string }) => {
+    const isLockedTopic =
+      topic.status === 'locked' ||
+      (topic.topicNum !== undefined && topic.topicNum >= 5) ||
+      topic.title.toLowerCase().includes('data vs information vs insight');
+
+    if (isLockedTopic) {
+      handleOpenSuccessPlan(topic.title);
+    } else if (onStartTopic) {
+      onStartTopic(topic.id, topic.title);
+    }
+  };
 
   const activeTab: TabItem =
     DATA_ANALYST_CURRICULUM.find((t) => t.id === activeTabId) ||
@@ -197,6 +226,14 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                 </button>
                 <button
                   type="button"
+                  onClick={() => handleOpenSuccessPlan('Data Analyst with GenAI')}
+                  className="px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-emerald-600/25 active:scale-95 transition-all cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Enroll for ₹987</span>
+                </button>
+                <button
+                  type="button"
                   onClick={() => {
                     const el = document.getElementById('curriculum-tabs-map');
                     el?.scrollIntoView({ behavior: 'smooth' });
@@ -251,10 +288,10 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                   key={tab.id}
                   type="button"
                   onClick={() => handleSelectTab(tab.id)}
-                  className={`group relative py-2 px-3 sm:py-2 sm:px-3 rounded-xl flex items-center gap-2.5 text-left transition-all cursor-pointer border ${
+                  className={`group relative py-2 px-3 sm:py-2 sm:px-3 rounded-xl flex items-center gap-2.5 text-left transition-all duration-200 hover:-translate-y-0.5 active:scale-95 cursor-pointer border ${
                     isActive
                       ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white border-blue-500 shadow-md shadow-blue-500/25 z-10'
-                      : 'bg-white hover:bg-slate-50/90 text-slate-800 border-slate-200 hover:border-blue-300 shadow-2xs'
+                      : 'bg-white hover:bg-slate-50/90 text-slate-800 border-slate-200 hover:border-blue-300 hover:shadow-sm shadow-2xs'
                   }`}
                 >
                   {/* Real 3D High-Definition Icon Tile */}
@@ -329,30 +366,34 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                   return (
                     <div
                       key={chapter.id}
-                      className="rounded-2xl border border-slate-200/90 overflow-hidden bg-slate-50/40 transition-all shadow-2xs hover:border-slate-300"
+                      className={`rounded-2xl border overflow-hidden transition-all duration-300 ${
+                        isExpanded
+                          ? 'border-blue-300/90 bg-white shadow-md shadow-blue-500/5 ring-1 ring-blue-500/10'
+                          : 'border-slate-200/90 bg-slate-50/40 hover:bg-white hover:border-slate-300 hover:shadow-xs'
+                      }`}
                     >
-                      {/* Chapter Accordion Header */}
+                      {/* Chapter / Module Accordion Header */}
                       <button
                         type="button"
-                        onClick={() => toggleChapter(chapter.id)}
-                        className="w-full p-4 sm:p-4.5 flex items-center justify-between gap-4 text-left hover:bg-slate-50 transition-colors cursor-pointer"
+                        onClick={() => handleModuleHeaderClick(chapter)}
+                        className="group w-full p-4 sm:p-4.5 flex items-center justify-between gap-4 text-left transition-all duration-200 cursor-pointer"
                       >
                         <div className="flex items-center gap-3 min-w-0">
                           {/* Circle Number */}
-                          <div className={`w-8 h-8 rounded-full font-black text-xs flex items-center justify-center shrink-0 ${
+                          <div className={`w-8 h-8 rounded-full font-black text-xs flex items-center justify-center shrink-0 shadow-2xs transition-transform duration-200 group-hover:scale-105 ${
                             chapter.chapterNum <= 4 ? 'bg-blue-600 text-white' : 'bg-purple-600 text-white'
                           }`}>
                             {chapter.chapterNum}
                           </div>
 
                           {/* Doc/Code Icon */}
-                          <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                          <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105">
                             <FileText className="w-4 h-4" />
                           </div>
 
                           {/* Title & Description */}
                           <div className="flex flex-col min-w-0">
-                            <h3 className="text-xs sm:text-sm font-black text-slate-900 truncate">
+                            <h3 className="text-xs sm:text-sm font-black text-slate-900 truncate group-hover:text-blue-600 transition-colors">
                               {chapter.title}
                             </h3>
                             <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
@@ -361,14 +402,14 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                           </div>
                         </div>
 
-                        {/* Chapter Stats & Chevron */}
+                        {/* Chapter Stats & Animated Chevron */}
                         <div className="flex items-center gap-3 shrink-0">
                           <span className="text-[11px] font-bold text-slate-500 hidden sm:inline">
                             {totalCount} Topics
                           </span>
                           <div className="w-20 h-1.5 rounded-full bg-slate-200 overflow-hidden hidden sm:block">
                             <div
-                              className="h-full bg-emerald-500 rounded-full"
+                              className="h-full bg-emerald-500 rounded-full transition-all duration-500 ease-out"
                               style={{ width: `${percent}%` }}
                             />
                           </div>
@@ -378,53 +419,70 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                           <span className="text-xs font-black text-emerald-600">
                             {percent}%
                           </span>
-                          {isExpanded ? (
-                            <ChevronUp className="w-4 h-4 text-slate-400" />
-                          ) : (
-                            <ChevronDown className="w-4 h-4 text-slate-400" />
-                          )}
+                          <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 ${
+                            isExpanded
+                              ? 'bg-blue-50 text-blue-600 rotate-180 shadow-2xs'
+                              : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200 group-hover:text-slate-600'
+                          }`}>
+                            <ChevronDown className="w-4 h-4 transition-transform duration-300" />
+                          </div>
                         </div>
                       </button>
 
-                      {/* Topic List (Shown if expanded) */}
-                      {isExpanded && (
-                        <div className="divide-y divide-slate-100 border-t border-slate-200 bg-white">
+                      {/* Smooth animated accordion collapse/expand container */}
+                      <div
+                        className={`grid transition-all duration-300 ease-in-out ${
+                          isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                        }`}
+                      >
+                        <div className="overflow-hidden divide-y divide-slate-100 border-t border-slate-200/80 bg-white">
                           {chapter.topics.map((topic) => {
                             const isDone = topic.status === 'completed';
                             const isCurrent = topic.status === 'in-progress';
-                            const isLocked = topic.status === 'locked';
+                            const isLocked =
+                              topic.status === 'locked' ||
+                              (topic.topicNum !== undefined && topic.topicNum >= 5) ||
+                              topic.title.toLowerCase().includes('data vs information vs insight');
 
                             return (
                               <div
                                 key={topic.id}
-                                className={`p-3 sm:px-4 flex items-center justify-between gap-3 text-xs transition-colors ${
-                                  isCurrent ? 'bg-blue-50/50' : 'hover:bg-slate-50'
+                                onClick={() => handleTopicClick(topic)}
+                                className={`group/topic p-3 sm:px-4 sm:py-3.5 flex items-center justify-between gap-3 text-xs transition-all duration-200 cursor-pointer ${
+                                  isCurrent ? 'bg-blue-50/60' : 'hover:bg-slate-50/90'
                                 }`}
                               >
-                                {/* Left: Number (1 to 120) + Check/Play/Lock + Exact Title */}
+                                {/* Left: Number + Status Icon + Title */}
                                 <div className="flex items-center gap-2.5 min-w-0">
-                                  <span className="text-[11px] sm:text-xs font-black text-slate-400 w-7 sm:w-8 shrink-0 text-left">
+                                  <span className="text-[11px] sm:text-xs font-black text-slate-400 w-7 sm:w-8 shrink-0 text-left group-hover/topic:text-slate-600 transition-colors">
                                     {topic.topicNum}.
                                   </span>
 
                                   {isDone && (
-                                    <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0">
+                                    <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs group-hover/topic:scale-110 transition-transform duration-200">
                                       <Check className="w-3 h-3 stroke-[3]" />
                                     </div>
                                   )}
                                   {isCurrent && (
-                                    <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0">
-                                      <Play className="w-2.5 h-2.5 fill-white" />
-                                    </div>
+                                    <span className="relative flex h-5 w-5 shrink-0">
+                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-60"></span>
+                                      <span className="relative inline-flex rounded-full h-5 w-5 bg-blue-600 text-white items-center justify-center shadow-xs">
+                                        <Play className="w-2.5 h-2.5 fill-white ml-0.5" />
+                                      </span>
+                                    </span>
                                   )}
                                   {isLocked && (
-                                    <div className="w-5 h-5 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center shrink-0">
+                                    <div className="w-5 h-5 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 group-hover/topic:scale-110 transition-transform">
                                       <Lock className="w-2.5 h-2.5" />
                                     </div>
                                   )}
 
-                                  <span className={`font-bold truncate ${
-                                    isCurrent ? 'text-blue-900 font-extrabold' : 'text-slate-800'
+                                  <span className={`font-bold truncate transition-colors duration-150 ${
+                                    isCurrent
+                                      ? 'text-blue-900 font-extrabold'
+                                      : isLocked
+                                      ? 'text-slate-700 group-hover/topic:text-blue-600'
+                                      : 'text-slate-800 group-hover/topic:text-blue-600'
                                   }`}>
                                     {topic.title}
                                   </span>
@@ -438,47 +496,59 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
 
                                   {/* Status Pill */}
                                   {isDone && (
-                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 transition-colors">
                                       Completed
                                     </span>
                                   )}
                                   {isCurrent && (
-                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 transition-colors">
                                       In Progress
                                     </span>
                                   )}
                                   {isLocked && (
-                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-400 border border-slate-200">
-                                      Locked
+                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-50 text-amber-800 border border-amber-200">
+                                      Enroll to Unlock
                                     </span>
                                   )}
 
-                                  {/* Action Button */}
+                                  {/* Action Buttons (Smooth & Animated) */}
                                   {isDone && (
                                     <button
                                       type="button"
-                                      onClick={() => onStartTopic && onStartTopic(topic.id, topic.title)}
-                                      className="px-3 py-1 rounded-lg text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-colors cursor-pointer"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        onStartTopic && onStartTopic(topic.id, topic.title);
+                                      }}
+                                      className="group/btn px-3 py-1.5 rounded-lg text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-600 hover:text-white border border-blue-200 hover:border-blue-600 hover:shadow-md hover:shadow-blue-500/20 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1.5"
                                     >
-                                      Watch Again
+                                      <RotateCcw className="w-3 h-3 group-hover/btn:-rotate-45 transition-transform duration-300" />
+                                      <span>Watch Again</span>
                                     </button>
                                   )}
                                   {isCurrent && (
                                     <button
                                       type="button"
-                                      onClick={() => onStartTopic && onStartTopic(topic.id, topic.title)}
-                                      className="px-4 py-1 rounded-lg text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-xs transition-colors cursor-pointer"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        onStartTopic && onStartTopic(topic.id, topic.title);
+                                      }}
+                                      className="group/btn px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 hover:shadow-md hover:shadow-blue-500/30 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1.5"
                                     >
-                                      Continue
+                                      <span>Continue</span>
+                                      <Play className="w-2.5 h-2.5 fill-white group-hover/btn:translate-x-0.5 transition-transform duration-200" />
                                     </button>
                                   )}
                                   {isLocked && (
                                     <button
                                       type="button"
-                                      disabled
-                                      className="px-3 py-1 rounded-lg text-xs font-bold text-slate-400 bg-slate-100 border border-slate-200 cursor-not-allowed"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleTopicClick(topic);
+                                      }}
+                                      className="group/btn px-3.5 py-1.5 rounded-lg text-xs font-black text-white bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 hover:shadow-md hover:shadow-amber-500/30 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1.5 shadow-xs"
                                     >
-                                      Locked
+                                      <Lock className="w-3 h-3" />
+                                      <span>Unlock</span>
                                     </button>
                                   )}
                                 </div>
@@ -486,7 +556,7 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                             );
                           })}
                         </div>
-                      )}
+                      </div>
                     </div>
                   );
                 })}
@@ -645,6 +715,14 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
 
         </div>
       </main>
+
+      {/* Choose Your Success Plan Modal Popup */}
+      <SuccessPlanModal
+        isOpen={isSuccessPlanOpen}
+        onClose={() => setIsSuccessPlanOpen(false)}
+        targetTopicTitle={selectedTargetTitle}
+        courseTitle="Data Scientist & Agentic AI"
+      />
 
     </div>
   );
