@@ -44,6 +44,7 @@ interface MobileDashboardHomeProps {
   onOpenDataScience?: () => void;
   onOpenMlEngineering?: () => void;
   onOpenAiEngineering?: () => void;
+  onOpenAiToolsPrompt?: () => void;
   onOpenSql?: () => void;
   onOpenExcel?: () => void;
   onOpenPowerBi?: () => void;
@@ -63,6 +64,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
   onOpenDataScience,
   onOpenMlEngineering,
   onOpenAiEngineering,
+  onOpenAiToolsPrompt,
   onOpenSql,
   onOpenExcel,
   onOpenPowerBi,

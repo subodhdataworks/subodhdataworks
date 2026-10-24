@@ -41,6 +41,7 @@ export interface StudentCoursesDashboardProps {
   onOpenMlEngineeringCourse?: () => void;
   onOpenDeepLearningCourse?: () => void;
   onOpenAiEngineeringCourse?: () => void;
+  onOpenAiToolsPromptCourse?: () => void;
   onOpenLockedCourse: (courseTitle: string) => void;
   onOpenPythonDirect?: () => void;
   onOpenMockInterview?: () => void;
@@ -83,6 +84,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
   onOpenMlEngineeringCourse,
   onOpenDeepLearningCourse,
   onOpenAiEngineeringCourse,
+  onOpenAiToolsPromptCourse,
   onOpenLockedCourse,
   onOpenPythonDirect,
   onOpenMockInterview,
