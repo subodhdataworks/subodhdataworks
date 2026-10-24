@@ -32,9 +32,7 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
 }) => {
   const [activeTabId, setActiveTabId] = useState<string>('tab-1');
   const [expandedChapters, setExpandedChapters] = useState<Record<string, boolean>>({
-    'ch-1': true,
-    'ch-2': false,
-    'ch-3': false,
+    'mod-1': true,
   });
 
   const activeTab: TabItem =
@@ -229,11 +227,11 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
             {/* Bottom Stats Bar inside Hero */}
             <div className="mt-3 pt-2.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs font-black text-slate-800">
               <div className="flex items-center gap-1.5">
-                <span className="w-6 h-6 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center font-black text-[11px]">24</span>
-                <span>Chapters</span>
+                <span className="w-6 h-6 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center font-black text-[11px]">43</span>
+                <span>Modules</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-6 h-6 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center font-black text-[11px]">120</span>
+                <span className="w-6 h-6 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center font-black text-[11px]">345</span>
                 <span>Topics</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -260,6 +258,9 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
           <div className="flex items-stretch gap-2.5 min-w-max">
             {DATA_ANALYST_CURRICULUM.map((tab) => {
               const isActive = tab.id === activeTabId;
+              const moduleCount = tab.chapters.length;
+              const topicCount = tab.chapters.reduce((acc, c) => acc + c.topics.length, 0);
+
               return (
                 <button
                   key={tab.id}
@@ -288,7 +289,7 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                       {tab.tabNum} {tab.shortTitle}
                     </span>
                     <span className={`text-[10px] font-medium leading-none mt-1 ${isActive ? 'text-blue-100' : 'text-slate-400'}`}>
-                      3 Chapters • 15 Topics
+                      {moduleCount} Modules • {topicCount} Topics
                     </span>
                   </div>
                 </button>
@@ -313,7 +314,9 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
               <div className="space-y-3">
                 {activeTab.chapters.map((chapter) => {
                   const isExpanded = expandedChapters[chapter.id] ?? false;
-                  const isCh1 = chapter.id === 'ch-1';
+                  const completedCount = chapter.topics.filter((t) => t.status === 'completed').length;
+                  const totalCount = chapter.topics.length;
+                  const percent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
                   return (
                     <div
@@ -329,7 +332,7 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                         <div className="flex items-center gap-3 min-w-0">
                           {/* Circle Number */}
                           <div className={`w-8 h-8 rounded-full font-black text-xs flex items-center justify-center shrink-0 ${
-                            isCh1 ? 'bg-blue-600 text-white' : 'bg-purple-600 text-white'
+                            chapter.chapterNum <= 4 ? 'bg-blue-600 text-white' : 'bg-purple-600 text-white'
                           }`}>
                             {chapter.chapterNum}
                           </div>
@@ -353,19 +356,19 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                         {/* Chapter Stats & Chevron */}
                         <div className="flex items-center gap-3 shrink-0">
                           <span className="text-[11px] font-bold text-slate-500 hidden sm:inline">
-                            5 Topics
+                            {totalCount} Topics
                           </span>
                           <div className="w-20 h-1.5 rounded-full bg-slate-200 overflow-hidden hidden sm:block">
                             <div
                               className="h-full bg-emerald-500 rounded-full"
-                              style={{ width: isCh1 ? '60%' : '0%' }}
+                              style={{ width: `${percent}%` }}
                             />
                           </div>
                           <span className="text-[11px] font-black text-slate-700 hidden sm:inline">
-                            {isCh1 ? '3 / 5 completed' : '0 / 5 completed'}
+                            {completedCount} / {totalCount} completed
                           </span>
                           <span className="text-xs font-black text-emerald-600">
-                            {isCh1 ? '60%' : '0%'}
+                            {percent}%
                           </span>
                           {isExpanded ? (
                             <ChevronUp className="w-4 h-4 text-slate-400" />
@@ -521,7 +524,7 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                 </div>
                 <div className="flex flex-col">
                   <span className="text-xs font-black text-slate-900">
-                    30 / 120 Lessons Completed
+                    30 / 345 Lessons Completed
                   </span>
                   <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden mt-1.5">
                     <div className="h-full bg-emerald-500 rounded-full" style={{ width: '25%' }} />
