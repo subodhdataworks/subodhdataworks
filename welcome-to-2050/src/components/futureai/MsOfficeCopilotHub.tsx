@@ -9,7 +9,9 @@ import {
   Flame,
   FileText,
   Check,
-  RotateCcw
+  RotateCcw,
+  Code2,
+  Mic
 } from 'lucide-react';
 import { MS_OFFICE_COPILOT_CURRICULUM, TabItem } from '../../data/msOfficeCopilotCurriculum';
 import { SuccessPlanModal } from './SuccessPlanModal';
@@ -17,7 +19,7 @@ import { SuccessPlanModal } from './SuccessPlanModal';
 interface MsOfficeCopilotHubProps {
   userName?: string;
   onBack?: () => void;
-  onStartTopic?: (topicId: string, title: string) => void;
+  onStartTopic?: (topicId: string, title: string, step?: 'learn' | 'play' | 'interview') => void;
 }
 
 export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
@@ -475,8 +477,8 @@ export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
 
                                   {/* Status Pill */}
                                   {isDone && (
-                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 transition-colors">
-                                      Completed
+                                    <span className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs" title="Completed">
+                                      <Check className="w-3 h-3 stroke-[3]" />
                                     </span>
                                   )}
                                   {isCurrent && (
@@ -492,17 +494,44 @@ export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
 
                                   {/* Action Buttons */}
                                   {isDone && (
-                                    <button
-                                      type="button"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        onStartTopic && onStartTopic(topic.id, topic.title);
-                                      }}
-                                      className="group/btn px-3 py-1.5 rounded-lg text-xs font-bold text-sky-800 bg-sky-50 hover:bg-blue-600 hover:text-white border border-sky-200 hover:border-blue-600 hover:shadow-md hover:shadow-blue-500/20 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1.5"
-                                    >
-                                      <RotateCcw className="w-3 h-3 group-hover/btn:-rotate-45 transition-transform duration-300" />
-                                      <span>Watch Again</span>
-                                    </button>
+                                    <div className="flex items-center gap-1.5">
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          onStartTopic && onStartTopic(topic.id, topic.title, 'learn');
+                                        }}
+                                        className="px-2.5 py-1 rounded-lg text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-600 hover:text-white border border-blue-200 hover:border-blue-600 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1"
+                                        title="Watch Video"
+                                      >
+                                        <Play className="w-3 h-3 fill-current" />
+                                        <span>Video</span>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          onStartTopic && onStartTopic(topic.id, topic.title, 'play');
+                                        }}
+                                        className="px-2.5 py-1 rounded-lg text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-600 hover:text-white border border-emerald-200 hover:border-emerald-600 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1"
+                                        title="Practice Code"
+                                      >
+                                        <Code2 className="w-3 h-3" />
+                                        <span>Practice Code</span>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          onStartTopic && onStartTopic(topic.id, topic.title, 'interview');
+                                        }}
+                                        className="px-2.5 py-1 rounded-lg text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-600 hover:text-white border border-purple-200 hover:border-purple-600 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1"
+                                        title="Mock Interview"
+                                      >
+                                        <Mic className="w-3 h-3" />
+                                        <span>Mock Interview</span>
+                                      </button>
+                                    </div>
                                   )}
                                   {isCurrent && (
                                     <button

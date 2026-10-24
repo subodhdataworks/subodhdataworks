@@ -2094,33 +2094,24 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
         </div>
       </header>
 
-      {/* ── 1. UNIFIED TOP BAR: Breadcrumbs (Left) + Activity Steps (Right) in ONE SINGLE LINE ── */}
+      {/* ── 1. UNIFIED TOP BAR: Back + Topic Name (Left) + 3 Activity Steps (Right) ── */}
       <div className="plw-top-unified-bar">
-        {/* Left: Back button & Breadcrumbs */}
+        {/* Left: Back button & Topic Name only */}
         <div className="plw-top-crumbs-group">
-          {activeStep !== 'code' && (
-            <button
-              className="plw-back-pill"
-              onClick={onBack}
-              title="Back to Python Course"
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-              <span>Back</span>
-            </button>
-          )}
-
-          <div className="plw-crumbs">
-            <span className="crumb-link" onClick={() => onNavigateDock?.('home')}>Home</span>
-            <ChevronRight className="w-3 h-3 text-slate-400" />
-            <span className="crumb-link" onClick={onBack}>Python</span>
-            <ChevronRight className="w-3 h-3 text-slate-400" />
-            <span className="crumb-link" onClick={onBack}>{topicHierarchy.moduleTitle}</span>
-            <ChevronRight className="w-3 h-3 text-slate-400" />
-            <strong className="crumb-current">{topicHierarchy.topicTitle}</strong>
-          </div>
+          <button
+            className="plw-back-pill"
+            onClick={onBack}
+            title="Back to Python Course"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+            <span>Back</span>
+          </button>
+          <strong className="crumb-current text-sm font-black text-slate-800 tracking-tight truncate max-w-[280px] sm:max-w-md">
+            {topicHierarchy.topicTitle}
+          </strong>
         </div>
 
-        {/* Right: Activity Steps in the SAME LINE! */}
+        {/* Right: Activity Steps (1 Video -> 2 Practice Code -> 3 Mock Interview) */}
         <div className="plw-top-steps-inline">
           {/* Step 1: Video */}
           <button
@@ -2134,40 +2125,25 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
 
           <span className="pill-connector">→</span>
 
-          {/* Step 2: Level 1 Game */}
+          {/* Step 2: Practice Code */}
           <button
             type="button"
-            className={`plw-inline-step-pill ${activeStep === 'play' ? 'active' : ''} ${['code', 'interview', 'score'].includes(activeStep) ? 'completed' : ''}`}
+            className={`plw-inline-step-pill ${activeStep === 'play' ? 'active' : ''} ${['interview', 'score'].includes(activeStep) ? 'completed' : ''}`}
             onClick={() => handleSelectTab('play')}
           >
-            <span className="pill-num">{['code', 'interview', 'score'].includes(activeStep) ? '✓' : '2'}</span>
-            <span className="pill-label">{effectiveTopicId === 1 ? 'Coding Practice' : 'Practice'}</span>
+            <span className="pill-num">{['interview', 'score'].includes(activeStep) ? '✓' : '2'}</span>
+            <span className="pill-label">Practice Code</span>
           </button>
 
           <span className="pill-connector">→</span>
 
-          {/* Step 3: Code (if applicable) */}
-          {!isTopicWithoutCoding && (
-            <>
-              <button
-                type="button"
-                className={`plw-inline-step-pill ${activeStep === 'code' ? 'active' : ''} ${['interview', 'score'].includes(activeStep) ? 'completed' : ''}`}
-                onClick={() => handleSelectTab('code')}
-              >
-                <span className="pill-num">{['interview', 'score'].includes(activeStep) ? '✓' : '3'}</span>
-                <span className="pill-label">Code</span>
-              </button>
-              <span className="pill-connector">→</span>
-            </>
-          )}
-
-          {/* Step 4: Mock Interview */}
+          {/* Step 3: Mock Interview */}
           <button
             type="button"
-            className={`plw-inline-step-pill ${activeStep === 'interview' ? 'active' : ''}`}
+            className={`plw-inline-step-pill ${activeStep === 'interview' ? 'active' : ''} ${activeStep === 'score' ? 'completed' : ''}`}
             onClick={() => handleSelectTab('interview')}
           >
-            <span className="pill-num">{isTopicWithoutCoding ? '3' : '4'}</span>
+            <span className="pill-num">{activeStep === 'score' ? '✓' : '3'}</span>
             <span className="pill-label">Mock Interview</span>
           </button>
         </div>

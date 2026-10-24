@@ -610,9 +610,8 @@ export function getTopicHierarchyInfo(topicId: number = 1): TopicHierarchyInfo {
 
 const ACTIONS = [
   { step: 'learn' as WorkspaceStepId, label: 'Video', icon: <Play className="w-3 h-3" />, cls: 'act-video' },
-  { step: 'practice' as WorkspaceStepId, label: 'MCQ', icon: <FileText className="w-3 h-3" />, cls: 'act-mcq' },
-  { step: 'play' as WorkspaceStepId, label: 'Game', icon: <Gamepad2 className="w-3 h-3" />, cls: 'act-game' },
-  { step: 'code' as WorkspaceStepId, label: 'Code', icon: <Code2 className="w-3 h-3" />, cls: 'act-code' },
+  { step: 'play' as WorkspaceStepId, label: 'Practice Code', icon: <Code2 className="w-3 h-3" />, cls: 'act-code' },
+  { step: 'interview' as WorkspaceStepId, label: 'Mock Interview', icon: <Mic className="w-3 h-3" />, cls: 'act-interview' },
 ];
 
 export const PythonChapterView: React.FC<Props> = ({
@@ -761,7 +760,7 @@ export const PythonChapterView: React.FC<Props> = ({
                             ))}
                           </div>
                           <div className="pcv-lstatus">
-                            {(isTopicDone || l.status === 'completed') && <span className="st-done"><CheckCircle2 /> Completed</span>}
+                            {(isTopicDone || l.status === 'completed') && <span className="st-done" title="Completed"><CheckCircle2 className="w-4 h-4 text-emerald-500" /></span>}
                             {!isTopicDone && l.status === 'progress' && <span className="st-prog"><Circle /> In Progress</span>}
                             {!isTopicDone && l.status === 'todo' && <span className="st-todo">Not Started</span>}
                           </div>

@@ -2027,12 +2027,14 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                   setSelectedModuleView(null);
                   if (typeof window !== 'undefined') window.location.hash = '#dashboard';
                 }}
-                onStartTopic={(topicId, title) => {
+                onStartTopic={(topicId, title, step = 'learn') => {
                   playClick();
                   if (topicId.startsWith('t-10') || topicId.startsWith('t-11') || topicId.startsWith('t-12')) {
                     playCinema();
                     setSelectedModuleView('python');
-                    if (typeof window !== 'undefined') window.location.hash = '#python';
+                    setActiveTopicWs(1);
+                    setTargetStep(step as any);
+                    if (typeof window !== 'undefined') window.location.hash = `#${step}`;
                   } else if (topicId.startsWith('t-7') || topicId.startsWith('t-8') || topicId.startsWith('t-9')) {
                     playCinema();
                     setSelectedModuleView('sql');
@@ -2052,8 +2054,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                   } else {
                     setSelectedModuleView('python');
                     setActiveTopicWs(1);
-                    setTargetStep('learn');
-                    if (typeof window !== 'undefined') window.location.hash = '#learn';
+                    setTargetStep(step as any);
+                    if (typeof window !== 'undefined') window.location.hash = `#${step}`;
                   }
                 }}
               />
