@@ -319,56 +319,9 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
             </div>
 
             {/* 3. ACTIVE TAB MAIN ACCORDION CONTAINER */}
-            <section className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-sm space-y-4">
-              
-              {/* Tab Header Banner */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-base flex items-center justify-center shrink-0 shadow-sm">
-                    {activeTab.tabNum}
-                  </div>
-                  <div className="w-10 h-10 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center shrink-0">
-                    {renderTabIcon(activeTab.iconName)}
-                  </div>
-                  <div className="flex flex-col">
-                    <div className="flex items-center gap-2">
-                      <h2 className="text-base sm:text-lg font-black text-slate-950">
-                        Tab {activeTab.tabNum}: {activeTab.title}
-                      </h2>
-                      {activeTab.isFree && (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black tracking-wide uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
-                          FREE
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-slate-500 font-medium mt-0.5">
-                      {activeTab.subtitle}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Tab Progress */}
-                <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                  <div className="flex flex-col items-end text-right">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase">Tab Progress</span>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <div className="w-28 h-2 rounded-full bg-slate-100 overflow-hidden">
-                        <div className="h-full bg-emerald-500 rounded-full" style={{ width: activeTab.tabNum === 1 ? '47%' : '0%' }} />
-                      </div>
-                      <span className="text-xs font-black text-slate-800">
-                        {activeTab.tabNum === 1 ? '7 / 15 completed' : '0 / 15 completed'}
-                      </span>
-                      <span className="text-xs font-black text-emerald-600">
-                        {activeTab.tabNum === 1 ? '47%' : '0%'}
-                      </span>
-                    </div>
-                  </div>
-                  <ChevronUp className="w-5 h-5 text-slate-400" />
-                </div>
-              </div>
-
+            <section className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-sm space-y-3">
               {/* Chapters List (3 Chapters in current active tab) */}
-              <div className="space-y-3 pt-1">
+              <div className="space-y-3">
                 {activeTab.chapters.map((chapter) => {
                   const isExpanded = expandedChapters[chapter.id] ?? false;
                   const isCh1 = chapter.id === 'ch-1';
