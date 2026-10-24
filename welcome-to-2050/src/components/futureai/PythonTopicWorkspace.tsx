@@ -2973,7 +2973,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                         onClick={handleNextQuestion}
                       >
                         <Trophy className="w-4 h-4 text-amber-300 fill-amber-300" />
-                        <span>Complete Quiz (View Results)</span>
+                        <span>Submit</span>
                       </button>
                     )}
                   </div>

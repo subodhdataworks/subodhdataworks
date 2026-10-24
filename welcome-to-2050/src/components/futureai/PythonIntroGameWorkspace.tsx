@@ -943,38 +943,37 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                             disabled={isAdvancing}
                           >
                             <div className="py-option-key-badge">{opt.key}</div>
-                    {/* Submit Answer Button */}
-                    <div className="py-submit-action-row">
-                      <button
-                        type="button"
-                        className={`py-submit-answer-btn ${selectedChoiceKey ? 'py-submit-ready' : 'py-submit-idle'}`}
-                        onClick={handleSubmitChoice}
-                        disabled={isAdvancing || !selectedChoiceKey}
-                      >
-                        <Check className="w-4 h-4 stroke-[2.5]" />
-                        <span>Submit Answer</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </div>
+                    {/* Next / Submit Button (Shows only after choosing an option; on last question shows Submit) */}
+                    {selectedChoiceKey && (
+                      <div className="py-submit-action-row animate-fade-in">
+                        <button
+                          type="button"
+                          className="py-submit-answer-btn py-submit-ready"
+                          onClick={handleSubmitChoice}
+                          disabled={isAdvancing}
+                        >
+                          {activeChallengeNum === activeGame.challenges.length ? (
+                            <>
+                              <Check className="w-4 h-4 stroke-[2.5]" />
+                              <span>Submit</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>Next Question</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
+                    
                             <span className="py-option-label">{opt.label}</span>
                             {isOptCorrect && <Check className="w-4 h-4 text-emerald-600 ml-auto" />}
                           </button>
                         );
                       })}
                     </div>
-                    {/* Submit Answer Button */}
-                    <div className="py-submit-action-row">
-                      <button
-                        type="button"
-                        className={`py-submit-answer-btn ${selectedChoiceKey ? 'py-submit-ready' : 'py-submit-idle'}`}
-                        onClick={handleSubmitChoice}
-                        disabled={isAdvancing || !selectedChoiceKey}
-                      >
-                        <Check className="w-4 h-4 stroke-[2.5]" />
-                        <span>Submit Answer</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </div>
+                    
                   </div>
                 ) : (
                   <div className="py-g1-puzzle-25d-container">
@@ -1172,19 +1171,30 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                         disabled={isAdvancing}
                       >
                         <div className="py-option-key-badge">{opt.key}</div>
-                    {/* Submit Answer Button */}
-                    <div className="py-submit-action-row">
-                      <button
-                        type="button"
-                        className={`py-submit-answer-btn ${selectedChoiceKey ? 'py-submit-ready' : 'py-submit-idle'}`}
-                        onClick={handleSubmitChoice}
-                        disabled={isAdvancing || !selectedChoiceKey}
-                      >
-                        <Check className="w-4 h-4 stroke-[2.5]" />
-                        <span>Submit Answer</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </div>
+                    {/* Next / Submit Button (Shows only after choosing an option; on last question shows Submit) */}
+                    {selectedChoiceKey && (
+                      <div className="py-submit-action-row animate-fade-in">
+                        <button
+                          type="button"
+                          className="py-submit-answer-btn py-submit-ready"
+                          onClick={handleSubmitChoice}
+                          disabled={isAdvancing}
+                        >
+                          {activeChallengeNum === activeGame.challenges.length ? (
+                            <>
+                              <Check className="w-4 h-4 stroke-[2.5]" />
+                              <span>Submit</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>Next Question</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
+                    
                         <span className="py-option-label">{opt.label}</span>
                         {isOptCorrect && <Check className="w-4 h-4 text-emerald-600 ml-auto" />}
                       </button>
@@ -1430,19 +1440,30 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                         disabled={isAdvancing}
                       >
                         <div className="py-option-key-badge">{opt.key}</div>
-                    {/* Submit Answer Button */}
-                    <div className="py-submit-action-row">
-                      <button
-                        type="button"
-                        className={`py-submit-answer-btn ${selectedChoiceKey ? 'py-submit-ready' : 'py-submit-idle'}`}
-                        onClick={handleSubmitChoice}
-                        disabled={isAdvancing || !selectedChoiceKey}
-                      >
-                        <Check className="w-4 h-4 stroke-[2.5]" />
-                        <span>Submit Answer</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </div>
+                    {/* Next / Submit Button (Shows only after choosing an option; on last question shows Submit) */}
+                    {selectedChoiceKey && (
+                      <div className="py-submit-action-row animate-fade-in">
+                        <button
+                          type="button"
+                          className="py-submit-answer-btn py-submit-ready"
+                          onClick={handleSubmitChoice}
+                          disabled={isAdvancing}
+                        >
+                          {activeChallengeNum === activeGame.challenges.length ? (
+                            <>
+                              <Check className="w-4 h-4 stroke-[2.5]" />
+                              <span>Submit</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>Next Question</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
+                    
                         <span className="py-option-label whitespace-pre-wrap">{opt.label}</span>
                         {isOptCorrect && <Check className="w-4 h-4 text-emerald-600 ml-auto" />}
                       </button>
@@ -1500,19 +1521,30 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                         disabled={isAdvancing}
                       >
                         <div className="py-option-key-badge">{opt.key}</div>
-                    {/* Submit Answer Button */}
-                    <div className="py-submit-action-row">
-                      <button
-                        type="button"
-                        className={`py-submit-answer-btn ${selectedChoiceKey ? 'py-submit-ready' : 'py-submit-idle'}`}
-                        onClick={handleSubmitChoice}
-                        disabled={isAdvancing || !selectedChoiceKey}
-                      >
-                        <Check className="w-4 h-4 stroke-[2.5]" />
-                        <span>Submit Answer</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </div>
+                    {/* Next / Submit Button (Shows only after choosing an option; on last question shows Submit) */}
+                    {selectedChoiceKey && (
+                      <div className="py-submit-action-row animate-fade-in">
+                        <button
+                          type="button"
+                          className="py-submit-answer-btn py-submit-ready"
+                          onClick={handleSubmitChoice}
+                          disabled={isAdvancing}
+                        >
+                          {activeChallengeNum === activeGame.challenges.length ? (
+                            <>
+                              <Check className="w-4 h-4 stroke-[2.5]" />
+                              <span>Submit</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>Next Question</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
+                    
                         <code className="py-option-label font-mono">{opt.label}</code>
                         {isOptCorrect && <Check className="w-4 h-4 text-emerald-600 ml-auto" />}
                       </button>
@@ -1571,19 +1603,30 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                           disabled={isAdvancing}
                         >
                           <div className="py-option-key-badge">{opt.key}</div>
-                    {/* Submit Answer Button */}
-                    <div className="py-submit-action-row">
-                      <button
-                        type="button"
-                        className={`py-submit-answer-btn ${selectedChoiceKey ? 'py-submit-ready' : 'py-submit-idle'}`}
-                        onClick={handleSubmitChoice}
-                        disabled={isAdvancing || !selectedChoiceKey}
-                      >
-                        <Check className="w-4 h-4 stroke-[2.5]" />
-                        <span>Submit Answer</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </div>
+                    {/* Next / Submit Button (Shows only after choosing an option; on last question shows Submit) */}
+                    {selectedChoiceKey && (
+                      <div className="py-submit-action-row animate-fade-in">
+                        <button
+                          type="button"
+                          className="py-submit-answer-btn py-submit-ready"
+                          onClick={handleSubmitChoice}
+                          disabled={isAdvancing}
+                        >
+                          {activeChallengeNum === activeGame.challenges.length ? (
+                            <>
+                              <Check className="w-4 h-4 stroke-[2.5]" />
+                              <span>Submit</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>Next Question</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
+                    
                           <span className="py-option-label font-mono font-bold">{opt.label}</span>
                           {isOptCorrect && <Check className="w-4 h-4 text-emerald-600 ml-auto" />}
                         </button>
@@ -1712,19 +1755,30 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                           disabled={isAdvancing}
                         >
                           <div className="py-option-key-badge">{opt.key}</div>
-                    {/* Submit Answer Button */}
-                    <div className="py-submit-action-row">
-                      <button
-                        type="button"
-                        className={`py-submit-answer-btn ${selectedChoiceKey ? 'py-submit-ready' : 'py-submit-idle'}`}
-                        onClick={handleSubmitChoice}
-                        disabled={isAdvancing || !selectedChoiceKey}
-                      >
-                        <Check className="w-4 h-4 stroke-[2.5]" />
-                        <span>Submit Answer</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </div>
+                    {/* Next / Submit Button (Shows only after choosing an option; on last question shows Submit) */}
+                    {selectedChoiceKey && (
+                      <div className="py-submit-action-row animate-fade-in">
+                        <button
+                          type="button"
+                          className="py-submit-answer-btn py-submit-ready"
+                          onClick={handleSubmitChoice}
+                          disabled={isAdvancing}
+                        >
+                          {activeChallengeNum === activeGame.challenges.length ? (
+                            <>
+                              <Check className="w-4 h-4 stroke-[2.5]" />
+                              <span>Submit</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>Next Question</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
+                    
                           <span className="py-option-label">{opt.label}</span>
                           {isOptCorrect && <Check className="w-4 h-4 text-emerald-600 ml-auto" />}
                         </button>
@@ -1893,19 +1947,30 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                         disabled={isAdvancing}
                       >
                         <div className="py-option-key-badge boss">{opt.key}</div>
-                    {/* Submit Answer Button */}
-                    <div className="py-submit-action-row">
-                      <button
-                        type="button"
-                        className={`py-submit-answer-btn ${selectedChoiceKey ? 'py-submit-ready' : 'py-submit-idle'}`}
-                        onClick={handleSubmitChoice}
-                        disabled={isAdvancing || !selectedChoiceKey}
-                      >
-                        <Check className="w-4 h-4 stroke-[2.5]" />
-                        <span>Submit Answer</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </div>
+                    {/* Next / Submit Button (Shows only after choosing an option; on last question shows Submit) */}
+                    {selectedChoiceKey && (
+                      <div className="py-submit-action-row animate-fade-in">
+                        <button
+                          type="button"
+                          className="py-submit-answer-btn py-submit-ready"
+                          onClick={handleSubmitChoice}
+                          disabled={isAdvancing}
+                        >
+                          {activeChallengeNum === activeGame.challenges.length ? (
+                            <>
+                              <Check className="w-4 h-4 stroke-[2.5]" />
+                              <span>Submit</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>Next Question</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
+                    
                         <code className="py-option-label font-mono">{opt.label}</code>
                         {isOptCorrect && <Zap className="w-4 h-4 text-emerald-400 ml-auto fill-current" />}
                       </button>
