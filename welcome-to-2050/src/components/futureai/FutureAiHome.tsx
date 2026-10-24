@@ -215,7 +215,14 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         {/* 4. Section: Career-Focused Courses (Hidden on Mobile without login) */}
         <div className="hidden md:block mt-4 mb-1 sm:mt-6 sm:mb-1">
           <CareerFocusedCoursesSection
-            onStartCourse={() => handleStartJourney()}
+            onStartCourse={(courseId) => {
+              if (courseId === 'data-analyst-genai') {
+                setDataAnalystHubOpen(true);
+                if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+              } else {
+                handleStartJourney();
+              }
+            }}
             onEnroll={() => setCurriculumModalOpen(true)}
           />
         </div>
