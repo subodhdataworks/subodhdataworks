@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Play,
   Lock,
@@ -25,6 +25,7 @@ export const FullStackMernHub: React.FC<FullStackMernHubProps> = ({
   onBack,
   onStartTopic,
 }) => {
+  const tabButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const [activeTabId, setActiveTabId] = useState<string>('tab-1');
   const [expandedChapters, setExpandedChapters] = useState<Record<string, boolean>>({
     'mod-1': true,
@@ -69,6 +70,16 @@ export const FullStackMernHub: React.FC<FullStackMernHubProps> = ({
         [targetTab.chapters[0].id]: true,
       }));
     }
+    setTimeout(() => {
+      const btn = tabButtonRefs.current[tabId];
+      if (btn) {
+        btn.scrollIntoView({
+          behavior: 'smooth',
+          inline: 'center',
+          block: 'nearest',
+        });
+      }
+    }, 50);
   };
 
   const toggleChapter = (chapterId: string) => {
@@ -248,7 +259,7 @@ export const FullStackMernHub: React.FC<FullStackMernHubProps> = ({
           id="mern-curriculum-tabs-map"
           className="bg-white rounded-2xl p-2 sm:p-2.5 border border-slate-200/90 shadow-2xs overflow-hidden"
         >
-          <div className="flex items-center gap-2 overflow-x-auto pb-1.5 sm:pb-0 scrollbar-thin scrollbar-thumb-slate-300">
+          <div className="flex items-center gap-2 overflow-x-auto scroll-smooth pb-1.5 sm:pb-0 scrollbar-thin scrollbar-thumb-slate-300">
             {FULL_STACK_MERN_CURRICULUM.map((tab) => {
               const isActive = tab.id === activeTabId;
               const realIcon = getTabRealIcon(tab.tabNum);
@@ -257,6 +268,7 @@ export const FullStackMernHub: React.FC<FullStackMernHubProps> = ({
                 <button
                   key={tab.id}
                   type="button"
+                  ref={(el) => { tabButtonRefs.current[tab.id] = el; }}
                   onClick={() => handleSelectTab(tab.id)}
                   className={`flex items-center gap-2 px-3 py-2 rounded-xl text-left transition-all shrink-0 border cursor-pointer ${
                     isActive

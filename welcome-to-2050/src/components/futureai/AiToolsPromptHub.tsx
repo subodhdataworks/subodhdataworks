@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Play,
   Lock,
@@ -25,6 +25,7 @@ export const AiToolsPromptHub: React.FC<AiToolsPromptHubProps> = ({
   onBack,
   onStartTopic,
 }) => {
+  const tabButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const [activeTabId, setActiveTabId] = useState<string>('tab-1');
   const [expandedChapters, setExpandedChapters] = useState<Record<string, boolean>>({
     'mod-1': true,
@@ -69,6 +70,16 @@ export const AiToolsPromptHub: React.FC<AiToolsPromptHubProps> = ({
         [targetTab.chapters[0].id]: true,
       }));
     }
+    setTimeout(() => {
+      const btn = tabButtonRefs.current[tabId];
+      if (btn) {
+        btn.scrollIntoView({
+          behavior: 'smooth',
+          inline: 'center',
+          block: 'nearest',
+        });
+      }
+    }, 50);
   };
 
   const AI_TOOLS_PRORICULUM_find = (tabId: string) => {
@@ -248,7 +259,7 @@ export const AiToolsPromptHub: React.FC<AiToolsPromptHubProps> = ({
         {/* =========================================================================
             2. FULL-WIDTH HORIZONTAL TABS (Compact, Real 3D Icons, No "Tab" text)
             ========================================================================= */}
-        <div id="pt-curriculum-tabs-map" className="overflow-x-auto scrollbar-none pb-1.5 pt-0.5 px-0.5">
+        <div id="pt-curriculum-tabs-map" className="overflow-x-auto scroll-smooth scrollbar-none pb-1.5 pt-0.5 px-0.5">
           <div className="flex items-center gap-2 sm:gap-2.5 min-w-max">
             {AI_TOOLS_PROMPT_CURRICULUM.map((tab) => {
               const isActive = tab.id === activeTabId;
@@ -259,6 +270,7 @@ export const AiToolsPromptHub: React.FC<AiToolsPromptHubProps> = ({
                 <button
                   key={tab.id}
                   type="button"
+                  ref={(el) => { tabButtonRefs.current[tab.id] = el; }}
                   onClick={() => handleSelectTab(tab.id)}
                   className={`group relative py-2 px-3 sm:py-2 sm:px-3 rounded-xl flex items-center gap-2.5 text-left transition-all duration-200 hover:-translate-y-0.5 active:scale-95 cursor-pointer border ${
                     isActive

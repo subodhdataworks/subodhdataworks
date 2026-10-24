@@ -1,3 +1,4 @@
+import { IndiasMostAffordableBanner } from './IndiasMostAffordableBanner';
 import React, { useState, useEffect } from 'react';
 import {
   Layers,
@@ -89,6 +90,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
   onOpenAiEngineeringCourse,
   onOpenAiToolsPromptCourse,
   onOpenMsOfficeCopilotCourse,
+  onOpenFullStackMernCourse,
   onOpenLockedCourse,
   onOpenPythonDirect,
   onOpenMockInterview,
@@ -155,6 +157,15 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
     } else if (c.id === 'ai-engineering') {
       if (onOpenAiEngineeringCourse) onOpenAiEngineeringCourse();
       else onOpenLockedCourse(c.fullName || c.title || 'AI Engineering');
+    } else if (c.id === 'ai-tools-prompt' || c.id === 'ai-tools-prompt-mastery' || c.id === 'ai-tool-and-prompt') {
+      if (onOpenAiToolsPromptCourse) onOpenAiToolsPromptCourse();
+      else onOpenLockedCourse(c.fullName || c.title || 'AI Tools & Prompt Engineering Mastery');
+    } else if (c.id === 'ms-office-copilot' || c.id === 'msoffice-365-copilot') {
+      if (onOpenMsOfficeCopilotCourse) onOpenMsOfficeCopilotCourse();
+      else onOpenLockedCourse(c.fullName || c.title || 'Microsoft 365 with Copilot AI');
+    } else if (c.id === 'full-stack-web-dev' || c.id === 'full-stack' || c.id === 'mern') {
+      if (onOpenFullStackMernCourse) onOpenFullStackMernCourse();
+      else onOpenLockedCourse(c.fullName || c.title || 'Full-Stack MERN Development with AI');
     } else {
       onOpenLockedCourse(c.fullName || c.title || 'Course');
     }
@@ -182,6 +193,15 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
     } else if (c.id === 'ai-engineering') {
       if (onOpenAiEngineeringCourse) onOpenAiEngineeringCourse();
       else onOpenLockedCourse(c.fullName || c.title || 'AI Engineering');
+    } else if (c.id === 'ai-tools-prompt' || c.id === 'ai-tools-prompt-mastery' || c.id === 'ai-tool-and-prompt') {
+      if (onOpenAiToolsPromptCourse) onOpenAiToolsPromptCourse();
+      else onOpenLockedCourse(c.fullName || c.title || 'AI Tools & Prompt Engineering Mastery');
+    } else if (c.id === 'ms-office-copilot' || c.id === 'msoffice-365-copilot') {
+      if (onOpenMsOfficeCopilotCourse) onOpenMsOfficeCopilotCourse();
+      else onOpenLockedCourse(c.fullName || c.title || 'Microsoft 365 with Copilot AI');
+    } else if (c.id === 'full-stack-web-dev' || c.id === 'full-stack' || c.id === 'mern') {
+      if (onOpenFullStackMernCourse) onOpenFullStackMernCourse();
+      else onOpenLockedCourse(c.fullName || c.title || 'Full-Stack MERN Development with AI');
     } else {
       onOpenLockedCourse(c.fullName || c.title);
     }
@@ -422,22 +442,11 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             SLIM PROMOTIONAL OFFER BANNER STRIP (DIRECTLY UNDER 4 COURSES)
             Matches media_1792140864467_fdb63c4c.png 1:1
             ========================================================================= */}
-        <div
-          className="w-full relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl border border-blue-500/40 hover:border-cyan-400 transition-all duration-300 cursor-pointer group my-6 bg-[#001438]"
-          onClick={() => {
-            playClick();
-            if (onOpenLogin) onOpenLogin();
-            else onOpenDataAnalystCourse();
-          }}
-          title="India's Most Affordable AI Learning Platform - Create Free Account"
-        >
-          <img
-            src="/images/indias_most_affordable_ai_platform_banner.png"
-            alt="India's Most Affordable AI Learning Platform"
-            className="w-full h-auto object-cover block group-hover:scale-[1.008] transition-transform duration-300"
-          />
-          <div className="absolute inset-0 rounded-2xl md:rounded-3xl pointer-events-none ring-1 ring-inset ring-white/10 group-hover:ring-cyan-400/40 transition-all duration-300" />
-        </div>
+        <IndiasMostAffordableBanner onAction={() => {
+          playClick();
+          if (onOpenLogin) onOpenLogin();
+          else onOpenDataAnalystCourse();
+        }} />
       </section>
 
       {/* ============================================================

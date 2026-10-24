@@ -2224,6 +2224,24 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                   setSelectedModuleView('ai_engineering');
                   if (typeof window !== 'undefined') window.location.hash = '#ai-engineering';
                 }}
+                onOpenAiToolsPrompt={() => {
+                  playClick();
+                  playCinema();
+                  setSelectedModuleView('ai_tools_prompt');
+                  if (typeof window !== 'undefined') window.location.hash = '#ai-tools-prompt';
+                }}
+                onOpenMsOfficeCopilot={() => {
+                  playClick();
+                  playCinema();
+                  setSelectedModuleView('ms_office_copilot');
+                  if (typeof window !== 'undefined') window.location.hash = '#ms-office-copilot';
+                }}
+                onOpenFullStackMern={() => {
+                  playClick();
+                  playCinema();
+                  setSelectedModuleView('full_stack_mern');
+                  if (typeof window !== 'undefined') window.location.hash = '#full-stack-web-dev';
+                }}
                 onOpenSql={() => {
                   playClick();
                   playCinema();
@@ -2309,6 +2327,24 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                   playCinema();
                   setSelectedModuleView('ai_engineering');
                   if (typeof window !== 'undefined') window.location.hash = '#ai-engineering';
+                }}
+                onOpenAiToolsPromptCourse={() => {
+                  playClick();
+                  playCinema();
+                  setSelectedModuleView('ai_tools_prompt');
+                  if (typeof window !== 'undefined') window.location.hash = '#ai-tools-prompt';
+                }}
+                onOpenMsOfficeCopilotCourse={() => {
+                  playClick();
+                  playCinema();
+                  setSelectedModuleView('ms_office_copilot');
+                  if (typeof window !== 'undefined') window.location.hash = '#ms-office-copilot';
+                }}
+                onOpenFullStackMernCourse={() => {
+                  playClick();
+                  playCinema();
+                  setSelectedModuleView('full_stack_mern');
+                  if (typeof window !== 'undefined') window.location.hash = '#full-stack-web-dev';
                 }}
                 onOpenLockedCourse={(courseTitle) => {
                   playClick();

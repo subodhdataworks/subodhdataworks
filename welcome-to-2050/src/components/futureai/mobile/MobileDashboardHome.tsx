@@ -451,7 +451,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
         btnClass: 'bg-gradient-to-r from-amber-600 to-orange-500 hover:from-amber-700 hover:to-orange-600 shadow-amber-500/30',
         priceBorder: 'border-amber-400',
       },
-      action: () => onOpenLockedModule('AI Tool and Prompt'),
+      action: onOpenAiToolsPrompt || (() => onOpenLockedModule('AI Tool & Prompt Engineering Mastery')),
     },
     {
       id: 'ai-for-techies-python-sprint',
