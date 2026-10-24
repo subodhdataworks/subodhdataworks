@@ -39,6 +39,7 @@ export interface StudentCoursesDashboardProps {
   onOpenDataAnalystCourse: () => void;
   onOpenDataScienceCourse?: () => void;
   onOpenMlEngineeringCourse?: () => void;
+  onOpenDeepLearningCourse?: () => void;
   onOpenLockedCourse: (courseTitle: string) => void;
   onOpenPythonDirect?: () => void;
   onOpenMockInterview?: () => void;
@@ -79,6 +80,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
   onOpenDataAnalystCourse,
   onOpenDataScienceCourse,
   onOpenMlEngineeringCourse,
+  onOpenDeepLearningCourse,
   onOpenLockedCourse,
   onOpenPythonDirect,
   onOpenMockInterview,
@@ -138,6 +140,9 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
     } else if (c.id === 'ml-engineering') {
       if (onOpenMlEngineeringCourse) onOpenMlEngineeringCourse();
       else onOpenLockedCourse(c.fullName || c.title || 'Machine Learning Engineering');
+    } else if (c.id === 'deep-learning') {
+      if (onOpenDeepLearningCourse) onOpenDeepLearningCourse();
+      else onOpenLockedCourse(c.fullName || c.title || 'Deep Learning');
     } else {
       onOpenLockedCourse(c.fullName || c.title || 'Course');
     }
@@ -159,6 +164,9 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
     } else if (c.id === 'ml-engineering') {
       if (onOpenMlEngineeringCourse) onOpenMlEngineeringCourse();
       else onOpenLockedCourse(c.fullName || c.title || 'Machine Learning Engineering');
+    } else if (c.id === 'deep-learning') {
+      if (onOpenDeepLearningCourse) onOpenDeepLearningCourse();
+      else onOpenLockedCourse(c.fullName || c.title || 'Deep Learning');
     } else {
       onOpenLockedCourse(c.fullName || c.title);
     }

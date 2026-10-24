@@ -77,6 +77,7 @@ import { LearnerHomeHub } from './LearnerHomeHub';
 import { DataAnalystGenAiHub } from './DataAnalystGenAiHub';
 import { DataScienceAgenticAiHub } from './DataScienceAgenticAiHub';
 import { MlEngineeringHub } from './MlEngineeringHub';
+import { DeepLearningHub } from './DeepLearningHub';
 import { StudentCoursesDashboard } from './StudentCoursesDashboard';
 import { PythonIntroGameWorkspace } from './PythonIntroGameWorkspace';
 import { LearningModulesProgressModal } from './LearningModulesProgressModal';
@@ -532,7 +533,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   };
 
   // Sub-view: null = 4-Course Student Dashboard (#dashboard), 'data_analyst' = Data Analyst with GenAI 6-Module Hub (#data-analyst), 'python' = Python Module Detail Page, 'python_intro_game' = Python Introduction & Setup Game Workspace, 'sql' = SQL Chapter View, 'excel' = Excel Chapter View, 'powerbi' = Power BI Chapter View, 'stats' = Statistics Chapter View, 'genai' = GenAI Chapter View
-  const [selectedModuleView, setSelectedModuleView] = useState<'data_analyst' | 'data_science' | 'ml_engineering' | 'python' | 'python_intro_game' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai' | null>(() => {
+  const [selectedModuleView, setSelectedModuleView] = useState<'data_analyst' | 'data_science' | 'ml_engineering' | 'deep_learning' | 'python' | 'python_intro_game' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai' | null>(() => {
     if (typeof window !== 'undefined') {
       const h = window.location.hash;
       const baseH = h.split('?')[0];
@@ -544,6 +545,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       }
       if (baseH === '#ml-engineering' || baseH === '#mlengineering' || baseH === '#ml-eng' || baseH === '#ml') {
         return 'ml_engineering';
+      }
+      if (baseH === '#deep-learning' || baseH === '#deeplearning' || baseH === '#dl') {
+        return 'deep_learning';
       }
       if (baseH === '#intro-game' || baseH === '#intro-games' || baseH === '#pyintro') {
         return 'python_intro_game';
@@ -620,7 +624,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       ? 'placement'
       : dockTab === 'income' || dockTab === 'referral' || dockTab === 'wallet' || dockTab === 'withdraw'
       ? 'earn'
-      : selectedModuleView === 'data_analyst' || selectedModuleView === 'data_science' || selectedModuleView === 'ml_engineering' || selectedModuleView === 'python' || selectedModuleView === 'sql' || selectedModuleView === 'excel' || selectedModuleView === 'powerbi' || selectedModuleView === 'genai' || selectedModuleView === 'stats'
+      : selectedModuleView === 'data_analyst' || selectedModuleView === 'data_science' || selectedModuleView === 'ml_engineering' || selectedModuleView === 'deep_learning' || selectedModuleView === 'python' || selectedModuleView === 'sql' || selectedModuleView === 'excel' || selectedModuleView === 'powerbi' || selectedModuleView === 'genai' || selectedModuleView === 'stats'
       ? 'learn'
       : 'home';
 
@@ -667,6 +671,10 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         setDockTab('home');
       } else if (baseH === '#ml-engineering' || baseH === '#mlengineering' || baseH === '#ml-eng' || baseH === '#ml') {
         setSelectedModuleView('ml_engineering');
+        setActiveTopicWs(null);
+        setDockTab('home');
+      } else if (baseH === '#deep-learning' || baseH === '#deeplearning' || baseH === '#dl') {
+        setSelectedModuleView('deep_learning');
         setActiveTopicWs(null);
         setDockTab('home');
       } else if (baseH === '#intro-game' || baseH === '#intro-games' || baseH === '#pyintro') {
@@ -2078,6 +2086,24 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           </div>
         )}
 
+        
+        {/* ─── COURSE 04 SUB-HUB: DEEP LEARNING (#deep-learning) ─── */}
+        {dockTab === 'home' && selectedModuleView === 'deep_learning' && (
+          <div className="col-span-full">
+            <DeepLearningHub
+              userName={currentUserName || userName}
+              onBack={() => {
+                playClick();
+                setSelectedModuleView(null);
+                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+              }}
+              onStartTopic={(topicId, title) => {
+                playClick();
+              }}
+            />
+          </div>
+        )}
+
         {/* ─── TAB 1: TOP-LEVEL 4-COURSE STUDENT DASHBOARD (#dashboard) ─── */}
         {dockTab === 'home' && selectedModuleView === null && (
           <div className="col-span-full">
@@ -2183,6 +2209,12 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                   playCinema();
                   setSelectedModuleView('ml_engineering');
                   if (typeof window !== 'undefined') window.location.hash = '#ml-engineering';
+                }}
+                onOpenDeepLearningCourse={() => {
+                  playClick();
+                  playCinema();
+                  setSelectedModuleView('deep_learning');
+                  if (typeof window !== 'undefined') window.location.hash = '#deep-learning';
                 }}
                 onOpenLockedCourse={(courseTitle) => {
                   playClick();
