@@ -81,6 +81,7 @@ import { DeepLearningHub } from './DeepLearningHub';
 import { AiEngineeringHub } from './AiEngineeringHub';
 import { AiToolsPromptHub } from './AiToolsPromptHub';
 import { MsOfficeCopilotHub } from './MsOfficeCopilotHub';
+import { FullStackMernHub } from './FullStackMernHub';
 import { StudentCoursesDashboard } from './StudentCoursesDashboard';
 import { PythonIntroGameWorkspace } from './PythonIntroGameWorkspace';
 import { LearningModulesProgressModal } from './LearningModulesProgressModal';
@@ -536,7 +537,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   };
 
   // Sub-view: null = 4-Course Student Dashboard (#dashboard), 'data_analyst' = Data Analyst with GenAI 6-Module Hub (#data-analyst), 'python' = Python Module Detail Page, 'python_intro_game' = Python Introduction & Setup Game Workspace, 'sql' = SQL Chapter View, 'excel' = Excel Chapter View, 'powerbi' = Power BI Chapter View, 'stats' = Statistics Chapter View, 'genai' = GenAI Chapter View
-  const [selectedModuleView, setSelectedModuleView] = useState<'data_analyst' | 'data_science' | 'ml_engineering' | 'deep_learning' | 'ai_engineering' | 'ai_tools_prompt' | 'ms_office_copilot' | 'python' | 'python_intro_game' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai' | null>(() => {
+  const [selectedModuleView, setSelectedModuleView] = useState<'data_analyst' | 'data_science' | 'ml_engineering' | 'deep_learning' | 'ai_engineering' | 'ai_tools_prompt' | 'ms_office_copilot' | 'full_stack_mern' | 'python' | 'python_intro_game' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai' | null>(() => {
     if (typeof window !== 'undefined') {
       const h = window.location.hash;
       const baseH = h.split('?')[0];
@@ -630,7 +631,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       ? 'placement'
       : dockTab === 'income' || dockTab === 'referral' || dockTab === 'wallet' || dockTab === 'withdraw'
       ? 'earn'
-      : selectedModuleView === 'data_analyst' || selectedModuleView === 'data_science' || selectedModuleView === 'ml_engineering' || selectedModuleView === 'deep_learning' || selectedModuleView === 'ai_engineering' || selectedModuleView === 'ai_tools_prompt' || selectedModuleView === 'ms_office_copilot' || selectedModuleView === 'python' || selectedModuleView === 'sql' || selectedModuleView === 'excel' || selectedModuleView === 'powerbi' || selectedModuleView === 'genai' || selectedModuleView === 'stats'
+      : selectedModuleView === 'data_analyst' || selectedModuleView === 'data_science' || selectedModuleView === 'ml_engineering' || selectedModuleView === 'deep_learning' || selectedModuleView === 'ai_engineering' || selectedModuleView === 'ai_tools_prompt' || selectedModuleView === 'ms_office_copilot' || selectedModuleView === 'full_stack_mern' || selectedModuleView === 'python' || selectedModuleView === 'sql' || selectedModuleView === 'excel' || selectedModuleView === 'powerbi' || selectedModuleView === 'genai' || selectedModuleView === 'stats'
       ? 'learn'
       : 'home';
 
@@ -2155,6 +2156,23 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         {dockTab === 'home' && selectedModuleView === 'ms_office_copilot' && (
           <div className="col-span-full">
             <MsOfficeCopilotHub
+              userName={currentUserName || userName}
+              onBack={() => {
+                playClick();
+                setSelectedModuleView(null);
+                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+              }}
+              onStartTopic={(topicId, title) => {
+                playClick();
+              }}
+            />
+          </div>
+        )}
+
+        {/* ─── COURSE 08 SUB-HUB: FULL-STACK MERN DEVELOPMENT WITH AI (#full-stack-web-dev) ─── */}
+        {dockTab === 'home' && selectedModuleView === 'full_stack_mern' && (
+          <div className="col-span-full">
+            <FullStackMernHub
               userName={currentUserName || userName}
               onBack={() => {
                 playClick();

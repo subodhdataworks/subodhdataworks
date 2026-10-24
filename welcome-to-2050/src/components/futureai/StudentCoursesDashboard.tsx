@@ -43,6 +43,7 @@ export interface StudentCoursesDashboardProps {
   onOpenAiEngineeringCourse?: () => void;
   onOpenAiToolsPromptCourse?: () => void;
   onOpenMsOfficeCopilotCourse?: () => void;
+  onOpenFullStackMernCourse?: () => void;
   onOpenLockedCourse: (courseTitle: string) => void;
   onOpenPythonDirect?: () => void;
   onOpenMockInterview?: () => void;
