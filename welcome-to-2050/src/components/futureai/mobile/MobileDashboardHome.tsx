@@ -45,6 +45,7 @@ interface MobileDashboardHomeProps {
   onOpenMlEngineering?: () => void;
   onOpenAiEngineering?: () => void;
   onOpenAiToolsPrompt?: () => void;
+  onOpenMsOfficeCopilot?: () => void;
   onOpenSql?: () => void;
   onOpenExcel?: () => void;
   onOpenPowerBi?: () => void;
@@ -65,6 +66,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
   onOpenMlEngineering,
   onOpenAiEngineering,
   onOpenAiToolsPrompt,
+  onOpenMsOfficeCopilot,
   onOpenSql,
   onOpenExcel,
   onOpenPowerBi,
@@ -363,7 +365,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
         btnClass: 'bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600 shadow-blue-500/30',
         priceBorder: 'border-sky-400',
       },
-      action: () => onOpenLockedModule('Microsoft Office 365 with Copilot'),
+      action: onOpenMsOfficeCopilot || (() => onOpenLockedModule('Microsoft 365 with Copilot AI')),
     },
     {
       id: 'full-stack-web-dev',
