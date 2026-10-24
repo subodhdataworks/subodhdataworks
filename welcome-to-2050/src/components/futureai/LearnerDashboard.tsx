@@ -61,7 +61,6 @@ import { useThemeAccent } from '../../context/ThemeAccentContext';
 import { PayToUnlockModal } from './PayToUnlockModal';
 import { PythonChapterView } from './PythonChapterView';
 import { SqlChapterView } from './SqlChapterView';
-import { ExcelChapterView } from './ExcelChapterView';
 import { PowerBiChapterView } from './PowerBiChapterView';
 import { StatsChapterView } from './StatsChapterView';
 import { GenAiChapterView } from './GenAiChapterView';
@@ -95,7 +94,6 @@ import { MobilePlacementHub } from './mobile/MobilePlacementHub';
 import { MobilePythonChapterView } from './mobile/MobilePythonChapterView';
 import { MobileTopicWorkspace } from './mobile/MobileTopicWorkspace';
 import { MobileSqlChapterView } from './mobile/MobileSqlChapterView';
-import { MobileExcelChapterView } from './mobile/MobileExcelChapterView';
 import { MobileGameArenaHub } from './mobile/MobileGameArenaHub';
 import { MobileDataAnalystHub } from './mobile/MobileDataAnalystHub';
 import { FutureAuthModal } from './FutureAuthModal';
@@ -563,7 +561,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         return 'sql';
       }
       if (baseH === '#excel') {
-        return 'excel';
+        return 'python';
       }
       if (baseH === '#powerbi') {
         return 'powerbi';
@@ -760,7 +758,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         setActiveTopicWs(null);
         setDockTab('home');
       } else if (baseH === '#excel') {
-        setSelectedModuleView('excel');
+        setSelectedModuleView('python');
         setActiveTopicWs(null);
         setDockTab('home');
       } else if (baseH === '#powerbi') {
@@ -1051,8 +1049,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       setSelectedModuleView('sql');
       if (typeof window !== 'undefined') window.location.hash = '#sql';
     } else if (m.id === 'mod-3' || titleLower.includes('excel') || titleLower.includes('business')) {
-      setSelectedModuleView('excel');
-      if (typeof window !== 'undefined') window.location.hash = '#excel';
+      setSelectedModuleView('python');
+      if (typeof window !== 'undefined') window.location.hash = '#python';
     } else if (m.id === 'mod-4' || titleLower.includes('power bi') || titleLower.includes('powerbi')) {
       setSelectedModuleView('powerbi');
       if (typeof window !== 'undefined') window.location.hash = '#powerbi';
@@ -1155,8 +1153,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       setSelectedModuleView('sql');
       if (typeof window !== 'undefined') window.location.hash = '#sql';
     } else if (route === 'excel') {
-      setSelectedModuleView('excel');
-      if (typeof window !== 'undefined') window.location.hash = '#excel';
+      setSelectedModuleView('python');
+      if (typeof window !== 'undefined') window.location.hash = '#python';
     } else if (route === 'powerbi') {
       setSelectedModuleView('powerbi');
       if (typeof window !== 'undefined') window.location.hash = '#powerbi';
@@ -1770,42 +1768,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           </div>
         )}
 
-        {/* ─── TAB: EXCEL COURSE CHAPTER VIEW ─── */}
-        {dockTab === 'home' && selectedModuleView === 'excel' && (
-          <div className="col-span-full">
-            {/* Mobile View (< 768px) */}
-            <div className="md:hidden min-h-screen bg-slate-50">
-              <MobileExcelChapterView
-                userName={currentUserName}
-                onBack={() => {
-                  setSelectedModuleView(null);
-                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-                }}
-                onOpenUnlockModal={(mod) => {
-                  setSelectedLockedModule(mod || 'Advanced Excel');
-                  setUnlockModalOpen(true);
-                }}
-                onOpenAdvisor={onOpenAdvisor}
-              />
-            </div>
-
-            {/* Desktop View (>= 768px) */}
-            <div className="hidden md:block">
-              <ExcelChapterView
-                userName={userName}
-                onBack={() => {
-                  setSelectedModuleView('data_analyst');
-                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-                }}
-                onOpenUnlockModal={(mod) => {
-                  setSelectedLockedModule(mod || 'Advanced Excel');
-                  setUnlockModalOpen(true);
-                }}
-                onOpenAdvisor={onOpenAdvisor}
-              />
-            </div>
-          </div>
-        )}
+        {/* ExcelChapterView removed as requested - direct workspace access */}
 
         {/* ─── TAB: POWER BI COURSE CHAPTER VIEW ─── */}
         {dockTab === 'home' && selectedModuleView === 'powerbi' && (
@@ -1883,8 +1846,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 onOpenExcel={() => {
                   playClick();
                   playCinema();
-                  setSelectedModuleView('excel');
-                  if (typeof window !== 'undefined') window.location.hash = '#excel';
+                  setSelectedModuleView('python');
+                  if (typeof window !== 'undefined') window.location.hash = '#python';
                 }}
                 onOpenPowerBi={() => {
                   playClick();
@@ -1916,8 +1879,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                     setSelectedModuleView('sql');
                     if (typeof window !== 'undefined') window.location.hash = '#sql';
                   } else if (t.includes('excel') || t.includes('copilot')) {
-                    setSelectedModuleView('excel');
-                    if (typeof window !== 'undefined') window.location.hash = '#excel';
+                    setSelectedModuleView('python');
+                    if (typeof window !== 'undefined') window.location.hash = '#python';
                   } else if (t.includes('power') || t.includes('bi')) {
                     setSelectedModuleView('powerbi');
                     if (typeof window !== 'undefined') window.location.hash = '#powerbi';
@@ -1981,8 +1944,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                     if (typeof window !== 'undefined') window.location.hash = '#sql';
                   } else if (topicId.startsWith('t-4') || topicId.startsWith('t-5') || topicId.startsWith('t-6')) {
                     playCinema();
-                    setSelectedModuleView('excel');
-                    if (typeof window !== 'undefined') window.location.hash = '#excel';
+                    setSelectedModuleView('python');
+                    if (typeof window !== 'undefined') window.location.hash = '#python';
                   } else if (topicId.startsWith('t-13') || topicId.startsWith('t-14') || topicId.startsWith('t-15')) {
                     playCinema();
                     setSelectedModuleView('powerbi');
@@ -2193,8 +2156,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 onOpenExcel={() => {
                   playClick();
                   playCinema();
-                  setSelectedModuleView('excel');
-                  if (typeof window !== 'undefined') window.location.hash = '#excel';
+                  setSelectedModuleView('python');
+                  if (typeof window !== 'undefined') window.location.hash = '#python';
                 }}
                 onOpenPowerBi={() => {
                   playClick();

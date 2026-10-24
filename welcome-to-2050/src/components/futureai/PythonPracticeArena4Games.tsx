@@ -2,6 +2,8 @@ import { getTopicQuestionBank, getTab1TopicList, TopicQuestionBank } from './dat
 import React, { useState, useEffect, useMemo } from 'react';
 import './PythonPracticeArena4Games.css';
 import {
+  Building2,
+  CheckCircle2,
   FileText,
   Puzzle,
   Code2,
@@ -432,11 +434,10 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
       setFloatingXp('+10 XP ✨');
       setTimeout(() => setFloatingXp(null), 1500);
 
-      // Build full voice feedback with Indian voice:
-      // Example: "Right answer! Programming is Giving a computer instructions."
+      // Build direct voice feedback with Indian voice (NO question repetition!)
+      // Direct full answer: "Right answer! [Option text]"
       const selectedOptionText = currQ.options[optIdx]?.text || '';
-      const cleanQ = currQ.question.replace(/\.{2,}/g, '').trim();
-      const rightAnswerAnnouncement = `Right answer! ${cleanQ} is ${selectedOptionText}.`;
+      const rightAnswerAnnouncement = `Right answer! ${selectedOptionText}.`;
 
       // Function to advance ONLY AFTER voice announcement ends completely
       const advanceAfterVoiceEnds = () => {
@@ -673,6 +674,14 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
   // GAME 4: REAL-LIFE MISSION STATE (2 Missions)
   // ─────────────────────────────────────────────────────────────────────────────
   const [missionIdx, setMissionIdx] = useState<number>(0);
+
+  const currentMission = useMemo(() => {
+    if (registeredBank?.game4Missions && registeredBank.game4Missions[missionIdx]) {
+      return registeredBank.game4Missions[missionIdx];
+    }
+    return null;
+  }, [registeredBank, missionIdx]);
+
   const [missionCode, setMissionCode] = useState<string>(
 `products = [
   {"name": "Laptop", "price": 45000},
@@ -1425,17 +1434,17 @@ print(result)`
           )}
 
           {/* ════════════════════════════════════════════════════════════
-              GAME 4: REAL-LIFE MISSION VIEW (Compact Fit)
+              GAME 4: REAL-LIFE MISSION VIEW (Dynamic Topic Support)
               ════════════════════════════════════════════════════════════ */}
           {activeGame === 4 && (
             <div className="ppa-mission-container">
               <div className="ppa-mission-grid">
-                {/* Left: Scenario & Product List Table */}
+                {/* Left: Real-Life Business Scenario */}
                 <div className="ppa-scenario-card">
                   <div className="flex items-center justify-between gap-2">
                     <div className="ppa-scenario-title">
-                      <FileText className="w-4 h-4 text-blue-600" />
-                      <span>Scenario</span>
+                      <Target className="w-4 h-4 text-pink-600" />
+                      <span>{currentMission?.title || `MISSION ${missionIdx + 1} OF 2 — BUSINESS SCENARIO`}</span>
                     </div>
                     <button
                       type="button"
@@ -1450,56 +1459,68 @@ print(result)`
                       <span>Need Help?</span>
                     </button>
                   </div>
-                  <p className="ppa-scenario-desc">
-                    Find products with price &gt; ₹500 and show their names and prices.
-                  </p>
 
-                  <table className="ppa-data-table">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Price (₹)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr><td>Laptop</td><td>45000</td></tr>
-                      <tr><td>Mouse</td><td>299</td></tr>
-                      <tr><td>Keyboard</td><td>799</td></tr>
-                      <tr><td>Monitor</td><td>8999</td></tr>
-                      <tr><td>Charger</td><td>499</td></tr>
-                      <tr><td>Headphone</td><td>1999</td></tr>
-                    </tbody>
-                  </table>
+                  <div className="ppa-scenario-context-box my-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200">
+                    <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                      <Building2 className="w-3.5 h-3.5 text-blue-600" />
+                      <span>Business Context</span>
+                    </div>
+                    <p className="text-sm font-medium text-slate-800 leading-relaxed">
+                      {currentMission?.scenario || 'A team faces an operational challenge requiring practical data analysis.'}
+                    </p>
+                  </div>
+
+                  <div className="ppa-scenario-task-box p-3 rounded-xl bg-blue-50/70 border border-blue-200">
+                    <div className="text-xs font-bold text-blue-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                      <Lightbulb className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
+                      <span>Your Objective</span>
+                    </div>
+                    <p className="text-sm font-bold text-blue-950 leading-relaxed">
+                      {currentMission?.prompt || 'Identify the lesson concept that applies and formulate the analytical solution.'}
+                    </p>
+                  </div>
                 </div>
 
-                {/* Center: Python IDE Card */}
-                <div className="ppa-ide-card">
+                {/* Right: Mission Execution & Action Workspace */}
+                <div className="ppa-ide-card ppa-mission-action-card">
                   <div className="ppa-ide-head">
-                    <span className="ppa-ide-task-text">
-                      Filter products &gt; 500
+                    <span className="ppa-ide-task-text flex items-center gap-1.5 text-slate-200 font-bold">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                      <span>Recommended Analytical Action</span>
                     </span>
                     <button
                       type="button"
-                      className="ppa-ide-run-btn"
-                      onClick={handleRunMissionCode}
+                      className="ppa-ide-run-btn bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs transition-all shadow-sm cursor-pointer"
+                      onClick={handleSubmitMissionSolution}
                     >
-                      <Play className="w-3 h-3 fill-white" />
-                      <span>Run Code</span>
+                      <Check className="w-3.5 h-3.5 stroke-[3]" />
+                      <span>Submit Solution</span>
                     </button>
                   </div>
 
-                  <textarea
-                    className="ppa-ide-editor-area bg-transparent text-emerald-300 font-mono text-xs outline-none resize-none"
-                    rows={8}
-                    value={missionCode}
-                    onChange={(e) => setMissionCode(e.target.value)}
-                  />
-
-                  {missionOutput && (
-                    <div className="p-2 bg-black/60 border-t border-slate-700 text-xs font-mono text-emerald-400">
-                      <strong>Output:</strong> {missionOutput}
+                  <div className="p-4 bg-slate-900/90 rounded-b-xl flex-1 flex flex-col justify-between gap-3 text-slate-100">
+                    <div className="space-y-2.5">
+                      <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                        Key Decision Guidelines:
+                      </div>
+                      <div className="p-2.5 bg-slate-800/80 rounded-lg border border-slate-700 text-xs text-slate-200 leading-relaxed">
+                        <strong className="text-emerald-400">Step 1:</strong> Identify the core business question and map relevant data sources.
+                      </div>
+                      <div className="p-2.5 bg-slate-800/80 rounded-lg border border-slate-700 text-xs text-slate-200 leading-relaxed">
+                        <strong className="text-sky-400">Step 2:</strong> Apply the topic's standard methodology to clean, categorize, or analyze.
+                      </div>
+                      <div className="p-2.5 bg-slate-800/80 rounded-lg border border-slate-700 text-xs text-slate-200 leading-relaxed">
+                        <strong className="text-purple-400">Step 3:</strong> Present verified insights to stakeholders to drive objective action.
+                      </div>
                     </div>
-                  )}
+
+                    {missionDone && (
+                      <div className="p-3 bg-emerald-950/80 border border-emerald-500/50 rounded-xl text-emerald-300 text-xs font-bold flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <span>Mission Solution Approved! Moving to next milestone...</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

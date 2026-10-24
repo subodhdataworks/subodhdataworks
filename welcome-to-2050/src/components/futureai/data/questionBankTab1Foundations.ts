@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // TAB 1: DATA ANALYTICS FOUNDATIONS — 26 TOPICS QUESTION BANK
 // 100% Faithful to Future IT Industry Master Syllabus
-// Covers Modules 1, 2, 3, 4 with 4 Games + Mock Interview per topic
+// Randomly Distributed Quiz Answers (A, B, C, D) & Authentic Real-Life Missions
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import { TopicQuestionBank } from './questionBankRegistry';
@@ -23,11 +23,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand What Is Data?"
+          "text": "To replace all human decisions"
         },
         {
           "key": "B",
-          "text": "To replace all human decisions"
+          "text": "To perform or understand What Is Data?"
         },
         {
           "key": "C",
@@ -38,7 +38,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "To skip understanding the problem"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "The primary objective of learning What Is Data? is to perform and understand its principles within business analytics.",
       "hint": "Think about what What Is Data? accomplishes in data analytics."
     },
@@ -48,22 +48,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply What Is Data? to a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Use an unrelated advanced topic"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Ignore the task requirements"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Assume every result is correct"
+        },
+        {
+          "key": "D",
+          "text": "Apply What Is Data? to a relevant example"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding What Is Data?.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -73,22 +73,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "B",
           "text": "Guess without reading"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip checking the result"
+        },
+        {
+          "key": "C",
+          "text": "Understand the task and available information"
         },
         {
           "key": "D",
           "text": "Use an unintroduced feature"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Before proceeding with What Is Data?, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -123,11 +123,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
+          "text": "Memorize an unrelated definition"
         },
         {
           "key": "B",
-          "text": "Memorize an unrelated definition"
+          "text": "Explain or demonstrate it with a relevant example"
         },
         {
           "key": "C",
@@ -138,7 +138,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Use a future lesson's concept"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of What Is Data?.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -241,17 +241,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — WHAT IS DATA? IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"What Is Data?\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around What Is Data?. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — SWIGGY DELIVERY LOGS AUDIT",
+      "scenario": "Swiggy operations in Bangalore experienced a 24% increase in delivery delays during peak evening hours. The logistics VP requested an audit of incoming data streams.",
+      "prompt": "Identify the raw operational data attributes (Order ID, GPS timestamp, rider assignment, weather flag) versus derived summary reports needed to diagnose the bottleneck.",
+      "expectedResponse": "Collect raw timestamp logs, rider GPS pings, restaurant dispatch times, and weather status to analyze delay causes accurately."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"What Is Data?\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply What Is Data? to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — APOLLO HOSPITALS PATIENT REGISTRY",
+      "scenario": "Apollo Hospitals admissions department is digitizing paper intake forms into an enterprise analytics database.",
+      "prompt": "Distinguish between raw clinical observation data (heart rate 72 bpm, systolic BP 120 mmHg) and aggregate patient summary metrics.",
+      "expectedResponse": "Store individual clinical measurements as raw atomic data points before calculating daily ward averages."
     }
   ],
   "mockInterview": [
@@ -313,22 +313,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply What Is Data Analytics? to a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Use an unrelated advanced topic"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Ignore the task requirements"
+        },
+        {
+          "key": "C",
+          "text": "Apply What Is Data Analytics? to a relevant example"
         },
         {
           "key": "D",
           "text": "Assume every result is correct"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding What Is Data Analytics?.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -338,11 +338,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
+          "text": "Guess without reading"
         },
         {
           "key": "B",
-          "text": "Guess without reading"
+          "text": "Understand the task and available information"
         },
         {
           "key": "C",
@@ -353,7 +353,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Use an unintroduced feature"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Before proceeding with What Is Data Analytics?, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -363,22 +363,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
-        },
-        {
-          "key": "B",
           "text": "Ignore errors"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Use unrelated concepts"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Never explain your choice"
+        },
+        {
+          "key": "D",
+          "text": "Check whether the result meets the task"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -506,17 +506,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — WHAT IS DATA ANALYTICS? IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"What Is Data Analytics?\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around What Is Data Analytics?. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — FLIPKART CART ABANDONMENT ANALYSIS",
+      "scenario": "Flipkart observed that 38% of mobile shoppers who add items to their shopping cart leave the application without completing payment.",
+      "prompt": "Explain how the data analytics process (inspecting funnel drop-off, payment gateway latency, delivery fee visibility) identifies the root cause and boosts sales conversion.",
+      "expectedResponse": "Analyze the checkout funnel drop-offs to pinpoint friction on the payment screen and recommend one-click checkout options."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"What Is Data Analytics?\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply What Is Data Analytics? to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — ZOMATO DELIVERY TIME OPTIMIZATION",
+      "scenario": "Zomato wants to reduce average meal delivery times in South Delhi from 36 minutes to 28 minutes.",
+      "prompt": "Describe how data analytics on kitchen preparation times and traffic congestion routes helps dispatch riders at optimal moments.",
+      "expectedResponse": "Use predictive dispatch analytics based on real-time kitchen preparation signals and traffic data."
     }
   ],
   "mockInterview": [
@@ -553,22 +553,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Why Businesses Need Data Analytics"
-        },
-        {
-          "key": "B",
           "text": "To replace all human decisions"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "To make every result correct automatically"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "To skip understanding the problem"
+        },
+        {
+          "key": "D",
+          "text": "To perform or understand Why Businesses Need Data Analytics"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "The primary objective of learning Why Businesses Need Data Analytics is to perform and understand its principles within business analytics.",
       "hint": "Think about what Why Businesses Need Data Analytics accomplishes in data analytics."
     },
@@ -578,11 +578,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply Why Businesses Need Data Analytics to a relevant example"
+          "text": "Use an unrelated advanced topic"
         },
         {
           "key": "B",
-          "text": "Use an unrelated advanced topic"
+          "text": "Apply Why Businesses Need Data Analytics to a relevant example"
         },
         {
           "key": "C",
@@ -593,7 +593,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Assume every result is correct"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Why Businesses Need Data Analytics.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -628,22 +628,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
-        },
-        {
-          "key": "B",
           "text": "Ignore errors"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Use unrelated concepts"
+        },
+        {
+          "key": "C",
+          "text": "Check whether the result meets the task"
         },
         {
           "key": "D",
           "text": "Never explain your choice"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -653,22 +653,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Memorize an unrelated definition"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip the example"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Use a future lesson's concept"
+        },
+        {
+          "key": "D",
+          "text": "Explain or demonstrate it with a relevant example"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Why Businesses Need Data Analytics.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -771,17 +771,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — WHY BUSINESSES NEED DATA ANALYTICS IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Why Businesses Need Data Analytics\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Why Businesses Need Data Analytics. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — NETFLIX CONTENT INVESTMENT DECISION",
+      "scenario": "Netflix leadership must decide whether to invest $40 Million in producing Season 2 of an original thriller drama.",
+      "prompt": "How does Netflix utilize viewer completion rates, episode drop-off minutes, and social sentiment data instead of executive gut feelings to fund successful shows?",
+      "expectedResponse": "Evaluate user completion velocity and rewatch metrics to calculate projected subscriber retention value."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Why Businesses Need Data Analytics\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Why Businesses Need Data Analytics to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — ZARA FAST-FASHION INVENTORY RESTOCK",
+      "scenario": "Zara physical stores in Mumbai notice an unexpected surge in demand for linen jackets.",
+      "prompt": "Explain why real-time store sales analytics enables Zara to replenish fast-moving inventory within 48 hours instead of overproducing unsold stock.",
+      "expectedResponse": "Real-time sales velocity feeds direct production orders, eliminating unsold stock markdowns."
     }
   ],
   "mockInterview": [
@@ -818,22 +818,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Real-Life Examples of Data Analytics"
-        },
-        {
-          "key": "B",
           "text": "To replace all human decisions"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "To make every result correct automatically"
+        },
+        {
+          "key": "C",
+          "text": "To perform or understand Real-Life Examples of Data Analytics"
         },
         {
           "key": "D",
           "text": "To skip understanding the problem"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "The primary objective of learning Real-Life Examples of Data Analytics is to perform and understand its principles within business analytics.",
       "hint": "Think about what Real-Life Examples of Data Analytics accomplishes in data analytics."
     },
@@ -868,22 +868,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "B",
           "text": "Guess without reading"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip checking the result"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Use an unintroduced feature"
+        },
+        {
+          "key": "D",
+          "text": "Understand the task and available information"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Before proceeding with Real-Life Examples of Data Analytics, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -893,11 +893,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
+          "text": "Ignore errors"
         },
         {
           "key": "B",
-          "text": "Ignore errors"
+          "text": "Check whether the result meets the task"
         },
         {
           "key": "C",
@@ -908,7 +908,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Never explain your choice"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -918,22 +918,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Memorize an unrelated definition"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip the example"
+        },
+        {
+          "key": "C",
+          "text": "Explain or demonstrate it with a relevant example"
         },
         {
           "key": "D",
           "text": "Use a future lesson's concept"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Real-Life Examples of Data Analytics.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -1036,17 +1036,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — REAL-LIFE EXAMPLES OF DATA ANALYTICS IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Real-Life Examples of Data Analytics\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Real-Life Examples of Data Analytics. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — PHONEPE & UPI FRAUD DETECTION",
+      "scenario": "A payment gateway processes 12,000 transactions per second. An anomalous transaction of ₹95,000 occurs from a new device in a different state within 2 minutes of a local transfer.",
+      "prompt": "Explain how real-time velocity checking and geolocation leap detection algorithms flag and block unauthorized fraudulent transactions.",
+      "expectedResponse": "Flag transactions that violate impossible travel speeds and unverified device fingerprints."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Real-Life Examples of Data Analytics\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Real-Life Examples of Data Analytics to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — INDIGO AIRLINES DYNAMIC FARE PRICING",
+      "scenario": "IndiGo flight 6E-205 from Delhi to Mumbai has 32 unsold seats 4 days before departure.",
+      "prompt": "How does dynamic pricing analytics adjust ticket prices automatically based on competitor pricing, historical booking curves, and search queries?",
+      "expectedResponse": "Dynamically adjust fares to maximize seat load factor and total flight revenue."
     }
   ],
   "mockInterview": [
@@ -1083,11 +1083,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Data vs Information vs Insight"
+          "text": "To replace all human decisions"
         },
         {
           "key": "B",
-          "text": "To replace all human decisions"
+          "text": "To perform or understand Data vs Information vs Insight"
         },
         {
           "key": "C",
@@ -1098,7 +1098,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "To skip understanding the problem"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "The primary objective of learning Data vs Information vs Insight is to perform and understand its principles within business analytics.",
       "hint": "Think about what Data vs Information vs Insight accomplishes in data analytics."
     },
@@ -1108,22 +1108,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply Data vs Information vs Insight to a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Use an unrelated advanced topic"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Ignore the task requirements"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Assume every result is correct"
+        },
+        {
+          "key": "D",
+          "text": "Apply Data vs Information vs Insight to a relevant example"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Data vs Information vs Insight.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -1133,22 +1133,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "B",
           "text": "Guess without reading"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip checking the result"
+        },
+        {
+          "key": "C",
+          "text": "Understand the task and available information"
         },
         {
           "key": "D",
           "text": "Use an unintroduced feature"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Before proceeding with Data vs Information vs Insight, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -1183,11 +1183,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
+          "text": "Memorize an unrelated definition"
         },
         {
           "key": "B",
-          "text": "Memorize an unrelated definition"
+          "text": "Explain or demonstrate it with a relevant example"
         },
         {
           "key": "C",
@@ -1198,7 +1198,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Use a future lesson's concept"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Data vs Information vs Insight.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -1301,17 +1301,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — DATA VS INFORMATION VS INSIGHT IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Data vs Information vs Insight\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Data vs Information vs Insight. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — RETAIL CHAIN CLASSIFICATION AUDIT",
+      "scenario": "A national supermarket chain generates 800,000 customer transaction receipts daily across 120 stores.",
+      "prompt": "Categorize: (1) 800,000 raw receipt logs, (2) A chart showing $4.2M quarterly sales by city, and (3) The discovery that weekend shoppers using credit cards spend 45% more on organic groceries.",
+      "expectedResponse": "Raw receipts = Data; Quarterly sales chart = Information; High-spending weekend organic shoppers = Actionable Insight."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Data vs Information vs Insight\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Data vs Information vs Insight to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — FINTECH APP USER RETENTION",
+      "scenario": "A wealth management app measures user activity after a redesign.",
+      "prompt": "Differentiate between raw user click logs, the Daily Active Users (DAU) metric, and the insight that adding a 1-minute portfolio onboarding walkthrough doubles month-1 retention.",
+      "expectedResponse": "Clicks = Data, DAU = Information, Onboarding doubles retention = Actionable Insight."
     }
   ],
   "mockInterview": [
@@ -1373,22 +1373,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply The Role of Data in Decision-Making to a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Use an unrelated advanced topic"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Ignore the task requirements"
+        },
+        {
+          "key": "C",
+          "text": "Apply The Role of Data in Decision-Making to a relevant example"
         },
         {
           "key": "D",
           "text": "Assume every result is correct"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding The Role of Data in Decision-Making.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -1398,11 +1398,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
+          "text": "Guess without reading"
         },
         {
           "key": "B",
-          "text": "Guess without reading"
+          "text": "Understand the task and available information"
         },
         {
           "key": "C",
@@ -1413,7 +1413,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Use an unintroduced feature"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Before proceeding with The Role of Data in Decision-Making, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -1423,22 +1423,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
-        },
-        {
-          "key": "B",
           "text": "Ignore errors"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Use unrelated concepts"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Never explain your choice"
+        },
+        {
+          "key": "D",
+          "text": "Check whether the result meets the task"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -1566,17 +1566,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — THE ROLE OF DATA IN DECISION-MAKING IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"The Role of Data in Decision-Making\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around The Role of Data in Decision-Making. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — RELIANCE RETAIL STORE EXPANSION",
+      "scenario": "Reliance Retail must choose between opening a new supermarket in Pune vs Nagpur with a ₹15 Crore capital budget.",
+      "prompt": "Describe the data points (household disposable income, competitor store density, vehicular traffic flow) required to make an objective data-driven decision.",
+      "expectedResponse": "Analyze demographic spending power and catchment area traffic to project 5-year store ROI."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"The Role of Data in Decision-Making\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply The Role of Data in Decision-Making to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — EDTECH MARKETING BUDGET REALLOCATION",
+      "scenario": "An ed-tech firm spends ₹50 Lakhs monthly across print newspapers, Google Search, and Instagram influencer sponsorships.",
+      "prompt": "How does Cost-Per-Lead (CPL) and Customer Lifetime Value (LTV) analytics guide leadership to reallocate 70% of spend to top-performing digital channels?",
+      "expectedResponse": "Shift budget away from unmeasurable print ads to channels with proven high LTV-to-CAC ratios."
     }
   ],
   "mockInterview": [
@@ -1613,22 +1613,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Data Analyst Roles and Responsibilities"
-        },
-        {
-          "key": "B",
           "text": "To replace all human decisions"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "To make every result correct automatically"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "To skip understanding the problem"
+        },
+        {
+          "key": "D",
+          "text": "To perform or understand Data Analyst Roles and Responsibilities"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "The primary objective of learning Data Analyst Roles and Responsibilities is to perform and understand its principles within business analytics.",
       "hint": "Think about what Data Analyst Roles and Responsibilities accomplishes in data analytics."
     },
@@ -1638,11 +1638,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply Data Analyst Roles and Responsibilities to a relevant example"
+          "text": "Use an unrelated advanced topic"
         },
         {
           "key": "B",
-          "text": "Use an unrelated advanced topic"
+          "text": "Apply Data Analyst Roles and Responsibilities to a relevant example"
         },
         {
           "key": "C",
@@ -1653,7 +1653,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Assume every result is correct"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Data Analyst Roles and Responsibilities.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -1688,22 +1688,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
-        },
-        {
-          "key": "B",
           "text": "Ignore errors"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Use unrelated concepts"
+        },
+        {
+          "key": "C",
+          "text": "Check whether the result meets the task"
         },
         {
           "key": "D",
           "text": "Never explain your choice"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -1713,22 +1713,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Memorize an unrelated definition"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip the example"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Use a future lesson's concept"
+        },
+        {
+          "key": "D",
+          "text": "Explain or demonstrate it with a relevant example"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Data Analyst Roles and Responsibilities.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -1831,17 +1831,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — DATA ANALYST ROLES AND RESPONSIBILITIES IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Data Analyst Roles and Responsibilities\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Data Analyst Roles and Responsibilities. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — ONBOARDING AT ZOMATO AS JUNIOR ANALYST",
+      "scenario": "You join Zomato analytics team. Your first assignment is to build a weekly restaurant delivery SLA dashboard.",
+      "prompt": "Outline your primary responsibilities: extracting transactional data with SQL, cleaning missing timestamps, calculating on-time rates, and presenting findings to regional managers.",
+      "expectedResponse": "Extract data using SQL, clean null values, compute SLA KPIs, and build intuitive visualizations for operations teams."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Data Analyst Roles and Responsibilities\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Data Analyst Roles and Responsibilities to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — RECONCILING CONFLICTING SALES REPORTS",
+      "scenario": "Finance reports ₹12.5 Crore monthly sales while the Marketing dashboard shows ₹14.2 Crore.",
+      "prompt": "Explain the analyst’s role in auditing data definitions (gross revenue vs net revenue after discounts) to reconcile the discrepancy.",
+      "expectedResponse": "Audit SQL logic and verify whether refunds and promotional discount codes were excluded in the Finance definition."
     }
   ],
   "mockInterview": [
@@ -1878,22 +1878,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Data Analyst vs Data Scientist vs Data Engineer"
-        },
-        {
-          "key": "B",
           "text": "To replace all human decisions"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "To make every result correct automatically"
+        },
+        {
+          "key": "C",
+          "text": "To perform or understand Data Analyst vs Data Scientist vs Data Engineer"
         },
         {
           "key": "D",
           "text": "To skip understanding the problem"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "The primary objective of learning Data Analyst vs Data Scientist vs Data Engineer is to perform and understand its principles within business analytics.",
       "hint": "Think about what Data Analyst vs Data Scientist vs Data Engineer accomplishes in data analytics."
     },
@@ -1928,22 +1928,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "B",
           "text": "Guess without reading"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip checking the result"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Use an unintroduced feature"
+        },
+        {
+          "key": "D",
+          "text": "Understand the task and available information"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Before proceeding with Data Analyst vs Data Scientist vs Data Engineer, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -1953,11 +1953,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
+          "text": "Ignore errors"
         },
         {
           "key": "B",
-          "text": "Ignore errors"
+          "text": "Check whether the result meets the task"
         },
         {
           "key": "C",
@@ -1968,7 +1968,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Never explain your choice"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -1978,22 +1978,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Memorize an unrelated definition"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip the example"
+        },
+        {
+          "key": "C",
+          "text": "Explain or demonstrate it with a relevant example"
         },
         {
           "key": "D",
           "text": "Use a future lesson's concept"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Data Analyst vs Data Scientist vs Data Engineer.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -2096,17 +2096,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — DATA ANALYST VS DATA SCIENTIST VS DATA ENGINEER IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Data Analyst vs Data Scientist vs Data Engineer\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Data Analyst vs Data Scientist vs Data Engineer. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — FINTECH PLATFORM TEAM ROLE MAPPING",
+      "scenario": "A fintech startup needs to build an enterprise analytics infrastructure from scratch.",
+      "prompt": "Assign tasks to the correct role: (1) Build automated Apache Airflow data pipelines to Snowflake, (2) Create monthly customer acquisition dashboards in Power BI, (3) Train a machine learning model to predict loan default probabilities.",
+      "expectedResponse": "Task 1 = Data Engineer; Task 2 = Data Analyst; Task 3 = Data Scientist."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Data Analyst vs Data Scientist vs Data Engineer\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Data Analyst vs Data Scientist vs Data Engineer to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — COLLABORATION DURING A CHURN REDUCTION SPRINT",
+      "scenario": "A telecom company launches a cross-functional initiative to stop high-paying postpaid customers from switching carriers.",
+      "prompt": "Describe how the Data Analyst works with Data Engineers (for reliable pipeline feeds) and Data Scientists (interpreting predictive churn scores for marketing campaigns).",
+      "expectedResponse": "Analyst translates business requirements to Data Engineers and translates Data Scientist model outputs into business actions."
     }
   ],
   "mockInterview": [
@@ -2143,11 +2143,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Common Tasks in a Data Analyst’s Day"
+          "text": "To replace all human decisions"
         },
         {
           "key": "B",
-          "text": "To replace all human decisions"
+          "text": "To perform or understand Common Tasks in a Data Analyst’s Day"
         },
         {
           "key": "C",
@@ -2158,7 +2158,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "To skip understanding the problem"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "The primary objective of learning Common Tasks in a Data Analyst’s Day is to perform and understand its principles within business analytics.",
       "hint": "Think about what Common Tasks in a Data Analyst’s Day accomplishes in data analytics."
     },
@@ -2168,22 +2168,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply Common Tasks in a Data Analyst’s Day to a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Use an unrelated advanced topic"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Ignore the task requirements"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Assume every result is correct"
+        },
+        {
+          "key": "D",
+          "text": "Apply Common Tasks in a Data Analyst’s Day to a relevant example"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Common Tasks in a Data Analyst’s Day.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -2193,22 +2193,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "B",
           "text": "Guess without reading"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip checking the result"
+        },
+        {
+          "key": "C",
+          "text": "Understand the task and available information"
         },
         {
           "key": "D",
           "text": "Use an unintroduced feature"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Before proceeding with Common Tasks in a Data Analyst’s Day, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -2243,11 +2243,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
+          "text": "Memorize an unrelated definition"
         },
         {
           "key": "B",
-          "text": "Memorize an unrelated definition"
+          "text": "Explain or demonstrate it with a relevant example"
         },
         {
           "key": "C",
@@ -2258,7 +2258,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Use a future lesson's concept"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Common Tasks in a Data Analyst’s Day.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -2361,17 +2361,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — COMMON TASKS IN A DATA ANALYST’S DAY IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Common Tasks in a Data Analyst’s Day\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Common Tasks in a Data Analyst’s Day. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — AN ANALYST’S DAILY ROUTINE",
+      "scenario": "You are preparing for your first day at a fast-paced analytics consultancy.",
+      "prompt": "Organize a standard daily schedule: morning data pipeline check, writing SQL queries for sales leads, building executive KPI charts, and attending an ad-hoc stakeholder briefing.",
+      "expectedResponse": "Start with data pipeline integrity validation, execute scheduled queries, build visualizations, and conclude with stakeholder communication."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Common Tasks in a Data Analyst’s Day\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Common Tasks in a Data Analyst’s Day to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — TRIAGING AD-HOC DATA REQUESTS",
+      "scenario": "Three different department heads request urgent reports at 11:00 AM before a board meeting.",
+      "prompt": "How do you triage requests based on business impact, clarity of question, and estimated delivery timeline without creating reporting errors?",
+      "expectedResponse": "Prioritize by business urgency, clarify ambiguous metrics immediately, and provide validated data snapshots."
     }
   ],
   "mockInterview": [
@@ -2433,22 +2433,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply Analytics Lifecycle: From Question to Action to a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Use an unrelated advanced topic"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Ignore the task requirements"
+        },
+        {
+          "key": "C",
+          "text": "Apply Analytics Lifecycle: From Question to Action to a relevant example"
         },
         {
           "key": "D",
           "text": "Assume every result is correct"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Analytics Lifecycle: From Question to Action.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -2458,11 +2458,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
+          "text": "Guess without reading"
         },
         {
           "key": "B",
-          "text": "Guess without reading"
+          "text": "Understand the task and available information"
         },
         {
           "key": "C",
@@ -2473,7 +2473,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Use an unintroduced feature"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Before proceeding with Analytics Lifecycle: From Question to Action, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -2483,22 +2483,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
-        },
-        {
-          "key": "B",
           "text": "Ignore errors"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Use unrelated concepts"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Never explain your choice"
+        },
+        {
+          "key": "D",
+          "text": "Check whether the result meets the task"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -2626,17 +2626,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — ANALYTICS LIFECYCLE: FROM QUESTION TO ACTION IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Analytics Lifecycle: From Question to Action\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Analytics Lifecycle: From Question to Action. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — TELECOM CHURN REDUCTION LIFECYCLE",
+      "scenario": "A telecom operator loses 8% of subscribers each quarter to competitors offering cheaper fiber plans.",
+      "prompt": "Walk through the 6 stages of the analytics lifecycle: (1) Frame Question, (2) Data Extraction, (3) Data Cleaning, (4) Exploratory Analysis, (5) Dashboard Storytelling, (6) Business Action.",
+      "expectedResponse": "Follow structured lifecycle from framing \"Why are users leaving?\" to implementing customized retention discounts."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Analytics Lifecycle: From Question to Action\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Analytics Lifecycle: From Question to Action to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — PRODUCT FEATURE ADOPTION LIFECYCLE",
+      "scenario": "An app launches a new bill-split feature but initial adoption is below expectations.",
+      "prompt": "Formulate an end-to-end plan to investigate user onboarding drop-off, analyze behavioral cohorts, and deliver recommendations to product managers.",
+      "expectedResponse": "Track funnel conversion, segment by app version, and recommend prominent homepage placement."
     }
   ],
   "mockInterview": [
@@ -2673,22 +2673,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Working with Stakeholders"
-        },
-        {
-          "key": "B",
           "text": "To replace all human decisions"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "To make every result correct automatically"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "To skip understanding the problem"
+        },
+        {
+          "key": "D",
+          "text": "To perform or understand Working with Stakeholders"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "The primary objective of learning Working with Stakeholders is to perform and understand its principles within business analytics.",
       "hint": "Think about what Working with Stakeholders accomplishes in data analytics."
     },
@@ -2698,11 +2698,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply Working with Stakeholders to a relevant example"
+          "text": "Use an unrelated advanced topic"
         },
         {
           "key": "B",
-          "text": "Use an unrelated advanced topic"
+          "text": "Apply Working with Stakeholders to a relevant example"
         },
         {
           "key": "C",
@@ -2713,7 +2713,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Assume every result is correct"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Working with Stakeholders.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -2748,22 +2748,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
-        },
-        {
-          "key": "B",
           "text": "Ignore errors"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Use unrelated concepts"
+        },
+        {
+          "key": "C",
+          "text": "Check whether the result meets the task"
         },
         {
           "key": "D",
           "text": "Never explain your choice"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -2773,22 +2773,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Memorize an unrelated definition"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip the example"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Use a future lesson's concept"
+        },
+        {
+          "key": "D",
+          "text": "Explain or demonstrate it with a relevant example"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Working with Stakeholders.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -2891,17 +2891,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — WORKING WITH STAKEHOLDERS IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Working with Stakeholders\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Working with Stakeholders. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — NON-TECHNICAL EXECUTIVE BRIEFING",
+      "scenario": "You discovered that 18% of delivery delays are caused by unoptimized driver dispatch radius. You must present this to the Non-Technical Operations VP.",
+      "prompt": "Explain how to present findings using business impact (lost revenue, customer refund costs) without confusing mathematical jargon.",
+      "expectedResponse": "Focus on business metrics like ₹45 Lakh monthly cost and customer satisfaction loss rather than algorithmic complexity."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Working with Stakeholders\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Working with Stakeholders to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — MANAGING CONFLICTING KPI REQUIREMENTS",
+      "scenario": "The Sales team defines a \"Lead\" as anyone who downloads a PDF, while the Marketing team defines a \"Lead\" only as users who book a product demo.",
+      "prompt": "How do you facilitate alignment between both teams and establish a single source of truth in the company reporting dashboard?",
+      "expectedResponse": "Document distinct definitions: \"Marketing Qualified Lead (MQL)\" vs \"Sales Qualified Lead (SQL)\" in a shared data dictionary."
     }
   ],
   "mockInterview": [
@@ -2938,22 +2938,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Ethics and Professional Responsibility"
-        },
-        {
-          "key": "B",
           "text": "To replace all human decisions"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "To make every result correct automatically"
+        },
+        {
+          "key": "C",
+          "text": "To perform or understand Ethics and Professional Responsibility"
         },
         {
           "key": "D",
           "text": "To skip understanding the problem"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "The primary objective of learning Ethics and Professional Responsibility is to perform and understand its principles within business analytics.",
       "hint": "Think about what Ethics and Professional Responsibility accomplishes in data analytics."
     },
@@ -2988,22 +2988,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "B",
           "text": "Guess without reading"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip checking the result"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Use an unintroduced feature"
+        },
+        {
+          "key": "D",
+          "text": "Understand the task and available information"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Before proceeding with Ethics and Professional Responsibility, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -3013,11 +3013,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
+          "text": "Ignore errors"
         },
         {
           "key": "B",
-          "text": "Ignore errors"
+          "text": "Check whether the result meets the task"
         },
         {
           "key": "C",
@@ -3028,7 +3028,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Never explain your choice"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -3038,22 +3038,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Memorize an unrelated definition"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip the example"
+        },
+        {
+          "key": "C",
+          "text": "Explain or demonstrate it with a relevant example"
         },
         {
           "key": "D",
           "text": "Use a future lesson's concept"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Ethics and Professional Responsibility.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -3156,17 +3156,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — ETHICS AND PROFESSIONAL RESPONSIBILITY IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Ethics and Professional Responsibility\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Ethics and Professional Responsibility. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — UNENCRYPTED PII DATA EXPOSURE AUDIT",
+      "scenario": "While writing a SQL query on customer records, you notice plain-text credit card numbers and Aadhaar IDs stored in an unencrypted table accessible to all interns.",
+      "prompt": "Outline your immediate ethical and compliance steps to safeguard customer privacy under data protection laws.",
+      "expectedResponse": "Alert the data security officer immediately, recommend column-level masking, and ensure no PII is exported to local machines."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Ethics and Professional Responsibility\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Ethics and Professional Responsibility to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — RESISTING MISLEADING VISUALIZATIONS",
+      "scenario": "A department manager asks you to truncate the Y-axis of a bar chart from 0 to 95 to make a 2% sales gain look like a massive 300% spike for investors.",
+      "prompt": "Explain how to maintain analytical integrity and present honest, transparent visualizations while addressing stakeholder expectations.",
+      "expectedResponse": "Refuse misleading scale truncations, explain compliance risks, and highlight genuine positive growth drivers instead."
     }
   ],
   "mockInterview": [
@@ -3203,11 +3203,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Descriptive Analytics"
+          "text": "To replace all human decisions"
         },
         {
           "key": "B",
-          "text": "To replace all human decisions"
+          "text": "To perform or understand Descriptive Analytics"
         },
         {
           "key": "C",
@@ -3218,7 +3218,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "To skip understanding the problem"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "The primary objective of learning Descriptive Analytics is to perform and understand its principles within business analytics.",
       "hint": "Think about what Descriptive Analytics accomplishes in data analytics."
     },
@@ -3228,22 +3228,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply Descriptive Analytics to a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Use an unrelated advanced topic"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Ignore the task requirements"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Assume every result is correct"
+        },
+        {
+          "key": "D",
+          "text": "Apply Descriptive Analytics to a relevant example"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Descriptive Analytics.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -3253,22 +3253,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "B",
           "text": "Guess without reading"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip checking the result"
+        },
+        {
+          "key": "C",
+          "text": "Understand the task and available information"
         },
         {
           "key": "D",
           "text": "Use an unintroduced feature"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Before proceeding with Descriptive Analytics, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -3303,11 +3303,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
+          "text": "Memorize an unrelated definition"
         },
         {
           "key": "B",
-          "text": "Memorize an unrelated definition"
+          "text": "Explain or demonstrate it with a relevant example"
         },
         {
           "key": "C",
@@ -3318,7 +3318,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Use a future lesson's concept"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Descriptive Analytics.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -3421,17 +3421,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — DESCRIPTIVE ANALYTICS IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Descriptive Analytics\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Descriptive Analytics. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — QUARTERLY BUSINESS REVIEW (QBR) REPORT",
+      "scenario": "The CEO of an e-commerce platform needs a retrospective performance report for Q3.",
+      "prompt": "Identify the descriptive analytics metrics (Total Revenue, Average Order Value, Total Units Sold, Active Customers) that answer \"What happened in Q3?\".",
+      "expectedResponse": "Calculate historical aggregates, regional breakdowns, and period-over-period percentage growth."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Descriptive Analytics\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Descriptive Analytics to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — HOSPITAL EMERGENCY ADMISSIONS AUDIT",
+      "scenario": "A city hospital analyzes emergency patient intake over the past 12 months.",
+      "prompt": "Describe how descriptive summaries (busiest days of week, average triage time, department intake volume) establish baseline operational facts.",
+      "expectedResponse": "Summarize past admission trends by time of day and department to establish operational baselines."
     }
   ],
   "mockInterview": [
@@ -3493,22 +3493,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply Diagnostic Analytics to a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Use an unrelated advanced topic"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Ignore the task requirements"
+        },
+        {
+          "key": "C",
+          "text": "Apply Diagnostic Analytics to a relevant example"
         },
         {
           "key": "D",
           "text": "Assume every result is correct"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Diagnostic Analytics.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -3518,11 +3518,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
+          "text": "Guess without reading"
         },
         {
           "key": "B",
-          "text": "Guess without reading"
+          "text": "Understand the task and available information"
         },
         {
           "key": "C",
@@ -3533,7 +3533,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Use an unintroduced feature"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Before proceeding with Diagnostic Analytics, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -3543,22 +3543,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
-        },
-        {
-          "key": "B",
           "text": "Ignore errors"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Use unrelated concepts"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Never explain your choice"
+        },
+        {
+          "key": "D",
+          "text": "Check whether the result meets the task"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -3686,17 +3686,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — DIAGNOSTIC ANALYTICS IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Diagnostic Analytics\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Diagnostic Analytics. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — ROOT CAUSE OF REVENUE DECLINE IN MARCH",
+      "scenario": "North India electronics sales fell by 26% in March despite identical marketing spend.",
+      "prompt": "How does diagnostic drill-down analysis (investigating regional stockouts, competitor flash sales, and delivery partner strikes) explain \"Why did it happen?\".",
+      "expectedResponse": "Perform dimensional drill-down and correlation analysis to isolate stockout events as the primary driver."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Diagnostic Analytics\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Diagnostic Analytics to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — CUSTOMER SERVICE TICKET ESCALATIONS",
+      "scenario": "Customer support escalation rates tripled within 48 hours of releasing a mobile app update.",
+      "prompt": "Detail how analyzing crash logs, error frequency by Android version, and customer chat keywords diagnoses the software defect.",
+      "expectedResponse": "Segment escalation tickets by app build version to isolate a crash on Android 14 devices."
     }
   ],
   "mockInterview": [
@@ -3733,22 +3733,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Predictive Analytics"
-        },
-        {
-          "key": "B",
           "text": "To replace all human decisions"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "To make every result correct automatically"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "To skip understanding the problem"
+        },
+        {
+          "key": "D",
+          "text": "To perform or understand Predictive Analytics"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "The primary objective of learning Predictive Analytics is to perform and understand its principles within business analytics.",
       "hint": "Think about what Predictive Analytics accomplishes in data analytics."
     },
@@ -3758,11 +3758,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply Predictive Analytics to a relevant example"
+          "text": "Use an unrelated advanced topic"
         },
         {
           "key": "B",
-          "text": "Use an unrelated advanced topic"
+          "text": "Apply Predictive Analytics to a relevant example"
         },
         {
           "key": "C",
@@ -3773,7 +3773,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Assume every result is correct"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Predictive Analytics.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -3808,22 +3808,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
-        },
-        {
-          "key": "B",
           "text": "Ignore errors"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Use unrelated concepts"
+        },
+        {
+          "key": "C",
+          "text": "Check whether the result meets the task"
         },
         {
           "key": "D",
           "text": "Never explain your choice"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -3833,22 +3833,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Memorize an unrelated definition"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip the example"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Use a future lesson's concept"
+        },
+        {
+          "key": "D",
+          "text": "Explain or demonstrate it with a relevant example"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Predictive Analytics.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -3951,17 +3951,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — PREDICTIVE ANALYTICS IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Predictive Analytics\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Predictive Analytics. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — DIWALI FESTIVAL DEMAND FORECASTING",
+      "scenario": "An electronics retailer must order stock 60 days ahead of the Diwali shopping season.",
+      "prompt": "Explain how predictive analytics combines historical seasonal sales, Google Search interest trends, and macroeconomic indicators to answer \"What is likely to happen?\".",
+      "expectedResponse": "Apply time-series forecasting to project product demand and optimize procurement quantities."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Predictive Analytics\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Predictive Analytics to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — CREDIT CARD DEFAULT RISK ESTIMATION",
+      "scenario": "A commercial bank receives 50,000 credit card applications monthly.",
+      "prompt": "How do predictive statistical models evaluate applicant credit scores, debt-to-income ratios, and employment history to predict default probabilities?",
+      "expectedResponse": "Compute credit risk scores to approve low-risk applicants and flag high-risk profiles for manual underwriting."
     }
   ],
   "mockInterview": [
@@ -3998,22 +3998,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Prescriptive Analytics"
-        },
-        {
-          "key": "B",
           "text": "To replace all human decisions"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "To make every result correct automatically"
+        },
+        {
+          "key": "C",
+          "text": "To perform or understand Prescriptive Analytics"
         },
         {
           "key": "D",
           "text": "To skip understanding the problem"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "The primary objective of learning Prescriptive Analytics is to perform and understand its principles within business analytics.",
       "hint": "Think about what Prescriptive Analytics accomplishes in data analytics."
     },
@@ -4048,22 +4048,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "B",
           "text": "Guess without reading"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip checking the result"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Use an unintroduced feature"
+        },
+        {
+          "key": "D",
+          "text": "Understand the task and available information"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Before proceeding with Prescriptive Analytics, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -4073,11 +4073,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
+          "text": "Ignore errors"
         },
         {
           "key": "B",
-          "text": "Ignore errors"
+          "text": "Check whether the result meets the task"
         },
         {
           "key": "C",
@@ -4088,7 +4088,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Never explain your choice"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -4098,22 +4098,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Memorize an unrelated definition"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip the example"
+        },
+        {
+          "key": "C",
+          "text": "Explain or demonstrate it with a relevant example"
         },
         {
           "key": "D",
           "text": "Use a future lesson's concept"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Prescriptive Analytics.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -4216,17 +4216,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — PRESCRIPTIVE ANALYTICS IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Prescriptive Analytics\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Prescriptive Analytics. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — REAL-TIME DELIVERY ROUTE OPTIMIZATION",
+      "scenario": "A grocery delivery fleet operates 450 electric vans across Mumbai with a 30-minute delivery guarantee.",
+      "prompt": "How does prescriptive analytics recommend specific actions: dynamic delivery route re-assignment and batching orders to minimize battery usage and prevent late deliveries?",
+      "expectedResponse": "Prescribe optimal dispatch routes and order batching decisions that optimize cost and meet SLAs."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Prescriptive Analytics\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Prescriptive Analytics to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — DYNAMIC MARKDOWN RECOMMENDATION",
+      "scenario": "A fashion retailer has 15,000 unsold winter coats with spring approaching in 3 weeks.",
+      "prompt": "How does prescriptive optimization determine whether a 20% discount now or a 40% clearance sale later maximizes total gross margin recovery?",
+      "expectedResponse": "Run optimization simulations to prescribe the exact markdown schedule maximizing margin recovery."
     }
   ],
   "mockInterview": [
@@ -4263,11 +4263,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Metrics, Dimensions and Measures"
+          "text": "To replace all human decisions"
         },
         {
           "key": "B",
-          "text": "To replace all human decisions"
+          "text": "To perform or understand Metrics, Dimensions and Measures"
         },
         {
           "key": "C",
@@ -4278,7 +4278,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "To skip understanding the problem"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "The primary objective of learning Metrics, Dimensions and Measures is to perform and understand its principles within business analytics.",
       "hint": "Think about what Metrics, Dimensions and Measures accomplishes in data analytics."
     },
@@ -4288,22 +4288,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply Metrics, Dimensions and Measures to a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Use an unrelated advanced topic"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Ignore the task requirements"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Assume every result is correct"
+        },
+        {
+          "key": "D",
+          "text": "Apply Metrics, Dimensions and Measures to a relevant example"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Metrics, Dimensions and Measures.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -4313,22 +4313,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "B",
           "text": "Guess without reading"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip checking the result"
+        },
+        {
+          "key": "C",
+          "text": "Understand the task and available information"
         },
         {
           "key": "D",
           "text": "Use an unintroduced feature"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Before proceeding with Metrics, Dimensions and Measures, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -4363,11 +4363,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
+          "text": "Memorize an unrelated definition"
         },
         {
           "key": "B",
-          "text": "Memorize an unrelated definition"
+          "text": "Explain or demonstrate it with a relevant example"
         },
         {
           "key": "C",
@@ -4378,7 +4378,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Use a future lesson's concept"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Metrics, Dimensions and Measures.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -4483,17 +4483,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — METRICS, DIMENSIONS AND MEASURES IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Metrics, Dimensions and Measures\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Metrics, Dimensions and Measures. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — CLASSIFYING E-COMMERCE DATA SCHEMA",
+      "scenario": "You are inspecting a customer orders table containing: CustomerID, OrderDate, Country, ProductSubCategory, Quantity, UnitPrice, and TotalRevenue.",
+      "prompt": "Correctly classify each field into Dimensions (qualitative slicers: Country, Date, Category) vs Measures (quantitative aggregations: Quantity, UnitPrice, Revenue).",
+      "expectedResponse": "Dimensions = Country, OrderDate, ProductSubCategory; Measures = Quantity, UnitPrice, TotalRevenue."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Metrics, Dimensions and Measures\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Metrics, Dimensions and Measures to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — FORMULATING BUSINESS KPIs FROM MEASURES",
+      "scenario": "Leadership wants to monitor Average Revenue Per User (ARPU) and Gross Margin Percentage.",
+      "prompt": "Define the mathematical formula for these KPIs using base measures (Total Revenue, Unique Customer Count, Total Cost of Goods Sold).",
+      "expectedResponse": "ARPU = Total Revenue / Total Unique Customers; Gross Margin % = (Total Revenue - Total Cost) / Total Revenue."
     }
   ],
   "mockInterview": [
@@ -4555,22 +4555,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply Business Questions and KPIs to a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Use an unrelated advanced topic"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Ignore the task requirements"
+        },
+        {
+          "key": "C",
+          "text": "Apply Business Questions and KPIs to a relevant example"
         },
         {
           "key": "D",
           "text": "Assume every result is correct"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Business Questions and KPIs.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -4580,11 +4580,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
+          "text": "Guess without reading"
         },
         {
           "key": "B",
-          "text": "Guess without reading"
+          "text": "Understand the task and available information"
         },
         {
           "key": "C",
@@ -4595,7 +4595,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Use an unintroduced feature"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Before proceeding with Business Questions and KPIs, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -4605,22 +4605,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
-        },
-        {
-          "key": "B",
           "text": "Ignore errors"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Use unrelated concepts"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Never explain your choice"
+        },
+        {
+          "key": "D",
+          "text": "Check whether the result meets the task"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -4748,17 +4748,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — BUSINESS QUESTIONS AND KPIS IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Business Questions and KPIs\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Business Questions and KPIs. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — SAAS BUSINESS HEALTH DASHBOARD",
+      "scenario": "The board of directors asks: \"Is our cloud subscription software business healthy and growing sustainably?\".",
+      "prompt": "Translate this vague question into 4 concrete, measurable KPIs: Monthly Recurring Revenue (MRR), Customer Churn Rate, Customer Lifetime Value (LTV), and Customer Acquisition Cost (CAC).",
+      "expectedResponse": "Track MRR growth rate, net customer churn %, LTV-to-CAC ratio (>3x), and Net Revenue Retention."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Business Questions and KPIs\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Business Questions and KPIs to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — MANUFACTURING PLANT EFFICIENCY METRICS",
+      "scenario": "An automobile assembly factory wants to reduce vehicle production downtime.",
+      "prompt": "Define 3 operational KPIs: Overall Equipment Effectiveness (OEE), Mean Time Between Failures (MTBF), and First-Pass Yield (FPY).",
+      "expectedResponse": "Measure OEE for machine availability, MTBF for equipment reliability, and FPY for zero-defect quality."
     }
   ],
   "mockInterview": [
@@ -4795,22 +4795,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Turning a Business Problem into an Analysis Plan"
-        },
-        {
-          "key": "B",
           "text": "To replace all human decisions"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "To make every result correct automatically"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "To skip understanding the problem"
+        },
+        {
+          "key": "D",
+          "text": "To perform or understand Turning a Business Problem into an Analysis Plan"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "The primary objective of learning Turning a Business Problem into an Analysis Plan is to perform and understand its principles within business analytics.",
       "hint": "Think about what Turning a Business Problem into an Analysis Plan accomplishes in data analytics."
     },
@@ -4820,11 +4820,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply Turning a Business Problem into an Analysis Plan to a relevant example"
+          "text": "Use an unrelated advanced topic"
         },
         {
           "key": "B",
-          "text": "Use an unrelated advanced topic"
+          "text": "Apply Turning a Business Problem into an Analysis Plan to a relevant example"
         },
         {
           "key": "C",
@@ -4835,7 +4835,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Assume every result is correct"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Turning a Business Problem into an Analysis Plan.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -4870,22 +4870,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
-        },
-        {
-          "key": "B",
           "text": "Ignore errors"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Use unrelated concepts"
+        },
+        {
+          "key": "C",
+          "text": "Check whether the result meets the task"
         },
         {
           "key": "D",
           "text": "Never explain your choice"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -4895,22 +4895,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Memorize an unrelated definition"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip the example"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Use a future lesson's concept"
+        },
+        {
+          "key": "D",
+          "text": "Explain or demonstrate it with a relevant example"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Turning a Business Problem into an Analysis Plan.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -5013,17 +5013,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — TURNING A BUSINESS PROBLEM INTO AN ANALYSIS PLAN IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Turning a Business Problem into an Analysis Plan\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Turning a Business Problem into an Analysis Plan. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — SCOPING A RATING DROP INVESTIGATION",
+      "scenario": "A major food delivery app experiences a drop in restaurant customer ratings from 4.7 to 4.1 over 60 days.",
+      "prompt": "Structure a professional analysis plan: (1) Core Problem Statement, (2) Key Hypotheses (cold food, delayed delivery, missing items), (3) Required Data Sources, (4) Timeline & Deliverables.",
+      "expectedResponse": "Formulate testable hypotheses on delivery transit time and packaging feedback, query order reviews, and deliver findings within 5 days."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Turning a Business Problem into an Analysis Plan\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Turning a Business Problem into an Analysis Plan to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — EMPLOYEE ATTRITION SCOPING DOCUMENT",
+      "scenario": "A software company experiences 28% annual attrition among senior developers with 3-5 years tenure.",
+      "prompt": "Draft an analysis scoping document detailing data tables needed (compensation, manager reviews, commute distance), stakeholder milestones, and confidentiality protocols.",
+      "expectedResponse": "Establish project scope, gather anonymized HR records, compare market salary benchmarks, and present retention initiatives."
     }
   ],
   "mockInterview": [
@@ -5060,22 +5060,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Structured, Semi-Structured and Unstructured Data"
-        },
-        {
-          "key": "B",
           "text": "To replace all human decisions"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "To make every result correct automatically"
+        },
+        {
+          "key": "C",
+          "text": "To perform or understand Structured, Semi-Structured and Unstructured Data"
         },
         {
           "key": "D",
           "text": "To skip understanding the problem"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "The primary objective of learning Structured, Semi-Structured and Unstructured Data is to perform and understand its principles within business analytics.",
       "hint": "Think about what Structured, Semi-Structured and Unstructured Data accomplishes in data analytics."
     },
@@ -5110,22 +5110,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "B",
           "text": "Guess without reading"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip checking the result"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Use an unintroduced feature"
+        },
+        {
+          "key": "D",
+          "text": "Understand the task and available information"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Before proceeding with Structured, Semi-Structured and Unstructured Data, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -5135,11 +5135,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
+          "text": "Ignore errors"
         },
         {
           "key": "B",
-          "text": "Ignore errors"
+          "text": "Check whether the result meets the task"
         },
         {
           "key": "C",
@@ -5150,7 +5150,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Never explain your choice"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -5160,22 +5160,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Memorize an unrelated definition"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip the example"
+        },
+        {
+          "key": "C",
+          "text": "Explain or demonstrate it with a relevant example"
         },
         {
           "key": "D",
           "text": "Use a future lesson's concept"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Structured, Semi-Structured and Unstructured Data.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -5278,17 +5278,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — STRUCTURED, SEMI-STRUCTURED AND UNSTRUCTURED DATA IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Structured, Semi-Structured and Unstructured Data\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Structured, Semi-Structured and Unstructured Data. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — AIRLINE ENTERPRISE DATA CLASSIFICATION",
+      "scenario": "An airline stores customer flight bookings, web server event logs, and customer support audio call recordings.",
+      "prompt": "Categorize each data asset: Relational SQL booking table (Structured), Flight JSON API response (Semi-Structured), Customer call audio & complaint emails (Unstructured).",
+      "expectedResponse": "SQL tables = Structured; JSON logs = Semi-Structured; Call audio/emails = Unstructured."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Structured, Semi-Structured and Unstructured Data\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Structured, Semi-Structured and Unstructured Data to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — SOCIAL MEDIA SENTIMENT PIPELINE",
+      "scenario": "A marketing team wants to analyze customer sentiment on Instagram and Twitter regarding a new smartphone launch.",
+      "prompt": "Explain how unstructured social media text, video reviews, and images are processed, tagged with sentiment labels, and stored into a structured tabular dashboard.",
+      "expectedResponse": "Process unstructured comments with NLP sentiment models into structured positive/negative scores for reporting."
     }
   ],
   "mockInterview": [
@@ -5325,11 +5325,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Common Data Sources: Files, Databases and Applications"
+          "text": "To replace all human decisions"
         },
         {
           "key": "B",
-          "text": "To replace all human decisions"
+          "text": "To perform or understand Common Data Sources: Files, Databases and Applications"
         },
         {
           "key": "C",
@@ -5340,7 +5340,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "To skip understanding the problem"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "The primary objective of learning Common Data Sources: Files, Databases and Applications is to perform and understand its principles within business analytics.",
       "hint": "Think about what Common Data Sources: Files, Databases and Applications accomplishes in data analytics."
     },
@@ -5350,22 +5350,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply Common Data Sources: Files, Databases and Applications to a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Use an unrelated advanced topic"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Ignore the task requirements"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Assume every result is correct"
+        },
+        {
+          "key": "D",
+          "text": "Apply Common Data Sources: Files, Databases and Applications to a relevant example"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Common Data Sources: Files, Databases and Applications.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -5375,22 +5375,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "B",
           "text": "Guess without reading"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip checking the result"
+        },
+        {
+          "key": "C",
+          "text": "Understand the task and available information"
         },
         {
           "key": "D",
           "text": "Use an unintroduced feature"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Before proceeding with Common Data Sources: Files, Databases and Applications, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -5425,11 +5425,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
+          "text": "Memorize an unrelated definition"
         },
         {
           "key": "B",
-          "text": "Memorize an unrelated definition"
+          "text": "Explain or demonstrate it with a relevant example"
         },
         {
           "key": "C",
@@ -5440,7 +5440,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Use a future lesson's concept"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Common Data Sources: Files, Databases and Applications.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -5543,17 +5543,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — COMMON DATA SOURCES: FILES, DATABASES AND APPLICATIONS IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Common Data Sources: Files, Databases and Applications\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Common Data Sources: Files, Databases and Applications. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — RETAIL CHAIN MULTI-SOURCE INTEGRATION",
+      "scenario": "A retailer operates 60 physical stores using offline POS Excel sheets, an online e-commerce website on MySQL, and customer service tickets in Zendesk.",
+      "prompt": "Describe how an analytics engineer extracts data from flat files, relational databases, and REST APIs into a centralized data warehouse for unified reporting.",
+      "expectedResponse": "Establish automated ETL connectors from POS files, MySQL replica, and Zendesk API into a central Snowflake warehouse."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Common Data Sources: Files, Databases and Applications\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Common Data Sources: Files, Databases and Applications to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — REAL-TIME IOT SENSOR DATA INGESTION",
+      "scenario": "A smart factory monitors 2,000 temperature and vibration sensors across manufacturing assembly lines.",
+      "prompt": "How does streaming data from IoT message queues (MQTT/Kafka) differ from scheduled nightly batch database exports?",
+      "expectedResponse": "IoT data requires low-latency streaming ingestion for immediate anomaly detection, whereas batch exports run on periodic schedules."
     }
   ],
   "mockInterview": [
@@ -5615,22 +5615,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply CSV, Excel, JSON and Database Tables to a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Use an unrelated advanced topic"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Ignore the task requirements"
+        },
+        {
+          "key": "C",
+          "text": "Apply CSV, Excel, JSON and Database Tables to a relevant example"
         },
         {
           "key": "D",
           "text": "Assume every result is correct"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding CSV, Excel, JSON and Database Tables.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -5640,11 +5640,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
+          "text": "Guess without reading"
         },
         {
           "key": "B",
-          "text": "Guess without reading"
+          "text": "Understand the task and available information"
         },
         {
           "key": "C",
@@ -5655,7 +5655,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Use an unintroduced feature"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Before proceeding with CSV, Excel, JSON and Database Tables, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -5665,22 +5665,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
-        },
-        {
-          "key": "B",
           "text": "Ignore errors"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Use unrelated concepts"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Never explain your choice"
+        },
+        {
+          "key": "D",
+          "text": "Check whether the result meets the task"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -5808,17 +5808,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — CSV, EXCEL, JSON AND DATABASE TABLES IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"CSV, Excel, JSON and Database Tables\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around CSV, Excel, JSON and Database Tables. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — SELECTING THE OPTIMAL DATA FORMAT",
+      "scenario": "You are sharing a dataset of 8 Million customer transaction records with the machine learning team for automated training.",
+      "prompt": "Explain why CSV or database tables are preferred over multi-tab Excel files (.xlsx) which fail due to the 1,048,576 row limit and heavy formatting overhead.",
+      "expectedResponse": "Use CSV or database tables because Excel cannot exceed 1,048,576 rows and adds unneeded file bloat."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"CSV, Excel, JSON and Database Tables\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply CSV, Excel, JSON and Database Tables to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — FLATTENING NESTED JSON ORDERS",
+      "scenario": "A weather API returns hierarchical JSON containing city coordinates, hourly forecasts, and arrays of weather alerts.",
+      "prompt": "Detail how you parse and flatten nested JSON arrays into clean rectangular rows and columns for business intelligence analysis in Power BI or Excel.",
+      "expectedResponse": "Use Power Query or Python json_normalize to expand nested arrays into relational rows with parent keys."
     }
   ],
   "mockInterview": [
@@ -5855,22 +5855,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Data Types and Schemas"
-        },
-        {
-          "key": "B",
           "text": "To replace all human decisions"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "To make every result correct automatically"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "To skip understanding the problem"
+        },
+        {
+          "key": "D",
+          "text": "To perform or understand Data Types and Schemas"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "The primary objective of learning Data Types and Schemas is to perform and understand its principles within business analytics.",
       "hint": "Think about what Data Types and Schemas accomplishes in data analytics."
     },
@@ -5880,11 +5880,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply Data Types and Schemas to a relevant example"
+          "text": "Use an unrelated advanced topic"
         },
         {
           "key": "B",
-          "text": "Use an unrelated advanced topic"
+          "text": "Apply Data Types and Schemas to a relevant example"
         },
         {
           "key": "C",
@@ -5895,7 +5895,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Assume every result is correct"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Data Types and Schemas.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -5930,22 +5930,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
-        },
-        {
-          "key": "B",
           "text": "Ignore errors"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Use unrelated concepts"
+        },
+        {
+          "key": "C",
+          "text": "Check whether the result meets the task"
         },
         {
           "key": "D",
           "text": "Never explain your choice"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -5955,22 +5955,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Memorize an unrelated definition"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip the example"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Use a future lesson's concept"
+        },
+        {
+          "key": "D",
+          "text": "Explain or demonstrate it with a relevant example"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Data Types and Schemas.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -6073,17 +6073,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — DATA TYPES AND SCHEMAS IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Data Types and Schemas\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Data Types and Schemas. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — TROUBLESHOOTING SQL DATA TYPE CONVERSION ERROR",
+      "scenario": "A financial calculation query fails with \"Operator does not exist: varchar + integer\" because order amounts were imported with currency symbols ($499.00).",
+      "prompt": "Explain the importance of data types (VARCHAR vs NUMERIC/DECIMAL) and how removing non-numeric characters and casting allows arithmetic operations.",
+      "expectedResponse": "Clean out currency symbols and cast text fields to DECIMAL(10,2) to enable accurate numerical aggregations."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Data Types and Schemas\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Data Types and Schemas to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — DESIGNING A CLEAN E-COMMERCE TABLE SCHEMA",
+      "scenario": "You are designing the schema for an online bookstore order transactions table.",
+      "prompt": "Specify the proper data types for: OrderID (INT/UUID), OrderTimestamp (TIMESTAMP), CustomerEmail (VARCHAR), IsDiscountApplied (BOOLEAN), and TotalPaid (DECIMAL).",
+      "expectedResponse": "Use INT for primary key, TIMESTAMP for dates, VARCHAR for email, BOOLEAN for flags, and DECIMAL for money."
     }
   ],
   "mockInterview": [
@@ -6120,22 +6120,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Missing Values and Duplicate Records"
-        },
-        {
-          "key": "B",
           "text": "To replace all human decisions"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "To make every result correct automatically"
+        },
+        {
+          "key": "C",
+          "text": "To perform or understand Missing Values and Duplicate Records"
         },
         {
           "key": "D",
           "text": "To skip understanding the problem"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "The primary objective of learning Missing Values and Duplicate Records is to perform and understand its principles within business analytics.",
       "hint": "Think about what Missing Values and Duplicate Records accomplishes in data analytics."
     },
@@ -6170,22 +6170,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "B",
           "text": "Guess without reading"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip checking the result"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Use an unintroduced feature"
+        },
+        {
+          "key": "D",
+          "text": "Understand the task and available information"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Before proceeding with Missing Values and Duplicate Records, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -6195,11 +6195,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
+          "text": "Ignore errors"
         },
         {
           "key": "B",
-          "text": "Ignore errors"
+          "text": "Check whether the result meets the task"
         },
         {
           "key": "C",
@@ -6210,7 +6210,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Never explain your choice"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -6220,22 +6220,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Memorize an unrelated definition"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip the example"
+        },
+        {
+          "key": "C",
+          "text": "Explain or demonstrate it with a relevant example"
         },
         {
           "key": "D",
           "text": "Use a future lesson's concept"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Missing Values and Duplicate Records.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -6338,17 +6338,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — MISSING VALUES AND DUPLICATE RECORDS IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Missing Values and Duplicate Records\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Missing Values and Duplicate Records. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — HANDLING MISSING CUSTOMER INCOMES",
+      "scenario": "In a bank loan dataset of 100,000 applicants, 7% of records have null values in the \"Annual Income\" field.",
+      "prompt": "Evaluate strategies: (1) Deleting rows (loss of data), (2) Imputing with median income based on age and occupation, (3) Creating an \"Income Unknown\" indicator flag.",
+      "expectedResponse": "Impute missing values using subgroup median (by profession) or create a missing indicator flag to preserve sample size."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Missing Values and Duplicate Records\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Missing Values and Duplicate Records to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — DEDUPLICATING CRM MARKETING LEADS",
+      "scenario": "A promotional campaign generates duplicate lead records when impatient users click the \"Submit\" button multiple times within 30 seconds.",
+      "prompt": "Formulate a deduplication rule using composite keys (Email Address + PhoneNumber) and timestamp ranking to retain only the earliest submission.",
+      "expectedResponse": "Group by Email and Phone, then retain the record with the minimum timestamp to remove accidental double-clicks."
     }
   ],
   "mockInterview": [
@@ -6385,11 +6385,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Accuracy, Completeness and Consistency"
+          "text": "To replace all human decisions"
         },
         {
           "key": "B",
-          "text": "To replace all human decisions"
+          "text": "To perform or understand Accuracy, Completeness and Consistency"
         },
         {
           "key": "C",
@@ -6400,7 +6400,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "To skip understanding the problem"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "The primary objective of learning Accuracy, Completeness and Consistency is to perform and understand its principles within business analytics.",
       "hint": "Think about what Accuracy, Completeness and Consistency accomplishes in data analytics."
     },
@@ -6410,22 +6410,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply Accuracy, Completeness and Consistency to a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Use an unrelated advanced topic"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Ignore the task requirements"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Assume every result is correct"
+        },
+        {
+          "key": "D",
+          "text": "Apply Accuracy, Completeness and Consistency to a relevant example"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Accuracy, Completeness and Consistency.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -6435,22 +6435,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "B",
           "text": "Guess without reading"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Skip checking the result"
+        },
+        {
+          "key": "C",
+          "text": "Understand the task and available information"
         },
         {
           "key": "D",
           "text": "Use an unintroduced feature"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Before proceeding with Accuracy, Completeness and Consistency, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -6485,11 +6485,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
+          "text": "Memorize an unrelated definition"
         },
         {
           "key": "B",
-          "text": "Memorize an unrelated definition"
+          "text": "Explain or demonstrate it with a relevant example"
         },
         {
           "key": "C",
@@ -6500,7 +6500,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Use a future lesson's concept"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Accuracy, Completeness and Consistency.",
       "hint": "Clear explanation and working examples prove mastery."
     }
@@ -6603,17 +6603,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — ACCURACY, COMPLETENESS AND CONSISTENCY IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Accuracy, Completeness and Consistency\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Accuracy, Completeness and Consistency. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — DATA QUALITY AUDIT FOR EXECUTIVE BOARD",
+      "scenario": "Before presenting annual sales to the board, you find inconsistent state abbreviations (\"MH\", \"Maharashtra\", \"Mah.\") and impossible order dates (\"1900-01-01\").",
+      "prompt": "Explain how data standardization and domain boundary validation checks guarantee reporting accuracy and board-level credibility.",
+      "expectedResponse": "Standardize state naming against an ISO lookup table and filter out default placeholder dates."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Accuracy, Completeness and Consistency\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Accuracy, Completeness and Consistency to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — HEALTHCARE PATIENT RECORD COMPLETENESS",
+      "scenario": "A health insurance company audits hospital claim submissions before paying claims.",
+      "prompt": "Describe completeness rules verifying that every patient admission has a matching doctor diagnostic code, discharge timestamp, and itemized billing ledger.",
+      "expectedResponse": "Execute automated relational checks ensuring foreign key completeness between diagnosis codes and billing ledgers."
     }
   ],
   "mockInterview": [
@@ -6675,22 +6675,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Apply Data Quality Checks and Documentation to a relevant example"
-        },
-        {
-          "key": "B",
           "text": "Use an unrelated advanced topic"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Ignore the task requirements"
+        },
+        {
+          "key": "C",
+          "text": "Apply Data Quality Checks and Documentation to a relevant example"
         },
         {
           "key": "D",
           "text": "Assume every result is correct"
         }
       ],
-      "correct": 0,
+      "correct": 2,
       "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Data Quality Checks and Documentation.",
       "hint": "Best learning practice always involves practical application to relevant examples."
     },
@@ -6700,11 +6700,11 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
+          "text": "Guess without reading"
         },
         {
           "key": "B",
-          "text": "Guess without reading"
+          "text": "Understand the task and available information"
         },
         {
           "key": "C",
@@ -6715,7 +6715,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
           "text": "Use an unintroduced feature"
         }
       ],
-      "correct": 0,
+      "correct": 1,
       "explanation": "Before proceeding with Data Quality Checks and Documentation, you must clearly understand the task objectives and the data available.",
       "hint": "Always comprehend requirements and inputs before taking action."
     },
@@ -6725,22 +6725,22 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       "options": [
         {
           "key": "A",
-          "text": "Check whether the result meets the task"
-        },
-        {
-          "key": "B",
           "text": "Ignore errors"
         },
         {
-          "key": "C",
+          "key": "B",
           "text": "Use unrelated concepts"
         },
         {
-          "key": "D",
+          "key": "C",
           "text": "Never explain your choice"
+        },
+        {
+          "key": "D",
+          "text": "Check whether the result meets the task"
         }
       ],
-      "correct": 0,
+      "correct": 3,
       "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
       "hint": "Verify results to ensure accuracy."
     },
@@ -6868,17 +6868,17 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "game4Missions": [
     {
       "id": 1,
-      "title": "MISSION 1 — DATA QUALITY CHECKS AND DOCUMENTATION IN PRACTICE",
-      "prompt": "A team faces a real situation related to \"Data Quality Checks and Documentation\". Identify the lesson concept that applies and explain why it fits.",
-      "scenario": "You are consulting for an enterprise team addressing questions around Data Quality Checks and Documentation. Your task is to recommend the best practice based on this lesson.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 1 — AUTOMATED PRE-INGESTION QUALITY GATES",
+      "scenario": "A data warehouse receives nightly batch files containing 2 Million sales rows from international subsidiaries.",
+      "prompt": "Design automated validation tests (Null check, Primary key uniqueness check, Range check on prices > 0, Foreign key constraint check) that trigger alerts before ingestion.",
+      "expectedResponse": "Set automated assertion tests that halt ingestion and notify engineers if price < 0 or duplicate IDs exceed threshold."
     },
     {
       "id": 2,
-      "title": "MISSION 2 — STAKEHOLDER STRATEGY",
-      "prompt": "A business stakeholder asks for an action plan regarding \"Data Quality Checks and Documentation\". Explain the key steps to implement.",
-      "scenario": "Prepare a brief structured response explaining how to apply Data Quality Checks and Documentation to improve business outcomes.",
-      "expectedResponse": "Apply only the current lesson's concept and explain the choice."
+      "title": "MISSION 2 — AUTHORING AN ENTERPRISE DATA DICTIONARY",
+      "scenario": "New analysts frequently misinterpret the \"Order_Status\" column, confusing \"Processing\" with \"Dispatched\".",
+      "prompt": "Create a standardized data dictionary entry: Column Name, Business Definition, Source System, Data Type, Allowed Enum Values, and Update Frequency.",
+      "expectedResponse": "Document clear definitions and allowed enum values in a searchable catalog to prevent cross-team metric confusion."
     }
   ],
   "mockInterview": [
