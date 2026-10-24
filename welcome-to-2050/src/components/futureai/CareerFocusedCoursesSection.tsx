@@ -414,7 +414,11 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
           min-height: 200px !important;
           margin-top: -15px !important;
           padding: 16px 12px 14px !important;
-          background: linear-gradient(180deg, #090e1f 0%, #0d152c 60%, #080d1c 100%) !important;
+          background: #ffffff !important;
+          border-left: 2px solid var(--pot-neon) !important;
+          border-right: 2px solid var(--pot-neon) !important;
+          border-bottom: 2.5px solid var(--pot-neon) !important;
+          box-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.12), 0 0 16px rgba(var(--pot-neon-rgb), 0.22) !important;
           gap: 7px !important;
           display: flex !important;
           flex-direction: column !important;

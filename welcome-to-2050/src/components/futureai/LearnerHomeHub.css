@@ -3573,13 +3573,13 @@
 .scd-pots-5grid .scd-pot-top-rim {
   position: relative;
   width: 96%;
-  height: 32px;
+  height: 30px;
   border-radius: 50%;
-  background: #081020;
-  border: 1.5px solid var(--pot-neon);
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+  border: 2px solid var(--pot-neon);
   box-shadow:
-    0 0 8px rgba(var(--pot-neon-rgb), 0.45),
-    inset 0 0 8px rgba(var(--pot-neon-rgb), 0.3);
+    0 0 8px rgba(var(--pot-neon-rgb), 0.35),
+    inset 0 0 8px rgba(var(--pot-neon-rgb), 0.2);
   z-index: 5;
   display: flex;
   align-items: center;
@@ -3587,10 +3587,27 @@
   overflow: hidden;
 }
 .scd-pots-5grid .scd-pot-cylinder-body {
-  min-height: unset;
-  margin-top: -12px;
-  padding: 14px 8px 10px;
-  gap: 4px;
+  position: relative;
+  width: 92%;
+  min-height: 200px;
+  margin-top: -16px;
+  padding: 16px 12px 14px;
+  background: #ffffff;
+  border-left: 2px solid var(--pot-neon);
+  border-right: 2px solid var(--pot-neon);
+  border-bottom: 2.5px solid var(--pot-neon);
+  border-radius: 0 0 36% 36% / 0 0 24px 24px;
+  box-shadow:
+    0 10px 24px -4px rgba(15, 23, 42, 0.12),
+    0 4px 14px rgba(var(--pot-neon-rgb), 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  gap: 7px;
+  z-index: 4;
+  overflow: hidden;
 }
 .scd-pots-5grid .scd-pot-top-tags {
   gap: 3px;
