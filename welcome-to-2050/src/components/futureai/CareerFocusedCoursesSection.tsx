@@ -411,9 +411,10 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
           width: 95% !important;
         }
         .scd-pots-4grid .scd-pot-cylinder-body {
-          min-height: 240px !important;
+          min-height: 200px !important;
           margin-top: -15px !important;
           padding: 16px 12px 14px !important;
+          background: linear-gradient(180deg, #090e1f 0%, #0d152c 60%, #080d1c 100%) !important;
           gap: 7px !important;
           display: flex !important;
           flex-direction: column !important;

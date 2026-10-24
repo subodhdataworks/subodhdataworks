@@ -3571,8 +3571,20 @@
   border-radius: 18px 18px 12px 12px;
 }
 .scd-pots-5grid .scd-pot-top-rim {
-  height: 24px;
-  width: 94%;
+  position: relative;
+  width: 96%;
+  height: 32px;
+  border-radius: 50%;
+  background: #081020;
+  border: 1.5px solid var(--pot-neon);
+  box-shadow:
+    0 0 8px rgba(var(--pot-neon-rgb), 0.45),
+    inset 0 0 8px rgba(var(--pot-neon-rgb), 0.3);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 .scd-pots-5grid .scd-pot-cylinder-body {
   min-height: unset;
@@ -3854,41 +3866,33 @@
   pointer-events: none;
 }
 
-/* Upward Energy Cone rising from the pot mouth */
+/* Upward Energy Cone rising from the pot mouth - Soft Subtle Lighting */
 .scd-pot-rising-energy {
   position: absolute;
   bottom: -10px;
-  left: 2%;
-  right: 2%;
-  height: 175px;
-  background:
-    radial-gradient(
-      ellipse 72% 40% at 50% 96%,
-      rgba(var(--pot-neon-rgb), 0.9) 0%,
-      rgba(var(--pot-neon-rgb), 0.4) 45%,
-      transparent 80%
-    ),
-    conic-gradient(
-      from 160deg at 50% 105%,
-      transparent 0deg,
-      rgba(var(--pot-neon-rgb), 0.35) 15deg,
-      transparent 28deg,
-      rgba(var(--pot-neon-rgb), 0.45) 40deg,
-      transparent 52deg
-    );
-  filter: blur(6px);
+  left: 5%;
+  right: 5%;
+  height: 160px;
+  background: radial-gradient(
+    ellipse 60% 30% at 50% 96%,
+    rgba(var(--pot-neon-rgb), 0.28) 0%,
+    rgba(var(--pot-neon-rgb), 0.1) 50%,
+    transparent 80%
+  );
+  filter: blur(8px);
   z-index: 4;
-  animation: potEnergyFlowUp 2.6s ease-in-out infinite;
+  opacity: 0.35;
+  animation: potEnergyFlowUp 3.2s ease-in-out infinite;
 }
 
 @keyframes potEnergyFlowUp {
   0%, 100% {
-    opacity: 0.82;
-    transform: scaleY(0.95) translateY(2px);
+    opacity: 0.25;
+    transform: scaleY(0.96);
   }
   50% {
-    opacity: 1;
-    transform: scaleY(1.08) translateY(-5px);
+    opacity: 0.4;
+    transform: scaleY(1.02);
   }
 }
 
@@ -4010,12 +4014,11 @@
   position: absolute;
   inset: 0;
   border-radius: 36px 36px 26px 26px;
-  border: 2.5px solid rgba(var(--pot-neon-rgb), 0.82);
+  border: 1.5px solid rgba(var(--pot-neon-rgb), 0.45);
   border-bottom: none;
   box-shadow:
-    inset 0 0 24px rgba(var(--pot-neon-rgb), 0.52),
-    inset 0 -28px 32px rgba(var(--pot-neon-rgb), 0.65),
-    0 0 20px rgba(var(--pot-neon-rgb), 0.5);
+    inset 0 0 10px rgba(var(--pot-neon-rgb), 0.2),
+    0 0 10px rgba(var(--pot-neon-rgb), 0.15);
   pointer-events: none;
   z-index: 4;
 }
@@ -4074,30 +4077,27 @@
   }
 }
 
-/* B. 3D Cylindrical Metallic Body */
+/* B. 3D Cylindrical Metallic Body - Deep Clean Background for Ultra-Crisp Text Readability */
 .scd-pot-cylinder-body {
   position: relative;
   width: 92%;
-  min-height: 212px;
-  margin-top: -19px;
-  padding: 26px 14px 18px;
-  background: var(--pot-cyl-bg);
-  border-left: 2px solid rgba(var(--pot-neon-rgb), 0.78);
-  border-right: 2px solid rgba(var(--pot-neon-rgb), 0.78);
-  border-bottom: 2.5px solid var(--pot-neon);
+  min-height: 235px;
+  margin-top: -16px;
+  padding: 20px 14px 16px;
+  background: linear-gradient(180deg, #090e1f 0%, #0d152c 60%, #080d1c 100%);
+  border-left: 1.5px solid rgba(var(--pot-neon-rgb), 0.45);
+  border-right: 1.5px solid rgba(var(--pot-neon-rgb), 0.45);
+  border-bottom: 2px solid rgba(var(--pot-neon-rgb), 0.6);
   border-radius: 0 0 42% 42% / 0 0 26px 26px;
   box-shadow:
-    inset 16px 0 26px rgba(0, 0, 0, 0.55),
-    inset -16px 0 26px rgba(0, 0, 0, 0.55),
-    inset 0 12px 24px rgba(var(--pot-neon-rgb), 0.28),
-    inset 0 -10px 20px rgba(var(--pot-neon-rgb), 0.32),
-    0 12px 28px rgba(4, 12, 30, 0.45);
+    0 12px 28px rgba(2, 6, 23, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   text-align: center;
-  gap: 6px;
+  gap: 7px;
   z-index: 4;
   overflow: hidden;
 }
@@ -4124,11 +4124,11 @@
   position: absolute;
   top: 16px;
   bottom: 16px;
-  width: 3px;
+  width: 2px;
   border-radius: 999px;
   background: var(--pot-neon);
-  box-shadow: 0 0 10px var(--pot-neon), 0 0 18px var(--pot-neon);
-  opacity: 0.85;
+  box-shadow: 0 0 6px var(--pot-neon);
+  opacity: 0.45;
   pointer-events: none;
 }
 
