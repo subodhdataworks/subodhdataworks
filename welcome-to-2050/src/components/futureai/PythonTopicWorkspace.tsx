@@ -2178,7 +2178,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                         autoPlay
                         playsInline
                         className="plw-embed-video-iframe"
-                        style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+                        style={{ objectFit: 'contain', width: '100%', height: '100%', aspectRatio: '16/9' }}
                         onEnded={() => {
                           setIsVideoCompleted(true);
                           if (effectiveTopicId === 1) {

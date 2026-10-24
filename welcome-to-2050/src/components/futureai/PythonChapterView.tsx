@@ -663,9 +663,7 @@ export const PythonChapterView: React.FC<Props> = ({
         <nav className="pcv-crumbs pcv-crumbs-standalone">
           <button onClick={onBack}>Home</button>
           <ChevronRight />
-          <button onClick={onBack}>Data Analytics with GenAI</button>
-          <ChevronRight />
-          <strong>Python</strong>
+          <strong>Data Analytics with GenAI</strong>
         </nav>
 
         {/* Hero Banner Image: Full Horizontal Width (Crystal Clear HD) */}
