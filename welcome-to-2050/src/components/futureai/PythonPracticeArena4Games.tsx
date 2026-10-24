@@ -219,28 +219,85 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     return () => clearInterval(timer);
   }, [currentQuestionText, quizIdx]);
 
-  // Text-To-Speech (TTS) with Web Speech API
-  const speakQuestionText = (textToSpeak: string) => {
+  // Alternating Gender: Even questions = Female Indian voice, Odd questions = Male Indian voice
+  const currentVoiceGender: 'female' | 'male' = quizIdx % 2 === 0 ? 'female' : 'male';
+
+  // Helper to pick Indian Accent Voice (Male or Female)
+  const getIndianVoice = (gender: 'female' | 'male') => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      return { voice: null, pitch: gender === 'female' ? 1.22 : 0.88 };
+    }
+    const voices = window.speechSynthesis.getVoices();
+
+    // Look for Indian English (en-IN) or Hindi (hi-IN)
+    const indianVoices = voices.filter(
+      (v) =>
+        v.lang === 'en-IN' ||
+        v.lang.startsWith('en-IN') ||
+        v.name.includes('India') ||
+        v.name.includes('Hindi') ||
+        v.lang.startsWith('hi')
+    );
+
+    let selectedVoice = null;
+    if (gender === 'female') {
+      selectedVoice =
+        indianVoices.find(
+          (v) =>
+            v.name.toLowerCase().includes('female') ||
+            v.name.toLowerCase().includes('heera') ||
+            v.name.toLowerCase().includes('neerja') ||
+            v.name.toLowerCase().includes('kalpana') ||
+            v.name.toLowerCase().includes('swara')
+        ) ||
+        indianVoices[0] ||
+        voices.find(
+          (v) =>
+            v.lang.startsWith('en') &&
+            (v.name.toLowerCase().includes('female') ||
+              v.name.toLowerCase().includes('zira') ||
+              v.name.toLowerCase().includes('samantha'))
+        );
+    } else {
+      selectedVoice =
+        indianVoices.find(
+          (v) =>
+            v.name.toLowerCase().includes('male') ||
+            v.name.toLowerCase().includes('ravi') ||
+            v.name.toLowerCase().includes('prabhat') ||
+            v.name.toLowerCase().includes('hemant') ||
+            v.name.toLowerCase().includes('madhav')
+        ) ||
+        indianVoices[indianVoices.length > 1 ? 1 : 0] ||
+        voices.find(
+          (v) =>
+            v.lang.startsWith('en') &&
+            (v.name.toLowerCase().includes('male') ||
+              v.name.toLowerCase().includes('david') ||
+              v.name.toLowerCase().includes('mark'))
+        );
+    }
+
+    return {
+      voice: selectedVoice || null,
+      pitch: gender === 'female' ? 1.22 : 0.88,
+    };
+  };
+
+  // Full-volume Indian Text-To-Speech (TTS)
+  const speakWithFullVoice = (textToSpeak: string, gender: 'female' | 'male') => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
     try {
       window.speechSynthesis.cancel();
       if (!textToSpeak) return;
       const utterance = new SpeechSynthesisUtterance(textToSpeak);
-      utterance.rate = 0.95;
-      utterance.pitch = 1.05;
-      utterance.lang = 'en-US';
+      utterance.volume = 1.0; // Full Awaz
+      utterance.rate = 0.94; // Clear natural Indian pace
+      utterance.lang = 'en-IN'; // Indian English
 
-      const voices = window.speechSynthesis.getVoices();
-      const naturalVoice = voices.find(
-        (v) =>
-          v.lang.startsWith('en') &&
-          (v.name.includes('Natural') ||
-            v.name.includes('Google') ||
-            v.name.includes('Samantha') ||
-            v.name.includes('David') ||
-            v.name.includes('Zira'))
-      ) || voices.find((v) => v.lang.startsWith('en'));
-      if (naturalVoice) utterance.voice = naturalVoice;
+      const { voice, pitch } = getIndianVoice(gender);
+      if (voice) utterance.voice = voice;
+      utterance.pitch = pitch;
 
       utterance.onstart = () => setIsSpeaking(true);
       utterance.onend = () => setIsSpeaking(false);
@@ -251,6 +308,10 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
       console.warn('Speech error:', err);
       setIsSpeaking(false);
     }
+  };
+
+  const speakQuestionText = (textToSpeak: string) => {
+    speakWithFullVoice(textToSpeak, currentVoiceGender);
   };
 
   // Auto-speak question on load / change if sound is enabled
@@ -290,7 +351,7 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     soundEffects.playClick();
   };
 
-  // 2. SUBMIT ANSWER (User requirement: submit answer click krne pr hi hoga)
+  // 2. SUBMIT ANSWER (User requirement: submit answer click krne pr hi hoga, full awaz explanation aayega)
   const handleSubmitAnswer = () => {
     if (!selectedQuizKey || quizFeedback === 'correct') return;
     const currQ: any = quizQuestions[quizIdx];
@@ -305,9 +366,18 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
       setQuizScore((s) => s + 10);
       setStreak((s) => s + 1);
       setFloatingXp('+10 XP ✨');
-      setTimeout(() => setFloatingXp(null), 1200);
+      setTimeout(() => setFloatingXp(null), 1500);
 
-      // Advance after submitting correct answer
+      // Build full voice feedback with Indian voice:
+      // Example: "Right answer! Programming is Giving a computer instructions."
+      const selectedOptionText = currQ.options[optIdx]?.text || '';
+      const cleanQ = currQ.question.replace(/\.{2,}/g, '').trim();
+      const rightAnswerAnnouncement = `Right answer! ${cleanQ} is ${selectedOptionText}.`;
+
+      // Full volume speech announcement
+      speakWithFullVoice(rightAnswerAnnouncement, currentVoiceGender);
+
+      // Advance smoothly after explanation speech finishes (3.2 seconds)
       setTimeout(() => {
         setSelectedQuizKey(null);
         setQuizFeedback(null);
@@ -322,13 +392,14 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
           setUnlockedGame((prev) => Math.max(prev, 2));
           setTimeout(() => {
             setActiveGame(2);
-          }, 1200);
+          }, 1500);
         }
-      }, 1200);
+      }, 3200);
     } else {
       setQuizFeedback('wrong');
       soundEffects.playQuizWrong();
       setStreak(0);
+      speakWithFullVoice('Galat jawab, try again!', currentVoiceGender);
     }
   };
 
@@ -1067,9 +1138,16 @@ print(result)`
                         speakQuestionText(currentQuestionText);
                       }
                     }}
-                    title={isSpeaking ? 'Mute voice' : 'Listen question (Bolo)'}
+                    title={
+                      isSpeaking
+                        ? 'Mute voice'
+                        : `Listen (${currentVoiceGender === 'female' ? 'Female' : 'Male'} Indian Voice)`
+                    }
                   >
                     <Volume2 className={`w-4 h-4 ${isSpeaking ? 'text-sky-600 animate-pulse' : 'text-slate-500'}`} />
+                    <span className="ppa-voice-gender-pill">
+                      {currentVoiceGender === 'female' ? '👩 Indian' : '👨 Indian'}
+                    </span>
                     {isSpeaking && (
                       <span className="ppa-speaking-waves">
                         <span className="sbar sbar-1"></span>

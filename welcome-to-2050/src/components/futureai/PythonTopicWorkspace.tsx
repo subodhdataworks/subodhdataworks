@@ -2269,14 +2269,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
 
 {/* Auto Progression banner removed per user preference */}
 
-              {/* Pro Tip Card Below Video */}
-              <div className="plw-pro-tip-card">
-                <div className="plw-pt-icon">💡</div>
-                <strong className="plw-pt-label">Auto-Pilot Learning</strong>
-                <p className="plw-pt-text">
-                  Video khatam hone ke baad <strong>MCQ, Game, Interview aur Report</strong> ek-ek karke automatically start ho jate hain!
-                </p>
-              </div>
+
             </div>
 
             {/* Right Column (~35%): 3 Cards matching media_1791213637074.jpg */}
