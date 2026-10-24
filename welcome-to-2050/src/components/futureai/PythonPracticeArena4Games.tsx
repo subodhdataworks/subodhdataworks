@@ -82,22 +82,42 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
   const [quizSeconds, setQuizSeconds] = useState<number>(25);
 
   const quizQuestions = useMemo(() => {
+    if (topicId === 1) {
+      return [
+        {
+          id: 1,
+          question: 'Programming is...',
+          options: [
+            { key: 'A' as const, text: 'Repairing hardware' },
+            { key: 'B' as const, text: 'Browsing the internet' },
+            { key: 'C' as const, text: 'Giving a computer instructions' },
+            { key: 'D' as const, text: 'Designing only graphics' },
+          ],
+          correct: 2,
+          explanation: 'Programming is the process of creating a set of instructions that tell a computer how to perform tasks.',
+          hint: 'A program is a set of instructions a computer can execute.',
+          realWorldContext: 'Every software application consists of computer instructions.',
+          codeSnippet: '# Programming = instructions\nprint("Execute step by step")',
+        },
+        ...(topicData?.mcqs ? topicData.mcqs.slice(1, 5) : [])
+      ];
+    }
     if (topicData?.mcqs && topicData.mcqs.length >= 5) {
       return topicData.mcqs.slice(0, 5);
     }
     return [
       {
         id: 1,
-        question: 'A computer follows instructions to complete a task. What is this process called?',
+        question: 'Programming is...',
         options: [
-          { key: 'A' as const, text: 'Programming' },
-          { key: 'B' as const, text: 'Browsing' },
-          { key: 'C' as const, text: 'Charging' },
-          { key: 'D' as const, text: 'Printing' },
+          { key: 'A' as const, text: 'Repairing hardware' },
+          { key: 'B' as const, text: 'Browsing the internet' },
+          { key: 'C' as const, text: 'Giving a computer instructions' },
+          { key: 'D' as const, text: 'Designing only graphics' },
         ],
-        correct: 0,
-        explanation: 'Programming is the process of creating a set of instructions that tell a computer how to perform a task.',
-        hint: 'Think about what code actually tells a computer to execute.',
+        correct: 2,
+        explanation: 'Programming is the process of creating a set of instructions that tell a computer how to perform tasks and solve problems.',
+        hint: 'A program is a set of instructions a computer can execute.',
         realWorldContext: 'Every software application consists of computer instructions.',
         codeSnippet: '# Programming = instructions\nprint("Execute step by step")',
       },
@@ -957,7 +977,7 @@ print(result)`
                     <button
                       key={opt.key}
                       type="button"
-                      className={`ppa-quiz-opt-btn ${isSelected ? 'selected' : ''} ${
+                      className={`ppa-quiz-opt-btn opt-card-${opt.key.toLowerCase()} ${isSelected ? 'selected' : ''} ${
                         isCorrect ? 'correct animate-pulse-glow' : ''
                       } ${isWrong ? 'wrong ppa-shake' : ''}`}
                       onMouseEnter={() => soundEffects.playHover()}
@@ -966,7 +986,7 @@ print(result)`
                     >
                       <div className={`ppa-opt-key-badge badge-${opt.key.toLowerCase()}`}>{opt.key}</div>
                       <span className="ppa-opt-text">{opt.text}</span>
-                      {isCorrect && <Check className="w-4 h-4 text-emerald-600 ml-auto shrink-0" />}
+                      {isCorrect && <Check className="w-5 h-5 text-emerald-600 ml-auto shrink-0 stroke-[3]" />}
                     </button>
                   );
                 })}
