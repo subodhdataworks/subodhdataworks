@@ -85,35 +85,35 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
   const [categoryTab, setCategoryTab] = useState<'all' | 'flagship' | 'core' | 'ai'>('all');
   const [viewMode, setViewMode] = useState<CourseViewModeType>('grid');
 
-  // Continuous Typewriter effect for "Pay After Placement."
-  const fullPapText = 'Pay After Placement.';
-  const [papDisplayText, setPapDisplayText] = useState(fullPapText);
-  const [isPapDeleting, setIsPapDeleting] = useState(false);
-  const [papCharIndex, setPapCharIndex] = useState(fullPapText.length);
+  // Continuous Typewriter effect for "Get Career-Ready."
+  const careerReadyTargetText = 'Get Career-Ready.';
+  const [typewriterText, setTypewriterText] = useState(careerReadyTargetText);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [charIndex, setCharIndex] = useState(careerReadyTargetText.length);
 
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>;
-    if (!isPapDeleting && papCharIndex < fullPapText.length) {
+    if (!isDeleting && charIndex < careerReadyTargetText.length) {
       timeout = setTimeout(() => {
-        setPapDisplayText(fullPapText.slice(0, papCharIndex + 1));
-        setPapCharIndex((prev) => prev + 1);
-      }, 95);
-    } else if (!isPapDeleting && papCharIndex === fullPapText.length) {
+        setTypewriterText(careerReadyTargetText.slice(0, charIndex + 1));
+        setCharIndex((prev) => prev + 1);
+      }, 100);
+    } else if (!isDeleting && charIndex === careerReadyTargetText.length) {
       timeout = setTimeout(() => {
-        setIsPapDeleting(true);
-      }, 2500);
-    } else if (isPapDeleting && papCharIndex > 0) {
+        setIsDeleting(true);
+      }, 2400);
+    } else if (isDeleting && charIndex > 0) {
       timeout = setTimeout(() => {
-        setPapDisplayText(fullPapText.slice(0, papCharIndex - 1));
-        setPapCharIndex((prev) => prev - 1);
-      }, 45);
-    } else if (isPapDeleting && papCharIndex === 0) {
+        setTypewriterText(careerReadyTargetText.slice(0, charIndex - 1));
+        setCharIndex((prev) => prev - 1);
+      }, 50);
+    } else if (isDeleting && charIndex === 0) {
       timeout = setTimeout(() => {
-        setIsPapDeleting(false);
+        setIsDeleting(false);
       }, 450);
     }
     return () => clearTimeout(timeout);
-  }, [papCharIndex, isPapDeleting, fullPapText]);
+  }, [charIndex, isDeleting, careerReadyTargetText]);
 
   const visibleCourses = ALL_PLATFORM_COURSES.filter((c) => {
     if (categoryTab !== 'all' && c.category !== categoryTab) return false;
@@ -173,7 +173,12 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
 
           {/* Main Headline - Short, Bold, High-Impact */}
           <h1 className="scd-future-hero-hl">
-            Learn AI. Build Real Skills. <span className="scd-future-hero-hl-gradient">Get Career-Ready. 🚀</span>
+            Learn AI. Build Real Skills.{' '}
+            <span className="scd-future-hero-hl-gradient inline-block">
+              {typewriterText}
+              <span className="inline-block w-[3px] h-[0.82em] ml-1 bg-gradient-to-b from-[#0284c7] via-[#4f46e5] to-[#9333ea] align-middle animate-pulse rounded-full" />
+            </span>{' '}
+            <span className="inline-block hover:scale-125 transition-transform duration-300">🚀</span>
           </h1>
 
           {/* Subtitle - One Punchy Line */}
