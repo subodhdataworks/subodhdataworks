@@ -429,18 +429,6 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                       {c.subtitle && <span className="scd-title-future">{c.subtitle}</span>}
                     </h3>
 
-                    {/* Centered Short Description */}
-                    <p className="scd-pot-desc">{c.shortDesc}</p>
-
-                    {/* Centered Skills Mini Pills */}
-                    <div className="scd-pot-skills-row">
-                      {c.skillsList.map((s) => (
-                        <span key={s} className="scd-pot-skill-tag">
-                          {s}
-                        </span>
-                      ))}
-                    </div>
-
                     {/* Horizontal Action Row: Left Slashed Price (Red Cut) + Right Start Learning Button */}
                     <div className="scd-pot-bottom-actions-row">
                       <div className="scd-pot-slashed-price-wrap flex flex-col gap-0.5">

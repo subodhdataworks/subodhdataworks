@@ -292,20 +292,13 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
                           <span className="scd-title-future">{c.subtitle}</span>
                         </h3>
 
-                        <p className="scd-pot-desc">{c.shortDesc}</p>
-
-                        <div className="scd-pot-skills-row">
-                          {c.skillsList.map((s) => (
-                            <span key={s} className="scd-pot-skill-tag">
-                              {s}
-                            </span>
-                          ))}
-                        </div>
-
                         <div className="scd-pot-bottom-actions-row">
-                          <div className="scd-pot-slashed-price-wrap flex items-center gap-1.5">
-                            <span className="scd-pot-slashed-daam" title="Suggested average market price">{c.marketPrice || 'Rs 6,000'}</span>
-                            <span className="text-emerald-700 font-black text-xs sm:text-sm bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-300 shadow-2xs whitespace-nowrap">{c.courseFee}</span>
+                          <div className="flex flex-col items-center gap-0.5 w-full">
+                            <div className="flex items-center justify-center gap-1 flex-wrap">
+                              <span className="line-through text-slate-400 font-semibold text-[9px]">{c.marketPrice || 'Rs 18,987'}</span>
+                              <span className="text-orange-500 font-bold text-[8.5px] bg-orange-50 px-1 rounded border border-orange-200">PAJ: {c.payAfterJob || 'Rs 18,000'}</span>
+                            </div>
+                            <span className="text-emerald-700 font-black text-[10.5px] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-300 whitespace-nowrap">Pay Now: {c.courseFee || 'Rs 879'}</span>
                           </div>
                           <button
                             type="button"
@@ -316,7 +309,7 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
                               handleCourseClick(c.id);
                             }}
                           >
-                            <span className="scd-pot-unlock-text">Explore Curriculum</span>
+                            <span className="scd-pot-unlock-text">Explore</span>
                             <span className="scd-pot-arrow-icon-circle">
                               <ArrowRight className="w-3.5 h-3.5 stroke-[2.8]" />
                             </span>
