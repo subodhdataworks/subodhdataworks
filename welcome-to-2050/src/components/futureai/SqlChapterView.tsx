@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  ChevronRight, ChevronDown, ChevronUp, Play, Clock, FileText, Gamepad2, Code2,
+  ChevronRight, ChevronDown, ChevronUp, Play, Clock, FileText, Mic, Gamepad2, Code2,
   CheckCircle2, BookOpen, FolderKanban, Wrench, ArrowRight, Zap, Award,
   Timer, Bot, Sparkles, Circle, Database, Key, Search, Filter, Layers,
   Calendar, GitMerge, Workflow, FileCode, Terminal, Sliders, BarChart3,
@@ -568,10 +568,9 @@ export const SQL_CHAPTERS: Chapter[] = [
 ];
 
 const ACTIONS = [
-  { step: 'video', label: 'Video', icon: <Play className="w-3 h-3" />, cls: 'act-video' },
-  { step: 'mcq', label: 'MCQ', icon: <FileText className="w-3 h-3" />, cls: 'act-mcq' },
-  { step: 'game', label: 'Game', icon: <Gamepad2 className="w-3 h-3" />, cls: 'act-game' },
-  { step: 'code', label: 'Code', icon: <Code2 className="w-3 h-3" />, cls: 'act-code' },
+  { step: 'video', label: 'Video', icon: <Play className="w-3 h-3" />, cls: 'act-video video' },
+  { step: 'mcq', label: 'MCQ', icon: <FileText className="w-3 h-3" />, cls: 'act-mcq mcq' },
+  { step: 'interview', label: 'Mock Interview', icon: <Mic className="w-3 h-3" />, cls: 'act-interview interview' },
 ];
 
 export const SqlChapterView: React.FC<Props> = ({

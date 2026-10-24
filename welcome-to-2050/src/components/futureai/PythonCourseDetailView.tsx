@@ -1994,7 +1994,7 @@ export const PythonCourseDetailView: React.FC<PythonCourseDetailViewProps> = ({
 
                       <p className="pcd-topic-desc">{topic.desc}</p>
 
-                      {/* 5 Integrated Activity Chips */}
+                      {/* 3 Core Activity Chips: Video, MCQ, Mock Interview */}
                       <div className={`pcd-chips-strip ${!topic.isFree ? 'muted-chips' : ''}`}>
                         <button 
                           className="pcd-chip chip-video"
@@ -2018,30 +2018,6 @@ export const PythonCourseDetailView: React.FC<PythonCourseDetailViewProps> = ({
                         >
                           <FileText className="w-3 h-3" />
                           <span>MCQ</span>
-                        </button>
-
-                        <button 
-                          className="pcd-chip chip-game"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (topic.isFree) onOpenTopic(topic.id, 'play');
-                            else onOpenUnlockModal(topic.title);
-                          }}
-                        >
-                          <Gamepad2 className="w-3 h-3" />
-                          <span>Game</span>
-                        </button>
-
-                        <button 
-                          className="pcd-chip chip-code"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (topic.isFree) onOpenTopic(topic.id === 1 ? 2 : topic.id, 'code');
-                            else onOpenUnlockModal(topic.title);
-                          }}
-                        >
-                          <Code2 className="w-3 h-3" />
-                          <span>Coding Practice</span>
                         </button>
 
                         <button 
@@ -2184,28 +2160,6 @@ export const PythonCourseDetailView: React.FC<PythonCourseDetailViewProps> = ({
                                         <FileText className="w-2.5 h-2.5" />
                                         <span>MCQ</span>
                                       </button>
-                                      <button 
-                                        className="pcd-ch-act-chip act-game"
-                                        onClick={() => {
-                                          if (ch.isFree) onOpenTopic(targetTopicId, 'play');
-                                          else onOpenUnlockModal(topic.title);
-                                        }}
-                                      >
-                                        <Gamepad2 className="w-2.5 h-2.5" />
-                                        <span>Game</span>
-                                      </button>
-                                      {ch.id !== '1-1' && (
-                                        <button 
-                                          className="pcd-ch-act-chip act-code"
-                                          onClick={() => {
-                                            if (ch.isFree) onOpenTopic(targetTopicId, 'code');
-                                            else onOpenUnlockModal(topic.title);
-                                          }}
-                                        >
-                                          <Code2 className="w-2.5 h-2.5" />
-                                          <span>Code</span>
-                                        </button>
-                                      )}
                                       <button 
                                         className="pcd-ch-act-chip act-interview"
                                         onClick={() => {

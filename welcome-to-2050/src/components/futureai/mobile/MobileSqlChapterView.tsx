@@ -5,6 +5,7 @@ import {
   FileText,
   Gamepad2,
   Code2,
+  Mic,
   Coins,
   Gem,
   Lock,
@@ -430,8 +431,8 @@ export const MobileSqlChapterView: React.FC<MobileSqlChapterViewProps> = ({
                       {chapter.desc}
                     </p>
 
-                    {/* Quick action buttons */}
-                    <div className="grid grid-cols-4 gap-1.5 text-center">
+                    {/* Quick action buttons: Video, MCQ, Mock Interview */}
+                    <div className="grid grid-cols-3 gap-2 text-center">
                       <button
                         type="button"
                         onClick={(e) => handleActionClick(e, chapter)}
@@ -453,19 +454,10 @@ export const MobileSqlChapterView: React.FC<MobileSqlChapterViewProps> = ({
                       <button
                         type="button"
                         onClick={(e) => handleActionClick(e, chapter)}
-                        className="py-2 px-1 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400 text-[10px] font-extrabold flex flex-col items-center gap-1 active:scale-95 transition-all"
+                        className="py-2 px-1 rounded-xl bg-pink-500/15 border border-pink-500/30 text-pink-300 text-[10px] font-extrabold flex flex-col items-center gap-1 active:scale-95 transition-all"
                       >
-                        <Gamepad2 className="w-3.5 h-3.5" />
-                        <span>Quest</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={(e) => handleActionClick(e, chapter)}
-                        className="py-2 px-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-extrabold flex flex-col items-center gap-1 active:scale-95 transition-all"
-                      >
-                        <Code2 className="w-3.5 h-3.5" />
-                        <span>Query</span>
+                        <Mic className="w-3.5 h-3.5" />
+                        <span>Mock Interview</span>
                       </button>
                     </div>
 

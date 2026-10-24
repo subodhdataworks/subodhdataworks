@@ -158,7 +158,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
 
   const effectiveTopicId = urlTopicId ?? topicId;
   const isTopicWithoutCoding = effectiveTopicId === 1;
-  const isTopicWithoutMcq = effectiveTopicId === 1;
+  const isTopicWithoutMcq = false;
 
   // Auto-redirect if skipped steps are selected on Topic 1
   useEffect(() => {
@@ -176,10 +176,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
   }, [isTopicWithoutMcq, isTopicWithoutCoding, activeStep, effectiveTopicId]);
 
   const handleSelectTab = (step: WorkspaceStepId) => {
-    if (isTopicWithoutMcq && step === 'practice') {
-      // Skip MCQ for Topic 1.1 What is Programming
-      step = 'play';
-    }
+    // All topics have MCQ
     if (isTopicWithoutCoding && step === 'code') {
       // Skip coding for Topic 1.1 What is Programming
       step = 'interview';
@@ -269,7 +266,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
       videoWatchTimer = setTimeout(() => {
         setIsVideoCompleted(true);
         if (effectiveTopicId === 1) {
-          triggerAutoAdvanceToStep('play', '💻 Video Completed! Starting Python Level 1 Coding Practice (8 Interactive Practice Challenges)', 3);
+          triggerAutoAdvanceToStep('practice', '🎉 Video Completed! Starting MCQ', 3);
         } else {
           triggerAutoAdvanceToStep('practice', '🎉 Video Completed! Starting MCQ', 3);
         }
@@ -433,7 +430,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
           // Auto start Game after 4 seconds celebration
           setTimeout(() => {
             setMcqShowCelebrationModal(false);
-            handleSelectTab('play');
+            handleSelectTab('interview');
           }, 3500);
           return prevIdx;
         }
@@ -2090,7 +2087,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
           </div>
         </div>
 
-        {/* Right: Activity Steps in the SAME LINE! */}
+        {/* Right: Activity Steps: Video -> MCQ -> Mock Interview */}
         <div className="plw-top-steps-inline">
           {/* Step 1: Video */}
           <button
@@ -2104,40 +2101,25 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
 
           <span className="pill-connector">→</span>
 
-          {/* Step 2: Level 1 Game */}
+          {/* Step 2: MCQ */}
           <button
             type="button"
-            className={`plw-inline-step-pill ${activeStep === 'play' ? 'active' : ''} ${['code', 'interview', 'score'].includes(activeStep) ? 'completed' : ''}`}
-            onClick={() => handleSelectTab('play')}
+            className={`plw-inline-step-pill ${activeStep === 'practice' ? 'active' : ''} ${['interview', 'score'].includes(activeStep) ? 'completed' : ''}`}
+            onClick={() => handleSelectTab('practice')}
           >
-            <span className="pill-num">{['code', 'interview', 'score'].includes(activeStep) ? '✓' : '2'}</span>
-            <span className="pill-label">{effectiveTopicId === 1 ? 'Coding Practice' : 'Practice'}</span>
+            <span className="pill-num">{['interview', 'score'].includes(activeStep) ? '✓' : '2'}</span>
+            <span className="pill-label">MCQ</span>
           </button>
 
           <span className="pill-connector">→</span>
 
-          {/* Step 3: Code (if applicable) */}
-          {!isTopicWithoutCoding && (
-            <>
-              <button
-                type="button"
-                className={`plw-inline-step-pill ${activeStep === 'code' ? 'active' : ''} ${['interview', 'score'].includes(activeStep) ? 'completed' : ''}`}
-                onClick={() => handleSelectTab('code')}
-              >
-                <span className="pill-num">{['interview', 'score'].includes(activeStep) ? '✓' : '3'}</span>
-                <span className="pill-label">Code</span>
-              </button>
-              <span className="pill-connector">→</span>
-            </>
-          )}
-
-          {/* Step 4: Mock Interview */}
+          {/* Step 3: Mock Interview */}
           <button
             type="button"
             className={`plw-inline-step-pill ${activeStep === 'interview' ? 'active' : ''}`}
             onClick={() => handleSelectTab('interview')}
           >
-            <span className="pill-num">{isTopicWithoutCoding ? '3' : '4'}</span>
+            <span className="pill-num">3</span>
             <span className="pill-label">Mock Interview</span>
           </button>
         </div>
