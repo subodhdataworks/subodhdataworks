@@ -38,6 +38,7 @@ export interface StudentCoursesDashboardProps {
   isNewStudentMode?: boolean;
   onOpenDataAnalystCourse: () => void;
   onOpenDataScienceCourse?: () => void;
+  onOpenMlEngineeringCourse?: () => void;
   onOpenLockedCourse: (courseTitle: string) => void;
   onOpenPythonDirect?: () => void;
   onOpenMockInterview?: () => void;
@@ -77,6 +78,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
   userName = 'Subodh Kumar',
   onOpenDataAnalystCourse,
   onOpenDataScienceCourse,
+  onOpenMlEngineeringCourse,
   onOpenLockedCourse,
   onOpenPythonDirect,
   onOpenMockInterview,
@@ -133,6 +135,9 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
     } else if (c.id === 'data-science-agentic-ai') {
       if (onOpenDataScienceCourse) onOpenDataScienceCourse();
       else onOpenLockedCourse(c.fullName || c.title || 'Data Science & Agentic AI');
+    } else if (c.id === 'ml-engineering') {
+      if (onOpenMlEngineeringCourse) onOpenMlEngineeringCourse();
+      else onOpenLockedCourse(c.fullName || c.title || 'Machine Learning Engineering');
     } else {
       onOpenLockedCourse(c.fullName || c.title || 'Course');
     }
@@ -151,6 +156,9 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
     } else if (c.id === 'data-science-agentic-ai') {
       if (onOpenDataScienceCourse) onOpenDataScienceCourse();
       else onOpenLockedCourse(c.fullName || c.title || 'Data Science & Agentic AI');
+    } else if (c.id === 'ml-engineering') {
+      if (onOpenMlEngineeringCourse) onOpenMlEngineeringCourse();
+      else onOpenLockedCourse(c.fullName || c.title || 'Machine Learning Engineering');
     } else {
       onOpenLockedCourse(c.fullName || c.title);
     }

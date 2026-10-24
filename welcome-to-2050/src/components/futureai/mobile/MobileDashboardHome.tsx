@@ -42,6 +42,7 @@ interface MobileDashboardHomeProps {
   onStartPython: () => void;
   onOpenDataAnalyst?: () => void;
   onOpenDataScience?: () => void;
+  onOpenMlEngineering?: () => void;
   onOpenSql?: () => void;
   onOpenExcel?: () => void;
   onOpenPowerBi?: () => void;
@@ -59,6 +60,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
   onStartPython,
   onOpenDataAnalyst,
   onOpenDataScience,
+  onOpenMlEngineering,
   onOpenSql,
   onOpenExcel,
   onOpenPowerBi,
