@@ -108,7 +108,7 @@ export const MobilePythonChapterView: React.FC<MobilePythonChapterViewProps> = (
           </button>
           <div>
             <h1 className="text-sm font-black text-slate-900 leading-tight flex items-center gap-1.5">
-              <span>Python Mastery</span>
+              <span>Python</span>
               <span className="px-1.5 py-0.2 rounded-md bg-blue-100 text-blue-700 text-[9.5px] font-black">
                 26 Chapters
               </span>
@@ -136,7 +136,7 @@ export const MobilePythonChapterView: React.FC<MobilePythonChapterViewProps> = (
               onError={(e) => {
                 (e.target as HTMLImageElement).src = '/images/python_mastery_banner_hd.jpg';
               }}
-              alt="Python Mastery Banner"
+              alt="Python Banner"
               className="w-full h-full object-cover object-center"
             />
             {/* Subtle Gradient Overlay */}
@@ -156,7 +156,7 @@ export const MobilePythonChapterView: React.FC<MobilePythonChapterViewProps> = (
 
               <div>
                 <h2 className="text-base font-black tracking-tight text-white drop-shadow-md">
-                  Python Mastery Curriculum
+                  Python Curriculum
                 </h2>
                 <p className="text-[10px] text-blue-200 font-semibold drop-shadow-sm">
                   Video Lessons ➔ Interactive Coding Practice ➔ AI Mock Interview

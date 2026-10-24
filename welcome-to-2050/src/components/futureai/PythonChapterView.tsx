@@ -666,7 +666,7 @@ export const PythonChapterView: React.FC<Props> = ({
           <ChevronRight />
           <button onClick={onBack}>Data Analytics with GenAI</button>
           <ChevronRight />
-          <strong>Python Mastery</strong>
+          <strong>Python</strong>
         </nav>
 
         {/* Hero Banner Image: Full Horizontal Width (Crystal Clear HD) */}

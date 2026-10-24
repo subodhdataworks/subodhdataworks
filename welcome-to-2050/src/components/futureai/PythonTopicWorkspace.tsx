@@ -178,7 +178,38 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
     }
   }, [isTopicWithoutMcq, isTopicWithoutCoding, activeStep, effectiveTopicId]);
 
+  // Silence any interview sound when navigating away from interview tab
+  useEffect(() => {
+    if (activeStep !== 'interview') {
+      if (typeof window !== 'undefined') {
+        if ('speechSynthesis' in window) {
+          try { window.speechSynthesis.cancel(); } catch {}
+        }
+        if ((window as any).__activeMockAudio) {
+          try {
+            (window as any).__activeMockAudio.pause();
+            (window as any).__activeMockAudio.currentTime = 0;
+          } catch {}
+          (window as any).__activeMockAudio = null;
+        }
+      }
+    }
+  }, [activeStep]);
+
   const handleSelectTab = (step: WorkspaceStepId) => {
+    // Silence all interview speech & audio immediately when leaving interview tab
+    if (typeof window !== 'undefined') {
+      if ('speechSynthesis' in window) {
+        try { window.speechSynthesis.cancel(); } catch {}
+      }
+      if ((window as any).__activeMockAudio) {
+        try {
+          (window as any).__activeMockAudio.pause();
+          (window as any).__activeMockAudio.currentTime = 0;
+        } catch {}
+        (window as any).__activeMockAudio = null;
+      }
+    }
     if (isTopicWithoutMcq && step === 'practice') {
       // Skip MCQ for Topic 1.1 What is Programming
       step = 'play';

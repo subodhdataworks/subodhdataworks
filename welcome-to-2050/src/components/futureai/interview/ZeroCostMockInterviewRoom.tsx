@@ -410,6 +410,13 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
       }
       hrAudioRef.current = null;
     }
+    if (typeof window !== 'undefined' && (window as any).__activeMockAudio) {
+      try {
+        (window as any).__activeMockAudio.pause();
+        (window as any).__activeMockAudio.currentTime = 0;
+      } catch {}
+      (window as any).__activeMockAudio = null;
+    }
     activeUtteranceRef.current = null;
     if (typeof window !== 'undefined') {
       (window as any).__activeHrUtterance = null;
@@ -622,6 +629,9 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
           const ttsUrl = `/api/human-tts?lang=${encodeURIComponent(language)}&text=${encodeURIComponent(fullSubtitle)}`;
           const audio = new Audio(ttsUrl);
           hrAudioRef.current = audio;
+          if (typeof window !== 'undefined') {
+            (window as any).__activeMockAudio = audio;
+          }
 
           audio.ontimeupdate = () => {
             if (audio.duration && Number.isFinite(audio.duration) && audio.duration > 0) {
@@ -686,6 +696,19 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
     return () => {
       clearTimeout(t);
       stopInterviewerSpeech();
+      stopCameraStream();
+      if (typeof window !== 'undefined') {
+        if ('speechSynthesis' in window) {
+          try { window.speechSynthesis.cancel(); } catch {}
+        }
+        if ((window as any).__activeMockAudio) {
+          try {
+            (window as any).__activeMockAudio.pause();
+            (window as any).__activeMockAudio.currentTime = 0;
+          } catch {}
+          (window as any).__activeMockAudio = null;
+        }
+      }
     };
     // Only re-trigger when question index or language changes!
     // eslint-disable-next-line react-hooks/exhaustive-deps

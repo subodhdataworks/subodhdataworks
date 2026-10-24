@@ -641,7 +641,7 @@ print(result)`
           onClick={() => { soundEffects.playClick(); setActiveGame(1); }}
         >
           <div className={`ppa-step-circle-badge ${unlockedGame > 1 ? 'completed' : 'quiz'}`}>
-            {unlockedGame > 1 ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : '1'}
+            {unlockedGame > 1 ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : <Zap className="w-3.5 h-3.5 fill-amber-300 text-amber-200" />}
           </div>
           <div className="ppa-step-meta">
             <span className="ppa-step-name">Quick Quiz</span>
@@ -721,24 +721,7 @@ print(result)`
           </div>
         </button>
 
-        <span className="ppa-step-arrow">→</span>
-
-        {/* Step 5: Coding Practice (If Available) */}
-        <button
-          type="button"
-          className="ppa-step-item opacity-60 cursor-not-allowed"
-          disabled={true}
-          title="Full IDE Coding Practice available in advanced chapters"
-        >
-          <div className="ppa-step-circle-badge locked">
-            <Lock className="w-3 h-3" />
-          </div>
-          <div className="ppa-step-meta">
-            <span className="ppa-step-name">Coding Practice</span>
-            <span className="ppa-step-sub">If Available</span>
-          </div>
-        </button>
-      </nav>
+        </nav>
 
       {/* ─────────────────────────────────────────────────────────────
           2. MAIN ARENA STAGE (Left 3D Pedestal, Center Game, Right AI Mentor)
@@ -771,10 +754,10 @@ print(result)`
                     : 'mission'
                 }`}
               >
-                {activeGame === 1 && <FileText className="w-5 h-5" />}
-                {activeGame === 2 && <Puzzle className="w-5 h-5" />}
-                {activeGame === 3 && <Code2 className="w-5 h-5" />}
-                {activeGame === 4 && <Target className="w-5 h-5" />}
+                {activeGame === 1 && <Zap className="w-5 h-5 fill-amber-300 text-amber-200 animate-pulse" />}
+                {activeGame === 2 && <Puzzle className="w-5 h-5 fill-purple-300 text-purple-100" />}
+                {activeGame === 3 && <Code2 className="w-5 h-5 text-cyan-200" />}
+                {activeGame === 4 && <Target className="w-5 h-5 text-amber-100" />}
               </div>
 
               <div className="ppa-header-titles">
@@ -1352,10 +1335,7 @@ print(result)`
                   <span>Real-Life Mission ({missionDone ? '2/2' : `${missionIdx}/2`})</span>
                 </div>
 
-                <div className="ppa-check-item opacity-50">
-                  <div className="ppa-check-dot-icon" />
-                  <span>Coding Practice (If Available)</span>
-                </div>
+                
               </div>
             </div>
           </div>
