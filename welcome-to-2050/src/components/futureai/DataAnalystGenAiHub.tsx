@@ -237,10 +237,10 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
         </section>
 
         {/* =========================================================================
-            2. FULL-WIDTH HORIZONTAL TABS (Ultra-Premium Cards with Big Real 3D Icons)
+            2. FULL-WIDTH HORIZONTAL TABS (Compact, Real 3D Icons, No "Tab" text)
             ========================================================================= */}
-        <div id="curriculum-tabs-map" className="overflow-x-auto scrollbar-none pb-2 pt-1 px-0.5">
-          <div className="flex items-stretch gap-3 min-w-max">
+        <div id="curriculum-tabs-map" className="overflow-x-auto scrollbar-none pb-1.5 pt-0.5 px-0.5">
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-max">
             {DATA_ANALYST_CURRICULUM.map((tab) => {
               const isActive = tab.id === activeTabId;
               const moduleCount = tab.chapters.length;
@@ -251,52 +251,52 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                   key={tab.id}
                   type="button"
                   onClick={() => handleSelectTab(tab.id)}
-                  className={`group relative p-3 sm:p-3.5 rounded-2xl flex items-center gap-3.5 text-left transition-all cursor-pointer border ${
+                  className={`group relative py-2 px-3 sm:py-2 sm:px-3 rounded-xl flex items-center gap-2.5 text-left transition-all cursor-pointer border ${
                     isActive
-                      ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white border-blue-500 shadow-lg shadow-blue-500/30 scale-[1.03] z-10'
-                      : 'bg-white hover:bg-slate-50/90 text-slate-800 border-slate-200/90 hover:border-blue-300 hover:shadow-md shadow-2xs'
+                      ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white border-blue-500 shadow-md shadow-blue-500/25 z-10'
+                      : 'bg-white hover:bg-slate-50/90 text-slate-800 border-slate-200 hover:border-blue-300 shadow-2xs'
                   }`}
                 >
                   {/* Real 3D High-Definition Icon Tile */}
                   <div
-                    className={`w-13 h-13 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shrink-0 p-1.5 transition-all duration-300 ${
+                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0 p-1 transition-all duration-200 ${
                       isActive
-                        ? 'bg-white/20 backdrop-blur-md border border-white/30 shadow-inner'
-                        : 'bg-gradient-to-b from-slate-50 to-slate-100/90 border border-slate-200/80 shadow-2xs group-hover:scale-105 group-hover:border-blue-200'
+                        ? 'bg-white/20 backdrop-blur-xs border border-white/30'
+                        : 'bg-slate-100/80 border border-slate-200/70 group-hover:border-blue-200'
                     }`}
                   >
                     <img
                       src={getTabRealIcon(tab.tabNum)}
                       alt={tab.title}
-                      className="w-10 h-10 sm:w-11 sm:h-11 object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300"
+                      className="w-7 h-7 sm:w-7.5 sm:h-7.5 object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-200"
                       onError={(e) => {
                         (e.target as HTMLElement).style.display = 'none';
                       }}
                     />
                   </div>
 
-                  {/* Title & Chapter Subtitle */}
-                  <div className="flex flex-col min-w-0 pr-2">
+                  {/* Title & Chapter Subtitle (No "Tab" text, just clean number and title) */}
+                  <div className="flex flex-col min-w-0 pr-1">
                     <div className="flex items-center gap-1.5">
-                      <span className={`text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md leading-none shrink-0 ${
+                      <span className={`text-[10px] font-black w-4 h-4 rounded-md flex items-center justify-center shrink-0 ${
                         isActive
-                          ? 'bg-white/20 text-white border border-white/30'
+                          ? 'bg-white/25 text-white border border-white/30'
                           : 'bg-blue-50 text-blue-700 border border-blue-200/80'
                       }`}>
-                        Tab {tab.tabNum}
+                        {tab.tabNum}
                       </span>
-                      <span className={`text-[12.5px] sm:text-[13.5px] font-black truncate leading-tight tracking-tight ${
-                        isActive ? 'text-white' : 'text-slate-950'
+                      <span className={`text-xs sm:text-[13px] font-bold truncate leading-tight tracking-tight ${
+                        isActive ? 'text-white' : 'text-slate-900'
                       }`}>
                         {tab.shortTitle}
                       </span>
                     </div>
 
-                    <span className={`text-[11px] font-bold leading-none mt-1.5 flex items-center gap-1.5 ${
+                    <span className={`text-[10px] sm:text-[10.5px] font-medium leading-none mt-1 flex items-center gap-1 ${
                       isActive ? 'text-blue-100' : 'text-slate-500'
                     }`}>
                       <span>{moduleCount} Modules</span>
-                      <span className="opacity-50">•</span>
+                      <span className="opacity-40">•</span>
                       <span>{topicCount} Topics</span>
                     </span>
                   </div>
