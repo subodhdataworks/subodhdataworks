@@ -423,7 +423,7 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
     switch (card.courseKey) {
       case 'python':
         if (onOpenPython) onOpenPython(1);
-        else window.location.hash = '#python';
+        else window.location.hash = '#python-challenges';
         break;
       case 'sql':
         if (onOpenSql) onOpenSql();
