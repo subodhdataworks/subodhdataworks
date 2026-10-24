@@ -5,7 +5,6 @@ import {
   FileText,
   Gamepad2,
   Code2,
-  Mic,
   Coins,
   Gem,
   Lock,
@@ -422,8 +421,8 @@ export const MobileExcelChapterView: React.FC<MobileExcelChapterViewProps> = ({
                       {chapter.desc}
                     </p>
 
-                    {/* Quick action buttons: Video, MCQ, Mock Interview */}
-                    <div className="grid grid-cols-3 gap-2 text-center">
+                    {/* Quick action buttons */}
+                    <div className="grid grid-cols-4 gap-1.5 text-center">
                       <button
                         type="button"
                         onClick={(e) => handleActionClick(e, chapter)}
@@ -445,10 +444,19 @@ export const MobileExcelChapterView: React.FC<MobileExcelChapterViewProps> = ({
                       <button
                         type="button"
                         onClick={(e) => handleActionClick(e, chapter)}
-                        className="py-2 px-1 rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-300 text-[10px] font-extrabold flex flex-col items-center gap-1 active:scale-95 transition-all"
+                        className="py-2 px-1 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400 text-[10px] font-extrabold flex flex-col items-center gap-1 active:scale-95 transition-all"
                       >
-                        <Mic className="w-3.5 h-3.5" />
-                        <span>Mock Interview</span>
+                        <Gamepad2 className="w-3.5 h-3.5" />
+                        <span>Arena</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => handleActionClick(e, chapter)}
+                        className="py-2 px-1 rounded-xl bg-teal-500/15 border border-teal-500/30 text-teal-300 text-[10px] font-extrabold flex flex-col items-center gap-1 active:scale-95 transition-all"
+                      >
+                        <Code2 className="w-3.5 h-3.5" />
+                        <span>Formula</span>
                       </button>
                     </div>
 

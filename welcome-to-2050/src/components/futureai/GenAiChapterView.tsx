@@ -412,9 +412,10 @@ const GENAI_CHAPTERS: Chapter[] = [
 ];
 
 const ACTIONS = [
-  { step: 'video', label: 'Video', icon: <Play className="w-3 h-3" />, cls: 'act-video video' },
-  { step: 'mcq', label: 'MCQ', icon: <FileText className="w-3 h-3" />, cls: 'act-mcq mcq' },
-  { step: 'interview', label: 'Mock Interview', icon: <Mic className="w-3 h-3" />, cls: 'act-interview interview' },
+  { step: 'video', label: 'Video', icon: <Play className="w-3 h-3" />, cls: 'act-video' },
+  { step: 'mcq', label: 'MCQ', icon: <FileText className="w-3 h-3" />, cls: 'act-mcq' },
+  { step: 'game', label: 'Game', icon: <Gamepad2 className="w-3 h-3" />, cls: 'act-game' },
+  { step: 'code', label: 'Code', icon: <Code2 className="w-3 h-3" />, cls: 'act-code' },
 ];
 
 export const GenAiChapterView: React.FC<Props> = ({ onBack, onOpenAdvisor }) => {

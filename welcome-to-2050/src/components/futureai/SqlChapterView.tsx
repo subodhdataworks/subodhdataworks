@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  ChevronRight, ChevronDown, ChevronUp, Play, Clock, FileText, Mic, Gamepad2, Code2,
+  ChevronRight, ChevronDown, ChevronUp, Play, Clock, FileText, Gamepad2, Code2,
   CheckCircle2, BookOpen, FolderKanban, Wrench, ArrowRight, Zap, Award,
   Timer, Bot, Sparkles, Circle, Database, Key, Search, Filter, Layers,
   Calendar, GitMerge, Workflow, FileCode, Terminal, Sliders, BarChart3,
@@ -8,7 +8,6 @@ import {
   Gauge, FileJson, PieChart, Share2
 } from 'lucide-react';
 import { MobileSqlChapterView } from './mobile/MobileSqlChapterView';
-import { CourseLessonVideoModal } from './CourseLessonVideoModal';
 import './SqlChapterView.css';
 
 interface Props {
@@ -569,9 +568,10 @@ export const SQL_CHAPTERS: Chapter[] = [
 ];
 
 const ACTIONS = [
-  { step: 'video', label: 'Video', icon: <Play className="w-3 h-3" />, cls: 'act-video video' },
-  { step: 'mcq', label: 'MCQ', icon: <FileText className="w-3 h-3" />, cls: 'act-mcq mcq' },
-  { step: 'interview', label: 'Mock Interview', icon: <Mic className="w-3 h-3" />, cls: 'act-interview interview' },
+  { step: 'video', label: 'Video', icon: <Play className="w-3 h-3" />, cls: 'act-video' },
+  { step: 'mcq', label: 'MCQ', icon: <FileText className="w-3 h-3" />, cls: 'act-mcq' },
+  { step: 'game', label: 'Game', icon: <Gamepad2 className="w-3 h-3" />, cls: 'act-game' },
+  { step: 'code', label: 'Code', icon: <Code2 className="w-3 h-3" />, cls: 'act-code' },
 ];
 
 export const SqlChapterView: React.FC<Props> = ({
@@ -581,7 +581,6 @@ export const SqlChapterView: React.FC<Props> = ({
   onOpenAdvisor,
 }) => {
   const [openId, setOpenId] = useState<number | null>(1);
-  const [activeVideoLesson, setActiveVideoLesson] = useState<{ title: string; module: string; videoSrc: string } | null>(null);
 
   const totalLessons = SQL_CHAPTERS.reduce((acc, c) => acc + c.lessons.length, 0);
   const doneLessons = SQL_CHAPTERS.reduce((acc, c) => acc + c.lessons.filter(l => l.status === 'completed').length, 0);

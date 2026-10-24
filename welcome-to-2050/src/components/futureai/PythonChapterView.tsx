@@ -529,9 +529,10 @@ export const TOPICS: Topic[] = [
 ];
 
 const ACTIONS = [
-  { step: 'learn' as WorkspaceStepId, label: 'Video', icon: <Play className="w-3 h-3" />, cls: 'video act-video' },
-  { step: 'practice' as WorkspaceStepId, label: 'MCQ', icon: <FileText className="w-3 h-3" />, cls: 'mcq act-mcq' },
-  { step: 'interview' as WorkspaceStepId, label: 'Mock Interview', icon: <Mic className="w-3 h-3" />, cls: 'interview act-interview' },
+  { step: 'learn' as WorkspaceStepId, label: 'Video', icon: <Play className="w-3 h-3" />, cls: 'act-video' },
+  { step: 'practice' as WorkspaceStepId, label: 'MCQ', icon: <FileText className="w-3 h-3" />, cls: 'act-mcq' },
+  { step: 'play' as WorkspaceStepId, label: 'Game', icon: <Gamepad2 className="w-3 h-3" />, cls: 'act-game' },
+  { step: 'code' as WorkspaceStepId, label: 'Code', icon: <Code2 className="w-3 h-3" />, cls: 'act-code' },
 ];
 
 export const PythonChapterView: React.FC<Props> = ({
