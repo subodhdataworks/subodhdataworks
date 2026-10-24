@@ -11,7 +11,9 @@ import {
   Code2,
   Award,
   Check,
-  AlertCircle
+  AlertCircle,
+  HelpCircle,
+  BookOpen
 } from 'lucide-react';
 
 export interface Topic1Task {
@@ -28,6 +30,7 @@ export interface Topic1Task {
   validate: (code: string, output: string) => { passed: boolean; message: string };
 }
 
+// 10 Practice Challenges for Topic 1 — ALL STARTER CODES ARE COMPLETELY EMPTY SO USER TYPES THEIR OWN CODE!
 export const TOPIC_1_TASKS: Topic1Task[] = [
   {
     id: 1,
@@ -36,12 +39,15 @@ export const TOPIC_1_TASKS: Topic1Task[] = [
     description: 'Write a Python program that prints "Hello, World!" to the console.',
     difficulty: 'Easy',
     maxScore: 5,
-    starterCode: '# Task 1: Print Hello, World!\nprint("Hello, World!")\n',
+    starterCode: '',
     expectedOutput: 'Hello, World!',
     hint: 'Use the print() function: print("Hello, World!")',
     solution: 'print("Hello, World!")',
     validate: (code, output) => {
       const clean = output.trim();
+      if (!code.trim()) {
+        return { passed: false, message: 'Please write your Python code in the editor.' };
+      }
       if (clean === 'Hello, World!' || clean.includes('Hello, World!')) {
         return { passed: true, message: 'Excellent! You printed Hello, World! successfully.' };
       }
@@ -55,12 +61,15 @@ export const TOPIC_1_TASKS: Topic1Task[] = [
     description: 'Write a Python program to print your name (for example, "Rahul" or any name).',
     difficulty: 'Easy',
     maxScore: 5,
-    starterCode: '# Task 2: Print your name\nname = "Rahul"\nprint(name)\n',
+    starterCode: '',
     expectedOutput: 'Rahul',
     hint: 'Define a variable name = "Your Name" or directly use print("Your Name")',
     solution: 'print("Rahul")',
     validate: (code, output) => {
       const clean = output.trim();
+      if (!code.trim()) {
+        return { passed: false, message: 'Please write your Python code in the editor.' };
+      }
       if (clean.length > 0 && code.includes('print')) {
         return { passed: true, message: `Great job! Printed name: "${clean}"` };
       }
@@ -74,12 +83,15 @@ export const TOPIC_1_TASKS: Topic1Task[] = [
     description: 'Write a Python program that prints "Welcome to Future IT Industry" exactly as given.',
     difficulty: 'Easy',
     maxScore: 10,
-    starterCode: '# Task 3: Print Welcome to Future IT Industry\nprint("Welcome to Future IT Industry")\n',
+    starterCode: '',
     expectedOutput: 'Welcome to Future IT Industry',
     hint: 'Use print("Welcome to Future IT Industry")',
     solution: 'print("Welcome to Future IT Industry")',
     validate: (code, output) => {
       const clean = output.trim();
+      if (!code.trim()) {
+        return { passed: false, message: 'Please write your Python code in the editor.' };
+      }
       if (clean === 'Welcome to Future IT Industry' || clean.toLowerCase() === 'welcome to future it industry') {
         return { passed: true, message: 'Perfect! Exactly matched the welcome banner text.' };
       }
@@ -93,11 +105,14 @@ export const TOPIC_1_TASKS: Topic1Task[] = [
     description: 'Print three different messages on separate lines using three print() statements.',
     difficulty: 'Easy',
     maxScore: 10,
-    starterCode: '# Task 4: Print three different messages on separate lines\nprint("Line 1: Python is fun")\nprint("Line 2: Data Science is powerful")\nprint("Line 3: AI is the future")\n',
+    starterCode: '',
     expectedOutput: 'Line 1: Python is fun\nLine 2: Data Science is powerful\nLine 3: AI is the future',
     hint: 'Write three consecutive print() function calls, each printing its own line.',
     solution: 'print("Line 1")\nprint("Line 2")\nprint("Line 3")',
     validate: (code, output) => {
+      if (!code.trim()) {
+        return { passed: false, message: 'Please write your Python code in the editor.' };
+      }
       const lines = output.trim().split('\n').filter(Boolean);
       const printCount = (code.match(/print\s*\(/g) || []).length;
       if (lines.length >= 3 || printCount >= 3) {
@@ -113,11 +128,14 @@ export const TOPIC_1_TASKS: Topic1Task[] = [
     description: 'Print a sentence that includes your name and age (e.g. "My name is Rahul and I am 21 years old.").',
     difficulty: 'Easy',
     maxScore: 10,
-    starterCode: '# Task 5: Print a sentence containing name and age\nname = "Rahul"\nage = 21\nprint(f"My name is {name} and I am {age} years old.")\n',
+    starterCode: '',
     expectedOutput: 'My name is Rahul and I am 21 years old.',
     hint: 'Use variables name and age with an f-string or comma separation inside print().',
     solution: 'name = "Rahul"\nage = 21\nprint(f"My name is {name} and I am {age} years old.")',
     validate: (code, output) => {
+      if (!code.trim()) {
+        return { passed: false, message: 'Please write your Python code in the editor.' };
+      }
       const clean = output.trim();
       const hasDigit = /\d+/.test(clean);
       const hasText = /[a-zA-Z]{3,}/.test(clean);
@@ -134,11 +152,14 @@ export const TOPIC_1_TASKS: Topic1Task[] = [
     description: 'Print a numeric value on the first line, and a text message on the second line.',
     difficulty: 'Easy',
     maxScore: 10,
-    starterCode: '# Task 6: Print number and text message on separate lines\nprint(2050)\nprint("Welcome to Future IT Industry")\n',
+    starterCode: '',
     expectedOutput: '2050\nWelcome to Future IT Industry',
     hint: 'Line 1: print(100) or print(2050)\nLine 2: print("Your text message")',
     solution: 'print(2050)\nprint("Welcome to Future IT Industry")',
     validate: (code, output) => {
+      if (!code.trim()) {
+        return { passed: false, message: 'Please write your Python code in the editor.' };
+      }
       const lines = output.trim().split('\n').filter(Boolean);
       if (lines.length >= 2) {
         return { passed: true, message: 'Great job! Number and text printed on separate lines.' };
@@ -153,11 +174,14 @@ export const TOPIC_1_TASKS: Topic1Task[] = [
     description: 'Display an output message using two separate print() statements.',
     difficulty: 'Easy',
     maxScore: 10,
-    starterCode: '# Task 7: Use two separate print() statements\nprint("Learning Python")\nprint("is the foundation of AI.")\n',
+    starterCode: '',
     expectedOutput: 'Learning Python\nis the foundation of AI.',
     hint: 'Call print() twice in your script.',
     solution: 'print("Learning Python")\nprint("is the foundation of AI.")',
     validate: (code, output) => {
+      if (!code.trim()) {
+        return { passed: false, message: 'Please write your Python code in the editor.' };
+      }
       const printCount = (code.match(/print\s*\(/g) || []).length;
       if (printCount >= 2 && output.trim().length > 0) {
         return { passed: true, message: 'Nicely done! Two separate print() statements executed.' };
@@ -172,11 +196,14 @@ export const TOPIC_1_TASKS: Topic1Task[] = [
     description: 'Print two lines of text using a single print() statement and the newline character \\n.',
     difficulty: 'Easy',
     maxScore: 10,
-    starterCode: '# Task 8: Print two lines using \\n in one print statement\nprint("Line One\\nLine Two")\n',
+    starterCode: '',
     expectedOutput: 'Line One\nLine Two',
     hint: 'Put \\n between words inside quotes: print("First Line\\nSecond Line")',
     solution: 'print("Line One\\nLine Two")',
     validate: (code, output) => {
+      if (!code.trim()) {
+        return { passed: false, message: 'Please write your Python code in the editor.' };
+      }
       const lines = output.trim().split('\n').filter(Boolean);
       const hasNewlineChar = code.includes('\\n');
       if (lines.length >= 2 || hasNewlineChar) {
@@ -192,11 +219,14 @@ export const TOPIC_1_TASKS: Topic1Task[] = [
     description: 'Print the sentence "Python is easy to learn" exactly as given.',
     difficulty: 'Easy',
     maxScore: 10,
-    starterCode: '# Task 9: Print exact sentence\nprint("Python is easy to learn")\n',
+    starterCode: '',
     expectedOutput: 'Python is easy to learn',
     hint: 'Check spelling and spacing: print("Python is easy to learn")',
     solution: 'print("Python is easy to learn")',
     validate: (code, output) => {
+      if (!code.trim()) {
+        return { passed: false, message: 'Please write your Python code in the editor.' };
+      }
       const clean = output.trim();
       if (clean === 'Python is easy to learn' || clean.toLowerCase() === 'python is easy to learn') {
         return { passed: true, message: 'Spot on! The sentence matched character-by-character.' };
@@ -211,11 +241,14 @@ export const TOPIC_1_TASKS: Topic1Task[] = [
     description: 'Print a three-line welcome message using only one print() statement (using \\n or triple quotes).',
     difficulty: 'Easy',
     maxScore: 10,
-    starterCode: '# Task 10: 3-line message with ONLY ONE print() call\nprint("Welcome to Future IT!\\nExplore Python & Data Science\\nBuild Real AI Solutions")\n',
+    starterCode: '',
     expectedOutput: 'Welcome to Future IT!\nExplore Python & Data Science\nBuild Real AI Solutions',
     hint: 'Use print("Line 1\\nLine 2\\nLine 3") or triple quotes print("""Line 1\\nLine 2\\nLine 3""")',
     solution: 'print("Line 1\\nLine 2\\nLine 3")',
     validate: (code, output) => {
+      if (!code.trim()) {
+        return { passed: false, message: 'Please write your Python code in the editor.' };
+      }
       const printCount = (code.match(/print\s*\(/g) || []).length;
       const lines = output.trim().split('\n').filter(Boolean);
       if (printCount === 1 && lines.length >= 3) {
@@ -327,16 +360,16 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
 
   const task = TOPIC_1_TASKS[currentTaskIndex];
 
-  // User code state dictionary per task
+  // User code state dictionary per task - STARTS EMPTY SO USER TYPES FROM SCRATCH!
   const [codes, setCodes] = useState<Record<number, string>>(() => {
     const init: Record<number, string> = {};
     TOPIC_1_TASKS.forEach((t) => {
-      init[t.id] = t.starterCode;
+      init[t.id] = '';
     });
     return init;
   });
 
-  const currentCode = codes[task.id] || task.starterCode;
+  const currentCode = codes[task.id] || '';
 
   const [terminalOutput, setTerminalOutput] = useState<string>('');
   const [testResult, setTestResult] = useState<{ passed: boolean; message: string } | null>(null);
@@ -349,12 +382,18 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
   };
 
   const handleResetCode = () => {
-    setCodes((prev) => ({ ...prev, [task.id]: task.starterCode }));
+    setCodes((prev) => ({ ...prev, [task.id]: '' }));
     setTerminalOutput('');
     setTestResult(null);
   };
 
   const handleRunCode = () => {
+    if (!currentCode.trim()) {
+      setTerminalOutput('Error: Please write your Python code before running.');
+      setTestResult({ passed: false, message: 'Editor is empty. Write your code and click Run.' });
+      return;
+    }
+
     const res = executePythonCodeSimulation(currentCode);
     if (res.error) {
       setTerminalOutput(`Traceback (most recent call last):\n  File "solution.py", line 1\n${res.error}`);
@@ -390,7 +429,7 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
     <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 text-slate-800">
       
       {/* ─── Top Bar: Back Button, Title & Progress ─── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 pb-4 border-b border-slate-200/80">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-200/80">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -424,38 +463,72 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
         </div>
       </div>
 
-      {/* ─── Task Selector Pills (1 to 10) ─── */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-5 no-scrollbar">
-        {TOPIC_1_TASKS.map((t, idx) => {
-          const isActive = idx === currentTaskIndex;
-          const isSolved = solvedTaskIds.has(t.id);
-          return (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => {
-                setCurrentTaskIndex(idx);
+      {/* ─── QUESTION DROPDOWN SELECTOR (EXACT USER REQUEST) ─── */}
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-3 sm:p-4 mb-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse" />
+          <label htmlFor="question-dropdown" className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">
+            Choose Question:
+          </label>
+        </div>
+
+        {/* Dropdown Menu for All 10 Questions */}
+        <div className="relative flex-1 max-w-2xl">
+          <select
+            id="question-dropdown"
+            value={currentTaskIndex}
+            onChange={(e) => {
+              setCurrentTaskIndex(Number(e.target.value));
+              setTerminalOutput('');
+              setTestResult(null);
+              setShowHint(false);
+            }}
+            className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-300 text-slate-900 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer transition-all"
+          >
+            {TOPIC_1_TASKS.map((t, idx) => {
+              const isSolved = solvedTaskIds.has(t.id);
+              return (
+                <option key={t.id} value={idx}>
+                  {isSolved ? '✅ ' : '📝 '} Question {t.taskNumber}: {t.title}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+
+        {/* Quick Prev & Next Question Controls */}
+        <div className="flex items-center gap-2 shrink-0 justify-end">
+          <button
+            type="button"
+            disabled={currentTaskIndex === 0}
+            onClick={() => {
+              if (currentTaskIndex > 0) {
+                setCurrentTaskIndex((prev) => prev - 1);
                 setTerminalOutput('');
                 setTestResult(null);
                 setShowHint(false);
-              }}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer active:scale-95 ${
-                isActive
-                  ? 'bg-[#1a73e8] text-white shadow-sm'
-                  : isSolved
-                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
-              }`}
-            >
-              {isSolved ? (
-                <Check className="w-3.5 h-3.5 text-emerald-600" />
-              ) : (
-                <span>#{t.taskNumber}</span>
-              )}
-              <span className="max-w-[120px] truncate">{t.title.replace(/^\d+\.\s*/, '')}</span>
-            </button>
-          );
-        })}
+              }
+            }}
+            className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+          >
+            ← Prev
+          </button>
+          <button
+            type="button"
+            disabled={currentTaskIndex === TOPIC_1_TASKS.length - 1}
+            onClick={() => {
+              if (currentTaskIndex < TOPIC_1_TASKS.length - 1) {
+                setCurrentTaskIndex((prev) => prev + 1);
+                setTerminalOutput('');
+                setTestResult(null);
+                setShowHint(false);
+              }
+            }}
+            className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+          >
+            Next →
+          </button>
+        </div>
       </div>
 
       {/* ─── Two-Column Interactive Problem Solver Workspace ─── */}
@@ -469,7 +542,7 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
               <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/50">
                 {task.difficulty} • +{task.maxScore} XP
               </span>
-              <span className="text-xs text-slate-400 font-medium">Task {task.taskNumber}/10</span>
+              <span className="text-xs text-slate-400 font-medium">Question {task.taskNumber}/10</span>
             </div>
 
             <h3 className="text-base font-extrabold text-slate-900 leading-snug">
@@ -534,21 +607,22 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
                   type="button"
                   onClick={handleResetCode}
                   className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition-colors cursor-pointer"
-                  title="Reset to starter code"
+                  title="Clear code"
                 >
                   <RotateCcw className="w-3 h-3" />
-                  <span>Reset</span>
+                  <span>Clear Code</span>
                 </button>
               </div>
             </div>
 
-            {/* Code Textarea with Python syntax dark styling */}
+            {/* Code Textarea - Starts Completely Empty so User Writes Code From Scratch */}
             <div className="relative">
               <textarea
                 value={currentCode}
                 onChange={(e) => handleCodeChange(e.target.value)}
+                placeholder="# Write your Python code here...&#10;# (e.g. print(...))"
                 rows={9}
-                className="w-full bg-[#1e1e2e] text-[#cdd6f4] font-mono text-xs sm:text-sm p-4 outline-none resize-none leading-relaxed selection:bg-blue-600/40"
+                className="w-full bg-[#1e1e2e] text-[#cdd6f4] placeholder-slate-500 font-mono text-xs sm:text-sm p-4 outline-none resize-none leading-relaxed selection:bg-blue-600/40"
                 spellCheck={false}
               />
             </div>
@@ -605,7 +679,7 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
               {terminalOutput ? (
                 terminalOutput
               ) : (
-                <span className="text-slate-500 italic">Click "Run &amp; Test Code" above to execute your solution.</span>
+                <span className="text-slate-500 italic">Type your code above and click "Run &amp; Test Code" to execute.</span>
               )}
             </div>
 
@@ -633,7 +707,7 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
                     onClick={handleNextTask}
                     className="inline-flex items-center gap-1 px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap active:scale-95"
                   >
-                    <span>Next Task</span>
+                    <span>Next Question</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                 )}
