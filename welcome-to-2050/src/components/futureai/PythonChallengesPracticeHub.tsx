@@ -341,8 +341,6 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
   const [activeTab, setActiveTab] = useState<'all' | 'basic' | 'intermediate' | 'advanced' | 'popular'>('all');
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<number>>(new Set());
   const [activeChallengeArenaTopic, setActiveChallengeArenaTopic] = useState<{ topicId: number; initialTaskId?: number } | null>(null);
-  const [selectedTopic1TaskId, setSelectedTopic1TaskId] = useState<number>(1);
-  const [topic1Expanded, setTopic1Expanded] = useState<boolean>(false);
 
   // Collapsible accordion states
   const [statusOpen, setStatusOpen] = useState<boolean>(true);
@@ -632,46 +630,10 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
                         <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
                           {item.description}
                         </p>
-
-                        {/* ─── Question Dropdown Selector ON THE CARD (BAHAR) ─── */}
-                        {item.id === 1 && (
-                          <div className="mt-3.5 bg-gradient-to-r from-blue-50/80 via-sky-50/50 to-slate-50 border border-blue-200/80 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center gap-2.5 shadow-sm">
-                            <div className="flex items-center gap-2 shrink-0">
-                              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-                              <label htmlFor="topic1-task-select" className="text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">
-                                Choose Challenge:
-                              </label>
-                            </div>
-                            <div className="relative flex-1 min-w-0">
-                              <select
-                                id="topic1-task-select"
-                                value={selectedTopic1TaskId}
-                                onChange={(e) => setSelectedTopic1TaskId(Number(e.target.value))}
-                                className="w-full bg-white hover:bg-slate-50 border border-slate-300 text-slate-900 font-bold text-xs sm:text-sm px-3 py-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer transition-all"
-                              >
-                                {TOPIC_1_TASKS.map((task) => (
-                                  <option key={task.id} value={task.taskNumber}>
-                                    Question {task.taskNumber}: {task.title}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setActiveChallengeArenaTopic({ topicId: 1, initialTaskId: selectedTopic1TaskId });
-                              }}
-                              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-bold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0"
-                            >
-                              <span>Solve Challenge #{selectedTopic1TaskId}</span>
-                              <ArrowRight className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        )}
                       </div>
                     </div>
 
-                    {/* Right: Bookmark Star + Solve Challenge Button */}
+                    {/* Right: Bookmark Star + Challenge Dropdown / Action Button */}
                     <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
                       <button
                         type="button"
@@ -686,22 +648,49 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
                         />
                       </button>
 
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (item.id === 1) {
-                            setActiveChallengeArenaTopic({ topicId: 1, initialTaskId: selectedTopic1TaskId });
-                          } else if (onSolveChallenge) {
-                            onSolveChallenge(item.id, item.title);
-                          } else {
-                            window.location.hash = `#python?topic=${item.id}`;
-                          }
-                        }}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-semibold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap"
-                      >
-                        <span>Solve Challenge</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
+                      {/* For Topic 1: Replace Solve Challenge with Question Dropdown */}
+                      {item.id === 1 ? (
+                        <div className="relative">
+                          <select
+                            defaultValue=""
+                            onChange={(e) => {
+                              const val = Number(e.target.value);
+                              if (val) {
+                                setActiveChallengeArenaTopic({ topicId: 1, initialTaskId: val });
+                              }
+                            }}
+                            className="appearance-none bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-bold text-xs sm:text-sm pl-4 pr-9 py-2.5 rounded-xl shadow-md shadow-blue-500/20 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+                            title="Select a challenge to solve"
+                          >
+                            <option value="" disabled className="bg-white text-slate-800 font-bold">
+                              Choose Challenge (1-10) ▾
+                            </option>
+                            {TOPIC_1_TASKS.map((task) => (
+                              <option key={task.id} value={task.taskNumber} className="bg-white text-slate-900 font-medium py-1.5">
+                                {task.taskNumber}. {task.title}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-white">
+                            <ChevronDown className="w-4 h-4" />
+                          </div>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (onSolveChallenge) {
+                              onSolveChallenge(item.id, item.title);
+                            } else {
+                              window.location.hash = `#python?topic=${item.id}`;
+                            }
+                          }}
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-semibold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap"
+                        >
+                          <span>Solve Challenge</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
