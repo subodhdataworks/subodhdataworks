@@ -70,8 +70,8 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
 
   const currentTabTopics = useMemo(() => getTopicListForTab(tabId), [tabId]);
 
-  const courseKey = tabId === 3 ? 'ml_engineering' : tabId === 2 ? 'data_science' : 'data_analyst';
-  const courseTitle = tabId === 3 ? 'Machine Learning Engineering' : tabId === 2 ? 'Data Science & Agentic AI' : 'Data Analyst with GenAI';
+  const courseKey = tabId === 4 ? 'ai_engineering' : tabId === 3 ? 'ml_engineering' : tabId === 2 ? 'data_science' : 'data_analyst';
+  const courseTitle = tabId === 4 ? 'AI Engineering & LLMOps' : tabId === 3 ? 'Machine Learning Engineering' : tabId === 2 ? 'Data Science & Agentic AI' : 'Data Analyst with GenAI';
 
   const [isCoursePaid, setIsCoursePaid] = useState<boolean>(() => isCourseUnlocked(courseKey));
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
@@ -103,6 +103,15 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     setSelectedSnippet(null);
     setMissionIdx(0);
     setMissionDone(false);
+    if (tabId === 4) {
+      if (numericTopicId === 2) {
+        setMissionCode(`def classify_message(message):\n    text = message.lower()\n    if "free prize" in text or "claim reward" in text:\n        return "Potential spam — review this message"\n    return "No matching spam phrase found"\n\nmessage = input("Enter a message: ")\nresult = classify_message(message)\nprint("Result:", result)`);
+      } else if (numericTopicId === 3) {
+        setMissionCode(`from sklearn.tree import DecisionTreeClassifier\n\n# Training examples: 0 = no umbrella, 1 = umbrella\n# Features: [cloudy, rainy]\nX = [\n    [0, 0],\n    [1, 0],\n    [1, 1],\n    [0, 1],\n    [1, 1],\n    [0, 0]\n]\ny = [0, 0, 1, 1, 1, 0]\n\n# Train a small Machine Learning model\nmodel = DecisionTreeClassifier(random_state=0)\nmodel.fit(X, y)\n\n# Predict for a new example: cloudy and rainy\nprediction = model.predict([[1, 1]])\nprint("Prediction:", prediction[0])`);
+      } else {
+        setMissionCode(`temperature = 38\nif temperature >= 38:\n    print("High temperature detected")\nelse:\n    print("Temperature is below 38")`);
+      }
+    }
     setActiveGame(1);
     setUnlockedGame(1);
   }, [topicId, tabId]);
@@ -1271,6 +1280,52 @@ print(result)`
           explainTextHi: 'मॉडल लाइव होने के बाद भी यह देखना जरूरी है कि क्या वो सही समय पर सही जवाब दे रहा है या उसमें कोई गिरावट आई है।',
           realWorldEn: 'Financial institutions monitor credit scoring models continuously to prevent lending discrimination or model drift.',
           realWorldHi: 'बैंक लगातार मॉनिटर करते हैं ताकि लोन देने वाला AI मॉडल हमेशा सही और निष्पक्ष फैसले ले।',
+        };
+      }
+
+      // ─── AI Engineering Quizzes (Tab 4) ───
+      if (qText.includes('best describes Artificial Intelligence') || qText.includes('What is Artificial Intelligence?')) {
+        return {
+          hintEn: 'Artificial Intelligence refers to computer systems engineered to perform tasks associated with human intelligence.',
+          hintHi: 'आर्टिफिशियल इंटेलिजेंस (AI) कंप्यूटर सिस्टम द्वारा इंसानी समझ और बुद्धिमत्ता से जुड़े काम करने की क्षमता है।',
+          exampleCode: '// AI Cognitive Capabilities:\n1. Vision: Recognize faces and street signs\n2. Language: Understand and translate speech\n3. Reasoning: Solve problems and plan moves (e.g. Chess AI)',
+          exampleNote: 'AI enables software to perceive, reason, learn, and act intelligently.',
+          explainTitleEn: 'What Is Artificial Intelligence?',
+          explainTitleHi: 'आर्टिफिशियल इंटेलिजेंस (AI) क्या है?',
+          explainTextEn: 'AI is a broad branch of computer science dedicated to building software and algorithms that perform cognitive tasks historically unique to humans.',
+          explainTextHi: 'AI का मतलब ऐसी तकनीक से है जो कंप्यूटर को इंसानों की तरह सोचने, समझने, देखने और निर्णय लेने की क्षमता देती है।',
+          realWorldEn: 'OpenAI ChatGPT, Google Gemini, and Tesla Full Self-Driving are state-of-the-art AI systems.',
+          realWorldHi: 'ChatGPT, Google Gemini और सेल्फ ड्राइविंग कारें आधुनिक AI के सबसे बड़े उदाहरण हैं।',
+        };
+      }
+
+      if (qText.includes('phone assistant converts spoken requests') || qText.includes('speech into words')) {
+        return {
+          hintEn: 'Converting spoken words into text is the domain of speech recognition and natural language processing (NLP).',
+          hintHi: 'आवाज़ को टेक्स्ट में बदलने के लिए स्पीच और लैंग्वेज प्रोसेसिंग (Speech & language processing) तकनीक का उपयोग होता है।',
+          exampleCode: '// Speech Recognition Pipeline:\nAudio Waveform: "Call Rahul"\n-> Acoustic Feature Extraction (MFCC)\n-> Deep Neural ASR Model\n-> Text Output: "Call Rahul" (NLP Intent: CALL_CONTACT)',
+          exampleNote: 'Automatic Speech Recognition (ASR) translates auditory frequencies into linguistic tokens.',
+          explainTitleEn: 'Speech and Language Processing',
+          explainTitleHi: 'स्पीच और भाषा प्रोसेसिंग तकनीक',
+          explainTextEn: 'Smartphones utilize speech recognition algorithms to decode acoustic audio waves into transcribed words, followed by natural language understanding (NLU) to infer user commands.',
+          explainTextHi: 'स्मार्टफोन असिस्टेंट आपकी आवाज़ को सुनकर शब्दों में बदलते हैं और फिर कमांड को समझकर कॉल या मैसेज करते हैं।',
+          realWorldEn: 'Apple Siri and Google Assistant process over 1 billion voice requests daily with deep learning ASR.',
+          realWorldHi: 'Siri और Google Assistant रोजाना 1 अरब से ज्यादा वॉयस कमांड्स को तुरंत प्रोसेस करते हैं।',
+        };
+      }
+
+      if (qText.includes('physical robot body')) {
+        return {
+          hintEn: 'AI is fundamentally software and algorithms—it does not require a physical metallic robot body.',
+          hintHi: 'AI मूल रूप से सॉफ्टवेयर है—इसके लिए रोबोट की फिजिकल बॉडी होना बिल्कुल जरूरी नहीं है (False)।',
+          exampleCode: '// AI Deployment Formats:\nSoftware Only (Cloud API): ChatGPT, Midjourney, Spam Filter\nPhysical Robotics:          Boston Dynamics Atlas, Warehouse AGVs',
+          exampleNote: 'Most commercial AI algorithms exist entirely in cloud data centers.',
+          explainTitleEn: 'Software AI vs Robotics',
+          explainTitleHi: 'सॉफ्टवेयर AI बनाम रोबोटिक्स',
+          explainTextEn: 'While robotics integrates AI to move mechanical limbs, the vast majority of AI systems (search engines, recommendation models, LLMs) run strictly as cloud software.',
+          explainTextHi: 'रोबोट सिर्फ AI का एक रूप है, लेकिन अधिकांश AI (जैसे ChatGPT, सर्च इंजन, फ्रॉड डिटेक्टर) सिर्फ सॉफ्टवेयर कोड के रूप में काम करते हैं।',
+          realWorldEn: 'Search engines, fraud detection systems, and language models operate entirely in the cloud without physical bodies.',
+          realWorldHi: 'बैंकों का फ्रॉड डिटेक्टर और गूगल सर्च क्लाउड सर्वर पर बिना किसी रोबोट के चलता है।',
         };
       }
 

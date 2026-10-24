@@ -71,6 +71,7 @@ export interface TopicQuestionBank {
 import { TAB1_QUESTION_BANK, TAB1_QUESTION_BANK_BY_ID } from './questionBankTab1Foundations';
 import { TAB2_DATA_SCIENCE_QUESTION_BANK, TAB2_DATA_SCIENCE_QUESTION_BANK_BY_ID } from './questionBankTab2DataScience';
 import { TAB3_ML_ENGINEERING_QUESTION_BANK, TAB3_ML_ENGINEERING_QUESTION_BANK_BY_ID } from './questionBankTab3MlEngineering';
+import { TAB4_AI_ENGINEERING_QUESTION_BANK, TAB4_AI_ENGINEERING_QUESTION_BANK_BY_ID } from './questionBankTab4AiEngineering';
 
 /**
  * Universal lookup function to fetch Question Bank for any topic across all 8 Tabs
@@ -105,7 +106,15 @@ export function getTopicQuestionBank(
     return TAB3_ML_ENGINEERING_QUESTION_BANK[key] || TAB3_ML_ENGINEERING_QUESTION_BANK_BY_ID[Number(key)] || null;
   }
 
-  // Future tabs 4 through 8 will register here
+  if (numericTab === 4) {
+    if (typeof topicKeyOrId === 'number') {
+      return TAB4_AI_ENGINEERING_QUESTION_BANK_BY_ID[topicKeyOrId] || TAB4_AI_ENGINEERING_QUESTION_BANK['1.1'] || null;
+    }
+    const key = String(topicKeyOrId);
+    return TAB4_AI_ENGINEERING_QUESTION_BANK[key] || TAB4_AI_ENGINEERING_QUESTION_BANK_BY_ID[Number(key)] || null;
+  }
+
+  // Future tabs 5 through 8 will register here
   return null;
 }
 
@@ -131,6 +140,13 @@ export function getTab3TopicList() {
 }
 
 /**
+ * Get all available topics for Tab 4 (AI Engineering)
+ */
+export function getTab4TopicList() {
+  return Object.values(TAB4_AI_ENGINEERING_QUESTION_BANK_BY_ID);
+}
+
+/**
  * Get available topic list by tabId
  */
 export function getTopicListForTab(tabId: number = 1) {
@@ -139,6 +155,9 @@ export function getTopicListForTab(tabId: number = 1) {
   }
   if (tabId === 3) {
     return Object.values(TAB3_ML_ENGINEERING_QUESTION_BANK_BY_ID);
+  }
+  if (tabId === 4) {
+    return Object.values(TAB4_AI_ENGINEERING_QUESTION_BANK_BY_ID);
   }
   return Object.values(TAB1_QUESTION_BANK_BY_ID);
 }
