@@ -119,73 +119,73 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
         )}
 
         {/* =========================================================================
-            1. TOP HERO BANNER: 1:1 REPLICA OF REFERENCE UI (LUXURY DEEP BLUE TECH HERO)
+            1. TOP HERO BANNER: LIGHT EXECUTIVE THEME (HIGH-CONTRAST DAYLIGHT TECH CAMPUS)
             ========================================================================= */}
-        <section className="w-full relative rounded-3xl overflow-hidden border border-blue-500/30 shadow-2xl shadow-blue-950/40 bg-[#070e23] text-white">
-          {/* Photorealistic Dark Tech Collaboration Image */}
+        <section className="w-full relative rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm bg-gradient-to-r from-white via-slate-50/70 to-blue-50/30 text-slate-900">
+          {/* Photorealistic Daylight Campus Collaboration Photo */}
           <img
-            src="/images/data_analyst_luxury_dark_banner.jpg"
+            src="/images/data_analyst_light_banner.jpg"
             alt="Data Analyst Students Collaboration"
-            className="absolute right-0 top-0 bottom-0 w-full md:w-[58%] lg:w-[54%] h-full object-cover object-center opacity-70 md:opacity-85 pointer-events-none"
+            className="absolute right-0 top-0 bottom-0 w-full md:w-[56%] lg:w-[52%] h-full object-cover object-center opacity-90 md:opacity-95 pointer-events-none transition-opacity"
             onError={(e) => {
               (e.target as HTMLImageElement).src = '/images/future_it_industries_campus_banner.png';
             }}
           />
-          {/* Deep Navy/Black Gradient Fade across the left text zone for 100% crystal clear legibility */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#070e23] via-[#070e23]/95 md:via-[#070e23]/80 to-transparent pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050a1a] via-transparent to-transparent pointer-events-none" />
+          {/* Smooth Pearl Gradient Fade across the left text zone for crystal clear readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 md:via-white/85 to-transparent pointer-events-none w-full md:w-[62%]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/70 via-transparent to-transparent pointer-events-none md:hidden" />
 
-          <div className="relative z-10 p-5 sm:p-6 lg:p-7 flex flex-col justify-between min-h-[225px] sm:min-h-[240px]">
+          <div className="relative z-10 p-4 sm:p-5 lg:p-6 flex flex-col justify-between min-h-[210px] sm:min-h-[225px]">
             
             {/* Top Row: Eyebrow + Headline + Right Inset Box */}
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               
               {/* Left Content */}
-              <div className="max-w-2xl space-y-2.5">
+              <div className="max-w-2xl space-y-2">
                 {/* Eyebrow Pill */}
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-orange-600/30 to-amber-600/30 border border-orange-500/50 text-[11px] font-black text-orange-400 tracking-wide uppercase shadow-sm">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 border border-orange-200 text-[11px] font-black text-orange-700 tracking-wide uppercase shadow-2xs">
                   <Flame className="w-3.5 h-3.5 fill-orange-500 text-orange-500" />
                   <span>Most Popular</span>
                 </div>
 
                 {/* Headline */}
-                <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-black tracking-tight text-white leading-tight">
+                <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-black tracking-tight text-slate-950 leading-tight">
                   Data Analyst with{' '}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-300 drop-shadow-[0_2px_12px_rgba(56,189,248,0.45)]">
+                  <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
                     GenAI
                   </span>
                 </h1>
 
                 {/* Subtitle */}
-                <p className="text-xs sm:text-[13.5px] text-slate-300 font-medium leading-relaxed max-w-xl">
+                <p className="text-xs sm:text-[13px] text-slate-600 font-semibold leading-relaxed max-w-xl">
                   Learn Excel, SQL, Python, Power BI and Generative AI to become a job-ready Data Analyst with real-world projects.
                 </p>
 
                 {/* Feature Pills */}
-                <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px] font-bold text-slate-200">
-                  <span className="flex items-center gap-1.5 bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/15 px-3 py-1 rounded-full shadow-2xs transition-colors">
+                <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-[10.5px] font-bold text-slate-700">
+                  <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
                     🔰 Beginner to Advanced
                   </span>
-                  <span className="flex items-center gap-1.5 bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/15 px-3 py-1 rounded-full shadow-2xs transition-colors">
+                  <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
                     🛠️ Hands-on Projects
                   </span>
-                  <span className="flex items-center gap-1.5 bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/15 px-3 py-1 rounded-full shadow-2xs transition-colors">
+                  <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
                     💬 Interview Preparation
                   </span>
-                  <span className="flex items-center gap-1.5 bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/15 px-3 py-1 rounded-full shadow-2xs transition-colors">
+                  <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
                     📜 Industry Certificate
                   </span>
-                  <span className="flex items-center gap-1.5 bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/15 px-3 py-1 rounded-full shadow-2xs transition-colors">
+                  <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
                     🤖 AI-Powered Learning
                   </span>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex flex-wrap items-center gap-3 pt-1.5">
+                <div className="flex flex-wrap items-center gap-2.5 pt-1">
                   <button
                     type="button"
                     onClick={() => onStartTopic && onStartTopic('t-4', 'Analytics Lifecycle')}
-                    className="px-5 py-2.5 rounded-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-blue-500/40 active:scale-95 transition-all cursor-pointer"
+                    className="px-5 py-2 rounded-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-blue-500/25 active:scale-95 transition-all cursor-pointer"
                   >
                     <Play className="w-3.5 h-3.5 fill-white" />
                     <span>Resume Learning</span>
@@ -196,42 +196,42 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                       const el = document.getElementById('curriculum-tabs-map');
                       el?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer backdrop-blur-sm"
+                    className="px-5 py-2 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-800 font-bold text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-2xs"
                   >
-                    <Search className="w-3.5 h-3.5 text-slate-300" />
+                    <Search className="w-3.5 h-3.5 text-slate-500" />
                     <span>View Course Overview</span>
                   </button>
                 </div>
               </div>
 
               {/* Right Inset: From Learning to a Data Analyst Career */}
-              <div className="shrink-0 w-full md:w-60 rounded-2xl bg-[#091432]/85 backdrop-blur-md border border-blue-400/30 p-4 space-y-2.5 shadow-xl shadow-blue-950/60">
-                <div className="flex items-center justify-between gap-2 border-b border-blue-500/20 pb-2">
+              <div className="shrink-0 w-full md:w-56 rounded-2xl bg-white/95 backdrop-blur-md border border-slate-200/90 p-3.5 space-y-1.5 shadow-sm">
+                <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-1.5">
                   <div className="flex flex-col">
-                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">From Learning</span>
-                    <span className="text-xs sm:text-[13px] font-black text-cyan-400 leading-tight">to a Data Analyst Career</span>
+                    <span className="text-[9.5px] text-slate-400 font-bold uppercase tracking-wider">From Learning</span>
+                    <span className="text-xs sm:text-[12px] font-black text-blue-700 leading-tight">to a Data Analyst Career</span>
                   </div>
-                  <TrendingUp className="w-4 h-4 text-cyan-400" />
+                  <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
                 </div>
-                <ul className="space-y-1.5 text-[11px] font-bold text-slate-200">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <ul className="space-y-1 text-[10.5px] font-bold text-slate-700">
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                     <span>Learn Skills</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                     <span>Build Projects</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                     <span>Get Certified</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                     <span>Crack Interviews</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                     <span>Land Your Dream Job</span>
                   </li>
                 </ul>
@@ -240,25 +240,25 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
             </div>
 
             {/* Bottom Stats Bar inside Hero */}
-            <div className="mt-4 pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs font-black text-slate-200">
-              <div className="flex items-center gap-2">
-                <span className="w-7 h-7 rounded-lg bg-blue-500/20 text-cyan-400 border border-blue-400/30 flex items-center justify-center font-black text-xs shadow-xs">24</span>
+            <div className="mt-3 pt-2.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs font-black text-slate-800">
+              <div className="flex items-center gap-1.5">
+                <span className="w-6 h-6 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center font-black text-[11px]">24</span>
                 <span>Chapters</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-400/30 flex items-center justify-center font-black text-xs shadow-xs">120</span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-6 h-6 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center font-black text-[11px]">120</span>
                 <span>Topics</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-400/30 flex items-center justify-center font-black text-xs shadow-xs">8</span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-6 h-6 rounded-lg bg-purple-50 text-purple-700 border border-purple-200 flex items-center justify-center font-black text-[11px]">8</span>
                 <span>Projects</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="w-7 h-7 rounded-lg bg-teal-500/20 text-teal-300 border border-teal-400/30 flex items-center justify-center font-black text-xs shadow-xs">📜</span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-6 h-6 rounded-lg bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center font-black text-[11px]">📜</span>
                 <span>Certificate</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 flex items-center justify-center font-black text-xs shadow-xs">🎯</span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center font-black text-[11px]">🎯</span>
                 <span>Job Ready Skills</span>
               </div>
             </div>
@@ -267,56 +267,58 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
         </section>
 
         {/* =========================================================================
-            2. LOWER SECTION: 2-COLUMN LAYOUT (LEFT: 8 TABS + CURRICULUM • RIGHT: SIDEBAR)
+            2. FULL-WIDTH HORIZONTAL TABS (Spans entire width so all tabs look spacious & clear)
+            ========================================================================= */}
+        <div id="curriculum-tabs-map" className="overflow-x-auto scrollbar-none pb-1 pt-1">
+          <div className="flex items-stretch gap-2.5 min-w-max">
+            {DATA_ANALYST_CURRICULUM.map((tab) => {
+              const isActive = tab.id === activeTabId;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => handleSelectTab(tab.id)}
+                  className={`p-3 rounded-2xl flex items-center gap-3 text-left transition-all border cursor-pointer ${
+                    isActive
+                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-600 shadow-md shadow-blue-500/25 scale-[1.02]'
+                      : 'bg-white text-slate-800 border-slate-200/90 hover:border-blue-300 hover:bg-blue-50/20 shadow-2xs'
+                  }`}
+                >
+                  {/* Tool/Subject Icon Tile */}
+                  <div
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                      isActive
+                        ? 'bg-white text-blue-600 shadow-xs'
+                        : 'bg-slate-100/90'
+                    }`}
+                  >
+                    {renderTabIcon(tab.iconName)}
+                  </div>
+
+                  {/* Title & Chapter Subtitle */}
+                  <div className="flex flex-col min-w-0 pr-1">
+                    <span className={`text-[12px] font-black truncate leading-tight ${isActive ? 'text-white' : 'text-slate-950'}`}>
+                      {tab.tabNum} {tab.shortTitle}
+                    </span>
+                    <span className={`text-[10px] font-medium leading-none mt-1 ${isActive ? 'text-blue-100' : 'text-slate-400'}`}>
+                      3 Chapters • 15 Topics
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* =========================================================================
+            3. LOWER SECTION: 2-COLUMN LAYOUT (LEFT: CHAPTER ACCORDION • RIGHT: SIDEBAR BELOW TABS)
             ========================================================================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-1">
           
           {/* ─────────────────────────────────────────────────────────────────────
-              LEFT COLUMN: 8 TABS + ACTIVE TAB ACCORDION (Cols 1-8 / 1-9)
+              LEFT COLUMN: ACTIVE TAB ACCORDION (Cols 1-8 / 1-9)
               ───────────────────────────────────────────────────────────────────── */}
           <div className="lg:col-span-8 xl:col-span-9 space-y-4">
-
-            {/* 2. THE 8 HORIZONTAL TABS (Exact 1:1 Match with Screenshot) */}
-            <div id="curriculum-tabs-map" className="overflow-x-auto scrollbar-none pb-1">
-              <div className="flex items-stretch gap-2.5 min-w-max">
-                {DATA_ANALYST_CURRICULUM.map((tab) => {
-                  const isActive = tab.id === activeTabId;
-                  return (
-                    <button
-                      key={tab.id}
-                      type="button"
-                      onClick={() => handleSelectTab(tab.id)}
-                      className={`p-3 rounded-2xl flex items-center gap-3 text-left transition-all border cursor-pointer ${
-                        isActive
-                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-600 shadow-md shadow-blue-500/25 scale-[1.02]'
-                          : 'bg-white text-slate-800 border-slate-200/90 hover:border-blue-300 hover:bg-blue-50/20 shadow-2xs'
-                      }`}
-                    >
-                      {/* Tool/Subject Icon Tile */}
-                      <div
-                        className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                          isActive
-                            ? 'bg-white text-blue-600 shadow-xs'
-                            : 'bg-slate-100/90'
-                        }`}
-                      >
-                        {renderTabIcon(tab.iconName)}
-                      </div>
-
-                      {/* Title & Chapter Subtitle */}
-                      <div className="flex flex-col min-w-0 pr-1">
-                        <span className={`text-[12px] font-black truncate leading-tight ${isActive ? 'text-white' : 'text-slate-950'}`}>
-                          {tab.tabNum} {tab.shortTitle}
-                        </span>
-                        <span className={`text-[10px] font-medium leading-none mt-1 ${isActive ? 'text-blue-100' : 'text-slate-400'}`}>
-                          3 Chapters • 15 Topics
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
 
             {/* 3. ACTIVE TAB MAIN ACCORDION CONTAINER */}
             <section className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-sm space-y-3">
