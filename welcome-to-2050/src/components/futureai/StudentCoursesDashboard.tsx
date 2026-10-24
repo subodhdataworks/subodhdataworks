@@ -156,137 +156,87 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
         {/* Background Image: Future IT Industries Campus Zoomed Out */}
         <img
           src="/images/future_it_industries_campus_zoomed_out.jpg"
-          alt="Future IT Industries Campus Zoomed Out"
+          alt="Future IT Industries Campus"
           className="scd-nhb-bg-img"
         />
 
-        {/* Soft Glass / Light Gradient Overlay on left */}
+        {/* Soft Glass / Light Gradient Overlay */}
         <div className="scd-nhb-gradient-overlay" />
 
         {/* Left Native Interactive Content */}
         <div className="scd-nhb-content">
-          {/* 1. Main Headline with Floating Animation & High Style */}
-          <h1 className="scd-nhb-headline scd-floating-headline">
-            <span className="scd-nhb-hl-title">Learn AI &amp; Data Skills.</span>
-            <span className="scd-nhb-hl-sub">
-              Get Job-Ready.{' '}
-              <span className="scd-nhb-future scd-glow-shimmer scd-pap-typewriter-text">
-                {papDisplayText}
-                <span className="scd-pap-typewriter-cursor">|</span>
-              </span>{' '}
-              <span className="scd-nhb-trend-icon">🚀</span>
-            </span>
+          {/* Eyebrow Pill */}
+          <div className="scd-future-eyebrow-pill">
+            <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+            <span>YOUR FUTURE IN AI STARTS HERE</span>
+          </div>
+
+          {/* Main Headline */}
+          <h1 className="scd-future-hero-hl">
+            <span>Learn AI. Build Real Skills.</span>{' '}
+            <span className="scd-future-hero-hl-gradient">Get Career-Ready. 🚀</span>
           </h1>
 
-          {/* 2. High-Converting Limited-Time Offer Ribbon directly under Headline */}
-          <div className="scd-nhb-offer-capsule scd-floating-offer">
-            <div className="scd-nhb-offer-tag">
-              <span className="scd-nhb-offer-gift">🎁</span>
-              <span className="scd-nhb-offer-label">LIMITED-TIME OFFER:</span>
-              <span className="scd-nhb-offer-headline">
-                Enroll in All 4 Courses for Just <strong className="scd-nhb-offer-price">₹987</strong>
-              </span>
-            </div>
-            <div className="scd-nhb-offer-sep" />
-            <div className="scd-nhb-offer-pap">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>100% Placement Support with <strong className="scd-nhb-offer-pap-amt">700+ Hiring Partners</strong></span>
-            </div>
-          </div>
-
-          {/* 3. Subtitle */}
-          <p className="scd-nhb-subtitle">
-            Master Data Analytics, Data Science, ML &amp; AI Engineering with coding practice, real projects &amp; AI HR interviews.
+          {/* Subtitle */}
+          <p className="scd-future-hero-sub">
+            Master Data Analytics, Data Science, Machine Learning &amp; AI Engineering through practical, industry-focused learning.
           </p>
 
-          {/* 4. 4 Interactive Glassmorphism Course Cards with Course Fee */}
-          <div className="scd-nhb-cards-row">
-            {/* Card 1: Data Analyst with GenAI */}
-            <div
-              className="scd-nhb-mini-card scd-card-blue"
-              onClick={() => {
-                playClick();
-                onOpenDataAnalystCourse();
-              }}
-            >
-              <div className="scd-nhb-card-icon-wrap icon-blue">
-                <BarChart3 className="w-4 h-4 text-sky-600" />
-              </div>
-              <div className="scd-nhb-card-text">
-                <span className="scd-nhb-card-title">Data Analyst with GenAI</span>
-                <span className="scd-nhb-card-ctc ctc-blue scd-card-slashed-daam">Rs 18,999</span>
-              </div>
+          {/* 8 Feature Highlights Grid */}
+          <div className="scd-future-highlights-grid">
+            <div className="scd-future-hl-item">
+              <span className="scd-future-hl-emoji">🎯</span>
+              <span className="scd-future-hl-text">Internship Opportunities</span>
             </div>
-
-            {/* Card 2: Data Science & Agentic AI */}
-            <div
-              className="scd-nhb-mini-card scd-card-purple"
-              onClick={() => {
-                playClick();
-                onOpenLockedCourse('Data Science & Agentic AI Mastery Program');
-              }}
-            >
-              <div className="scd-nhb-card-icon-wrap icon-purple">
-                <Brain className="w-4 h-4 text-purple-600" />
-              </div>
-              <div className="scd-nhb-card-text">
-                <span className="scd-nhb-card-title">Data Science &amp; Agentic AI</span>
-                <span className="scd-nhb-card-ctc ctc-purple scd-card-slashed-daam">Rs 29,999</span>
-              </div>
+            <div className="scd-future-hl-item">
+              <span className="scd-future-hl-emoji">📜</span>
+              <span className="scd-future-hl-text">Internship / Training Completion Certificate &amp; Recommendation Letter</span>
             </div>
-
-            {/* Card 3: ML Engineering */}
-            <div
-              className="scd-nhb-mini-card scd-card-amber"
-              onClick={() => {
-                playClick();
-                onOpenLockedCourse('Machine Learning Engineering & MLOps Program');
-              }}
-            >
-              <div className="scd-nhb-card-icon-wrap icon-amber">
-                <Cpu className="w-4 h-4 text-amber-600" />
-              </div>
-              <div className="scd-nhb-card-text">
-                <span className="scd-nhb-card-title">ML Engineering</span>
-                <span className="scd-nhb-card-ctc ctc-amber scd-card-slashed-daam">Rs 39,999</span>
-              </div>
+            <div className="scd-future-hl-item">
+              <span className="scd-future-hl-emoji">🏭</span>
+              <span className="scd-future-hl-text">Industrial Training</span>
             </div>
-
-            {/* Card 4: AI Engineering */}
-            <div
-              className="scd-nhb-mini-card scd-card-emerald"
-              onClick={() => {
-                playClick();
-                onOpenLockedCourse('Full-Stack AI & LLM Engineering Program');
-              }}
-            >
-              <div className="scd-nhb-card-icon-wrap icon-emerald">
-                <Bot className="w-4 h-4 text-emerald-600" />
-              </div>
-              <div className="scd-nhb-card-text">
-                <span className="scd-nhb-card-title">AI Engineering</span>
-                <span className="scd-nhb-card-ctc ctc-emerald scd-card-slashed-daam">Rs 49,999</span>
-              </div>
+            <div className="scd-future-hl-item">
+              <span className="scd-future-hl-emoji">💻</span>
+              <span className="scd-future-hl-text">28 Real-World Projects</span>
+            </div>
+            <div className="scd-future-hl-item">
+              <span className="scd-future-hl-emoji">⌨️</span>
+              <span className="scd-future-hl-text">Hands-On Coding Practice</span>
+            </div>
+            <div className="scd-future-hl-item">
+              <span className="scd-future-hl-emoji">🤖</span>
+              <span className="scd-future-hl-text">AI-Powered Mock Interviews</span>
+            </div>
+            <div className="scd-future-hl-item">
+              <span className="scd-future-hl-emoji">🚀</span>
+              <span className="scd-future-hl-text">Career &amp; Placement Assistance</span>
+            </div>
+            <div className="scd-future-hl-item">
+              <span className="scd-future-hl-emoji">🤝</span>
+              <span className="scd-future-hl-text">700+ Hiring Partners</span>
             </div>
           </div>
 
-          {/* 5. Features Highlights Row */}
-          <div className="scd-nhb-features-row">
-            <span className="scd-nhb-feature-chip">
-              <Folder className="w-3.5 h-3.5 text-sky-600 shrink-0" />
-              <span>28 Real-World Projects</span>
-            </span>
-            <span className="scd-nhb-feature-chip">
-              <Gamepad2 className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-              <span>Coding Practice</span>
-            </span>
-            <span className="scd-nhb-feature-chip">
-              <Sparkles className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-              <span>AI Mock Interviews</span>
-            </span>
-            <span className="scd-nhb-feature-chip">
-              <FileCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Placement Support</span>
+          {/* CTA Row with Explore Button and Tagline */}
+          <div className="scd-future-cta-row">
+            <button
+              type="button"
+              onClick={() => {
+                playClick();
+                const el = document.getElementById('learning-modules-section');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="scd-future-explore-btn"
+            >
+              <span>Explore Your Learning Path</span>
+              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+            </button>
+
+            <span className="scd-future-tagline">
+              *Learn Today. Earn Tomorrow.*
             </span>
           </div>
         </div>
