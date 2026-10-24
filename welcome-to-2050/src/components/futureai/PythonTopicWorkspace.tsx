@@ -71,6 +71,7 @@ import { getModule01TopicData, TopicAssessmentData } from './data/module01TopicC
 import { getHindiTopicActivity } from './data/hindiActivityContent';
 import { Topic1GamePack } from './games/Topic1GamePack';
 import { PythonIntroGameWorkspace } from './PythonIntroGameWorkspace';
+import { PythonPracticeArena4Games } from './PythonPracticeArena4Games';
 import { getTopicHierarchyInfo } from './PythonChapterView';
 import { HrSettingsService, HrSettingsConfig, DEFAULT_HR_SETTINGS } from '../../services/hrSettingsService';
 import { StableMouthLipSyncAvatar } from './interview/StableMouthLipSyncAvatar';
@@ -2152,7 +2153,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
             <div className="plw-col-left">
               {/* Video Player Card */}
               <div className="plw-video-player-card">
-                {effectiveTopicId === 1 ? (
+                {true ? (
                   <div className="plw-video-screen plw-video-screen-embedded" style={{ position: 'relative' }}>
                     {topic1VideoSource === 'drive' ? (
                       <iframe
@@ -3208,26 +3209,12 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
         {activeStep === 'play' && (
           effectiveTopicId === 1 ? (
             <div className="plw-game-main-col" style={{ width: '100%', maxWidth: '100%', flex: '1 1 100%' }}>
-              <PythonIntroGameWorkspace
+              <PythonPracticeArena4Games
                 userName={userName}
-                levelId={1}
-                isEmbedded={true}
-                topicTitle={topicHierarchy.topicTitle}
-                moduleTitle={topicHierarchy.moduleTitle}
-                onBackToArena={() => handleSelectTab('interview')}
-                onNavigateDock={onNavigateDock || (() => {})}
-                onOpenUnlockModal={onOpenUnlockModal}
-                onOpenAdvisor={onOpenAdvisor}
-                onComplete={() => {
-                  setL1Completed(true);
-                  setL2Completed(true);
-                  setL3Completed(true);
-                  setL4Completed(true);
-                  setL5BossDefeated(true);
-                  setGameAccuracy(100);
-                  setGameXp((x) => x + 350);
-                }}
-                onNextStep={() => handleSelectTab('interview')}
+                topicId={effectiveTopicId}
+                onBackToVideo={() => handleSelectTab('learn')}
+                onNextToInterview={() => handleSelectTab('interview')}
+                onNavigateDock={onNavigateDock}
               />
             </div>
           ) : (
