@@ -72,7 +72,7 @@ export const FULL_STACK_MERN_CURRICULUM: TabItem[] = [
             "title": "Full-stack development overview",
             "duration": "16 min",
             "type": "quiz",
-            "status": "in-progress"
+            "status": "locked"
           },
           {
             "id": "fs-t-5",

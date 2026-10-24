@@ -72,7 +72,7 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
             "title": "Real-Life Examples of Data Analytics",
             "duration": "Video • 10 min",
             "type": "video",
-            "status": "in-progress"
+            "status": "locked"
           },
           {
             "id": "t-5",

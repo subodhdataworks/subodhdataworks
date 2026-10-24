@@ -72,7 +72,7 @@ export const DATA_SCIENCE_CURRICULUM: TabItem[] = [
             "title": "Data vs Information vs Insights",
             "duration": "Project • 14 min",
             "type": "project",
-            "status": "in-progress"
+            "status": "locked"
           },
           {
             "id": "ds-t-5",

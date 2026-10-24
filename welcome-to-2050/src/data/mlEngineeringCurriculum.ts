@@ -72,7 +72,7 @@ export const ML_ENGINEERING_CURRICULUM: TabItem[] = [
             "title": "ML Engineer Roles and Responsibilities",
             "duration": "Reading • 16 min",
             "type": "reading",
-            "status": "in-progress"
+            "status": "locked"
           },
           {
             "id": "ml-t-5",

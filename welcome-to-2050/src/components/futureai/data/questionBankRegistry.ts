@@ -69,6 +69,7 @@ export interface TopicQuestionBank {
 }
 
 import { TAB1_QUESTION_BANK, TAB1_QUESTION_BANK_BY_ID } from './questionBankTab1Foundations';
+import { TAB2_DATA_SCIENCE_QUESTION_BANK, TAB2_DATA_SCIENCE_QUESTION_BANK_BY_ID } from './questionBankTab2DataScience';
 
 /**
  * Universal lookup function to fetch Question Bank for any topic across all 8 Tabs
@@ -87,7 +88,15 @@ export function getTopicQuestionBank(
     return TAB1_QUESTION_BANK[key] || TAB1_QUESTION_BANK_BY_ID[Number(key)] || null;
   }
 
-  // Future tabs 2 through 8 will register here
+  if (numericTab === 2) {
+    if (typeof topicKeyOrId === 'number') {
+      return TAB2_DATA_SCIENCE_QUESTION_BANK_BY_ID[topicKeyOrId] || TAB2_DATA_SCIENCE_QUESTION_BANK['1.1'] || null;
+    }
+    const key = String(topicKeyOrId);
+    return TAB2_DATA_SCIENCE_QUESTION_BANK[key] || TAB2_DATA_SCIENCE_QUESTION_BANK_BY_ID[Number(key)] || null;
+  }
+
+  // Future tabs 3 through 8 will register here
   return null;
 }
 
@@ -95,5 +104,22 @@ export function getTopicQuestionBank(
  * Get all available topics for Tab 1 (Foundations)
  */
 export function getTab1TopicList() {
+  return Object.values(TAB1_QUESTION_BANK_BY_ID);
+}
+
+/**
+ * Get all available topics for Tab 2 (Data Science & Agentic AI)
+ */
+export function getTab2TopicList() {
+  return Object.values(TAB2_DATA_SCIENCE_QUESTION_BANK_BY_ID);
+}
+
+/**
+ * Get available topic list by tabId
+ */
+export function getTopicListForTab(tabId: number = 1) {
+  if (tabId === 2) {
+    return Object.values(TAB2_DATA_SCIENCE_QUESTION_BANK_BY_ID);
+  }
   return Object.values(TAB1_QUESTION_BANK_BY_ID);
 }

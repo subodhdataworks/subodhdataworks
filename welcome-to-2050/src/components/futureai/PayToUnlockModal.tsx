@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
 import { startRazorpayCheckout, getCurrentUserForPayment } from '../../services/razorpayService';
+import { unlockCourse, normalizeCourseId } from '../../services/courseUnlockService';
 
 interface PayToUnlockModalProps {
   isOpen: boolean;
@@ -72,7 +73,7 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
       });
 
       try {
-        localStorage.setItem('futureai_student_enrolled', 'true');
+        const canonicalCourseId = unlockCourse(courseId || displayTitle);
         localStorage.setItem('futureai_payment_order_id', result.orderId);
         localStorage.setItem('futureai_payment_txn_id', result.paymentId);
       } catch {
@@ -82,7 +83,8 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
       onSimulateUnlock?.();
       onClose();
       // Show success modal (handled by PaymentResultModal)
-      window.location.hash = `payment-success?txnid=${encodeURIComponent(result.paymentId)}&amount=${result.amount}`;
+      const canonical = normalizeCourseId(courseId || displayTitle);
+      window.location.hash = `payment-success?txnid=${encodeURIComponent(result.paymentId)}&amount=${result.amount}&courseId=${encodeURIComponent(canonical)}`;
       window.location.reload();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Payment failed. Please try again.';

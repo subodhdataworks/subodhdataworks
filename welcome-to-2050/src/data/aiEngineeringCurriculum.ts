@@ -72,7 +72,7 @@ export const AI_ENGINEERING_CURRICULUM: TabItem[] = [
             "title": "AI Engineering vs Data Science",
             "duration": "Project • 18 min",
             "type": "project",
-            "status": "in-progress"
+            "status": "locked"
           },
           {
             "id": "ai-t-5",

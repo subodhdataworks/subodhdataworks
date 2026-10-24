@@ -146,6 +146,8 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
       const params = new URLSearchParams(window.location.hash.includes('?') ? window.location.hash.split('?')[1] : '');
       const t = params.get('topic');
       if (t) setUrlTopicId(parseInt(t, 10));
+      const tabParam = params.get('tab');
+      if (tabParam) setUrlTabId(parseInt(tabParam, 10));
 
       if (baseHash === '#learn' || baseHash === '#video') setActiveStep('learn');
       else if (baseHash === '#practice' || baseHash === '#mcq') setActiveStep('practice');
@@ -159,12 +161,21 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
+  const [urlTabId, setUrlTabId] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.hash.includes('?') ? window.location.hash.split('?')[1] : '');
+      const tabParam = p.get('tab');
+      if (tabParam) return parseInt(tabParam, 10);
+    }
+    return 1;
+  });
+
   const [internalTopicId, setInternalTopicId] = useState<number>(urlTopicId ?? topicId ?? 1);
   const effectiveTopicId = internalTopicId;
   const setEffectiveTopicId = (newId: number) => {
     setInternalTopicId(newId);
     if (typeof window !== 'undefined') {
-      window.location.hash = `#${activeStep}?topic=${newId}`;
+      window.location.hash = `#${activeStep}?topic=${newId}${urlTabId > 1 ? `&tab=${urlTabId}` : ''}`;
     }
   };
 
@@ -175,8 +186,8 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
   }, [topicId]);
   const topicHierarchy = useMemo(() => getTopicHierarchyInfo(effectiveTopicId), [effectiveTopicId]);
   const isTab1Topic = useMemo(() => {
-    return (effectiveTopicId >= 1 && effectiveTopicId <= 26) || !!getTopicQuestionBank(1, effectiveTopicId);
-  }, [effectiveTopicId]);
+    return !!getTopicQuestionBank(urlTabId, effectiveTopicId) || (effectiveTopicId >= 1 && effectiveTopicId <= 26);
+  }, [urlTabId, effectiveTopicId]);
   const isTopicWithoutCoding = isTab1Topic;
   const isTopicWithoutMcq = isTab1Topic;
 
@@ -3194,7 +3205,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
             <div className="plw-game-main-col" style={{ width: '100%', maxWidth: '100%', flex: '1 1 100%' }}>
               <PythonPracticeArena4Games
                 userName={userName}
-                tabId={1}
+                tabId={urlTabId}
                 topicId={effectiveTopicId}
                 onSelectTopic={(newId) => setEffectiveTopicId(newId)}
                 onBackToVideo={() => handleSelectTab('learn')}
@@ -4716,6 +4727,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
         {activeStep === 'interview' && (
           <>
             <ZeroCostMockInterviewRoom
+              tabId={urlTabId}
               topicId={effectiveTopicId}
               userName={userName}
               language={activityLang}

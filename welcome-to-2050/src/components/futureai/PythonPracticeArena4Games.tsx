@@ -1,4 +1,4 @@
-import { getTopicQuestionBank, getTab1TopicList, TopicQuestionBank } from './data/questionBankRegistry';
+import { getTopicQuestionBank, getTab1TopicList, getTopicListForTab, TopicQuestionBank } from './data/questionBankRegistry';
 import React, { useState, useEffect, useMemo } from 'react';
 import './PythonPracticeArena4Games.css';
 import {
@@ -36,6 +36,8 @@ import { soundEffects } from '../../services/soundEffects';
 import { getTopicHierarchyInfo } from './PythonChapterView';
 import { getModule01TopicData, TopicAssessmentData } from './data/module01TopicContent';
 import { getHindiTopicActivity } from './data/hindiActivityContent';
+import { isCourseUnlocked, isTopicUnlocked } from '../../services/courseUnlockService';
+import { SuccessPlanModal } from './SuccessPlanModal';
 
 export interface PythonPracticeArena4GamesProps {
   userName?: string;
@@ -66,7 +68,24 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     return getTopicQuestionBank(tabId, topicId);
   }, [tabId, topicId]);
 
-  const tab1Topics = useMemo(() => getTab1TopicList(), []);
+  const currentTabTopics = useMemo(() => getTopicListForTab(tabId), [tabId]);
+
+  const courseKey = tabId === 2 ? 'data_science' : 'data_analyst';
+  const courseTitle = tabId === 2 ? 'Data Science & Agentic AI' : 'Data Analyst with GenAI';
+
+  const [isCoursePaid, setIsCoursePaid] = useState<boolean>(() => isCourseUnlocked(courseKey));
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
+  const [lockedTopicTitle, setLockedTopicTitle] = useState<string>('');
+
+  useEffect(() => {
+    const handleUpdate = () => setIsCoursePaid(isCourseUnlocked(courseKey));
+    window.addEventListener('futureai_course_unlocked', handleUpdate);
+    return () => window.removeEventListener('futureai_course_unlocked', handleUpdate);
+  }, [courseKey]);
+
+  const isCurrentTopicLocked = useMemo(() => {
+    return !isTopicUnlocked(courseKey, 1, numericTopicId);
+  }, [courseKey, numericTopicId, isCoursePaid]);
 
   // Active game (1: Quick Quiz, 2: Puzzle Challenge, 3: Match the Code, 4: Real-Life Mission)
   const [activeGame, setActiveGame] = useState<number>(1);
@@ -968,6 +987,157 @@ print(result)`
         };
       }
 
+      // ─── Data Science Module 1 Topic 1 Quizzes ───
+      if (qText.includes('What is Data Science?')) {
+        return {
+          hintEn: 'Data Science combines scientific methods, algorithms, and data analysis to uncover hidden insights.',
+          hintHi: 'डेटा साइंस डेटा और वैज्ञानिक तरीकों (Scientific methods) का उपयोग करके छिपे हुए पैटर्न्स और इनसाइट्स ढूंढता है।',
+          exampleCode: '// Data Science Workflow:\n1. Collect Raw Data       -> [10M User Interactions]\n2. Clean & Analyze         -> [Statistical Distributions]\n3. Build Machine Model     -> [Personalized Recommendation Engine]',
+          exampleNote: 'Data Science goes beyond simple charts by applying scientific inquiry and predictive modeling.',
+          explainTitleEn: 'What Is Data Science?',
+          explainTitleHi: 'डेटा साइंस क्या है?',
+          explainTextEn: 'Data Science is an interdisciplinary field combining mathematics, statistics, computer programming, and domain expertise to discover patterns and solve complex real-world challenges.',
+          explainTextHi: 'डेटा साइंस गणित, कंप्यूटर प्रोग्रामिंग और आंकड़ों का संगम है जो डेटा से गहरी समझ निकालकर भविष्य के फैसले लेने में मदद करता है।',
+          realWorldEn: 'Google and NASA use Data Science pipelines to process exabytes of satellite imagery and search behavior.',
+          realWorldHi: 'Google सर्च और यूट्यूब रिकमेंडेशन पूरी तरह से डेटा साइंस पर आधारित हैं।',
+        };
+      }
+
+      if (qText.includes('music app recommends songs') || qText.includes('recommends songs')) {
+        return {
+          hintEn: 'Recommendation engines are powered by data science machine learning models.',
+          hintHi: 'म्यूजिक ऐप में गाने रिकमेंड करने की तकनीक डेटा साइंस (Data Science) का काम है।',
+          exampleCode: '// Spotify Discover Weekly Engine:\nUser History: [Arijit Singh, Acoustic Ballads]\nData Science: Collaborative Filtering Model\nOutput:       "Here is an unreleased song you will love!"',
+          exampleNote: 'Data science models study listening duration, skips, and playlist additions to match songs.',
+          explainTitleEn: 'Music Recommendation via Data Science',
+          explainTitleHi: 'म्यूजिक ऐप्स में गानों का रिकमेंडेशन',
+          explainTextEn: 'Streaming services like Spotify and Apple Music use data science algorithms to map millions of user listening habits into predictive preference clusters.',
+          explainTextHi: 'Spotify और Gaana आपके पसंदीदा गानों का विश्लेषण करके आपकी पसंद के नए गाने ढूंढते हैं।',
+          realWorldEn: 'Spotify\'s Discover Weekly drives over 1.7 Billion streaming hours annually through predictive data models.',
+          realWorldHi: 'Spotify का डिस्कवर वीकली फीचर डेटा साइंस की बदौलत हर हफ्ते करोड़ों यूजर्स को उनके पसंदीदा गाने सुझाता है।',
+        };
+      }
+
+      if (qText.includes("predict tomorrow's weather") || qText.includes('weather measurements')) {
+        return {
+          hintEn: 'Weather forecasting requires analyzing past atmospheric measurements like humidity, pressure, and temperature.',
+          hintHi: 'मौसम का अनुमान लगाने के लिए पुराने मौसम के आंकड़े (Past weather measurements) देखे जाते हैं।',
+          exampleCode: '// Weather Prediction Pipeline:\nInput:      Past 10 years of Barometric Pressure & Humidity Data\nModel:      Time-Series Atmospheric Neural Network\nPrediction: 85% Probability of Afternoon Rain (✓)',
+          exampleNote: 'Historical measurements are the raw fuel for forecasting models.',
+          explainTitleEn: 'Forecasting Weather with Historical Data',
+          explainTitleHi: 'पुराने डेटा से मौसम का पूर्वानुमान',
+          explainTextEn: 'Meteorological agencies rely on decades of historical satellite readings, temperature sensors, and atmospheric measurements to train accurate prediction models.',
+          explainTextHi: 'मौसम वैज्ञानिक पिछले कई सालों के तापमान, हवा के दबाव और नमी के आंकड़ों का विश्लेषण करके बारिश की भविष्यवाणी करते हैं।',
+          realWorldEn: 'AccuWeather runs supercomputer data science simulations processing billions of data points per minute.',
+          realWorldHi: 'मौसम विभाग सुपरकंप्यूटर और डेटा साइंस से लाखों सेंसर डेटा प्रोसेस करके चक्रवात और बारिश का अलर्ट जारी करता है।',
+        };
+      }
+
+      if (qText.includes('pattern in data')) {
+        return {
+          hintEn: 'A pattern represents a consistent trend or relationship that repeats across observations.',
+          hintHi: 'डेटा में पैटर्न का मतलब है एक दोहराया जाने वाला ट्रेंड या संबंध (Repeated trend or relationship)।',
+          exampleCode: '// Pattern Detection:\nDay 1 Temperature: 38°C -> Ice cream sales: 400\nDay 2 Temperature: 42°C -> Ice cream sales: 650\nDay 3 Temperature: 22°C -> Ice cream sales: 90\nPattern: Higher temperature strongly correlates with higher sales!',
+          exampleNote: 'Detecting patterns helps organizations prepare inventory and allocate resources ahead of time.',
+          explainTitleEn: 'Understanding Patterns in Data',
+          explainTitleHi: 'डेटा में पैटर्न का मतलब',
+          explainTextEn: 'A data pattern is a noticeable, repeated regular trend or relationship among variables that allows data scientists to extrapolate and predict future occurrences.',
+          explainTextHi: 'पैटर्न का मतलब आंकड़ों के बीच बार-बार दिखने वाला ऐसा रिश्ता है जिससे भविष्य का अनुमान लगाया जा सके।',
+          realWorldEn: 'Retailers identify seasonal purchase patterns to stock winter jackets 3 months before peak cold weather.',
+          realWorldHi: 'दुकानें सर्दियों के कपड़े ठंड आने से 2 महीने पहले ही मंगा लेती हैं क्योंकि डेटा में ऐसा पैटर्न दिखता है।',
+        };
+      }
+
+      if (qText.includes('help businesses make predictions')) {
+        return {
+          hintEn: 'Data science trains statistical models on past records to make probable predictions, but not 100% infallible guarantees.',
+          hintHi: 'हाँ, डेटा और सही मॉडल्स (Suitable models) का इस्तेमाल करके भविष्य का अनुमान लगाया जाता है।',
+          exampleCode: '// Predictive Business Model:\nHistorical Sales Data + Economic Indicators\n-> Machine Learning Regression Model\n-> Predict Next Quarter Revenue with 92% Confidence Interval.',
+          exampleNote: 'Predictions guide strategic decisions while accounting for market uncertainty.',
+          explainTitleEn: 'Predictive Modeling in Business',
+          explainTitleHi: 'बिजनेस में प्रेडिक्शन की शक्ति',
+          explainTextEn: 'Data Science allows enterprises to forecast customer demand, anticipate supply shortages, and detect fraud before it escalates.',
+          explainTextHi: 'डेटा साइंस कंपनियों को भविष्य की मांग, मुनाफे और आने वाले जोखिमों का सटीक अनुमान लगाने में मदद करता है।',
+          realWorldEn: 'Amazon forecasts package delivery volumes to hire temporary logistics fleets weeks before festive shopping rushes.',
+          realWorldHi: 'Amazon त्योहारों के सीजन में डिलीवरी का लोड पहले से प्रेडिक्ट करके गाड़ियां और स्टाफ तैयार रखता है।',
+        };
+      }
+
+      if (qText.includes('Why do businesses use Data Science?')) {
+        return {
+          hintEn: 'Businesses use Data Science to transform raw numbers into insights and make evidence-based choices rather than guessing.',
+          hintHi: 'कंपनियां डेटा को समझकर सही और सूचित निर्णय (Better-informed decisions) लेने के लिए डेटा साइंस का उपयोग करती हैं।',
+          exampleCode: '// Business Decision Making:\nGuesswork:  "Let us produce 50,000 blue bags based on intuition."\nData Science: "Data shows demand for green bags is 4x higher in summer!"\nDecision:    Produce 40,000 green and 10,000 blue bags.',
+          exampleNote: 'Data Science replaces guesswork with quantifiable facts.',
+          explainTitleEn: 'Why Businesses Use Data Science',
+          explainTitleHi: 'कंपनियां डेटा साइंस का उपयोग क्यों करती हैं?',
+          explainTextEn: 'Businesses leverage Data Science to uncover hidden consumer trends, optimize pricing, minimize operational waste, and make evidence-backed strategic decisions.',
+          explainTextHi: 'डेटा साइंस कंपनियों को ग्राहकों के व्यवहार को समझने, बर्बादी कम करने और सही फैसले लेने में मदद करता है।',
+          realWorldEn: 'Amazon, Uber, and Flipkart use data science to optimize pricing, logistics, and customer retention at scale.',
+          realWorldHi: 'Flipkart और Amazon करोड़ों ग्राहकों के डेटा का विश्लेषण करके सेल्स और ऑपरेशन्स को बेहतर बनाते हैं।',
+        };
+      }
+
+      if (qText.includes('recommend products customers may like') || qText.includes('online store wants to recommend')) {
+        return {
+          hintEn: 'Recommendation algorithms analyze browsing behavior, cart additions, and previous purchases.',
+          hintHi: 'कस्टमर की पुरानी खरीदारी और पसंद (Past purchases & customer preferences) का विश्लेषण करके सही प्रोडक्ट रिकमेंड किए जाते हैं।',
+          exampleCode: '// Collaborative Filtering Engine:\nUser A bought:  [Wireless Mouse, Laptop Stand]\nUser B bought:  [Wireless Mouse]\nRecommendation: Suggest "Laptop Stand" to User B (94% match)',
+          exampleNote: 'Personalized product recommendations drive higher customer satisfaction and sales.',
+          explainTitleEn: 'E-Commerce Product Recommendations',
+          explainTitleHi: 'ऑनलाइन स्टोर में प्रोडक्ट रिकमेंडेशन',
+          explainTextEn: 'Online stores use data science recommendation engines to analyze historical purchase logs and preferences, surfacing products each customer is most likely to buy.',
+          explainTextHi: 'ऑनलाइन शॉपिंग वेबसाइट्स यूजर के पुराने ऑर्डर्स और पसंद का डेटा देखकर वही सामान दिखाती हैं जो यूजर खरीदना चाहता है।',
+          realWorldEn: 'Over 35% of Amazon purchases originate directly from algorithmic product recommendations.',
+          realWorldHi: 'Amazon की 35% से ज्यादा बिक्री डेटा साइंस द्वारा सुझाए गए प्रोडक्ट्स से होती है।',
+        };
+      }
+
+      if (qText.includes('unsold food') || qText.includes('supermarket throws away')) {
+        return {
+          hintEn: 'Supermarkets analyze past purchase velocity and inventory records to predict exact stock needs before food spoils.',
+          hintHi: 'बिक्री और इन्वेंट्री के आंकड़े (Sales & inventory patterns) देखकर सही मात्रा में सामान मंगाया जाता है ताकि खाना बर्बाद न हो।',
+          exampleCode: '// Food Waste Prevention Model:\nDaily Bread Sold:   45 loaves\nStore Order:         50 loaves (Safety buffer: +5)\nPrevious Bad Order:  90 loaves (Result: 40 loaves wasted!)\nSaved per week:      ₹18,000 in prevented spoilage.',
+          exampleNote: 'Predictive inventory replenishment dramatically slashes perishables waste.',
+          explainTitleEn: 'Reducing Perishable Waste with Data Science',
+          explainTitleHi: 'सुपरमार्केट में खाने की बर्बादी रोकना',
+          explainTextEn: 'Supermarkets analyze historical sales velocity, weekend spikes, and shelf-life timelines to order precisely what customers will buy, preventing food waste.',
+          explainTextHi: 'बिक्री के आंकड़ों को देखकर सुपरमार्केट केवल उतनी ही सब्जियां और खाना मंगाता है जितना बिक सके।',
+          realWorldEn: 'Tesco reduced perishable food waste by over 30% using predictive replenishment algorithms.',
+          realWorldHi: 'Tesco और DMart जैसे सुपरमार्केट डेटा साइंस की मदद से लाखों रुपये का सामान खराब होने से बचाते हैं।',
+        };
+      }
+
+      if (qText.includes('stop using its service') || qText.includes('customers stop using')) {
+        return {
+          hintEn: 'Study cancellation logs, customer support complaints, and activity drops to understand why users leave.',
+          hintHi: 'कस्टमर फीडबैक और उपयोग के पैटर्न (Customer feedback & usage patterns) की जांच करके पता चलता है कि ग्राहक सेवा क्यों छोड़ रहे हैं।',
+          exampleCode: '// Churn Diagnostic Analysis:\nUser Metric: App opens dropped from 5x/day to 0x in week 3\nExit Survey: "Streaming quality buffered on mobile network"\nFix Action:  Compress video streams for mobile networks.',
+          exampleNote: 'Customer churn analytics helps businesses identify and fix pain points before losing users.',
+          explainTitleEn: 'Understanding Customer Churn',
+          explainTitleHi: 'कस्टमर सर्विस क्यों छोड़ते हैं? (Churn Analysis)',
+          explainTextEn: 'When subscribers cancel, data scientists analyze customer feedback, support interactions, and drop-offs in usage patterns to diagnose the root issues.',
+          explainTextHi: 'जब ग्राहक सेवा छोड़ते हैं, तो उनकी शिकायतों और ऐप इस्तेमाल करने के तरीकों की जांच करके सुधार किया जाता है।',
+          realWorldEn: 'Telecom companies like Jio and Airtel predict customer churn weeks before a user ports their number.',
+          realWorldHi: 'Jio और Airtel डेटा एनालिसिस से पहले ही पता लगा लेते हैं कि कौन सा ग्राहक नंबर पोर्ट कराने की सोच रहा है।',
+        };
+      }
+
+      if (qText.includes("estimate next month's demand") || qText.includes('past sales data to estimate')) {
+        return {
+          hintEn: 'A company analyzes past transaction trends to forecast likely future demand and plan stock accordingly.',
+          hintHi: 'भविष्य की संभावित मांग का अनुमान (Predict likely future demand) लगाने के लिए पिछले बिक्री डेटा का उपयोग किया जाता है।',
+          exampleCode: '// Time-Series Demand Forecasting:\nOctober Sales:  12,000 units\nNovember Sales: 18,500 units (Festive boost: +54%)\nEstimated Dec:  21,000 units (Trend extrapolation)',
+          exampleNote: 'Forecasting estimates probable future demand to optimize supply chains.',
+          explainTitleEn: 'Forecasting Future Demand',
+          explainTitleHi: 'भविष्य की मांग का पूर्वानुमान',
+          explainTextEn: 'By modeling historical sales patterns, seasonal peaks, and growth trends, businesses predict likely future product demand with statistical precision.',
+          explainTextHi: 'पुराने सेल्स डेटा की मदद से कंपनियां अनुमान लगाती हैं कि अगले महीने कितने सामान की जरूरत पड़ेगी।',
+          realWorldEn: 'Automobile makers like Maruti Suzuki forecast car demand 6 months ahead to procure parts and manage factories.',
+          realWorldHi: 'मारुति सुजुकी 6 महीने पहले ही डेटा देखकर तय करती है कि कौन सी कार कितनी संख्या में बनानी है।',
+        };
+      }
+
       // Universal Question Match for any other question
       return {
         hintEn: currQ?.hint || 'Review the core concept being asked in this question.',
@@ -1121,6 +1291,98 @@ print(result)`
           explainTextHi: 'ग्राहकों की रेटिंग कम होने पर उनके रिव्यूज और कमेंट्स पढ़कर ही सही समस्या का पता लगाया जा सकता है।',
           realWorldEn: 'E-commerce and app platforms monitor sentiment analysis dashboards to fix bugs and delivery issues within hours.',
           realWorldHi: 'ऑनलाइन शॉपिंग वेबसाइट्स ग्राहकों के 1-स्टार रिव्यूज पढ़कर तुरंत कमियां सुधारती हैं।',
+        };
+      }
+
+      // ─── Data Science Game 2 Mysteries ───
+      if (puzzle?.prompt?.includes('Ice Cream Shop') || pTitle.includes('Ice Cream')) {
+        return {
+          hintEn: 'The scientist should examine how variations in outdoor temperature directly correspond with ice cream sales.',
+          hintHi: 'तापमान और बिक्री के बीच का संबंध (Relationship between temperature and sales) जांचना चाहिए।',
+          exampleCode: '// Temperature vs Ice Cream Regression:\n30°C -> ₹15,000 Sales\n38°C -> ₹28,000 Sales (+86% surge!)\nInsight: Positive linear correlation between heat and sales.',
+          exampleNote: 'Correlation analysis helps shop owners buy raw ingredients in sync with weather forecasts.',
+          explainTitleEn: 'Mystery 1: Temperature & Sales Correlation',
+          explainTitleHi: 'मिस्ट्री 1: तापमान और आइसक्रीम की बिक्री',
+          explainTextEn: 'Investigating the mathematical correlation between daily temperatures and ice cream orders helps the shop optimize daily dairy orders and staff scheduling.',
+          explainTextHi: 'गर्मी और आइसक्रीम की बिक्री के बीच का संबंध देखकर दुकानदार तय कर सकता है कि गर्म दिनों में कितना माल बनाना है।',
+          realWorldEn: 'Baskin-Robbins and Amul schedule cold-storage logistics based on regional heatwave forecasts.',
+          realWorldHi: 'Amul और आइसक्रीम कंपनियां मौसम का अनुमान देखकर गर्म इलाकों में ज्यादा स्टॉक भेजती हैं।',
+        };
+      }
+
+      if (puzzle?.prompt?.includes('Movie Recommendations') || pTitle.includes('Movie Recommendations')) {
+        return {
+          hintEn: 'To recommend relevant films, analyze the user\'s past viewing history, genre ratings, and watchlist.',
+          hintHi: 'यूजर की देखने की हिस्ट्री और फिल्मों की पसंद (Viewing history & movie preferences) देखना जरूरी है।',
+          exampleCode: '// Netflix Recommendation Matrix:\nUser Watched: Interstellar, Inception, Tenet\nCommon Feature: Sci-Fi / Christopher Nolan\nRecommendation: Oppenheimer (98% Match Score)',
+          exampleNote: 'Collaborative and content-based filtering algorithms look at watch history.',
+          explainTitleEn: 'Mystery 2: Movie Recommendation System',
+          explainTitleHi: 'मिस्ट्री 2: मूवी रिकमेंडेशन कैसे काम करता है',
+          explainTextEn: 'Streaming platforms use viewing timestamps, watch completion rates, and liked genres to recommend films that keep subscribers engaged.',
+          explainTextHi: 'Netflix और Hotstar आपके देखे गए शोज़ और पसंद को देखकर नई फिल्में सजेस्ट करते हैं।',
+          realWorldEn: 'Over 80% of content watched on Netflix is discovered via its recommendation algorithms.',
+          realWorldHi: 'Netflix पर 80% फिल्में लोग रिकमेंडेशन देखकर ही पसंद करते हैं।',
+        };
+      }
+
+      if (puzzle?.prompt?.includes('Hospital Planning') || pTitle.includes('Hospital Planning')) {
+        return {
+          hintEn: 'Review historical patient footfall logs and seasonal healthcare trends to prepare doctors and hospital beds.',
+          hintHi: 'पिछले मरीजों की संख्या और ट्रेंड्स (Past patient counts & relevant trends) का विश्लेषण करें।',
+          exampleCode: '// Hospital Bed Capacity Model:\nPast 5 Years Data: Dengue admissions surge in August-September.\nPreparation:        Reserve 40 extra isolation beds & IV fluids in advance.',
+          exampleNote: 'Time-series forecasting prevents hospital bed shortages during seasonal disease outbreaks.',
+          explainTitleEn: 'Mystery 3: Healthcare Demand Forecasting',
+          explainTitleHi: 'मिस्ट्री 3: अस्पताल में मरीजों की संख्या का अनुमान',
+          explainTextEn: 'Hospitals forecast patient admissions by examining historical admission counts, seasonal epidemics, and local demographic changes to prevent overcrowding.',
+          explainTextHi: 'अस्पताल पुराने रिकॉर्ड्स देखकर पहले से दवाइयों और बेड्स की व्यवस्था करते हैं ताकि इमरजेंसी में कमी न पड़े।',
+          realWorldEn: 'Apollo and Fortis healthcare networks use AI predictive bed allocation systems to reduce patient ER wait times.',
+          realWorldHi: 'बड़े अस्पताल डेटा साइंस की मदद से पहले से जान लेते हैं कि किस मौसम में कितने मरीज आ सकते हैं।',
+        };
+      }
+
+      // Topic 1.3 Business Rescue Puzzles
+      if (pTitle.includes('Overstock Problem') || puzzle?.prompt?.includes('unsold T-shirts')) {
+        return {
+          hintEn: 'Investigating past sales volume alongside existing stock levels reveals how many shirts to order.',
+          hintHi: 'पुरानी बिक्री और वर्तमान स्टॉक के स्तर (Past sales & stock levels) की जांच करनी चाहिए।',
+          exampleCode: '// Overstock Diagnostic:\nStock held: 500 T-shirts\nAverage monthly sales: 40 T-shirts\nProblem: Over-ordering 12x above monthly demand!\nAction: Pause supplier orders and run flash discount.',
+          exampleNote: 'Inventory analytics prevents working capital from getting trapped in unsold goods.',
+          explainTitleEn: 'Puzzle 1: The Overstock Problem',
+          explainTitleHi: 'पहेली 1: ज्यादा बचे माल की समस्या',
+          explainTextEn: 'The shop owner needs to analyze the exact historical sales rate and current warehouse inventory numbers rather than logo colors or sports preferences.',
+          explainTextHi: 'दुकानदार को लोगो का रंग या खेल देखने के बजाय पुरानी बिक्री और स्टॉक के आंकड़े देखने चाहिए।',
+          realWorldEn: 'Zara and H&M use real-time store inventory telemetry to stop overproducing slow-selling apparel.',
+          realWorldHi: 'Zara और H&M हर हफ्ते बिक्री डेटा देखकर तय करते हैं कि कौन से कपड़े ज्यादा बनाने हैं।',
+        };
+      }
+
+      if (pTitle.includes('Delivery Problem') || puzzle?.prompt?.includes('late deliveries')) {
+        return {
+          hintEn: 'Comparing estimated vs actual delivery timestamps pinpoints shipping bottlenecks.',
+          hintHi: 'वादा किया गया समय और वास्तविक डिलीवरी का समय (Promised & actual delivery times) की तुलना करें।',
+          exampleCode: '// Delivery Timeliness Audit:\nPromised Time: 2 days (48 hrs)\nActual Transit: 5.5 days (132 hrs)\nDelay Root: Dispatch hub backlog in North Zone.\nFix: Shift courier partner for North Zone.',
+          exampleNote: 'SLA (Service Level Agreement) analytics isolates transit delays across supply chains.',
+          explainTitleEn: 'Puzzle 2: The Delivery Problem',
+          explainTitleHi: 'पहेली 2: देर से डिलीवरी की समस्या',
+          explainTextEn: 'To solve late deliveries, analysts compare the promised delivery SLA against actual courier arrival timestamps to detect where delays occur.',
+          explainTextHi: 'डिलीवरी में देरी सुधारने के लिए वादा किए गए समय और असल में पहुंचे समय की तुलना की जाती है।',
+          realWorldEn: 'Delhivery and Blue Dart track package scan timestamps every 15 minutes to guarantee on-time shipping.',
+          realWorldHi: 'Delhivery और Blue Dart हर पार्सल के समय का डेटा रिकॉर्ड करते हैं ताकि पैकेज समय पर पहुंचे।',
+        };
+      }
+
+      if (pTitle.includes('Customer Problem') || puzzle?.prompt?.includes('customers are leaving')) {
+        return {
+          hintEn: 'Examine customer exit feedback and usage drops before cancellations.',
+          hintHi: 'कैंसिलेशन के पैटर्न और कस्टमर फीडबैक (Cancellation patterns & customer feedback) की जांच करें।',
+          exampleCode: '// Subscription Retention Analysis:\nFinding: 72% of cancellations happen on Day 28 after free trial.\nFeedback: "Forgot how to use advanced feature X."\nIntervention: Automated Day 20 video guide email.',
+          exampleNote: 'Analyzing churn drivers enables proactive retention campaigns.',
+          explainTitleEn: 'Puzzle 3: The Customer Problem',
+          explainTitleHi: 'पहेली 3: कस्टमर छोड़ने की समस्या',
+          explainTextEn: 'Studying cancellation logs alongside direct customer feedback surveys pinpoints product dissatisfaction drivers, allowing targeted improvements.',
+          explainTextHi: 'कस्टमर के फीडबैक और उनके छोड़ने के समय को देखने से पता चलता है कि सेवा में क्या कमी थी।',
+          realWorldEn: 'Hotstar and Netflix identify inactive users early to send personalized re-engagement offers before subscription renewal.',
+          realWorldHi: 'Netflix और Hotstar यूजर के ऐप न खोलने पर उसे पसंदीदा शो का ईमेल भेजते हैं ताकि वो सब्सक्रिप्शन रद्द न करे।',
         };
       }
 
@@ -1358,15 +1620,22 @@ print(result)`
             <h3 className="ppa-pic-title">{registeredBank?.tabName || 'Data Analytics'}</h3>
             <p className="ppa-pic-subtitle">{registeredBank ? `${registeredBank.topicKey} ${registeredBank.topicTitle}` : 'Introduction to Programming'}</p>
 
-            {tab1Topics.length > 0 && (
+            {currentTabTopics.length > 0 && (
               <div className="ppa-topic-quick-switch" style={{ marginTop: '8px', marginBottom: '8px' }}>
                 <label style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#64748b', display: 'block', marginBottom: '4px' }}>
-                  Select Topic ({tab1Topics.length} Available):
+                  Select Topic ({currentTabTopics.length} Available):
                 </label>
                 <select
                   value={numericTopicId}
                   onChange={(e) => {
                     const nextId = Number(e.target.value);
+                    const isTargetFree = isTopicUnlocked(courseKey, 1, nextId);
+                    if (!isTargetFree) {
+                      const tgt = currentTabTopics.find((t) => (t.id || Number(t.topicKey.split('.')[1])) === nextId);
+                      setLockedTopicTitle(tgt ? `Topic ${tgt.topicKey}: ${tgt.topicTitle}` : 'Full Course Access');
+                      setIsSuccessModalOpen(true);
+                      return;
+                    }
                     if (onSelectTopic) onSelectTopic(nextId);
                   }}
                   style={{
@@ -1381,13 +1650,17 @@ print(result)`
                     cursor: 'pointer',
                     boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
                   }}
-                  title="Switch Topic in Tab 1"
+                  title={`Switch Topic in ${registeredBank?.tabName || 'Course'}`}
                 >
-                  {tab1Topics.map((t) => (
-                    <option key={t.topicKey} value={t.id}>
-                      {t.topicKey} {t.topicTitle}
-                    </option>
-                  ))}
+                  {currentTabTopics.map((t) => {
+                    const tId = t.id || Number(t.topicKey.split('.')[1]) || 1;
+                    const isFree = isTopicUnlocked(courseKey, 1, tId);
+                    return (
+                      <option key={t.topicKey} value={tId}>
+                        {isFree ? '✓ ' : '🔒 '}{t.topicKey} {t.topicTitle} {isFree ? '(Free Demo)' : '(Locked)'}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
             )}
@@ -1450,6 +1723,31 @@ print(result)`
 
         {/* Center Column: Active Game Main Card */}
         <main className="ppa-main-card">
+          {isCurrentTopicLocked ? (
+            <div className="ppa-locked-overlay-card flex flex-col items-center justify-center p-8 text-center bg-white rounded-2xl border-2 border-dashed border-amber-300 shadow-md my-auto h-full min-h-[380px]">
+              <div className="w-16 h-16 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mb-4 shadow-sm border border-amber-200">
+                <Lock className="w-8 h-8 stroke-[2.5]" />
+              </div>
+              <h3 className="text-xl font-black text-slate-900 mb-2">
+                Topic {registeredBank?.topicKey || numericTopicId}: {registeredBank?.topicTitle || 'Advanced Topic'} is Locked 🔒
+              </h3>
+              <p className="text-sm font-semibold text-slate-600 max-w-md mb-6 leading-relaxed">
+                Module 1 Topics 1, 2, and 3 are 100% Free Demo. To access this topic, real-life challenges, AI Mentor hints, and placement mock interviews, unlock the full course!
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setLockedTopicTitle(`Topic ${registeredBank?.topicKey || numericTopicId}: ${registeredBank?.topicTitle || 'Full Course'}`);
+                  setIsSuccessModalOpen(true);
+                }}
+                className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold text-sm shadow-lg shadow-blue-500/25 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4 text-amber-300 fill-amber-300" />
+                <span>Unlock Full Course for ₹987 →</span>
+              </button>
+            </div>
+          ) : (
+            <>
           {/* ════════════════════════════════════════════════════════════
               HEADER ROW (Icon, Title, Subtitle, Timer, Points, Streak, Sound)
               ════════════════════════════════════════════════════════════ */}
@@ -1988,6 +2286,8 @@ print(result)`
               </button>
             )}
           </div>
+          </>
+        )}
         </main>
 
         {/* ─────────────────────────────────────────────────────────────
@@ -2452,6 +2752,15 @@ print(result)`
           </div>
         </div>
       )}
+
+      {/* Choose Your Success Plan Modal */}
+      <SuccessPlanModal
+        isOpen={isSuccessModalOpen}
+        onClose={() => setIsSuccessModalOpen(false)}
+        courseTitle={courseTitle}
+        courseId={courseKey}
+        targetTopicTitle={lockedTopicTitle}
+      />
     </div>
   );
 };

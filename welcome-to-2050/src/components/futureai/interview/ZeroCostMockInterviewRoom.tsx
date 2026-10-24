@@ -40,6 +40,7 @@ import './ZeroCostMockInterviewRoom.css';
 
 export interface ZeroCostMockInterviewRoomProps {
   userName?: string;
+  tabId?: number;
   topicId?: number;
   language: 'en' | 'hi';
   onLanguageChange: (lang: 'en' | 'hi') => void;
@@ -50,6 +51,7 @@ export interface ZeroCostMockInterviewRoomProps {
 
 export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps> = ({
   userName = 'Subodh Kumar',
+  tabId = 1,
   topicId = 1,
   language,
   onLanguageChange,
@@ -59,7 +61,7 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
 }) => {
   // 1. Preloaded Local Question Bank (10 questions, zero AI generation)
   const questions = useMemo<PreloadedInterviewQuestion[]>(
-    () => getPreloadedInterviewQuestionsForTopic(topicId),
+    () => getPreloadedInterviewQuestionsForTopic(topicId, tabId),
     [topicId]
   );
 

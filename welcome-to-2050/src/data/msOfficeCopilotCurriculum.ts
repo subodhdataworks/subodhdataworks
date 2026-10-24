@@ -72,7 +72,7 @@ export const MS_OFFICE_COPILOT_CURRICULUM: TabItem[] = [
             "title": "Introduction to Outlook and Teams",
             "duration": "Project • 15 min",
             "type": "project",
-            "status": "in-progress"
+            "status": "locked"
           },
           {
             "id": "ms-t-5",

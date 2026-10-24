@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CheckCircle2, XCircle, Loader2, ArrowRight, Home } from 'lucide-react';
+import { unlockCourse } from '../../services/courseUnlockService';
 
 type PaymentStatus = 'success' | 'failure' | 'pending' | null;
 
@@ -27,10 +28,13 @@ export const PaymentResultModal: React.FC<PaymentResultModalProps> = ({ onGoHome
       setStatus('success');
       const resolvedTxn = params.get('txnid') || params.get('txnId') || params.get('TXNID') || params.get('mihpayid') || params.get('orderId') || params.get('ORDERID') || '';
       const resolvedAmt = params.get('amount') || params.get('TXNAMOUNT') || '987';
+      const resolvedCourse = params.get('courseId') || params.get('course') || '';
       setTxnId(resolvedTxn);
       setAmount(resolvedAmt);
       try {
-        localStorage.setItem('futureai_student_enrolled', 'true');
+        if (resolvedCourse) {
+          unlockCourse(resolvedCourse);
+        }
       } catch (e) {}
       setTimeout(() => { window.history.replaceState(null, '', window.location.pathname); }, 2500);
     } else if (hash.includes('payment-failure') || hash.includes('payment-failed') || params.get('status') === 'TXN_FAILURE' || params.get('status') === 'failure') {

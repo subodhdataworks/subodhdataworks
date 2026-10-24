@@ -72,7 +72,7 @@ export const DEEP_LEARNING_CURRICULUM: TabItem[] = [
             "title": "AI vs Machine Learning vs Deep Learning",
             "duration": "Project • 18 min",
             "type": "project",
-            "status": "in-progress"
+            "status": "locked"
           },
           {
             "id": "dl-t-5",

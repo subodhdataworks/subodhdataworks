@@ -27,12 +27,14 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { startRazorpayCheckout, getCurrentUserForPayment } from '../../services/razorpayService';
+import { unlockCourse, normalizeCourseId } from '../../services/courseUnlockService';
 
 export interface SuccessPlanModalProps {
   isOpen: boolean;
   onClose: () => void;
   targetTopicTitle?: string;
   courseTitle?: string;
+  courseId?: string;
 }
 
 export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
@@ -40,6 +42,7 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
   onClose,
   targetTopicTitle,
   courseTitle = 'Data Scientist & Agentic AI',
+  courseId,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -49,12 +52,13 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
   const handlePayNow = async () => {
     setError(null);
     const user = getCurrentUserForPayment();
+    const canonicalCourseId = normalizeCourseId(courseId || courseTitle);
 
     setIsLoading(true);
     try {
       const result = await startRazorpayCheckout({
         amount: 987,
-        courseId: 'data-analyst-genai',
+        courseId: canonicalCourseId,
         courseTitle: courseTitle,
         name: user.name || 'Student',
         email: user.email || 'student@example.com',
@@ -62,13 +66,13 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
       });
 
       try {
-        localStorage.setItem('futureai_student_enrolled', 'true');
+        unlockCourse(canonicalCourseId);
         localStorage.setItem('futureai_payment_order_id', result.orderId);
         localStorage.setItem('futureai_payment_txn_id', result.paymentId);
       } catch {}
 
       onClose();
-      window.location.hash = `payment-success?txnid=${encodeURIComponent(result.paymentId)}&amount=${result.amount}`;
+      window.location.hash = `payment-success?txnid=${encodeURIComponent(result.paymentId)}&amount=${result.amount}&courseId=${encodeURIComponent(canonicalCourseId)}`;
       window.location.reload();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Payment failed. Please try again.';

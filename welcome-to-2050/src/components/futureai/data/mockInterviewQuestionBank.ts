@@ -837,15 +837,15 @@ export function resetCustomInterviewQuestionsForTopic(topicId: number): void {
 }
 
 // Build a complete 5-question list for any Topic ID, merging topic-specific questions from module01TopicContent
-export function getPreloadedInterviewQuestionsForTopic(topicId: number = 1): PreloadedInterviewQuestion[] {
+export function getPreloadedInterviewQuestionsForTopic(topicId: number = 1, tabId: number = 1): PreloadedInterviewQuestion[] {
   // Check for admin custom configured questions first
   const custom = getCustomInterviewQuestions();
   if (custom[topicId] && Array.isArray(custom[topicId]) && custom[topicId].length > 0) {
     return custom[topicId];
   }
 
-  // Check Master Question Bank (Tab 1: Data Analytics Foundations, etc.)
-  const qb = getTopicQuestionBank(1, topicId);
+  // Check Master Question Bank (Tab 1: Foundations, Tab 2: Data Science, etc.)
+  const qb = getTopicQuestionBank(tabId, topicId);
   if (qb && qb.mockInterview && qb.mockInterview.length > 0) {
     return qb.mockInterview.map((item, idx) => ({
       id: item.id || idx + 1,

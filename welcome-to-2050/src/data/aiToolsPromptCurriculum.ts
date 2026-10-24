@@ -72,7 +72,7 @@ export const AI_TOOLS_PROMPT_CURRICULUM: TabItem[] = [
             "title": "AI vs Traditional Software",
             "duration": "Project • 14 min",
             "type": "project",
-            "status": "in-progress"
+            "status": "locked"
           },
           {
             "id": "pt-t-5",

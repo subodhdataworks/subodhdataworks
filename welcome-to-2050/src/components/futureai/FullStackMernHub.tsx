@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Play,
   Lock,
@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { FULL_STACK_MERN_CURRICULUM, TabItem } from '../../data/fullStackMernCurriculum';
 import { SuccessPlanModal } from './SuccessPlanModal';
+import { isCourseUnlocked, isTopicUnlocked } from '../../services/courseUnlockService';
 
 interface FullStackMernHubProps {
   userName?: string;
@@ -32,25 +33,35 @@ export const FullStackMernHub: React.FC<FullStackMernHubProps> = ({
   });
   const [isSuccessPlanOpen, setIsSuccessPlanOpen] = useState<boolean>(false);
   const [selectedTargetTitle, setSelectedTargetTitle] = useState<string>('');
+  const [isCoursePaid, setIsCoursePaid] = useState<boolean>(() => isCourseUnlocked('full_stack_mern'));
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setIsCoursePaid(isCourseUnlocked('full_stack_mern'));
+    };
+    window.addEventListener('futureai_course_unlocked', handleUpdate);
+    return () => window.removeEventListener('futureai_course_unlocked', handleUpdate);
+  }, []);
 
   const handleOpenSuccessPlan = (title?: string) => {
-    setSelectedTargetTitle(title || 'Full-Stack MERN Development with AI');
+    setSelectedTargetTitle(title || 'Full Stack MERN & Next.js');
     setIsSuccessPlanOpen(true);
   };
 
   const handleModuleHeaderClick = (chapter: { id: string; title: string; chapterNum: number }) => {
     toggleChapter(chapter.id);
-    if (chapter.chapterNum >= 2) {
+    if (chapter.chapterNum >= 2 && !isCoursePaid) {
       handleOpenSuccessPlan(chapter.title);
     }
   };
 
-  const handleTopicClick = (topic: { id: string; title: string; topicNum?: number; status?: string }) => {
-    const isLockedTopic =
-      topic.status === 'locked' ||
-      (topic.topicNum !== undefined && topic.topicNum >= 5);
+  const handleTopicClick = (
+    topic: { id: string; title: string; topicNum?: number; status?: string },
+    chapterNum: number = 1
+  ) => {
+    const isTopicFree = isTopicUnlocked('full_stack_mern', chapterNum, topic.topicNum || 1);
 
-    if (isLockedTopic) {
+    if (!isTopicFree) {
       handleOpenSuccessPlan(topic.title);
     } else if (onStartTopic) {
       onStartTopic(topic.id, topic.title);
@@ -387,17 +398,16 @@ export const FullStackMernHub: React.FC<FullStackMernHubProps> = ({
                     {/* Chapter Topics Accordion Drawer */}
                     {isExpanded && (
                       <div className="border-t border-slate-100 bg-[#fbfcfe] px-3 sm:px-4 py-2 space-y-1.5 divide-y divide-slate-100/70">
-                        {chapter.topics.map((topic) => {
-                          const isDone = topic.status === 'completed';
-                          const isInProg = topic.status === 'in-progress';
-                          const isLocked =
-                            topic.status === 'locked' ||
-                            (topic.topicNum !== undefined && topic.topicNum >= 5);
+                        {chapter.topics.map((topic, tIdx) => {
+                          const isTopicFree = isTopicUnlocked('full_stack_mern', chapter.chapterNum, topic.topicNum || tIdx + 1);
+                          const isLocked = !isTopicFree;
+                          const isDone = isTopicFree && (topic.topicNum || tIdx + 1) <= 3;
+                          const isInProg = isTopicFree && !isDone;
 
                           return (
                             <div
                               key={topic.id}
-                              onClick={() => handleTopicClick(topic)}
+                              onClick={() => handleTopicClick(topic, chapter.chapterNum)}
                               className={`pt-2 pb-1 px-2.5 rounded-xl flex items-center justify-between gap-3 transition-colors cursor-pointer ${
                                 isInProg
                                   ? 'bg-emerald-50/60 border border-emerald-200/60'

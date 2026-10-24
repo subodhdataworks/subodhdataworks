@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Play,
   Lock,
@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { AI_ENGINEERING_CURRICULUM, TabItem } from '../../data/aiEngineeringCurriculum';
 import { SuccessPlanModal } from './SuccessPlanModal';
+import { isCourseUnlocked, isTopicUnlocked } from '../../services/courseUnlockService';
 
 interface AiEngineeringHubProps {
   userName?: string;
@@ -34,25 +35,35 @@ export const AiEngineeringHub: React.FC<AiEngineeringHubProps> = ({
   });
   const [isSuccessPlanOpen, setIsSuccessPlanOpen] = useState<boolean>(false);
   const [selectedTargetTitle, setSelectedTargetTitle] = useState<string>('');
+  const [isCoursePaid, setIsCoursePaid] = useState<boolean>(() => isCourseUnlocked('ai_engineering'));
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setIsCoursePaid(isCourseUnlocked('ai_engineering'));
+    };
+    window.addEventListener('futureai_course_unlocked', handleUpdate);
+    return () => window.removeEventListener('futureai_course_unlocked', handleUpdate);
+  }, []);
 
   const handleOpenSuccessPlan = (title?: string) => {
-    setSelectedTargetTitle(title || 'AI Engineering');
+    setSelectedTargetTitle(title || 'AI Engineering & LLMOps');
     setIsSuccessPlanOpen(true);
   };
 
   const handleModuleHeaderClick = (chapter: { id: string; title: string; chapterNum: number }) => {
     toggleChapter(chapter.id);
-    if (chapter.chapterNum >= 2) {
+    if (chapter.chapterNum >= 2 && !isCoursePaid) {
       handleOpenSuccessPlan(chapter.title);
     }
   };
 
-  const handleTopicClick = (topic: { id: string; title: string; topicNum?: number; status?: string }) => {
-    const isLockedTopic =
-      topic.status === 'locked' ||
-      (topic.topicNum !== undefined && topic.topicNum >= 5);
+  const handleTopicClick = (
+    topic: { id: string; title: string; topicNum?: number; status?: string },
+    chapterNum: number = 1
+  ) => {
+    const isTopicFree = isTopicUnlocked('ai_engineering', chapterNum, topic.topicNum || 1);
 
-    if (isLockedTopic) {
+    if (!isTopicFree) {
       handleOpenSuccessPlan(topic.title);
     } else if (onStartTopic) {
       onStartTopic(topic.id, topic.title);
@@ -418,17 +429,16 @@ export const AiEngineeringHub: React.FC<AiEngineeringHubProps> = ({
                         }`}
                       >
                         <div className="overflow-hidden divide-y divide-slate-100 border-t border-slate-200/80 bg-white">
-                          {chapter.topics.map((topic) => {
-                            const isDone = topic.status === 'completed';
-                            const isCurrent = topic.status === 'in-progress';
-                            const isLocked =
-                              topic.status === 'locked' ||
-                              (topic.topicNum !== undefined && topic.topicNum >= 5);
+                          {chapter.topics.map((topic, tIdx) => {
+                            const isTopicFree = isTopicUnlocked('ai_engineering', chapter.chapterNum, topic.topicNum || tIdx + 1);
+                            const isLocked = !isTopicFree;
+                            const isDone = isTopicFree && (topic.topicNum || tIdx + 1) <= 3;
+                            const isCurrent = isTopicFree && !isDone;
 
                             return (
                               <div
                                 key={topic.id}
-                                onClick={() => handleTopicClick(topic)}
+                                onClick={() => handleTopicClick(topic, chapter.chapterNum)}
                                 className={`group/topic p-3 sm:px-4 sm:py-3.5 flex items-center justify-between gap-3 text-xs transition-all duration-200 cursor-pointer ${
                                   isCurrent ? 'bg-emerald-50/60' : 'hover:bg-slate-50/90'
                                 }`}
