@@ -54,7 +54,10 @@ import {
   Gem,
   X,
   Smartphone,
-  Monitor
+  Monitor,
+  Code2,
+  Trophy,
+  Settings
 } from 'lucide-react';
 import { FutureLogo } from './FutureLogo';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
@@ -1626,101 +1629,193 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                   onClick={() => setProfileDropdownOpen(false)} 
                 />
                 
-                <div className="absolute right-0 top-full mt-2 w-72 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200/90 py-3 px-3 z-50 animate-fadeIn text-left">
-                  {/* User Profile Header */}
-                  <div className="flex items-center gap-3 p-2 bg-slate-50/80 rounded-xl mb-2">
-                    <img 
-                      src={(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_avatar') : null) || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"} 
-                      alt={userName} 
-                      className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm flex-shrink-0" 
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-extrabold text-slate-900 truncate">{userName}</div>
-                      <div className="text-[11px] text-slate-500 truncate">
-                        {(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_email') || localStorage.getItem('futureai_user_phone') : null) || 'Student Account'}
-                      </div>
-                      <div className="inline-flex items-center gap-1 mt-0.5 px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 text-[10px] font-bold">
-                        <span>Level 1 • New Learner</span>
-                      </div>
-                    </div>
-                  </div>
+                <div className="absolute right-0 top-full mt-2 w-60 bg-white/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-100 py-2.5 px-2 z-50 animate-fadeIn text-left space-y-0.5">
+                  {/* 1. Dashboard */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDockTab('home');
+                      setSelectedModuleView(null);
+                      setActiveTopicWs(null);
+                      setProfileDropdownOpen(false);
+                      if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+                    }}
+                    className={`w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] transition-colors cursor-pointer text-left ${
+                      dockTab === 'home' && selectedModuleView === null
+                        ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-sm'
+                        : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium'
+                    }`}
+                  >
+                    <Home className="w-[18px] h-[18px] shrink-0" />
+                    <span>Dashboard</span>
+                  </button>
 
-                  {/* Telemetry Stats */}
-                  <div className="grid grid-cols-2 gap-2 mb-2 p-2 bg-slate-50/60 rounded-xl text-center">
-                    <div className="flex items-center justify-center gap-1.5 text-amber-600 font-bold text-xs">
-                      <Coins className="w-4 h-4 text-amber-500" />
-                      <span>{telemetry.coins} Coins</span>
-                    </div>
-                    <div className="flex items-center justify-center gap-1.5 text-purple-600 font-bold text-xs">
-                      <Gem className="w-4 h-4 text-purple-500" />
-                      <span>{telemetry.gems} Gems</span>
-                    </div>
-                  </div>
+                  {/* 2. My Learning */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDockTab('home');
+                      setSelectedModuleView('data_analyst');
+                      setActiveTopicWs(null);
+                      setProfileDropdownOpen(false);
+                      if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+                    }}
+                    className={`w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] transition-colors cursor-pointer text-left ${
+                      selectedModuleView !== null
+                        ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-sm'
+                        : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium'
+                    }`}
+                  >
+                    <GraduationCap className="w-[18px] h-[18px] shrink-0" />
+                    <span>My Learning</span>
+                  </button>
 
-                  {/* Menu Items */}
-                  <div className="space-y-1">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setDockTab('home');
-                        setProfileDropdownOpen(false);
-                      }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer"
-                    >
-                      <LayoutDashboard className="w-4 h-4 text-blue-500" />
-                      <span>My Learning Dashboard</span>
-                    </button>
+                  {/* 3. Coding Practice */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedModuleView(null);
+                      setActiveTopicWs(null);
+                      setDockTab('game');
+                      setProfileDropdownOpen(false);
+                      if (typeof window !== 'undefined') window.location.hash = '#game';
+                    }}
+                    className={`w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] transition-colors cursor-pointer text-left ${
+                      dockTab === 'game' && selectedModuleView === null
+                        ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-sm'
+                        : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium'
+                    }`}
+                  >
+                    <Code2 className="w-[18px] h-[18px] shrink-0" />
+                    <span>Coding Practice</span>
+                  </button>
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setDockTab('game');
-                        setProfileDropdownOpen(false);
-                      }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer"
-                    >
-                      <Gamepad2 className="w-4 h-4 text-purple-500" />
-                      <span>Coding Practice Arena</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setDockTab('income');
-                        setProfileDropdownOpen(false);
-                      }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer"
-                    >
-                      <IndianRupee className="w-4 h-4 text-emerald-500" />
-                      <span>Affiliate & Earnings Hub</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setDockTab('placement');
-                        setProfileDropdownOpen(false);
-                      }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer"
-                    >
-                      <Briefcase className="w-4 h-4 text-sky-500" />
-                      <span>Job & Placement Portal</span>
-                    </button>
-                  </div>
-
-                  <div className="my-2 border-t border-slate-100" />
-
-                  {/* Dedicated Logout Button (Only logs out when user explicitly clicks this button) */}
+                  {/* 4. Certifications */}
                   <button
                     type="button"
                     onClick={() => {
                       setProfileDropdownOpen(false);
-                      onLogout?.();
+                      setLockedSectionTarget('Certificate');
+                      setPlacementLockOpen(true);
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer text-left"
                   >
-                    <LogOut className="w-4 h-4 text-rose-500" />
-                    <span>Log Out</span>
+                    <Award className="w-[18px] h-[18px] shrink-0" />
+                    <span>Certifications</span>
+                  </button>
+
+                  {/* 5. Challenges */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedModuleView(null);
+                      setActiveTopicWs(null);
+                      setDockTab('game');
+                      setProfileDropdownOpen(false);
+                      if (typeof window !== 'undefined') window.location.hash = '#game';
+                    }}
+                    className="w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer text-left"
+                  >
+                    <Trophy className="w-[18px] h-[18px] shrink-0" />
+                    <span>Challenges</span>
+                  </button>
+
+                  {/* 6. Leaderboards */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setProfileDropdownOpen(false);
+                      alert('🏆 Global Leaderboard: You are Rank #12 among all active learners! Solve more coding challenges to climb into the Top 10.');
+                    }}
+                    className="w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer text-left"
+                  >
+                    <BarChart2 className="w-[18px] h-[18px] shrink-0" />
+                    <span>Leaderboards</span>
+                  </button>
+
+                  {/* 7. Tools & Resources */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedModuleView(null);
+                      setActiveTopicWs(null);
+                      setDockTab('game');
+                      setProfileDropdownOpen(false);
+                      if (typeof window !== 'undefined') window.location.hash = '#game';
+                    }}
+                    className="w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer text-left"
+                  >
+                    <Briefcase className="w-[18px] h-[18px] shrink-0" />
+                    <span>Tools & Resources</span>
+                  </button>
+
+                  {/* Divider line */}
+                  <div className="border-t border-slate-100 my-1.5" />
+
+                  {/* 8. Community */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setProfileDropdownOpen(false);
+                      alert('👥 Community Portal: Connect with 10,000+ data science and AI peers on our student discord & telegram channels.');
+                    }}
+                    className="w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer text-left"
+                  >
+                    <Users className="w-[18px] h-[18px] shrink-0" />
+                    <span>Community</span>
+                  </button>
+
+                  {/* 9. Affiliate */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedModuleView(null);
+                      setActiveTopicWs(null);
+                      setDockTab('income');
+                      setProfileDropdownOpen(false);
+                      if (typeof window !== 'undefined') window.location.hash = '#earnings';
+                    }}
+                    className={`w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] transition-colors cursor-pointer text-left ${
+                      dockTab === 'income' || dockTab === 'referral'
+                        ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-sm'
+                        : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium'
+                    }`}
+                  >
+                    <div className="w-[18px] h-[18px] rounded-full border-[1.8px] border-current flex items-center justify-center text-[10.5px] font-bold shrink-0">
+                      ₹
+                    </div>
+                    <span>Affiliate</span>
+                  </button>
+
+                  {/* 10. Placement */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setProfileDropdownOpen(false);
+                      setLockedSectionTarget('Placement');
+                      setPlacementLockOpen(true);
+                    }}
+                    className={`w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] transition-colors cursor-pointer text-left ${
+                      dockTab === 'placement'
+                        ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-sm'
+                        : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium'
+                    }`}
+                  >
+                    <Briefcase className="w-[18px] h-[18px] shrink-0" />
+                    <span>Placement</span>
+                  </button>
+
+                  {/* 11. Settings */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setProfileDropdownOpen(false);
+                      setMobileProfileSheetOpen(true);
+                    }}
+                    className="w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer text-left"
+                  >
+                    <Settings className="w-[18px] h-[18px] shrink-0" />
+                    <span>Settings</span>
                   </button>
                 </div>
               </>
