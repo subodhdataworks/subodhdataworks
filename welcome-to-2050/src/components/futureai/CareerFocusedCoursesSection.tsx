@@ -241,7 +241,7 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
             </div>
 
             {viewMode === 'grid' ? (
-              <div className="scd-pots-4grid home-compact-pots">
+              <div className="scd-pots-5grid home-compact-pots">
                 {desktopPotCourses.map((c) => (
                   <article
                     key={c.id}

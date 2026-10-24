@@ -3527,6 +3527,93 @@
   gap: 6px !important;
 }
 
+.scd-pots-5grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  padding: 2px 2px 20px;
+  margin-top: -6px;
+  background: transparent !important;
+  align-items: stretch;
+}
+
+@media (max-width: 1240px) {
+  .scd-pots-5grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 980px) {
+  .scd-pots-5grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .scd-pots-5grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .scd-pots-5grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* Compact Image Dome (reduced from 204px to 110px) */
+.scd-pots-5grid .scd-pot-holo-dome {
+  height: 110px;
+  border-radius: 18px 18px 12px 12px;
+}
+.scd-pots-5grid .scd-pot-top-rim {
+  height: 24px;
+  width: 94%;
+}
+.scd-pots-5grid .scd-pot-cylinder-body {
+  min-height: unset;
+  margin-top: -12px;
+  padding: 14px 8px 10px;
+  gap: 4px;
+}
+.scd-pots-5grid .scd-pot-top-tags {
+  gap: 3px;
+  margin-bottom: 2px;
+}
+.scd-pots-5grid .scd-pot-status-pill,
+.scd-pots-5grid .scd-pot-ctc-pill {
+  font-size: 7.5px;
+  padding: 1px 5px;
+}
+.scd-pots-5grid .scd-pot-title {
+  font-size: 13px;
+  line-height: 1.25;
+  margin: 2px 0 4px;
+  min-height: 32px;
+}
+.scd-pots-5grid .scd-pot-bottom-actions-row {
+  margin-top: 6px;
+  gap: 5px;
+  flex-direction: column;
+}
+.scd-pots-5grid .scd-pot-circle-arrow-btn {
+  height: 26px;
+  padding: 4px 8px;
+  font-size: 10px;
+  border-radius: 999px;
+}
+.scd-pots-5grid .scd-pot-metallic-plinth {
+  height: 14px;
+  margin-top: -5px;
+}
+.scd-pots-5grid .scd-pot-bottom-neon-ring {
+  height: 10px;
+}
+
 .scd-pots-4grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -4231,14 +4318,188 @@
 
 /* Responsive Breakpoints for 4 Pots Grid */
 @media (max-width: 1280px) {
-  .scd-pots-4grid {
+  .scd-pots-5grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  padding: 2px 2px 20px;
+  margin-top: -6px;
+  background: transparent !important;
+  align-items: stretch;
+}
+
+@media (max-width: 1240px) {
+  .scd-pots-5grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 980px) {
+  .scd-pots-5grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .scd-pots-5grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .scd-pots-5grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* Compact Image Dome (reduced from 204px to 110px) */
+.scd-pots-5grid .scd-pot-holo-dome {
+  height: 110px;
+  border-radius: 18px 18px 12px 12px;
+}
+.scd-pots-5grid .scd-pot-top-rim {
+  height: 24px;
+  width: 94%;
+}
+.scd-pots-5grid .scd-pot-cylinder-body {
+  min-height: unset;
+  margin-top: -12px;
+  padding: 14px 8px 10px;
+  gap: 4px;
+}
+.scd-pots-5grid .scd-pot-top-tags {
+  gap: 3px;
+  margin-bottom: 2px;
+}
+.scd-pots-5grid .scd-pot-status-pill,
+.scd-pots-5grid .scd-pot-ctc-pill {
+  font-size: 7.5px;
+  padding: 1px 5px;
+}
+.scd-pots-5grid .scd-pot-title {
+  font-size: 13px;
+  line-height: 1.25;
+  margin: 2px 0 4px;
+  min-height: 32px;
+}
+.scd-pots-5grid .scd-pot-bottom-actions-row {
+  margin-top: 6px;
+  gap: 5px;
+  flex-direction: column;
+}
+.scd-pots-5grid .scd-pot-circle-arrow-btn {
+  height: 26px;
+  padding: 4px 8px;
+  font-size: 10px;
+  border-radius: 999px;
+}
+.scd-pots-5grid .scd-pot-metallic-plinth {
+  height: 14px;
+  margin-top: -5px;
+}
+.scd-pots-5grid .scd-pot-bottom-neon-ring {
+  height: 10px;
+}
+
+.scd-pots-4grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 28px 20px;
   }
 }
 
 @media (max-width: 640px) {
-  .scd-pots-4grid {
+  .scd-pots-5grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  padding: 2px 2px 20px;
+  margin-top: -6px;
+  background: transparent !important;
+  align-items: stretch;
+}
+
+@media (max-width: 1240px) {
+  .scd-pots-5grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 980px) {
+  .scd-pots-5grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .scd-pots-5grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .scd-pots-5grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* Compact Image Dome (reduced from 204px to 110px) */
+.scd-pots-5grid .scd-pot-holo-dome {
+  height: 110px;
+  border-radius: 18px 18px 12px 12px;
+}
+.scd-pots-5grid .scd-pot-top-rim {
+  height: 24px;
+  width: 94%;
+}
+.scd-pots-5grid .scd-pot-cylinder-body {
+  min-height: unset;
+  margin-top: -12px;
+  padding: 14px 8px 10px;
+  gap: 4px;
+}
+.scd-pots-5grid .scd-pot-top-tags {
+  gap: 3px;
+  margin-bottom: 2px;
+}
+.scd-pots-5grid .scd-pot-status-pill,
+.scd-pots-5grid .scd-pot-ctc-pill {
+  font-size: 7.5px;
+  padding: 1px 5px;
+}
+.scd-pots-5grid .scd-pot-title {
+  font-size: 13px;
+  line-height: 1.25;
+  margin: 2px 0 4px;
+  min-height: 32px;
+}
+.scd-pots-5grid .scd-pot-bottom-actions-row {
+  margin-top: 6px;
+  gap: 5px;
+  flex-direction: column;
+}
+.scd-pots-5grid .scd-pot-circle-arrow-btn {
+  height: 26px;
+  padding: 4px 8px;
+  font-size: 10px;
+  border-radius: 999px;
+}
+.scd-pots-5grid .scd-pot-metallic-plinth {
+  height: 14px;
+  margin-top: -5px;
+}
+.scd-pots-5grid .scd-pot-bottom-neon-ring {
+  height: 10px;
+}
+
+.scd-pots-4grid {
     grid-template-columns: 1fr;
     gap: 28px;
   }

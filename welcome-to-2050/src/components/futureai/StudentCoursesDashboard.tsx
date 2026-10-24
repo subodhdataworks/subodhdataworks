@@ -365,7 +365,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             3. 4 FLAGSHIP COURSES — 3D CYLINDRICAL GLOWING NEON POTS (NO WHITE BG)
             ========================================================================= */}
         {viewMode === 'grid' ? (
-          <div className="scd-pots-4grid">
+          <div className="scd-pots-5grid">
             {visibleCourses.map((c) => (
               <article
                 key={c.id}
