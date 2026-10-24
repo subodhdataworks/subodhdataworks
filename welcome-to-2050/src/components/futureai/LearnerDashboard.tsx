@@ -1189,11 +1189,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             }}
             onOpenAdvisor={onOpenAdvisor}
           />
-          <MobileBottomNav
-            currentTab="arena"
-            onSelectTab={handleMobileTabSelect}
-            unreadEarnBadge={true}
-          />
+
         </div>
 
         {/* Desktop (>= 768px): Full 2050 Game Workspace */}
@@ -2558,63 +2554,57 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       </div>
 
       {/* =========================================================================
-          3. NAVIGATION: LIQUID DOCK ON DESKTOP & NATIVE ANDROID BOTTOM BAR ON MOBILE
+          3. NAVIGATION: LIQUID DOCK ON DESKTOP & NATIVE ANDROID BOTTOM BAR ON MOBILE (HOMEPAGE ONLY)
           ========================================================================= */}
-      {/* Desktop (>= 768px): 8-Section Liquid Floating Glass Dock */}
-      <div className="hidden md:block">
-        <LiquidFloatingNavBar
-          activeTab={
-            selectedModuleView === 'data_analyst' || selectedModuleView === 'python' || selectedModuleView === 'sql' || selectedModuleView === 'excel' || selectedModuleView === 'powerbi' || selectedModuleView === 'stats' || selectedModuleView === 'genai'
-              ? 'learning'
-              : dockTab === 'game'
-              ? 'coding_game'
-              : dockTab === 'income' || dockTab === 'referral' || dockTab === 'wallet' || dockTab === 'withdraw'
-              ? 'earning'
-              : dockTab === 'placement'
-              ? 'placement'
-              : 'dashboard'
-          }
-          onSelectTab={(tabId) => {
-            if (tabId === 'dashboard') {
-              setDockTab('home');
-              setSelectedModuleView(null);
-              setActiveTopicWs(null);
-              if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-            } else if (tabId === 'learning') {
-              setDockTab('home');
-              setSelectedModuleView('data_analyst');
-              setActiveTopicWs(null);
-              if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-            } else if (tabId === 'earning') {
-              setSelectedModuleView(null);
-              setActiveTopicWs(null);
-              setDockTab('income');
-              if (typeof window !== 'undefined') window.location.hash = '#earnings';
-            } else if (tabId === 'coding_game') {
-              setSelectedModuleView(null);
-              setActiveTopicWs(null);
-              setDockTab('game');
-              if (typeof window !== 'undefined') window.location.hash = '#game';
-            } else if (tabId === 'industrial_training' || tabId === 'internship' || tabId === 'job' || tabId === 'placement') {
-              setLockedSectionTarget(tabId === 'industrial_training' ? 'Industrial Training' : tabId === 'internship' ? 'Internship' : 'Placement & Job Assistance');
+      {/* Desktop (>= 768px): 8-Section Liquid Floating Glass Dock - ONLY on Homepage */}
+      {selectedModuleView === null && activeTopicWs === null && dockTab === 'home' && (
+        <div className="hidden md:block">
+          <LiquidFloatingNavBar
+            activeTab="dashboard"
+            onSelectTab={(tabId) => {
+              if (tabId === 'dashboard') {
+                setDockTab('home');
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+              } else if (tabId === 'learning') {
+                setDockTab('home');
+                setSelectedModuleView('data_analyst');
+                setActiveTopicWs(null);
+                if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+              } else if (tabId === 'earning') {
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                setDockTab('income');
+                if (typeof window !== 'undefined') window.location.hash = '#earnings';
+              } else if (tabId === 'coding_game') {
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                setDockTab('game');
+                if (typeof window !== 'undefined') window.location.hash = '#game';
+              } else if (tabId === 'industrial_training' || tabId === 'internship' || tabId === 'job' || tabId === 'placement') {
+                setLockedSectionTarget(tabId === 'industrial_training' ? 'Industrial Training' : tabId === 'internship' ? 'Internship' : 'Placement & Job Assistance');
+                setPlacementLockOpen(true);
+              }
+            }}
+            onOpenLockedModal={(featureTitle) => {
+              setLockedSectionTarget(featureTitle);
               setPlacementLockOpen(true);
-            }
-          }}
-          onOpenLockedModal={(featureTitle) => {
-            setLockedSectionTarget(featureTitle);
-            setPlacementLockOpen(true);
-          }}
-        />
-      </div>
+            }}
+          />
+        </div>
+      )}
 
-      {/* Mobile (< 768px): Native Android 5-Tab Bottom Navigation Bar */}
-      <div className="md:hidden">
-        <MobileBottomNav
-          currentTab={currentMobileTab}
-          onSelectTab={handleMobileTabSelect}
-          unreadEarnBadge={true}
-        />
-      </div>
+      {/* Mobile (< 768px): Native Android 5-Tab Bottom Navigation Bar - ONLY on Homepage */}
+      {selectedModuleView === null && activeTopicWs === null && dockTab === 'home' && (
+        <div className="md:hidden">
+          <MobileBottomNav
+            currentTab={currentMobileTab}
+            onSelectTab={handleMobileTabSelect}
+            unreadEarnBadge={true}
+          />
+        </div>
+      )}
 
       {/* Android Mobile Profile Bottom Sheet Dialog */}
       <MobileProfileSheet

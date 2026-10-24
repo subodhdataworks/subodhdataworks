@@ -179,34 +179,6 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
                 </p>
               </div>
 
-              {/* 3. Six Feature Highlights Badges */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                <div className="flex items-center gap-2 p-2 rounded-xl bg-blue-50/70 border border-blue-100 text-xs font-bold text-slate-800">
-                  <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 font-bold text-[10px]">📊</div>
-                  <span className="truncate">Beginner to Advanced</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 rounded-xl bg-blue-50/70 border border-blue-100 text-xs font-bold text-slate-800">
-                  <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 font-bold text-[10px]">⏱</div>
-                  <span className="truncate">50+ Hours</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 rounded-xl bg-purple-50/70 border border-purple-100 text-xs font-bold text-slate-800">
-                  <div className="w-6 h-6 rounded-lg bg-purple-600 text-white flex items-center justify-center shrink-0 font-bold text-[10px]">📁</div>
-                  <span className="truncate">15+ Real-world Projects</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 rounded-xl bg-emerald-50/70 border border-emerald-100 text-xs font-bold text-slate-800">
-                  <div className="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 font-bold text-[10px]">💼</div>
-                  <span className="truncate">Industrial Training</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 rounded-xl bg-rose-50/70 border border-rose-100 text-xs font-bold text-slate-800">
-                  <div className="w-6 h-6 rounded-lg bg-rose-600 text-white flex items-center justify-center shrink-0 font-bold text-[10px]">➕</div>
-                  <span className="truncate">Job Assistance</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 rounded-xl bg-sky-50/70 border border-sky-100 text-xs font-bold text-slate-800">
-                  <div className="w-6 h-6 rounded-lg bg-sky-600 text-white flex items-center justify-center shrink-0 font-bold text-[10px]">👥</div>
-                  <span className="truncate">Expert Mentors</span>
-                </div>
-              </div>
-
               {/* 4. What You'll Learn Checklist */}
               <div className="space-y-2.5 pt-1">
                 <h3 className="text-sm font-black text-slate-900 tracking-tight">
@@ -361,45 +333,6 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
                     </div>
                   </div>
 
-                </div>
-              </div>
-
-              {/* 6. Trusted by 10,000+ Learners */}
-              <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="flex -space-x-2 shrink-0">
-                    <img className="w-7 h-7 rounded-full border-2 border-white object-cover" src="/images/avatar-rohit.jpg" alt="Student" onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }} />
-                    <img className="w-7 h-7 rounded-full border-2 border-white object-cover" src="/images/avatar-sneha.jpg" alt="Student" onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }} />
-                    <img className="w-7 h-7 rounded-full border-2 border-white object-cover" src="/images/avatar-neha.jpg" alt="Student" onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }} />
-                    <img className="w-7 h-7 rounded-full border-2 border-white object-cover" src="/images/avatar-subodh-kumar.jpg" alt="Student" onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }} />
-                  </div>
-                  <div>
-                    <span className="text-xs font-black text-slate-900 block leading-tight">Trusted by 10,000+ Learners</span>
-                    <div className="flex items-center gap-1 text-[11px] font-bold text-amber-500">
-                      <span>★★★★★</span>
-                      <span className="text-slate-600 font-extrabold text-[10.5px]">4.8/5 (1,200+ reviews)</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Mini Testimonial Quote */}
-                <div className="flex items-center gap-2 max-w-xs text-left bg-white p-2 rounded-xl border border-slate-200/80 shadow-2xs">
-                  <img
-                    src="/images/student_female_portrait.jpg"
-                    alt="Priya Singh"
-                    className="w-8 h-8 rounded-full object-cover shrink-0 border border-emerald-300"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/images/avatar-neha.jpg';
-                    }}
-                  />
-                  <div className="flex flex-col min-w-0">
-                    <p className="text-[10px] text-slate-600 font-medium italic line-clamp-2 leading-tight">
-                      "The projects and Agentic AI training helped me build real skills and I got my dream job as a Data Scientist."
-                    </p>
-                    <span className="text-[9.5px] font-black text-slate-900 mt-0.5">
-                      Priya Singh <span className="font-normal text-emerald-700">• Placed at Product-based Co.</span>
-                    </span>
-                  </div>
                 </div>
               </div>
 
@@ -605,15 +538,53 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
                 </div>
               </div>
 
-              {/* Footer */}
-              <div className="text-center text-[11px] font-bold text-slate-400 flex items-center justify-center gap-1.5 pt-1">
-                <span>🍃 Powered by Power Green Industries</span>
-              </div>
-
             </div>
 
           </div>
 
+        </div>
+
+        {/* Full-width Pure Bottom Footer: Trusted by 10,000+ Learners & Powered by Power Green Industries */}
+        <div className="border-t border-slate-200 bg-slate-50/95 px-4 sm:px-6 py-3 flex flex-col md:flex-row items-center justify-between gap-3 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="flex -space-x-2 shrink-0">
+              <img className="w-7 h-7 rounded-full border-2 border-white object-cover" src="/images/avatar-rohit.jpg" alt="Student" onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }} />
+              <img className="w-7 h-7 rounded-full border-2 border-white object-cover" src="/images/avatar-sneha.jpg" alt="Student" onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }} />
+              <img className="w-7 h-7 rounded-full border-2 border-white object-cover" src="/images/avatar-neha.jpg" alt="Student" onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }} />
+              <img className="w-7 h-7 rounded-full border-2 border-white object-cover" src="/images/avatar-subodh-kumar.jpg" alt="Student" onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }} />
+            </div>
+            <div>
+              <span className="text-xs font-black text-slate-900 block leading-tight">Trusted by 10,000+ Learners</span>
+              <div className="flex items-center gap-1 text-[11px] font-bold text-amber-500">
+                <span>★★★★★</span>
+                <span className="text-slate-600 font-extrabold text-[10.5px]">4.8/5 (1,200+ reviews)</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Testimonial Quote */}
+          <div className="flex items-center gap-2 max-w-sm text-left bg-white p-2 rounded-xl border border-slate-200/90 shadow-2xs">
+            <img
+              src="/images/student_female_portrait.jpg"
+              alt="Priya Singh"
+              className="w-8 h-8 rounded-full object-cover shrink-0 border border-emerald-300"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '/images/avatar-neha.jpg';
+              }}
+            />
+            <div className="flex flex-col min-w-0">
+              <p className="text-[10px] text-slate-600 font-medium italic line-clamp-1 leading-tight">
+                "The projects and Agentic AI training helped me get my dream job."
+              </p>
+              <span className="text-[9.5px] font-black text-slate-900 mt-0.5">
+                Priya Singh <span className="font-normal text-emerald-700">• Placed at Product-based Co.</span>
+              </span>
+            </div>
+          </div>
+
+          <div className="text-center text-[11px] font-bold text-slate-500 flex items-center justify-center gap-1.5 shrink-0">
+            <span>🍃 Powered by Power Green Industries</span>
+          </div>
         </div>
 
       </div>
