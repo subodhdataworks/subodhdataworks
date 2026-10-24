@@ -23,7 +23,10 @@ import {
   AlertTriangle,
   Flame,
   Volume2,
-  VolumeX
+  VolumeX,
+  BookOpen,
+  MessageSquare,
+  Trophy
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundEffects } from '../../services/soundEffects';
@@ -169,6 +172,15 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     }, 1000);
     return () => clearInterval(interval);
   }, [activeGame, quizIdx]);
+
+  const handleSubmitAnswer = () => {
+    if (!selectedQuizKey || quizFeedback === 'correct') return;
+    const currQ: any = quizQuestions[quizIdx];
+    const optIdx = currQ.options.findIndex((o: any) => o.key === selectedQuizKey);
+    if (optIdx !== -1) {
+      handleSelectQuizOption(selectedQuizKey, optIdx);
+    }
+  };
 
   // Handle Quiz Selection & Auto-Next
   const handleSelectQuizOption = (key: string, optIdx: number) => {
@@ -640,100 +652,175 @@ print(result)`
           className={`ppa-step-item ${activeGame === 1 ? 'active' : ''}`}
           onClick={() => { soundEffects.playClick(); setActiveGame(1); }}
         >
-          <div className={`ppa-step-circle-badge ${unlockedGame > 1 ? 'completed' : 'quiz'}`}>
-            {unlockedGame > 1 ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : <Zap className="w-3.5 h-3.5 fill-amber-300 text-amber-200" />}
+          <div className="ppa-step-badges-wrap">
+            <div className={`ppa-step-circle-badge ${unlockedGame > 1 ? 'completed' : 'quiz'}`}>
+              {unlockedGame > 1 ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : <Zap className="w-3.5 h-3.5 fill-amber-300 text-amber-200" />}
+            </div>
+            <span className="ppa-step-num-pill">1</span>
           </div>
           <div className="ppa-step-meta">
             <span className="ppa-step-name">Quick Quiz</span>
-            <span className="ppa-step-sub">{unlockedGame > 1 ? '5/5 Done' : '5 Qs'}</span>
+            <span className="ppa-step-sub">{unlockedGame > 1 ? '5/5 Done' : '5 Questions'}</span>
           </div>
         </button>
 
-        <span className="ppa-step-arrow">→</span>
+        <div className="ppa-step-connector-line">
+          <span className="ppa-step-dot" />
+        </div>
 
         {/* Step 2: Puzzle Challenge */}
         <button
           type="button"
-          className={`ppa-step-item ${activeGame === 2 ? 'active' : ''}`}
+          className={`ppa-step-item ${activeGame === 2 ? 'active' : ''} ${unlockedGame < 2 ? 'locked' : ''}`}
           disabled={unlockedGame < 2}
           onClick={() => { soundEffects.playClick(); setActiveGame(2); }}
         >
-          <div className={`ppa-step-circle-badge ${unlockedGame > 2 ? 'completed' : unlockedGame >= 2 ? 'puzzle' : 'locked'}`}>
-            {unlockedGame > 2 ? (
-              <Check className="w-3.5 h-3.5 stroke-[3]" />
-            ) : unlockedGame >= 2 ? (
-              <Puzzle className="w-3.5 h-3.5" />
-            ) : (
-              <Lock className="w-3 h-3" />
-            )}
+          <div className="ppa-step-badges-wrap">
+            <div className={`ppa-step-circle-badge ${unlockedGame > 2 ? 'completed' : unlockedGame >= 2 ? 'puzzle' : 'locked'}`}>
+              {unlockedGame > 2 ? (
+                <Check className="w-3.5 h-3.5 stroke-[3]" />
+              ) : (
+                <Puzzle className="w-3.5 h-3.5" />
+              )}
+            </div>
+            <span className="ppa-step-num-pill">2</span>
           </div>
           <div className="ppa-step-meta">
             <span className="ppa-step-name">Puzzle Challenge</span>
-            <span className="ppa-step-sub">{unlockedGame > 2 ? '3/3 Done' : '3 Ch.'}</span>
+            <span className="ppa-step-sub">{unlockedGame > 2 ? '3/3 Done' : '3 Challenges'}</span>
           </div>
+          {unlockedGame < 2 && <Lock className="w-3.5 h-3.5 text-slate-300 ml-auto ppa-lock-icon" />}
         </button>
 
-        <span className="ppa-step-arrow">→</span>
+        <div className="ppa-step-connector-line">
+          <span className="ppa-step-dot" />
+        </div>
 
-        {/* Step 3: Match the Code */}
+        {/* Step 3: Match Code */}
         <button
           type="button"
-          className={`ppa-step-item ${activeGame === 3 ? 'active' : ''}`}
+          className={`ppa-step-item ${activeGame === 3 ? 'active' : ''} ${unlockedGame < 3 ? 'locked' : ''}`}
           disabled={unlockedGame < 3}
           onClick={() => { soundEffects.playClick(); setActiveGame(3); }}
         >
-          <div className={`ppa-step-circle-badge ${unlockedGame > 3 ? 'completed' : unlockedGame >= 3 ? 'match' : 'locked'}`}>
-            {unlockedGame > 3 ? (
-              <Check className="w-3.5 h-3.5 stroke-[3]" />
-            ) : unlockedGame >= 3 ? (
-              <Code2 className="w-3.5 h-3.5" />
-            ) : (
-              <Lock className="w-3 h-3" />
-            )}
+          <div className="ppa-step-badges-wrap">
+            <div className={`ppa-step-circle-badge ${unlockedGame > 3 ? 'completed' : unlockedGame >= 3 ? 'match' : 'locked'}`}>
+              {unlockedGame > 3 ? (
+                <Check className="w-3.5 h-3.5 stroke-[3]" />
+              ) : (
+                <Code2 className="w-3.5 h-3.5" />
+              )}
+            </div>
+            <span className="ppa-step-num-pill">3</span>
           </div>
           <div className="ppa-step-meta">
             <span className="ppa-step-name">Match Code</span>
             <span className="ppa-step-sub">{unlockedGame > 3 ? '5/5 Done' : '5 Pairs'}</span>
           </div>
+          {unlockedGame < 3 && <Lock className="w-3.5 h-3.5 text-slate-300 ml-auto ppa-lock-icon" />}
         </button>
 
-        <span className="ppa-step-arrow">→</span>
+        <div className="ppa-step-connector-line">
+          <span className="ppa-step-dot" />
+        </div>
 
         {/* Step 4: Real-Life Mission */}
         <button
           type="button"
-          className={`ppa-step-item ${activeGame === 4 ? 'active' : ''}`}
+          className={`ppa-step-item ${activeGame === 4 ? 'active' : ''} ${unlockedGame < 4 ? 'locked' : ''}`}
           disabled={unlockedGame < 4}
           onClick={() => { soundEffects.playClick(); setActiveGame(4); }}
         >
-          <div className={`ppa-step-circle-badge ${missionDone ? 'completed' : unlockedGame >= 4 ? 'mission' : 'locked'}`}>
-            {missionDone ? (
-              <Check className="w-3.5 h-3.5 stroke-[3]" />
-            ) : unlockedGame >= 4 ? (
-              <Target className="w-3.5 h-3.5" />
-            ) : (
-              <Lock className="w-3 h-3" />
-            )}
+          <div className="ppa-step-badges-wrap">
+            <div className={`ppa-step-circle-badge ${missionDone ? 'completed' : unlockedGame >= 4 ? 'mission' : 'locked'}`}>
+              {missionDone ? (
+                <Check className="w-3.5 h-3.5 stroke-[3]" />
+              ) : (
+                <Target className="w-3.5 h-3.5" />
+              )}
+            </div>
+            <span className="ppa-step-num-pill">4</span>
           </div>
           <div className="ppa-step-meta">
             <span className="ppa-step-name">Real-Life Mission</span>
             <span className="ppa-step-sub">{missionDone ? '2/2 Done' : '2 Missions'}</span>
           </div>
+          {unlockedGame < 4 && <Lock className="w-3.5 h-3.5 text-slate-300 ml-auto ppa-lock-icon" />}
         </button>
-
-        </nav>
+      </nav>
 
       {/* ─────────────────────────────────────────────────────────────
           2. MAIN ARENA STAGE (Left 3D Pedestal, Center Game, Right AI Mentor)
           ───────────────────────────────────────────────────────────── */}
       <div className="ppa-arena-stage">
         {/* Left Column: 3D Python Pedestal */}
-        <aside className="ppa-pedestal-col" aria-label="3D Python Pedestal">
-          <img
-            src="/images/dashboard/pedestal_left_feathered.png"
-            alt="3D Glowing Python Sphere"
-            className="ppa-pedestal-img"
-          />
+        <aside className="ppa-left-card-col" aria-label="Python Course Status">
+          <div className="ppa-robot-mascot-wrap">
+            <img
+              src="/images/dashboard/py_robot_mascot_laptop.png"
+              alt="Python AI Robot Mascot"
+              className="ppa-robot-mascot-img"
+            />
+          </div>
+
+          <div className="ppa-python-info-card">
+            <h3 className="ppa-pic-title">Python</h3>
+            <p className="ppa-pic-subtitle">Introduction to Programming</p>
+
+            <div className="ppa-pic-progress-wrap">
+              <div className="ppa-pic-progress-bar">
+                <div className="ppa-pic-progress-fill" style={{ width: '20%' }} />
+              </div>
+              <span className="ppa-pic-progress-text">20% Complete</span>
+            </div>
+
+            <nav className="ppa-pic-links-list">
+              <button
+                type="button"
+                className="ppa-pic-link-btn"
+                onClick={() => { soundEffects.playClick(); onBackToVideo?.(); }}
+                title="Open Lesson Notes"
+              >
+                <span className="ppa-pic-icon-box blue">
+                  <BookOpen className="w-3.5 h-3.5" />
+                </span>
+                <span>Lesson Notes</span>
+              </button>
+              <button
+                type="button"
+                className="ppa-pic-link-btn"
+                onClick={() => { soundEffects.playClick(); setActiveGame(3); }}
+                title="View Code Examples"
+              >
+                <span className="ppa-pic-icon-box purple">
+                  <Code2 className="w-3.5 h-3.5" />
+                </span>
+                <span>Code Examples</span>
+              </button>
+              <button
+                type="button"
+                className="ppa-pic-link-btn"
+                onClick={() => { soundEffects.playClick(); window.print(); }}
+                title="Download Lesson PDF"
+              >
+                <span className="ppa-pic-icon-box violet">
+                  <FileText className="w-3.5 h-3.5" />
+                </span>
+                <span>Download PDF</span>
+              </button>
+              <button
+                type="button"
+                className="ppa-pic-link-btn"
+                onClick={() => { soundEffects.playClick(); onNextToInterview?.(); }}
+                title="Open Discussion & Interview"
+              >
+                <span className="ppa-pic-icon-box pink">
+                  <MessageSquare className="w-3.5 h-3.5" />
+                </span>
+                <span>Discussion</span>
+              </button>
+            </nav>
+          </div>
         </aside>
 
         {/* Center Column: Active Game Main Card */}
@@ -1136,108 +1223,41 @@ print(result)`
               (All strictly visible together without scrolling)
               ════════════════════════════════════════════════════════════ */}
           <div className="ppa-card-footer">
-            <button
-              type="button"
-              className="ppa-btn-prev"
-              disabled={activeGame === 1}
-              onClick={() => { soundEffects.playClick(); setActiveGame((g) => Math.max(1, g - 1)); }}
-            >
-              <ChevronLeft className="w-4 h-4" />
-              <span>Previous</span>
-            </button>
-
-            {activeGame === 2 && (
-              <button
-                type="button"
-                className="ppa-btn-reset"
-                onClick={handleResetPuzzle}
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>Reset</span>
-              </button>
-            )}
-
-            {activeGame === 3 && (
-              <button
-                type="button"
-                className="ppa-btn-reset"
-                onClick={handleResetMatches}
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>Reset</span>
-              </button>
-            )}
-
-            <div className="flex items-center gap-2 ml-auto">
-              {/* Compact Skip Button */}
-              <button
-                type="button"
-                className="ppa-btn-skip-compact"
-                onClick={handleSkipQuestion}
-                onMouseEnter={() => soundEffects.playHover()}
-                title="Skip this question"
-              >
-                <span>Skip ↷</span>
-              </button>
-
-              {/* Action Button: Check Answer / Submit */}
-              {activeGame === 1 && (
                 <button
                   type="button"
-                  className="ppa-btn-submit-action"
-                  disabled={!selectedQuizKey}
+                  className="ppa-btn-prev"
+                  disabled={quizIdx === 0}
                   onClick={() => {
-                    const optIdx = quizQuestions[quizIdx]?.options.findIndex((o) => o.key === selectedQuizKey);
-                    if (optIdx !== -1 && selectedQuizKey) {
-                      handleSelectQuizOption(selectedQuizKey, optIdx);
-                    }
+                    soundEffects.playClick();
+                    setQuizIdx((prev) => Math.max(0, prev - 1));
+                    setSelectedQuizKey(null);
+                    setQuizFeedback(null);
                   }}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Previous</span>
+                </button>
+
+                <button
+                  type="button"
+                  className="ppa-btn-skip-pill"
+                  onClick={handleSkipQuestion}
+                  title="Skip this question and move to next"
+                >
+                  <span>Skip Question</span>
+                  <span className="ppa-skip-chevrons">»</span>
+                </button>
+
+                <button
+                  type="button"
+                  className="ppa-btn-submit-main"
+                  disabled={!selectedQuizKey || quizFeedback === 'correct'}
+                  onClick={handleSubmitAnswer}
                 >
                   <span>Submit Answer</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
-              )}
-
-              {activeGame === 2 && (
-                <button
-                  type="button"
-                  className="ppa-btn-submit-action"
-                  disabled={placedSlots.some((s) => s === null)}
-                  onClick={handleCheckPuzzleAnswer}
-                >
-                  <span>Check Answer</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              )}
-
-              {activeGame === 3 && (
-                <button
-                  type="button"
-                  className="ppa-btn-submit-action"
-                  disabled={Object.keys(matchedPairs).length < matchPairs.length}
-                  onClick={() => {
-                    setUnlockedGame(4);
-                    setActiveGame(4);
-                  }}
-                >
-                  <span>Next to Mission</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              )}
-
-              {activeGame === 4 && (
-                <button
-                  type="button"
-                  className="ppa-btn-submit-action"
-                  onClick={handleSubmitMissionSolution}
-                >
-                  <Check className="w-4 h-4 stroke-[2.5]" />
-                  <span>Submit Solution</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-          </div>
+              </div>
         </main>
 
         {/* ─────────────────────────────────────────────────────────────
@@ -1273,6 +1293,32 @@ print(result)`
               <HelpCircle className="w-3.5 h-3.5 text-blue-600" />
               <span>Need Help? (4 Options)</span>
             </button>
+          </div>
+
+          {/* Card 3: Points & Streak (Exact match to media_1792847065914_f68382f0.png) */}
+          <div className="ppa-points-streak-card">
+            <div className="ppa-ps-head">
+              <Trophy className="w-4 h-4 text-amber-500 fill-amber-400" />
+              <span>Points & Streak</span>
+            </div>
+
+            <div className="ppa-ps-stats-grid">
+              <div className="ppa-ps-stat-box">
+                <Star className="w-7 h-7 text-amber-400 fill-amber-400 shrink-0" />
+                <div className="ppa-ps-stat-content">
+                  <strong className="ppa-ps-stat-val">{quizScore}</strong>
+                  <span className="ppa-ps-stat-lbl">Total Points</span>
+                </div>
+              </div>
+
+              <div className="ppa-ps-stat-box">
+                <Flame className="w-7 h-7 text-orange-500 fill-orange-500 shrink-0" />
+                <div className="ppa-ps-stat-content">
+                  <strong className="ppa-ps-stat-val">{streak}</strong>
+                  <span className="ppa-ps-stat-lbl">Day Streak</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Card 2: Your Progress Donut & Checklist */}

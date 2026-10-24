@@ -141,8 +141,8 @@
    ───────────────────────────────────────────────────────────── */
 .ppa-arena-stage {
   display: grid;
-  grid-template-columns: 80px minmax(0, 1fr) 260px;
-  gap: 10px;
+  grid-template-columns: 165px minmax(0, 1fr) 265px;
+  gap: 12px;
   align-items: stretch;
 }
 
@@ -1463,4 +1463,293 @@
 .ppa-report-success-box {
   padding: 16px;
   text-align: center;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   EXACT MATCH TO media_1792847065914_f68382f0.png STYLES
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Stepper Bar Numbers & Connectors */
+.ppa-step-badges-wrap {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ppa-step-num-pill {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  font-size: 10px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ppa-step-item.active .ppa-step-num-pill {
+  background: #0284c7;
+  border-color: #0284c7;
+  color: #ffffff;
+}
+
+.ppa-step-connector-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 14px;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #93c5fd 0, #93c5fd 4px, transparent 4px, transparent 8px);
+  position: relative;
+}
+
+.ppa-step-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #3b82f6;
+}
+
+.ppa-step-item.active {
+  background: #ffffff;
+  border: 1.5px solid #38bdf8;
+  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.25);
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.ppa-lock-icon {
+  opacity: 0.6;
+}
+
+/* Left Column: Robot Mascot + Python Course Info Card */
+.ppa-left-card-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.ppa-robot-mascot-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: -16px;
+  position: relative;
+  z-index: 3;
+}
+
+.ppa-robot-mascot-img {
+  width: 100%;
+  max-width: 140px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 20px rgba(0, 100, 220, 0.25));
+  animation: ppaRobotFloat 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes ppaRobotFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
+}
+
+.ppa-python-info-card {
+  width: 100%;
+  background: linear-gradient(180deg, #1e3a8a 0%, #0f172a 100%);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 18px;
+  padding: 18px 12px 14px;
+  box-shadow: 0 10px 30px rgba(2, 132, 199, 0.22);
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.ppa-pic-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 0 0 2px 0;
+  letter-spacing: -0.02em;
+}
+
+.ppa-pic-subtitle {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #94a3b8;
+  margin: 0 0 10px 0;
+  line-height: 1.25;
+}
+
+.ppa-pic-progress-wrap {
+  margin-bottom: 12px;
+}
+
+.ppa-pic-progress-bar {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+}
+
+.ppa-pic-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #38bdf8, #0284c7);
+  border-radius: 999px;
+}
+
+.ppa-pic-progress-text {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.ppa-pic-links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ppa-pic-link-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 5px 6px;
+  border-radius: 8px;
+  text-align: left;
+  color: #cbd5e1;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ppa-pic-link-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.ppa-pic-icon-box {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ppa-pic-icon-box.blue {
+  background: rgba(2, 132, 199, 0.28);
+  color: #38bdf8;
+}
+
+.ppa-pic-icon-box.purple {
+  background: rgba(168, 85, 247, 0.28);
+  color: #c084fc;
+}
+
+.ppa-pic-icon-box.violet {
+  background: rgba(139, 92, 246, 0.28);
+  color: #a78bfa;
+}
+
+.ppa-pic-icon-box.pink {
+  background: rgba(236, 72, 153, 0.28);
+  color: #f472b6;
+}
+
+/* Card 3: Points & Streak */
+.ppa-points-streak-card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 16px rgba(0, 70, 180, 0.04);
+}
+
+.ppa-ps-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.ppa-ps-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ppa-ps-stat-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+}
+
+.ppa-ps-stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.ppa-ps-stat-val {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.ppa-ps-stat-lbl {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+/* Skip & Submit Buttons */
+.ppa-btn-skip-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #fde68a;
+  background: #fffbeb;
+  color: #b45309;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.ppa-btn-skip-pill:hover {
+  background: #fef3c7;
+  border-color: #fcd34d;
+  color: #92400e;
+  transform: translateY(-1px);
+}
+
+.ppa-skip-chevrons {
+  font-size: 1.05rem;
+  font-weight: 900;
+  line-height: 1;
 }

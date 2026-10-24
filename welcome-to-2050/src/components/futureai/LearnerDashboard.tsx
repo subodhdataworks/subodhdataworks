@@ -752,7 +752,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         else setTargetStep('learn');
       } else if (baseH === '#python') {
         setSelectedModuleView('python');
-        setActiveTopicWs(null);
+        setActiveTopicWs(1);
+        setTargetStep('learn');
         setDockTab('home');
       } else if (baseH === '#sql') {
         setSelectedModuleView('sql');
@@ -1312,7 +1313,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   }
 
   // Render Hands-on Python Lab Workspace when an interactive step is active
-  if (selectedModuleView === 'python' && activeTopicWs !== null) {
+  if (selectedModuleView === 'python') {
     if (mobileTestingFrame) {
       return (
         <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-start py-4 px-2 sm:px-4">
@@ -1339,12 +1340,13 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           <div className="w-full max-w-[420px] max-h-[90vh] overflow-y-auto rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] border-4 border-slate-700 bg-white relative">
             <MobileTopicWorkspace
               userName={currentUserName}
-              topicId={activeTopicWs}
+              topicId={activeTopicWs || 1}
               initialStep={targetStep}
               onBack={() => {
+                setSelectedModuleView('data_analyst');
                 setActiveTopicWs(null);
                 if (typeof window !== 'undefined') {
-                  window.location.hash = '#python';
+                  window.location.hash = '#data-analyst';
                 }
               }}
               onOpenUnlockModal={(mod?: string) => {
@@ -1385,7 +1387,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         <div className="min-h-screen bg-slate-50">
           <MobileTopicWorkspace
             userName={currentUserName}
-            topicId={activeTopicWs}
+            topicId={activeTopicWs || 1}
             initialStep={targetStep}
             onBack={() => {
               setActiveTopicWs(null);
@@ -1438,12 +1440,13 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
         <PythonTopicWorkspace
           userName={userName}
-          topicId={activeTopicWs}
+          topicId={activeTopicWs || 1}
           initialStep={targetStep}
           onBack={() => {
+            setSelectedModuleView('data_analyst');
             setActiveTopicWs(null);
             setTargetStep('learn');
-            if (typeof window !== 'undefined') window.location.hash = '#python';
+            if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
           }}
           onNavigateDock={(tab) => {
             setActiveTopicWs(null);
@@ -1728,70 +1731,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           ========================================================================= */}
       <div className="dock-main-container">
 
-        {/* ─── TAB: PYTHON COURSE DETAIL VIEW (Exact match to media_1791029953384.jpg) ─── */}
-        {dockTab === 'home' && selectedModuleView === 'python' && (
-          <div className="col-span-full">
-            {/* Mobile View (< 768px) */}
-            <div className="md:hidden min-h-screen bg-slate-50">
-              <MobilePythonChapterView
-                userName={currentUserName}
-                onBack={() => {
-                  setSelectedModuleView(null);
-                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-                }}
-                onOpenTopic={(topicId, step = 'learn') => {
-                  setTargetStep(step);
-                  setActiveTopicWs(topicId);
-                  const map: Record<WorkspaceStepId, string> = {
-                    learn: '#learn',
-                    practice: '#practice',
-                    play: '#play',
-                    code: '#code',
-                    interview: '#interview',
-                    score: '#score',
-                  };
-                  const stepHash = map[step] || '#learn';
-                  if (typeof window !== 'undefined') window.location.hash = `${stepHash}?topic=${topicId}`;
-                }}
-                onOpenUnlockModal={(mod) => {
-                  setSelectedLockedModule(mod || 'Python Advanced Track');
-                  setUnlockModalOpen(true);
-                }}
-                onOpenAdvisor={onOpenAdvisor}
-              />
-            </div>
-
-            {/* Desktop View (>= 768px) */}
-            <div className="hidden md:block">
-              <PythonChapterView
-                userName={userName}
-                onBack={() => {
-                  setSelectedModuleView('data_analyst');
-                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-                }}
-                onOpenTopic={(topicId, step = 'learn') => {
-                  setTargetStep(step);
-                  setActiveTopicWs(topicId);
-                  const map: Record<WorkspaceStepId, string> = {
-                    learn: '#learn',
-                    practice: '#practice',
-                    play: '#play',
-                    code: '#code',
-                    interview: '#interview',
-                    score: '#score',
-                  };
-                  const stepHash = map[step] || '#learn';
-                  if (typeof window !== 'undefined') window.location.hash = `${stepHash}?topic=${topicId}`;
-                }}
-                onOpenUnlockModal={(mod) => {
-                  setSelectedLockedModule(mod || 'Python Advanced Track');
-                  setUnlockModalOpen(true);
-                }}
-                onOpenAdvisor={onOpenAdvisor}
-              />
-            </div>
-          </div>
-        )}
+{/* PythonChapterView removed as requested - direct workspace access */}
 
         {/* ─── TAB: SQL COURSE CHAPTER VIEW ─── */}
         {dockTab === 'home' && selectedModuleView === 'sql' && (

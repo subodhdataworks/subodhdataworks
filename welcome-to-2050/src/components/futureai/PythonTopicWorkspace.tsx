@@ -2094,48 +2094,51 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
         </div>
       </header>
 
-      {/* ── 1. UNIFIED TOP BAR: Back + Topic Name (Left) + 3 Activity Steps (Right) ── */}
+      {/* ── 1. UNIFIED TOP BAR: Exact Match to media_1792847065914_f68382f0.png ── */}
       <div className="plw-top-unified-bar">
-        {/* Left: Back button & Topic Name only */}
+        {/* Left: Back button & Breadcrumbs */}
         <div className="plw-top-crumbs-group">
           <button
             className="plw-back-pill"
             onClick={onBack}
-            title="Back to Python Course"
+            title="Back to Course"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
             <span>Back</span>
           </button>
-          <strong className="crumb-current text-sm font-black text-slate-800 tracking-tight truncate max-w-[280px] sm:max-w-md">
-            {topicHierarchy.topicTitle}
-          </strong>
+
+          <div className="plw-crumbs flex items-center gap-1.5 text-xs">
+            <span className="crumb-link text-slate-600 hover:text-blue-600 cursor-pointer" onClick={() => onNavigateDock?.('home')}>Home</span>
+            <ChevronRight className="w-3 h-3 text-slate-400" />
+            <span className="crumb-link text-slate-600 hover:text-blue-600 cursor-pointer" onClick={onBack}>Python</span>
+            <ChevronRight className="w-3 h-3 text-slate-400" />
+            <span className="crumb-link text-slate-600 hover:text-blue-600 cursor-pointer" onClick={onBack}>{topicHierarchy.moduleTitle}</span>
+            <ChevronRight className="w-3 h-3 text-slate-400" />
+            <strong className="crumb-current text-blue-600 font-extrabold">{topicHierarchy.topicTitle}</strong>
+          </div>
         </div>
 
-        {/* Right: Activity Steps (1 Video -> 2 Practice Code -> 3 Mock Interview) */}
+        {/* Right: Activity Steps matching media_1792847065914_f68382f0.png */}
         <div className="plw-top-steps-inline">
           {/* Step 1: Video */}
           <button
             type="button"
-            className={`plw-inline-step-pill ${activeStep === 'learn' ? 'active' : ''} ${activeStep !== 'learn' ? 'completed' : ''}`}
+            className={`plw-inline-step-pill ${activeStep === 'learn' ? 'active' : 'completed'}`}
             onClick={() => handleSelectTab('learn')}
           >
             <span className="pill-num">{activeStep !== 'learn' ? '✓' : '1'}</span>
             <span className="pill-label">Video</span>
           </button>
 
-          <span className="pill-connector">→</span>
-
-          {/* Step 2: Practice Code */}
+          {/* Step 2: Coding Practice */}
           <button
             type="button"
             className={`plw-inline-step-pill ${activeStep === 'play' ? 'active' : ''} ${['interview', 'score'].includes(activeStep) ? 'completed' : ''}`}
             onClick={() => handleSelectTab('play')}
           >
             <span className="pill-num">{['interview', 'score'].includes(activeStep) ? '✓' : '2'}</span>
-            <span className="pill-label">Practice Code</span>
+            <span className="pill-label">Coding Practice</span>
           </button>
-
-          <span className="pill-connector">→</span>
 
           {/* Step 3: Mock Interview */}
           <button
