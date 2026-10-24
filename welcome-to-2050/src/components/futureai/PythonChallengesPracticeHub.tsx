@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { PythonTopic1ChallengeArena, TOPIC_1_TASKS } from './PythonTopic1ChallengeArena';
 import {
   Home,
   ChevronRight,
@@ -14,7 +15,10 @@ import {
   Code2,
   Search,
   BookOpen,
-  Award
+  Award,
+  Layers,
+  Sparkles,
+  Play
 } from 'lucide-react';
 
 export interface PythonChallengeItem {
@@ -336,6 +340,8 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
 }) => {
   const [activeTab, setActiveTab] = useState<'all' | 'basic' | 'intermediate' | 'advanced' | 'popular'>('all');
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<number>>(new Set());
+  const [activeChallengeArenaTopic, setActiveChallengeArenaTopic] = useState<{ topicId: number; initialTaskId?: number } | null>(null);
+  const [topic1Expanded, setTopic1Expanded] = useState<boolean>(true);
 
   // Collapsible accordion states
   const [statusOpen, setStatusOpen] = useState<boolean>(true);
@@ -423,6 +429,20 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
 
   const solvedCount = currentTabPool.filter((c) => c.solved).length;
   const unsolvedCount = currentTabPool.filter((c) => !c.solved).length;
+
+  if (activeChallengeArenaTopic !== null) {
+    return (
+      <PythonTopic1ChallengeArena
+        userName={userName}
+        initialTaskId={activeChallengeArenaTopic.initialTaskId || 1}
+        onBack={() => setActiveChallengeArenaTopic(null)}
+        onCompleteAll={() => {
+          alert('🎉 Congratulations! You have completed all 10 challenges of Topic 1!');
+          setActiveChallengeArenaTopic(null);
+        }}
+      />
+    );
+  }
 
   return (
     <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 text-slate-800">
@@ -549,93 +569,166 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
               return (
                 <div
                   key={item.id}
-                  className="group bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-blue-200 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                  className="group bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-blue-200 transition-all duration-200 flex flex-col"
                 >
-                  {/* Left: Number Badge + Python Logo + Details */}
-                  <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0 flex-1">
-                    {/* Number Badge */}
-                    <div className="w-8 h-8 rounded-full bg-[#f0f6ff] text-[#1a73e8] font-black text-xs flex items-center justify-center shrink-0">
-                      {index + 1}
-                    </div>
-
-                    {/* Python Logo in Circle */}
-                    <div className="w-11 h-11 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 p-1.5 group-hover:scale-105 transition-transform">
-                      <img
-                        src="/images/arena/icons/python.png"
-                        alt="Python"
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-
-                    {/* Challenge Title, Badges & Description */}
-                    <div className="min-w-0 flex-1 text-left">
-                      <h3 className="font-bold text-slate-900 text-sm sm:text-base leading-tight group-hover:text-blue-600 transition-colors">
-                        {item.title}
-                      </h3>
-
-                      {/* Badges Row */}
-                      <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                        {/* Difficulty */}
-                        <span
-                          className={`text-[10.5px] font-bold px-2.5 py-0.5 rounded-full ${
-                            item.difficulty === 'Easy'
-                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/50'
-                              : item.difficulty === 'Medium'
-                              ? 'bg-amber-50 text-amber-700 border border-amber-200/50'
-                              : 'bg-rose-50 text-rose-700 border border-rose-200/50'
-                          }`}
-                        >
-                          {item.difficulty}
-                        </span>
-
-                        {/* Max Score */}
-                        <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200/50">
-                          Max Score: {item.maxScore}
-                        </span>
-
-                        {/* Skill category */}
-                        <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
-                          {item.skill}
-                        </span>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    {/* Left: Number Badge + Python Logo + Details */}
+                    <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                      {/* Number Badge */}
+                      <div className="w-8 h-8 rounded-full bg-[#f0f6ff] text-[#1a73e8] font-black text-xs flex items-center justify-center shrink-0">
+                        {index + 1}
                       </div>
 
-                      {/* Description text */}
-                      <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
-                        {item.description}
-                      </p>
+                      {/* Python Logo in Circle */}
+                      <div className="w-11 h-11 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 p-1.5 group-hover:scale-105 transition-transform">
+                        <img
+                          src="/images/arena/icons/python.png"
+                          alt="Python"
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+
+                      {/* Challenge Title, Badges & Description */}
+                      <div className="min-w-0 flex-1 text-left">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="font-bold text-slate-900 text-sm sm:text-base leading-tight group-hover:text-blue-600 transition-colors">
+                            {item.title}
+                          </h3>
+                          {item.id === 1 && (
+                            <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
+                              10 Challenges
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Badges Row */}
+                        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                          {/* Difficulty */}
+                          <span
+                            className={`text-[10.5px] font-bold px-2.5 py-0.5 rounded-full ${
+                              item.difficulty === 'Easy'
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/50'
+                                : item.difficulty === 'Medium'
+                                ? 'bg-amber-50 text-amber-700 border border-amber-200/50'
+                                : 'bg-rose-50 text-rose-700 border border-rose-200/50'
+                            }`}
+                          >
+                            {item.difficulty}
+                          </span>
+
+                          {/* Max Score */}
+                          <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200/50">
+                            Max Score: {item.maxScore}
+                          </span>
+
+                          {/* Skill category */}
+                          <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                            {item.skill}
+                          </span>
+                        </div>
+
+                        {/* Description text */}
+                        <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
+                          {item.description}
+                        </p>
+
+                        {/* View 10 challenges accordion toggle on Topic 1 */}
+                        {item.id === 1 && (
+                          <button
+                            type="button"
+                            onClick={() => setTopic1Expanded((prev) => !prev)}
+                            className="mt-2 text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1.5 cursor-pointer select-none"
+                          >
+                            <span>{topic1Expanded ? 'Hide 10 Challenges' : 'View All 10 Challenges (Topic 1)'}</span>
+                            {topic1Expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Right: Bookmark Star + Solve Challenge Button */}
+                    <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                      <button
+                        type="button"
+                        onClick={(e) => toggleBookmark(item.id, e)}
+                        aria-label="Bookmark Challenge"
+                        className="p-2 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-amber-500 transition-colors cursor-pointer"
+                      >
+                        <Star
+                          className={`w-5 h-5 transition-colors ${
+                            isBookmarked ? 'fill-amber-400 text-amber-400' : ''
+                          }`}
+                        />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (item.id === 1) {
+                            setActiveChallengeArenaTopic({ topicId: 1, initialTaskId: 1 });
+                          } else if (onSolveChallenge) {
+                            onSolveChallenge(item.id, item.title);
+                          } else {
+                            window.location.hash = `#python?topic=${item.id}`;
+                          }
+                        }}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-semibold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap"
+                      >
+                        <span>Solve Challenge</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   </div>
 
-                  {/* Right: Bookmark Star + Solve Challenge Button */}
-                  <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                    <button
-                      type="button"
-                      onClick={(e) => toggleBookmark(item.id, e)}
-                      aria-label="Bookmark Challenge"
-                      className="p-2 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-amber-500 transition-colors cursor-pointer"
-                    >
-                      <Star
-                        className={`w-5 h-5 transition-colors ${
-                          isBookmarked ? 'fill-amber-400 text-amber-400' : ''
-                        }`}
-                      />
-                    </button>
+                  {/* Expandable Sub-Tasks for Topic 1: 10 Challenges */}
+                  {item.id === 1 && topic1Expanded && (
+                    <div className="mt-4 pt-3.5 border-t border-slate-100 space-y-2">
+                      <div className="text-[11px] font-black text-slate-400 uppercase tracking-wider text-left mb-1.5">
+                        Topic 1 Practice Challenges (10 Tasks):
+                      </div>
+                      <div className="grid grid-cols-1 gap-2">
+                        {TOPIC_1_TASKS.map((subTask) => (
+                          <div
+                            key={subTask.id}
+                            className="bg-slate-50/80 hover:bg-blue-50/50 border border-slate-200/60 rounded-xl p-2.5 sm:p-3 flex items-center justify-between gap-3 transition-colors text-left"
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                              <span className="w-6 h-6 rounded-lg bg-white text-slate-700 border border-slate-200 text-xs font-bold flex items-center justify-center shrink-0">
+                                {subTask.taskNumber}
+                              </span>
+                              <div className="min-w-0 flex-1">
+                                <div className="text-xs font-bold text-slate-800 truncate">
+                                  {subTask.title}
+                                </div>
+                                <div className="text-[11px] text-slate-500 truncate">
+                                  {subTask.description}
+                                </div>
+                              </div>
+                            </div>
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (onSolveChallenge) {
-                          onSolveChallenge(item.id, item.title);
-                        } else {
-                          window.location.hash = `#python?topic=${item.id}`;
-                        }
-                      }}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-semibold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap"
-                    >
-                      <span>Solve Challenge</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/40">
+                                +{subTask.maxScore} XP
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setActiveChallengeArenaTopic({
+                                    topicId: 1,
+                                    initialTaskId: subTask.taskNumber
+                                  })
+                                }
+                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#1a73e8] hover:bg-blue-700 text-white font-bold text-[11px] shadow-sm transition-all cursor-pointer whitespace-nowrap active:scale-95"
+                              >
+                                <span>Solve</span>
+                                <ArrowRight className="w-3 h-3" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })
