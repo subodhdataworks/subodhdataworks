@@ -805,34 +805,7 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
         </header>
       )}
 
-      {/* ─────────────────────────────────────────────────────────────
-          2. STEP INDICATOR BAR (1 TO 8 CIRCLES WITH ACTIVE COLORS) — UNLOCKED FOR ALL 8 GAMES
-          ───────────────────────────────────────────────────────────── */}
-      <nav className="py-step-indicator-bar" aria-label="Practice progress steps">
-        {gamesList.map((game) => {
-          const isActive = game.id === activeGameId;
-          const isUnlocked = true; // All 8 games fully unlocked per user request
-
-          return (
-            <button
-              key={game.id}
-              className={`py-step-circle-btn ${isActive ? 'active' : ''}`}
-              style={{
-                backgroundColor: isActive ? game.activeColor : undefined,
-                borderColor: isActive ? game.activeColor : undefined,
-              }}
-              onClick={() => {
-                if (soundEnabled) soundEffects.playClick();
-                setActiveGameId(game.id);
-                setActiveChallengeNum(1);
-              }}
-              title={`${game.title} (Click to start Practice ${game.id})`}
-            >
-              <span className="py-step-num-text">{game.badge}</span>
-            </button>
-          );
-        })}
-      </nav>
+      {/* Step indicator bar 1-8 removed to maximize vertical screen space */}
 
       {/* ─────────────────────────────────────────────────────────────
           3. GAME TRANSITION BANNER (When auto-advancing 1 -> 2 -> ... -> 8)
