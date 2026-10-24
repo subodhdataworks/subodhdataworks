@@ -171,54 +171,29 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             <span>YOUR FUTURE IN AI STARTS HERE</span>
           </div>
 
-          {/* Main Headline */}
+          {/* Main Headline - Short, Bold, High-Impact */}
           <h1 className="scd-future-hero-hl">
-            <span>Learn AI. Build Real Skills.</span>{' '}
-            <span className="scd-future-hero-hl-gradient">Get Career-Ready. 🚀</span>
+            Learn AI. Build Real Skills. <span className="scd-future-hero-hl-gradient">Get Career-Ready. 🚀</span>
           </h1>
 
-          {/* Subtitle */}
+          {/* Subtitle - One Punchy Line */}
           <p className="scd-future-hero-sub">
-            Master Data Analytics, Data Science, Machine Learning &amp; AI Engineering through practical, industry-focused learning.
+            Master Analytics, Data Science, ML &amp; AI Engineering through practical industry tracks.
           </p>
 
-          {/* 8 Feature Highlights Grid */}
-          <div className="scd-future-highlights-grid">
-            <div className="scd-future-hl-item">
-              <span className="scd-future-hl-emoji">🎯</span>
-              <span className="scd-future-hl-text">Internship Opportunities</span>
-            </div>
-            <div className="scd-future-hl-item">
-              <span className="scd-future-hl-emoji">📜</span>
-              <span className="scd-future-hl-text">Internship / Training Completion Certificate &amp; Recommendation Letter</span>
-            </div>
-            <div className="scd-future-hl-item">
-              <span className="scd-future-hl-emoji">🏭</span>
-              <span className="scd-future-hl-text">Industrial Training</span>
-            </div>
-            <div className="scd-future-hl-item">
-              <span className="scd-future-hl-emoji">💻</span>
-              <span className="scd-future-hl-text">28 Real-World Projects</span>
-            </div>
-            <div className="scd-future-hl-item">
-              <span className="scd-future-hl-emoji">⌨️</span>
-              <span className="scd-future-hl-text">Hands-On Coding Practice</span>
-            </div>
-            <div className="scd-future-hl-item">
-              <span className="scd-future-hl-emoji">🤖</span>
-              <span className="scd-future-hl-text">AI-Powered Mock Interviews</span>
-            </div>
-            <div className="scd-future-hl-item">
-              <span className="scd-future-hl-emoji">🚀</span>
-              <span className="scd-future-hl-text">Career &amp; Placement Assistance</span>
-            </div>
-            <div className="scd-future-hl-item">
-              <span className="scd-future-hl-emoji">🤝</span>
-              <span className="scd-future-hl-text">700+ Hiring Partners</span>
-            </div>
+          {/* Luxury Floating Feature Pills - Short & Crisp */}
+          <div className="scd-future-pills-row">
+            <span className="scd-future-pill">🎯 <strong>Internships</strong></span>
+            <span className="scd-future-pill">📜 <strong>Certificates &amp; LOR</strong></span>
+            <span className="scd-future-pill">🏭 <strong>Industrial Training</strong></span>
+            <span className="scd-future-pill">💻 <strong>28+ Live Projects</strong></span>
+            <span className="scd-future-pill">⌨️ <strong>Coding Practice</strong></span>
+            <span className="scd-future-pill">🤖 <strong>AI Mock Interviews</strong></span>
+            <span className="scd-future-pill">🚀 <strong>Placement Support</strong></span>
+            <span className="scd-future-pill">🤝 <strong>700+ Partners</strong></span>
           </div>
 
-          {/* CTA Row with Explore Button and Tagline */}
+          {/* CTA Row */}
           <div className="scd-future-cta-row">
             <button
               type="button"
@@ -231,8 +206,8 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
               }}
               className="scd-future-explore-btn"
             >
-              <span>Explore Your Learning Path</span>
-              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+              <span>Explore Programs</span>
+              <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
             </button>
 
             <span className="scd-future-tagline">
