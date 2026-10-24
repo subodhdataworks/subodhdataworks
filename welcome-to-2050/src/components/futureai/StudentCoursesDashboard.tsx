@@ -40,7 +40,6 @@ export interface StudentCoursesDashboardProps {
   onOpenDataAnalystCourse: () => void;
   onOpenDataScienceCourse?: () => void;
   onOpenMlEngineeringCourse?: () => void;
-  onOpenDeepLearningCourse?: () => void;
   onOpenAiEngineeringCourse?: () => void;
   onOpenAiToolsPromptCourse?: () => void;
   onOpenMsOfficeCopilotCourse?: () => void;
@@ -86,7 +85,6 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
   onOpenDataAnalystCourse,
   onOpenDataScienceCourse,
   onOpenMlEngineeringCourse,
-  onOpenDeepLearningCourse,
   onOpenAiEngineeringCourse,
   onOpenAiToolsPromptCourse,
   onOpenMsOfficeCopilotCourse,
@@ -151,9 +149,6 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
     } else if (c.id === 'ml-engineering') {
       if (onOpenMlEngineeringCourse) onOpenMlEngineeringCourse();
       else onOpenLockedCourse(c.fullName || c.title || 'Machine Learning Engineering');
-    } else if (c.id === 'deep-learning') {
-      if (onOpenDeepLearningCourse) onOpenDeepLearningCourse();
-      else onOpenLockedCourse(c.fullName || c.title || 'Deep Learning');
     } else if (c.id === 'ai-engineering') {
       if (onOpenAiEngineeringCourse) onOpenAiEngineeringCourse();
       else onOpenLockedCourse(c.fullName || c.title || 'AI Engineering');
@@ -187,9 +182,6 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
     } else if (c.id === 'ml-engineering') {
       if (onOpenMlEngineeringCourse) onOpenMlEngineeringCourse();
       else onOpenLockedCourse(c.fullName || c.title || 'Machine Learning Engineering');
-    } else if (c.id === 'deep-learning') {
-      if (onOpenDeepLearningCourse) onOpenDeepLearningCourse();
-      else onOpenLockedCourse(c.fullName || c.title || 'Deep Learning');
     } else if (c.id === 'ai-engineering') {
       if (onOpenAiEngineeringCourse) onOpenAiEngineeringCourse();
       else onOpenLockedCourse(c.fullName || c.title || 'AI Engineering');

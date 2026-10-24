@@ -48,7 +48,7 @@ export const MS_OFFICE_COPILOT_CURRICULUM: TabItem[] = [
             "title": "What Is Microsoft 365?",
             "duration": "Quiz • 10 min",
             "type": "quiz",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "ms-t-2",
@@ -56,7 +56,7 @@ export const MS_OFFICE_COPILOT_CURRICULUM: TabItem[] = [
             "title": "Microsoft 365 vs Microsoft Office",
             "duration": "Video • 12 min",
             "type": "video",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "ms-t-3",
@@ -64,7 +64,7 @@ export const MS_OFFICE_COPILOT_CURRICULUM: TabItem[] = [
             "title": "Overview of Word, Excel and PowerPoint",
             "duration": "Video • 14 min",
             "type": "video",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "ms-t-4",

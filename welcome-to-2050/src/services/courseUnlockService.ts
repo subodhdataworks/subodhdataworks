@@ -73,9 +73,9 @@ export function normalizeCourseId(raw: string = ''): CanonicalCourseId {
   if (s.includes('machine learning') || s.includes('ml engineering') || s.includes('ml-eng')) return 'ml_engineering';
   if (s.includes('deep learning') || s.includes('neural')) return 'deep_learning';
   if (s.includes('ai engineering') || s.includes('llmops')) return 'ai_engineering';
-  if (s.includes('prompt') || s.includes('ai tools')) return 'ai_tools_prompt';
-  if (s.includes('office') || s.includes('copilot') || s.includes('excel')) return 'ms_office_copilot';
-  if (s.includes('mern') || s.includes('full stack') || s.includes('react') || s.includes('next')) return 'full_stack_mern';
+  if (s.includes('prompt') || s.includes('ai tools') || s.includes('ai tool') || s.includes('ai-tool') || s.includes('ai_tool')) return 'ai_tools_prompt';
+  if (s.includes('office') || s.includes('copilot') || s.includes('excel') || s.includes('microsoft') || s.includes('ms-office') || s.includes('ms_office')) return 'ms_office_copilot';
+  if (s.includes('mern') || s.includes('full stack') || s.includes('fullstack') || s.includes('full-stack') || s.includes('react') || s.includes('next')) return 'full_stack_mern';
   
   return 'data_analyst';
 }
@@ -147,8 +147,10 @@ export function unlockCourse(courseKeyOrTitle: string): CanonicalCourseId {
 /**
  * Core Rule Check: Is a specific topic unlocked?
  * 1. If course is unlocked -> TRUE (all topics unlocked)
- * 2. If chapterNum === 1 and topicNum <= 3 -> TRUE (1st module first 3 topics are FREE)
- * 3. Otherwise -> FALSE (LOCKED)
+ * 2. User requirement: "ai tool , microsoft office full stack ka saare topic lock kro"
+ *    -> ai_tools_prompt, ms_office_copilot, full_stack_mern are 100% LOCKED until course fee is paid!
+ * 3. For other courses: chapterNum === 1 and topicNum <= 3 -> TRUE (1st module first 3 topics are FREE)
+ * 4. Otherwise -> FALSE (LOCKED)
  */
 export function isTopicUnlocked(
   courseKeyOrTitle: string,
@@ -158,5 +160,15 @@ export function isTopicUnlocked(
   if (isCourseUnlocked(courseKeyOrTitle)) {
     return true;
   }
+  const canonical = normalizeCourseId(courseKeyOrTitle);
+  // Strictly lock all topics for AI Tools, MS Office, and Full Stack
+  if (
+    canonical === 'ai_tools_prompt' ||
+    canonical === 'ms_office_copilot' ||
+    canonical === 'full_stack_mern'
+  ) {
+    return false;
+  }
+
   return chapterNum === 1 && topicNum <= 3;
 }

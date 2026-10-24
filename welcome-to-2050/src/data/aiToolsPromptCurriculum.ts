@@ -48,7 +48,7 @@ export const AI_TOOLS_PROMPT_CURRICULUM: TabItem[] = [
             "title": "What Is Artificial Intelligence?",
             "duration": "Quiz • 10 min",
             "type": "quiz",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "pt-t-2",
@@ -56,7 +56,7 @@ export const AI_TOOLS_PROMPT_CURRICULUM: TabItem[] = [
             "title": "AI in Everyday Life",
             "duration": "Video • 12 min",
             "type": "video",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "pt-t-3",
@@ -64,7 +64,7 @@ export const AI_TOOLS_PROMPT_CURRICULUM: TabItem[] = [
             "title": "Types of AI: Narrow AI and General AI",
             "duration": "Video • 15 min",
             "type": "video",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "pt-t-4",

@@ -48,7 +48,7 @@ export const FULL_STACK_MERN_CURRICULUM: TabItem[] = [
             "title": "What is web development?",
             "duration": "13 min",
             "type": "video",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "fs-t-2",
@@ -56,7 +56,7 @@ export const FULL_STACK_MERN_CURRICULUM: TabItem[] = [
             "title": "Websites vs web applications",
             "duration": "14 min",
             "type": "video",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "fs-t-3",
@@ -64,7 +64,7 @@ export const FULL_STACK_MERN_CURRICULUM: TabItem[] = [
             "title": "Frontend vs backend development",
             "duration": "15 min",
             "type": "reading",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "fs-t-4",
