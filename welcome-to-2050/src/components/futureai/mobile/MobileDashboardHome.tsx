@@ -43,6 +43,7 @@ interface MobileDashboardHomeProps {
   onOpenDataAnalyst?: () => void;
   onOpenDataScience?: () => void;
   onOpenMlEngineering?: () => void;
+  onOpenAiEngineering?: () => void;
   onOpenSql?: () => void;
   onOpenExcel?: () => void;
   onOpenPowerBi?: () => void;
@@ -61,6 +62,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
   onOpenDataAnalyst,
   onOpenDataScience,
   onOpenMlEngineering,
+  onOpenAiEngineering,
   onOpenSql,
   onOpenExcel,
   onOpenPowerBi,
@@ -331,7 +333,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
         btnClass: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-emerald-500/30',
         priceBorder: 'border-emerald-400',
       },
-      action: () => onOpenLockedModule('Full-Stack AI Engineering'),
+      action: onOpenAiEngineering || (() => onOpenLockedModule('AI Engineering')),
     },
     {
       id: 'msoffice-365-copilot',
