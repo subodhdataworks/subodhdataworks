@@ -686,15 +686,19 @@ print(result)`
     setFloatingXp('+25 XP 🏆');
     setTimeout(() => setFloatingXp(null), 1500);
 
-    if (missionIdx === 0) {
+    const totalMissions = registeredBank?.game4Missions?.length || 2;
+    if (missionIdx < totalMissions - 1) {
       setTimeout(() => {
-        setMissionIdx(1);
+        setMissionIdx((prev) => prev + 1);
         setMissionDone(false);
-      }, 1500);
+      }, 1200);
     } else {
-      if (onNextToInterview) {
-        setTimeout(onNextToInterview, 1800);
-      }
+      // User requirement: Real-life mission khatam hone ke baad mock interview auto start hoga
+      setTimeout(() => {
+        if (onNextToInterview) {
+          onNextToInterview();
+        }
+      }, 1200);
     }
   };
 
@@ -710,105 +714,215 @@ print(result)`
     return p;
   }, [unlockedGame, missionDone]);
 
-  // AI Mentor Dynamic Hint
+  // AI Mentor Dynamic Hint — 100% matched to current question/scenario
   const currentMentorHint = useMemo(() => {
     if (activeGame === 1) {
       return (
+        quizQuestions[quizIdx]?.hint ||
         quizQuestions[quizIdx]?.explanation ||
-        'Think about the process of writing instructions that a computer can understand and execute.'
+        'Think about the core concept asked in this question.'
       );
     }
     if (activeGame === 2) {
-      return currentPuzzle.hint;
+      return currentPuzzle?.hint || 'Analyze the given scenario to find the data.';
     }
     if (activeGame === 3) {
-      return 'Look at what each code does and match it with the correct meaning: variables, loops, and conditions.';
+      return 'Match each real-world example on the left with its correct data format (Text, Number, Image, Measurement).';
     }
-    return 'Think about using a loop or list comprehension to check the price condition and create a new list with the matching products.';
-  }, [activeGame, quizIdx, currentPuzzle, quizQuestions]);
+    return currentMission?.prompt || 'Formulate the analytical action needed to resolve this real-world scenario.';
+  }, [activeGame, quizIdx, currentPuzzle, quizQuestions, currentMission]);
 
   // ─────────────────────────────────────────────────────────────────────────────
-  // PRE-WRITTEN HINT, EXAMPLE, EXPLANATION & REPORT DATA (Zero AI Cost)
+  // PRE-WRITTEN HINT, EXAMPLE, EXPLANATION & REPORT DATA (Matched to Current Question)
   // ─────────────────────────────────────────────────────────────────────────────
   const currentHelpData = useMemo(() => {
     if (activeGame === 1) {
-      const qNum = quizIdx + 1;
       const currQ: any = quizQuestions[quizIdx];
-      const currH = hindiActivity?.mcqs ? hindiActivity.mcqs[qNum] : null;
+      const qText = currQ?.question || '';
 
+      // Topic 1.1 Custom Question Matches
+      if (qText.includes('What is data?')) {
+        return {
+          hintEn: currQ?.hint || 'Think about whether data includes recorded facts, numbers, and values.',
+          hintHi: 'सोचिए कि क्या डेटा में रिकॉर्ड किए गए तथ्य (facts) और मान (values) शामिल होते हैं।',
+          exampleCode: '// Examples of Data:\nStudent Name = "Asha"       // Text\nMarks = 85                  // Number\nAttendance = "Present"       // Fact\nTemperature = 32°C          // Measurement',
+          exampleNote: 'Data can be words, numbers, measurements, or observations recorded from the real world.',
+          explainTitleEn: 'Concept: What Is Data?',
+          explainTitleHi: 'डेटा क्या है? (Understanding Data)',
+          explainTextEn: 'Data is a collection of facts, numbers, text, images, and values that represent observations or measurements. When analyzed, data becomes actionable information.',
+          explainTextHi: 'डेटा रिकॉर्ड किए गए तथ्यों, संख्याओं, शब्दों या मापों का संग्रह होता है। जैसे किसी छात्र के अंक (85), उम्र (18) या दैनिक बिक्री।',
+          realWorldEn: 'In companies like Google, Amazon, and Swiggy, data is collected from millions of clicks, orders, and GPS coordinates every second.',
+          realWorldHi: 'Swiggy, Amazon और Google जैसी कंपनियां हर सेकंड यूजर के ऑर्डर्स, नाम और पेमेंट्स को डेटा के रूप में रिकॉर्ड करती हैं।',
+        };
+      }
+
+      if (qText.includes('Which of these is an example of data?')) {
+        return {
+          hintEn: 'Look for an option that represents an actual recorded value or measurement, rather than physical hardware or blank paper.',
+          hintHi: 'वह विकल्प चुनें जो किसी रिकॉर्ड किए गए मान (value) या माप को दर्शाता है, न कि कोई भौतिक वस्तु जैसे कीबोर्ड या खाली नोटबुक।',
+          exampleCode: '// Physical Object vs Recorded Data:\nPhysical Hardware:  Computer Keyboard (Device)\nPhysical Furniture: Wooden Desk\nAuthentic Data:     Student\'s age: 18 (Recorded Value)',
+          exampleNote: 'Hardware devices process or store information, but the recorded values themselves are the data.',
+          explainTitleEn: 'Recognizing Data in Everyday Scenarios',
+          explainTitleHi: 'डेटा के उदाहरण पहचानना',
+          explainTextEn: 'A keyboard, computer desk, or blank notebook are physical objects. A student\'s age (18) is a measured, recorded observation that represents real data.',
+          explainTextHi: 'कीबोर्ड, मेज या खाली कॉपी भौतिक वस्तुएं (Physical items) हैं। किसी छात्र की उम्र (18) एक रिकॉर्ड किया गया मान है, इसलिए यह डेटा है।',
+          realWorldEn: 'HR software systems store employee age, join date, and salary as structured data fields.',
+          realWorldHi: 'कंपनियों के HR सॉफ्टवेयर में कर्मचारी की उम्र, जॉइनिंग डेट और सैलरी डेटा के रूप में सेव होती है।',
+        };
+      }
+
+      if (qText.includes('A shop records 20, 25, and 30 items sold')) {
+        return {
+          hintEn: 'These recorded sales numbers represent daily business observations of transactions.',
+          hintHi: 'दुकानदार द्वारा हर दिन बेचे गए सामान की संख्या (20, 25, 30) रिकॉर्ड की गई जानकारी है।',
+          exampleCode: '// Daily Store Transactions:\nDay 1: 20 items sold\nDay 2: 25 items sold\nDay 3: 30 items sold\n// Total = 75 items (Sales Data Log)',
+          exampleNote: 'Daily transaction counts form the sales dataset of the store.',
+          explainTitleEn: 'Sales Transaction Records as Business Data',
+          explainTitleHi: 'दुकान की बिक्री का डेटा',
+          explainTextEn: 'The daily numbers (20, 25, 30) are quantitative business records. They are not computer viruses or passwords; they are operational sales data used to analyze store performance.',
+          explainTextHi: '20, 25, 30 बेची गई वस्तुओं की संख्या है, जो कि व्यापार का बिक्री डेटा (Sales Data) है।',
+          realWorldEn: 'Retail stores like DMart and Reliance Smart track daily sold quantities to reorder stock and compute revenue.',
+          realWorldHi: 'DMart और Reliance Retail हर दिन बिकने वाले सामान की संख्या से नया स्टॉक मंगाते हैं।',
+        };
+      }
+
+      if (qText.includes('Which item can be data?')) {
+        return {
+          hintEn: 'Remember that data is not limited to numbers—text, measurements, and images can all be data.',
+          hintHi: 'याद रखें कि डेटा केवल नंबर नहीं होता—नाम (टेक्स्ट), तापमान (माप) और फोटो (इमेज) सभी डेटा हो सकते हैं।',
+          exampleCode: '// Variety of Data Types:\nCustomer Name:  "Subodh Kumar"  (Text / String)\nTemperature:    32.5°C          (Numerical Measurement)\nProduct Photo:  camera.jpg      (Image / Multimedia Data)',
+          exampleNote: 'All of these forms can be stored and analyzed in modern databases.',
+          explainTitleEn: 'Multimodal Nature of Data',
+          explainTitleHi: 'डेटा के विभिन्न रूप',
+          explainTextEn: 'Modern data analysts work with varied data formats: text strings (customer names), continuous measurements (temperature 32°C), and multimedia files (product images). Therefore, all of these are data.',
+          explainTextHi: 'डेटा किसी भी रूप में हो सकता है: टेक्स्ट (नाम), नंबर या माप (तापमान) और फोटो। इसलिए ये सभी डेटा हैं।',
+          realWorldEn: 'E-commerce apps like Flipkart display product titles (text), user reviews (text), prices (numbers), and product photos (images).',
+          realWorldHi: 'Flipkart पर प्रोडक्ट का नाम, कीमत और फोटो तीनों ही अलग-अलग प्रकार का डेटा हैं।',
+        };
+      }
+
+      if (qText.includes("marks data") || qText.includes("teacher records")) {
+        return {
+          hintEn: 'Think about what test marks represent: they are factual, observed outcomes of student evaluations.',
+          hintHi: 'सोचिए कि परीक्षा के अंक क्या दर्शाते हैं: वे छात्रों के प्रदर्शन के रिकॉर्ड किए गए वास्तविक तथ्य (facts) हैं।',
+          exampleCode: '// Student Gradebook:\nStudent: "Rahul", Subject: "Maths", Marks: 92\nStatus: Recorded Fact (Observable Exam Result)',
+          exampleNote: 'Recorded marks provide factual evidence of academic performance.',
+          explainTitleEn: 'Recorded Facts vs Predictions',
+          explainTitleHi: 'रिकॉर्ड किए गए तथ्य (Recorded Facts)',
+          explainTextEn: 'Marks represent observed, verifiable historical facts about a test that has taken place. They are not hardware, advertisements, or mere guesses; they are factual recorded observations.',
+          explainTextHi: 'शिक्षक द्वारा दर्ज किए गए अंक परीक्षा के वास्तविक तथ्य (Recorded Facts) हैं, जो छात्र के प्रदर्शन को प्रमाणित करते हैं।',
+          realWorldEn: 'Universities generate report cards and graduation eligibility by processing recorded marksheets in database systems.',
+          realWorldHi: 'स्कूल और कॉलेज मार्कशीट और रिजल्ट तैयार करने के लिए छात्रों के दर्ज किए गए अंकों का विश्लेषण करते हैं।',
+        };
+      }
+
+      // Universal Question Match for any other question
       return {
-        hintEn: currQ?.hint || currQ?.explanation || 'Think about the core concept of giving step-by-step instructions that a machine executes.',
-        hintHi: currH?.hint || 'सोचिए कि कोड कंप्यूटर को कौन सा काम करने का निर्देश देता है।',
-        exampleCode: currQ?.codeSnippet || '# Example instruction in Python\nprint("Hello, Python!")\nx = 10 + 20\nprint(x)',
-        exampleNote: currQ?.realWorldContext || 'Computer sequentially executes code from top to bottom, exactly as commanded.',
+        hintEn: currQ?.hint || 'Review the core concept being asked in this question.',
+        hintHi: 'सवाल के मुख्य विचार (Core Concept) पर ध्यान दें और सही विकल्प चुनें।',
+        exampleCode: currQ?.options?.map((o: any) => `${o.key}. ${o.text}`).join('\n') || '// Question Options',
+        exampleNote: currQ?.explanation || 'Think about the lesson concepts discussed in this topic.',
         explainTitleEn: currQ?.question || 'Question Concept',
-        explainTitleHi: currH?.question || 'प्रोग्रामिंग संकल्पना (Concept)',
-        explainTextEn: currQ?.explanation || 'A program is a collection of instructions that tell the hardware how to perform computations and process data.',
-        explainTextHi: currH?.explanation || 'प्रोग्राम निर्देशों का एक समूह होता है जिसे कंप्यूटर स्टेप-बाय-स्टेप प्रोसेस करके सही परिणाम दिखाता है।',
-        realWorldEn: currQ?.realWorldContext || 'Every software system, from WhatsApp to Google Search, is driven by programmed instructions.',
-        realWorldHi: 'आजकल की सारी मोबाइल ऐप्स और AI मॉडल्स इसी बेसिक प्रोग्रामिंग इंस्ट्रक्शन्स पर चलते हैं।',
+        explainTitleHi: 'सवाल की व्याख्या (Concept Details)',
+        explainTextEn: currQ?.explanation || 'This concept is a core foundation of business data analytics.',
+        explainTextHi: currQ?.explanation || 'यह डेटा एनालिटिक्स का एक मूलभूत सिद्धांत है जो सही जानकारी रिकॉर्ड और विश्लेषित करने में मदद करता है।',
+        realWorldEn: 'Data professionals apply this concept to ensure high accuracy in dashboards and reporting.',
+        realWorldHi: 'डेटा प्रोफेशनल्स इस तकनीक का उपयोग वास्तविक प्रोजेक्ट्स और रिपोर्ट्स में करते हैं।',
       };
     }
 
     if (activeGame === 2) {
       const puzzle = currentPuzzle;
-      const examples = [
-        '# Python print syntax\nprint("Hello, Python!")',
-        '# Variable assignment syntax\nuser_name = "Aman"\nprint(user_name)',
-        '# Calculation syntax\ntotal = 10 + 20\nprint("Total:", total)'
-      ];
-      const notes = [
-        'Function name comes first, then brackets (), and string is inside quotes.',
-        'Variable name on left, = in middle, value on right.',
-        'Expression on right (10 + 20) evaluates to 30 and gets assigned to total.'
-      ];
+      const pTitle = puzzle?.title || '';
+
+      if (pTitle.includes('Find the Data') || puzzle?.prompt?.includes('café records')) {
+        return {
+          hintEn: 'Look for recorded numbers or counts. Furniture and wall paint are physical surroundings, not data.',
+          hintHi: 'दुकान में रिकॉर्ड की गई संख्या को देखें। दीवार का रंग या कुर्सी डेटा नहीं हैं।',
+          exampleCode: '// Identifying Data in a Café:\nWall Colour: Green        -> Physical Property (Not Data)\nChair in Café: Wooden     -> Physical Object (Not Data)\nCustomer Counts: 45, 52   -> Recorded Business Data (✓)',
+          exampleNote: 'Recorded customer counts can be analyzed to find busiest hours and sales trends.',
+          explainTitleEn: 'Puzzle 1: Find the Data',
+          explainTitleHi: 'पहेली 1: डेटा की पहचान',
+          explainTextEn: 'A café\'s wall colour or physical chair are surrounding physical objects. The recorded customer numbers (45, 52, 38) are documented observations representing business metrics—this is authentic data.',
+          explainTextHi: 'कैफे की कुर्सी या दीवार का रंग केवल भौतिक वस्तुएं हैं। ग्राहकों की दर्ज की गई संख्या (45, 52, 38) वास्तविक डेटा है।',
+          realWorldEn: 'Starbucks analyzes customer footfall by hour to optimize staff scheduling and reduce queue wait times.',
+          realWorldHi: 'कैफे और रेस्टोरेंट ग्राहकों की संख्या गिनकर तय करते हैं कि कितने कर्मचारी काम पर रखे जाएं।',
+        };
+      }
+
+      if (pTitle.includes('Spot the Data') || puzzle?.prompt?.includes('32°C')) {
+        return {
+          hintEn: 'Measurements like temperatures, rainfall, and wind speed are numerical data.',
+          hintHi: 'तापमान (32°C) एक संख्यात्मक माप (Measurement) है, जो डेटा का एक महत्वपूर्ण प्रकार है।',
+          exampleCode: '// Weather App Data Feed:\nCity: "Delhi"\nTemperature: 32°C  (Quantitative Measurement = Data ✓)\nHumidity: 65%      (Measurement = Data ✓)',
+          exampleNote: 'Data is not restricted to text; scientific and environmental measurements are data.',
+          explainTitleEn: 'Puzzle 2: Spot the Data',
+          explainTitleHi: 'पहेली 2: तापमान डेटा है या नहीं?',
+          explainTextEn: 'Yes, 32°C is a recorded environmental measurement. Data does not have to be text; numerical measurements, timestamps, and percentages are standard data points.',
+          explainTextHi: 'हाँ, 32°C एक मापी गई संख्या है। डेटा केवल टेक्स्ट नहीं होता, माप और संख्याएं भी डेटा हैं।',
+          realWorldEn: 'Weather forecasting platforms collect sensor readings from satellites and ground stations to predict weather patterns.',
+          realWorldHi: 'मौसम विभाग सैटेलाइट और थर्मामीटर से तापमान रिकॉर्ड करके बारिश और गर्मी का अनुमान लगाता है।',
+        };
+      }
+
+      if (pTitle.includes('Complete the Idea') || puzzle?.prompt?.includes('images, and')) {
+        return {
+          hintEn: 'Think about what else can be measured or observed (e.g. speed, height, temperature).',
+          hintHi: 'सोचिए कि और कौन सी चीज मापी जा सकती है (जैसे गति, वजन, तापमान)।',
+          exampleCode: '// Four Main Forms of Data:\n1. Numbers      -> 45, 100, 3.14\n2. Text         -> "Customer Name", "Review"\n3. Images       -> Product Photos, Scans\n4. Measurements -> Temperature, Speed, Distance (✓)',
+          exampleNote: 'Measurements capture continuous physical quantities.',
+          explainTitleEn: 'Puzzle 3: Complete the Idea',
+          explainTitleHi: 'पहेली 3: विचार पूरा करें',
+          explainTextEn: 'Data is versatile and includes numbers, text, images, and measurements. Keyboards and chairs are physical hardware, while measurements represent recorded scientific or physical values.',
+          explainTextHi: 'डेटा में संख्या, टेक्स्ट, इमेज और माप (Measurements) शामिल होते हैं।',
+          realWorldEn: 'IoT devices (smartwatches, connected cars) transmit millions of real-time measurements (heart rate, vehicle speed) per minute.',
+          realWorldHi: 'स्मार्टवॉच हमारे दिल की धड़कन और कदमों की गिनती को माप (Measurement) के रूप में स्टोर करती है।',
+        };
+      }
 
       return {
-        hintEn: puzzle.hint,
-        hintHi: puzzleIdx === 0
-          ? 'Python में print() फ़ंक्शन पहले आएगा, फिर कोष्ठक ( ) के अंदर कोट्स में संदेश लिखा जाएगा।'
-          : puzzleIdx === 1
-          ? 'वेरिएबल बनाने का नियम: पहले वेरिएबल का नाम, फिर बराबर का निशान (=), फिर मान (value)।'
-          : 'गणित जोड़ (+) करने के बाद बराबर (=) से total वेरिएबल में सुरक्षित करें।',
-        exampleCode: examples[puzzleIdx] || examples[0],
-        exampleNote: notes[puzzleIdx] || notes[0],
-        explainTitleEn: puzzle.title,
+        hintEn: puzzle?.hint || 'Analyze the sequence and identify the correct concept.',
+        hintHi: 'दी गई स्थिति को ध्यान से पढ़ें और उसमें से सही डेटा या क्रम पहचानें।',
+        exampleCode: `Available Tokens:\n${puzzle?.tokens?.map((t: string) => `• ${t}`).join('\n')}`,
+        exampleNote: puzzle?.hint || 'Arrange the blocks in logical order.',
+        explainTitleEn: puzzle?.title || 'Puzzle Challenge',
         explainTitleHi: 'पहेली की व्याख्या (Challenge Logic)',
-        explainTextEn: `In Python syntax, statement structure follows strict grammatical rules. For ${puzzle.title.toLowerCase()}, tokens must be placed in sequential order without misplaced parentheses or operators.`,
-        explainTextHi: 'Python में कोड लिखने का नियम बिल्कुल निश्चित होता है। पहले फ़ंक्शन का नाम या वेरिएबल, फिर ऑपरेटर, और ब्रैकेट्स को हमेशा सही तरह से जोड़ें।',
-        realWorldEn: 'Syntax errors represent 80% of beginner programming bugs; ordering tokens properly builds compiler-friendly logic.',
-        realWorldHi: 'कोडिंग सीखते समय ब्रैकेट या कॉमा की गलती सबसे आम होती है, इसलिए ब्लॉक्स को ध्यान से जोड़ें।',
+        explainTextEn: (puzzle?.prompt || '') + '\n\nExpected target: ' + (puzzle?.expected?.join(' -> ') || ''),
+        explainTextHi: 'इस पहेली में सही क्रम या विकल्प: ' + (puzzle?.expected?.join(', ') || ''),
+        realWorldEn: 'Logical ordering and critical thinking are essential skills for clean data preparation.',
+        realWorldHi: 'डेटा क्लीनिंग और एनालिसिस में सही लॉजिकल सीक्वेंस समझना बहुत जरूरी होता है।',
       };
     }
 
     if (activeGame === 3) {
       return {
-        hintEn: 'Look at the keywords: "print" displays text, "=" assigns value, "for" loops, "if" tests conditions, "len()" calculates size.',
-        hintHi: 'कीवर्ड्स को ध्यान से देखें: print = स्क्रीन पर दिखाना, = = स्टोर करना, for = रिपीट करना, if = शर्त जांचना, len = लंबाई/गिनना।',
-        exampleCode: '# Quick Python Cheatsheet\nprint("Subodh")       # 1. Output\nroll = 45             # 2. Variable\nfor num in [1, 2, 3]: # 3. Loop\nif roll > 30:         # 4. Condition\nsize = len("Python")  # 5. Length = 6',
-        exampleNote: 'Each built-in keyword represents a distinct operation in the computer memory pipeline.',
-        explainTitleEn: 'Python Syntax & Keywords Meaning',
-        explainTitleHi: 'Python सिंटैक्स और कीवर्ड्स का अर्थ',
-        explainTextEn: 'Programming languages define high-level keywords (print, if, for, len) that translate human logic into binary machine code.',
-        explainTextHi: 'Python में हर कीवर्ड का एक निश्चित मतलब होता है। जैसे ही आप "print" लिखते हैं, Python OS को कंसोल आउटपुट भेजने का आदेश देता है।',
-        realWorldEn: 'Writing clean, idiomatic code helps team members quickly read and maintain production codebases.',
-        realWorldHi: 'सॉफ्टवेयर डेवलपमेंट कंपनियों में क्लीन कोड और सही कीवर्ड्स इस्तेमाल करने से कोड तेज गति से चलता है।',
+        hintEn: 'Match each data item on the left with its correct type on the right (e.g. Text, Number, Measurement, Image).',
+        hintHi: 'बाएं तरफ दिए गए उदाहरण को उसके सही डेटा प्रकार (जैसे Text, Number, Measurement, Image) से मिलाएं।',
+        exampleCode: matchPairs.map((p, i) => `${i + 1}. ${p.snippet} ➔ ${p.meaning}`).join('\n'),
+        exampleNote: 'Names and words are Text, quantities and scores are Numbers, temperature and speed are Measurements.',
+        explainTitleEn: 'Match Concept: Data Types & Categories',
+        explainTitleHi: 'डेटा प्रकारों की पहचान (Data Types Matching)',
+        explainTextEn: 'Each data point belongs to a specific type. Text describes qualities or identifiers, Numbers represent counts or totals, Images provide visual records, and Measurements capture physical scales.',
+        explainTextHi: 'हर डेटा का एक प्रकार होता है: नाम और फीडबैक टेक्स्ट हैं, अंक नंबर हैं, फोटो इमेज है, और 28°C माप है।',
+        realWorldEn: 'In Excel and SQL databases, setting the correct column format (Text, Number, Date) prevents calculation bugs.',
+        realWorldHi: 'एक्सेल और डेटाबेस में कॉलम का सही टाइप सेट करने से गणना और रिपोर्टिंग सही होती है।',
       };
     }
 
+    // Game 4: Real-Life Mission
     return {
-      hintEn: 'Filter the list using a conditional check (if price > 500) inside a loop or comprehension.',
-      hintHi: 'लिस्ट के हर प्रोडक्ट को चेक करने के लिए for loop और if condition का प्रयोग करें: if p["price"] > 500.',
-      exampleCode: '# Real-life data filtering example\nproducts = [\n    {"name": "Pen", "price": 20},\n    {"name": "Book", "price": 600},\n    {"name": "Bag", "price": 1200}\n]\n\n# Filter items above 500\nhigh_value = [p for p in products if p["price"] > 500]\nprint(high_value)',
-      exampleNote: 'List comprehension iterates through each dictionary and filters only items meeting the threshold price.',
-      explainTitleEn: 'E-Commerce Product Filtering Mission',
-      explainTitleHi: 'ई-कॉमर्स प्रोडक्ट फिल्टरिंग मिशन',
-      explainTextEn: 'In modern e-commerce platforms like Amazon or Flipkart, catalog filtering based on price ranges, ratings, and categories happens using high-performance array filters.',
-      explainTextHi: 'रियल-वर्ल्ड ई-कॉमर्स वेबसाइट में हजारों प्रोडक्ट्स में से फ़िल्टर करके सस्ते या महंगे सामान दिखाना एक अहम Python डेटा ऑपरेशन है।',
-      realWorldEn: 'Backend engineers process millions of JSON records daily using this exact filtering logic.',
-      realWorldHi: 'डेटा एनालिस्ट और सॉफ्टवेयर इंजीनियर हर दिन इसी तरह के फ़िल्टरिंग स्क्रिप्ट्स लिखते हैं।',
+      hintEn: currentMission?.prompt || 'Identify 3 core data points or relevant operational records.',
+      hintHi: 'सोचिए कि इस स्थिति में कौन सी 3 मुख्य जानकारियां (Data Points) रजिस्टर या कंप्यूटर में दर्ज करनी चाहिए।',
+      exampleCode: currentMission?.expectedResponse || '// Analytical Guidelines:\n1. Identifier: ID / Barcode\n2. Metric: Count / Amount / Attendance\n3. Context: Date & Timestamp',
+      exampleNote: currentMission?.scenario || 'Business Data Tracking Scenario',
+      explainTitleEn: currentMission?.title || 'Real-Life Analytical Mission',
+      explainTitleHi: currentMission?.title || 'व्यावहारिक व्यावसायिक मिशन',
+      explainTextEn: (currentMission?.scenario || '') + '\n\nKey Strategy:\n' + (currentMission?.expectedResponse || ''),
+      explainTextHi: (currentMission?.scenario || '') + '\n\nसमाधान संकेत:\n' + (currentMission?.expectedResponse || ''),
+      realWorldEn: 'Data engineering teams design intake schemas to capture exactly these transactional attributes.',
+      realWorldHi: 'कंपनियां ग्राहकों और छात्रों का रिकॉर्ड रखने के लिए इसी तरह का डेटा कलेक्ट करती हैं।',
     };
-  }, [activeGame, quizIdx, puzzleIdx, topicData, hindiActivity, quizQuestions, currentPuzzle]);
+  }, [activeGame, quizIdx, puzzleIdx, quizQuestions, currentPuzzle, matchPairs, currentMission]);
 
   // Skip Question Handler
   const handleSkipQuestion = () => {
@@ -839,8 +953,9 @@ print(result)`
       setUnlockedGame((prev) => Math.max(prev, 4));
       setTimeout(() => setActiveGame(4), 500);
     } else if (activeGame === 4) {
-      if (missionIdx === 0) {
-        setMissionIdx(1);
+      const totalMissions = registeredBank?.game4Missions?.length || 2;
+      if (missionIdx < totalMissions - 1) {
+        setMissionIdx((prev) => prev + 1);
       } else {
         setMissionDone(true);
         if (onNextToInterview) {
@@ -1485,9 +1600,13 @@ print(result)`
                     </div>
 
                     {missionDone && (
-                      <div className="p-3 bg-emerald-950/80 border border-emerald-500/50 rounded-xl text-emerald-300 text-xs font-bold flex items-center gap-2">
+                      <div className="p-3 bg-emerald-950/80 border border-emerald-500/50 rounded-xl text-emerald-300 text-xs font-bold flex items-center gap-2 animate-pulse">
                         <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                        <span>Mission Solution Approved! Moving to next milestone...</span>
+                        <span>
+                          {missionIdx < (registeredBank?.game4Missions?.length || 2) - 1
+                            ? 'Mission 1 Approved! Loading Mission 2...'
+                            : '🎉 All Missions Completed! Starting Mock Interview automatically...'}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -1501,41 +1620,96 @@ print(result)`
               (All strictly visible together without scrolling)
               ════════════════════════════════════════════════════════════ */}
           <div className="ppa-card-footer">
-                <button
-                  type="button"
-                  className="ppa-btn-prev"
-                  disabled={quizIdx === 0}
-                  onClick={() => {
-                    soundEffects.playClick();
-                    setQuizIdx((prev) => Math.max(0, prev - 1));
-                    setSelectedQuizKey(null);
-                    setQuizFeedback(null);
-                  }}
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Previous</span>
-                </button>
+            <button
+              type="button"
+              className="ppa-btn-prev"
+              disabled={activeGame === 1 ? quizIdx === 0 : activeGame === 2 ? puzzleIdx === 0 : activeGame === 4 ? missionIdx === 0 : false}
+              onClick={() => {
+                soundEffects.playClick();
+                if (activeGame === 1) {
+                  setQuizIdx((prev) => Math.max(0, prev - 1));
+                  setSelectedQuizKey(null);
+                  setQuizFeedback(null);
+                } else if (activeGame === 2) {
+                  setPuzzleIdx((prev) => Math.max(0, prev - 1));
+                } else if (activeGame === 4) {
+                  setMissionIdx((prev) => Math.max(0, prev - 1));
+                  setMissionDone(false);
+                }
+              }}
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>Previous</span>
+            </button>
 
-                <button
-                  type="button"
-                  className="ppa-btn-skip-pill"
-                  onClick={handleSkipQuestion}
-                  title="Skip this question and move to next"
-                >
-                  <span>Skip Question</span>
-                  <span className="ppa-skip-chevrons">»</span>
-                </button>
+            <button
+              type="button"
+              className="ppa-btn-skip-pill"
+              onClick={handleSkipQuestion}
+              title="Skip this question and move to next"
+            >
+              <span>Skip Question</span>
+              <span className="ppa-skip-chevrons">»</span>
+            </button>
 
-                <button
-                  type="button"
-                  className="ppa-btn-submit-main"
-                  disabled={!selectedQuizKey || quizFeedback === 'correct'}
-                  onClick={handleSubmitAnswer}
-                >
-                  <span>Submit Answer</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
+            {/* Dynamic Main Action Button for Current Game */}
+            {activeGame === 1 && (
+              <button
+                type="button"
+                className="ppa-btn-submit-main"
+                disabled={!selectedQuizKey || quizFeedback === 'correct'}
+                onClick={handleSubmitAnswer}
+              >
+                <span>Submit Answer</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
+
+            {activeGame === 2 && (
+              <button
+                type="button"
+                className="ppa-btn-submit-main"
+                disabled={placedSlots.some((s) => s === null)}
+                onClick={handleCheckPuzzleAnswer}
+              >
+                <span>Check Puzzle</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
+
+            {activeGame === 3 && (
+              <button
+                type="button"
+                className="ppa-btn-submit-main"
+                onClick={() => {
+                  if (Object.keys(matchedPairs).length === matchPairs.length) {
+                    setUnlockedGame((prev) => Math.max(prev, 4));
+                    setActiveGame(4);
+                  } else {
+                    handleSkipQuestion();
+                  }
+                }}
+              >
+                <span>{Object.keys(matchedPairs).length === matchPairs.length ? 'Continue to Game 4 »' : 'Skip & Continue »'}</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
+
+            {activeGame === 4 && (
+              <button
+                type="button"
+                className="ppa-btn-submit-main bg-emerald-600 hover:bg-emerald-500"
+                onClick={handleSubmitMissionSolution}
+              >
+                <span>
+                  {missionIdx < (registeredBank?.game4Missions?.length || 2) - 1
+                    ? 'Submit Mission 1 »'
+                    : 'Submit & Start Mock Interview 🎙️'}
+                </span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
+          </div>
         </main>
 
         {/* ─────────────────────────────────────────────────────────────
@@ -1821,7 +1995,7 @@ print(result)`
                 <div className="ppa-help-detail-card">
                   <span className="ppa-help-tag-pill blue">🔍 Similar Solved Example</span>
                   <p className="text-xs text-slate-600 -mt-1">
-                    Ye example dekh kar samjho ki similar problem Python me kaise solve hoti hai:
+                    Ye example dekh kar samjho ki is question ka correct concept aur logic kya hai:
                   </p>
 
                   <div className="ppa-help-code-snippet">
