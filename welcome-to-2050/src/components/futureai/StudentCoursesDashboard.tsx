@@ -29,6 +29,7 @@ import {
 import { useThemeAccent } from '../../context/ThemeAccentContext';
 import { RealSuccessStoriesShowcase } from './RealSuccessStoriesShowcase';
 import { ALL_PLATFORM_COURSES, PlatformCourseItem } from '../../data/allPlatformCourses';
+import { CourseToolBadges } from './CourseToolBadges';
 import './LearnerHomeHub.css';
 
 export interface StudentCoursesDashboardProps {
@@ -365,7 +366,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             3. 4 FLAGSHIP COURSES — 3D CYLINDRICAL GLOWING NEON POTS (NO WHITE BG)
             ========================================================================= */}
         {viewMode === 'grid' ? (
-          <div className="scd-pots-5grid">
+          <div className="scd-pots-4grid">
             {visibleCourses.map((c) => (
               <article
                 key={c.id}
@@ -389,14 +390,25 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
 
                   {/* Translucent 3D Arched Hologram Shield emerging from the pot */}
                   <div className="scd-pot-holo-dome">
-                    <img
-                      src={c.holoImage || c.image}
-                      alt={c.title}
-                      loading="lazy"
-                      decoding="async"
-                      className="scd-pot-holo-img"
-                    />
-                    {/* Holographic inner arch frame & upward energy blend */}
+                    {c.video ? (
+                      <video
+                        src={c.video}
+                        poster={c.holoImage || c.image}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="scd-pot-holo-img w-full h-full object-cover"
+                      />
+                    ) : (
+                      <img
+                        src={c.holoImage || c.image}
+                        alt={c.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="scd-pot-holo-img"
+                      />
+                    )}
                     <div className="scd-pot-holo-glass-frame" />
                   </div>
                 </div>
@@ -430,11 +442,9 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                     </h3>
 
                     {/* Horizontal Action Row: Left Slashed Price (Red Cut) + Right Start Learning Button */}
+                    <CourseToolBadges courseId={c.id} />
+
                     <div className="scd-pot-bottom-actions-row">
-                      <div className="scd-pot-slashed-price-wrap flex flex-col gap-0.5">
-                        <div className="flex items-center gap-1"><span className="line-through text-slate-400 font-semibold text-[9px]">{c.marketPrice}</span><span className="text-orange-500 font-bold text-[9px]">PAJ: {c.payAfterJob}</span></div>
-                        <span className="text-emerald-700 font-black text-[10px] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-300 whitespace-nowrap">Now: {c.courseFee}</span>
-                      </div>
 
                       <button
                         type="button"

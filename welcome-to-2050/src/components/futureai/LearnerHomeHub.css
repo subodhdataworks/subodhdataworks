@@ -3617,11 +3617,68 @@
 .scd-pots-4grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 22px;
+  gap: 20px;
   padding: 2px 4px 20px;
   margin-top: -8px;
   background: transparent !important;
-  align-items: end;
+  align-items: stretch;
+}
+
+@media (max-width: 1080px) {
+  .scd-pots-4grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .scd-pots-4grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* Video Dome - Bigger as requested (175px) */
+.scd-pots-4grid .scd-pot-holo-dome {
+  height: 175px;
+  border-radius: 28px 28px 18px 18px;
+}
+
+/* Course Name - Smaller as requested (13.5px) */
+.scd-pots-4grid .scd-pot-title {
+  font-size: 13.5px !important;
+  font-weight: 850 !important;
+  line-height: 1.25 !important;
+  margin: 3px 0 2px !important;
+  min-height: 34px !important;
+  text-align: center !important;
+}
+
+.scd-pots-4grid .scd-pot-cylinder-body {
+  min-height: unset !important;
+  padding: 18px 12px 14px !important;
+  margin-top: -15px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  gap: 4px !important;
+}
+
+.scd-pots-4grid .scd-pot-bottom-actions-row {
+  width: 100% !important;
+  margin-top: 4px !important;
+}
+
+.scd-pots-4grid .scd-pot-circle-arrow-btn {
+  width: 100% !important;
+  padding: 8px 12px !important;
+  height: 34px !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  border-radius: 999px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
 }
 
 /* Each Pot Card Wrapper — NO white box, 100% transparent outer container */

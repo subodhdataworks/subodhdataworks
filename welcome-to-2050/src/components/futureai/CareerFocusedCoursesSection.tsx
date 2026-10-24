@@ -16,6 +16,7 @@ import {
 import { useThemeAccent } from '../../context/ThemeAccentContext';
 import './LearnerHomeHub.css';
 import { ALL_PLATFORM_COURSES, PlatformCourseItem } from '../../data/allPlatformCourses';
+import { CourseToolBadges } from './CourseToolBadges';
 
 interface CareerFocusedCoursesProps {
   onStartCourse?: (courseId: string) => void;
@@ -241,7 +242,7 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
             </div>
 
             {viewMode === 'grid' ? (
-              <div className="scd-pots-5grid home-compact-pots">
+              <div className="scd-pots-4grid home-compact-pots">
                 {desktopPotCourses.map((c) => (
                   <article
                     key={c.id}
@@ -261,13 +262,25 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
                       </div>
 
                       <div className="scd-pot-holo-dome">
-                        <img
-                          src={c.holoImage || c.image}
-                          alt={c.title}
-                          loading="lazy"
-                          decoding="async"
-                          className="scd-pot-holo-img"
-                        />
+                        {c.video ? (
+                          <video
+                            src={c.video}
+                            poster={c.holoImage || c.image}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="scd-pot-holo-img w-full h-full object-cover"
+                          />
+                        ) : (
+                          <img
+                            src={c.holoImage || c.image}
+                            alt={c.title}
+                            loading="lazy"
+                            decoding="async"
+                            className="scd-pot-holo-img"
+                          />
+                        )}
                         <div className="scd-pot-holo-glass-frame" />
                       </div>
                     </div>
@@ -292,14 +305,10 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
                           <span className="scd-title-future">{c.subtitle}</span>
                         </h3>
 
+                        {/* Tool Logos directly under course title */}
+                        <CourseToolBadges courseId={c.id} />
+
                         <div className="scd-pot-bottom-actions-row">
-                          <div className="flex flex-col items-center gap-0.5 w-full">
-                            <div className="flex items-center justify-center gap-1 flex-wrap">
-                              <span className="line-through text-slate-400 font-semibold text-[9px]">{c.marketPrice || 'Rs 18,987'}</span>
-                              <span className="text-orange-500 font-bold text-[8.5px] bg-orange-50 px-1 rounded border border-orange-200">PAJ: {c.payAfterJob || 'Rs 18,000'}</span>
-                            </div>
-                            <span className="text-emerald-700 font-black text-[10.5px] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-300 whitespace-nowrap">Pay Now: {c.courseFee || 'Rs 879'}</span>
-                          </div>
                           <button
                             type="button"
                             className="scd-pot-circle-arrow-btn cursor-pointer w-full justify-between"
@@ -309,7 +318,7 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
                               handleCourseClick(c.id);
                             }}
                           >
-                            <span className="scd-pot-unlock-text">Explore</span>
+                            <span className="scd-pot-unlock-text">Start Learning</span>
                             <span className="scd-pot-arrow-icon-circle">
                               <ArrowRight className="w-3.5 h-3.5 stroke-[2.8]" />
                             </span>
@@ -436,18 +445,30 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
                 className="rounded-3xl bg-white border border-slate-200/90 shadow-md hover:shadow-xl transition-all overflow-hidden relative cursor-pointer active:scale-[0.99]"
               >
                 {/* 16:9 Thumbnail / Video Header with floating badges */}
-                <div className="relative aspect-[16/6] w-full overflow-hidden bg-slate-950">
-                  <img
-                    src={c.image || c.holoImage}
-                    alt={c.title}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
+                <div className="relative aspect-[16/8] w-full overflow-hidden bg-slate-950">
+                  {c.video ? (
+                    <video
+                      src={c.video}
+                      poster={c.image || c.holoImage}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <img
+                      src={c.image || c.holoImage}
+                      alt={c.title}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/35 pointer-events-none" />
 
                   {/* Top Tags Overlay */}
-                  <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2 z-10">
+                  <div className="absolute top-2 left-2.5 right-2.5 flex items-center justify-between gap-2 z-10">
                     <span className="px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wide uppercase bg-black/60 text-white backdrop-blur-md border border-white/20">
                       {c.statusTag}
                     </span>
@@ -455,59 +476,28 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
                       {c.salaryRange}
                     </span>
                   </div>
-
-                  {/* Bottom Stats Overlay */}
-                  <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[10px] font-bold z-10">
-                    <div className="flex items-center gap-1.5">
-                      <span className="bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-md">{c.lessonsText}</span>
-                      <span className="bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-md">{c.projectsText}</span>
-                    </div>
-                  </div>
                 </div>
 
                 {/* Card Content Body */}
-                <div className="p-4">
-                  <h3 className="text-base font-black text-slate-900 tracking-tight leading-snug">
+                <div className="p-3.5">
+                  <h3 className="text-[13px] font-black text-slate-900 tracking-tight leading-snug">
                     <span>{c.title}</span> <span className="text-blue-600">{c.subtitle}</span>
                   </h3>
-                  <p className="text-xs text-slate-600 font-medium mt-1 line-clamp-2 leading-relaxed">
-                    {c.shortDesc}
-                  </p>
 
-                  {/* Skills Pills */}
-                  <div className="flex flex-wrap gap-1 mt-2.5">
-                    {c.skillsList.map((skill: string) => (
-                      <span
-                        key={skill}
-                        className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200/80"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
+                  {/* Tool Logos directly under course title */}
+                  <CourseToolBadges courseId={c.id} />
 
-                  {/* Bottom Actions Row */}
-                  <div className="mt-3.5 pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs text-slate-400 line-through font-bold">
-                        {c.marketPrice || 'Rs 6,000'}
-                      </span>
-                      <span className="text-xs sm:text-sm font-black text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                        {c.courseFee}
-                      </span>
-                    </div>
-
-
-
+                  {/* Bottom Action Button (NO amounts) */}
+                  <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-end">
                     <button
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleCourseClick(c.id);
                       }}
-                      className="px-4 py-2 rounded-xl text-xs font-black text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 shadow-md shadow-blue-500/25 flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
+                      className="w-full py-2 rounded-xl text-xs font-black text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 shadow-sm shadow-blue-500/25 flex items-center justify-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
                     >
-                      <span>Explore</span>
+                      <span>Start Learning</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -521,20 +511,85 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
       </div>
 
       <style>{`
-        /* Compact Responsive Sizing for Home Page */
-        .home-compact-pots {
-          margin-top: 0.5rem;
-          margin-bottom: 0.5rem;
+        /* 4 Courses per Line on Desktop + Bigger Video Dome + Smaller Course Name */
+        .scd-pots-4grid {
+          display: grid !important;
+          grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+          gap: 18px !important;
+          padding: 4px 2px 24px !important;
+          margin-top: -6px !important;
+          background: transparent !important;
+          align-items: stretch !important;
         }
-        @media (min-width: 1024px) {
-          .home-compact-pots .scd-pot-card {
-            transform: scale(0.92);
-            transform-origin: top center;
-            margin-bottom: -20px;
+        @media (max-width: 1080px) {
+          .scd-pots-4grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 16px !important;
           }
-          .home-compact-pots .scd-pot-card:hover {
-            transform: scale(0.95) translateY(-6px);
+        }
+        @media (max-width: 640px) {
+          .scd-pots-4grid {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
           }
+        }
+
+        /* Video Dome - Bigger as requested (175px) */
+        .scd-pots-4grid .scd-pot-holo-dome {
+          height: 175px !important;
+          border-radius: 28px 28px 18px 18px !important;
+        }
+
+        /* Course Name - Smaller as requested (13.5px) */
+        .scd-pots-4grid .scd-pot-title {
+          font-size: 13.5px !important;
+          font-weight: 850 !important;
+          line-height: 1.25 !important;
+          margin: 3px 0 2px !important;
+          min-height: 34px !important;
+          text-align: center !important;
+        }
+
+        .scd-pots-4grid .scd-pot-top-rim {
+          height: 32px !important;
+          width: 95% !important;
+        }
+        .scd-pots-4grid .scd-pot-cylinder-body {
+          min-height: unset !important;
+          margin-top: -15px !important;
+          padding: 18px 12px 14px !important;
+          gap: 6px !important;
+          display: flex !important;
+          flex-direction: column !important;
+          justify-content: space-between !important;
+        }
+        .scd-pots-4grid .scd-pot-top-tags {
+          gap: 4px !important;
+          margin-bottom: 2px !important;
+        }
+        .scd-pots-4grid .scd-pot-status-pill,
+        .scd-pots-4grid .scd-pot-ctc-pill {
+          font-size: 8.5px !important;
+          padding: 2px 7px !important;
+        }
+        .scd-pots-4grid .scd-pot-bottom-actions-row {
+          margin-top: 6px !important;
+          width: 100% !important;
+        }
+        .scd-pots-4grid .scd-pot-circle-arrow-btn {
+          height: 32px !important;
+          padding: 6px 12px !important;
+          font-size: 11px !important;
+          font-weight: 800 !important;
+          border-radius: 999px !important;
+          width: 100% !important;
+        }
+        .scd-pots-4grid .scd-pot-metallic-plinth {
+          height: 18px !important;
+          margin-top: -6px !important;
+        }
+        .scd-pots-4grid .scd-pot-bottom-neon-ring {
+          height: 14px !important;
         }
       `}</style>
 
