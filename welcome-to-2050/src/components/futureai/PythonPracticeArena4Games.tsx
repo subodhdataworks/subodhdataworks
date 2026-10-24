@@ -1,3 +1,4 @@
+import { getTopicQuestionBank, getTab1TopicList, TopicQuestionBank } from './data/questionBankRegistry';
 import React, { useState, useEffect, useMemo } from 'react';
 import './PythonPracticeArena4Games.css';
 import {
@@ -36,7 +37,9 @@ import { getHindiTopicActivity } from './data/hindiActivityContent';
 
 export interface PythonPracticeArena4GamesProps {
   userName?: string;
-  topicId?: number;
+  tabId?: number;
+  topicId?: number | string;
+  onSelectTopic?: (topicId: number) => void;
   onBackToVideo?: () => void;
   onNextToInterview?: () => void;
   onNavigateDock?: (tab: string) => void;
@@ -44,18 +47,44 @@ export interface PythonPracticeArena4GamesProps {
 
 export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps> = ({
   userName = 'Subodh Kumar',
+  tabId = 1,
   topicId = 1,
+  onSelectTopic,
   onBackToVideo,
   onNextToInterview,
   onNavigateDock,
 }) => {
-  const topicHierarchy = useMemo(() => getTopicHierarchyInfo(topicId), [topicId]);
-  const topicData: TopicAssessmentData = useMemo(() => getModule01TopicData(topicId), [topicId]);
-  const hindiActivity = useMemo(() => getHindiTopicActivity(topicId), [topicId]);
+  const numericTopicId = typeof topicId === 'number' ? topicId : 1;
+  const topicHierarchy = useMemo(() => getTopicHierarchyInfo(numericTopicId), [numericTopicId]);
+  const topicData: TopicAssessmentData = useMemo(() => getModule01TopicData(numericTopicId), [numericTopicId]);
+  const hindiActivity = useMemo(() => getHindiTopicActivity(numericTopicId), [numericTopicId]);
+
+  // Master Question Bank for Tab 1 / current topic
+  const registeredBank: TopicQuestionBank | null = useMemo(() => {
+    return getTopicQuestionBank(tabId, topicId);
+  }, [tabId, topicId]);
+
+  const tab1Topics = useMemo(() => getTab1TopicList(), []);
 
   // Active game (1: Quick Quiz, 2: Puzzle Challenge, 3: Match the Code, 4: Real-Life Mission)
   const [activeGame, setActiveGame] = useState<number>(1);
   const [unlockedGame, setUnlockedGame] = useState<number>(1);
+
+  // Reset state when topicId or tabId changes
+  useEffect(() => {
+    setQuizIdx(0);
+    setSelectedQuizKey(null);
+    setQuizFeedback(null);
+    setPuzzleIdx(0);
+    setPlacedSlots([null, null, null, null]);
+    setPuzzleStatus('idle');
+    setMatchedPairs({});
+    setSelectedSnippet(null);
+    setMissionIdx(0);
+    setMissionDone(false);
+    setActiveGame(1);
+    setUnlockedGame(1);
+  }, [topicId, tabId]);
 
   // Gamification: Streak, XP toast & Sound Toggle
   const [streak, setStreak] = useState<number>(0);
@@ -87,6 +116,9 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
 
   const quizQuestions = useMemo(() => {
+    if (registeredBank?.game1Quiz && registeredBank.game1Quiz.length >= 5) {
+      return registeredBank.game1Quiz;
+    }
     if (topicId === 1) {
       return [
         {
@@ -448,7 +480,11 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
   ]);
   const [puzzleStatus, setPuzzleStatus] = useState<'idle' | 'correct' | 'wrong'>('idle');
 
-  const puzzleChallenges = useMemo(() => [
+  const puzzleChallenges = useMemo(() => {
+    if (registeredBank?.game2Puzzles && registeredBank.game2Puzzles.length > 0) {
+      return registeredBank.game2Puzzles;
+    }
+    return [
     {
       id: 1,
       title: 'CHALLENGE 1 — ARRANGE THE CODE',
@@ -476,7 +512,8 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
       expected: ['total', '=', '10', '+', '20'],
       hint: 'Store 10 + 20 in the total variable.',
     },
-  ], []);
+  ];
+  }, [registeredBank]);
 
   const currentPuzzle = puzzleChallenges[puzzleIdx] || puzzleChallenges[0];
 
@@ -553,7 +590,11 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
   // ─────────────────────────────────────────────────────────────────────────────
   // GAME 3: MATCH THE CODE STATE (5 Matches)
   // ─────────────────────────────────────────────────────────────────────────────
-  const matchPairs = useMemo(() => [
+  const matchPairs = useMemo(() => {
+    if (registeredBank?.game3MatchPairs && registeredBank.game3MatchPairs.length > 0) {
+      return registeredBank.game3MatchPairs;
+    }
+    return [
     {
       id: 1,
       snippet: 'print("Hello, Python!")',
@@ -584,7 +625,8 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
       meaning: 'Returns the length (number of items).',
       cls: 'c5',
     },
-  ], []);
+  ];
+  }, [registeredBank]);
 
   const [selectedSnippet, setSelectedSnippet] = useState<string | null>(null);
   const [matchedPairs, setMatchedPairs] = useState<Record<number, string>>({});
@@ -975,8 +1017,8 @@ print(result)`
           </div>
 
           <div className="ppa-python-info-card">
-            <h3 className="ppa-pic-title">Python</h3>
-            <p className="ppa-pic-subtitle">Introduction to Programming</p>
+            <h3 className="ppa-pic-title">{registeredBank?.tabName || 'Data Analytics'}</h3>
+            <p className="ppa-pic-subtitle">{registeredBank ? `${registeredBank.topicKey} ${registeredBank.topicTitle}` : 'Introduction to Programming'}</p>
 
             <div className="ppa-pic-progress-wrap">
               <div className="ppa-pic-progress-bar">

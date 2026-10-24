@@ -1,3 +1,4 @@
+import { getTopicQuestionBank, getTab1TopicList } from './data/questionBankRegistry';
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Play,
@@ -158,7 +159,20 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
-  const effectiveTopicId = urlTopicId ?? topicId;
+  const [internalTopicId, setInternalTopicId] = useState<number>(urlTopicId ?? topicId ?? 1);
+  const effectiveTopicId = internalTopicId;
+  const setEffectiveTopicId = (newId: number) => {
+    setInternalTopicId(newId);
+    if (typeof window !== 'undefined') {
+      window.location.hash = `#${activeStep}?topic=${newId}`;
+    }
+  };
+
+  useEffect(() => {
+    if (typeof topicId === 'number' && topicId !== internalTopicId) {
+      setInternalTopicId(topicId);
+    }
+  }, [topicId]);
   const topicHierarchy = useMemo(() => getTopicHierarchyInfo(effectiveTopicId), [effectiveTopicId]);
   const isTopicWithoutCoding = effectiveTopicId === 1;
   const isTopicWithoutMcq = effectiveTopicId === 1;
@@ -2090,11 +2104,25 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
           <div className="plw-crumbs flex items-center gap-1.5 text-xs">
             <span className="crumb-link text-slate-600 hover:text-blue-600 cursor-pointer" onClick={() => onNavigateDock?.('home')}>Home</span>
             <ChevronRight className="w-3 h-3 text-slate-400" />
-            <span className="crumb-link text-slate-600 hover:text-blue-600 cursor-pointer" onClick={onBack}>Python</span>
+            <span className="crumb-link text-slate-600 hover:text-blue-600 cursor-pointer" onClick={onBack}>Data Analytics</span>
             <ChevronRight className="w-3 h-3 text-slate-400" />
-            <span className="crumb-link text-slate-600 hover:text-blue-600 cursor-pointer" onClick={onBack}>{topicHierarchy.moduleTitle}</span>
+            <span className="crumb-link text-slate-600 hover:text-blue-600 cursor-pointer" onClick={onBack}>
+              {getTopicQuestionBank(1, effectiveTopicId)?.moduleName || topicHierarchy.moduleTitle}
+            </span>
             <ChevronRight className="w-3 h-3 text-slate-400" />
-            <strong className="crumb-current text-blue-600 font-extrabold">{topicHierarchy.topicTitle}</strong>
+            {/* Quick Interactive Topic Switcher for Testing all 26 Tab 1 Topics */}
+            <select
+              className="bg-blue-50 border border-blue-200 text-blue-700 font-bold rounded-lg px-2 py-0.5 text-xs cursor-pointer hover:bg-blue-100 transition-colors shadow-xs"
+              value={effectiveTopicId}
+              onChange={(e) => setEffectiveTopicId(Number(e.target.value))}
+              title="Switch Topic in Tab 1 (Data Analytics Foundations)"
+            >
+              {getTab1TopicList().map((t) => (
+                <option key={t.topicKey} value={t.id}>
+                  Topic {t.topicKey}: {t.topicTitle} (Module {t.moduleId})
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -3163,7 +3191,9 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
             <div className="plw-game-main-col" style={{ width: '100%', maxWidth: '100%', flex: '1 1 100%' }}>
               <PythonPracticeArena4Games
                 userName={userName}
+                tabId={1}
                 topicId={effectiveTopicId}
+                onSelectTopic={(newId) => setEffectiveTopicId(newId)}
                 onBackToVideo={() => handleSelectTab('learn')}
                 onNextToInterview={() => handleSelectTab('interview')}
                 onNavigateDock={onNavigateDock}

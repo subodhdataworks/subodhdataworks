@@ -1,3 +1,4 @@
+import { getTopicQuestionBank } from './questionBankRegistry';
 // ============================================================================
 // FUTURE IT INDUSTRY — ZERO AI API COST LOCAL QUESTION BANK & RULE ENGINE
 // 100% Local, Deterministic JavaScript Evaluation (No External LLM / AI APIs)
@@ -841,6 +842,40 @@ export function getPreloadedInterviewQuestionsForTopic(topicId: number = 1): Pre
   const custom = getCustomInterviewQuestions();
   if (custom[topicId] && Array.isArray(custom[topicId]) && custom[topicId].length > 0) {
     return custom[topicId];
+  }
+
+  // Check Master Question Bank (Tab 1: Data Analytics Foundations, etc.)
+  const qb = getTopicQuestionBank(1, topicId);
+  if (qb && qb.mockInterview && qb.mockInterview.length > 0) {
+    return qb.mockInterview.map((item, idx) => ({
+      id: item.id || idx + 1,
+      topicId: topicId,
+      topic: qb.topicTitle,
+      difficulty: 'Medium' as const,
+      questionEn: item.question,
+      questionHi: item.question,
+      hintEn: `Focus on explaining ${qb.topicTitle} with business examples.`,
+      hintHi: `${qb.topicTitle} ko aasan shabdon me samjhayein.`,
+      idealAnswerEn: item.sampleAnswer,
+      idealAnswerHi: item.sampleAnswer,
+      exampleAnswerEn: item.sampleAnswer,
+      exampleAnswerHi: item.sampleAnswer,
+      requiredKeywords: [
+        { id: 'k1', labelEn: qb.topicTitle, labelHi: qb.topicTitle, weight: 3.5, synonyms: [qb.topicTitle.toLowerCase(), 'data', 'analytics'] },
+        { id: 'k2', labelEn: 'business', labelHi: 'business', weight: 2.5, synonyms: ['business', 'decision', 'analysis'] },
+      ],
+      importantConcepts: [
+        { id: 'c1', conceptEn: 'Core Definition', conceptHi: 'Mukhya Paribhasha', weight: 2.5, patterns: ['concept', 'information', 'process'] },
+      ],
+      commonMistakes: [],
+      scoringRules: {
+        keywordWeight: 5.0,
+        conceptWeight: 3.5,
+        structureWeight: 1.5,
+        minWordCount: 6,
+        maxScore: 10,
+      },
+    }));
   }
 
   if (topicId === 1) {
