@@ -29,7 +29,8 @@ import {
 import { useThemeAccent } from '../../context/ThemeAccentContext';
 import { RealSuccessStoriesShowcase } from './RealSuccessStoriesShowcase';
 import { ALL_PLATFORM_COURSES, PlatformCourseItem } from '../../data/allPlatformCourses';
-import { CourseToolBadges } from './CourseToolBadges';
+import { CareerCourseCard } from './CareerCourseCard';
+import { CAREER_COURSES_12 } from '../../data/careerCourses12';
 import './LearnerHomeHub.css';
 
 export interface StudentCoursesDashboardProps {
@@ -123,12 +124,12 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
     return true;
   });
 
-  const handleCourseClick = (c: PlatformCourseItem) => {
+  const handleCourseClick = (c: { id: string; title?: string; fullName?: string }) => {
     playClick();
     if (c.id === 'data-analyst-genai') {
       onOpenDataAnalystCourse();
     } else {
-      onOpenLockedCourse(c.fullName || c.title);
+      onOpenLockedCourse(c.fullName || c.title || 'Course');
     }
   };
 
@@ -296,111 +297,13 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             3. 4 FLAGSHIP COURSES — 3D CYLINDRICAL GLOWING NEON POTS (NO WHITE BG)
             ========================================================================= */}
         {viewMode === 'grid' ? (
-          <div className="scd-pots-4grid">
-            {visibleCourses.map((c) => (
-              <article
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+            {CAREER_COURSES_12.map((c) => (
+              <CareerCourseCard
                 key={c.id}
-                className={`scd-pot-card scd-pot-${c.potTheme}`}
+                {...c}
                 onClick={() => handleCourseClick(c)}
-              >
-                {/* ===============================================================
-                    TOP HOLOGRAM / VIDEO DOME FLOWING UP OUT OF THE POT
-                    =============================================================== */}
-                <div className="scd-pot-flow-stage">
-                  {/* Upward flowing energy rays & particles from the pot mouth */}
-                  <div className="scd-pot-rising-energy" />
-                  <div className="scd-pot-particles">
-                    <span className="scd-pt p1" />
-                    <span className="scd-pt p2" />
-                    <span className="scd-pt p3" />
-                    <span className="scd-pt p4" />
-                    <span className="scd-pt p5" />
-                    <span className="scd-pt p6" />
-                  </div>
-
-                  {/* Translucent 3D Arched Hologram Shield emerging from the pot */}
-                  <div className="scd-pot-holo-dome">
-                    {c.video ? (
-                      <video
-                        src={c.video}
-                        poster={c.holoImage || c.image}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="scd-pot-holo-img w-full h-full object-cover"
-                      />
-                    ) : (
-                      <img
-                        src={c.holoImage || c.image}
-                        alt={c.title}
-                        loading="lazy"
-                        decoding="async"
-                        className="scd-pot-holo-img"
-                      />
-                    )}
-                    <div className="scd-pot-holo-glass-frame" />
-                  </div>
-                </div>
-
-                {/* ===============================================================
-                    BOTTOM 3D CYLINDRICAL NEON POT (Rim + Cylinder Body + Base)
-                    =============================================================== */}
-                <div className="scd-pot-cylinder-wrap">
-                  {/* 1. Glowing Elliptical Top Rim (Mouth of the Pot where Hologram flows from) */}
-                  <div className="scd-pot-top-rim">
-                    <div className="scd-pot-mouth-vortex" />
-                    <div className="scd-pot-rim-neon-ring" />
-                  </div>
-
-                  {/* 2. 3D Cylindrical Metallic Body */}
-                  <div className="scd-pot-cylinder-body">
-                    {/* Vertical Neon Side Ribs (Left & Right) */}
-                    <span className="scd-pot-side-rib left" />
-                    <span className="scd-pot-side-rib right" />
-
-                    {/* Status & CTC Pill inside Cylinder */}
-                    <div className="scd-pot-top-tags">
-                      <span className="scd-pot-status-pill">{c.statusTag}</span>
-                      <span className="scd-pot-ctc-pill">{c.salaryRange}</span>
-                    </div>
-
-                    {/* Centered Course Title — Two-Tone 'Brighter Future' Style */}
-                    <h3 className="scd-pot-title">
-                      <span className="scd-title-brighter">{c.title}</span>{' '}
-                      {c.subtitle && <span className="scd-title-future">{c.subtitle}</span>}
-                    </h3>
-
-                    {/* Horizontal Action Row: Left Slashed Price (Red Cut) + Right Start Learning Button */}
-                    <CourseToolBadges courseId={c.id} />
-
-                    <div className="scd-pot-bottom-actions-row">
-
-                      <button
-                        type="button"
-                        className="scd-pot-circle-arrow-btn"
-                        aria-label="Start Learning"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleCourseClick(c);
-                        }}
-                      >
-                        <span className="scd-pot-unlock-text">Start Learning</span>
-                        <span className="scd-pot-arrow-icon-circle">
-                          <ArrowRight className="w-3.5 h-3.5 stroke-[2.8]" />
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* 3. Glowing Bottom Neon Ring & 3D Stepped Metallic Base Pedestal */}
-                  <div className="scd-pot-bottom-base">
-                    <div className="scd-pot-bottom-neon-ring" />
-                    <div className="scd-pot-metallic-plinth" />
-                    <div className="scd-pot-floor-glow" />
-                  </div>
-                </div>
-              </article>
+              />
             ))}
           </div>
         ) : (

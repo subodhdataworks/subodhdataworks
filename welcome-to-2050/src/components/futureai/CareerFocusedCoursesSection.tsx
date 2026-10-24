@@ -16,7 +16,8 @@ import {
 import { useThemeAccent } from '../../context/ThemeAccentContext';
 import './LearnerHomeHub.css';
 import { ALL_PLATFORM_COURSES, PlatformCourseItem } from '../../data/allPlatformCourses';
-import { CourseToolBadges } from './CourseToolBadges';
+import { CareerCourseCard } from './CareerCourseCard';
+import { CAREER_COURSES_12 } from '../../data/careerCourses12';
 
 interface CareerFocusedCoursesProps {
   onStartCourse?: (courseId: string) => void;
@@ -242,97 +243,13 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
             </div>
 
             {viewMode === 'grid' ? (
-              <div className="scd-pots-4grid home-compact-pots">
-                {desktopPotCourses.map((c) => (
-                  <article
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+                {CAREER_COURSES_12.map((c) => (
+                  <CareerCourseCard
                     key={c.id}
-                    className={`scd-pot-card scd-pot-${c.potTheme}`}
+                    {...c}
                     onClick={() => handleCourseClick(c.id)}
-                    onMouseEnter={playHover}
-                  >
-                    <div className="scd-pot-flow-stage">
-                      <div className="scd-pot-rising-energy" />
-                      <div className="scd-pot-particles">
-                        <span className="scd-pt p1" />
-                        <span className="scd-pt p2" />
-                        <span className="scd-pt p3" />
-                        <span className="scd-pt p4" />
-                        <span className="scd-pt p5" />
-                        <span className="scd-pt p6" />
-                      </div>
-
-                      <div className="scd-pot-holo-dome">
-                        {c.video ? (
-                          <video
-                            src={c.video}
-                            poster={c.holoImage || c.image}
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            className="scd-pot-holo-img w-full h-full object-cover"
-                          />
-                        ) : (
-                          <img
-                            src={c.holoImage || c.image}
-                            alt={c.title}
-                            loading="lazy"
-                            decoding="async"
-                            className="scd-pot-holo-img"
-                          />
-                        )}
-                        <div className="scd-pot-holo-glass-frame" />
-                      </div>
-                    </div>
-
-                    <div className="scd-pot-cylinder-wrap">
-                      <div className="scd-pot-top-rim">
-                        <div className="scd-pot-mouth-vortex" />
-                        <div className="scd-pot-rim-neon-ring" />
-                      </div>
-
-                      <div className="scd-pot-cylinder-body">
-                        <span className="scd-pot-side-rib left" />
-                        <span className="scd-pot-side-rib right" />
-
-                        <div className="scd-pot-top-tags">
-                          <span className="scd-pot-status-pill">{c.statusTag}</span>
-                          <span className="scd-pot-ctc-pill">{c.salaryRange}</span>
-                        </div>
-
-                        <h3 className="scd-pot-title">
-                          <span className="scd-title-brighter">{c.title}</span>{' '}
-                          <span className="scd-title-future">{c.subtitle}</span>
-                        </h3>
-
-                        {/* Tool Logos directly under course title */}
-                        <CourseToolBadges courseId={c.id} />
-
-                        <div className="scd-pot-bottom-actions-row">
-                          <button
-                            type="button"
-                            className="scd-pot-circle-arrow-btn cursor-pointer w-full justify-between"
-                            aria-label="Start Learning"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleCourseClick(c.id);
-                            }}
-                          >
-                            <span className="scd-pot-unlock-text">Start Learning</span>
-                            <span className="scd-pot-arrow-icon-circle">
-                              <ArrowRight className="w-3.5 h-3.5 stroke-[2.8]" />
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="scd-pot-bottom-base">
-                        <div className="scd-pot-bottom-neon-ring" />
-                        <div className="scd-pot-metallic-plinth" />
-                        <div className="scd-pot-floor-glow" />
-                      </div>
-                    </div>
-                  </article>
+                  />
                 ))}
               </div>
             ) : (
@@ -437,77 +354,16 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
           </div>
 
           {/* 12 Courses Premium Cards */}
-          <div className="space-y-2 px-1">
-            {filteredMobileCourses.map((c) => (
-              <article
+          <div className="space-y-4 px-1">
+            {CAREER_COURSES_12.map((c) => (
+              <CareerCourseCard
                 key={c.id}
+                {...c}
                 onClick={() => handleCourseClick(c.id)}
-                className="rounded-3xl bg-white border border-slate-200/90 shadow-md hover:shadow-xl transition-all overflow-hidden relative cursor-pointer active:scale-[0.99]"
-              >
-                {/* 16:9 Thumbnail / Video Header with floating badges */}
-                <div className="relative aspect-[16/8] w-full overflow-hidden bg-slate-950">
-                  {c.video ? (
-                    <video
-                      src={c.video}
-                      poster={c.image || c.holoImage}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <img
-                      src={c.image || c.holoImage}
-                      alt={c.title}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/35 pointer-events-none" />
-
-                  {/* Top Tags Overlay */}
-                  <div className="absolute top-2 left-2.5 right-2.5 flex items-center justify-between gap-2 z-10">
-                    <span className="px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wide uppercase bg-black/60 text-white backdrop-blur-md border border-white/20">
-                      {c.statusTag}
-                    </span>
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-tight bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-xs">
-                      {c.salaryRange}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Card Content Body */}
-                <div className="p-3.5">
-                  <h3 className="text-[13px] font-black text-slate-900 tracking-tight leading-snug">
-                    <span>{c.title}</span> <span className="text-blue-600">{c.subtitle}</span>
-                  </h3>
-
-                  {/* Tool Logos directly under course title */}
-                  <CourseToolBadges courseId={c.id} />
-
-                  {/* Bottom Action Button (NO amounts) */}
-                  <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-end">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCourseClick(c.id);
-                      }}
-                      className="w-full py-2 rounded-xl text-xs font-black text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 shadow-sm shadow-blue-500/25 flex items-center justify-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
-                    >
-                      <span>Start Learning</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-              </article>
+              />
             ))}
           </div>
-
         </div>
-
       </div>
 
       <style>{`
