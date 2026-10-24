@@ -57,6 +57,30 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
     }));
   };
 
+  // Helper to get real 3D high-resolution icon for each tab
+  const getTabRealIcon = (tabNum: number) => {
+    switch (tabNum) {
+      case 1:
+        return '/images/icons3d/icon_08_bizanalytics.png';
+      case 2:
+        return '/images/icons3d/icon_03_excel.png';
+      case 3:
+        return '/images/icons3d/icon_02_sql.png';
+      case 4:
+        return '/images/icons3d/icon_01_python.png';
+      case 5:
+        return '/images/icons3d/icon_04_powerbi.png';
+      case 6:
+        return '/images/icons3d/icon_06_genai.png';
+      case 7:
+        return '/images/icons3d/icon_goal_target.png';
+      case 8:
+        return '/images/icons3d/icon_10_capstone.png';
+      default:
+        return '/images/icons3d/icon_08_bizanalytics.png';
+    }
+  };
+
   // Helper to render icon for tab
   const renderTabIcon = (iconName: string) => {
     switch (iconName) {
@@ -85,23 +109,9 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
     <div className="min-h-screen bg-[#f3f7fd] text-slate-900 font-sans pb-16">
       
       {/* =========================================================================
-          MAIN CONTAINER: REFINED ALIGNMENT, SIZING & LUXURY PALETTE
+          MAIN CONTAINER: STREAMLINED COMPACT TOP SPACING
           ========================================================================= */}
-      <main className="max-w-[1520px] mx-auto px-4 sm:px-6 pt-4 space-y-4">
-        
-        {/* Back Button */}
-        {onBack && (
-          <div className="flex items-center justify-between">
-            <button
-              type="button"
-              onClick={onBack}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white hover:bg-slate-50 text-slate-800 text-xs font-bold border border-slate-200/90 shadow-2xs hover:shadow-xs transition-all cursor-pointer"
-            >
-              <ArrowLeft className="w-3.5 h-3.5 text-blue-600 stroke-[2.5]" />
-              <span>Back to All Courses</span>
-            </button>
-          </div>
-        )}
+      <main className="max-w-[1520px] mx-auto px-4 sm:px-6 pt-2 sm:pt-3 space-y-3">
 
         {/* =========================================================================
             1. TOP HERO BANNER: LIGHT EXECUTIVE THEME (HIGH-CONTRAST DAYLIGHT TECH CAMPUS)
@@ -116,116 +126,91 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
               (e.target as HTMLImageElement).src = '/images/future_it_industries_campus_banner.png';
             }}
           />
-          {/* Clean Glass Overlay so text is crystal clear directly over the full background image */}
-          <div className="absolute inset-0 bg-white/70 backdrop-blur-[1.5px] pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/60 pointer-events-none" />
+          {/* Soft Pearl Gradient: Left side is crisp white for clear black text, smoothly fading to transparent towards the right so the image is fully visible */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 md:via-white/80 to-transparent pointer-events-none w-full md:w-[58%] lg:w-[52%]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent pointer-events-none md:hidden" />
 
-          <div className="relative z-10 p-4 sm:p-5 lg:p-6 flex flex-col justify-between min-h-[210px] sm:min-h-[225px]">
+          <div className="relative z-10 p-5 sm:p-6 lg:p-7 flex flex-col justify-between min-h-[220px] sm:min-h-[240px]">
             
-            {/* Top Row: Eyebrow + Headline + Right Inset Box */}
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              
-              {/* Left Content */}
-              <div className="max-w-2xl space-y-2">
-                {/* Eyebrow Pill */}
+            {/* Left Content Zone (Right side remains completely open so image is 100% visible) */}
+            <div className="max-w-2xl space-y-2.5">
+              {/* Back Arrow + Eyebrow Pill */}
+              <div className="flex items-center gap-2.5">
+                {onBack && (
+                  <button
+                    type="button"
+                    onClick={onBack}
+                    title="Back to All Courses"
+                    aria-label="Back"
+                    className="w-8 h-8 rounded-full bg-white hover:bg-slate-50 text-slate-800 flex items-center justify-center border border-slate-200 shadow-2xs hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                  >
+                    <ArrowLeft className="w-4 h-4 text-slate-800 stroke-[2.5]" />
+                  </button>
+                )}
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 border border-orange-200 text-[11px] font-black text-orange-700 tracking-wide uppercase shadow-2xs">
                   <Flame className="w-3.5 h-3.5 fill-orange-500 text-orange-500" />
                   <span>Most Popular</span>
                 </div>
-
-                {/* Headline */}
-                <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-black tracking-tight text-slate-950 leading-tight">
-                  Data Analyst with{' '}
-                  <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                    GenAI
-                  </span>
-                </h1>
-
-                {/* Subtitle */}
-                <p className="text-xs sm:text-[13px] text-slate-600 font-semibold leading-relaxed max-w-xl">
-                  Learn Excel, SQL, Python, Power BI and Generative AI to become a job-ready Data Analyst with real-world projects.
-                </p>
-
-                {/* Feature Pills */}
-                <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-[10.5px] font-bold text-slate-700">
-                  <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
-                    🔰 Beginner to Advanced
-                  </span>
-                  <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
-                    🛠️ Hands-on Projects
-                  </span>
-                  <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
-                    💬 Interview Preparation
-                  </span>
-                  <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
-                    📜 Industry Certificate
-                  </span>
-                  <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
-                    🤖 AI-Powered Learning
-                  </span>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex flex-wrap items-center gap-2.5 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => onStartTopic && onStartTopic('t-4', 'Analytics Lifecycle')}
-                    className="px-5 py-2 rounded-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-blue-500/25 active:scale-95 transition-all cursor-pointer"
-                  >
-                    <Play className="w-3.5 h-3.5 fill-white" />
-                    <span>Resume Learning</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const el = document.getElementById('curriculum-tabs-map');
-                      el?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="px-5 py-2 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-800 font-bold text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-2xs"
-                  >
-                    <Search className="w-3.5 h-3.5 text-slate-500" />
-                    <span>View Course Overview</span>
-                  </button>
-                </div>
               </div>
 
-              {/* Right Inset: From Learning to a Data Analyst Career */}
-              <div className="shrink-0 w-full md:w-56 rounded-2xl bg-white/95 backdrop-blur-md border border-slate-200/90 p-3.5 space-y-1.5 shadow-sm">
-                <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-1.5">
-                  <div className="flex flex-col">
-                    <span className="text-[9.5px] text-slate-400 font-bold uppercase tracking-wider">From Learning</span>
-                    <span className="text-xs sm:text-[12px] font-black text-blue-700 leading-tight">to a Data Analyst Career</span>
-                  </div>
-                  <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
-                </div>
-                <ul className="space-y-1 text-[10.5px] font-bold text-slate-700">
-                  <li className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    <span>Learn Skills</span>
-                  </li>
-                  <li className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    <span>Build Projects</span>
-                  </li>
-                  <li className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    <span>Get Certified</span>
-                  </li>
-                  <li className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    <span>Crack Interviews</span>
-                  </li>
-                  <li className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    <span>Land Your Dream Job</span>
-                  </li>
-                </ul>
+              {/* Headline */}
+              <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-black tracking-tight text-slate-950 leading-tight">
+                Data Analyst with{' '}
+                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                  GenAI
+                </span>
+              </h1>
+
+              {/* Subtitle */}
+              <p className="text-xs sm:text-[13.5px] text-slate-700 font-semibold leading-relaxed max-w-xl">
+                Learn Excel, SQL, Python, Power BI and Generative AI to become a job-ready Data Analyst with real-world projects.
+              </p>
+
+              {/* Feature Pills */}
+              <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-[10.5px] font-bold text-slate-700">
+                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
+                  🔰 Beginner to Advanced
+                </span>
+                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
+                  🛠️ Hands-on Projects
+                </span>
+                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
+                  💬 Interview Preparation
+                </span>
+                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
+                  📜 Industry Certificate
+                </span>
+                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
+                  🤖 AI-Powered Learning
+                </span>
               </div>
 
+              {/* Action Buttons */}
+              <div className="flex flex-wrap items-center gap-3 pt-1.5">
+                <button
+                  type="button"
+                  onClick={() => onStartTopic && onStartTopic('t-4', 'Analytics Lifecycle: From Question to Action')}
+                  className="px-5 py-2.5 rounded-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-blue-500/25 active:scale-95 transition-all cursor-pointer"
+                >
+                  <Play className="w-3.5 h-3.5 fill-white" />
+                  <span>Resume Learning</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = document.getElementById('curriculum-tabs-map');
+                    el?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="px-5 py-2.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-800 font-bold text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-2xs"
+                >
+                  <Search className="w-3.5 h-3.5 text-slate-500" />
+                  <span>View Course Overview</span>
+                </button>
+              </div>
             </div>
 
-            {/* Bottom Stats Bar inside Hero */}
-            <div className="mt-3 pt-2.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs font-black text-slate-800">
+            {/* Bottom Stats Bar inside Hero (Translucent glass footer anchored at bottom) */}
+            <div className="mt-5 pt-3 border-t border-slate-200/70 bg-white/75 backdrop-blur-sm -mx-5 sm:-mx-6 lg:-mx-7 -mb-5 sm:-mb-6 lg:-mb-7 px-5 sm:px-6 lg:px-7 py-3 flex flex-wrap items-center justify-between gap-3 text-xs font-black text-slate-800 rounded-b-3xl">
               <div className="flex items-center gap-1.5">
                 <span className="w-6 h-6 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center font-black text-[11px]">43</span>
                 <span>Modules</span>
@@ -252,10 +237,10 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
         </section>
 
         {/* =========================================================================
-            2. FULL-WIDTH HORIZONTAL TABS (Spans entire width so all tabs look spacious & clear)
+            2. FULL-WIDTH HORIZONTAL TABS (Ultra-Premium Cards with Big Real 3D Icons)
             ========================================================================= */}
-        <div id="curriculum-tabs-map" className="overflow-x-auto scrollbar-none pb-1 pt-1">
-          <div className="flex items-stretch gap-2.5 min-w-max">
+        <div id="curriculum-tabs-map" className="overflow-x-auto scrollbar-none pb-2 pt-1 px-0.5">
+          <div className="flex items-stretch gap-3 min-w-max">
             {DATA_ANALYST_CURRICULUM.map((tab) => {
               const isActive = tab.id === activeTabId;
               const moduleCount = tab.chapters.length;
@@ -266,30 +251,53 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                   key={tab.id}
                   type="button"
                   onClick={() => handleSelectTab(tab.id)}
-                  className={`p-3 rounded-2xl flex items-center gap-3 text-left transition-all border cursor-pointer ${
+                  className={`group relative p-3 sm:p-3.5 rounded-2xl flex items-center gap-3.5 text-left transition-all cursor-pointer border ${
                     isActive
-                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-600 shadow-md shadow-blue-500/25 scale-[1.02]'
-                      : 'bg-white text-slate-800 border-slate-200/90 hover:border-blue-300 hover:bg-blue-50/20 shadow-2xs'
+                      ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white border-blue-500 shadow-lg shadow-blue-500/30 scale-[1.03] z-10'
+                      : 'bg-white hover:bg-slate-50/90 text-slate-800 border-slate-200/90 hover:border-blue-300 hover:shadow-md shadow-2xs'
                   }`}
                 >
-                  {/* Tool/Subject Icon Tile */}
+                  {/* Real 3D High-Definition Icon Tile */}
                   <div
-                    className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                    className={`w-13 h-13 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shrink-0 p-1.5 transition-all duration-300 ${
                       isActive
-                        ? 'bg-white text-blue-600 shadow-xs'
-                        : 'bg-slate-100/90'
+                        ? 'bg-white/20 backdrop-blur-md border border-white/30 shadow-inner'
+                        : 'bg-gradient-to-b from-slate-50 to-slate-100/90 border border-slate-200/80 shadow-2xs group-hover:scale-105 group-hover:border-blue-200'
                     }`}
                   >
-                    {renderTabIcon(tab.iconName)}
+                    <img
+                      src={getTabRealIcon(tab.tabNum)}
+                      alt={tab.title}
+                      className="w-10 h-10 sm:w-11 sm:h-11 object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300"
+                      onError={(e) => {
+                        (e.target as HTMLElement).style.display = 'none';
+                      }}
+                    />
                   </div>
 
                   {/* Title & Chapter Subtitle */}
-                  <div className="flex flex-col min-w-0 pr-1">
-                    <span className={`text-[12px] font-black truncate leading-tight ${isActive ? 'text-white' : 'text-slate-950'}`}>
-                      {tab.tabNum} {tab.shortTitle}
-                    </span>
-                    <span className={`text-[10px] font-medium leading-none mt-1 ${isActive ? 'text-blue-100' : 'text-slate-400'}`}>
-                      {moduleCount} Modules • {topicCount} Topics
+                  <div className="flex flex-col min-w-0 pr-2">
+                    <div className="flex items-center gap-1.5">
+                      <span className={`text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md leading-none shrink-0 ${
+                        isActive
+                          ? 'bg-white/20 text-white border border-white/30'
+                          : 'bg-blue-50 text-blue-700 border border-blue-200/80'
+                      }`}>
+                        Tab {tab.tabNum}
+                      </span>
+                      <span className={`text-[12.5px] sm:text-[13.5px] font-black truncate leading-tight tracking-tight ${
+                        isActive ? 'text-white' : 'text-slate-950'
+                      }`}>
+                        {tab.shortTitle}
+                      </span>
+                    </div>
+
+                    <span className={`text-[11px] font-bold leading-none mt-1.5 flex items-center gap-1.5 ${
+                      isActive ? 'text-blue-100' : 'text-slate-500'
+                    }`}>
+                      <span>{moduleCount} Modules</span>
+                      <span className="opacity-50">•</span>
+                      <span>{topicCount} Topics</span>
                     </span>
                   </div>
                 </button>
