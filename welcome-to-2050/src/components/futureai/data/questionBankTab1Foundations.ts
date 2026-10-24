@@ -207,270 +207,206 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
     ]
   },
   '1.2': {
-  "tabId": 1,
-  "tabName": "Data Analytics Foundations",
-  "moduleId": 1,
-  "moduleName": "Understanding Data and Analytics",
-  "topicKey": "1.2",
-  "id": 2,
-  "topicTitle": "What Is Data Analytics?",
-  "mode": "Non-coding",
-  "game1Quiz": [
-    {
-      "id": 1,
-      "question": "What is the main purpose of What Is Data Analytics??",
-      "options": [
-        {
-          "key": "A",
-          "text": "To perform or understand What Is Data Analytics?"
-        },
-        {
-          "key": "B",
-          "text": "To replace all human decisions"
-        },
-        {
-          "key": "C",
-          "text": "To make every result correct automatically"
-        },
-        {
-          "key": "D",
-          "text": "To skip understanding the problem"
-        }
-      ],
-      "correct": 0,
-      "explanation": "The primary objective of learning What Is Data Analytics? is to perform and understand its principles within business analytics.",
-      "hint": "Think about what What Is Data Analytics? accomplishes in data analytics."
-    },
-    {
-      "id": 2,
-      "question": "Which action best fits a lesson on What Is Data Analytics??",
-      "options": [
-        {
-          "key": "A",
-          "text": "Use an unrelated advanced topic"
-        },
-        {
-          "key": "B",
-          "text": "Ignore the task requirements"
-        },
-        {
-          "key": "C",
-          "text": "Apply What Is Data Analytics? to a relevant example"
-        },
-        {
-          "key": "D",
-          "text": "Assume every result is correct"
-        }
-      ],
-      "correct": 2,
-      "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding What Is Data Analytics?.",
-      "hint": "Best learning practice always involves practical application to relevant examples."
-    },
-    {
-      "id": 3,
-      "question": "What should you do before applying What Is Data Analytics??",
-      "options": [
-        {
-          "key": "A",
-          "text": "Guess without reading"
-        },
-        {
-          "key": "B",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "C",
-          "text": "Skip checking the result"
-        },
-        {
-          "key": "D",
-          "text": "Use an unintroduced feature"
-        }
-      ],
-      "correct": 1,
-      "explanation": "Before proceeding with What Is Data Analytics?, you must clearly understand the task objectives and the data available.",
-      "hint": "Always comprehend requirements and inputs before taking action."
-    },
-    {
-      "id": 4,
-      "question": "Which is a good practice when learning What Is Data Analytics??",
-      "options": [
-        {
-          "key": "A",
-          "text": "Ignore errors"
-        },
-        {
-          "key": "B",
-          "text": "Use unrelated concepts"
-        },
-        {
-          "key": "C",
-          "text": "Never explain your choice"
-        },
-        {
-          "key": "D",
-          "text": "Check whether the result meets the task"
-        }
-      ],
-      "correct": 3,
-      "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
-      "hint": "Verify results to ensure accuracy."
-    },
-    {
-      "id": 5,
-      "question": "How can you show understanding of What Is Data Analytics??",
-      "options": [
-        {
-          "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
-        },
-        {
-          "key": "B",
-          "text": "Memorize an unrelated definition"
-        },
-        {
-          "key": "C",
-          "text": "Skip the example"
-        },
-        {
-          "key": "D",
-          "text": "Use a future lesson's concept"
-        }
-      ],
-      "correct": 0,
-      "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of What Is Data Analytics?.",
-      "hint": "Clear explanation and working examples prove mastery."
-    }
-  ],
-  "game2Puzzles": [
-    {
-      "id": 1,
-      "title": "CHALLENGE 1 — ARRANGE STEPS",
-      "prompt": "Arrange the steps for a task about this topic.",
-      "tokens": [
-        "Understand the question",
-        "Identify the lesson concept",
-        "Apply it to an example"
-      ],
-      "shuffled": [
-        "Apply it to an example",
-        "Understand the question",
-        "Identify the lesson concept"
-      ],
-      "expected": [
-        "Understand the question",
-        "Identify the lesson concept",
-        "Apply it to an example"
-      ],
-      "hint": "Understand -> identify -> apply."
-    },
-    {
-      "id": 2,
-      "title": "CHALLENGE 2 — SELECT BEST CARD",
-      "prompt": "Pick the best card for this topic.",
-      "tokens": [
-        "A relevant example of What Is Data Analytics?",
-        "An unrelated advanced topic",
-        "An unchecked guess"
-      ],
-      "shuffled": [
-        "An unchecked guess",
-        "A relevant example of What Is Data Analytics?",
-        "An unrelated advanced topic"
-      ],
-      "expected": [
-        "A relevant example of What Is Data Analytics?"
-      ],
-      "hint": "Choose the lesson-related example."
-    },
-    {
-      "id": 3,
-      "title": "CHALLENGE 3 — LEARNING SEQUENCE",
-      "prompt": "Complete the learning sequence.",
-      "tokens": [
-        "Read the scenario",
-        "Choose the taught concept",
-        "Explain why it fits"
-      ],
-      "shuffled": [
-        "Explain why it fits",
-        "Read the scenario",
-        "Choose the taught concept"
-      ],
-      "expected": [
-        "Read the scenario",
-        "Choose the taught concept",
-        "Explain why it fits"
-      ],
-      "hint": "Read -> choose -> explain."
-    }
-  ],
-  "game3MatchPairs": [
-    {
-      "id": 1,
-      "snippet": "Key idea",
-      "meaning": "Central concept of What Is Data Analytics?",
-      "cls": "c1"
-    },
-    {
-      "id": 2,
-      "snippet": "Purpose",
-      "meaning": "Why the concept/operation is useful",
-      "cls": "c2"
-    },
-    {
-      "id": 3,
-      "snippet": "Example",
-      "meaning": "A lesson-related real-world example",
-      "cls": "c3"
-    },
-    {
-      "id": 4,
-      "snippet": "Input/source",
-      "meaning": "Information or item the task starts with",
-      "cls": "c4"
-    },
-    {
-      "id": 5,
-      "snippet": "Check",
-      "meaning": "Confirm the answer fits the business task",
-      "cls": "c5"
-    }
-  ],
-  "game4Missions": [
-    {
-      "id": 1,
-      "title": "MISSION 1 — FLIPKART CART ABANDONMENT ANALYSIS",
-      "scenario": "Flipkart observed that 38% of mobile shoppers who add items to their shopping cart leave the application without completing payment.",
-      "prompt": "Explain how the data analytics process (inspecting funnel drop-off, payment gateway latency, delivery fee visibility) identifies the root cause and boosts sales conversion.",
-      "expectedResponse": "Analyze the checkout funnel drop-offs to pinpoint friction on the payment screen and recommend one-click checkout options."
-    },
-    {
-      "id": 2,
-      "title": "MISSION 2 — ZOMATO DELIVERY TIME OPTIMIZATION",
-      "scenario": "Zomato wants to reduce average meal delivery times in South Delhi from 36 minutes to 28 minutes.",
-      "prompt": "Describe how data analytics on kitchen preparation times and traffic congestion routes helps dispatch riders at optimal moments.",
-      "expectedResponse": "Use predictive dispatch analytics based on real-time kitchen preparation signals and traffic data."
-    }
-  ],
-  "mockInterview": [
-    {
-      "id": 1,
-      "question": "How would you define What Is Data Analytics??",
-      "sampleAnswer": "In simple terms, What Is Data Analytics? is an essential concept in data analytics used to understand and interpret business information accurately."
-    },
-    {
-      "id": 2,
-      "question": "Why is What Is Data Analytics? useful in real-world business analytics?",
-      "sampleAnswer": "It provides structured clarity, reduces errors in data interpretation, and directly enables data-driven decision making."
-    },
-    {
-      "id": 3,
-      "question": "Can you give an example of What Is Data Analytics??",
-      "sampleAnswer": "A practical example is when an analytics team uses What Is Data Analytics? to transform raw numbers into meaningful business indicators that guide operational strategy."
-    }
-  ]
-},
+    tabId: 1,
+    tabName: 'Data Analytics Foundations',
+    moduleId: 1,
+    moduleName: 'Understanding Data and Analytics',
+    topicKey: '1.2',
+    id: 2,
+    topicTitle: 'What Is Data Analytics?',
+    mode: 'Non-coding',
+    game1Quiz: [
+      {
+        id: 1,
+        question: 'What is data analytics?',
+        options: [
+          { key: 'A', text: 'Collecting computer keyboards' },
+          { key: 'B', text: 'Examining data to find useful insights' },
+          { key: 'C', text: 'Creating passwords only' },
+          { key: 'D', text: 'Drawing random pictures' }
+        ],
+        correct: 1,
+        explanation: 'Data analytics is the process of examining data to uncover patterns, extract insights, and answer questions.',
+        hint: 'Think about examining data to find insights and make better decisions.'
+      },
+      {
+        id: 2,
+        question: 'A shop checks its monthly sales to find its best-selling product. What is it doing?',
+        options: [
+          { key: 'A', text: 'Data analytics' },
+          { key: 'B', text: 'Computer repair' },
+          { key: 'C', text: 'Graphic design' },
+          { key: 'D', text: 'Password recovery' }
+        ],
+        correct: 0,
+        explanation: 'Analyzing monthly sales records to discover product performance trends is data analytics in action.',
+        hint: 'The shop is studying recorded sales data to find patterns.'
+      },
+      {
+        id: 3,
+        question: 'Why do analysts look for patterns in data?',
+        options: [
+          { key: 'A', text: 'To make data disappear' },
+          { key: 'B', text: 'To avoid asking questions' },
+          { key: 'C', text: 'To understand trends and support decisions' },
+          { key: 'D', text: 'To change every number' }
+        ],
+        correct: 2,
+        explanation: 'Analysts identify trends and patterns so business leaders can make objective, evidence-based decisions.',
+        hint: 'Look for the option that helps understand trends and improve decision-making.'
+      },
+      {
+        id: 4,
+        question: 'Which activity is an example of data analytics?',
+        options: [
+          { key: 'A', text: 'Turning off a computer' },
+          { key: 'B', text: 'Buying a new chair without checking anything' },
+          { key: 'C', text: 'Changing a screen wallpaper' },
+          { key: 'D', text: "Comparing this month's sales with last month's" }
+        ],
+        correct: 3,
+        explanation: "Comparing sales figures across consecutive months evaluates performance trends, which is analytics.",
+        hint: 'Identify the activity that involves analyzing and comparing numbers.'
+      },
+      {
+        id: 5,
+        question: 'What can data analytics help a business do?',
+        options: [
+          { key: 'A', text: 'Guarantee every product will sell' },
+          { key: 'B', text: 'Make better-informed decisions' },
+          { key: 'C', text: 'Predict everything perfectly' },
+          { key: 'D', text: 'Remove all business risks' }
+        ],
+        correct: 1,
+        explanation: 'Data analytics provides evidence and insights to help managers make confident, informed business decisions.',
+        hint: 'Analytics cannot guarantee perfection or eliminate all risk, but it guides informed decisions.'
+      }
+    ],
+    game2Puzzles: [
+      {
+        id: 1,
+        title: 'Puzzle 1: Discovering Trends',
+        prompt: 'A restaurant finds that pizza sales rise every Friday. What has it discovered?',
+        tokens: [
+          'A computer error',
+          'A sales pattern',
+          'A new password'
+        ],
+        shuffled: [
+          'A computer error',
+          'A sales pattern',
+          'A new password'
+        ],
+        expected: [
+          'A sales pattern'
+        ],
+        hint: 'A recurring sales spike on specific days is a demand pattern.'
+      },
+      {
+        id: 2,
+        title: 'Puzzle 2: Evaluating Impact',
+        prompt: 'A store compares sales before and after a discount. What is its goal?',
+        tokens: [
+          "Change product names",
+          "Understand the discount's effect",
+          "Delete customer records"
+        ],
+        shuffled: [
+          "Change product names",
+          "Understand the discount's effect",
+          "Delete customer records"
+        ],
+        expected: [
+          "Understand the discount's effect"
+        ],
+        hint: 'Comparing numbers before and after an action measures its effectiveness.'
+      },
+      {
+        id: 3,
+        title: 'Puzzle 3: Analyzing School Data',
+        prompt: 'A school reviews attendance records to find which days have the most absences. This is…',
+        tokens: [
+          'Hardware installation',
+          'Data analytics',
+          'Logo design'
+        ],
+        shuffled: [
+          'Hardware installation',
+          'Data analytics',
+          'Logo design'
+        ],
+        expected: [
+          'Data analytics'
+        ],
+        hint: 'Examining attendance records to identify absence patterns is data analytics.'
+      }
+    ],
+    game3MatchPairs: [
+      {
+        id: 1,
+        snippet: 'Find the best-selling product',
+        meaning: 'Identify top performers',
+        cls: 'c1'
+      },
+      {
+        id: 2,
+        snippet: 'Compare sales across months',
+        meaning: 'Track trends over time',
+        cls: 'c2'
+      },
+      {
+        id: 3,
+        snippet: 'Find days with high absence',
+        meaning: 'Identify attendance patterns',
+        cls: 'c3'
+      },
+      {
+        id: 4,
+        snippet: 'Check sales before and after a discount',
+        meaning: 'Evaluate a possible impact',
+        cls: 'c4'
+      },
+      {
+        id: 5,
+        snippet: 'Study customer ratings',
+        meaning: 'Understand customer feedback',
+        cls: 'c5'
+      }
+    ],
+    game4Missions: [
+      {
+        id: 1,
+        title: '🛒 Mission 1: Help the Shop Owner',
+        scenario: 'A shop owner says, “My sales have dropped this month. I don\'t know why.”',
+        prompt: 'Your task: Write two things the owner could compare or investigate using data.',
+        expectedResponse: '1. Compare product-wise sales to identify which specific items saw a decline.\n2. Compare customer footfall and average transaction spend between this month and last month.'
+      },
+      {
+        id: 2,
+        title: '🏫 Mission 2: Improve School Attendance',
+        scenario: 'A school wants to understand why absences are higher on certain days.',
+        prompt: 'Your task: What data should the school examine, and what pattern could it look for?',
+        expectedResponse: '1. Examine day-of-the-week attendance logs to see if absences spike on Mondays or Fridays.\n2. Cross-reference attendance with bus route delays, weather events, or test schedules.'
+      }
+    ],
+    mockInterview: [
+      {
+        id: 1,
+        question: 'What is data analytics?',
+        sampleAnswer: 'Data analytics is the process of examining data to find useful information, patterns, and insights that help answer questions and support decisions.'
+      },
+      {
+        id: 2,
+        question: 'Give one real-life example of data analytics.',
+        sampleAnswer: 'A shop compares monthly sales to identify its best-selling products and understand changes in demand.'
+      },
+      {
+        id: 3,
+        question: 'How can data analytics help a business?',
+        sampleAnswer: 'It can help a business understand customers, identify trends, evaluate performance, and make better-informed decisions.'
+      }
+    ]
+  },
   '1.3': {
   "tabId": 1,
   "tabName": "Data Analytics Foundations",

@@ -816,6 +816,82 @@ print(result)`
         };
       }
 
+      // ─── Topic 1.2: What Is Data Analytics? Custom Question Matches ───
+      if (qText.includes('What is data analytics?')) {
+        return {
+          hintEn: currQ?.hint || 'Think about examining data to find patterns and actionable insights.',
+          hintHi: 'सोचिए कि डेटा की जांच करके उपयोगी जानकारी (insights) और पैटर्न कैसे निकाले जाते हैं।',
+          exampleCode: '// What Data Analytics Looks Like:\nRaw Data:  Monthly sales = [₹12k, ₹15k, ₹21k]\nAnalysis:  Sales grew +40% after weekend promotion!\nDecision:  Continue weekend promotional campaigns.',
+          exampleNote: 'Data analytics transforms raw numbers into actionable business strategy.',
+          explainTitleEn: 'What Is Data Analytics?',
+          explainTitleHi: 'डेटा एनालिटिक्स क्या है?',
+          explainTextEn: 'Data analytics is the science and practice of examining raw datasets to discover hidden trends, answer operational questions, and support better business decisions.',
+          explainTextHi: 'डेटा एनालिटिक्स का मतलब है डेटा की जांच करके उपयोगी जानकारी (Insights) निकालना, जिससे व्यापार में सही निर्णय लिए जा सकें।',
+          realWorldEn: 'Netflix analyzes viewer ratings and watch time to decide which movies to produce and recommend next.',
+          realWorldHi: 'Netflix यूजर के देखने के पैटर्न को एनालाइज करके अगली सीरीज बनाने का फैसला करता है।',
+        };
+      }
+
+      if (qText.includes('best-selling product') || qText.includes('checks its monthly sales')) {
+        return {
+          hintEn: 'The shop is analyzing monthly sales records to identify product trends.',
+          hintHi: 'दुकानदार पिछले महीने की बिक्री डेटा की जांच करके सबसे ज्यादा बिकने वाला सामान ढूंढ रहा है।',
+          exampleCode: '// Product Sales Analysis:\nItem A (Notebooks):  500 units\nItem B (Pens):      1,200 units (Best Seller!)\nItem C (Bags):        45 units',
+          exampleNote: 'Ranking sales quantities is a standard descriptive analytics technique.',
+          explainTitleEn: 'Identifying Best-Selling Products via Analytics',
+          explainTitleHi: 'बिक्री डेटा से बेस्ट सेलर खोजना',
+          explainTextEn: 'By looking at sales logs across months, businesses evaluate which products generate high consumer demand and prioritize inventory restocking.',
+          explainTextHi: 'बिक्री रिकॉर्ड की जांच करके यह पता लगाना कि कौन सा सामान सबसे ज्यादा बिक रहा है, डेटा एनालिटिक्स कहलाता है।',
+          realWorldEn: 'Amazon uses analytics to badge top-performing products with "Best Seller" tags.',
+          realWorldHi: 'Amazon और Flipkart ज्यादा बिकने वाले प्रोडक्ट्स को "Best Seller" का टैग देते हैं।',
+        };
+      }
+
+      if (qText.includes('patterns in data')) {
+        return {
+          hintEn: 'Patterns reveal underlying trends and customer behaviors over time.',
+          hintHi: 'डेटा में पैटर्न ढूंढने से भविष्य के ट्रेंड्स और ग्राहकों की पसंद का पता चलता है।',
+          exampleCode: '// Weekly Sales Pattern:\nMon-Thu: ~50 orders/day\nFri-Sun: ~180 orders/day (Weekend Surge Pattern!)',
+          exampleNote: 'Discovering patterns helps manage inventory and staffing proactively.',
+          explainTitleEn: 'The Value of Patterns in Data',
+          explainTitleHi: 'डेटा में पैटर्न का महत्व',
+          explainTextEn: 'Patterns allow organizations to understand recurring trends, forecast upcoming demand, and support evidence-based decisions rather than relying on guesswork.',
+          explainTextHi: 'पैटर्न देखने से हमें यह समझ आता है कि किस दिन या महीने में मांग बढ़ती है, जिससे सही फैसले लिए जा सकते हैं।',
+          realWorldEn: 'Uber detects Friday night trip spikes to dynamically position drivers near busy areas.',
+          realWorldHi: 'Uber शुक्रवार और वीकेंड पर ज्यादा गाड़ियां भेजता है क्योंकि डेटा में ऐसा पैटर्न दिखता है।',
+        };
+      }
+
+      if (qText.includes("last month's") || qText.includes("month's sales")) {
+        return {
+          hintEn: 'Look for an activity that evaluates and compares numerical data over time.',
+          hintHi: 'उस गतिविधि को चुनें जिसमें दो महीनों के डेटा की तुलना करके ट्रेंड्स देखे जाते हैं।',
+          exampleCode: '// Month-over-Month (MoM) Analytics:\nLast Month: ₹1,50,000\nThis Month: ₹1,95,000 (+30% Growth)',
+          exampleNote: 'Comparing periods is one of the most common analytical workflows in finance and retail.',
+          explainTitleEn: 'Comparative Analytics in Action',
+          explainTitleHi: 'महीने-दर-महीने बिक्री की तुलना',
+          explainTextEn: 'Comparing monthly sales identifies whether business is growing, stagnant, or declining. This is a foundational data analytics task.',
+          explainTextHi: 'पिछले महीने और इस महीने की बिक्री की तुलना करना डेटा एनालिटिक्स का एक सीधा उदाहरण है।',
+          realWorldEn: 'Financial analysts present monthly growth rate reports to board executives every quarter.',
+          realWorldHi: 'कंपनियां हर महीने सेल्स रिपोर्ट बनाकर देखती हैं कि उनका बिजनेस कितना बढ़ा है।',
+        };
+      }
+
+      if (qText.includes('help a business do')) {
+        return {
+          hintEn: 'Data analytics provides insights for informed decisions, but cannot eliminate all uncertainty.',
+          hintHi: 'डेटा एनालिटिक्स बेहतर और सूचित निर्णय (Better-informed decisions) लेने में मदद करता है।',
+          exampleCode: '// Intuition vs Data-Driven:\nIntuition: "I think people might like this shirt."\nAnalytics: "Data shows 78% of customers bought black shirts in winter."',
+          exampleNote: 'Analytics reduces uncertainty and backs decisions with observable facts.',
+          explainTitleEn: 'Business Impact of Data Analytics',
+          explainTitleHi: 'बिजनेस में डेटा एनालिटिक्स का फायदा',
+          explainTextEn: 'Data analytics empowers business leaders to make better-informed, evidence-backed decisions, reducing costly mistakes and improving profitability.',
+          explainTextHi: 'डेटा एनालिटिक्स व्यापार को तुक्के लगाने के बजाय ठोस तथ्यों के आधार पर सही निर्णय लेने में सक्षम बनाता है।',
+          realWorldEn: 'Companies with strong data analytics practices achieve up to 23x greater customer acquisition.',
+          realWorldHi: 'डेटा का सही इस्तेमाल करने वाली कंपनियां ग्राहकों को बेहतर समझती हैं और ज्यादा मुनाफा कमाती हैं।',
+        };
+      }
+
       // Universal Question Match for any other question
       return {
         hintEn: currQ?.hint || 'Review the core concept being asked in this question.',
@@ -877,6 +953,52 @@ print(result)`
           explainTextHi: 'डेटा में संख्या, टेक्स्ट, इमेज और माप (Measurements) शामिल होते हैं।',
           realWorldEn: 'IoT devices (smartwatches, connected cars) transmit millions of real-time measurements (heart rate, vehicle speed) per minute.',
           realWorldHi: 'स्मार्टवॉच हमारे दिल की धड़कन और कदमों की गिनती को माप (Measurement) के रूप में स्टोर करती है।',
+        };
+      }
+
+      // ─── Topic 1.2 Puzzles ───
+      if (puzzle?.prompt?.includes('pizza sales rise') || pTitle.includes('Discovering Trends')) {
+        return {
+          hintEn: 'A weekly recurring surge in customer orders is a sales pattern.',
+          hintHi: 'हर शुक्रवार को बिक्री का बढ़ना एक सेल्स पैटर्न (Sales Pattern) कहलाता है।',
+          exampleCode: '// Friday Pizza Orders:\nWeek 1 Friday: 120 pizzas\nWeek 2 Friday: 135 pizzas\nWeek 3 Friday: 140 pizzas\n-> Strong Friday Sales Pattern!',
+          exampleNote: 'A pattern indicates predictable customer demand on specific days.',
+          explainTitleEn: 'Discovering Sales Patterns',
+          explainTitleHi: 'सेल्स पैटर्न की खोज',
+          explainTextEn: 'When sales systematically increase on the same day every week, analysts describe this as a recurring sales pattern or seasonal trend.',
+          explainTextHi: 'जब हर हफ्ते किसी खास दिन बिक्री बढ़ती है, तो इसे सेल्स पैटर्न कहा जाता है।',
+          realWorldEn: 'Domino\'s and Pizza Hut plan inventory prep and driver shifts around Friday-Saturday sales spikes.',
+          realWorldHi: 'पिज्जा कंपनियां शुक्रवार को पहले से ज्यादा आटा और पनीर तैयार रखती हैं क्योंकि डेटा में ऐसा पैटर्न दिखता है।',
+        };
+      }
+
+      if (puzzle?.prompt?.includes('before and after a discount') || pTitle.includes('Evaluating Impact')) {
+        return {
+          hintEn: 'The objective is to measure how customer purchases changed as a result of the discount.',
+          hintHi: 'डिस्काउंट से पहले और बाद की बिक्री की तुलना करके डिस्काउंट का प्रभाव (Effect) समझा जाता है।',
+          exampleCode: '// Pre/Post Promotion Comparison:\nBefore 10% Discount: 50 items/day\nAfter 10% Discount:  85 items/day\n-> Impact: +70% lift in sales volume!',
+          exampleNote: 'A/B and pre/post comparative analytics measure campaign effectiveness.',
+          explainTitleEn: 'Evaluating Promotion Impact',
+          explainTitleHi: 'डिस्काउंट का प्रभाव समझना',
+          explainTextEn: 'Comparing sales metrics before versus after a price promotion demonstrates the direct elasticity and impact of the discount on customer demand.',
+          explainTextHi: 'डिस्काउंट देने से पहले और बाद के आंकड़ों की तुलना करने से पता चलता है कि ऑफर से बिक्री बढ़ी या घटी।',
+          realWorldEn: 'E-commerce brands evaluate Festive Sale discount effectiveness through pre/post conversion tracking.',
+          realWorldHi: 'Flipkart Big Billion Days सेल में डिस्काउंट का असर देखने के लिए यही एनालिसिस करता है।',
+        };
+      }
+
+      if (puzzle?.prompt?.includes('most absences') || pTitle.includes('Analyzing School Data')) {
+        return {
+          hintEn: 'Analyzing historical records to identify trends and solve problems is data analytics.',
+          hintHi: 'स्कूल रिकॉर्ड्स की जांच करके अनुपस्थिति का कारण और दिन ढूंढना डेटा एनालिटिक्स का काम है।',
+          exampleCode: '// School Attendance Log:\nMonday:    98%\nWednesday: 97%\nFriday:    82% (High Absence Day!)\n-> Data Analytics finding attendance patterns.',
+          exampleNote: 'Educational institutions use attendance analytics to intervene before grades drop.',
+          explainTitleEn: 'Educational Data Analytics',
+          explainTitleHi: 'स्कूल अटेंडेंस का डेटा एनालिसिस',
+          explainTextEn: 'Examining recorded student attendance to reveal which days experience peak absences is an application of descriptive data analytics.',
+          explainTextHi: 'रिकॉर्ड किए गए हाजिरी डेटा की जांच करके यह समझना कि किस दिन सबसे ज्यादा छात्र अनुपस्थित रहते हैं, डेटा एनालिटिक्स कहलाता है।',
+          realWorldEn: 'School districts allocate counseling and meal resources based on attendance trend dashboards.',
+          realWorldHi: 'स्कूल प्रशासन अटेंडेंस डेटा देखकर तय करता है कि किस दिन छात्रों के लिए स्पेशल एक्टिविटी रखी जाए।',
         };
       }
 
