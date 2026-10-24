@@ -121,107 +121,74 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     if (registeredBank?.game1Quiz && registeredBank.game1Quiz.length >= 5) {
       return registeredBank.game1Quiz;
     }
-    if (topicId === 1) {
-      return [
-        {
-          id: 1,
-          question: 'Programming is...',
-          options: [
-            { key: 'A' as const, text: 'Repairing hardware' },
-            { key: 'B' as const, text: 'Browsing the internet' },
-            { key: 'C' as const, text: 'Giving a computer instructions' },
-            { key: 'D' as const, text: 'Designing only graphics' },
-          ],
-          correct: 2,
-          explanation: 'Programming is the process of creating a set of instructions that tell a computer how to perform tasks.',
-          hint: 'A program is a set of instructions a computer can execute.',
-          realWorldContext: 'Every software application consists of computer instructions.',
-          codeSnippet: '# Programming = instructions\nprint("Execute step by step")',
-        },
-        ...(topicData?.mcqs ? topicData.mcqs.slice(1, 5) : [])
-      ];
-    }
-    if (topicData?.mcqs && topicData.mcqs.length >= 5) {
-      return topicData.mcqs.slice(0, 5);
-    }
     return [
       {
         id: 1,
-        question: 'Programming is...',
+        question: 'What is data?',
         options: [
-          { key: 'A' as const, text: 'Repairing hardware' },
-          { key: 'B' as const, text: 'Browsing the internet' },
-          { key: 'C' as const, text: 'Giving a computer instructions' },
-          { key: 'D' as const, text: 'Designing only graphics' },
+          { key: 'A' as const, text: 'A collection of facts and values' },
+          { key: 'B' as const, text: 'Only computer programs' },
+          { key: 'C' as const, text: 'Only pictures' },
+          { key: 'D' as const, text: 'Only business profits' }
         ],
-        correct: 2,
-        explanation: 'Programming is the process of creating a set of instructions that tell a computer how to perform tasks and solve problems.',
-        hint: 'A program is a set of instructions a computer can execute.',
-        realWorldContext: 'Every software application consists of computer instructions.',
-        codeSnippet: '# Programming = instructions\nprint("Execute step by step")',
+        correct: 0,
+        explanation: 'Data is a collection of facts, numbers, text, images, and values that represent observations or measurements.',
+        hint: 'Think about whether data includes recorded facts and values.'
       },
       {
         id: 2,
-        question: 'Who created the Python programming language in 1991?',
+        question: 'Which of these is an example of data?',
         options: [
-          { key: 'A' as const, text: 'Dennis Ritchie' },
-          { key: 'B' as const, text: 'Guido van Rossum' },
-          { key: 'C' as const, text: 'James Gosling' },
-          { key: 'D' as const, text: 'Bjarne Stroustrup' },
+          { key: 'A' as const, text: 'A keyboard only' },
+          { key: 'B' as const, text: "A student's age: 18" },
+          { key: 'C' as const, text: 'A computer desk only' },
+          { key: 'D' as const, text: 'A blank notebook' }
         ],
         correct: 1,
-        explanation: 'Guido van Rossum created Python in 1991 at CWI in the Netherlands.',
-        hint: 'He is a Dutch computer programmer named Guido.',
-        realWorldContext: 'Guido designed Python to be clean and readable.',
-        codeSnippet: '# Python was created by Guido van Rossum\nauthor = "Guido van Rossum"',
+        explanation: "A student's age: 18 is a recorded value representing an individual attribute, making it authentic data.",
+        hint: 'Look for the option that represents an actual recorded value or measurement.'
       },
       {
         id: 3,
-        question: 'Which built-in Python function is used to output messages to the console screen?',
+        question: 'A shop records 20, 25, and 30 items sold each day. What are these values?',
         options: [
-          { key: 'A' as const, text: 'output()' },
-          { key: 'B' as const, text: 'display()' },
-          { key: 'C' as const, text: 'print()' },
-          { key: 'D' as const, text: 'show()' },
+          { key: 'A' as const, text: 'A computer virus' },
+          { key: 'B' as const, text: 'A password' },
+          { key: 'C' as const, text: 'Data' },
+          { key: 'D' as const, text: 'A website' }
         ],
         correct: 2,
-        explanation: 'print() is Python standard built-in function to display text and data values.',
-        hint: 'It prints text directly to your console.',
-        realWorldContext: 'Used by every developer to test and show results.',
-        codeSnippet: 'print("Hello, Python!")',
+        explanation: 'Daily recorded sales numbers are factual observations, which are data.',
+        hint: 'These recorded sales numbers represent factual observations.'
       },
       {
         id: 4,
-        question: 'What is the correct file extension for standard Python source code script files?',
+        question: 'Which item can be data?',
         options: [
-          { key: 'A' as const, text: '.python' },
-          { key: 'B' as const, text: '.py' },
-          { key: 'C' as const, text: '.pt' },
-          { key: 'D' as const, text: '.exe' },
+          { key: 'A' as const, text: "A customer's name" },
+          { key: 'B' as const, text: 'A temperature reading' },
+          { key: 'C' as const, text: 'A product photo' },
+          { key: 'D' as const, text: 'All of these' }
         ],
-        correct: 1,
-        explanation: 'Python script source files always use the .py extension.',
-        hint: 'It is a 2-letter extension starting with p.',
-        realWorldContext: 'Operating systems associate .py files with the Python interpreter.',
-        codeSnippet: '# filename: app.py',
+        correct: 3,
+        explanation: 'Data can exist as text (customer name), numbers (temperature), or multimedia (photos).',
+        hint: 'Remember that text, numbers, and photos can all represent data.'
       },
       {
         id: 5,
-        question: 'Why is Python the leading language for Artificial Intelligence and Data Analytics?',
+        question: "A teacher records students' marks. Why are the marks data?",
         options: [
-          { key: 'A' as const, text: 'Only runs on one specific operating system' },
-          { key: 'B' as const, text: 'Simple English-like syntax and vast library ecosystem' },
-          { key: 'C' as const, text: 'Cannot work with numbers' },
-          { key: 'D' as const, text: 'Requires compilation before execution' },
+          { key: 'A' as const, text: 'They are always predictions' },
+          { key: 'B' as const, text: 'They are recorded facts' },
+          { key: 'C' as const, text: 'They are computer hardware' },
+          { key: 'D' as const, text: 'They are advertisements' }
         ],
         correct: 1,
-        explanation: 'Python clean readability and massive libraries (Pandas, NumPy, PyTorch) make it the global standard for AI.',
-        hint: 'English-like readability and rich packages.',
-        realWorldContext: 'Used worldwide in ChatGPT, Google DeepMind, and Tesla Autopilot.',
-        codeSnippet: 'import pandas as pd\nimport torch',
-      },
+        explanation: 'Marks represent observed, recorded facts about student exam performance.',
+        hint: 'Think about whether test scores are recorded facts.'
+      }
     ];
-  }, [topicData]);
+  }, [registeredBank]);
 
   // Quiz Timer
   useEffect(() => {
@@ -644,7 +611,10 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     const pair = matchPairs.find((p) => p.id === pairId);
     if (!pair) return;
 
-    if (pair.snippet === selectedSnippet) {
+    const selectedPair = matchPairs.find((p) => p.snippet === selectedSnippet);
+    if (!selectedPair) return;
+
+    if (pair.snippet === selectedSnippet || pair.meaning === selectedPair.meaning) {
       const nextMatches = { ...matchedPairs, [pairId]: selectedSnippet };
       setMatchedPairs(nextMatches);
       setSelectedSnippet(null);
@@ -1261,7 +1231,7 @@ print(result)`
                       disabled={quizFeedback === 'correct'}
                     >
                       <div className={`ppa-opt-key-badge badge-${opt.key.toLowerCase()}`}>{opt.key}</div>
-                      <span className="ppa-opt-text">{opt.text}</span>
+                      <span className="ppa-opt-text font-normal">{opt.text}</span>
                       {isCorrect && <Check className="w-5 h-5 text-emerald-600 ml-auto shrink-0 stroke-[3]" />}
                     </button>
                   );
@@ -1336,7 +1306,7 @@ print(result)`
                       >
                         <span className="ppa-slot-index-pill">{i + 1}</span>
                         {tok ? (
-                          <span className="font-mono text-xs font-bold text-purple-900">{tok}</span>
+                          <span className="font-mono text-xs font-medium text-purple-900">{tok}</span>
                         ) : (
                           <span className="ppa-slot-placeholder-text">Empty slot</span>
                         )}

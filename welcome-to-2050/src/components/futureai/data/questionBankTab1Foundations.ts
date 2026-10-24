@@ -8,270 +8,204 @@ import { TopicQuestionBank } from './questionBankRegistry';
 
 export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   '1.1': {
-  "tabId": 1,
-  "tabName": "Data Analytics Foundations",
-  "moduleId": 1,
-  "moduleName": "Understanding Data and Analytics",
-  "topicKey": "1.1",
-  "id": 1,
-  "topicTitle": "What Is Data?",
-  "mode": "Non-coding",
-  "game1Quiz": [
-    {
-      "id": 1,
-      "question": "What is the main purpose of What Is Data??",
-      "options": [
-        {
-          "key": "A",
-          "text": "To replace all human decisions"
-        },
-        {
-          "key": "B",
-          "text": "To perform or understand What Is Data?"
-        },
-        {
-          "key": "C",
-          "text": "To make every result correct automatically"
-        },
-        {
-          "key": "D",
-          "text": "To skip understanding the problem"
-        }
-      ],
-      "correct": 1,
-      "explanation": "The primary objective of learning What Is Data? is to perform and understand its principles within business analytics.",
-      "hint": "Think about what What Is Data? accomplishes in data analytics."
-    },
-    {
-      "id": 2,
-      "question": "Which action best fits a lesson on What Is Data??",
-      "options": [
-        {
-          "key": "A",
-          "text": "Use an unrelated advanced topic"
-        },
-        {
-          "key": "B",
-          "text": "Ignore the task requirements"
-        },
-        {
-          "key": "C",
-          "text": "Assume every result is correct"
-        },
-        {
-          "key": "D",
-          "text": "Apply What Is Data? to a relevant example"
-        }
-      ],
-      "correct": 3,
-      "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding What Is Data?.",
-      "hint": "Best learning practice always involves practical application to relevant examples."
-    },
-    {
-      "id": 3,
-      "question": "What should you do before applying What Is Data??",
-      "options": [
-        {
-          "key": "A",
-          "text": "Guess without reading"
-        },
-        {
-          "key": "B",
-          "text": "Skip checking the result"
-        },
-        {
-          "key": "C",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "D",
-          "text": "Use an unintroduced feature"
-        }
-      ],
-      "correct": 2,
-      "explanation": "Before proceeding with What Is Data?, you must clearly understand the task objectives and the data available.",
-      "hint": "Always comprehend requirements and inputs before taking action."
-    },
-    {
-      "id": 4,
-      "question": "Which is a good practice when learning What Is Data??",
-      "options": [
-        {
-          "key": "A",
-          "text": "Check whether the result meets the task"
-        },
-        {
-          "key": "B",
-          "text": "Ignore errors"
-        },
-        {
-          "key": "C",
-          "text": "Use unrelated concepts"
-        },
-        {
-          "key": "D",
-          "text": "Never explain your choice"
-        }
-      ],
-      "correct": 0,
-      "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
-      "hint": "Verify results to ensure accuracy."
-    },
-    {
-      "id": 5,
-      "question": "How can you show understanding of What Is Data??",
-      "options": [
-        {
-          "key": "A",
-          "text": "Memorize an unrelated definition"
-        },
-        {
-          "key": "B",
-          "text": "Explain or demonstrate it with a relevant example"
-        },
-        {
-          "key": "C",
-          "text": "Skip the example"
-        },
-        {
-          "key": "D",
-          "text": "Use a future lesson's concept"
-        }
-      ],
-      "correct": 1,
-      "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of What Is Data?.",
-      "hint": "Clear explanation and working examples prove mastery."
-    }
-  ],
-  "game2Puzzles": [
-    {
-      "id": 1,
-      "title": "CHALLENGE 1 — ARRANGE STEPS",
-      "prompt": "Arrange the steps for a task about this topic.",
-      "tokens": [
-        "Understand the question",
-        "Identify the lesson concept",
-        "Apply it to an example"
-      ],
-      "shuffled": [
-        "Apply it to an example",
-        "Understand the question",
-        "Identify the lesson concept"
-      ],
-      "expected": [
-        "Understand the question",
-        "Identify the lesson concept",
-        "Apply it to an example"
-      ],
-      "hint": "Understand -> identify -> apply."
-    },
-    {
-      "id": 2,
-      "title": "CHALLENGE 2 — SELECT BEST CARD",
-      "prompt": "Pick the best card for this topic.",
-      "tokens": [
-        "A relevant example of What Is Data?",
-        "An unrelated advanced topic",
-        "An unchecked guess"
-      ],
-      "shuffled": [
-        "An unchecked guess",
-        "A relevant example of What Is Data?",
-        "An unrelated advanced topic"
-      ],
-      "expected": [
-        "A relevant example of What Is Data?"
-      ],
-      "hint": "Choose the lesson-related example."
-    },
-    {
-      "id": 3,
-      "title": "CHALLENGE 3 — LEARNING SEQUENCE",
-      "prompt": "Complete the learning sequence.",
-      "tokens": [
-        "Read the scenario",
-        "Choose the taught concept",
-        "Explain why it fits"
-      ],
-      "shuffled": [
-        "Explain why it fits",
-        "Read the scenario",
-        "Choose the taught concept"
-      ],
-      "expected": [
-        "Read the scenario",
-        "Choose the taught concept",
-        "Explain why it fits"
-      ],
-      "hint": "Read -> choose -> explain."
-    }
-  ],
-  "game3MatchPairs": [
-    {
-      "id": 1,
-      "snippet": "Key idea",
-      "meaning": "Central concept of What Is Data?",
-      "cls": "c1"
-    },
-    {
-      "id": 2,
-      "snippet": "Purpose",
-      "meaning": "Why the concept/operation is useful",
-      "cls": "c2"
-    },
-    {
-      "id": 3,
-      "snippet": "Example",
-      "meaning": "A lesson-related real-world example",
-      "cls": "c3"
-    },
-    {
-      "id": 4,
-      "snippet": "Input/source",
-      "meaning": "Information or item the task starts with",
-      "cls": "c4"
-    },
-    {
-      "id": 5,
-      "snippet": "Check",
-      "meaning": "Confirm the answer fits the business task",
-      "cls": "c5"
-    }
-  ],
-  "game4Missions": [
-    {
-      "id": 1,
-      "title": "MISSION 1 — SWIGGY DELIVERY LOGS AUDIT",
-      "scenario": "Swiggy operations in Bangalore experienced a 24% increase in delivery delays during peak evening hours. The logistics VP requested an audit of incoming data streams.",
-      "prompt": "Identify the raw operational data attributes (Order ID, GPS timestamp, rider assignment, weather flag) versus derived summary reports needed to diagnose the bottleneck.",
-      "expectedResponse": "Collect raw timestamp logs, rider GPS pings, restaurant dispatch times, and weather status to analyze delay causes accurately."
-    },
-    {
-      "id": 2,
-      "title": "MISSION 2 — APOLLO HOSPITALS PATIENT REGISTRY",
-      "scenario": "Apollo Hospitals admissions department is digitizing paper intake forms into an enterprise analytics database.",
-      "prompt": "Distinguish between raw clinical observation data (heart rate 72 bpm, systolic BP 120 mmHg) and aggregate patient summary metrics.",
-      "expectedResponse": "Store individual clinical measurements as raw atomic data points before calculating daily ward averages."
-    }
-  ],
-  "mockInterview": [
-    {
-      "id": 1,
-      "question": "How would you define What Is Data??",
-      "sampleAnswer": "In simple terms, What Is Data? is an essential concept in data analytics used to understand and interpret business information accurately."
-    },
-    {
-      "id": 2,
-      "question": "Why is What Is Data? useful in real-world business analytics?",
-      "sampleAnswer": "It provides structured clarity, reduces errors in data interpretation, and directly enables data-driven decision making."
-    },
-    {
-      "id": 3,
-      "question": "Can you give an example of What Is Data??",
-      "sampleAnswer": "A practical example is when an analytics team uses What Is Data? to transform raw numbers into meaningful business indicators that guide operational strategy."
-    }
-  ]
-},
+    tabId: 1,
+    tabName: 'Data Analytics Foundations',
+    moduleId: 1,
+    moduleName: 'Understanding Data and Analytics',
+    topicKey: '1.1',
+    id: 1,
+    topicTitle: 'What Is Data?',
+    mode: 'Non-coding',
+    game1Quiz: [
+      {
+        id: 1,
+        question: 'What is data?',
+        options: [
+          { key: 'A', text: 'A collection of facts and values' },
+          { key: 'B', text: 'Only computer programs' },
+          { key: 'C', text: 'Only pictures' },
+          { key: 'D', text: 'Only business profits' }
+        ],
+        correct: 0,
+        explanation: 'Data is a collection of facts, numbers, text, images, and values that represent observations or measurements.',
+        hint: 'Think about whether data includes recorded facts and values.'
+      },
+      {
+        id: 2,
+        question: 'Which of these is an example of data?',
+        options: [
+          { key: 'A', text: 'A keyboard only' },
+          { key: 'B', text: "A student's age: 18" },
+          { key: 'C', text: 'A computer desk only' },
+          { key: 'D', text: 'A blank notebook' }
+        ],
+        correct: 1,
+        explanation: "A student's age: 18 is a recorded value representing an individual attribute, making it authentic data.",
+        hint: 'Look for the option that represents an actual recorded value or measurement.'
+      },
+      {
+        id: 3,
+        question: 'A shop records 20, 25, and 30 items sold each day. What are these values?',
+        options: [
+          { key: 'A', text: 'A computer virus' },
+          { key: 'B', text: 'A password' },
+          { key: 'C', text: 'Data' },
+          { key: 'D', text: 'A website' }
+        ],
+        correct: 2,
+        explanation: 'Daily recorded sales numbers are factual observations, which are data.',
+        hint: 'These recorded sales numbers represent factual observations.'
+      },
+      {
+        id: 4,
+        question: 'Which item can be data?',
+        options: [
+          { key: 'A', text: "A customer's name" },
+          { key: 'B', text: 'A temperature reading' },
+          { key: 'C', text: 'A product photo' },
+          { key: 'D', text: 'All of these' }
+        ],
+        correct: 3,
+        explanation: 'Data can exist as text (customer name), numbers (temperature), or multimedia (photos).',
+        hint: 'Remember that text, numbers, and photos can all represent data.'
+      },
+      {
+        id: 5,
+        question: "A teacher records students' marks. Why are the marks data?",
+        options: [
+          { key: 'A', text: 'They are always predictions' },
+          { key: 'B', text: 'They are recorded facts' },
+          { key: 'C', text: 'They are computer hardware' },
+          { key: 'D', text: 'They are advertisements' }
+        ],
+        correct: 1,
+        explanation: 'Marks represent observed, recorded facts about student exam performance.',
+        hint: 'Think about whether test scores are recorded facts.'
+      }
+    ],
+    game2Puzzles: [
+      {
+        id: 1,
+        title: 'Puzzle 1: Find the Data',
+        prompt: "A café records its daily customers: 45, 52, 38. Which option contains the data?",
+        tokens: [
+          'The recorded customer counts',
+          "The café's wall colour",
+          'A chair in the café'
+        ],
+        shuffled: [
+          "The café's wall colour",
+          'The recorded customer counts',
+          'A chair in the café'
+        ],
+        expected: [
+          'The recorded customer counts'
+        ],
+        hint: 'Data is recorded counts or measurements, not physical furniture or decorative paint.'
+      },
+      {
+        id: 2,
+        title: 'Puzzle 2: Spot the Data',
+        prompt: 'A weather app stores the temperature as 32°C. Is this data?',
+        tokens: [
+          'Yes, it is a recorded measurement',
+          'No, data must be text'
+        ],
+        shuffled: [
+          'No, data must be text',
+          'Yes, it is a recorded measurement'
+        ],
+        expected: [
+          'Yes, it is a recorded measurement'
+        ],
+        hint: 'Measurements like 32°C are numerical data.'
+      },
+      {
+        id: 3,
+        title: 'Puzzle 3: Complete the Idea',
+        prompt: 'Data can include numbers, text, images, and ______.',
+        tokens: [
+          'Measurements',
+          'Only chairs',
+          'Only keyboards'
+        ],
+        shuffled: [
+          'Only chairs',
+          'Measurements',
+          'Only keyboards'
+        ],
+        expected: [
+          'Measurements'
+        ],
+        hint: 'Measurements like speed, height, or temperature are all forms of data.'
+      }
+    ],
+    game3MatchPairs: [
+      {
+        id: 1,
+        snippet: 'Student name: Asha',
+        meaning: 'Text',
+        cls: 'c1'
+      },
+      {
+        id: 2,
+        snippet: 'Test score: 85',
+        meaning: 'Number',
+        cls: 'c2'
+      },
+      {
+        id: 3,
+        snippet: 'A product photograph',
+        meaning: 'Image',
+        cls: 'c3'
+      },
+      {
+        id: 4,
+        snippet: 'Temperature: 28°C',
+        meaning: 'Measurement',
+        cls: 'c4'
+      },
+      {
+        id: 5,
+        snippet: 'Customer feedback: “Good service”',
+        meaning: 'Text',
+        cls: 'c5'
+      }
+    ],
+    game4Missions: [
+      {
+        id: 1,
+        title: '🚀 Mission 1: School Data Collector',
+        scenario: "Imagine you're helping your school analyze student attendance.",
+        prompt: 'Task: Write three examples of data the school could record.',
+        expectedResponse: '1. Student Roll Number / ID (Unique identifier)\n2. Daily Attendance Status (Present / Absent)\n3. Check-in Timestamp (e.g. 08:30 AM)'
+      },
+      {
+        id: 2,
+        title: '🛍️ Mission 2: Shop Detective',
+        scenario: 'A shop owner wants to understand which products customers buy most.',
+        prompt: 'Task: What information should the shop owner collect?',
+        expectedResponse: '1. Product Barcode / Name (Item sold)\n2. Quantity Purchased (Units per bill)\n3. Date, Time of Sale & Billing Amount'
+      }
+    ],
+    mockInterview: [
+      {
+        id: 1,
+        question: 'What is data? Give one example.',
+        sampleAnswer: "Data is a collection of recorded facts or values. For example, a student's age or marks."
+      },
+      {
+        id: 2,
+        question: 'Can images and text be data, or only numbers?',
+        sampleAnswer: 'Images, text, numbers, and measurements can all be data.'
+      },
+      {
+        id: 3,
+        question: 'Why might a shop collect daily sales data?',
+        sampleAnswer: 'To understand which products sell most and help make better business decisions.'
+      }
+    ]
+  },
   '1.2': {
   "tabId": 1,
   "tabName": "Data Analytics Foundations",

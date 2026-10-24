@@ -447,8 +447,8 @@
   border-radius: 18px;
   padding: 16px 20px;
   font-size: 1.05rem;
-  font-weight: 800;
-  color: #0f172a;
+  font-weight: 400; /* User requirement: ans bold nhi hoga */
+  color: #1e293b;
   cursor: pointer;
   text-align: left;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -502,6 +502,15 @@
   color: #991b1b !important;
 }
 
+/* User requirement: ans bold nhi hoga */
+.ppa-quiz-opt-btn .ppa-opt-text,
+.ppa-quiz-opt-btn span:not(.ppa-opt-key-badge),
+.ppa-quiz-opt-btn.selected .ppa-opt-text,
+.ppa-quiz-opt-btn.correct .ppa-opt-text,
+.ppa-quiz-opt-btn.wrong .ppa-opt-text {
+  font-weight: 400 !important;
+}
+
 /* Badges matching media_1792847065914_f68382f0.png */
 .ppa-opt-key-badge {
   width: 36px;
@@ -539,8 +548,8 @@
 
 .ppa-opt-text {
   font-size: 1rem;
-  font-weight: 800;
-  color: #0f172a;
+  font-weight: 400 !important; /* User requirement: ans bold nhi hoga */
+  color: #334155;
   line-height: 1.35;
 }
 
@@ -1094,7 +1103,7 @@
 
 .ppa-meaning-text {
   font-size: 0.74rem;
-  font-weight: 700;
+  font-weight: 500;
   color: #334155;
   line-height: 1.2;
 }
@@ -1114,7 +1123,7 @@
   border-color: #10b981;
   background: #ecfdf5;
   color: #065f46;
-  font-weight: 800;
+  font-weight: 500;
 }
 
 /* ─────────────────────────────────────────────────────────────
