@@ -298,7 +298,9 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
     // Initialize Mode 8
     if (activeGame.gameType === 'boss_fight') {
       // Calculate HP remaining based on question number (100 - (q-1)*10 for 10 questions)
-      const currentHp = Math.max(0, 100 - (activeChallengeNum - 1) * 10);
+      const totalQ = activeGame.challenges.length || 5;
+      const hpStep = 100 / totalQ;
+      const currentHp = Math.max(0, Math.round(100 - (activeChallengeNum - 1) * hpStep));
       setBossHp(currentHp);
       setIsBossAttacked(false);
     }
@@ -549,20 +551,34 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
     });
   };
 
-  // ── 7. Mode 2, 4, 5, 8: Multiple Choice Handler ──
+  // ── 7. Mode 2, 4, 5, 8: Multiple Choice Selection & Submit Handler ──
   const handleSelectChoice = (opt: GameChoiceOption) => {
     if (isAdvancing) return;
+    if (soundEnabled) soundEffects.playClick();
     setSelectedChoiceKey(opt.key);
+    setChoiceStatus(null);
+    setFeedback(null);
+  };
+
+  const handleSubmitChoice = () => {
+    if (isAdvancing) return;
+    if (!selectedChoiceKey) {
+      setFeedback({ type: 'error', message: '⚠️ Pehle apna option chunein, fir Submit par click karein!' });
+      return;
+    }
+    const opt = currentChallenge.choiceOptions?.find((o) => o.key === selectedChoiceKey);
+    if (!opt) return;
 
     if (opt.isCorrect) {
       setChoiceStatus('correct');
 
       if (activeGame.gameType === 'boss_fight') {
-        // Trigger Boss Strike Damage Animation (10 questions = -10 HP per strike)
+        const totalQ = activeGame.challenges.length || 5;
+        const hpDamage = Math.round(100 / totalQ);
         setIsBossAttacked(true);
-        setFloatingDamage('-10 HP');
+        setFloatingDamage(`-${hpDamage} HP`);
         if (soundEnabled) soundEffects.playZapLifeline();
-        setBossHp((prev) => Math.max(0, prev - 10));
+        setBossHp((prev) => Math.max(0, prev - hpDamage));
 
         setTimeout(() => {
           setIsBossAttacked(false);
@@ -571,12 +587,12 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
       }
 
       const expl = currentChallenge.explanation ? ` — ${currentChallenge.explanation}` : '';
-      handleCorrectAnswer(10, `✓ Correct! Option ${opt.key} is right.${expl}`);
+      handleCorrectAnswer(10, `✓ Sahi Jawab! Option ${opt.key} bilkul sahi hai.${expl}`);
     } else {
       setChoiceStatus('wrong');
       if (soundEnabled) soundEffects.playQuizWrong();
       const expl = currentChallenge.explanation ? `\n💡 Concept: ${currentChallenge.explanation}` : ' Check the syntax and try again!';
-      setFeedback({ type: 'error', message: `Option ${opt.key} is incorrect.${expl}` });
+      setFeedback({ type: 'error', message: `Option ${opt.key} galat hai.${expl}` });
     }
   };
 
@@ -920,18 +936,44 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                         return (
                           <button
                             key={opt.key}
-                            className={`py-option-row ${isOptCorrect ? 'correct' : ''} ${
+                            className={`py-option-row ${isSelected && !choiceStatus ? 'selected' : ''} ${isOptCorrect ? 'correct' : ''} ${
                               isOptWrong ? 'wrong' : ''
                             }`}
                             onClick={() => handleSelectChoice(opt)}
                             disabled={isAdvancing}
                           >
                             <div className="py-option-key-badge">{opt.key}</div>
+                    {/* Submit Answer Button */}
+                    <div className="py-submit-action-row">
+                      <button
+                        type="button"
+                        className={`py-submit-answer-btn ${selectedChoiceKey ? 'py-submit-ready' : 'py-submit-idle'}`}
+                        onClick={handleSubmitChoice}
+                        disabled={isAdvancing || !selectedChoiceKey}
+                      >
+                        <Check className="w-4 h-4 stroke-[2.5]" />
+                        <span>Submit Answer</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
                             <span className="py-option-label">{opt.label}</span>
                             {isOptCorrect && <Check className="w-4 h-4 text-emerald-600 ml-auto" />}
                           </button>
                         );
                       })}
+                    </div>
+                    {/* Submit Answer Button */}
+                    <div className="py-submit-action-row">
+                      <button
+                        type="button"
+                        className={`py-submit-answer-btn ${selectedChoiceKey ? 'py-submit-ready' : 'py-submit-idle'}`}
+                        onClick={handleSubmitChoice}
+                        disabled={isAdvancing || !selectedChoiceKey}
+                      >
+                        <Check className="w-4 h-4 stroke-[2.5]" />
+                        <span>Submit Answer</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 ) : (
@@ -1020,7 +1062,8 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                         disabled={isAdvancing || puzzleSlots.length === 0}
                       >
                         <span className="py-check-play-icon">▶</span>
-                        <span>Check Answer</span>
+                        <Check className="w-4 h-4 stroke-[2.5]" />
+                        <span>Submit Answer</span>
                       </button>
 
                       <button
@@ -1122,13 +1165,26 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                     return (
                       <button
                         key={opt.key}
-                        className={`py-option-row ${isOptCorrect ? 'correct' : ''} ${
+                        className={`py-option-row ${isSelected && !choiceStatus ? 'selected' : ''} ${isOptCorrect ? 'correct' : ''} ${
                           isOptWrong ? 'wrong' : ''
                         }`}
                         onClick={() => handleSelectChoice(opt)}
                         disabled={isAdvancing}
                       >
                         <div className="py-option-key-badge">{opt.key}</div>
+                    {/* Submit Answer Button */}
+                    <div className="py-submit-action-row">
+                      <button
+                        type="button"
+                        className={`py-submit-answer-btn ${selectedChoiceKey ? 'py-submit-ready' : 'py-submit-idle'}`}
+                        onClick={handleSubmitChoice}
+                        disabled={isAdvancing || !selectedChoiceKey}
+                      >
+                        <Check className="w-4 h-4 stroke-[2.5]" />
+                        <span>Submit Answer</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
                         <span className="py-option-label">{opt.label}</span>
                         {isOptCorrect && <Check className="w-4 h-4 text-emerald-600 ml-auto" />}
                       </button>
@@ -1367,13 +1423,26 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                     return (
                       <button
                         key={opt.key}
-                        className={`py-option-row ${isOptCorrect ? 'correct' : ''} ${
+                        className={`py-option-row ${isSelected && !choiceStatus ? 'selected' : ''} ${isOptCorrect ? 'correct' : ''} ${
                           isOptWrong ? 'wrong' : ''
                         }`}
                         onClick={() => handleSelectChoice(opt)}
                         disabled={isAdvancing}
                       >
                         <div className="py-option-key-badge">{opt.key}</div>
+                    {/* Submit Answer Button */}
+                    <div className="py-submit-action-row">
+                      <button
+                        type="button"
+                        className={`py-submit-answer-btn ${selectedChoiceKey ? 'py-submit-ready' : 'py-submit-idle'}`}
+                        onClick={handleSubmitChoice}
+                        disabled={isAdvancing || !selectedChoiceKey}
+                      >
+                        <Check className="w-4 h-4 stroke-[2.5]" />
+                        <span>Submit Answer</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
                         <span className="py-option-label whitespace-pre-wrap">{opt.label}</span>
                         {isOptCorrect && <Check className="w-4 h-4 text-emerald-600 ml-auto" />}
                       </button>
@@ -1424,13 +1493,26 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                     return (
                       <button
                         key={opt.key}
-                        className={`py-option-row ${isOptCorrect ? 'correct' : ''} ${
+                        className={`py-option-row ${isSelected && !choiceStatus ? 'selected' : ''} ${isOptCorrect ? 'correct' : ''} ${
                           isOptWrong ? 'wrong' : ''
                         }`}
                         onClick={() => handleSelectChoice(opt)}
                         disabled={isAdvancing}
                       >
                         <div className="py-option-key-badge">{opt.key}</div>
+                    {/* Submit Answer Button */}
+                    <div className="py-submit-action-row">
+                      <button
+                        type="button"
+                        className={`py-submit-answer-btn ${selectedChoiceKey ? 'py-submit-ready' : 'py-submit-idle'}`}
+                        onClick={handleSubmitChoice}
+                        disabled={isAdvancing || !selectedChoiceKey}
+                      >
+                        <Check className="w-4 h-4 stroke-[2.5]" />
+                        <span>Submit Answer</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
                         <code className="py-option-label font-mono">{opt.label}</code>
                         {isOptCorrect && <Check className="w-4 h-4 text-emerald-600 ml-auto" />}
                       </button>
@@ -1482,13 +1564,26 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                       return (
                         <button
                           key={opt.key}
-                          className={`py-option-row ${isOptCorrect ? 'correct' : ''} ${
+                          className={`py-option-row ${isSelected && !choiceStatus ? 'selected' : ''} ${isOptCorrect ? 'correct' : ''} ${
                             isOptWrong ? 'wrong' : ''
                           }`}
                           onClick={() => handleSelectChoice(opt)}
                           disabled={isAdvancing}
                         >
                           <div className="py-option-key-badge">{opt.key}</div>
+                    {/* Submit Answer Button */}
+                    <div className="py-submit-action-row">
+                      <button
+                        type="button"
+                        className={`py-submit-answer-btn ${selectedChoiceKey ? 'py-submit-ready' : 'py-submit-idle'}`}
+                        onClick={handleSubmitChoice}
+                        disabled={isAdvancing || !selectedChoiceKey}
+                      >
+                        <Check className="w-4 h-4 stroke-[2.5]" />
+                        <span>Submit Answer</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
                           <span className="py-option-label font-mono font-bold">{opt.label}</span>
                           {isOptCorrect && <Check className="w-4 h-4 text-emerald-600 ml-auto" />}
                         </button>
@@ -1610,13 +1705,26 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                       return (
                         <button
                           key={opt.key}
-                          className={`py-option-row ${isOptCorrect ? 'correct' : ''} ${
+                          className={`py-option-row ${isSelected && !choiceStatus ? 'selected' : ''} ${isOptCorrect ? 'correct' : ''} ${
                             isOptWrong ? 'wrong' : ''
                           }`}
                           onClick={() => handleSelectChoice(opt)}
                           disabled={isAdvancing}
                         >
                           <div className="py-option-key-badge">{opt.key}</div>
+                    {/* Submit Answer Button */}
+                    <div className="py-submit-action-row">
+                      <button
+                        type="button"
+                        className={`py-submit-answer-btn ${selectedChoiceKey ? 'py-submit-ready' : 'py-submit-idle'}`}
+                        onClick={handleSubmitChoice}
+                        disabled={isAdvancing || !selectedChoiceKey}
+                      >
+                        <Check className="w-4 h-4 stroke-[2.5]" />
+                        <span>Submit Answer</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
                           <span className="py-option-label">{opt.label}</span>
                           {isOptCorrect && <Check className="w-4 h-4 text-emerald-600 ml-auto" />}
                         </button>
@@ -1681,6 +1789,27 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                         </div>
                       </div>
                     ))}
+
+                  {/* Submit Order Button */}
+                  <div className="py-submit-action-row">
+                    <button
+                      type="button"
+                      className="py-submit-answer-btn py-submit-ready"
+                      onClick={() => {
+                        const isCorrect = orderedLines.every((item, i) => item.correctIndex === i);
+                        if (isCorrect) {
+                          handleCorrectAnswer(10, '🎉 Sabhi Logic Blocks Sahi Krama Me Hain!');
+                        } else {
+                          if (soundEnabled) soundEffects.playQuizWrong();
+                          setFeedback({ type: 'error', message: '❌ Code ka sequence sahi nahi hai. Lines ko upar/niche karke sahi karein!' });
+                        }
+                      }}
+                      disabled={isAdvancing}
+                    >
+                      <Check className="w-4 h-4 stroke-[2.5]" />
+                      <span>Submit Order</span>
+                    </button>
+                  </div>
                   </div>
                 </div>
               )
@@ -1757,13 +1886,26 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
                     return (
                       <button
                         key={opt.key}
-                        className={`py-option-row boss-strike ${isOptCorrect ? 'correct' : ''} ${
+                        className={`py-option-row boss-strike ${isSelected && !choiceStatus ? 'selected' : ''} ${isOptCorrect ? 'correct' : ''} ${
                           isOptWrong ? 'wrong' : ''
                         }`}
                         onClick={() => handleSelectChoice(opt)}
                         disabled={isAdvancing}
                       >
                         <div className="py-option-key-badge boss">{opt.key}</div>
+                    {/* Submit Answer Button */}
+                    <div className="py-submit-action-row">
+                      <button
+                        type="button"
+                        className={`py-submit-answer-btn ${selectedChoiceKey ? 'py-submit-ready' : 'py-submit-idle'}`}
+                        onClick={handleSubmitChoice}
+                        disabled={isAdvancing || !selectedChoiceKey}
+                      >
+                        <Check className="w-4 h-4 stroke-[2.5]" />
+                        <span>Submit Answer</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
                         <code className="py-option-label font-mono">{opt.label}</code>
                         {isOptCorrect && <Zap className="w-4 h-4 text-emerald-400 ml-auto fill-current" />}
                       </button>

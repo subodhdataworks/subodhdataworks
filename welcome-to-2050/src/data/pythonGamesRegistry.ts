@@ -30,7 +30,7 @@ export const PYTHON_LEVELS_META: Record<number, PythonLevelMeta> = {
     category: 'Beginner',
     description: 'Learn computing foundations, instructions, algorithms, and setting up Python.',
     totalGames: 8,
-    totalQuestions: 80,
+    totalQuestions: 40,
     icon: '🐍',
   },
   2: {
@@ -42,7 +42,7 @@ export const PYTHON_LEVELS_META: Record<number, PythonLevelMeta> = {
     category: 'Beginner',
     description: 'Master variables, data types (int, float, str, bool), type casting, and naming conventions.',
     totalGames: 8,
-    totalQuestions: 80,
+    totalQuestions: 40,
     icon: '📦',
   },
 };
@@ -50,12 +50,14 @@ export const PYTHON_LEVELS_META: Record<number, PythonLevelMeta> = {
 /**
  * Returns the 8 interactive games for the specified Python Level (1 or 2).
  * Defaults to Level 1 if unspecified or out of range.
+ * Each game contains strictly 5 curated challenges as requested ("saare question 5 , 5 karo").
  */
 export function getPythonLevelGames(levelId: number = 1): PythonGame[] {
-  if (levelId === 2) {
-    return PYTHON_VARIABLES_GAMES;
-  }
-  return PYTHON_INTRO_GAMES;
+  const games = levelId === 2 ? PYTHON_VARIABLES_GAMES : PYTHON_INTRO_GAMES;
+  return games.map((g) => ({
+    ...g,
+    challenges: g.challenges.slice(0, 5),
+  }));
 }
 
 /**
@@ -71,7 +73,7 @@ export function getPythonLevelMeta(levelId: number = 1): PythonLevelMeta {
     category: levelId <= 7 ? 'Beginner' : levelId <= 15 ? 'Intermediate' : 'Advanced',
     description: 'Interactive Python coding challenge arena.',
     totalGames: 8,
-    totalQuestions: 80,
+    totalQuestions: 40,
     icon: '⚡',
   };
 }

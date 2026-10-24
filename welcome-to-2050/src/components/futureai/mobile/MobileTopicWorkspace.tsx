@@ -384,7 +384,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
         soundEffects.playCoinCollect();
         awardLearnerTelemetry(20, 5);
       } catch {}
-      setGameQuestionsDone((prev) => Math.min(10, Math.max(prev, activeGameLevel)));
+      setGameQuestionsDone((prev) => Math.min(5, Math.max(prev, activeGameLevel)));
       setGameScore((prev) => prev + 10);
     }
   };
@@ -399,7 +399,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
   const handleNextGameLevel = () => {
     playTactile();
-    if (activeGameLevel < 10) {
+    if (activeGameLevel < 5) {
       setActiveGameLevel((prev) => prev + 1);
       setSelectedGameOption(null);
       setIsAnswerSubmitted(false);
@@ -1588,7 +1588,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
           {/* Level Selector Circles (All 10 Distinct Levels 1 to 10) */}
           <div className="flex items-center justify-between gap-1 px-1 py-1 overflow-x-auto no-scrollbar">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
+            {[1, 2, 3, 4, 5].map((num) => {
               const isActive = num === activeGameLevel;
               return (
                 <button
@@ -1618,13 +1618,13 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                   Coding Practice {activeGameLevel} — {currentChallenge.tag}
                 </h3>
                 <p className="text-[9px] text-slate-500 font-semibold leading-tight mt-0.5">
-                  {currentChallenge.concept} • Challenge {activeGameLevel} of 10
+                  {currentChallenge.concept} • Challenge {activeGameLevel} of 5
                 </p>
               </div>
             </div>
 
             <span className="px-2 py-0.5 rounded-full bg-blue-50 text-[9px] font-black text-blue-700 border border-blue-200 shrink-0">
-              Level {activeGameLevel}/10
+              Level {activeGameLevel}/5
             </span>
           </div>
 
@@ -1742,13 +1742,13 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
                 {/* Next Level or Finish ➔ Auto Interview CTA */}
                 <div className="space-y-1.5">
-                  {activeGameLevel < 10 ? (
+                  {activeGameLevel < 5 ? (
                     <button
                       type="button"
                       onClick={handleNextGameLevel}
                       className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-blue-500/25 active:scale-98 transition-transform cursor-pointer"
                     >
-                      <span>Next Level: Coding Practice {activeGameLevel + 1} of 10 →</span>
+                      <span>Next Level: Coding Practice {activeGameLevel + 1} of 5 →</span>
                     </button>
                   ) : (
                     <button
