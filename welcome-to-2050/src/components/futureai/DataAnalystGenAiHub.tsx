@@ -9,13 +9,11 @@ import {
   Sparkles,
   BarChart3,
   ArrowLeft,
-  Send,
   Briefcase,
   Flame,
   FileText,
   Target,
   Check,
-  Bot,
   TrendingUp
 } from 'lucide-react';
 import { DATA_ANALYST_CURRICULUM, TabItem } from '../../data/dataAnalystCurriculum';
@@ -38,8 +36,6 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
     'ch-2': false,
     'ch-3': false,
   });
-  const [novaQuestion, setNovaQuestion] = useState('');
-  const [novaResponse, setNovaResponse] = useState<string | null>(null);
 
   const activeTab: TabItem =
     DATA_ANALYST_CURRICULUM.find((t) => t.id === activeTabId) ||
@@ -61,15 +57,6 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
       ...prev,
       [chapterId]: !prev[chapterId],
     }));
-  };
-
-  const handleAskNova = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!novaQuestion.trim()) return;
-    setNovaResponse(
-      `NOVA AI: For "${novaQuestion.trim()}", start with Tab ${activeTab.tabNum} Chapter 1 fundamentals, and try practicing live code in the Coding Arena!`
-    );
-    setNovaQuestion('');
   };
 
   // Helper to render icon for tab
@@ -121,19 +108,19 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
         {/* =========================================================================
             1. TOP HERO BANNER: LIGHT EXECUTIVE THEME (HIGH-CONTRAST DAYLIGHT TECH CAMPUS)
             ========================================================================= */}
-        <section className="w-full relative rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm bg-gradient-to-r from-white via-slate-50/70 to-blue-50/30 text-slate-900">
-          {/* Photorealistic Daylight Campus Collaboration Photo */}
+        <section className="w-full relative rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm bg-white text-slate-900">
+          {/* Full Background Daylight Tech Campus Photo */}
           <img
             src="/images/data_analyst_light_banner.jpg"
             alt="Data Analyst Students Collaboration"
-            className="absolute right-0 top-0 bottom-0 w-full md:w-[56%] lg:w-[52%] h-full object-cover object-center opacity-90 md:opacity-95 pointer-events-none transition-opacity"
+            className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
             onError={(e) => {
               (e.target as HTMLImageElement).src = '/images/future_it_industries_campus_banner.png';
             }}
           />
-          {/* Smooth Pearl Gradient Fade across the left text zone for crystal clear readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 md:via-white/85 to-transparent pointer-events-none w-full md:w-[62%]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-white/70 via-transparent to-transparent pointer-events-none md:hidden" />
+          {/* Clean Glass Overlay so text is crystal clear directly over the full background image */}
+          <div className="absolute inset-0 bg-white/70 backdrop-blur-[1.5px] pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/60 pointer-events-none" />
 
           <div className="relative z-10 p-4 sm:p-5 lg:p-6 flex flex-col justify-between min-h-[210px] sm:min-h-[225px]">
             
@@ -583,82 +570,6 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
             </div>
 
 
-            {/* 2. CONTINUE LEARNING CARD */}
-            <div className="bg-white rounded-3xl p-5 border border-slate-200/90 shadow-sm space-y-3">
-              <h3 className="font-black text-sm text-slate-900">Continue Learning</h3>
-
-              <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-slate-900 p-1 flex items-center justify-center shrink-0">
-                  <ToolIcon name="python" className="w-6 h-6 object-contain" />
-                </div>
-                <div className="flex flex-col min-w-0 flex-1">
-                  <span className="text-xs font-black text-slate-950 truncate">
-                    Python as a Calculator
-                  </span>
-                  <span className="text-[10px] font-semibold text-slate-400 truncate">
-                    Tab 4 • Chapter 10 • Topic 4
-                  </span>
-                  <div className="flex items-center gap-2 mt-1.5">
-                    <div className="flex-1 h-1.5 rounded-full bg-slate-200 overflow-hidden">
-                      <div className="h-full bg-emerald-500 rounded-full" style={{ width: '50%' }} />
-                    </div>
-                    <span className="text-[10px] font-bold text-slate-600">50%</span>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => onStartTopic && onStartTopic('t-49', 'Writing Reusable Code')}
-                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
-              >
-                <Play className="w-3.5 h-3.5 fill-white" />
-                <span>Continue Learning</span>
-              </button>
-            </div>
-
-
-            {/* 3. AI TUTOR (NOVA) CARD */}
-            <div className="bg-white rounded-3xl p-5 border border-slate-200/90 shadow-sm space-y-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-sm">
-                  <Bot className="w-5 h-5 text-white" />
-                </div>
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-black text-xs text-slate-900">AI Tutor (NOVA)</span>
-                    <span className="px-1.5 py-0.2 rounded text-[9px] font-black uppercase tracking-wider bg-blue-100 text-blue-700">
-                      Beta
-                    </span>
-                  </div>
-                  <span className="text-[10px] text-slate-400">
-                    Get instant answers, explanations, code help and real examples.
-                  </span>
-                </div>
-              </div>
-
-              {novaResponse && (
-                <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 font-medium">
-                  {novaResponse}
-                </div>
-              )}
-
-              <form onSubmit={handleAskNova} className="relative">
-                <input
-                  type="text"
-                  value={novaQuestion}
-                  onChange={(e) => setNovaQuestion(e.target.value)}
-                  placeholder="Ask NOVA anything..."
-                  className="w-full pl-3 pr-9 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 text-xs text-slate-800 placeholder-slate-400 outline-none transition-all"
-                />
-                <button
-                  type="submit"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors cursor-pointer"
-                >
-                  <Send className="w-3 h-3" />
-                </button>
-              </form>
-            </div>
 
 
             {/* 4. LEARNING PATH STEPPER */}
