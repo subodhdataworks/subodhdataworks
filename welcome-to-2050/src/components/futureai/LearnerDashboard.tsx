@@ -72,6 +72,7 @@ import { GlobalTopNav } from './navigation/GlobalTopNav';
 import './navigation/GlobalNavigation.css';
 import { AffiliateEarningsHub } from './AffiliateEarningsHub';
 import { GameArenaHub } from './GameArenaHub';
+import { CodingPracticeMasterHub } from './CodingPracticeMasterHub';
 import { LearnerHomeHub } from './LearnerHomeHub';
 import { DataAnalystGenAiHub } from './DataAnalystGenAiHub';
 import { DataScienceAgenticAiHub } from './DataScienceAgenticAiHub';
@@ -1565,7 +1566,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           <Search className="w-4 h-4 text-sky-500 shrink-0" />
           <input
             type="text"
-            placeholder={dockTab === 'game' ? 'Search Python coding practice, challenges, or skills...' : 'Search for topics, modules, projects, interview questions or anything...'}
+            placeholder={dockTab === 'game' ? 'Search courses, tools or topics...' : 'Search for topics, modules, projects, interview questions or anything...'}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="dock-search-input"
@@ -1573,14 +1574,26 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           <span className="dock-kbd-hint">Ctrl K</span>
         </div>
 
-        {/* Right Actions: Notifications + User Profile (media_1791313375552.jpg) */}
+        {/* Right Actions: 13 Courses Dropdown + Notifications + User Profile (Exact 1:1 with media_1792862844688_4a7e1cf6.jpg) */}
         <div className="flex items-center gap-3">
-          {/* Notifications bell */}
+          {/* 13 Courses Pill Button */}
+          <button
+            type="button"
+            onClick={() => {
+              setDockTab('game');
+              if (typeof window !== 'undefined') window.location.hash = '#game';
+            }}
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-sm transition-all cursor-pointer active:scale-95"
+          >
+            <Layers className="w-4 h-4 text-[#1a73e8]" />
+            <span>13 Courses</span>
+            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+          </button>
+
+          {/* Notifications bell with Red Dot Badge */}
           <div className="relative cursor-pointer p-1.5 rounded-full hover:bg-sky-50 text-slate-600 transition-colors">
             <Bell className="w-5 h-5" />
-            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center">
-              1
-            </span>
+            <span className="absolute 0.5 top-0.5 right-0.5 w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-white"></span>
           </div>
 
           {/* User Profile & Dropdown Menu */}
@@ -1598,8 +1611,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 className="dock-avatar-img" 
               />
               <div className="hidden sm:flex flex-col text-left">
-                <strong className="text-xs font-black text-slate-800 leading-tight">{userName}</strong>
-                <span className="text-[10px] text-slate-500 font-semibold">Level 1 • New Learner</span>
+                <strong className="text-xs font-black text-slate-800 leading-tight">Hi, {userName || 'Rahul'}</strong>
+                <span className="text-[10px] text-slate-500 font-semibold">Learner</span>
               </div>
               <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${profileDropdownOpen ? 'rotate-180' : ''}`} />
             </div>
@@ -2277,67 +2290,51 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           </div>
         )}
 
-        {/* ─── TAB: GAME ARENA HUB (1:1 with media_1791313375552.jpg) ─── */}
+        {/* ─── TAB: CODING PRACTICE MASTER HUB (Exact 1:1 with media_1792862844688_4a7e1cf6.jpg) ─── */}
         {dockTab === 'game' && selectedModuleView === null && (
           <div className="col-span-full">
-            {/* Mobile (< 768px): Exact Match to Reference Image (media_1792498440204_03b1cee0.jpg) */}
-            <div className="md:hidden">
-              <MobileGameArenaHub
-                userName={userName}
-                onPlayPython={(topicId) => {
-                  setIntroGameLevelId(topicId || 1);
-                  setSelectedModuleView('python_intro_game');
-                  if (typeof window !== 'undefined') window.location.hash = `#intro-game?level=${topicId || 1}`;
-                }}
-                onLockedGame={(gameName) => {
-                  setSelectedLockedModule(gameName);
-                  setUnlockModalOpen(true);
-                }}
-                onNavigateBack={() => {
-                  setDockTab('home');
-                  setSelectedModuleView(null);
-                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-                }}
-                onOpenAdvisor={onOpenAdvisor}
-                onOpenLogin={() => setAuthModalOpen(true)}
-              />
-            </div>
-
-            {/* Desktop (>= 768px): GameArenaHub */}
-            <div className="hidden md:block">
-              <GameArenaHub
+            <CodingPracticeMasterHub
               userName={userName}
-              isNewStudentMode={isNewStudentMode}
-              onPlayPython={(topicId) => {
-                if (topicId === 1 || topicId === 2) {
-                  setIntroGameLevelId(topicId);
-                  setSelectedModuleView('python_intro_game');
-                  if (typeof window !== 'undefined') window.location.hash = `#intro-game?level=${topicId}`;
-                } else {
-                  setSelectedModuleView('python');
-                  setActiveTopicWs(topicId || 1);
-                  setTargetStep('play');
-                  if (typeof window !== 'undefined') window.location.hash = '#play';
-                }
+              onOpenPython={(topicId) => {
+                setSelectedModuleView('python');
+                setActiveTopicWs(topicId || 1);
+                setTargetStep('play');
+                if (typeof window !== 'undefined') window.location.hash = '#python';
               }}
-              onLockedGame={(gameName) => {
-                setSelectedLockedModule(gameName);
-                setUnlockModalOpen(true);
+              onOpenSql={() => {
+                setSelectedModuleView('sql');
+                if (typeof window !== 'undefined') window.location.hash = '#sql';
               }}
-              onNavigateTab={(tab) => {
-                if (tab === 'home') {
-                  setDockTab('home');
-                  setSelectedModuleView(null);
-                  setActiveTopicWs(null);
-                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-                } else if (tab === 'placement') {
-                  setDockTab('placement');
-                  if (typeof window !== 'undefined') window.location.hash = '#placement';
-                }
+              onOpenDataAnalyst={() => {
+                setSelectedModuleView('data_analyst');
+                setActiveTopicWs(1);
+                if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+              }}
+              onOpenDataScience={() => {
+                setSelectedModuleView('data_science');
+                setActiveTopicWs(1);
+                if (typeof window !== 'undefined') window.location.hash = '#data-science';
+              }}
+              onOpenMlEngineering={() => {
+                setSelectedModuleView('ml_engineering');
+                setActiveTopicWs(1);
+                if (typeof window !== 'undefined') window.location.hash = '#ml-engineering';
+              }}
+              onOpenAiEngineering={() => {
+                setSelectedModuleView('ai_engineering');
+                setActiveTopicWs(1);
+                if (typeof window !== 'undefined') window.location.hash = '#ai-engineering';
+              }}
+              onOpenFullStack={() => {
+                setSelectedModuleView('full_stack_mern');
+                setActiveTopicWs(1);
+                if (typeof window !== 'undefined') window.location.hash = '#full-stack';
+              }}
+              onOpenGenericPractice={(courseName) => {
+                alert(`🚀 ${courseName} Practice is active! Jump directly into hands-on code challenges.`);
               }}
               onOpenAdvisor={onOpenAdvisor}
             />
-            </div>
           </div>
         )}
 
@@ -2735,8 +2732,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         </div>
       )}
 
-      {/* Mobile (< 768px): Native Android 5-Tab Bottom Navigation Bar - ONLY on Homepage */}
-      {selectedModuleView === null && activeTopicWs === null && dockTab === 'home' && (
+      {/* Mobile (< 768px): Native Android 5-Tab Bottom Navigation Bar */}
+      {selectedModuleView === null && activeTopicWs === null && (dockTab === 'home' || dockTab === 'game') && (
         <div className="md:hidden">
           <MobileBottomNav
             currentTab={currentMobileTab}
