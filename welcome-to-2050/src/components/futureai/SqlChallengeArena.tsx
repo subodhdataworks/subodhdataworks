@@ -108,6 +108,14 @@ export const SqlChallengeArena: React.FC<SqlChallengeArenaProps> = ({
   });
 
   // Sound and settings
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  }, []);
+
   const [soundEnabled, setSoundEnabled] = useState<boolean>(soundEffects.getSoundEnabled());
   const [selectedDialect, setSelectedDialect] = useState<string>('PostgreSQL (16)');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);

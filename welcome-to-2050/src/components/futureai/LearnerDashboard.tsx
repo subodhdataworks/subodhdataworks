@@ -639,9 +639,48 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     return 1;
   });
 
+  // Disable browser auto scroll restoration so every page open starts at top (0, 0)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []);
+
+  // Always scroll to top upon any tab, module view, or topic workspace transition
+  useLayoutEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      const dockPage = document.querySelector('.dock-dashboard-page');
+      if (dockPage) dockPage.scrollTop = 0;
+      const mainContainer = document.querySelector('.dock-main-container');
+      if (mainContainer) mainContainer.scrollTop = 0;
+      requestAnimationFrame(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      });
+    }
+  }, [dockTab, selectedModuleView, activeTopicWs]);
+
   // Sync hash changes
   useEffect(() => {
     const handleHash = () => {
+      if (typeof window !== 'undefined') {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        const dockPage = document.querySelector('.dock-dashboard-page');
+        if (dockPage) dockPage.scrollTop = 0;
+        const mainContainer = document.querySelector('.dock-main-container');
+        if (mainContainer) mainContainer.scrollTop = 0;
+        requestAnimationFrame(() => {
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+        });
+      }
       const h = window.location.hash;
       const baseH = h.split('?')[0];
       if (baseH === '#data-analyst' || baseH === '#data-analytics') {
@@ -658,6 +697,10 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         setDockTab('home');
       } else if (baseH === '#ai-engineering' || baseH === '#aiengineering' || baseH === '#ai-eng' || baseH === '#ai') {
         setSelectedModuleView('ai_engineering');
+        setActiveTopicWs(null);
+        setDockTab('home');
+      } else if (baseH === '#full-stack' || baseH === '#fullstack' || baseH === '#fullstack-mern') {
+        setSelectedModuleView('full_stack_mern');
         setActiveTopicWs(null);
         setDockTab('home');
       } else if (baseH === '#intro-game' || baseH === '#intro-games' || baseH === '#pyintro') {
@@ -680,42 +723,42 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         setSelectedModuleView('excel_challenges');
         setActiveTopicWs(null);
         setDockTab('game');
-      } else if (h === '#game' || h === '#games' || h === '#arena' || h === '#gamearena' || h === '#practice' || h === '#codingpractice' || h === '#coding-practice') {
+      } else if (baseH === '#game' || baseH === '#games' || baseH === '#arena' || baseH === '#gamearena' || baseH === '#practice' || baseH === '#codingpractice' || baseH === '#coding-practice') {
         setSelectedModuleView(null);
         setActiveTopicWs(null);
         setDockTab('game');
-      } else if (h === '#income' || h === '#earnings' || h === '#myearnings' || h === '#myearning' || h === '#earning') {
+      } else if (baseH === '#income' || baseH === '#earnings' || baseH === '#myearnings' || baseH === '#myearning' || baseH === '#earning') {
         setSelectedModuleView(null);
         setActiveTopicWs(null);
         setDockTab('income');
-      } else if (h === '#placement' || h === '#jobs' || h === '#placements') {
+      } else if (baseH === '#placement' || baseH === '#jobs' || baseH === '#placements') {
         setSelectedModuleView(null);
         setActiveTopicWs(null);
         setLockedSectionTarget('Placement');
         setPlacementLockOpen(true);
-      } else if (h === '#internship' || h === '#internships') {
+      } else if (baseH === '#internship' || baseH === '#internships') {
         setSelectedModuleView(null);
         setActiveTopicWs(null);
         setLockedSectionTarget('Internship');
         setPlacementLockOpen(true);
-      } else if (h === '#certificate' || h === '#certificates') {
+      } else if (baseH === '#certificate' || baseH === '#certificates') {
         setSelectedModuleView(null);
         setActiveTopicWs(null);
         setLockedSectionTarget('Certificate');
         setPlacementLockOpen(true);
-      } else if (h === '#referral') {
+      } else if (baseH === '#referral') {
         setSelectedModuleView(null);
         setActiveTopicWs(null);
         setDockTab('referral');
-      } else if (h === '#wallet') {
+      } else if (baseH === '#wallet') {
         setSelectedModuleView(null);
         setActiveTopicWs(null);
         setDockTab('wallet');
-      } else if (h === '#withdraw') {
+      } else if (baseH === '#withdraw') {
         setSelectedModuleView(null);
         setActiveTopicWs(null);
         setDockTab('withdraw');
-      } else if (h === '#dashboard' || h === '#courses' || h === '#home' || !h) {
+      } else if (baseH === '#dashboard' || baseH === '#courses' || baseH === '#home' || !baseH) {
         setSelectedModuleView(null);
         setActiveTopicWs(null);
         setDockTab('home');
@@ -763,7 +806,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     };
     handleHash();
     window.addEventListener('hashchange', handleHash);
-    return () => window.removeEventListener('hashchange', handleHash);
+    window.addEventListener('popstate', handleHash);
+    return () => {
+      window.removeEventListener('hashchange', handleHash);
+      window.removeEventListener('popstate', handleHash);
+    };
   }, []);
 
   // Interactive AI Mentor Chat state in bottom right widget

@@ -111,6 +111,14 @@ export const ExcelChallengeArena: React.FC<ExcelChallengeArenaProps> = ({
   });
 
   // Sound and settings
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  }, []);
+
   const [soundEnabled, setSoundEnabled] = useState<boolean>(soundEffects.getSoundEnabled());
   const [selectedEngine, setSelectedEngine] = useState<string>('Excel 365 (Modern Formulas)');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);

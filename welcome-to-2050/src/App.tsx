@@ -268,7 +268,17 @@ export const App: React.FC = () => {
           />
         ) : (() => {
             const baseH = (typeof window !== 'undefined' ? window.location.hash : currentHash).split('?')[0].toLowerCase();
-            const appRoutes = ['#dashboard', '#game', '#games', '#arena', '#gamezone', '#coding_game', '#placement', '#income', '#referral', '#python', '#sql', '#excel', '#powerbi', '#genai', '#stats', '#data-analyst', '#intro-game', '#pyintro', '#earnings', '#wallet', '#withdraw'];
+            const appRoutes = [
+              '#dashboard', '#home', '#courses', '#game', '#games', '#arena', '#gamezone', '#coding_game',
+              '#coding-practice', '#codingpractice', '#practice', '#placement', '#income', '#referral',
+              '#python', '#sql', '#excel', '#powerbi', '#genai', '#stats',
+              '#python-challenges', '#pythonchallenges', '#sql-challenges', '#sqlchallenges', '#excel-challenges', '#excelchallenges',
+              '#data-analyst', '#data-analytics', '#data-science', '#data-science-agentic-ai', '#datascience',
+              '#ml-engineering', '#mlengineering', '#ml-eng', '#ml',
+              '#ai-engineering', '#aiengineering', '#ai-eng', '#ai',
+              '#full-stack', '#fullstack', '#fullstack-mern',
+              '#intro-game', '#pyintro', '#earnings', '#wallet', '#withdraw'
+            ];
             return isLoggedIn || appRoutes.includes(baseH);
           })() ? (
           <LearnerDashboard

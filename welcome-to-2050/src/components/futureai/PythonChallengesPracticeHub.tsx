@@ -69,6 +69,42 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
     }
   }, [isEnrolled]);
 
+  // Sync arena state with URL hash so Google Chrome's native back button exits arena
+  useEffect(() => {
+    const handleHash = () => {
+      const h = window.location.hash;
+      if (h.includes('#python-challenges') && h.includes('arena=')) {
+        const params = new URLSearchParams(h.split('?')[1] || '');
+        const arenaId = parseInt(params.get('arena') || '1', 10);
+        setActiveChallengeArenaTopic((prev) => (prev?.topicId === arenaId ? prev : { topicId: arenaId, initialTaskId: 1 }));
+      } else {
+        setActiveChallengeArenaTopic(null);
+      }
+    };
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    window.addEventListener('popstate', handleHash);
+    return () => {
+      window.removeEventListener('hashchange', handleHash);
+      window.removeEventListener('popstate', handleHash);
+    };
+  }, []);
+
+  const openArena = (topicId: number, taskId: number = 1) => {
+    setActiveChallengeArenaTopic({ topicId, initialTaskId: taskId });
+    if (typeof window !== 'undefined') {
+      window.location.hash = `#python-challenges?arena=${topicId}`;
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  }, [activeTab, activeChallengeArenaTopic]);
+
   // Collapsible accordion states
   const [statusOpen, setStatusOpen] = useState<boolean>(true);
   const [skillsOpen, setSkillsOpen] = useState<boolean>(true);
@@ -167,9 +203,19 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
         topicTitle={selectedTopic?.title}
         tasks={selectedTopic?.questions}
         initialTaskId={activeChallengeArenaTopic.initialTaskId || 1}
-        onBack={() => setActiveChallengeArenaTopic(null)}
+        onBack={() => {
+          if (typeof window !== 'undefined' && window.location.hash.includes('arena=')) {
+            window.history.back();
+          } else {
+            setActiveChallengeArenaTopic(null);
+          }
+        }}
         onCompleteAll={() => {
-          setActiveChallengeArenaTopic(null);
+          if (typeof window !== 'undefined' && window.location.hash.includes('arena=')) {
+            window.history.back();
+          } else {
+            setActiveChallengeArenaTopic(null);
+          }
         }}
       />
     );
@@ -390,7 +436,7 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
                                 }
                                 const val = Number(e.target.value);
                                 if (val) {
-                                  setActiveChallengeArenaTopic({ topicId: item.id, initialTaskId: val });
+                                  openArena(item.id, val);
                                 }
                               }}
                               className="w-full appearance-none bg-blue-50/80 hover:bg-blue-100/70 border border-blue-200 text-blue-900 font-bold text-xs pl-3 pr-8 py-2 rounded-xl shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all truncate"
@@ -444,7 +490,7 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
                         <button
                           type="button"
                           onClick={() => {
-                            setActiveChallengeArenaTopic({ topicId: item.id, initialTaskId: 1 });
+                            openArena(item.id, 1);
                           }}
                           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-semibold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap"
                         >

@@ -129,12 +129,20 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
     }
   ];
 
+  const scrollToTop = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  };
+
   // Quick search suggestions
   const searchResults = [
-    { title: 'Python Coding Challenges (Topic 1 Free)', category: 'Practice', action: () => onNavigatePractice('python') },
-    { title: 'SQL Query Arena (Topic 1 Free)', category: 'Practice', action: () => onNavigatePractice('sql') },
-    { title: 'Excel Formula Simulator (Topic 1 Free)', category: 'Practice', action: () => onNavigatePractice('excel') },
-    { title: 'Master Practice Hub (14 Tracks)', category: 'Practice', action: () => onNavigatePractice('master') },
+    { title: 'Python Coding Challenges (Topic 1 Free)', category: 'Practice', action: () => { scrollToTop(); onNavigatePractice('python'); } },
+    { title: 'SQL Query Arena (Topic 1 Free)', category: 'Practice', action: () => { scrollToTop(); onNavigatePractice('sql'); } },
+    { title: 'Excel Formula Simulator (Topic 1 Free)', category: 'Practice', action: () => { scrollToTop(); onNavigatePractice('excel'); } },
+    { title: 'Master Practice Hub (14 Tracks)', category: 'Practice', action: () => { scrollToTop(); onNavigatePractice('master'); } },
     { title: 'Data Analyst with Generative AI Track', category: 'Course', action: onNavigateLearning },
     { title: 'ATS Resume Checker & Optimizer', category: 'Career Tool', action: onOpenAtsResume },
     { title: 'Affiliate Earnings & Wallet Dashboard', category: 'Finance', action: onNavigateEarn },
@@ -151,7 +159,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
           <div 
             onClick={() => {
               soundEffects.playClick();
-              onNavigateHome();
+              scrollToTop(); onNavigateHome();
             }}
             className="flex items-center gap-2 select-none cursor-pointer group shrink-0 transition-transform hover:scale-[1.01] active:scale-98"
             title="Future IT Industries - Learn Today, Earn Tomorrow."
@@ -167,7 +175,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               type="button"
               onClick={() => {
                 soundEffects.playClick();
-                onNavigateHome();
+                scrollToTop(); onNavigateHome();
               }}
               className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-200 cursor-pointer ${
                 activeNavTab === 'home'
@@ -184,7 +192,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               type="button"
               onClick={() => {
                 soundEffects.playClick();
-                onNavigateLearning();
+                scrollToTop(); onNavigateLearning();
               }}
               className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-200 cursor-pointer ${
                 activeNavTab === 'learning'
@@ -204,7 +212,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                   onClick={() => {
                     soundEffects.playClick();
                     setPracticeDropdownOpen(false);
-                    onNavigatePractice('master');
+                    scrollToTop(); onNavigatePractice('master');
                   }}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-l-xl transition-all duration-200 cursor-pointer ${
                     activeNavTab === 'practice'
@@ -249,7 +257,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     onClick={() => {
                       soundEffects.playClick();
                       setPracticeDropdownOpen(false);
-                      onNavigatePractice('master');
+                      scrollToTop(); onNavigatePractice('master');
                     }}
                     className="w-full flex items-center gap-3 px-3 py-2 rounded-xl bg-blue-50/70 hover:bg-blue-100/70 text-blue-700 transition group text-left cursor-pointer mb-1 border border-blue-200/50"
                   >
@@ -268,7 +276,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     onClick={() => {
                       soundEffects.playClick();
                       setPracticeDropdownOpen(false);
-                      onNavigatePractice('python');
+                      scrollToTop(); onNavigatePractice('python');
                     }}
                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-sky-50 text-slate-800 hover:text-[#1a73e8] transition group text-left cursor-pointer"
                   >
@@ -290,7 +298,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     onClick={() => {
                       soundEffects.playClick();
                       setPracticeDropdownOpen(false);
-                      onNavigatePractice('sql');
+                      scrollToTop(); onNavigatePractice('sql');
                     }}
                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-sky-50 text-slate-800 hover:text-[#1a73e8] transition group text-left cursor-pointer"
                   >
@@ -312,7 +320,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     onClick={() => {
                       soundEffects.playClick();
                       setPracticeDropdownOpen(false);
-                      onNavigatePractice('excel');
+                      scrollToTop(); onNavigatePractice('excel');
                     }}
                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-emerald-50 text-slate-800 hover:text-emerald-700 transition group text-left cursor-pointer"
                   >
@@ -336,7 +344,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     onClick={() => {
                       soundEffects.playClick();
                       setPracticeDropdownOpen(false);
-                      onNavigatePractice('master');
+                      scrollToTop(); onNavigatePractice('master');
                     }}
                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-indigo-50 text-slate-800 hover:text-indigo-600 transition group text-left cursor-pointer"
                   >
@@ -374,7 +382,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               type="button"
               onClick={() => {
                 soundEffects.playClick();
-                onNavigateEarn();
+                scrollToTop(); onNavigateEarn();
               }}
               className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-200 cursor-pointer ${
                 activeNavTab === 'earn'
@@ -391,7 +399,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               type="button"
               onClick={() => {
                 soundEffects.playClick();
-                onNavigateInternship();
+                scrollToTop(); onNavigateInternship();
               }}
               className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-200 cursor-pointer ${
                 activeNavTab === 'internship'
@@ -408,7 +416,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               type="button"
               onClick={() => {
                 soundEffects.playClick();
-                onNavigatePlacement();
+                scrollToTop(); onNavigatePlacement();
               }}
               className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-200 cursor-pointer ${
                 activeNavTab === 'placement'
@@ -513,7 +521,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     onClick={() => {
                       soundEffects.playClick();
                       setProfileDropdownOpen(false);
-                      onNavigateHome();
+                      scrollToTop(); onNavigateHome();
                     }}
                     className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition cursor-pointer"
                   >
@@ -526,7 +534,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     onClick={() => {
                       soundEffects.playClick();
                       setProfileDropdownOpen(false);
-                      onNavigatePractice('master');
+                      scrollToTop(); onNavigatePractice('master');
                     }}
                     className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition cursor-pointer"
                   >
@@ -553,7 +561,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                       soundEffects.playClick();
                       setProfileDropdownOpen(false);
                       if (onOpenWallet) onOpenWallet();
-                      else onNavigateEarn();
+                      else scrollToTop(); onNavigateEarn();
                     }}
                     className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition cursor-pointer"
                   >
@@ -609,7 +617,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 onClick={() => {
                   soundEffects.playClick();
                   setMobileMenuOpen(false);
-                  onNavigateHome();
+                  scrollToTop(); onNavigateHome();
                 }}
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-bold text-xs ${
                   activeNavTab === 'home' ? 'bg-[#eef5fe] text-[#1a73e8]' : 'text-slate-700 bg-slate-50'
@@ -625,7 +633,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 onClick={() => {
                   soundEffects.playClick();
                   setMobileMenuOpen(false);
-                  onNavigateLearning();
+                  scrollToTop(); onNavigateLearning();
                 }}
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-bold text-xs ${
                   activeNavTab === 'learning' ? 'bg-[#eef5fe] text-[#1a73e8]' : 'text-slate-700 bg-slate-50'
@@ -648,7 +656,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 onClick={() => {
                   soundEffects.playClick();
                   setMobileMenuOpen(false);
-                  onNavigatePractice('master');
+                  scrollToTop(); onNavigatePractice('master');
                 }}
                 className="w-full flex items-center justify-between p-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-xs shadow-md shadow-blue-500/20 active:scale-98 transition cursor-pointer"
               >
@@ -665,7 +673,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                   onClick={() => {
                     soundEffects.playClick();
                     setMobileMenuOpen(false);
-                    onNavigatePractice('python');
+                    scrollToTop(); onNavigatePractice('python');
                   }}
                   className="flex items-center justify-between p-2.5 rounded-xl bg-sky-50/70 border border-sky-100 text-xs font-bold text-slate-800"
                 >
@@ -677,7 +685,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                   onClick={() => {
                     soundEffects.playClick();
                     setMobileMenuOpen(false);
-                    onNavigatePractice('sql');
+                    scrollToTop(); onNavigatePractice('sql');
                   }}
                   className="flex items-center justify-between p-2.5 rounded-xl bg-sky-50/70 border border-sky-100 text-xs font-bold text-slate-800"
                 >
@@ -689,7 +697,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                   onClick={() => {
                     soundEffects.playClick();
                     setMobileMenuOpen(false);
-                    onNavigatePractice('excel');
+                    scrollToTop(); onNavigatePractice('excel');
                   }}
                   className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-100 text-xs font-bold text-slate-800"
                 >
@@ -722,7 +730,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               onClick={() => {
                 soundEffects.playClick();
                 setMobileMenuOpen(false);
-                onNavigateEarn();
+                scrollToTop(); onNavigateEarn();
               }}
               className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-slate-50 hover:bg-amber-50 text-xs font-bold text-slate-800 transition"
             >
@@ -739,7 +747,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               onClick={() => {
                 soundEffects.playClick();
                 setMobileMenuOpen(false);
-                onNavigateInternship();
+                scrollToTop(); onNavigateInternship();
               }}
               className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-slate-50 hover:bg-blue-50 text-xs font-bold text-slate-800 transition"
             >
@@ -756,7 +764,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               onClick={() => {
                 soundEffects.playClick();
                 setMobileMenuOpen(false);
-                onNavigatePlacement();
+                scrollToTop(); onNavigatePlacement();
               }}
               className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-slate-50 hover:bg-blue-50 text-xs font-bold text-slate-800 transition"
             >

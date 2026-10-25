@@ -435,6 +435,36 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
     }
   }, [isEnrolled]);
 
+  // Sync track hash with activeBlankCourse so Google Chrome back button returns to all 14 cards
+  useEffect(() => {
+    const handleHash = () => {
+      const h = window.location.hash;
+      if (h.includes('track=')) {
+        const params = new URLSearchParams(h.split('?')[1] || '');
+        const trackKey = params.get('track');
+        const found = PRACTICE_CARDS.find((c) => c.courseKey === trackKey);
+        if (found) setActiveBlankCourse(found);
+      } else {
+        setActiveBlankCourse(null);
+      }
+    };
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    window.addEventListener('popstate', handleHash);
+    return () => {
+      window.removeEventListener('hashchange', handleHash);
+      window.removeEventListener('popstate', handleHash);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  }, [activeCategory, activeBlankCourse]);
+
   // Filter cards based on selected category and search input
   const filteredCards = useMemo(() => {
     return PRACTICE_CARDS.filter((card) => {
@@ -471,6 +501,9 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
         } else {
           soundEffects.playClick();
           setActiveBlankCourse(card);
+          if (typeof window !== 'undefined') {
+            window.location.hash = `#practice?track=${card.courseKey}`;
+          }
         }
         break;
       }
@@ -486,21 +519,10 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
   if (activeBlankCourse) {
     return (
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-slate-800">
-        {/* Top Breadcrumb & Back */}
+        {/* Top Breadcrumb */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6 flex-wrap gap-3">
           <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 flex-wrap">
-            <button
-              onClick={() => {
-                soundEffects.playClick();
-                setActiveBlankCourse(null);
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 transition cursor-pointer font-bold"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back to Coding Practice</span>
-            </button>
-            <span>/</span>
-            <span>Coding Practice</span>
+            <span className="text-slate-400">Coding Practice</span>
             <span>/</span>
             <span className="text-slate-900 font-bold">{activeBlankCourse.title}</span>
           </div>
@@ -537,7 +559,11 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
           <button
             onClick={() => {
               soundEffects.playClick();
-              setActiveBlankCourse(null);
+              if (typeof window !== 'undefined' && window.location.hash.includes('track=')) {
+                window.history.back();
+              } else {
+                setActiveBlankCourse(null);
+              }
             }}
             className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition shadow-sm cursor-pointer"
           >

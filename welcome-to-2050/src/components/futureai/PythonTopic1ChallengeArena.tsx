@@ -501,6 +501,14 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
     return idx >= 0 ? idx : 0;
   });
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  }, [currentTaskIndex]);
+
   const task = activeTasks[currentTaskIndex] || activeTasks[0];
 
   // Codes dictionary per task

@@ -82,6 +82,42 @@ export const ExcelChallengesPracticeHub: React.FC<ExcelChallengesPracticeHubProp
     }
   }, [isEnrolled]);
 
+  // Sync arena state with URL hash so Google Chrome's native back button exits arena
+  useEffect(() => {
+    const handleHash = () => {
+      const h = window.location.hash;
+      if (h.includes('#excel-challenges') && h.includes('arena=')) {
+        const params = new URLSearchParams(h.split('?')[1] || '');
+        const arenaId = parseInt(params.get('arena') || '1', 10);
+        setActiveChallengeArenaTopic((prev) => (prev?.topicId === arenaId ? prev : { topicId: arenaId, initialTaskId: 1 }));
+      } else {
+        setActiveChallengeArenaTopic(null);
+      }
+    };
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    window.addEventListener('popstate', handleHash);
+    return () => {
+      window.removeEventListener('hashchange', handleHash);
+      window.removeEventListener('popstate', handleHash);
+    };
+  }, []);
+
+  const openArena = (topicId: number, taskId: number = 1) => {
+    setActiveChallengeArenaTopic({ topicId, initialTaskId: taskId });
+    if (typeof window !== 'undefined') {
+      window.location.hash = `#excel-challenges?arena=${topicId}`;
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  }, [activeTab, activeChallengeArenaTopic]);
+
   // Selected question per card
   const [selectedTaskPerTopic, setSelectedTaskPerTopic] = useState<Record<number, number>>({});
 
@@ -210,11 +246,19 @@ export const ExcelChallengesPracticeHub: React.FC<ExcelChallengesPracticeHubProp
         initialTaskId={activeChallengeArenaTopic.initialTaskId || 1}
         onBack={() => {
           soundEffects.playClick();
-          setActiveChallengeArenaTopic(null);
+          if (typeof window !== 'undefined' && window.location.hash.includes('arena=')) {
+            window.history.back();
+          } else {
+            setActiveChallengeArenaTopic(null);
+          }
         }}
         onCompleteAll={() => {
           soundEffects.playSuccess();
-          setActiveChallengeArenaTopic(null);
+          if (typeof window !== 'undefined' && window.location.hash.includes('arena=')) {
+            window.history.back();
+          } else {
+            setActiveChallengeArenaTopic(null);
+          }
         }}
       />
     );
@@ -462,10 +506,7 @@ export const ExcelChallengesPracticeHub: React.FC<ExcelChallengesPracticeHubProp
                         <button
                           onClick={() => {
                             soundEffects.playClick();
-                            setActiveChallengeArenaTopic({
-                              topicId: topic.id,
-                              initialTaskId: selectedTaskId
-                            });
+                            openArena(topic.id, selectedTaskId);
                           }}
                           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#107c41] hover:bg-[#0b5e28] text-white font-bold text-xs shadow-xs hover:shadow transition cursor-pointer"
                         >
