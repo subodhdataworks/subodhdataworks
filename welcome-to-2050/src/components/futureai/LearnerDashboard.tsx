@@ -499,7 +499,13 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
   // Student Enrollment State:
   // "koi bhi new studend join krega to uska sab kuch 0 se start hoga and abhi sirf python unlock hoga baaki sab lock hoga click krne pr 999 wala page aa jayega"
-  const [isNewStudentMode, setIsNewStudentMode] = useState<boolean>(true);
+  const [isNewStudentMode, setIsNewStudentMode] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('futureai_course_enrolled');
+      if (saved === 'true') return false;
+    }
+    return true;
+  });
   const [unlockModalOpen, setUnlockModalOpen] = useState(false);
   const [selectedLockedModule, setSelectedLockedModule] = useState<string>('SQL & Databases');
 
@@ -2414,6 +2420,19 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           <div className="col-span-full">
             <CodingPracticeMasterHub
               userName={userName}
+              isEnrolled={!isNewStudentMode}
+              onNavigateToCourses={() => {
+                setDockTab('home');
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                if (typeof window !== 'undefined') window.location.hash = '#courses';
+              }}
+              onUnlockAll={() => {
+                setIsNewStudentMode(false);
+                if (typeof window !== 'undefined') {
+                  localStorage.setItem('futureai_course_enrolled', 'true');
+                }
+              }}
               onOpenPython={(topicId) => {
                 setSelectedModuleView('python_challenges');
                 setActiveTopicWs(null);

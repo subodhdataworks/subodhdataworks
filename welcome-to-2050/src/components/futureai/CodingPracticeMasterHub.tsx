@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { soundEffects } from '../../services/soundEffects';
 import {
   Search,
@@ -12,6 +12,10 @@ import {
   Flame,
   CheckCircle2,
   Lock,
+  Unlock,
+  ShieldCheck,
+  X,
+  GraduationCap,
   Filter,
   Check,
   Zap,
@@ -193,6 +197,9 @@ const ReactIcon = () => (
 
 export interface CodingPracticeMasterHubProps {
   userName?: string;
+  isEnrolled?: boolean;
+  onNavigateToCourses?: () => void;
+  onUnlockAll?: () => void;
   onOpenPython?: (topicId?: number) => void;
   onOpenSql?: () => void;
   onOpenExcel?: () => void;
@@ -393,6 +400,9 @@ const CATEGORIES = ['All', 'Popular', 'Programming', 'Data & AI', 'Web Dev', 'To
 
 export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = ({
   userName = 'Rahul',
+  isEnrolled,
+  onNavigateToCourses,
+  onUnlockAll,
   onOpenPython,
   onOpenSql,
   onOpenExcel,
@@ -409,6 +419,21 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
   const [searchFilter, setSearchFilter] = useState<string>('');
   const [notifySuccess, setNotifySuccess] = useState<boolean>(false);
   const [activeBlankCourse, setActiveBlankCourse] = useState<PracticeCardItem | null>(null);
+  const [lockedModalCourse, setLockedModalCourse] = useState<PracticeCardItem | null>(null);
+
+  const [internalEnrolled, setInternalEnrolled] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('futureai_course_enrolled');
+      if (saved === 'true') return true;
+    }
+    return isEnrolled || false;
+  });
+
+  useEffect(() => {
+    if (isEnrolled !== undefined) {
+      setInternalEnrolled(isEnrolled);
+    }
+  }, [isEnrolled]);
 
   // Filter cards based on selected category and search input
   const filteredCards = useMemo(() => {
@@ -438,11 +463,17 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
         if (onOpenExcel) onOpenExcel();
         else window.location.hash = '#excel-challenges';
         break;
-      default:
+      default: {
         // Items 4 to 14: Power BI, Pandas, NumPy, Matplotlib & Seaborn, Statistics, Machine Learning, Deep Learning, Generative AI, Agentic AI, JavaScript, React
-        soundEffects.playClick();
-        setActiveBlankCourse(card);
+        if (!internalEnrolled) {
+          soundEffects.playLock();
+          setLockedModalCourse(card);
+        } else {
+          soundEffects.playClick();
+          setActiveBlankCourse(card);
+        }
         break;
+      }
     }
   };
 
@@ -451,12 +482,12 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
     setTimeout(() => setNotifySuccess(false), 4000);
   };
 
-  // If a blank course is selected (Items 4 to 14)
+  // If an enrolled course is opened (Items 4 to 14)
   if (activeBlankCourse) {
     return (
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-slate-800">
         {/* Top Breadcrumb & Back */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6 flex-wrap gap-3">
           <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 flex-wrap">
             <button
               onClick={() => {
@@ -475,26 +506,43 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
           </div>
 
           <div className="flex items-center gap-2">
+            <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold text-xs border border-emerald-200 flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Course Enrolled</span>
+            </span>
             <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 font-bold text-xs border border-slate-200">
               0 / {activeBlankCourse.topicsCount} Topics
             </span>
           </div>
         </div>
 
-        {/* Blank Page Content */}
-        <div className="w-full min-h-[550px] bg-white rounded-3xl border border-slate-200/90 shadow-xs flex flex-col items-center justify-center p-8 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center p-2 mb-4">
+        {/* Blank Page Content - "content updating soon" */}
+        <div className="w-full min-h-[500px] bg-white rounded-3xl border border-slate-200/90 shadow-sm flex flex-col items-center justify-center p-8 text-center relative overflow-hidden">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-slate-50 to-slate-100 border border-slate-200 flex items-center justify-center p-3 mb-5 shadow-xs">
             {activeBlankCourse.iconComponent}
           </div>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight mb-2">
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-2">
             {activeBlankCourse.title}
           </h2>
-          <p className="text-xs text-slate-500 font-medium max-w-md mb-3">
+          <p className="text-xs sm:text-sm text-slate-500 font-medium max-w-md mb-4">
             {activeBlankCourse.subtitle1} • {activeBlankCourse.subtitle2}
           </p>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-slate-400 text-xs font-semibold">
-            <span>Blank Canvas • Challenges Under Development</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 font-bold text-sm shadow-xs mb-3">
+            <Sparkles className="w-4 h-4 text-amber-600" />
+            <span>Content Updating Soon</span>
           </div>
+          <p className="text-xs text-slate-400 max-w-md mb-6 leading-relaxed">
+            Hands-on coding challenges for {activeBlankCourse.title} are currently being curated. Check back shortly!
+          </p>
+          <button
+            onClick={() => {
+              soundEffects.playClick();
+              setActiveBlankCourse(null);
+            }}
+            className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition shadow-sm cursor-pointer"
+          >
+            ← Back to Practice Hub
+          </button>
         </div>
       </div>
     );
@@ -605,64 +653,89 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
 
       {/* ─── 3. 14 CODING PRACTICE CARDS GRID + POWERGREEN AI TUTOR BANNER ─── */}
       <section className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-4.5">
-        {filteredCards.map((card) => (
-          <div
-            key={card.id}
-            onClick={() => handleCardClick(card)}
-            className="group bg-white rounded-2xl p-4 border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:shadow-lg hover:border-blue-200 transition-all duration-200 cursor-pointer flex flex-col justify-between"
-          >
-            {/* Card Header: Number Badge + Icon + Text */}
-            <div className="flex items-start gap-3">
-              {/* Number Badge */}
-              <div
-                className="w-5 h-5 rounded-md text-white text-[11px] font-black flex items-center justify-center shrink-0 shadow-sm mt-0.5"
-                style={{ backgroundColor: card.numBg }}
-              >
-                {card.num}
-              </div>
+        {filteredCards.map((card) => {
+          const isLocked = !internalEnrolled && card.id >= 4;
 
-              {/* Vector Icon Container (Ultra Crisp, High Resolution) */}
-              <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-100/80 flex items-center justify-center shrink-0 p-1 group-hover:scale-105 transition-transform duration-200">
-                {card.iconComponent}
-              </div>
-
-              {/* Title & Subtitles */}
-              <div className="min-w-0 flex-1 text-left">
-                <h3 className="font-bold text-slate-900 text-sm md:text-base leading-tight group-hover:text-blue-600 transition-colors">
-                  {card.title}
-                </h3>
-                <div className="text-[11px] text-slate-400 mt-1 leading-tight truncate">
-                  {card.subtitle1}
-                </div>
-                <div className="text-[11px] text-slate-400 leading-tight truncate">
-                  {card.subtitle2}
-                </div>
-              </div>
-            </div>
-
-            {/* Card Bottom: Progress Bar + Topics count + Arrow Button */}
-            <div className="mt-4 pt-2">
-              {/* Progress Track */}
-              <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mb-2">
-                <div className="bg-blue-600 h-full w-0 rounded-full" />
-              </div>
-
-              {/* Text & Button */}
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-medium text-slate-400">
-                  0 / {card.topicsCount} Topics
-                </span>
-                <button
-                  type="button"
-                  aria-label={`Open ${card.title} practice`}
-                  className="w-7 h-7 rounded-full bg-[#f0f6ff] text-[#1a73e8] flex items-center justify-center group-hover:bg-[#1a73e8] group-hover:text-white transition-colors shadow-sm"
+          return (
+            <div
+              key={card.id}
+              onClick={() => handleCardClick(card)}
+              className={`group bg-white rounded-2xl p-4 border transition-all duration-200 cursor-pointer flex flex-col justify-between ${
+                isLocked
+                  ? 'border-slate-200/90 shadow-2xs hover:border-amber-300 hover:shadow-md'
+                  : 'border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:shadow-lg hover:border-blue-200'
+              }`}
+            >
+              {/* Card Header: Number Badge + Icon + Text */}
+              <div className="flex items-start gap-3">
+                {/* Number Badge */}
+                <div
+                  className="w-5 h-5 rounded-md text-white text-[11px] font-black flex items-center justify-center shrink-0 shadow-sm mt-0.5"
+                  style={{ backgroundColor: card.numBg }}
                 >
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                  {card.num}
+                </div>
+
+                {/* Vector Icon Container (Ultra Crisp, High Resolution) */}
+                <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-100/80 flex items-center justify-center shrink-0 p-1 group-hover:scale-105 transition-transform duration-200">
+                  {card.iconComponent}
+                </div>
+
+                {/* Title & Subtitles */}
+                <div className="min-w-0 flex-1 text-left">
+                  <div className="flex items-center justify-between gap-1">
+                    <h3 className="font-bold text-slate-900 text-sm md:text-base leading-tight group-hover:text-blue-600 transition-colors truncate">
+                      {card.title}
+                    </h3>
+                    {isLocked && (
+                      <span className="shrink-0 flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-bold">
+                        <Lock className="w-2.5 h-2.5 text-amber-600" />
+                        <span>Locked</span>
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[11px] text-slate-400 mt-1 leading-tight truncate">
+                    {card.subtitle1}
+                  </div>
+                  <div className="text-[11px] text-slate-400 leading-tight truncate">
+                    {card.subtitle2}
+                  </div>
+                </div>
+              </div>
+
+              {/* Card Bottom: Progress Bar + Topics count + Arrow/Lock Button */}
+              <div className="mt-4 pt-2">
+                {/* Progress Track */}
+                <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mb-2">
+                  <div className="bg-blue-600 h-full w-0 rounded-full" />
+                </div>
+
+                {/* Text & Button */}
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-medium text-slate-400">
+                    0 / {card.topicsCount} Topics
+                  </span>
+                  {isLocked ? (
+                    <div
+                      title="Enroll in any course to unlock"
+                      className="w-7 h-7 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors shadow-2xs border border-amber-200"
+                    >
+                      <Lock className="w-3.5 h-3.5" />
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      aria-label={`Open ${card.title} practice`}
+                      className="w-7 h-7 rounded-full bg-[#f0f6ff] text-[#1a73e8] flex items-center justify-center group-hover:bg-[#1a73e8] group-hover:text-white transition-colors shadow-sm cursor-pointer"
+                    >
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {/* ─── 4. POWERGREEN AI TUTOR BANNER (Original Uncropped 3D Mascot) ─── */}
         <div className="col-span-1 sm:col-span-2 lg:col-span-2 rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-[#f1effe] via-[#edf2fe] to-[#eff4fe] border border-[#e2e8f8] shadow-sm flex items-center justify-between gap-4 relative overflow-hidden">
@@ -702,6 +775,95 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
           </div>
         </div>
       </section>
+
+      {/* ─── MODAL: ENROLL IN COURSE TO UNLOCK PRACTICE TRACK ─── */}
+      {lockedModalCourse && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-3xl border border-slate-200 max-w-md w-full p-6 sm:p-7 shadow-2xl relative text-left">
+            {/* Close button */}
+            <button
+              onClick={() => {
+                soundEffects.playClick();
+                setLockedModalCourse(null);
+              }}
+              className="absolute top-5 right-5 p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Lock Badge & Icon */}
+            <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center mb-4 shadow-xs">
+              <Lock className="w-7 h-7" />
+            </div>
+
+            {/* Course name pill */}
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold mb-2">
+              <span>{lockedModalCourse.title} Practice Track</span>
+            </div>
+
+            <h3 className="text-xl font-black text-slate-900 tracking-tight mb-2">
+              Enroll in Any 1 Course to Unlock
+            </h3>
+
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
+              <strong>{lockedModalCourse.title}</strong> ke coding challenges unlock karne ke liye kisi bhi <strong>1 Course</strong> me enroll karein. Kisi ek me enroll hone ke baad tabhi ye open hoga!
+            </p>
+
+            {/* Benefits List */}
+            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-3.5 space-y-2 mb-5 text-xs text-slate-700 font-medium">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>All {lockedModalCourse.topicsCount} practical challenge topics unlock</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Hands-on live coding &amp; real-world tasks</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Industry placement &amp; interview challenges</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playClick();
+                  setLockedModalCourse(null);
+                  if (onNavigateToCourses) {
+                    onNavigateToCourses();
+                  } else {
+                    window.location.hash = '#courses';
+                  }
+                }}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs sm:text-sm shadow-md shadow-blue-500/20 active:scale-98 transition cursor-pointer"
+              >
+                <span>Explore &amp; Enroll in Courses →</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playSuccess();
+                  setInternalEnrolled(true);
+                  if (typeof window !== 'undefined') {
+                    localStorage.setItem('futureai_course_enrolled', 'true');
+                  }
+                  if (onUnlockAll) onUnlockAll();
+                  const targetCard = lockedModalCourse;
+                  setLockedModalCourse(null);
+                  setActiveBlankCourse(targetCard);
+                }}
+                className="w-full py-2 px-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold text-xs transition cursor-pointer text-center"
+              >
+                Simulate Course Enrollment (Unlock Demo)
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Floating Toast Notification when user clicks Notify Me */}
       {notifySuccess && (
