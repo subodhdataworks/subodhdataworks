@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BookOpen,
   Code2,
@@ -65,6 +65,61 @@ import { soundEffects } from '../../services/soundEffects';
 import { FutureAdvancedHeader } from './FutureAdvancedHeader';
 import { FutureAuthModal } from './FutureAuthModal';
 import { RealSuccessStoriesShowcase } from './RealSuccessStoriesShowcase';
+
+// ─── Reusable Smooth Typewriter Heading Component ─────────────────────────────
+interface TypewriterHeadingProps {
+  words: string[];
+  className?: string;
+  cursorClassName?: string;
+  typingSpeed?: number;
+  deletingSpeed?: number;
+  pauseTime?: number;
+}
+
+export const TypewriterHeading: React.FC<TypewriterHeadingProps> = ({
+  words,
+  className = '',
+  cursorClassName = 'text-blue-600',
+  typingSpeed = 80,
+  deletingSpeed = 38,
+  pauseTime = 2200,
+}) => {
+  const [wordIdx, setWordIdx] = useState(0);
+  const [typedText, setTypedText] = useState(words[0] || '');
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    if (!words || words.length === 0) return;
+    const currentWord = words[wordIdx];
+    const speed = isDeleting ? deletingSpeed : typingSpeed;
+
+    const timeout = setTimeout(() => {
+      if (!isDeleting) {
+        if (typedText.length < currentWord.length) {
+          setTypedText(currentWord.slice(0, typedText.length + 1));
+        } else {
+          setTimeout(() => setIsDeleting(true), pauseTime);
+        }
+      } else {
+        if (typedText.length > 0) {
+          setTypedText(currentWord.slice(0, typedText.length - 1));
+        } else {
+          setIsDeleting(false);
+          setWordIdx((prev) => (prev + 1) % words.length);
+        }
+      }
+    }, speed);
+
+    return () => clearTimeout(timeout);
+  }, [typedText, isDeleting, wordIdx, words, typingSpeed, deletingSpeed, pauseTime]);
+
+  return (
+    <span className={`inline-flex items-center ${className}`}>
+      <span>{typedText}</span>
+      <span className={`inline-block ml-0.5 font-light animate-pulse ${cursorClassName}`}>|</span>
+    </span>
+  );
+};
 
 interface FutureAiHomeProps {
   profile?: any;
@@ -228,8 +283,12 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               <h1 className="text-3xl sm:text-5xl lg:text-[42px] xl:text-[48px] font-black tracking-tight leading-[1.06] text-[#0f172a]">
                 <span className="block">World&apos;s First</span>
                 <span className="block text-[#1a73e8]">Affordable Easy</span>
-                <span className="block text-[#0f172a]">
-                  AI Learning <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 bg-clip-text text-transparent drop-shadow-xs">Platform</span>
+                <span className="block">
+                  <TypewriterHeading
+                    words={['AI Learning Platform']}
+                    className="bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-500 bg-clip-text text-transparent"
+                    cursorClassName="text-amber-500"
+                  />
                 </span>
               </h1>
 
@@ -432,9 +491,11 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               {/* Main Headline */}
               <h2 className="text-2xl sm:text-3xl lg:text-[38px] font-black text-slate-900 tracking-tight leading-[1.12]">
                 Explore Our{' '}
-                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  Career Programs
-                </span>
+<TypewriterHeading
+                  words={['Career Programs']}
+                  className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent"
+                  cursorClassName="text-purple-600"
+                />
               </h2>
 
               {/* Subtitle with High-End Formatting */}
@@ -617,14 +678,13 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 relative z-10">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100/70 text-blue-700 text-[11px] font-black uppercase tracking-wider mb-2">
-                <span>The 6-Step Career Roadmap</span>
-              </div>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
                 Your Journey From{' '}
-                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  Learning to Earning
-                </span>
+                <TypewriterHeading
+                words={['Learning to Earning']}
+                className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent"
+                cursorClassName="text-purple-600"
+              />
               </h2>
               <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1">
                 A simple path to a successful career with Future IT Industry.
@@ -647,7 +707,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             <img
               src="/images/home_sections/journey_roadmap_real_strip.jpg"
               alt="Your Journey From Learning to Earning: Learn • Grow • Get Hired"
-              className="w-full h-[220px] sm:h-[320px] md:h-[380px] lg:h-[440px] object-cover object-center group-hover:scale-[1.01] transition-transform duration-500 select-none"
+              className="w-full h-[160px] sm:h-[220px] md:h-[260px] lg:h-[300px] object-cover object-center group-hover:scale-[1.01] transition-transform duration-500 select-none"
             />
             {/* Ambient Vignette Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/15 pointer-events-none" />
@@ -690,14 +750,32 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           </div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
             Why Choose{' '}
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent">
-              Future IT Industry?
-            </span>
+<TypewriterHeading
+              words={['Future IT Industry?']}
+              className="bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent"
+              cursorClassName="text-cyan-500"
+            />
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1.5">
             Real Skills • Real Projects • Career Support. Choose the proven path to career transformation.
           </p>
         </div>
+
+        {/* Master Video Showcase Container */}
+        <div 
+          onClick={promptLogin}
+          className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl border border-slate-200/90 hover:border-blue-300 transition-all duration-500 cursor-pointer group bg-slate-950 mb-6 sm:mb-8"
+        >
+          <video
+            src="/videos/why_choose_showcase.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-auto max-h-[460px] object-cover object-center group-hover:scale-[1.008] transition-transform duration-700 select-none"
+          />
+        </div>
+
 
 
         {/* 4 Core Value Pillars (Matching the High-Impact Trust Bar) */}
