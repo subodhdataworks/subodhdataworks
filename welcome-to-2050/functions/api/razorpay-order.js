@@ -19,7 +19,7 @@ const json = (data, status = 200) =>
 
 // Canonical Server-Side Course Price Validation (Rupees)
 const CANONICAL_COURSE_PRICES_INR = {
-  data_analyst: 9,
+  data_analyst: 4,
   data_science: 987,
   ml_engineering: 987,
   deep_learning: 987,

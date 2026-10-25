@@ -693,7 +693,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                 onChange={(e) => setUnlockTargetCourse(e.target.value)}
                 className="w-full p-3 rounded-xl border border-slate-300 bg-white text-xs font-bold text-slate-800 outline-none"
               >
-                <option value="data_analyst">Data Analyst with GenAI (₹9 Flagship)</option>
+                <option value="data_analyst">Data Analyst with GenAI (₹4 Flagship)</option>
                 <option value="data_science">Data Science & Agentic AI (₹987)</option>
                 <option value="ml_engineering">Machine Learning Engineering (₹987)</option>
                 <option value="ai_engineering">AI Engineering & LLMOps (₹987)</option>

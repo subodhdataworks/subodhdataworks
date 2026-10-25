@@ -253,7 +253,7 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                   className="px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-emerald-600/25 active:scale-95 transition-all cursor-pointer"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                  <span>Enroll for ₹9</span>
+                  <span>Enroll for ₹4</span>
                 </button>
                 <button
                   type="button"

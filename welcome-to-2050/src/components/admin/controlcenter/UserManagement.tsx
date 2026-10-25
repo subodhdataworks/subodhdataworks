@@ -247,7 +247,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
               onChange={(e) => setQuickCourse(e.target.value)}
               className="w-full sm:w-56 px-3 py-2.5 bg-slate-950/80 border border-slate-700 rounded-xl text-xs text-slate-200 font-bold cursor-pointer focus:outline-none focus:border-blue-500"
             >
-              <option value="data_analyst">Data Analyst with GenAI (₹9)</option>
+              <option value="data_analyst">Data Analyst with GenAI (₹4)</option>
               <option value="data_science">Data Science &amp; Agentic AI (₹987)</option>
               <option value="ml_engineering">Machine Learning Engineering</option>
               <option value="deep_learning">Deep Learning &amp; Neural Nets</option>
@@ -643,7 +643,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
                   onChange={(e) => setTargetCourseToUnlock(e.target.value)}
                   className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white font-bold cursor-pointer focus:outline-none focus:border-amber-500"
                 >
-                  <option value="data_analyst">Data Analyst with GenAI (₹9)</option>
+                  <option value="data_analyst">Data Analyst with GenAI (₹4)</option>
                   <option value="data_science">Data Science &amp; Agentic AI (₹987)</option>
                   <option value="ml_engineering">Machine Learning Engineering</option>
                   <option value="deep_learning">Deep Learning &amp; Neural Nets</option>

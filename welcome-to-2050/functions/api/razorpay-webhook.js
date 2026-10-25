@@ -27,7 +27,7 @@ const processedEventIds = new Set();
 
 // Canonical course prices in INR
 const CANONICAL_COURSE_PRICES_INR = {
-  data_analyst: 9,
+  data_analyst: 4,
   data_science: 987,
   ml_engineering: 987,
   deep_learning: 987,

@@ -190,7 +190,7 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
   const canonicalCourseId: CanonicalCourseId = normalizeCourseId(courseId || courseTitle || targetTopicTitle);
   const info = COURSES_INFO[canonicalCourseId] || COURSES_INFO.data_analyst;
   const isDataAnalyst = canonicalCourseId === 'data_analyst';
-  const effectivePrice = isDataAnalyst ? 9 : (info.defaultPrice || 987);
+  const effectivePrice = isDataAnalyst ? 4 : (info.defaultPrice || 987);
   const displayTitle = courseTitle || info.title;
 
   const handlePayNow = async () => {

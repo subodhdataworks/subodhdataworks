@@ -302,7 +302,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
                 <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-xl border border-slate-200 p-3 z-50 text-left space-y-2 animate-fadeIn">
                   <span className="text-xs font-black text-slate-900 block">Notifications</span>
                   <div className="text-xs text-slate-600 p-2 rounded-xl bg-slate-50">
-                    <strong>New Enrollment:</strong> Data Analyst with GenAI purchased by Aman Sharma (₹18,999 / ₹9)
+                    <strong>New Enrollment:</strong> Data Analyst with GenAI purchased by Aman Sharma (₹18,999 / ₹4)
                   </div>
                   <div className="text-xs text-slate-600 p-2 rounded-xl bg-slate-50">
                     <strong>Withdrawal Request:</strong> ₹1,100 pending for affiliate Rohit Verma

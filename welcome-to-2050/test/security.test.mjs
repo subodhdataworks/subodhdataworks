@@ -187,7 +187,7 @@ async function runTests() {
         entity: {
           id: 'pay_WH_123',
           order_id: 'order_WH_456',
-          amount: 900, // paise (₹9)
+          amount: 400, // paise (₹4)
           currency: 'INR',
           notes: { courseId: 'data_analyst' },
         },
