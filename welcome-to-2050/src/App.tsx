@@ -268,18 +268,25 @@ export const App: React.FC = () => {
           />
         ) : (() => {
             const baseH = (typeof window !== 'undefined' ? window.location.hash : currentHash).split('?')[0].toLowerCase();
-            const appRoutes = [
-              '#dashboard', '#home', '#courses', '#game', '#games', '#arena', '#gamezone', '#coding_game',
-              '#coding-practice', '#codingpractice', '#practice', '#placement', '#income', '#referral',
-              '#python', '#sql', '#excel', '#powerbi', '#genai', '#stats',
-              '#python-challenges', '#pythonchallenges', '#sql-challenges', '#sqlchallenges', '#excel-challenges', '#excelchallenges',
+            const directPublicRoutes = [
+              '#practice', '#codingpractice', '#coding-practice',
+              '#python-challenges', '#pythonchallenges',
+              '#sql-challenges', '#sqlchallenges',
+              '#excel-challenges', '#excelchallenges',
+              '#game', '#games', '#arena', '#gamezone', '#coding_game',
               '#data-analyst', '#data-analytics', '#data-science', '#data-science-agentic-ai', '#datascience',
               '#ml-engineering', '#mlengineering', '#ml-eng', '#ml',
               '#ai-engineering', '#aiengineering', '#ai-eng', '#ai',
               '#full-stack', '#fullstack', '#fullstack-mern',
-              '#intro-game', '#pyintro', '#earnings', '#wallet', '#withdraw'
+              '#intro-game', '#pyintro', '#earnings', '#wallet', '#withdraw',
+              '#placement', '#income', '#referral'
             ];
-            return isLoggedIn || appRoutes.includes(baseH);
+            // If logged in, show LearnerDashboard (unless user specifically visits pre-login #home)
+            if (isLoggedIn) {
+              return baseH !== '#home' && baseH !== '#welcome';
+            }
+            // Pre-login: only show LearnerDashboard if directly accessing public challenge routes; otherwise show new pre-login FutureAiHome
+            return directPublicRoutes.includes(baseH);
           })() ? (
           <LearnerDashboard
             userName={userName}
