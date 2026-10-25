@@ -312,12 +312,12 @@ export const ExcelChallengeArena: React.FC<ExcelChallengeArenaProps> = ({
 
   return (
     <div className={`min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col font-sans ${isFullscreen ? 'fixed inset-0 z-50 overflow-auto' : ''}`}>
-      {/* 1. TOP GLOBAL NAVIGATION */}
-      <header className="sticky top-0 z-40 bg-white border-b border-slate-200 px-4 sm:px-6 py-2.5 flex items-center justify-between shadow-xs">
+      {/* 1. BREADCRUMB BAR & CONTROLS (Single clean bar below app top navigation) */}
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-2.5 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs transition cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Practice Hub</span>
@@ -325,26 +325,28 @@ export const ExcelChallengeArena: React.FC<ExcelChallengeArenaProps> = ({
 
           <div className="flex items-center gap-2">
             <ExcelLogo />
-            <span className="font-black text-slate-900 text-sm sm:text-base tracking-tight">
-              Future IT Industry <span className="text-[#107c41]">Excel Arena</span>
+            <span className="font-black text-slate-900 text-sm tracking-tight">
+              Excel Arena
             </span>
           </div>
 
-          <div className="hidden md:flex items-center gap-1.5 text-xs font-semibold text-slate-500 pl-4 border-l border-slate-200">
-            <span className="text-[#107c41] font-bold">Practice</span>
-            <span>/</span>
+          <div className="hidden md:flex items-center gap-1.5 text-xs font-semibold text-slate-500 pl-3 border-l border-slate-200">
+            <span className="text-[#107c41] font-bold">Coding Practice</span>
+            <span>&gt;</span>
             <span>Excel</span>
-            <span>/</span>
+            <span>&gt;</span>
             <span className="text-slate-700">{categoryName}</span>
-            <span>/</span>
+            <span>&gt;</span>
             <span className="text-slate-900 font-bold">{topicTitle}</span>
+            <span>&gt;</span>
+            <span className="text-[#107c41] font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">Task {task.taskNumber}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             onClick={toggleSound}
-            className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 transition"
+            className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 transition cursor-pointer"
             title={soundEnabled ? 'Mute Sounds' : 'Unmute Sounds'}
           >
             {soundEnabled ? <Volume2 className="w-4 h-4 text-[#107c41]" /> : <VolumeX className="w-4 h-4 text-slate-400" />}
@@ -352,20 +354,13 @@ export const ExcelChallengeArena: React.FC<ExcelChallengeArenaProps> = ({
 
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 transition"
+            className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 transition cursor-pointer"
             title="Toggle Fullscreen"
           >
             {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
           </button>
-
-          <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
-            <div className="w-7 h-7 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center font-bold text-emerald-800 text-xs">
-              {userName.charAt(0).toUpperCase()}
-            </div>
-            <span className="hidden sm:inline text-xs font-bold text-slate-700">{userName}</span>
-          </div>
         </div>
-      </header>
+      </div>
 
       {/* 2. THREE-COLUMN ARENA LAYOUT */}
       <main className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 p-3 sm:p-5">

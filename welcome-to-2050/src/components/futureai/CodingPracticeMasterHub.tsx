@@ -1,10 +1,12 @@
 import React, { useState, useMemo } from 'react';
+import { soundEffects } from '../../services/soundEffects';
 import {
   Search,
   Bell,
   Layers,
   ChevronDown,
   ArrowRight,
+  ArrowLeft,
   Code2,
   Sparkles,
   Flame,
@@ -406,6 +408,7 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
   const [courseDropdownOpen, setCourseDropdownOpen] = useState<boolean>(false);
   const [searchFilter, setSearchFilter] = useState<string>('');
   const [notifySuccess, setNotifySuccess] = useState<boolean>(false);
+  const [activeBlankCourse, setActiveBlankCourse] = useState<PracticeCardItem | null>(null);
 
   // Filter cards based on selected category and search input
   const filteredCards = useMemo(() => {
@@ -435,37 +438,10 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
         if (onOpenExcel) onOpenExcel();
         else window.location.hash = '#excel-challenges';
         break;
-      case 'powerbi':
-        if (onOpenDataAnalyst) onOpenDataAnalyst();
-        else window.location.hash = '#data-analyst';
-        break;
-      case 'pandas':
-      case 'numpy':
-      case 'matplotlib':
-      case 'statistics':
-      case 'data_science':
-        if (onOpenDataScience) onOpenDataScience();
-        else window.location.hash = '#data-science';
-        break;
-      case 'ml_engineering':
-        if (onOpenMlEngineering) onOpenMlEngineering();
-        else window.location.hash = '#ml-engineering';
-        break;
-      case 'ai_engineering':
-        if (onOpenAiEngineering) onOpenAiEngineering();
-        else window.location.hash = '#ai-engineering';
-        break;
-      case 'javascript':
-      case 'react':
-        if (onOpenFullStack) onOpenFullStack();
-        else window.location.hash = '#full-stack';
-        break;
-      case 'deep_learning':
-        if (onOpenGenericPractice) onOpenGenericPractice('Deep Learning');
-        else if (onOpenAiEngineering) onOpenAiEngineering();
-        break;
       default:
-        if (onOpenGenericPractice) onOpenGenericPractice(card.title);
+        // Items 4 to 14: Power BI, Pandas, NumPy, Matplotlib & Seaborn, Statistics, Machine Learning, Deep Learning, Generative AI, Agentic AI, JavaScript, React
+        soundEffects.playClick();
+        setActiveBlankCourse(card);
         break;
     }
   };
@@ -474,6 +450,55 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
     setNotifySuccess(true);
     setTimeout(() => setNotifySuccess(false), 4000);
   };
+
+  // If a blank course is selected (Items 4 to 14)
+  if (activeBlankCourse) {
+    return (
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-slate-800">
+        {/* Top Breadcrumb & Back */}
+        <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 flex-wrap">
+            <button
+              onClick={() => {
+                soundEffects.playClick();
+                setActiveBlankCourse(null);
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 transition cursor-pointer font-bold"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Coding Practice</span>
+            </button>
+            <span>/</span>
+            <span>Coding Practice</span>
+            <span>/</span>
+            <span className="text-slate-900 font-bold">{activeBlankCourse.title}</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 font-bold text-xs border border-slate-200">
+              0 / {activeBlankCourse.topicsCount} Topics
+            </span>
+          </div>
+        </div>
+
+        {/* Blank Page Content */}
+        <div className="w-full min-h-[550px] bg-white rounded-3xl border border-slate-200/90 shadow-xs flex flex-col items-center justify-center p-8 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center p-2 mb-4">
+            {activeBlankCourse.iconComponent}
+          </div>
+          <h2 className="text-2xl font-black text-slate-900 tracking-tight mb-2">
+            {activeBlankCourse.title}
+          </h2>
+          <p className="text-xs text-slate-500 font-medium max-w-md mb-3">
+            {activeBlankCourse.subtitle1} • {activeBlankCourse.subtitle2}
+          </p>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-slate-400 text-xs font-semibold">
+            <span>Blank Canvas • Challenges Under Development</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 text-slate-800">

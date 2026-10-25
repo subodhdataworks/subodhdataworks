@@ -332,131 +332,66 @@ export const SqlChallengeArena: React.FC<SqlChallengeArenaProps> = ({
   return (
     <div className="min-h-screen bg-[#f0f4f8] text-slate-800 font-sans flex flex-col select-none">
       
-      {/* ─── 1. TOP GLOBAL NAVIGATION BAR (Exact 1:1 with Reference Screenshot) ─── */}
-      <header className="h-16 bg-white border-b border-slate-200/90 px-4 sm:px-6 flex items-center justify-between gap-4 shrink-0 shadow-[0_1px_3px_rgba(0,0,0,0.03)] z-30">
-        {/* Left: Brand Logo & Title */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 via-sky-500 to-indigo-600 flex items-center justify-center shadow-sm">
-            <span className="text-white font-black text-xl italic tracking-tighter">F</span>
+      {/* ─── BREADCRUMB BAR & CONTROLS (Single clean bar below app nav) ─── */}
+      <div className="bg-white border-b border-slate-200/90 px-4 sm:px-6 py-2.5 flex items-center justify-between gap-3 text-xs text-slate-500 font-medium shrink-0 shadow-xs">
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Back / Forward Arrows */}
+          <div className="flex items-center gap-1 mr-1">
+            <button
+              type="button"
+              onClick={onBack}
+              title="Back to Challenges"
+              className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer border border-slate-200"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              disabled={currentTaskIndex >= activeTasks.length - 1}
+              onClick={handleNextChallenge}
+              title="Next"
+              className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 disabled:opacity-40 transition-colors cursor-pointer border border-slate-200"
+            >
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
           </div>
-          <div className="leading-tight text-left hidden sm:block">
-            <div className="font-black text-slate-900 text-sm tracking-tight flex items-center gap-1">
-              <span>FUTURE IT</span>
-            </div>
-            <div className="text-[10px] text-slate-400 font-bold tracking-wider uppercase">
-              INDUSTRY
-            </div>
-            <div className="text-[9px] text-slate-400 -mt-0.5">
-              Learn Today, Earn Tomorrow.
-            </div>
-          </div>
+
+          {/* Breadcrumb Trail */}
+          <button
+            type="button"
+            onClick={onBack}
+            className="hover:text-blue-600 font-semibold text-slate-600 transition-colors cursor-pointer"
+          >
+            Coding Practice
+          </button>
+          <span>&gt;</span>
+          <button
+            type="button"
+            onClick={onBack}
+            className="hover:text-blue-600 font-semibold text-slate-600 transition-colors cursor-pointer"
+          >
+            SQL
+          </button>
+          <span>&gt;</span>
+          <span className="text-slate-500">Basic</span>
+          <span>&gt;</span>
+          <span className="font-bold text-slate-800">{topicTitle}</span>
+          <span>&gt;</span>
+          <span className="font-bold text-[#1a73e8] bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200/60">Challenge {task.taskNumber}</span>
         </div>
 
-        {/* Center: Navigation Links & Search Bar */}
-        <div className="hidden md:flex items-center gap-6 flex-1 max-w-2xl mx-4">
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-[#1a73e8] font-bold text-xs shadow-xs cursor-pointer"
-            >
-              <Code2 className="w-3.5 h-3.5" />
-              <span>Practice</span>
-            </button>
-            <button
-              type="button"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-slate-600 hover:text-slate-900 font-semibold text-xs cursor-pointer transition-colors"
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>Courses</span>
-            </button>
-            <button
-              type="button"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-slate-600 hover:text-slate-900 font-semibold text-xs cursor-pointer transition-colors"
-            >
-              <Trophy className="w-3.5 h-3.5" />
-              <span>Contests</span>
-            </button>
-          </div>
-
-          {/* Search Bar Input */}
-          <div className="relative flex-1">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              readOnly
-              placeholder="Search challenges, topics or keywords..."
-              className="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs text-slate-600 focus:outline-none placeholder-slate-400 shadow-inner/5"
-            />
-          </div>
-        </div>
-
-        {/* Right: Notification Bell & User Profile */}
-        <div className="flex items-center gap-4 shrink-0">
-          {/* Sound Toggle */}
+        {/* Right Controls: Sound Toggle */}
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={toggleSound}
             aria-label="Toggle sound"
-            className="p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer"
+            title={soundEnabled ? 'Mute Sounds' : 'Unmute Sounds'}
           >
             {soundEnabled ? <Volume2 className="w-4 h-4 text-emerald-600" /> : <VolumeX className="w-4 h-4 text-slate-400" />}
           </button>
-
-          {/* Bell with red indicator */}
-          <div className="relative cursor-pointer p-1.5 text-slate-500 hover:text-slate-800 transition-colors">
-            <Bell className="w-5 h-5" />
-            <span className="w-2 h-2 rounded-full bg-rose-500 absolute top-1 right-1 ring-2 ring-white" />
-          </div>
-
-          {/* User Avatar + Hi, Rahul */}
-          <div className="flex items-center gap-2.5 pl-2 border-l border-slate-200 cursor-pointer">
-            <div className="w-9 h-9 rounded-full bg-[#1a73e8] text-white flex items-center justify-center font-bold text-sm shadow-sm">
-              R
-            </div>
-            <div className="text-left hidden lg:block leading-tight">
-              <div className="text-xs font-bold text-slate-900">Hi, {userName}</div>
-              <div className="text-[11px] text-slate-400 flex items-center gap-1">
-                <span>Learner</span>
-                <ChevronDown className="w-3 h-3 text-slate-400" />
-              </div>
-            </div>
-          </div>
         </div>
-      </header>
-
-      {/* ─── 2. BREADCRUMB BAR (Exact 1:1 with Screenshot) ─── */}
-      <div className="px-4 sm:px-6 py-2.5 flex items-center gap-2 text-xs text-slate-500 font-medium shrink-0">
-        {/* Back / Forward Arrows */}
-        <div className="flex items-center gap-1 mr-1">
-          <button
-            type="button"
-            onClick={onBack}
-            title="Back to Challenges"
-            className="p-1 rounded-md hover:bg-slate-200 text-slate-600 transition-colors cursor-pointer"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-          </button>
-          <button
-            type="button"
-            disabled={currentTaskIndex >= activeTasks.length - 1}
-            onClick={handleNextChallenge}
-            title="Next"
-            className="p-1 rounded-md hover:bg-slate-200 text-slate-400 disabled:opacity-40 transition-colors cursor-pointer"
-          >
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
-        {/* Breadcrumb Trail */}
-        <span className="hover:text-blue-600 cursor-pointer" onClick={onBack}>Coding Practice</span>
-        <span>&gt;</span>
-        <span className="hover:text-blue-600 cursor-pointer" onClick={onBack}>SQL</span>
-        <span>&gt;</span>
-        <span>Basic</span>
-        <span>&gt;</span>
-        <span className="font-bold text-slate-800">{topicTitle}</span>
-        <span>&gt;</span>
-        <span className="font-semibold text-slate-700">Challenge {task.taskNumber}</span>
       </div>
 
       {/* ─── 3. 3-COLUMN WORKSPACE GRID (Exact 1:1 with Screenshot) ─── */}
