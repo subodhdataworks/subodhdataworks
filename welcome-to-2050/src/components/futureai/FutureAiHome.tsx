@@ -174,12 +174,12 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         />
       </div>
 
-      {/* ─── 2. MAIN HERO SECTION (Bada Banner with Video) ─── */}
-      <section className="relative w-full px-4 sm:px-6 lg:px-8 py-5 sm:py-8 overflow-hidden bg-gradient-to-b from-[#e8f2fe]/85 via-[#f0f6ff]/45 to-[#F4F8FC]">
+      {/* ─── 2. MAIN HERO SECTION (Cinematic Holographic Stage with Live 3D Animation) ─── */}
+      <section className="relative w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-10 overflow-hidden bg-gradient-to-b from-[#050811] via-[#09101f] to-[#0d1629] text-white">
         
         {/* Soft Ambient Aurora Lights */}
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-400/12 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-10 right-1/4 w-[500px] h-[500px] bg-cyan-400/12 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-500/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-10 right-1/4 w-[500px] h-[500px] bg-cyan-400/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-[1440px] w-full mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center w-full">
@@ -188,32 +188,32 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center text-center lg:text-left z-10 pl-0 lg:pl-3">
               
               {/* Main Headline - Taller & Bolder */}
-              <h1 className="text-3xl sm:text-5xl lg:text-[44px] xl:text-[52px] font-black tracking-tight leading-[1.06] text-[#0f172a]">
+              <h1 className="text-3xl sm:text-5xl lg:text-[44px] xl:text-[52px] font-black tracking-tight leading-[1.06] text-white">
                 <span className="block">World&apos;s First</span>
-                <span className="block text-[#1a73e8]">Affordable Easy</span>
-                <span className="block text-[#0f172a]">
-                  AI Learning <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 bg-clip-text text-transparent drop-shadow-xs">Platform</span>
+                <span className="block text-[#38bdf8]">Affordable Easy</span>
+                <span className="block text-white">
+                  AI Learning <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 bg-clip-text text-transparent drop-shadow-md">Platform</span>
                 </span>
               </h1>
 
               {/* Tagline */}
-              <div className="mt-3 text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-600 leading-snug max-w-lg mx-auto lg:mx-0">
+              <div className="mt-3 text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-300 leading-snug max-w-lg mx-auto lg:mx-0">
                 <p>Real Practical Courses. Real Projects. Industry Guidance.</p>
-                <p className="text-slate-900 font-bold mt-0.5">From Learning to Earning, We&apos;re With You.</p>
+                <p className="text-white font-bold mt-0.5">From Learning to Earning, We&apos;re With You.</p>
               </div>
 
               {/* Key Features Bullet points */}
-              <div className="mt-3 space-y-1.5 text-[11px] sm:text-xs text-slate-600 font-semibold max-w-md mx-auto lg:mx-0 hidden sm:block">
+              <div className="mt-3.5 space-y-1.5 text-[11px] sm:text-xs text-slate-300 font-semibold max-w-md mx-auto lg:mx-0 hidden sm:block">
                 <div className="flex items-center gap-2 justify-center lg:justify-start">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                   <span>100% Hands-On Coding Challenges & Industry Datasets</span>
                 </div>
                 <div className="flex items-center gap-2 justify-center lg:justify-start">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                   <span>AI Mock Interview Simulator with Live Scoring</span>
                 </div>
                 <div className="flex items-center gap-2 justify-center lg:justify-start">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                   <span>700+ Hiring Partners • Pay Fee Only After Placement</span>
                 </div>
               </div>
@@ -223,7 +223,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                 <button
                   type="button"
                   onClick={promptLogin}
-                  className="px-6 py-2.5 sm:py-3 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer flex items-center gap-2 group"
+                  className="px-6 py-2.5 sm:py-3 rounded-xl bg-[#1a73e8] hover:bg-blue-600 active:scale-95 text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-blue-500/35 transition-all cursor-pointer flex items-center gap-2 group"
                 >
                   <span>Start Learning Free</span>
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -232,47 +232,47 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                 <button
                   type="button"
                   onClick={promptLogin}
-                  className="px-5 py-2.5 sm:py-3 rounded-xl bg-white hover:bg-slate-50 active:scale-95 text-slate-800 font-bold text-xs sm:text-sm border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all cursor-pointer flex items-center gap-2"
+                  className="px-5 py-2.5 sm:py-3 rounded-xl bg-white/10 hover:bg-white/15 active:scale-95 text-white font-bold text-xs sm:text-sm border border-white/20 backdrop-blur-md shadow-2xs hover:border-blue-400 transition-all cursor-pointer flex items-center gap-2"
                 >
-                  <Code2 className="w-3.5 h-3.5 text-[#1a73e8]" />
+                  <Code2 className="w-3.5 h-3.5 text-[#38bdf8]" />
                   <span>Explore Coding Practice</span>
                 </button>
               </div>
 
               {/* Rating */}
-              <div className="mt-3 flex items-center justify-center lg:justify-start gap-2 text-[11px] text-slate-500 font-medium">
+              <div className="mt-3.5 flex items-center justify-center lg:justify-start gap-2 text-[11px] text-slate-400 font-medium">
                 <div className="flex items-center text-amber-400">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
                   ))}
                 </div>
-                <span><strong className="text-slate-900 font-bold">4.9/5</strong> rating trusted by 100K+ learners across India</span>
+                <span><strong className="text-white font-bold">4.9/5</strong> rating trusted by 100K+ learners across India</span>
               </div>
 
             </div>
 
-            {/* RIGHT COLUMN: Video Player from Google Drive */}
+            {/* RIGHT COLUMN: Holographic 3D Floating Animation (No Box, No Video Borders, Seamless Blend) */}
             <div className="lg:col-span-6 xl:col-span-6 flex items-center justify-center relative z-10">
-              <div className="relative w-full max-w-[540px] lg:max-w-[580px] flex items-center justify-center">
+              <div className="relative w-full max-w-[560px] lg:max-w-[620px] flex items-center justify-center">
                 
                 {/* Glowing Radiant Backing Aura */}
-                <div className="absolute inset-0 bg-radial from-cyan-400/25 via-blue-500/15 to-transparent rounded-full blur-2xl scale-105 pointer-events-none" />
+                <div className="absolute inset-0 bg-radial from-cyan-400/30 via-blue-500/20 to-transparent rounded-full blur-3xl scale-110 pointer-events-none" />
                 
-                {/* Seamless Floating Animation (Background Softly Feathered, No Box, No Player Controls) */}
+                {/* Seamless Floating Hologram Animation */}
                 <div 
                   className="relative z-10 w-full flex items-center justify-center pointer-events-none select-none"
                   style={{
-                    maskImage: 'radial-gradient(ellipse 68% 66% at 50% 50%, black 48%, transparent 92%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse 68% 66% at 50% 50%, black 48%, transparent 92%)',
+                    maskImage: 'radial-gradient(ellipse 75% 72% at 50% 50%, black 50%, transparent 95%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse 75% 72% at 50% 50%, black 50%, transparent 95%)',
                   }}
                 >
                   <video
-                    src="/videos/hero_video.mp4"
+                    src="/videos/hero_video_v2.mp4"
                     autoPlay
                     loop
                     muted
                     playsInline
-                    className="w-full h-auto max-h-[350px] sm:max-h-[420px] lg:max-h-[480px] xl:max-h-[520px] object-cover scale-105 pointer-events-none select-none drop-shadow-[0_20px_45px_rgba(26,115,232,0.25)]"
+                    className="w-full h-auto max-h-[380px] sm:max-h-[460px] lg:max-h-[520px] xl:max-h-[560px] object-cover scale-105 pointer-events-none select-none drop-shadow-[0_20px_50px_rgba(56,189,248,0.25)]"
                   />
                 </div>
 
