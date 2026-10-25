@@ -193,6 +193,7 @@ export interface CodingPracticeMasterHubProps {
   userName?: string;
   onOpenPython?: (topicId?: number) => void;
   onOpenSql?: () => void;
+  onOpenExcel?: () => void;
   onOpenDataAnalyst?: () => void;
   onOpenDataScience?: () => void;
   onOpenMlEngineering?: () => void;
@@ -392,6 +393,7 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
   userName = 'Rahul',
   onOpenPython,
   onOpenSql,
+  onOpenExcel,
   onOpenDataAnalyst,
   onOpenDataScience,
   onOpenMlEngineering,
@@ -430,6 +432,9 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
         else window.location.hash = '#sql-challenges';
         break;
       case 'excel':
+        if (onOpenExcel) onOpenExcel();
+        else window.location.hash = '#excel-challenges';
+        break;
       case 'powerbi':
         if (onOpenDataAnalyst) onOpenDataAnalyst();
         else window.location.hash = '#data-analyst';

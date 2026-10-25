@@ -78,6 +78,7 @@ import { GameArenaHub } from './GameArenaHub';
 import { CodingPracticeMasterHub } from './CodingPracticeMasterHub';
 import { PythonChallengesPracticeHub } from './PythonChallengesPracticeHub';
 import { SqlChallengesPracticeHub } from './SqlChallengesPracticeHub';
+import { ExcelChallengesPracticeHub } from './ExcelChallengesPracticeHub';
 import { LearnerHomeHub } from './LearnerHomeHub';
 import { DataAnalystGenAiHub } from './DataAnalystGenAiHub';
 import { DataScienceAgenticAiHub } from './DataScienceAgenticAiHub';
@@ -540,7 +541,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   };
 
   // Sub-view: null = 4-Course Student Dashboard (#dashboard), 'data_analyst' = Data Analyst with GenAI 6-Module Hub (#data-analyst), 'python' = Python Module Detail Page, 'python_intro_game' = Python Introduction & Setup Game Workspace, 'sql' = SQL Chapter View, 'excel' = Excel Chapter View, 'powerbi' = Power BI Chapter View, 'stats' = Statistics Chapter View, 'genai' = GenAI Chapter View
-  const [selectedModuleView, setSelectedModuleView] = useState<'data_analyst' | 'data_science' | 'ml_engineering' | 'ai_engineering' | 'ai_tools_prompt' | 'ms_office_copilot' | 'full_stack_mern' | 'python' | 'python_intro_game' | 'python_challenges' | 'sql_challenges' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai' | null>(() => {
+  const [selectedModuleView, setSelectedModuleView] = useState<'data_analyst' | 'data_science' | 'ml_engineering' | 'ai_engineering' | 'ai_tools_prompt' | 'ms_office_copilot' | 'full_stack_mern' | 'python' | 'python_intro_game' | 'python_challenges' | 'sql_challenges' | 'excel_challenges' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai' | null>(() => {
     if (typeof window !== 'undefined') {
       const h = window.location.hash;
       const baseH = h.split('?')[0];
@@ -573,6 +574,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       }
       if (baseH === '#sql-challenges' || baseH === '#sqlchallenges') {
         return 'sql_challenges';
+      }
+      if (baseH === '#excel-challenges' || baseH === '#excelchallenges') {
+        return 'excel_challenges';
       }
       if (baseH === '#stats') {
         return 'stats';
@@ -704,6 +708,10 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         setDockTab('game');
       } else if (baseH === '#sql-challenges' || baseH === '#sqlchallenges') {
         setSelectedModuleView('sql_challenges');
+        setActiveTopicWs(null);
+        setDockTab('game');
+      } else if (baseH === '#excel-challenges' || baseH === '#excelchallenges') {
+        setSelectedModuleView('excel_challenges');
         setActiveTopicWs(null);
         setDockTab('game');
       } else if (h === '#game' || h === '#games' || h === '#arena' || h === '#gamearena') {
@@ -2416,6 +2424,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setActiveTopicWs(null);
                 if (typeof window !== 'undefined') window.location.hash = '#sql-challenges';
               }}
+              onOpenExcel={() => {
+                setSelectedModuleView('excel_challenges');
+                setActiveTopicWs(null);
+                if (typeof window !== 'undefined') window.location.hash = '#excel-challenges';
+              }}
               onOpenDataAnalyst={() => {
                 setSelectedModuleView('data_analyst');
                 setActiveTopicWs(1);
@@ -2480,6 +2493,30 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         {selectedModuleView === 'sql_challenges' && (
           <div className="col-span-full">
             <SqlChallengesPracticeHub
+              userName={userName}
+              onBackToPractice={() => {
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                setDockTab('game');
+                if (typeof window !== 'undefined') window.location.hash = '#game';
+              }}
+              onBackToDashboard={() => {
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                setDockTab('home');
+                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+              }}
+              onSolveChallenge={(challengeId, title) => {
+                // Handled in arena
+              }}
+            />
+          </div>
+        )}
+
+        {/* ─── TAB: EXCEL CODING PRACTICE CHALLENGES ─── */}
+        {selectedModuleView === 'excel_challenges' && (
+          <div className="col-span-full">
+            <ExcelChallengesPracticeHub
               userName={userName}
               onBackToPractice={() => {
                 setSelectedModuleView(null);
