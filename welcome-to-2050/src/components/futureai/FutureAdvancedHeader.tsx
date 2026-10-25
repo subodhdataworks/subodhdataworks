@@ -158,8 +158,8 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
   return (
     <>
       {/* ─── STICKY ULTRA-ADVANCED TOP HEADER BAR (Exact 1:1 Reference Design) ─── */}
-      <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-[0_2px_16px_rgba(0,0,0,0.03)] transition-all">
-        <div className="max-w-[1440px] mx-auto px-3 sm:px-5 lg:px-7 h-17 sm:h-18 flex items-center justify-between gap-2 lg:gap-5">
+      <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-[0_2px_16px_rgba(0,0,0,0.03)] transition-all shrink-0">
+        <div className="max-w-[1440px] mx-auto px-3 sm:px-5 lg:px-7 h-15 sm:h-16 flex items-center justify-between gap-2 lg:gap-5">
           
           {/* LEFT: Future IT Industries Official Brand Logo */}
           <div 
