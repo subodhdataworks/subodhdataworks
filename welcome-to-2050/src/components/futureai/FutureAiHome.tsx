@@ -618,353 +618,97 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </section>
 
             {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 2: Learn by Doing – Real Skills for Real Jobs (Master Interactive Sandbox)
+          SECTION 2: Learn by Doing – Real Skills for Real Jobs (Master 3D Showcase)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 sm:mb-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-xs font-black uppercase tracking-wider mb-3">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-xs font-black uppercase tracking-wider mb-2.5">
               <Target className="w-3.5 h-3.5 text-emerald-600" />
               <span>Practical Learning Ecosystem</span>
             </div>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
               Learn by Doing –{' '}
               <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
                 Real Skills for Real Jobs
               </span>
             </h2>
-            <p className="text-xs sm:text-base text-slate-600 font-medium max-w-2xl mt-2 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-2xl mt-1.5 leading-relaxed">
               Not just passive videos. Write real code in live cloud sandboxes, build production repositories, test against ATS algorithms, and practice live AI interviews.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="px-4 py-2 rounded-2xl bg-slate-900 text-white text-xs font-bold flex items-center gap-2.5 shadow-md">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-              </span>
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold flex items-center gap-2 shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>100% Practical • Hands-On Architecture</span>
             </div>
           </div>
         </div>
 
-        {/* Bento Grid: 5 Realistic Interactive Learning Pillars */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
+        {/* Master 3D Animated Showcase Banner */}
+        <div 
+          onClick={promptLogin}
+          className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-slate-200/90 hover:shadow-2xl hover:border-blue-300 transition-all duration-500 cursor-pointer group bg-slate-950 mb-5"
+        >
+          <img
+            src="/images/home_sections/learn_by_doing_master_3d.jpg"
+            alt="Practical Learning Ecosystem: Learn by Doing – Real Skills for Real Jobs"
+            className="w-full h-auto max-h-[460px] object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 select-none"
+          />
+        </div>
 
-          {/* PILLAR 1: Real Live Code IDE (Large Showcase - lg:col-span-7) */}
-          <div 
-            onClick={promptLogin}
-            className="lg:col-span-7 bg-slate-950 rounded-3xl p-5 sm:p-7 border border-slate-800 shadow-xl hover:shadow-2xl hover:border-blue-500/50 transition-all duration-300 cursor-pointer flex flex-col justify-between group relative overflow-hidden"
-          >
-            {/* Ambient Background Glow */}
-            <div className="absolute -top-24 -right-24 w-72 h-72 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-emerald-600/15 rounded-full blur-3xl pointer-events-none" />
-
-            <div>
-              {/* Header Badges */}
-              <div className="flex items-center justify-between gap-3 mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center">
-                    <Code2 className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="text-white font-black text-base sm:text-lg tracking-tight">
-                      Hands-On Coding Sandbox
-                    </h3>
-                    <p className="text-slate-400 text-xs">Run real code in-browser with automated test validation</p>
-                  </div>
-                </div>
-
-                <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>500+ Challenges</span>
-                </div>
-              </div>
-
-              {/* Real Code Terminal Mockup */}
-              <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-4 font-mono text-xs sm:text-[13px] shadow-inner mb-4 overflow-hidden">
-                {/* Window Chrome */}
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800/80">
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-rose-500/80" />
-                    <span className="w-3 h-3 rounded-full bg-amber-500/80" />
-                    <span className="w-3 h-3 rounded-full bg-emerald-500/80" />
-                    <span className="ml-2 text-slate-400 text-[11px] font-sans font-medium">customer_retention_model.py</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-blue-500/20 text-blue-300 text-[11px] font-sans font-bold">
-                    <Play className="w-3 h-3 fill-current" />
-                    <span>Run Pipeline</span>
-                  </div>
-                </div>
-
-                {/* Code Lines */}
-                <div className="space-y-1 text-slate-300 leading-relaxed overflow-x-auto">
-                  <p><span className="text-purple-400">import</span> pandas <span className="text-purple-400">as</span> pd</p>
-                  <p><span className="text-purple-400">from</span> sklearn.ensemble <span className="text-purple-400">import</span> RandomForestClassifier</p>
-                  <p className="text-slate-500 italic"># Load real e-commerce transactional database</p>
-                  <p>df = pd.<span className="text-blue-400">read_parquet</span>(<span className="text-emerald-300">&quot;s3://enterprise-lake/retention.parquet&quot;</span>)</p>
-                  <p>model = <span className="text-amber-300">RandomForestClassifier</span>(n_estimators=<span className="text-rose-400">200</span>, max_depth=<span className="text-rose-400">12</span>)</p>
-                  <p>model.<span className="text-blue-400">fit</span>(X_train, y_train)</p>
-                </div>
-
-                {/* Real Test Suite Output */}
-                <div className="mt-4 pt-3 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-                  <div className="flex items-center gap-2 text-emerald-400 font-bold">
-                    <BadgeCheck className="w-4 h-4 shrink-0" />
-                    <span>15 / 15 Test Cases Passed (48ms)</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 font-sans">Accuracy: 96.8% • Production Ready</span>
-                </div>
-              </div>
+        {/* 5 Sleek Feature Chips for Fast Interactive Actions */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          <div onClick={promptLogin} className="p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-blue-400 transition cursor-pointer flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+              <Code2 className="w-4 h-4" />
             </div>
-
-            {/* Bottom Actions */}
-            <div className="flex items-center justify-between pt-2">
-              <span className="text-xs text-slate-400 font-medium">Python • SQL • Pandas • PySpark • Scikit-Learn</span>
-              <span className="text-xs text-blue-400 group-hover:text-blue-300 font-bold flex items-center gap-1">
-                Try Sandbox <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </span>
+            <div className="min-w-0">
+              <h4 className="text-xs font-black text-slate-900 truncate">Coding Sandbox</h4>
+              <p className="text-[10px] text-slate-500 truncate">500+ Challenges</p>
             </div>
           </div>
 
-          {/* PILLAR 2: ATS Resume Checker (Score Meter - lg:col-span-5) */}
-          <div 
-            onClick={promptLogin}
-            className="lg:col-span-5 bg-gradient-to-br from-white to-blue-50/40 rounded-3xl p-5 sm:p-7 border border-slate-200/90 shadow-lg hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer flex flex-col justify-between group relative"
-          >
-            <div>
-              <div className="flex items-center justify-between gap-3 mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center">
-                    <FileCheck className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="text-slate-900 font-black text-base sm:text-lg tracking-tight">
-                      ATS Resume Intelligence
-                    </h3>
-                    <p className="text-slate-500 text-xs">Instant recruiter-grade algorithmic parsing</p>
-                  </div>
-                </div>
-
-                <span className="px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200/80 text-[11px] font-bold">
-                  AI Scored
-                </span>
-              </div>
-
-              {/* Score Display Card */}
-              <div className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-2xs mb-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">ATS Match Rating</span>
-                    <div className="flex items-baseline gap-1.5 mt-0.5">
-                      <span className="text-3xl sm:text-4xl font-black text-slate-900">96</span>
-                      <span className="text-sm font-bold text-slate-400">/ 100</span>
-                      <span className="ml-2 text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                        Top 2% Candidate
-                      </span>
-                    </div>
-                  </div>
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center font-black text-lg shadow-sm">
-                    ✓
-                  </div>
-                </div>
-
-                {/* Progress breakdown */}
-                <div className="space-y-2.5 pt-2 border-t border-slate-100">
-                  <div>
-                    <div className="flex justify-between text-xs font-bold mb-1">
-                      <span className="text-slate-600">Technical Keyword Density</span>
-                      <span className="text-slate-900">98%</span>
-                    </div>
-                    <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                      <div className="w-[98%] h-full bg-blue-600 rounded-full" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-xs font-bold mb-1">
-                      <span className="text-slate-600">Quantified Business Impact</span>
-                      <span className="text-slate-900">94%</span>
-                    </div>
-                    <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                      <div className="w-[94%] h-full bg-purple-600 rounded-full" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-xs font-bold mb-1">
-                      <span className="text-slate-600">Single-Column Parse Format</span>
-                      <span className="text-slate-900">100%</span>
-                    </div>
-                    <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                      <div className="w-full h-full bg-emerald-500 rounded-full" />
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <div onClick={promptLogin} className="p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-purple-400 transition cursor-pointer flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+              <FileCheck className="w-4 h-4" />
             </div>
-
-            {/* Bottom Actions */}
-            <div className="flex items-center justify-between pt-2">
-              <span className="text-xs text-slate-500 font-medium">Matched to 50+ Enterprise Job Descriptions</span>
-              <span className="text-xs text-purple-600 group-hover:text-purple-700 font-bold flex items-center gap-1">
-                Scan Your Resume <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </span>
+            <div className="min-w-0">
+              <h4 className="text-xs font-black text-slate-900 truncate">ATS Resume Check</h4>
+              <p className="text-[10px] text-slate-500 truncate">Instant AI Score</p>
             </div>
           </div>
 
-          {/* PILLAR 3: Real Industry Projects (lg:col-span-4) */}
-          <div 
-            onClick={promptLogin}
-            className="lg:col-span-4 bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all duration-300 cursor-pointer flex flex-col justify-between group"
-          >
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                  <Briefcase className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-slate-900 font-black text-base tracking-tight">
-                    Production Repositories
-                  </h3>
-                  <p className="text-slate-500 text-[11px]">Real enterprise-grade portfolio code</p>
-                </div>
-              </div>
-
-              {/* GitHub Mock Project Card */}
-              <div className="bg-slate-900 rounded-2xl p-4 text-white border border-slate-800 shadow-2xs mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300">
-                    <span className="text-blue-400">enterprise</span> / <span className="text-white">fraud-detection-ai</span>
-                  </div>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700">Public</span>
-                </div>
-                <p className="text-[11px] text-slate-400 leading-relaxed mb-3">
-                  Real-time transaction anomaly detection pipeline handling 100K RPS with FastAPI, Redis, and LangChain agents.
-                </p>
-                <div className="flex items-center gap-2 text-[10.5px] font-bold text-slate-400">
-                  <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-yellow-400" /> Python</span>
-                  <span>•</span>
-                  <span>LangChain</span>
-                  <span>•</span>
-                  <span>Docker</span>
-                </div>
-              </div>
+          <div onClick={promptLogin} className="p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-emerald-400 transition cursor-pointer flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+              <Briefcase className="w-4 h-4" />
             </div>
-
-            <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-              <span className="text-xs text-slate-500 font-medium">12+ Real Portfolio Projects</span>
-              <span className="text-xs text-emerald-600 group-hover:text-emerald-700 font-bold flex items-center gap-1">
-                Explore Projects <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </span>
+            <div className="min-w-0">
+              <h4 className="text-xs font-black text-slate-900 truncate">Real Repositories</h4>
+              <p className="text-[10px] text-slate-500 truncate">12+ Projects</p>
             </div>
           </div>
 
-          {/* PILLAR 4: AI Mock Interview Simulator (lg:col-span-4) */}
-          <div 
-            onClick={promptLogin}
-            className="lg:col-span-4 bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-amber-300 transition-all duration-300 cursor-pointer flex flex-col justify-between group"
-          >
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                  <MessageSquare className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-slate-900 font-black text-base tracking-tight">
-                    AI Mock Interview Voice Lab
-                  </h3>
-                  <p className="text-slate-500 text-[11px]">Real-time speech & technical evaluation</p>
-                </div>
-              </div>
-
-              {/* Voice Simulator Card */}
-              <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/80 mb-4">
-                <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Question #04</div>
-                <p className="text-xs font-bold text-slate-900 mb-3">
-                  &quot;How would you optimize an SQL aggregate query on a 10M-row table?&quot;
-                </p>
-
-                {/* Simulated Audio Waveform */}
-                <div className="flex items-center justify-between gap-1 h-8 px-2 py-1 bg-white rounded-xl border border-slate-200/60 mb-2">
-                  <div className="w-1.5 h-3 bg-blue-500 rounded-full animate-pulse" />
-                  <div className="w-1.5 h-5 bg-blue-600 rounded-full animate-pulse" />
-                  <div className="w-1.5 h-7 bg-indigo-600 rounded-full animate-pulse" />
-                  <div className="w-1.5 h-4 bg-blue-500 rounded-full animate-pulse" />
-                  <div className="w-1.5 h-6 bg-purple-600 rounded-full animate-pulse" />
-                  <div className="w-1.5 h-5 bg-indigo-500 rounded-full animate-pulse" />
-                  <div className="w-1.5 h-2 bg-slate-300 rounded-full" />
-                  <div className="w-1.5 h-6 bg-blue-600 rounded-full animate-pulse" />
-                  <div className="w-1.5 h-4 bg-indigo-400 rounded-full animate-pulse" />
-                  <div className="w-1.5 h-7 bg-purple-600 rounded-full animate-pulse" />
-                  <div className="w-1.5 h-3 bg-blue-500 rounded-full animate-pulse" />
-                </div>
-
-                <div className="flex items-center justify-between text-[11px] font-bold text-emerald-600">
-                  <span>AI Score: 9.4 / 10</span>
-                  <span className="text-slate-500 font-normal">Clarity: Excellent</span>
-                </div>
-              </div>
+          <div onClick={promptLogin} className="p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-amber-400 transition cursor-pointer flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+              <MessageSquare className="w-4 h-4" />
             </div>
-
-            <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-              <span className="text-xs text-slate-500 font-medium">FAANG & MNC Questions</span>
-              <span className="text-xs text-amber-600 group-hover:text-amber-700 font-bold flex items-center gap-1">
-                Start Mock <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </span>
+            <div className="min-w-0">
+              <h4 className="text-xs font-black text-slate-900 truncate">AI Mock Interview</h4>
+              <p className="text-[10px] text-slate-500 truncate">Voice &amp; Code Lab</p>
             </div>
           </div>
 
-          {/* PILLAR 5: Industry Placement Guarantee & Salary (lg:col-span-4) */}
-          <div 
-            onClick={promptLogin}
-            className="lg:col-span-4 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-5 sm:p-6 text-white shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all duration-300 cursor-pointer flex flex-col justify-between group relative overflow-hidden"
-          >
-            <div className="absolute top-0 right-0 w-36 h-36 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-
+          <div onClick={promptLogin} className="col-span-2 sm:col-span-1 p-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-sm hover:shadow-md transition cursor-pointer flex items-center justify-between gap-3">
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 rounded-xl bg-white/20 text-white flex items-center justify-center">
-                  <Trophy className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-white font-black text-base tracking-tight">
-                    Direct Placement Assistance
-                  </h3>
-                  <p className="text-blue-100 text-[11px]">Recruitment letters & referral pipeline</p>
-                </div>
-              </div>
-
-              {/* Verified Metrics Card */}
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 mb-4">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-blue-200 mb-0.5">Verified CTC Range</div>
-                <div className="text-2xl sm:text-3xl font-black text-white mb-2">
-                  ₹6 LPA – ₹15 LPA
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-[11px] pt-2 border-t border-white/15">
-                  <div>
-                    <span className="text-blue-200 block">Hiring Partners</span>
-                    <span className="font-bold text-white text-xs">700+ Tech Firms</span>
-                  </div>
-                  <div>
-                    <span className="text-blue-200 block">Average Growth</span>
-                    <span className="font-bold text-white text-xs">140% Hike</span>
-                  </div>
-                </div>
-              </div>
+              <h4 className="text-xs font-black text-white">Direct Placement</h4>
+              <p className="text-[10px] text-blue-100 font-semibold">₹6 – 15 LPA CTC</p>
             </div>
-
-            <div className="flex items-center justify-between pt-2 border-t border-white/15">
-              <span className="text-xs text-blue-100 font-medium">100% Placement Support Guard</span>
-              <span className="text-xs text-white font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                Get Placed <ArrowRight className="w-3.5 h-3.5" />
-              </span>
-            </div>
+            <ArrowRight className="w-4 h-4 text-white shrink-0" />
           </div>
-
         </div>
 
       </section>
@@ -1373,113 +1117,95 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 8: Comprehensive Modern Footer
+          SECTION 8: Comprehensive Modern Footer (Campus Background with Soft White Tint)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <footer className="w-full bg-[#070b15] text-slate-400 pt-12 pb-8 border-t border-slate-800">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+      <footer className="relative w-full border-t border-slate-200/90 overflow-hidden">
+        
+        {/* Full-Cover Campus Background Image */}
+        <img
+          src="/images/future_ai_campus_footer.png"
+          alt="Future AI Innovation Headquarters & Tech Campus"
+          className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
+        />
+
+        {/* Soft White Frost Glass Tint Overlay ("halka white") */}
+        <div className="absolute inset-0 bg-white/92 sm:bg-white/90 backdrop-blur-[3px] pointer-events-none" />
+
+        {/* Top Accent Gradient Line */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 pointer-events-none" />
+
+        {/* Footer Content Container directly on top of the campus background */}
+        <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-8">
           
-          {/* Future AI Campus Showcase Panorama */}
-          <div 
-            onClick={promptLogin}
-            className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden mb-12 border border-slate-800 shadow-2xl group cursor-pointer"
-          >
-            <img
-              src="/images/future_ai_campus_footer.png"
-              alt="Future AI Innovation Headquarters & Tech Campus"
-              className="w-full h-[220px] sm:h-[300px] md:h-[360px] lg:h-[420px] object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 select-none"
-            />
-            {/* Subtle Gradient Fade into Footer */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#070b15] via-[#070b15]/20 to-transparent pointer-events-none" />
-            
-            {/* Campus Info Overlay Card */}
-            <div className="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950/85 backdrop-blur-md p-4 sm:px-6 sm:py-4 rounded-2xl border border-white/10 text-white shadow-xl">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-cyan-400 shrink-0">
-                  <Building2 className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-sm sm:text-base font-black tracking-tight text-white flex items-center gap-2">
-                    <span>Future AI Innovation Headquarters &amp; Tech Campus</span>
-                    <span className="text-[10px] bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold px-2 py-0.5 rounded-full">
-                      Physical &amp; Virtual Campus
-                    </span>
-                  </h3>
-                  <p className="text-xs text-slate-400 font-medium mt-0.5">
-                    India&apos;s premier learning technology center &amp; placement operations hub.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 shrink-0">
-                <div className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5">
-                  <span>Explore Campus</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-12 border-b border-slate-800/80">
+          {/* Main Footer Links Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-10 border-b border-slate-300/80">
             
             {/* Column 1: Brand & Logo */}
             <div className="lg:col-span-2">
-              <div className="flex items-center gap-2.5 text-white font-black text-xl tracking-tight">
-                <span className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center font-mono text-base shadow-md shadow-blue-500/30">
+              <div className="flex items-center gap-2.5 text-slate-950 font-black text-xl tracking-tight">
+                <span className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-500 text-white flex items-center justify-center font-mono text-base shadow-md shadow-blue-500/30">
                   F
                 </span>
                 <span>FUTURE IT</span>
-                <span className="text-cyan-400 font-semibold text-xs tracking-widest">— INDUSTRIES —</span>
+                <span className="text-blue-600 font-bold text-xs tracking-widest">— INDUSTRIES —</span>
               </div>
-              <p className="text-xs text-slate-400 mt-3 font-medium leading-relaxed max-w-sm">
+              <p className="text-xs text-slate-600 mt-3 font-medium leading-relaxed max-w-sm">
                 India&apos;s #1 AI &amp; Data Science Career Accelerator. Hands-on projects, real interview prep, and 100% placement support.
               </p>
-              <div className="text-xs text-cyan-400 font-bold mt-2">
-                Learn Today, Earn Tomorrow.
+              <div className="text-xs text-blue-600 font-bold mt-2 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+                <span>Learn Today, Earn Tomorrow.</span>
+              </div>
+              
+              {/* Verified Campus Badge */}
+              <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/90 border border-slate-200/90 shadow-2xs text-[11px] font-bold text-slate-700">
+                <Building2 className="w-3.5 h-3.5 text-blue-600" />
+                <span>Innovation Headquarters &amp; Physical Tech Campus</span>
               </div>
             </div>
 
             {/* Column 2: Quick Links */}
             <div>
-              <h4 className="text-xs font-black text-white tracking-wider uppercase mb-3.5">
+              <h4 className="text-xs font-black text-slate-900 tracking-wider uppercase mb-3.5">
                 Quick Links
               </h4>
-              <ul className="space-y-2.5 text-xs font-medium">
-                <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Courses</button></li>
-                <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Coding Practice</button></li>
-                <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">ATS Resume Checker</button></li>
-                <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Internship</button></li>
-                <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Success Stories</button></li>
+              <ul className="space-y-2.5 text-xs font-semibold text-slate-600">
+                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Courses</button></li>
+                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Coding Practice</button></li>
+                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">ATS Resume Checker</button></li>
+                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Internship</button></li>
+                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Success Stories</button></li>
               </ul>
             </div>
 
             {/* Column 3: Company */}
             <div>
-              <h4 className="text-xs font-black text-white tracking-wider uppercase mb-3.5">
+              <h4 className="text-xs font-black text-slate-900 tracking-wider uppercase mb-3.5">
                 Company
               </h4>
-              <ul className="space-y-2.5 text-xs font-medium">
-                <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">About Us</button></li>
-                <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Contact Us</button></li>
-                <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Privacy Policy</button></li>
-                <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Terms &amp; Conditions</button></li>
+              <ul className="space-y-2.5 text-xs font-semibold text-slate-600">
+                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">About Us</button></li>
+                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Contact Us</button></li>
+                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Privacy Policy</button></li>
+                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Terms &amp; Conditions</button></li>
               </ul>
             </div>
 
             {/* Column 4: Support & Follow Us */}
             <div>
-              <h4 className="text-xs font-black text-white tracking-wider uppercase mb-3.5">
+              <h4 className="text-xs font-black text-slate-900 tracking-wider uppercase mb-3.5">
                 Support
               </h4>
-              <ul className="space-y-2.5 text-xs font-medium">
-                <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Help Center</button></li>
-                <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">FAQs</button></li>
-                <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Refund Policy</button></li>
-                <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Career</button></li>
+              <ul className="space-y-2.5 text-xs font-semibold text-slate-600">
+                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Help Center</button></li>
+                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">FAQs</button></li>
+                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Refund Policy</button></li>
+                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Career</button></li>
               </ul>
 
               {/* Social Media */}
               <div className="mt-5">
-                <h5 className="text-[11px] font-bold text-white mb-2.5">Follow Us</h5>
+                <h5 className="text-[11px] font-bold text-slate-900 mb-2.5">Follow Us</h5>
                 <div className="flex items-center gap-2">
                   <a href="#" onClick={(e) => { e.preventDefault(); promptLogin(); }} className="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-xs">
                     <YoutubeIcon />
@@ -1504,9 +1230,9 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           </div>
 
           {/* Bottom Copyright */}
-          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-medium">
+          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600 font-semibold">
             <p>© 2026 Future IT Industry. All rights reserved.</p>
-            <p className="text-[11px]">Empowering learners across India to learn, practice, and get placed.</p>
+            <p className="text-[11px] text-slate-500">Empowering learners across India to learn, practice, and get placed.</p>
           </div>
 
         </div>
