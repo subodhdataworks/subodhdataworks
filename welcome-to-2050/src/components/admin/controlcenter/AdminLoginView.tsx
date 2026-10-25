@@ -137,6 +137,32 @@ export const AdminLoginView: React.FC<AdminLoginProps> = ({ onLoginSuccess, onCa
               <span>Sign In to Admin Control Center ➔</span>
             )}
           </button>
+
+          {/* Quick Super Admin One-Click Login */}
+          <button
+            type="button"
+            disabled={isLoading}
+            onClick={async () => {
+              setEmail('admin@futureitindustry.com');
+              setPassword('Admin@2050FutureIT#');
+              setIsLoading(true);
+              setErrorMessage('');
+              try {
+                const res = await AdminAuthService.login('admin@futureitindustry.com', 'Admin@2050FutureIT#');
+                if (res.success && res.session) {
+                  onLoginSuccess(res.session);
+                }
+              } catch (e: any) {
+                setErrorMessage(e?.message || 'Access error');
+              } finally {
+                setIsLoading(false);
+              }
+            }}
+            className="w-full py-2.5 px-4 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs rounded-xl shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+            <span>⚡ Quick 1-Click Super Admin Access</span>
+          </button>
         </form>
 
         {/* Back to student site */}

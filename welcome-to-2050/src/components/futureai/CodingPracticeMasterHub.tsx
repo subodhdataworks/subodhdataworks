@@ -441,6 +441,14 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
     }
   }, [isEnrolled]);
 
+  useEffect(() => {
+    const handleUnlocked = () => {
+      setInternalEnrolled(true);
+    };
+    window.addEventListener('futureai_course_unlocked', handleUnlocked);
+    return () => window.removeEventListener('futureai_course_unlocked', handleUnlocked);
+  }, []);
+
   // Sync track hash with activeBlankCourse so Google Chrome back button returns to all 14 cards
   useEffect(() => {
     const handleHash = () => {
@@ -486,12 +494,16 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
   }, [activeCategory, searchFilter]);
 
   const handleCardClick = (card: PracticeCardItem) => {
+    const isEnrolledStudent = internalEnrolled || isCourseUnlocked('data_analyst') || isAnyCourseUnlocked();
     const isAuth = Boolean(
       isLoggedIn ||
-      (typeof window !== 'undefined' &&
-        localStorage.getItem('futureai_logged_in') === 'true' &&
-        localStorage.getItem('futureai_user_name') &&
-        localStorage.getItem('futureai_user_name') !== 'Learner')
+      isEnrolledStudent ||
+      (typeof window !== 'undefined' && (
+        localStorage.getItem('futureai_logged_in') === 'true' ||
+        localStorage.getItem('futureai_course_enrolled') === 'true' ||
+        localStorage.getItem('futureai_user_email') ||
+        localStorage.getItem('futureai_user_phone')
+      ))
     );
 
     if (!isAuth) {

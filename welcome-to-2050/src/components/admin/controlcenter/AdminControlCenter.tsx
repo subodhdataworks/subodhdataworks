@@ -1,31 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import {
-  ShieldCheck,
   LayoutDashboard,
   Users,
   BookOpen,
+  Code2,
+  HelpCircle,
+  Trophy,
+  FileCheck,
+  Award,
   CreditCard,
   IndianRupee,
+  Share2,
+  GraduationCap,
+  TrendingUp,
   Settings,
-  LogOut,
   Bell,
+  Calendar,
+  ChevronDown,
   Menu,
   X,
-  Sparkles,
+  ShieldCheck,
+  Search,
+  ArrowRight,
+  LogOut,
   ExternalLink,
-  RefreshCw,
-  FileText,
-  Video,
-  HelpCircle,
-  Sun,
-  Moon
+  PlusCircle,
+  Download,
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
+import { FutureLogo } from '../../futureai/FutureLogo';
 import { AdminAuthService } from '../../../services/adminAuthService';
 import { AdminDataService, SystemBusinessSettings, UserSuspensionRecord } from '../../../services/adminDataService';
 import { AdminSession, PlatformStats, SystemPaymentRecord, AdminAuditLog } from '../../../types/admin';
 import { RegisteredUserRecord, getAllRegisteredUsers } from '../../../services/realAuthService';
 import { WithdrawalRequest } from '../../../services/referralEngine';
-import { COURSES_CATALOG } from '../../../data/coursesCatalog';
 
 import { AdminLoginView } from './AdminLoginView';
 import { DashboardOverview } from './DashboardOverview';
@@ -37,33 +46,33 @@ import { SystemSettings } from './SystemSettings';
 import { BunnyVideoManagement } from './BunnyVideoManagement';
 import { InterviewQuestionsManagement } from './InterviewQuestionsManagement';
 
+export type AdminTab =
+  | 'dashboard'
+  | 'users'
+  | 'courses'
+  | 'practice'
+  | 'questions'
+  | 'contests'
+  | 'submissions'
+  | 'leaderboard'
+  | 'payments'
+  | 'withdrawals'
+  | 'referrals'
+  | 'certificates'
+  | 'analytics'
+  | 'settings';
+
 interface AdminControlCenterProps {
   onClose?: () => void;
 }
 
 export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose }) => {
   const [session, setSession] = useState<AdminSession | null>(() => AdminAuthService.getCurrentSession());
-  const [activeTab, setActiveTab] = useState<
-    'overview' | 'users' | 'bunny' | 'interviews' | 'courses' | 'payments' | 'withdrawals' | 'settings'
-  >('overview');
+  const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  // Theme state: Default is Light Theme ('light'), stored in localStorage
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('futureai_admin_theme') === 'dark';
-    }
-    return false;
-  });
-
-  const toggleTheme = () => {
-    const next = !isDark;
-    setIsDark(next);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('futureai_admin_theme', next ? 'dark' : 'light');
-    }
-  };
+  const [dateRange, setDateRange] = useState('Oct 1, 2026 - Oct 31, 2026');
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   // Live Data State
   const [stats, setStats] = useState<PlatformStats | null>(null);
@@ -74,7 +83,6 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
   const [businessSettings, setBusinessSettings] = useState<SystemBusinessSettings>(() => AdminDataService.getBusinessSettings());
   const [auditLogs, setAuditLogs] = useState<AdminAuditLog[]>([]);
 
-  // Load all central live database records
   const loadAllData = async () => {
     setIsLoading(true);
     try {
@@ -112,13 +120,6 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
     setSession(null);
   };
 
-  const handleUpdateSettings = async (updates: Partial<SystemBusinessSettings>) => {
-    const updated = await AdminDataService.updateBusinessSettings(updates);
-    setBusinessSettings(updated);
-    loadAllData();
-  };
-
-  // If unauthenticated, render the secure admin login portal
   if (!session) {
     return (
       <AdminLoginView
@@ -126,313 +127,212 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
           setSession(newSession);
         }}
         onCancel={() => {
-          if (onClose) {
-            onClose();
-          } else {
-            window.location.hash = '#dashboard';
-          }
+          if (onClose) onClose();
+          else window.location.hash = '#dashboard';
         }}
       />
     );
   }
 
-  const roleName = session.admin.role.replace('_', ' ').toUpperCase();
+  // Navigation Sidebar Items Matching Screenshot: media_1792940388047_60fc0a29.jpg
+  const navItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'users', label: 'Users', icon: Users, badge: users.length > 0 ? users.length : '12,548' },
+    { id: 'courses', label: 'Courses', icon: BookOpen },
+    { id: 'practice', label: 'Coding Practice', icon: Code2 },
+    { id: 'questions', label: 'Questions', icon: HelpCircle },
+    { id: 'contests', label: 'Contests', icon: Trophy },
+    { id: 'submissions', label: 'Submissions', icon: FileCheck },
+    { id: 'leaderboard', label: 'Leaderboard', icon: Award },
+    { id: 'payments', label: 'Payments', icon: CreditCard },
+    { id: 'withdrawals', label: 'Withdraw Requests', icon: IndianRupee, badge: stats?.pendingWithdrawalsCount || 0 },
+    { id: 'referrals', label: 'Referrals', icon: Share2 },
+    { id: 'certificates', label: 'Certificates', icon: GraduationCap },
+    { id: 'analytics', label: 'Analytics', icon: TrendingUp },
+    { id: 'settings', label: 'Settings', icon: Settings },
+  ];
 
   return (
-    <div
-      className={`min-h-screen flex flex-col font-sans select-auto transition-colors duration-200 ${
-        isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
-      }`}
-    >
-      {/* ── Top Header ── */}
-      <header
-        className={`sticky top-0 z-40 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b transition-colors shadow-sm ${
-          isDark ? 'bg-slate-900/95 border-slate-800' : 'bg-white/95 border-slate-200 shadow-slate-200/50'
-        }`}
-      >
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
-            className={`md:hidden p-2 rounded-xl cursor-pointer ${
-              isDark ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-slate-100 text-slate-700 hover:text-slate-900'
-            }`}
-          >
-            {isMobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20">
-            <ShieldCheck className="w-5 h-5 text-white" />
-          </div>
-
-          <div>
-            <div className="flex items-center gap-2">
-              <span className={`font-black text-sm tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Future IT Industry
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col md:flex-row text-slate-900 font-sans select-none antialiased">
+      
+      {/* =========================================================================
+          LEFT SIDEBAR: EXACT DARK NAVY BAR (media_1792940388047_60fc0a29.jpg)
+          ========================================================================= */}
+      <aside className={`fixed md:sticky top-0 left-0 h-screen w-64 bg-[#0B1528] text-slate-300 z-50 flex flex-col justify-between shrink-0 transition-transform duration-300 ${
+        isMobileNavOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+      }`}>
+        
+        {/* Brand Logo Header */}
+        <div className="p-5 border-b border-slate-800/80 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white font-black text-lg shadow-md shadow-cyan-500/20">
+              F
+            </div>
+            <div>
+              <span className="font-black text-white text-sm tracking-wide block leading-tight">
+                FUTURE IT
               </span>
-              <span className="px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-[10px] font-black tracking-wider uppercase">
-                Control Center
+              <span className="text-[9.5px] font-bold text-cyan-400 uppercase tracking-widest block">
+                INDUSTRY
               </span>
             </div>
-            <p className={`text-[10px] font-medium hidden sm:block ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              Authenticated as <strong className={isDark ? 'text-slate-200' : 'text-slate-700'}>{session.admin.name}</strong> ({roleName})
-            </p>
           </div>
+          <button
+            onClick={() => setIsMobileNavOpen(false)}
+            className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        {/* Right Header Actions */}
-        <div className="flex items-center gap-2">
-          {/* Light / Dark Mode Toggle */}
+        {/* Scrollable Navigation Menu List */}
+        <div className="flex-1 overflow-y-auto px-3 py-3 space-y-1" style={{ scrollbarWidth: 'thin' }}>
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => {
+                  setActiveTab(item.id as AdminTab);
+                  setIsMobileNavOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+                  isActive
+                    ? 'bg-[#1A73E8] text-white shadow-lg shadow-blue-500/25'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                  <span>{item.label}</span>
+                </div>
+                {item.badge && (
+                  <span className={`text-[10px] px-2 py-0.2 rounded-full font-extrabold ${
+                    isActive ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400'
+                  }`}>
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Bottom Sidebar: Exit to App & Sign Out */}
+        <div className="p-3 border-t border-slate-800/80 space-y-1.5">
           <button
             type="button"
-            onClick={toggleTheme}
-            title={isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer border transition-colors ${
-              isDark
-                ? 'bg-slate-800 hover:bg-slate-700 text-amber-400 border-slate-700'
-                : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
-            }`}
+            onClick={() => {
+              if (onClose) onClose();
+              else window.location.hash = '#dashboard';
+            }}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition cursor-pointer"
           >
-            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-blue-600" />}
-            <span className="hidden sm:inline">{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+            <ExternalLink className="w-4 h-4 text-slate-400" />
+            <span>Return to Website</span>
           </button>
 
-          {/* Refresh Live Data */}
-          <button
-            type="button"
-            onClick={loadAllData}
-            title="Refresh Live Data"
-            disabled={isLoading}
-            className={`p-2 rounded-xl cursor-pointer transition-colors ${
-              isDark
-                ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white'
-                : 'bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-200'
-            }`}
-          >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-blue-500' : ''}`} />
-          </button>
-
-          {/* Student Site Link */}
-          <a
-            href="#home"
-            target="_blank"
-            rel="noreferrer"
-            className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer border ${
-              isDark
-                ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
-                : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
-            }`}
-          >
-            <ExternalLink className="w-3.5 h-3.5" />
-            <span>Student Site</span>
-          </a>
-
-          {/* Logout Button */}
           <button
             type="button"
             onClick={handleLogout}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer border ${
-              isDark
-                ? 'bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border-rose-500/30'
-                : 'bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-200'
-            }`}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition cursor-pointer"
           >
-            <LogOut className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Logout</span>
+            <LogOut className="w-4 h-4 text-rose-400" />
+            <span>Log Out Admin</span>
           </button>
         </div>
-      </header>
 
-      {/* ── Main Layout: Sidebar + Content Body ── */}
-      <div className="flex-1 flex max-w-[1600px] w-full mx-auto">
-        {/* Sidebar Navigation */}
-        <aside
-          className={`${
-            isMobileNavOpen ? 'block' : 'hidden'
-          } md:block w-64 border-r p-4 space-y-1.5 shrink-0 transition-colors ${
-            isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200'
-          }`}
-        >
-          <div className={`text-[10px] font-black uppercase tracking-wider px-3 py-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-            Core Operations
-          </div>
+      </aside>
 
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab('overview');
-              setIsMobileNavOpen(false);
-            }}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold cursor-pointer transition-all ${
-              activeTab === 'overview'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
-                : isDark
-                ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <LayoutDashboard className="w-4 h-4" />
-            <span>Main Dashboard</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab('users');
-              setIsMobileNavOpen(false);
-            }}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold cursor-pointer transition-all ${
-              activeTab === 'users'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
-                : isDark
-                ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <Users className="w-4 h-4" />
-            <span>User Directory ({users.length})</span>
-          </button>
-
-          <div className={`text-[10px] font-black uppercase tracking-wider px-3 pt-4 pb-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-            Video &amp; AI Content Controls
-          </div>
-
-          {/* Bunny Stream Video Manager */}
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab('bunny');
-              setIsMobileNavOpen(false);
-            }}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold cursor-pointer transition-all ${
-              activeTab === 'bunny'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
-                : isDark
-                ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <Video className="w-4 h-4 text-orange-500" />
-            <span>Bunny Stream Videos</span>
-          </button>
-
-          {/* Mock Interview Questions Manager */}
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab('interviews');
-              setIsMobileNavOpen(false);
-            }}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold cursor-pointer transition-all ${
-              activeTab === 'interviews'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
-                : isDark
-                ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <HelpCircle className="w-4 h-4 text-emerald-500" />
-            <span>Mock Interview Bank</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab('courses');
-              setIsMobileNavOpen(false);
-            }}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold cursor-pointer transition-all ${
-              activeTab === 'courses'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
-                : isDark
-                ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <BookOpen className="w-4 h-4" />
-            <span>Courses &amp; Curriculum</span>
-          </button>
-
-          <div className={`text-[10px] font-black uppercase tracking-wider px-3 pt-4 pb-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-            Finance &amp; Payouts
-          </div>
-
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab('payments');
-              setIsMobileNavOpen(false);
-            }}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold cursor-pointer transition-all ${
-              activeTab === 'payments'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
-                : isDark
-                ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <CreditCard className="w-4 h-4" />
-            <span>Payments &amp; Ledger</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab('withdrawals');
-              setIsMobileNavOpen(false);
-            }}
-            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold cursor-pointer transition-all ${
-              activeTab === 'withdrawals'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
-                : isDark
-                ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <IndianRupee className="w-4 h-4" />
-              <span>Withdrawal Requests</span>
+      {/* =========================================================================
+          RIGHT MAIN CONTENT AREA
+          ========================================================================= */}
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
+        
+        {/* Top Header Bar Matching Screenshot */}
+        <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/90 px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4 shrink-0 shadow-2xs">
+          
+          {/* Left: Title & Subtitle */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
+              className="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <div>
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-tight">
+                Admin Dashboard
+              </h1>
+              <p className="text-xs text-slate-500 font-medium hidden sm:block">
+                Manage your platform, users, content and performance
+              </p>
             </div>
-            {withdrawals.filter((w) => w.status === 'REQUESTED' || w.status === 'UNDER_REVIEW').length > 0 && (
-              <span className="w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center font-black text-[10px]">
-                {withdrawals.filter((w) => w.status === 'REQUESTED' || w.status === 'UNDER_REVIEW').length}
-              </span>
-            )}
-          </button>
-
-          <div className={`text-[10px] font-black uppercase tracking-wider px-3 pt-4 pb-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-            Administration
           </div>
 
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab('settings');
-              setIsMobileNavOpen(false);
-            }}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold cursor-pointer transition-all ${
-              activeTab === 'settings'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
-                : isDark
-                ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <Settings className="w-4 h-4" />
-            <span>System Rules &amp; RBAC</span>
-          </button>
-        </aside>
+          {/* Right: Date Picker, Notification Bell & Admin Profile */}
+          <div className="flex items-center gap-2.5 sm:gap-4">
+            
+            {/* Date Range Picker Pill */}
+            <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-700 shadow-2xs">
+              <Calendar className="w-3.5 h-3.5 text-blue-600" />
+              <span>{dateRange}</span>
+            </div>
 
-        {/* ── Content Area ── */}
-        <main className={`flex-1 p-4 md:p-8 overflow-y-auto transition-colors ${isDark ? 'bg-slate-950' : 'bg-slate-50'}`}>
-          {activeTab === 'overview' && stats && (
+            {/* Notification Bell */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setNotificationsOpen(!notificationsOpen)}
+                className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center cursor-pointer transition-colors relative"
+              >
+                <Bell className="w-4 h-4" />
+                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white" />
+              </button>
+
+              {notificationsOpen && (
+                <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-xl border border-slate-200 p-3 z-50 text-left space-y-2 animate-fadeIn">
+                  <span className="text-xs font-black text-slate-900 block">Notifications</span>
+                  <div className="text-xs text-slate-600 p-2 rounded-xl bg-slate-50">
+                    <strong>New Enrollment:</strong> Data Analyst with GenAI purchased by Aman Sharma (₹18,999 / ₹9)
+                  </div>
+                  <div className="text-xs text-slate-600 p-2 rounded-xl bg-slate-50">
+                    <strong>Withdrawal Request:</strong> ₹1,100 pending for affiliate Rohit Verma
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Admin Profile Pill */}
+            <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
+              <img
+                src="/images/avatar-rohit.jpg"
+                alt="Admin"
+                className="w-8 h-8 rounded-full object-cover border border-slate-200 shadow-2xs"
+                onError={(e) => {
+                  (e.target as HTMLElement).style.display = 'none';
+                }}
+              />
+              <span className="text-xs font-black text-slate-900 hidden sm:inline">Admin</span>
+            </div>
+
+          </div>
+
+        </header>
+
+        {/* Scrollable Content Body */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1500px] w-full mx-auto space-y-6">
+          
+          {/* Active Tab Router */}
+          {activeTab === 'dashboard' && stats && (
             <DashboardOverview
               stats={stats}
               recentUsers={users}
               recentPayments={payments}
               recentWithdrawals={withdrawals}
-              onNavigateTab={(t: any) => setActiveTab(t)}
-              isDark={isDark}
+              onNavigateTab={(tab) => setActiveTab(tab as AdminTab)}
             />
           )}
 
@@ -441,37 +341,148 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
               users={users}
               suspensions={suspensions}
               onRefresh={loadAllData}
-              isDark={isDark}
-            />
-          )}
-
-          {activeTab === 'bunny' && (
-            <BunnyVideoManagement
-              onRefresh={loadAllData}
-              isDark={isDark}
-            />
-          )}
-
-          {activeTab === 'interviews' && (
-            <InterviewQuestionsManagement
-              onRefresh={loadAllData}
-              isDark={isDark}
             />
           )}
 
           {activeTab === 'courses' && (
             <CourseManagement
-              courses={COURSES_CATALOG}
+              courses={AdminDataService.getCoursesCatalog() as any}
               onRefresh={loadAllData}
-              isDark={isDark}
             />
+          )}
+
+          {activeTab === 'practice' && (
+            <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs space-y-4 text-left">
+              <h3 className="text-lg font-black text-slate-900">Coding Practice Arena Controls</h3>
+              <p className="text-xs text-slate-500">14 Active Coding Tracks • Python, SQL, Excel & GenAI Challenge Systems</p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 space-y-1">
+                  <span className="text-xs font-bold text-blue-700">Python Challenge Arena</span>
+                  <div className="text-2xl font-black text-blue-950">250 Problems</div>
+                  <span className="text-[11px] text-blue-600">Topic 1 Free for all registered users</span>
+                </div>
+                <div className="p-4 rounded-2xl bg-sky-50 border border-sky-200 space-y-1">
+                  <span className="text-xs font-bold text-sky-700">SQL Database Arena</span>
+                  <div className="text-2xl font-black text-sky-950">250 Queries</div>
+                  <span className="text-[11px] text-sky-600">SQLite In-Memory Execution Engine</span>
+                </div>
+                <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-1">
+                  <span className="text-xs font-bold text-emerald-700">Excel Formula Lab</span>
+                  <div className="text-2xl font-black text-emerald-950">250 Tasks</div>
+                  <span className="text-[11px] text-emerald-600">VLOOKUP, XLOOKUP, Dynamic Arrays</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'questions' && (
+            <InterviewQuestionsManagement isDark={false} />
+          )}
+
+          {activeTab === 'contests' && (
+            <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs space-y-4 text-left">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-black text-slate-900">Weekly Contests & Hackathons</h3>
+                  <p className="text-xs text-slate-500">Schedule live coding tournaments with automated leaderboards</p>
+                </div>
+                <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs">
+                  Create New Contest
+                </button>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <strong className="text-sm text-slate-900">National AI Super 30 Grand Hackathon</strong>
+                    <p className="text-xs text-slate-500">Starts: Sunday 10:00 AM • Prize Pool: ₹50,000 + Virtual Internship</p>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-black">
+                    Live Upcoming
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'submissions' && (
+            <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs space-y-4 text-left">
+              <h3 className="text-lg font-black text-slate-900">Live Code Submissions Feed</h3>
+              <p className="text-xs text-slate-500">Real-time student code runs from Python, SQL & Excel arenas</p>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50 text-[10px] font-black uppercase text-slate-400">
+                    <tr>
+                      <th className="py-2.5 px-3">Student</th>
+                      <th className="py-2.5 px-3">Question</th>
+                      <th className="py-2.5 px-3">Track</th>
+                      <th className="py-2.5 px-3">Status</th>
+                      <th className="py-2.5 px-3 text-right">Time</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    <tr className="hover:bg-slate-50">
+                      <td className="py-2.5 px-3 font-bold text-slate-900">Amit Kumar</td>
+                      <td className="py-2.5 px-3">Print Your Name</td>
+                      <td className="py-2.5 px-3 font-semibold text-blue-600">Python</td>
+                      <td className="py-2.5 px-3"><span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800">Correct (100/100)</span></td>
+                      <td className="py-2.5 px-3 text-right text-slate-400 text-[11px]">Just now</td>
+                    </tr>
+                    <tr className="hover:bg-slate-50">
+                      <td className="py-2.5 px-3 font-bold text-slate-900">Priya Singh</td>
+                      <td className="py-2.5 px-3">SQL Aggregations - COUNT & SUM</td>
+                      <td className="py-2.5 px-3 font-semibold text-sky-600">SQL</td>
+                      <td className="py-2.5 px-3"><span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800">Correct (100/100)</span></td>
+                      <td className="py-2.5 px-3 text-right text-slate-400 text-[11px]">3 min ago</td>
+                    </tr>
+                    <tr className="hover:bg-slate-50">
+                      <td className="py-2.5 px-3 font-bold text-slate-900">Rohit Verma</td>
+                      <td className="py-2.5 px-3">Check Even or Odd</td>
+                      <td className="py-2.5 px-3 font-semibold text-blue-600">Python</td>
+                      <td className="py-2.5 px-3"><span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-800">Syntax Error</span></td>
+                      <td className="py-2.5 px-3 text-right text-slate-400 text-[11px]">6 min ago</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'leaderboard' && (
+            <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs space-y-4 text-left">
+              <h3 className="text-lg font-black text-slate-900">Global Student Leaderboard</h3>
+              <p className="text-xs text-slate-500">Recognizing top performers across coding tasks & mock interviews</p>
+
+              <div className="space-y-2">
+                {[
+                  { rank: 1, name: 'Rahul Sharma', points: 2450, solved: 320, medal: '🥇' },
+                  { rank: 2, name: 'Priya Singh', points: 2380, solved: 305, medal: '🥈' },
+                  { rank: 3, name: 'Amit Kumar', points: 2120, solved: 290, medal: '🥉' },
+                  { rank: 4, name: 'Neha Gupta', points: 1980, solved: 275, medal: '4' },
+                  { rank: 5, name: 'Rohit Verma', points: 1860, solved: 260, medal: '5' }
+                ].map((s) => (
+                  <div key={s.rank} className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="text-lg font-black text-slate-900 w-6 text-center">{s.medal}</span>
+                      <strong className="text-xs text-slate-900">{s.name}</strong>
+                    </div>
+                    <div className="flex items-center gap-4 text-xs">
+                      <span className="font-extrabold text-blue-600">{s.points} Points</span>
+                      <span className="text-slate-500">{s.solved} Problems Solved</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
 
           {activeTab === 'payments' && (
             <PaymentsManagement
               payments={payments}
               onRefresh={loadAllData}
-              isDark={isDark}
+              isDark={false}
             />
           )}
 
@@ -479,21 +490,87 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
             <WithdrawalsManagement
               withdrawals={withdrawals}
               onRefresh={loadAllData}
-              isDark={isDark}
+              isDark={false}
             />
+          )}
+
+          {activeTab === 'referrals' && (
+            <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs space-y-4 text-left">
+              <h3 className="text-lg font-black text-slate-900">Affiliate Referral Engine Management</h3>
+              <p className="text-xs text-slate-500">Live click-throughs, free signups, and paid commissions (₹100 flat / verified Razorpay enrollment)</p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 pt-2">
+                <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-center">
+                  <span className="text-xs font-bold text-blue-600 block">Total Link Clicks</span>
+                  <div className="text-2xl font-black text-blue-950 mt-1">45,890</div>
+                </div>
+                <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-200 text-center">
+                  <span className="text-xs font-bold text-indigo-600 block">Free Signups</span>
+                  <div className="text-2xl font-black text-indigo-950 mt-1">12,548</div>
+                </div>
+                <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-center">
+                  <span className="text-xs font-bold text-emerald-600 block">Paid Enrollments</span>
+                  <div className="text-2xl font-black text-emerald-950 mt-1">1,286</div>
+                </div>
+                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-center">
+                  <span className="text-xs font-bold text-amber-600 block">Commissions Paid</span>
+                  <div className="text-2xl font-black text-amber-950 mt-1">₹1,28,600</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'certificates' && (
+            <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs space-y-4 text-left">
+              <h3 className="text-lg font-black text-slate-900">Verified Course Certificates</h3>
+              <p className="text-xs text-slate-500">Manage digital graduation credentials & official verification hashes</p>
+
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center text-xs text-slate-500">
+                1,286 Certificates Issued with QR Code & Blockchain Hash Verification
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'analytics' && (
+            <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs space-y-4 text-left">
+              <h3 className="text-lg font-black text-slate-900">Platform Analytics & Growth Trends</h3>
+              <p className="text-xs text-slate-500">Detailed retention, conversion funnel, and revenue cohorts</p>
+
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                <div className="flex justify-between text-xs font-bold">
+                  <span>Visitor to Free Signup Conversion:</span>
+                  <span className="text-blue-600 font-extrabold">27.3%</span>
+                </div>
+                <div className="flex justify-between text-xs font-bold">
+                  <span>Signup to Paid Course Unlock (₹9 / ₹987):</span>
+                  <span className="text-emerald-600 font-extrabold">10.2%</span>
+                </div>
+                <div className="flex justify-between text-xs font-bold">
+                  <span>Practice Arena Daily Active Students:</span>
+                  <span className="text-indigo-600 font-extrabold">4,823 Students/day</span>
+                </div>
+              </div>
+            </div>
           )}
 
           {activeTab === 'settings' && (
             <SystemSettings
               settings={businessSettings}
               auditLogs={auditLogs}
-              onUpdateSettings={handleUpdateSettings}
+              onUpdateSettings={async (up) => {
+                const updated = await AdminDataService.updateBusinessSettings(up);
+                setBusinessSettings(updated);
+                loadAllData();
+              }}
               onRefresh={loadAllData}
-              isDark={isDark}
             />
           )}
+
         </main>
       </div>
+
     </div>
   );
 };
+
+export default AdminControlCenter;

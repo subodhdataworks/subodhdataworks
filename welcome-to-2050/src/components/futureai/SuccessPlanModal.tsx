@@ -26,6 +26,7 @@ import {
 import { startRazorpayCheckout, getCurrentUserForPayment } from '../../services/razorpayService';
 import { unlockCourse, normalizeCourseId, CanonicalCourseId } from '../../services/courseUnlockService';
 import { recordReferralPayment } from '../../services/realAuthService';
+import { recordCourseEnrollmentInCloud } from '../../services/cloudSyncService';
 
 export interface SuccessPlanModalProps {
   isOpen: boolean;
@@ -213,6 +214,22 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
         localStorage.setItem('futureai_payment_txn_id', result.paymentId);
         localStorage.setItem('futureai_course_enrolled', 'true');
       } catch {}
+
+      // Permanent Firestore Cloud Persistence (Course will NEVER disappear on refresh/cache clear)
+      try {
+        await recordCourseEnrollmentInCloud({
+          email: user.email,
+          phone: user.phone || undefined,
+          name: user.name || 'Student',
+          courseId: canonicalCourseId,
+          courseTitle: displayTitle,
+          paymentId: result.paymentId,
+          orderId: result.orderId,
+          amount: result.amount,
+        });
+      } catch (cloudErr) {
+        console.warn('Cloud sync record notice:', cloudErr);
+      }
 
       // Anti-Fraud Referral Credit: Flat 100 credited upon verified Razorpay payment
       try {

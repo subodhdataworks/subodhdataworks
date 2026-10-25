@@ -44,7 +44,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { FutureLogo } from './FutureLogo';
-import { FutureNavbar } from './FutureNavbar';
+import { FutureAdvancedHeader } from './FutureAdvancedHeader';
 import './LearnerHomeHub.css';
 import './AtsResumeChecker.css';
 import { SupportedLanguage } from '../../services/powerGreenAIService';
@@ -821,24 +821,42 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
       {/* ─────────────────────────────────────────────────────────────
           1. EXACT HOMEPAGE HEADER NAVIGATION (FutureNavbar)
           ───────────────────────────────────────────────────────────── */}
-      <FutureNavbar
-        currentLanguage={currentLanguage}
-        onLanguageChange={setCurrentLanguage}
-        onOpenLogin={() => onOpenLogin?.()}
-        onGetStarted={() => (onEnrollNow ? onEnrollNow() : onOpenLogin?.())}
-        onOpenVoice={() => {}}
-        onNavigateSection={handleNavbarNavigate}
-        onTalkToAdvisor={() => {}}
-        onExploreCurriculum={() => (onEnrollNow ? onEnrollNow() : onOpenLogin?.())}
-        isLoggedIn={isLoggedIn}
+            {/* Standardized Ultra-Advanced Header Matching All Pages */}
+      <FutureAdvancedHeader
         userName={userName}
-        onOpenDashboard={() => onOpenLogin?.()}
+        isLoggedIn={isLoggedIn}
+        activeNavTab="ats"
+        onNavigateHome={() => {
+          if (onBackToHome) onBackToHome();
+          else window.location.hash = isLoggedIn ? '#dashboard' : '#home';
+        }}
+        onNavigateLearning={() => {
+          window.location.hash = '#data-analyst';
+        }}
+        onNavigatePractice={(track) => {
+          const hash = track === 'python' ? '#python-challenges' : track === 'sql' ? '#sql-challenges' : track === 'excel' ? '#excel-challenges' : '#practice';
+          window.location.hash = hash;
+        }}
+        onOpenAtsResume={() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onNavigateEarn={() => {
+          window.location.hash = '#earnings';
+        }}
+        onNavigateInternship={() => {
+          window.location.hash = '#placement';
+        }}
+        onNavigatePlacement={() => {
+          window.location.hash = '#placement';
+        }}
+        onOpenLogin={() => onOpenLogin?.()}
+        onOpenSignUp={() => onOpenLogin?.()}
       />
 
       {/* ─────────────────────────────────────────────────────────────
           2. HERO SECTION & 3-STEP LAYOUT (Clean Aesthetic Background)
           ───────────────────────────────────────────────────────────── */}
-      <div className="relative w-full overflow-hidden bg-[#F4F8FC] pt-20">
+      <div className="relative w-full overflow-hidden bg-[#F4F8FC] pt-4 sm:pt-6">
 
         {/* Content Container */}
         <main className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-2.5 pb-8 space-y-4">

@@ -20,6 +20,7 @@ import { PaymentResultModal } from './components/futureai/PaymentResultModal';
 import { auth } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { findExistingUser, recordUserInDatabase } from './services/realAuthService';
+import { restoreUserEntitlementsFromCloud } from './services/cloudSyncService';
 
 export const App: React.FC = () => {
   const profile = StorageService.getProfile();
@@ -38,6 +39,9 @@ export const App: React.FC = () => {
         localStorage.setItem('futureai_ref_attribution', refCode.trim());
         recordReferralClick(refCode.trim());
       }
+      try {
+        restoreUserEntitlementsFromCloud();
+      } catch {}
     }
   }, []);
 
@@ -59,6 +63,9 @@ export const App: React.FC = () => {
           if (user.email) localStorage.setItem('futureai_user_email', user.email);
           if (user.photoURL) localStorage.setItem('futureai_user_avatar', user.photoURL);
         }
+        try {
+          restoreUserEntitlementsFromCloud({ email: user.email || undefined, uid: user.uid });
+        } catch {}
       }
     });
 
@@ -175,6 +182,9 @@ export const App: React.FC = () => {
       if (avatar) localStorage.setItem('futureai_user_avatar', avatar);
       if (role) localStorage.setItem('futureai_user_role', role);
       localStorage.setItem('futureai_logged_in', 'true');
+      try {
+        restoreUserEntitlementsFromCloud({ email: email || undefined });
+      } catch {}
       if (role === 'influencer') {
         window.location.hash = '#income';
       } else {

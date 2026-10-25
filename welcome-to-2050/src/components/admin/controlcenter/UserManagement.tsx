@@ -17,11 +17,19 @@ import {
   DollarSign,
   ChevronRight,
   ExternalLink,
-  X
+  X,
+  Zap,
+  Wallet,
+  Sparkles,
+  BookOpen,
+  PlusCircle,
+  MinusCircle
 } from 'lucide-react';
 import { RegisteredUserRecord, exportUsersToCSV } from '../../../services/realAuthService';
 import { AdminDataService, UserSuspensionRecord, UserSupportNote } from '../../../services/adminDataService';
 import { AdminAuthService } from '../../../services/adminAuthService';
+import { adminGrantCourseToStudent, adminAdjustStudentWallet } from '../../../services/cloudSyncService';
+import { CANONICAL_COURSES, CanonicalCourseId } from '../../../services/courseUnlockService';
 
 interface UserManagementProps {
   users: RegisteredUserRecord[];
@@ -40,6 +48,23 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
   const [newNoteText, setNewNoteText] = useState('');
   const [noteCategory, setNoteCategory] = useState<'GENERAL' | 'PAYMENT' | 'WITHDRAWAL' | 'REFERRAL'>('GENERAL');
   const [exportNotice, setExportNotice] = useState('');
+  
+  // Quick Unlock & Wallet States
+  const [quickStudentId, setQuickStudentId] = useState('');
+  const [quickCourse, setQuickCourse] = useState<string>('data_analyst');
+  const [isQuickUnlocking, setIsQuickUnlocking] = useState(false);
+  const [quickNotice, setQuickNotice] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
+
+  // Modal for individual user course unlock
+  const [unlockModalUser, setUnlockModalUser] = useState<RegisteredUserRecord | null>(null);
+  const [targetCourseToUnlock, setTargetCourseToUnlock] = useState<string>('data_analyst');
+  const [isGrantingCourse, setIsGrantingCourse] = useState(false);
+
+  // Modal for wallet adjustment
+  const [walletModalUser, setWalletModalUser] = useState<RegisteredUserRecord | null>(null);
+  const [walletAmountDelta, setWalletAmountDelta] = useState<number>(100);
+  const [walletReason, setWalletReason] = useState('Referral reward credit');
+  const [isAdjustingWallet, setIsAdjustingWallet] = useState(false);
 
   const cardBg = isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200/90 shadow-sm';
   const textPrimary = isDark ? 'text-white' : 'text-slate-900';
@@ -133,8 +158,127 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
     setTimeout(() => setExportNotice(''), 5000);
   };
 
+  const handleQuickUnlock = async () => {
+    if (!quickStudentId.trim()) {
+      setQuickNotice({ type: 'error', msg: 'Please enter student email or mobile number.' });
+      return;
+    }
+    setIsQuickUnlocking(true);
+    setQuickNotice(null);
+    try {
+      await adminGrantCourseToStudent(quickStudentId.trim(), quickCourse);
+      const courseTitle = quickCourse === 'data_analyst' ? 'Data Analyst with GenAI' : quickCourse === 'data_science' ? 'Data Science & Agentic AI' : quickCourse;
+      setQuickNotice({
+        type: 'success',
+        msg: `Successfully unlocked and synced '${courseTitle}' in cloud for ${quickStudentId.trim()}!`
+      });
+      setQuickStudentId('');
+      onRefresh();
+    } catch (e: any) {
+      setQuickNotice({ type: 'error', msg: e?.message || 'Failed to unlock course in cloud.' });
+    } finally {
+      setIsQuickUnlocking(false);
+    }
+  };
+
+  const handleGrantCourseForUser = async () => {
+    if (!unlockModalUser) return;
+    setIsGrantingCourse(true);
+    try {
+      const identifier = unlockModalUser.email || unlockModalUser.phone || unlockModalUser.uid;
+      await adminGrantCourseToStudent(identifier, targetCourseToUnlock);
+      alert(`Success! Course permanently unlocked for ${unlockModalUser.name} in cloud.`);
+      setUnlockModalUser(null);
+      onRefresh();
+    } catch (e: any) {
+      alert(e?.message || 'Failed to grant course.');
+    } finally {
+      setIsGrantingCourse(false);
+    }
+  };
+
+  const handleAdjustWalletForUser = async () => {
+    if (!walletModalUser) return;
+    setIsAdjustingWallet(true);
+    try {
+      const identifier = walletModalUser.email || walletModalUser.phone || walletModalUser.uid;
+      const newBal = await adminAdjustStudentWallet(identifier, walletAmountDelta, walletReason.trim());
+      alert(`Wallet updated successfully! New balance: ₹${newBal}`);
+      setWalletModalUser(null);
+      onRefresh();
+    } catch (e: any) {
+      alert(e?.message || 'Failed to adjust wallet.');
+    } finally {
+      setIsAdjustingWallet(false);
+    }
+  };
+
   return (
     <div className="space-y-6 text-left">
+      {/* ── ⚡ 1-CLICK INSTANT COURSE UNLOCK & CLOUD PERSISTENCE TOOL ── */}
+      <div className="bg-gradient-to-r from-blue-900/60 via-indigo-900/40 to-slate-900 border border-blue-500/30 rounded-3xl p-5 shadow-lg relative overflow-hidden">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-[10px] font-black tracking-wide uppercase flex items-center gap-1">
+                <Zap className="w-3 h-3 text-amber-400" />
+                <span>Instant Student Recovery</span>
+              </span>
+              <span className="text-xs text-blue-300 font-semibold">Firestore Cloud Sync</span>
+            </div>
+            <h3 className="text-base sm:text-lg font-black text-white tracking-tight">
+              ⚡ Instant 1-Click Course Unlock Tool
+            </h3>
+            <p className="text-xs text-slate-300 leading-relaxed max-w-xl">
+              Agar kisi student ka course refresh karne ya device change karne par lock dikha raha ho, to uska Email ya Mobile daal kar yahan se 1-click me permanent unlock karein. Data direct Firestore cloud me safe ho jayega!
+            </p>
+          </div>
+
+          <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center gap-2.5">
+            <input
+              type="text"
+              value={quickStudentId}
+              onChange={(e) => setQuickStudentId(e.target.value)}
+              placeholder="Enter Student Email or Mobile Number..."
+              className="w-full sm:w-64 px-3.5 py-2.5 bg-slate-950/80 border border-slate-700 rounded-xl text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 font-medium"
+            />
+            <select
+              value={quickCourse}
+              onChange={(e) => setQuickCourse(e.target.value)}
+              className="w-full sm:w-56 px-3 py-2.5 bg-slate-950/80 border border-slate-700 rounded-xl text-xs text-slate-200 font-bold cursor-pointer focus:outline-none focus:border-blue-500"
+            >
+              <option value="data_analyst">Data Analyst with GenAI (₹9)</option>
+              <option value="data_science">Data Science &amp; Agentic AI (₹987)</option>
+              <option value="ml_engineering">Machine Learning Engineering</option>
+              <option value="deep_learning">Deep Learning &amp; Neural Nets</option>
+              <option value="ai_engineering">AI Engineering &amp; LLMOps</option>
+              <option value="full_stack_mern">Full Stack MERN &amp; Next.js</option>
+              <option value="all">🌟 VIP All Courses Full Unlock</option>
+            </select>
+            <button
+              type="button"
+              disabled={isQuickUnlocking || !quickStudentId.trim()}
+              onClick={handleQuickUnlock}
+              className="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 shrink-0"
+            >
+              <Zap className="w-3.5 h-3.5 fill-current" />
+              <span>{isQuickUnlocking ? 'Unlocking & Saving...' : '⚡ Unlock in Cloud'}</span>
+            </button>
+          </div>
+        </div>
+
+        {quickNotice && (
+          <div className={`mt-3.5 p-3 rounded-xl text-xs flex items-center gap-2 ${
+            quickNotice.type === 'success'
+              ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-300'
+              : 'bg-rose-500/20 border border-rose-500/30 text-rose-300'
+          }`}>
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
+            <span className="font-bold">{quickNotice.msg}</span>
+          </div>
+        )}
+      </div>
+
       {/* Top Action & Search Bar */}
       <div className={`${cardBg} border rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4`}>
         {/* Search Input */}
@@ -282,13 +426,42 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
 
                       {/* Actions */}
                       <td className="py-3.5 px-4 text-right">
-                        <button
-                          type="button"
-                          onClick={() => setSelectedUser(user)}
-                          className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer transition-colors"
-                        >
-                          View Details ➔
-                        </button>
+                        <div className="flex items-center justify-end gap-1.5 flex-wrap">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setUnlockModalUser(user);
+                              setTargetCourseToUnlock('data_analyst');
+                            }}
+                            title="Unlock Course for Student"
+                            className="px-2.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 font-bold text-[11px] cursor-pointer transition-colors flex items-center gap-1"
+                          >
+                            <Zap className="w-3 h-3 text-amber-400" />
+                            <span>Unlock</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setWalletModalUser(user);
+                              setWalletAmountDelta(100);
+                              setWalletReason('Referral reward credit');
+                            }}
+                            title="Adjust / Credit Wallet"
+                            className="px-2.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 font-bold text-[11px] cursor-pointer transition-colors flex items-center gap-1"
+                          >
+                            <Wallet className="w-3 h-3 text-emerald-400" />
+                            <span>Wallet</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setSelectedUser(user)}
+                            className="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[11px] cursor-pointer transition-colors"
+                          >
+                            Details ➔
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -432,6 +605,170 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
                     <p>{n.content}</p>
                   </div>
                 ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── UNLOCK COURSE MODAL ── */}
+      {unlockModalUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
+          <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl relative text-left">
+            <button
+              type="button"
+              onClick={() => setUnlockModalUser(null)}
+              className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3 pb-3 border-b border-slate-800 mb-5">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-400 flex items-center justify-center font-black">
+                <Zap className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-black text-white">Unlock Course for Learner</h3>
+                <p className="text-xs text-slate-400 font-medium">{unlockModalUser.name} ({unlockModalUser.email || unlockModalUser.phone || unlockModalUser.uid})</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                  Select Course to Grant Access
+                </label>
+                <select
+                  value={targetCourseToUnlock}
+                  onChange={(e) => setTargetCourseToUnlock(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white font-bold cursor-pointer focus:outline-none focus:border-amber-500"
+                >
+                  <option value="data_analyst">Data Analyst with GenAI (₹9)</option>
+                  <option value="data_science">Data Science &amp; Agentic AI (₹987)</option>
+                  <option value="ml_engineering">Machine Learning Engineering</option>
+                  <option value="deep_learning">Deep Learning &amp; Neural Nets</option>
+                  <option value="ai_engineering">AI Engineering &amp; LLMOps</option>
+                  <option value="full_stack_mern">Full Stack MERN &amp; Next.js</option>
+                  <option value="all">🌟 VIP All Courses Full Unlock</option>
+                </select>
+              </div>
+
+              <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-[11px] text-amber-200 leading-relaxed">
+                ℹ️ Clicking confirm will write this course entitlement permanently to Firebase Firestore <code>registered_users</code> collection and sync with the student's browser immediately.
+              </div>
+
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setUnlockModalUser(null)}
+                  className="w-1/2 py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={isGrantingCourse}
+                  onClick={handleGrantCourseForUser}
+                  className="w-1/2 py-2.5 px-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs rounded-xl cursor-pointer disabled:opacity-50 flex items-center justify-center gap-1.5"
+                >
+                  <Zap className="w-3.5 h-3.5 fill-current" />
+                  <span>{isGrantingCourse ? 'Granting...' : 'Confirm Unlock'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── WALLET ADJUSTMENT MODAL ── */}
+      {walletModalUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
+          <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl relative text-left">
+            <button
+              type="button"
+              onClick={() => setWalletModalUser(null)}
+              className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3 pb-3 border-b border-slate-800 mb-5">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center font-black">
+                <Wallet className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-black text-white">Adjust Student Wallet</h3>
+                <p className="text-xs text-slate-400 font-medium">{walletModalUser.name} ({walletModalUser.email || walletModalUser.phone || walletModalUser.uid})</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                  Amount (₹) — Positive to Credit, Negative to Deduct
+                </label>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setWalletAmountDelta(100)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold ${walletAmountDelta === 100 ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-300'}`}
+                  >
+                    +₹100 (Referral)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setWalletAmountDelta(125)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold ${walletAmountDelta === 125 ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-300'}`}
+                  >
+                    +₹125 (Student)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setWalletAmountDelta(500)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold ${walletAmountDelta === 500 ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-300'}`}
+                  >
+                    +₹500
+                  </button>
+                </div>
+                <input
+                  type="number"
+                  value={walletAmountDelta}
+                  onChange={(e) => setWalletAmountDelta(Number(e.target.value))}
+                  placeholder="Enter amount (e.g. 100)"
+                  className="w-full mt-2 px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white font-bold focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                  Audit Reason / Note
+                </label>
+                <input
+                  type="text"
+                  value={walletReason}
+                  onChange={(e) => setWalletReason(e.target.value)}
+                  placeholder="e.g. Verified referral payment commission"
+                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setWalletModalUser(null)}
+                  className="w-1/2 py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={isAdjustingWallet}
+                  onClick={handleAdjustWalletForUser}
+                  className="w-1/2 py-2.5 px-4 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:opacity-95 text-white font-black text-xs rounded-xl cursor-pointer disabled:opacity-50 flex items-center justify-center gap-1.5"
+                >
+                  <Wallet className="w-3.5 h-3.5" />
+                  <span>{isAdjustingWallet ? 'Saving...' : 'Apply Adjustment'}</span>
+                </button>
               </div>
             </div>
           </div>

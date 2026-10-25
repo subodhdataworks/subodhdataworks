@@ -1,3 +1,4 @@
+import { FutureAdvancedHeader } from '../futureai/FutureAdvancedHeader';
 import React, { useState } from 'react';
 import {
   ArrowLeft,
@@ -70,28 +71,20 @@ export const ContactUsView: React.FC<ContactUsViewProps> = ({ onBack }) => {
     <div className="w-full min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-blue-100 pb-20 select-none">
       
       {/* ─── Top Navigation Header ─── */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/90 px-4 py-3 flex items-center justify-between shadow-2xs">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={handleBack}
-            className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center active:scale-95 transition-all shadow-2xs cursor-pointer"
-            aria-label="Back"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div className="cursor-pointer" onClick={() => { if (typeof window !== 'undefined') window.location.hash = '#dashboard'; }}>
-            <FutureLogo size="sm" />
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black flex items-center gap-1">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>RBI Mandated Policy</span>
-          </span>
-        </div>
-      </header>
+            {/* Standardized Global Advanced Header */}
+      <FutureAdvancedHeader
+        activeNavTab="home"
+        onNavigateHome={() => { window.location.hash = '#home'; }}
+        onNavigateLearning={() => { window.location.hash = '#data-analyst'; }}
+        onNavigatePractice={(track) => {
+          const hash = track === 'python' ? '#python-challenges' : track === 'sql' ? '#sql-challenges' : track === 'excel' ? '#excel-challenges' : '#practice';
+          window.location.hash = hash;
+        }}
+        onOpenAtsResume={() => { window.location.hash = '#ats'; }}
+        onNavigateEarn={() => { window.location.hash = '#earnings'; }}
+        onNavigateInternship={() => { window.location.hash = '#placement'; }}
+        onNavigatePlacement={() => { window.location.hash = '#placement'; }}
+      />
 
       {/* ─── Main Content Container ─── */}
       <main className="max-w-4xl mx-auto px-4 pt-6 sm:pt-10 space-y-6 text-left">

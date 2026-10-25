@@ -1,3 +1,4 @@
+import { FutureAdvancedHeader } from '../futureai/FutureAdvancedHeader';
 import React from 'react';
 import { ArrowLeft, Scale, Clock, CheckCircle2 } from 'lucide-react';
 import { FutureLogo } from '../futureai/FutureLogo';
@@ -62,25 +63,20 @@ export const TermsAndConditionsView: React.FC<TermsAndConditionsViewProps> = ({ 
     <div className="w-full min-h-screen bg-[#F8FAFC] text-slate-900 font-sans pb-20 select-none">
 
       {/* ─── Header ─── */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/90 px-4 py-3 flex items-center justify-between shadow-2xs">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={handleBack}
-            className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center active:scale-95 transition-all shadow-2xs cursor-pointer"
-            aria-label="Back"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div className="cursor-pointer" onClick={() => { if (typeof window !== 'undefined') window.location.hash = '#dashboard'; }}>
-            <FutureLogo size="sm" />
-          </div>
-        </div>
-        <span className="px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-black flex items-center gap-1">
-          <Scale className="w-3.5 h-3.5" />
-          Legal
-        </span>
-      </header>
+            {/* Standardized Global Advanced Header */}
+      <FutureAdvancedHeader
+        activeNavTab="home"
+        onNavigateHome={() => { window.location.hash = '#home'; }}
+        onNavigateLearning={() => { window.location.hash = '#data-analyst'; }}
+        onNavigatePractice={(track) => {
+          const hash = track === 'python' ? '#python-challenges' : track === 'sql' ? '#sql-challenges' : track === 'excel' ? '#excel-challenges' : '#practice';
+          window.location.hash = hash;
+        }}
+        onOpenAtsResume={() => { window.location.hash = '#ats'; }}
+        onNavigateEarn={() => { window.location.hash = '#earnings'; }}
+        onNavigateInternship={() => { window.location.hash = '#placement'; }}
+        onNavigatePlacement={() => { window.location.hash = '#placement'; }}
+      />
 
       {/* ─── Content ─── */}
       <main className="max-w-2xl mx-auto px-4 pt-6 space-y-5 text-left">
