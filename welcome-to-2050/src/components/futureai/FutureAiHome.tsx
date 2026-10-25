@@ -413,17 +413,13 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 1: Explore Our Career Programs (Ultra-Premium Luxury Cards - Shifted Higher)
+          SECTION 1: Explore Our Career Programs (Shifted Up & Clean Header)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 sm:pt-5 sm:pb-10">
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-1 pb-6 sm:pt-2 sm:pb-8">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4 sm:mb-5">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-blue-700 text-[11px] font-black uppercase tracking-wider mb-2.5 shadow-2xs">
-              <Sparkles className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
-              <span>Job-Ready Master Programs</span>
-            </div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
               Explore Our{' '}
               <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
@@ -438,7 +434,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           <button
             type="button"
             onClick={promptLogin}
-            className="self-start md:self-auto px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-blue-600 font-extrabold text-xs sm:text-sm border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-sm transition-all cursor-pointer flex items-center gap-2 group active:scale-95"
+            className="self-start md:self-auto px-5 py-2 rounded-xl bg-white hover:bg-slate-50 text-blue-600 font-extrabold text-xs sm:text-sm border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-sm transition-all cursor-pointer flex items-center gap-2 group active:scale-95"
           >
             <span>View All Courses</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -689,11 +685,11 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       {/* ═══════════════════════════════════════════════════════════════════════════
           SECTION 2: Learn by Doing – Real Skills for Real Jobs (Vibrant 3D Icon Badges)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-[11px] font-black uppercase tracking-wider mb-2.5 shadow-2xs">
+        <div className="text-center max-w-3xl mx-auto mb-6">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-[11px] font-black uppercase tracking-wider mb-2 shadow-2xs">
             <Target className="w-3.5 h-3.5 text-emerald-600" />
             <span>Practical Learning Ecosystem</span>
           </div>
@@ -867,7 +863,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       {/* ═══════════════════════════════════════════════════════════════════════════
           SECTION 3: Your Journey From Learning to Earning (Connected Stepper Track)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7">
         <div className="bg-gradient-to-b from-white via-blue-50/20 to-white rounded-3xl p-6 sm:p-10 border border-slate-200/90 shadow-sm relative overflow-hidden">
           
           {/* Header */}
@@ -1028,7 +1024,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       {/* ═══════════════════════════════════════════════════════════════════════════
           SECTION 4: Why Choose Future IT Industry? (Luxury Comparison Showcase)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-9">
         
         {/* Title */}
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
