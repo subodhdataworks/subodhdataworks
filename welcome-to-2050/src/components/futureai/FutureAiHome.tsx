@@ -11,10 +11,20 @@ import {
   Building2,
   Trophy,
   Star,
-  Sparkles,
   ArrowRight,
   CheckCircle2,
-  Zap
+  Layers,
+  Cpu,
+  Brain,
+  Database,
+  BarChart3,
+  FileSpreadsheet,
+  Infinity as InfinityIcon,
+  Cloud,
+  Rocket,
+  MessageSquare,
+  Flame,
+  Check
 } from 'lucide-react';
 import { soundEffects } from '../../services/soundEffects';
 import { FutureAdvancedHeader } from './FutureAdvancedHeader';
@@ -142,10 +152,10 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
   };
 
   return (
-    <div className="h-screen w-full bg-[#FBFDFF] text-slate-800 font-sans flex flex-col justify-between overflow-x-hidden overflow-y-auto lg:overflow-hidden selection:bg-blue-500 selection:text-white">
+    <div className="min-h-screen w-full bg-[#F4F8FC] text-slate-800 font-sans flex flex-col justify-between overflow-x-hidden selection:bg-blue-500 selection:text-white">
       
       {/* ─── 1. TOP NAVBAR (Exact Post-Login Header with Pre-Login Guard) ─── */}
-      <div className="shrink-0">
+      <div className="shrink-0 sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
         <FutureAdvancedHeader
           userName={userName}
           activeNavTab="home"
@@ -164,28 +174,21 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         />
       </div>
 
-      {/* ─── 2. MAIN HERO SECTION (Bada Banner - Flex-1 Dominant) ─── */}
-      <section className="relative flex-1 flex items-center min-h-0 w-full px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-[#e8f2fe]/75 via-[#f0f6ff]/40 to-[#FBFDFF]">
+      {/* ─── 2. MAIN HERO SECTION (Bada Banner with Video) ─── */}
+      <section className="relative w-full px-4 sm:px-6 lg:px-8 py-5 sm:py-8 overflow-hidden bg-gradient-to-b from-[#e8f2fe]/85 via-[#f0f6ff]/45 to-[#F4F8FC]">
         
         {/* Soft Ambient Aurora Lights */}
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-400/12 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-10 right-1/4 w-[500px] h-[500px] bg-cyan-400/12 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-[1440px] w-full mx-auto h-full flex items-center py-2 sm:py-3">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center w-full">
+        <div className="max-w-[1440px] w-full mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center w-full">
             
             {/* LEFT COLUMN: Punchy Headline & CTAs (lg:col-span-6) */}
             <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center text-center lg:text-left z-10 pl-0 lg:pl-3">
               
-              {/* Eyebrow Pill */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50/90 border border-blue-200/80 text-blue-700 text-[11px] font-bold tracking-tight mb-2.5 shadow-2xs w-fit mx-auto lg:mx-0">
-                <span className="flex h-1.5 w-1.5 rounded-full bg-blue-600 animate-pulse" />
-                <Sparkles className="w-3 h-3 text-amber-500 fill-amber-500" />
-                <span>India&apos;s #1 Practical AI & Data Learning Academy</span>
-              </div>
-
               {/* Main Headline - Taller & Bolder */}
-              <h1 className="text-2xl sm:text-4xl lg:text-[42px] xl:text-[50px] font-black tracking-tight leading-[1.06] text-[#0f172a]">
+              <h1 className="text-3xl sm:text-5xl lg:text-[44px] xl:text-[52px] font-black tracking-tight leading-[1.06] text-[#0f172a]">
                 <span className="block">World&apos;s First</span>
                 <span className="block text-[#1a73e8]">Affordable Easy</span>
                 <span className="block text-[#0f172a]">
@@ -194,13 +197,13 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               </h1>
 
               {/* Tagline */}
-              <div className="mt-2.5 text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-600 leading-snug max-w-lg mx-auto lg:mx-0">
+              <div className="mt-3 text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-600 leading-snug max-w-lg mx-auto lg:mx-0">
                 <p>Real Practical Courses. Real Projects. Industry Guidance.</p>
                 <p className="text-slate-900 font-bold mt-0.5">From Learning to Earning, We&apos;re With You.</p>
               </div>
 
               {/* Key Features Bullet points */}
-              <div className="mt-2.5 space-y-1 text-[11px] sm:text-xs text-slate-600 font-semibold max-w-md mx-auto lg:mx-0 hidden sm:block">
+              <div className="mt-3 space-y-1.5 text-[11px] sm:text-xs text-slate-600 font-semibold max-w-md mx-auto lg:mx-0 hidden sm:block">
                 <div className="flex items-center gap-2 justify-center lg:justify-start">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                   <span>100% Hands-On Coding Challenges & Industry Datasets</span>
@@ -216,7 +219,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               </div>
 
               {/* CTAs Row */}
-              <div className="mt-3.5 flex flex-wrap items-center justify-center lg:justify-start gap-3">
+              <div className="mt-4 flex flex-wrap items-center justify-center lg:justify-start gap-3">
                 <button
                   type="button"
                   onClick={promptLogin}
@@ -237,7 +240,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               </div>
 
               {/* Rating */}
-              <div className="mt-2.5 flex items-center justify-center lg:justify-start gap-2 text-[11px] text-slate-500 font-medium">
+              <div className="mt-3 flex items-center justify-center lg:justify-start gap-2 text-[11px] text-slate-500 font-medium">
                 <div className="flex items-center text-amber-400">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
@@ -248,30 +251,24 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
 
             </div>
 
-            {/* RIGHT COLUMN: Grand Center Visual Artwork (Student with Laptop & 7 Orbiting Badges) (lg:col-span-6) */}
+            {/* RIGHT COLUMN: Video Player from Google Drive */}
             <div className="lg:col-span-6 xl:col-span-6 flex items-center justify-center relative z-10">
-              <div className="relative w-full max-w-[520px] lg:max-w-[560px] flex items-center justify-center">
+              <div className="relative w-full max-w-[540px] lg:max-w-[580px] flex items-center justify-center">
                 
                 {/* Glowing Radiant Backing Aura */}
-                <div className="absolute inset-0 bg-radial from-cyan-400/30 via-blue-500/18 to-transparent rounded-full blur-2xl scale-105 pointer-events-none" />
+                <div className="absolute inset-0 bg-radial from-cyan-400/25 via-blue-500/15 to-transparent rounded-full blur-2xl scale-105 pointer-events-none" />
                 
-                {/* Central Futuristic Tech Student Illustration - Enlarged */}
-                <img
-                  src="/images/hero_tech_orbit_blended.png"
-                  alt="Future IT Industries AI Learning Platform"
-                  className="relative z-10 w-full h-auto max-h-[290px] sm:max-h-[350px] lg:max-h-[400px] xl:max-h-[440px] object-contain drop-shadow-[0_20px_45px_rgba(26,115,232,0.25)] select-none pointer-events-none transform transition-transform hover:scale-102 duration-300"
-                />
-
-                {/* Floating Highlight Chips */}
-                <div className="hidden sm:flex absolute -bottom-1 -left-2 z-20 items-center gap-2 px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200/80 shadow-md text-[11px] font-bold text-slate-800">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                  <Trophy className="w-3.5 h-3.5 text-amber-500" />
-                  <span>3 Job Offers Today (₹8-14 LPA)</span>
-                </div>
-
-                <div className="hidden sm:flex absolute -top-1 -right-1 z-20 items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur-md border border-blue-200/80 shadow-md text-[11px] font-bold text-blue-900">
-                  <Zap className="w-3.5 h-3.5 text-[#1a73e8]" />
-                  <span>Topic 1 Free Practice Live</span>
+                {/* Modern Video Card Container */}
+                <div className="relative z-10 w-full rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(26,115,232,0.22)] border-2 border-white/90 bg-slate-900 aspect-video max-h-[300px] sm:max-h-[360px] lg:max-h-[410px] xl:max-h-[440px] flex items-center justify-center group">
+                  <video
+                    src="/videos/hero_video.mp4"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    controls
+                    className="w-full h-full object-cover rounded-2xl"
+                  />
                 </div>
 
               </div>
@@ -281,12 +278,12 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         </div>
       </section>
 
-      {/* ─── 3. METRICS / TRUST STAT BADGES (Row of 4 Compact Badges - Chota Kiya) ─── */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-1 shrink-0">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-2.5">
+      {/* ─── 3. METRICS / TRUST STAT BADGES (Row of 4 Compact Badges) ─── */}
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-2 shrink-0">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
           
           {/* Card 1: 100K+ Students */}
-          <div className="bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
+          <div className="bg-white rounded-lg py-2 px-3 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
             <div className="w-7 h-7 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
               <Users className="w-3.5 h-3.5 stroke-[2.2]" />
             </div>
@@ -301,7 +298,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           </div>
 
           {/* Card 2: 700+ Hiring Partners */}
-          <div className="bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
+          <div className="bg-white rounded-lg py-2 px-3 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
             <div className="w-7 h-7 rounded-md bg-pink-50 text-pink-600 flex items-center justify-center shrink-0">
               <Building2 className="w-3.5 h-3.5 stroke-[2.2]" />
             </div>
@@ -316,7 +313,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           </div>
 
           {/* Card 3: 99% Placement Support */}
-          <div className="bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
+          <div className="bg-white rounded-lg py-2 px-3 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
             <div className="w-7 h-7 rounded-md bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
               <Trophy className="w-3.5 h-3.5 stroke-[2.2]" />
             </div>
@@ -331,7 +328,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           </div>
 
           {/* Card 4: Industry Aligned Curriculum */}
-          <div className="bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
+          <div className="bg-white rounded-lg py-2 px-3 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
             <div className="w-7 h-7 rounded-md bg-yellow-50 text-yellow-500 flex items-center justify-center shrink-0">
               <Star className="w-3.5 h-3.5 stroke-[2.2]" />
             </div>
@@ -348,142 +345,9 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         </div>
       </section>
 
-      {/* ─── 4. ACTION FEATURE CARDS (Row of 6 Compact Horizontal Cards - Chota Kiya) ─── */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-1 shrink-0">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1.5 sm:gap-2">
-          
-          {/* Action 1: Industry-Focused Courses */}
-          <div
-            onClick={promptLogin}
-            className="group bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-blue-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
-          >
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <BookOpen className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-              </div>
-              <div className="min-w-0">
-                <h3 className="text-[11px] font-bold text-slate-900 leading-tight truncate">
-                  Industry Courses
-                </h3>
-                <p className="text-[9.5px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
-                  Job-ready curriculum
-                </p>
-              </div>
-            </div>
-            <ChevronRight className="w-3 h-3 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
-          </div>
-
-          {/* Action 2: Coding Practice */}
-          <div
-            onClick={promptLogin}
-            className="group bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-indigo-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
-          >
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <Code2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-              </div>
-              <div className="min-w-0">
-                <h3 className="text-[11px] font-bold text-slate-900 leading-tight truncate">
-                  Coding Practice
-                </h3>
-                <p className="text-[9.5px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
-                  Build skills & solve
-                </p>
-              </div>
-            </div>
-            <ChevronRight className="w-3 h-3 text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all shrink-0" />
-          </div>
-
-          {/* Action 3: ATS Resume Checker */}
-          <div
-            onClick={promptLogin}
-            className="group bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-emerald-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
-          >
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <FileCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-              </div>
-              <div className="min-w-0">
-                <h3 className="text-[11px] font-bold text-slate-900 leading-tight truncate">
-                  ATS Resume
-                </h3>
-                <p className="text-[9.5px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
-                  AI resume score
-                </p>
-              </div>
-            </div>
-            <ChevronRight className="w-3 h-3 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all shrink-0" />
-          </div>
-
-          {/* Action 4: Earn Cash */}
-          <div
-            onClick={promptLogin}
-            className="group bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-pink-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
-          >
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md bg-pink-50 text-pink-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <Coins className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-              </div>
-              <div className="min-w-0">
-                <h3 className="text-[11px] font-bold text-slate-900 leading-tight truncate">
-                  Earn Cash
-                </h3>
-                <p className="text-[9.5px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
-                  Refer & earn money
-                </p>
-              </div>
-            </div>
-            <ChevronRight className="w-3 h-3 text-slate-400 group-hover:text-pink-600 group-hover:translate-x-0.5 transition-all shrink-0" />
-          </div>
-
-          {/* Action 5: Internship */}
-          <div
-            onClick={promptLogin}
-            className="group bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-purple-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
-          >
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <GraduationCap className="w-3.5 h-3.5" />
-              </div>
-              <div className="min-w-0">
-                <h3 className="text-[11px] font-bold text-slate-900 leading-tight truncate">
-                  Internship
-                </h3>
-                <p className="text-[9.5px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
-                  Real experience
-                </p>
-              </div>
-            </div>
-            <ChevronRight className="w-3 h-3 text-slate-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-all shrink-0" />
-          </div>
-
-          {/* Action 6: Placement Support */}
-          <div
-            onClick={promptLogin}
-            className="group bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-rose-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
-          >
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <Briefcase className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-              </div>
-              <div className="min-w-0">
-                <h3 className="text-[11px] font-bold text-slate-900 leading-tight truncate">
-                  Placement
-                </h3>
-                <p className="text-[9.5px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
-                  Top hiring partners
-                </p>
-              </div>
-            </div>
-            <ChevronRight className="w-3 h-3 text-slate-400 group-hover:text-rose-600 group-hover:translate-x-0.5 transition-all shrink-0" />
-          </div>
-
-        </div>
-      </section>
-
-      {/* ─── 5. HIRING PARTNERS CONTINUOUS TICKER ROW (Right to Left Scrolling Marquee) ─── */}
-      <footer className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-1 shrink-0 pb-1.5">
-        <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-1.5 bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+      {/* ─── 4. HIRING PARTNERS CONTINUOUS TICKER ROW (Right to Left Scrolling Marquee) ─── */}
+      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-2 shrink-0">
+        <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2 bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
           
           {/* Label */}
           <div className="text-[11px] sm:text-xs font-black text-slate-800 whitespace-nowrap shrink-0 flex items-center gap-1.5 border-r border-slate-200 pr-3">
@@ -508,6 +372,562 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           </div>
 
         </div>
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════════════════════
+          SECTION 1: Explore Our Career Programs (From Uploaded Screenshot)
+      ═══════════════════════════════════════════════════════════════════════════ */}
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+        
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+          <div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
+              Explore Our{' '}
+              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                Career Programs
+              </span>
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1">
+              Choose a program and start your journey towards a successful career.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={promptLogin}
+            className="self-start md:self-auto px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-blue-600 font-extrabold text-xs sm:text-sm border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all cursor-pointer flex items-center gap-1.5 group"
+          >
+            <span>View All Courses</span>
+            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
+
+        {/* 4 Career Programs Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          
+          {/* Program Card 1: Data Analyst (Most Popular) */}
+          <div
+            onClick={promptLogin}
+            className="group bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-lg hover:border-blue-300 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
+          >
+            <div>
+              {/* Banner Graphic with Badge */}
+              <div className="relative w-full h-[140px] sm:h-[155px] overflow-hidden bg-slate-900">
+                <img
+                  src="/images/home_sections/card_da_banner.jpg"
+                  alt="Data Analyst Program"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md">
+                  <Flame className="w-3 h-3 fill-white" />
+                  <span>Most Popular</span>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-4">
+                <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">
+                  Data Analyst
+                </h3>
+                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed">
+                  Turn data into insights and build a career in analytics.
+                </p>
+              </div>
+            </div>
+
+            {/* Tech Badges & Action Arrow */}
+            <div className="p-4 pt-0 flex items-center justify-between gap-2 border-t border-slate-100 mt-2">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-100 flex items-center gap-1">
+                  <FileSpreadsheet className="w-2.5 h-2.5" />
+                  Excel
+                </span>
+                <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-100 flex items-center gap-1">
+                  <Database className="w-2.5 h-2.5" />
+                  SQL
+                </span>
+                <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100 flex items-center gap-1">
+                  <BarChart3 className="w-2.5 h-2.5" />
+                  Power BI
+                </span>
+              </div>
+
+              <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-blue-700 transition-all shadow-xs">
+                <ArrowRight className="w-4 h-4" />
+              </div>
+            </div>
+          </div>
+
+          {/* Program Card 2: Data Scientist */}
+          <div
+            onClick={promptLogin}
+            className="group bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-lg hover:border-purple-300 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
+          >
+            <div>
+              {/* Banner Graphic */}
+              <div className="relative w-full h-[140px] sm:h-[155px] overflow-hidden bg-slate-900">
+                <img
+                  src="/images/home_sections/card_ds_banner.jpg"
+                  alt="Data Scientist Program"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+
+              {/* Content */}
+              <div className="p-4">
+                <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight group-hover:text-purple-600 transition-colors">
+                  Data Scientist
+                </h3>
+                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed">
+                  Work with data, build AI models and solve real-world problems.
+                </p>
+              </div>
+            </div>
+
+            {/* Tech Badges & Action Arrow */}
+            <div className="p-4 pt-0 flex items-center justify-between gap-2 border-t border-slate-100 mt-2">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100 flex items-center gap-1">
+                  <Code2 className="w-2.5 h-2.5" />
+                  Python
+                </span>
+                <span className="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 text-[10px] font-bold border border-purple-100 flex items-center gap-1">
+                  <Brain className="w-2.5 h-2.5" />
+                  ML
+                </span>
+                <span className="px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 text-[10px] font-bold border border-rose-100 flex items-center gap-1">
+                  <BarChart3 className="w-2.5 h-2.5" />
+                  Statistics
+                </span>
+              </div>
+
+              <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-purple-700 transition-all shadow-xs">
+                <ArrowRight className="w-4 h-4" />
+              </div>
+            </div>
+          </div>
+
+          {/* Program Card 3: AI Engineering */}
+          <div
+            onClick={promptLogin}
+            className="group bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-lg hover:border-sky-300 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
+          >
+            <div>
+              {/* Banner Graphic */}
+              <div className="relative w-full h-[140px] sm:h-[155px] overflow-hidden bg-slate-900">
+                <img
+                  src="/images/home_sections/card_ai_banner.jpg"
+                  alt="AI Engineering Program"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+
+              {/* Content */}
+              <div className="p-4">
+                <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight group-hover:text-sky-600 transition-colors">
+                  AI Engineering
+                </h3>
+                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed">
+                  Build AI applications with real-world projects and industry tools.
+                </p>
+              </div>
+            </div>
+
+            {/* Tech Badges & Action Arrow */}
+            <div className="p-4 pt-0 flex items-center justify-between gap-2 border-t border-slate-100 mt-2">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100 flex items-center gap-1">
+                  <Code2 className="w-2.5 h-2.5" />
+                  Python
+                </span>
+                <span className="px-2 py-0.5 rounded-md bg-cyan-50 text-cyan-700 text-[10px] font-bold border border-cyan-100 flex items-center gap-1">
+                  <Cpu className="w-2.5 h-2.5" />
+                  GenAI
+                </span>
+                <span className="px-2 py-0.5 rounded-md bg-sky-50 text-sky-700 text-[10px] font-bold border border-sky-100 flex items-center gap-1">
+                  <Layers className="w-2.5 h-2.5" />
+                  LLMs
+                </span>
+              </div>
+
+              <div className="w-8 h-8 rounded-full bg-sky-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-sky-700 transition-all shadow-xs">
+                <ArrowRight className="w-4 h-4" />
+              </div>
+            </div>
+          </div>
+
+          {/* Program Card 4: ML Engineering */}
+          <div
+            onClick={promptLogin}
+            className="group bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-lg hover:border-pink-300 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
+          >
+            <div>
+              {/* Banner Graphic */}
+              <div className="relative w-full h-[140px] sm:h-[155px] overflow-hidden bg-slate-900">
+                <img
+                  src="/images/home_sections/card_ml_banner.jpg"
+                  alt="ML Engineering Program"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+
+              {/* Content */}
+              <div className="p-4">
+                <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight group-hover:text-pink-600 transition-colors">
+                  ML Engineering
+                </h3>
+                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed">
+                  Design, deploy and scale ML systems for real-world impact.
+                </p>
+              </div>
+            </div>
+
+            {/* Tech Badges & Action Arrow */}
+            <div className="p-4 pt-0 flex items-center justify-between gap-2 border-t border-slate-100 mt-2">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 text-[10px] font-bold border border-purple-100 flex items-center gap-1">
+                  <InfinityIcon className="w-2.5 h-2.5" />
+                  MLOps
+                </span>
+                <span className="px-2 py-0.5 rounded-md bg-sky-50 text-sky-700 text-[10px] font-bold border border-sky-100 flex items-center gap-1">
+                  <Cloud className="w-2.5 h-2.5" />
+                  Cloud
+                </span>
+                <span className="px-2 py-0.5 rounded-md bg-pink-50 text-pink-700 text-[10px] font-bold border border-pink-100 flex items-center gap-1">
+                  <Rocket className="w-2.5 h-2.5" />
+                  Deployment
+                </span>
+              </div>
+
+              <div className="w-8 h-8 rounded-full bg-pink-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-pink-700 transition-all shadow-xs">
+                <ArrowRight className="w-4 h-4" />
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════════════
+          SECTION 2: Learn by Doing – Real Skills for Real Jobs (From Uploaded Screenshot)
+      ═══════════════════════════════════════════════════════════════════════════ */}
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+        
+        {/* Section Header */}
+        <div className="mb-6">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
+            Learn by Doing –{' '}
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              Real Skills for Real Jobs
+            </span>
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1">
+            Not just theory. Practice, build, and apply your skills with real-world projects.
+          </p>
+        </div>
+
+        {/* 6 Feature Cards Row */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+          
+          {/* Card 1: Industry-Focused Courses */}
+          <div
+            onClick={promptLogin}
+            className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-blue-300 transition-all cursor-pointer flex flex-col items-start gap-3"
+          >
+            <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
+              <img
+                src="/images/home_sections/icon_laptop.jpg"
+                alt="Industry-Focused Courses"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <h4 className="text-xs sm:text-[13px] font-black text-slate-900 group-hover:text-blue-600 transition-colors leading-tight">
+                Industry-Focused Courses
+              </h4>
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+                Learn from basics to advanced with structured curriculum.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 2: Coding Practice */}
+          <div
+            onClick={promptLogin}
+            className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-indigo-300 transition-all cursor-pointer flex flex-col items-start gap-3"
+          >
+            <div className="w-12 h-12 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
+              <img
+                src="/images/home_sections/icon_code.jpg"
+                alt="Coding Practice"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <h4 className="text-xs sm:text-[13px] font-black text-slate-900 group-hover:text-indigo-600 transition-colors leading-tight">
+                Coding Practice
+              </h4>
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+                Practice, build skills and solve real problems.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 3: Real Projects */}
+          <div
+            onClick={promptLogin}
+            className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-emerald-300 transition-all cursor-pointer flex flex-col items-start gap-3"
+          >
+            <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
+              <img
+                src="/images/home_sections/icon_folder.jpg"
+                alt="Real Projects"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <h4 className="text-xs sm:text-[13px] font-black text-slate-900 group-hover:text-emerald-600 transition-colors leading-tight">
+                Real Projects
+              </h4>
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+                Work on industry-relevant projects and build portfolio.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 4: ATS Resume Checker */}
+          <div
+            onClick={promptLogin}
+            className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-sky-300 transition-all cursor-pointer flex flex-col items-start gap-3"
+          >
+            <div className="w-12 h-12 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
+              <img
+                src="/images/home_sections/icon_ats.jpg"
+                alt="ATS Resume Checker"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <h4 className="text-xs sm:text-[13px] font-black text-slate-900 group-hover:text-sky-600 transition-colors leading-tight">
+                ATS Resume Checker
+              </h4>
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+                Get AI-powered resume score and improvement tips.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 5: Interview Preparation */}
+          <div
+            onClick={promptLogin}
+            className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-amber-300 transition-all cursor-pointer flex flex-col items-start gap-3"
+          >
+            <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
+              <img
+                src="/images/home_sections/icon_interview.jpg"
+                alt="Interview Preparation"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <h4 className="text-xs sm:text-[13px] font-black text-slate-900 group-hover:text-amber-600 transition-colors leading-tight">
+                Interview Preparation
+              </h4>
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+                Practice real interview questions with AI.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 6: Get Job */}
+          <div
+            onClick={promptLogin}
+            className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-blue-300 transition-all cursor-pointer flex flex-col items-start gap-3"
+          >
+            <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
+              <img
+                src="/images/home_sections/icon_briefcase.jpg"
+                alt="Get Job"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <h4 className="text-xs sm:text-[13px] font-black text-slate-900 group-hover:text-blue-600 transition-colors leading-tight">
+                Get Job
+              </h4>
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+                Target roles: <strong className="text-blue-600">₹6 – 15 LPA</strong>
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════════════
+          SECTION 3: Your Journey From Learning to Earning (From Uploaded Screenshot)
+      ═══════════════════════════════════════════════════════════════════════════ */}
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="bg-gradient-to-b from-white to-[#f0f6ff]/60 rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm relative overflow-hidden">
+          
+          {/* Section Header with 'Learn Grow Get Hired' badge */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 relative z-10">
+            <div>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
+                Your Journey From{' '}
+                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                  Learning to Earning
+                </span>
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1">
+                A simple path to a successful career with Future IT Industry.
+              </p>
+            </div>
+
+            {/* Hand-drawn style badge */}
+            <div className="self-end md:self-auto text-right">
+              <div className="inline-flex items-center gap-1.5 text-blue-700 font-black italic tracking-wide text-xs sm:text-sm">
+                <span>Learn • Grow • Get Hired</span>
+                <span className="text-lg">↗</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 6 Step Roadmap Connected Line */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-3 relative z-10">
+            
+            {/* Step 1: Learn */}
+            <div
+              onClick={promptLogin}
+              className="bg-white/90 backdrop-blur-xs rounded-2xl p-4 border border-slate-200/70 shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group"
+            >
+              <div className="w-7 h-7 rounded-full bg-pink-500 text-white font-black text-xs flex items-center justify-center shadow-xs mb-3 group-hover:scale-110 transition-transform">
+                01
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center mb-2">
+                <BookOpen className="w-5 h-5 stroke-[2.2]" />
+              </div>
+              <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-pink-600 transition-colors">
+                Learn
+              </h4>
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+                Industry-focused courses with practical approach.
+              </p>
+            </div>
+
+            {/* Step 2: Practice */}
+            <div
+              onClick={promptLogin}
+              className="bg-white/90 backdrop-blur-xs rounded-2xl p-4 border border-slate-200/70 shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group"
+            >
+              <div className="w-7 h-7 rounded-full bg-purple-600 text-white font-black text-xs flex items-center justify-center shadow-xs mb-3 group-hover:scale-110 transition-transform">
+                02
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-2">
+                <Code2 className="w-5 h-5 stroke-[2.2]" />
+              </div>
+              <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-purple-600 transition-colors">
+                Practice
+              </h4>
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+                Solve problems and work on real projects.
+              </p>
+            </div>
+
+            {/* Step 3: Mock Interview */}
+            <div
+              onClick={promptLogin}
+              className="bg-white/90 backdrop-blur-xs rounded-2xl p-4 border border-slate-200/70 shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group"
+            >
+              <div className="w-7 h-7 rounded-full bg-sky-500 text-white font-black text-xs flex items-center justify-center shadow-xs mb-3 group-hover:scale-110 transition-transform">
+                03
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mb-2">
+                <MessageSquare className="w-5 h-5 stroke-[2.2]" />
+              </div>
+              <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-sky-600 transition-colors">
+                Mock Interview
+              </h4>
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+                Practice with real interview questions.
+              </p>
+            </div>
+
+            {/* Step 4: Build Portfolio */}
+            <div
+              onClick={promptLogin}
+              className="bg-white/90 backdrop-blur-xs rounded-2xl p-4 border border-slate-200/70 shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group"
+            >
+              <div className="w-7 h-7 rounded-full bg-emerald-500 text-white font-black text-xs flex items-center justify-center shadow-xs mb-3 group-hover:scale-110 transition-transform">
+                04
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2">
+                <FileCheck className="w-5 h-5 stroke-[2.2]" />
+              </div>
+              <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-emerald-600 transition-colors">
+                Build Portfolio
+              </h4>
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+                Showcase your skills with real projects.
+              </p>
+            </div>
+
+            {/* Step 5: Internship */}
+            <div
+              onClick={promptLogin}
+              className="bg-white/90 backdrop-blur-xs rounded-2xl p-4 border border-slate-200/70 shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group"
+            >
+              <div className="w-7 h-7 rounded-full bg-orange-500 text-white font-black text-xs flex items-center justify-center shadow-xs mb-3 group-hover:scale-110 transition-transform">
+                05
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center mb-2">
+                <GraduationCap className="w-5 h-5 stroke-[2.2]" />
+              </div>
+              <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-orange-600 transition-colors">
+                Internship
+              </h4>
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+                Get real-world experience with industry projects.
+              </p>
+            </div>
+
+            {/* Step 6: Get Job */}
+            <div
+              onClick={promptLogin}
+              className="bg-white/90 backdrop-blur-xs rounded-2xl p-4 border border-slate-200/70 shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group"
+            >
+              <div className="w-7 h-7 rounded-full bg-blue-600 text-white font-black text-xs flex items-center justify-center shadow-xs mb-3 group-hover:scale-110 transition-transform">
+                06
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-2">
+                <Briefcase className="w-5 h-5 stroke-[2.2]" />
+              </div>
+              <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-blue-600 transition-colors">
+                Get Job
+              </h4>
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+                Get recruitment letter and start your career.
+              </p>
+            </div>
+
+          </div>
+
+          {/* Mountain / Success flag illustration background */}
+          <div className="absolute right-0 bottom-0 pointer-events-none opacity-20 max-w-[320px] overflow-hidden">
+            <img
+              src="/images/home_sections/mountain_bg.jpg"
+              alt="Career Summit"
+              className="w-full h-auto object-cover"
+            />
+          </div>
+
+        </div>
+      </section>
+
+      {/* ─── Bottom Footer ─── */}
+      <footer className="w-full border-t border-slate-200/80 bg-white py-6 px-4 text-center text-xs text-slate-500 font-semibold">
+        <p>© 2026 Future IT Industries. All rights reserved. India&apos;s Leading AI Learning & Career Acceleration Platform.</p>
       </footer>
 
       {/* Clean Auth Modal for Sign Up / Full Login Options */}
