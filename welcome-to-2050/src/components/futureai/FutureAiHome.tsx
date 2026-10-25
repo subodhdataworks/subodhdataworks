@@ -637,18 +637,15 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           </div>
         </div>
 
-        {/* Master 3D Animated Showcase Banner */}
+        {/* Master Horizontal Showcase Banner */}
         <div 
           onClick={promptLogin}
           className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-slate-200/90 hover:shadow-2xl hover:border-blue-300 transition-all duration-500 cursor-pointer group bg-slate-950 mb-5"
         >
-          <video
-            src="/videos/learn_by_doing_showcase.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-auto max-h-[480px] object-cover object-center group-hover:scale-[1.008] transition-transform duration-700 select-none"
+          <img
+            src="/images/home_sections/learn_by_doing_horizontal_banner.jpg"
+            alt="Practical Learning Ecosystem: Learn by Doing – Real Skills for Real Jobs"
+            className="w-full h-auto max-h-[380px] lg:max-h-[420px] object-cover object-center group-hover:scale-[1.008] transition-transform duration-700 select-none"
           />
         </div>
 
