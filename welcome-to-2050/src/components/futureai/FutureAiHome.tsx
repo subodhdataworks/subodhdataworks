@@ -427,17 +427,6 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             {/* Left Content (lg:col-span-7) */}
             <div className="lg:col-span-7 p-5 sm:p-7 lg:p-9 flex flex-col justify-center">
               
-              {/* Luxury Accent Eyebrow */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/95 border border-blue-200/90 shadow-2xs text-[11px] font-bold text-slate-700 mb-2.5 w-fit">
-                <span className="flex h-2 w-2 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600" />
-                </span>
-                <span className="text-blue-700 font-black uppercase tracking-wider">High-Growth Tracks</span>
-                <span className="text-slate-300">•</span>
-                <span className="text-slate-500 font-semibold">2026 AI-Native Curriculum</span>
-              </div>
-
               {/* Main Headline */}
               <h2 className="text-2xl sm:text-3xl lg:text-[38px] font-black text-slate-900 tracking-tight leading-[1.12]">
                 Explore Our{' '}
@@ -653,10 +642,13 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           onClick={promptLogin}
           className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-slate-200/90 hover:shadow-2xl hover:border-blue-300 transition-all duration-500 cursor-pointer group bg-slate-950 mb-5"
         >
-          <img
-            src="/images/home_sections/learn_by_doing_master_3d.jpg"
-            alt="Practical Learning Ecosystem: Learn by Doing – Real Skills for Real Jobs"
-            className="w-full h-auto max-h-[460px] object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 select-none"
+          <video
+            src="/videos/learn_by_doing_showcase.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-auto max-h-[480px] object-cover object-center group-hover:scale-[1.008] transition-transform duration-700 select-none"
           />
         </div>
 
@@ -1085,7 +1077,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               {/* Verified Campus Badge */}
               <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/90 border border-slate-200/90 shadow-2xs text-[11px] font-bold text-slate-700">
                 <Building2 className="w-3.5 h-3.5 text-blue-600" />
-                <span>Innovation Headquarters &amp; Physical Tech Campus</span>
+                <span>Headquarters &amp; Physical Tech Campus • Noida, India</span>
               </div>
             </div>
 
