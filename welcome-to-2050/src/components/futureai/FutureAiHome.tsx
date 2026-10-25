@@ -174,12 +174,13 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         />
       </div>
 
-      {/* ─── 2. MAIN HERO SECTION (Bada Banner with Video) ─── */}
-      <section className="relative w-full px-4 sm:px-6 lg:px-8 py-5 sm:py-8 overflow-hidden bg-gradient-to-b from-[#e8f2fe]/85 via-[#f0f6ff]/45 to-[#F4F8FC]">
+      {/* ─── 2. MAIN HERO SECTION (Color-Matched to Video Studio Background) ─── */}
+      <section className="relative w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-10 overflow-hidden bg-gradient-to-r from-[#d1dce7] via-[#d5e0eb] to-[#d8e8f2]">
         
         {/* Soft Ambient Aurora Lights */}
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-400/12 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-10 right-1/4 w-[500px] h-[500px] bg-cyan-400/12 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-300/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-10 right-1/4 w-[500px] h-[500px] bg-cyan-300/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-b from-transparent to-[#F4F8FC] pointer-events-none" />
 
         <div className="max-w-[1440px] w-full mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center w-full">
