@@ -198,22 +198,42 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
             {/* 3. Coding Practice ⌵ (Dropdown with Python, SQL, Excel, Master) */}
             <div className="relative" ref={practiceRef}>
-              <button
-                type="button"
-                onClick={() => {
-                  soundEffects.playClick();
-                  setPracticeDropdownOpen((prev) => !prev);
-                }}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl transition-all duration-200 cursor-pointer ${
-                  activeNavTab === 'practice' || practiceDropdownOpen
-                    ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-xs'
-                    : 'text-slate-700 hover:text-[#1a73e8] hover:bg-slate-50'
-                }`}
-              >
-                <Code2 className={`w-4 h-4 ${activeNavTab === 'practice' ? 'text-[#1a73e8]' : 'text-slate-500'}`} />
-                <span>Coding Practice</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${practiceDropdownOpen ? 'rotate-180 text-[#1a73e8]' : 'text-slate-400'}`} />
-              </button>
+              <div className="flex items-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEffects.playClick();
+                    setPracticeDropdownOpen(false);
+                    onNavigatePractice('master');
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-l-xl transition-all duration-200 cursor-pointer ${
+                    activeNavTab === 'practice'
+                      ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-xs'
+                      : 'text-slate-700 hover:text-[#1a73e8] hover:bg-slate-50'
+                  }`}
+                  title="Open Coding Practice Full Page (All 14 Tracks)"
+                >
+                  <Code2 className={`w-4 h-4 ${activeNavTab === 'practice' ? 'text-[#1a73e8]' : 'text-slate-500'}`} />
+                  <span>Coding Practice</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    soundEffects.playClick();
+                    setPracticeDropdownOpen((prev) => !prev);
+                  }}
+                  className={`px-1.5 py-1.5 rounded-r-xl transition-all duration-200 cursor-pointer ${
+                    activeNavTab === 'practice' || practiceDropdownOpen
+                      ? 'bg-[#eef5fe] text-[#1a73e8]'
+                      : 'text-slate-400 hover:text-[#1a73e8] hover:bg-slate-50'
+                  }`}
+                  title="Quick coding tracks dropdown"
+                >
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${practiceDropdownOpen ? 'rotate-180 text-[#1a73e8]' : ''}`} />
+                </button>
+              </div>
 
               {/* Coding Practice Floating Dropdown */}
               {practiceDropdownOpen && (
@@ -222,6 +242,25 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     <span className="text-[11px] font-bold tracking-wider text-slate-400 uppercase">Coding Tracks</span>
                     <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">1st Topic Free</span>
                   </div>
+
+                  {/* Direct Full Page Link */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundEffects.playClick();
+                      setPracticeDropdownOpen(false);
+                      onNavigatePractice('master');
+                    }}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-xl bg-blue-50/70 hover:bg-blue-100/70 text-blue-700 transition group text-left cursor-pointer mb-1 border border-blue-200/50"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-xs">
+                      🚀
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className="text-xs font-black text-blue-900 block">Full Practice Page (14 Tracks)</span>
+                      <p className="text-[11px] text-blue-700/80 truncate">Python, SQL, Excel, AI, ML, React...</p>
+                    </div>
+                  </button>
 
                   {/* Python Track */}
                   <button
@@ -598,10 +637,28 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
             </div>
 
             {/* Coding Practice Links */}
-            <div className="py-2 space-y-1">
+            <div className="py-2 space-y-1.5">
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block px-1">
                 Coding Practice (Topic 1 Free)
               </span>
+
+              {/* Full Page Button on Mobile */}
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playClick();
+                  setMobileMenuOpen(false);
+                  onNavigatePractice('master');
+                }}
+                className="w-full flex items-center justify-between p-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-xs shadow-md shadow-blue-500/20 active:scale-98 transition cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <Code2 className="w-4 h-4 text-white" />
+                  <span>Full Coding Practice Page (All 14 Tracks)</span>
+                </div>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
                 <button
                   type="button"
