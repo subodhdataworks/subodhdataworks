@@ -699,20 +699,9 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           </p>
         </div>
 
-        {/* Master Showcase Banner (Responsive on Desktop, Tablet & Mobile) */}
-        <div 
-          onClick={promptLogin}
-          className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl border border-slate-200/90 transition-all duration-500 cursor-pointer group bg-white mb-6 sm:mb-8"
-        >
-          <img
-            src="/images/why_choose/why_choose_comparison_banner.jpg"
-            alt="Why Choose Future IT Industry? Real Skills • Real Projects • Career Support"
-            className="w-full h-auto object-contain select-none group-hover:scale-[1.006] transition-transform duration-700"
-          />
-        </div>
 
         {/* 4 Core Value Pillars (Matching the High-Impact Trust Bar) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
           <div 
             onClick={promptLogin}
             className="group/pillar p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-blue-400 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer flex items-start gap-3.5"
@@ -781,90 +770,6 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             </div>
           </div>
         </div>
-
-        {/* Interactive Feature Comparison Matrix for Deep-Dive */}
-        <div className="bg-gradient-to-b from-slate-50/80 via-white to-blue-50/30 rounded-3xl p-5 sm:p-7 border border-slate-200/90 shadow-xs">
-          <div className="text-center max-w-xl mx-auto mb-6">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-blue-700 text-xs font-black uppercase tracking-wider mb-2">
-              <BarChart3 className="w-3.5 h-3.5 text-blue-600" />
-              <span>Feature-By-Feature Breakdown</span>
-            </span>
-            <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-              Traditional Learning <span className="text-slate-400 font-normal">vs</span> Future IT Industry
-            </h3>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Traditional Learning Column */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-rose-50/60 border border-red-200/80 space-y-3">
-              <div className="flex items-center gap-2.5 pb-2.5 border-b border-red-200/60">
-                <div className="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center font-black shadow-2xs">
-                  <X className="w-4 h-4 stroke-[3]" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-black text-slate-900">Traditional Learning</h4>
-                  <p className="text-[11px] text-red-600 font-semibold">Legacy &amp; Theoretical Approach</p>
-                </div>
-              </div>
-              <div className="space-y-2">
-                {[
-                  { title: 'Passive Video Lectures', desc: 'Hours of one-way recorded video without live interactive code feedback' },
-                  { title: 'Limited Hands-on Practice', desc: 'Theoretical concepts with minimal real industry problem-solving' },
-                  { title: 'Outdated Learning Paths', desc: 'Legacy curriculums not matched to 2026 AI industry standards' },
-                  { title: 'Limited Career Guidance', desc: 'No personalized resume optimization or real interview simulations' },
-                ].map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white/90 border border-red-100">
-                    <div className="w-5 h-5 rounded-full bg-red-100 text-red-600 flex items-center justify-center shrink-0 mt-0.5">
-                      <X className="w-3 h-3 stroke-[3]" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-black text-slate-800">{item.title}</div>
-                      <div className="text-[11px] text-slate-500 font-medium leading-tight mt-0.5">{item.desc}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Future IT Industry Column */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-blue-50/70 border-2 border-blue-300/90 shadow-sm space-y-3">
-              <div className="flex items-center justify-between pb-2.5 border-b border-blue-200/80">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black shadow-2xs">
-                    <Check className="w-4 h-4 stroke-[3]" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-black text-slate-900">Future IT Industry</h4>
-                    <p className="text-[11px] text-blue-700 font-bold">100% Practical &amp; AI-Powered</p>
-                  </div>
-                </div>
-                <div className="px-2.5 py-1 rounded-full bg-emerald-500 text-white font-black text-[11px] shadow-2xs">
-                  Pro Ready
-                </div>
-              </div>
-              <div className="space-y-2">
-                {[
-                  { title: 'Live Coding Practice', desc: 'Write. Run. Learn. In-browser sandbox with automated test cases' },
-                  { title: 'Real-World Projects', desc: 'Build production repositories & portfolio apps recruiters value' },
-                  { title: 'AI Mock Interviews', desc: 'Real-time speech & technical evaluation to boost confidence' },
-                  { title: 'ATS Resume Feedback', desc: 'Algorithmic resume parsing to beat enterprise recruitment filters' },
-                  { title: 'Career Support', desc: '1-on-1 mentor guidance & active referral pipeline at every step' },
-                ].map((item, idx) => (
-                  <div key={idx} onClick={promptLogin} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white border border-blue-200/80 shadow-2xs hover:border-blue-400 hover:shadow-xs transition cursor-pointer">
-                    <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                      <Check className="w-3 h-3 stroke-[3]" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-black text-slate-900">{item.title}</div>
-                      <div className="text-[11px] text-slate-600 font-medium leading-tight mt-0.5">{item.desc}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
