@@ -104,6 +104,7 @@ import { FutureAuthModal } from './FutureAuthModal';
 import { WalletWithdrawModal } from './WalletWithdrawModal';
 import { CurriculumModal } from './CurriculumModal';
 import { CourseDetailPopupModal } from './CourseDetailPopupModal';
+import { SuccessPlanModal } from './SuccessPlanModal';
 import { FutureAdvancedHeader } from './FutureAdvancedHeader';
 import { AtsResumeCheckerModal } from './AtsResumeCheckerModal';
 
@@ -378,21 +379,10 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
   const handleOpenCourseDetail = (courseIdOrTitle: string) => {
     playClick();
-    const t = (courseIdOrTitle || '').toLowerCase();
-    let resolvedId = 'react-frontend-dev';
-    if (t.includes('react') || t.includes('front')) resolvedId = 'react-frontend-dev';
-    else if (t.includes('data analyst') || t.includes('analyst')) resolvedId = 'data-analyst-genai';
-    else if (t.includes('python') || t.includes('dsa')) resolvedId = 'python-dsa';
-    else if (t.includes('sql') || t.includes('database')) resolvedId = 'sql-databases';
-    else if (t.includes('power') || t.includes('bi')) resolvedId = 'powerbi-analytics';
-    else if (t.includes('data science') || t.includes('agent')) resolvedId = 'data-science-agentic-ai';
-    else if (t.includes('ml') || t.includes('machine')) resolvedId = 'ml-engineering';
-    else if (t.includes('full stack') || t.includes('web')) resolvedId = 'full-stack-web-dev';
-    else if (t.includes('ui') || t.includes('ux') || t.includes('figma')) resolvedId = 'ui-ux-design-ai';
-    else if (t.includes('office') || t.includes('copilot') || t.includes('msoffice')) resolvedId = 'msoffice-365-copilot';
-    else if (t.includes('career') || t.includes('accelerator')) resolvedId = 'ai-career-accelerator';
-    else if (t.includes('sprint') || t.includes('30 day') || t.includes('techies')) resolvedId = 'ai-for-techies-30days';
-    setSelectedDetailCourseId(resolvedId);
+    const raw = (courseIdOrTitle || '').trim();
+    setSelectedLockedModule(raw || 'Data Analyst with GenAI');
+    setSelectedDetailCourseId(null);
+    setUnlockModalOpen(true);
   };
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [currentUserName, setCurrentUserName] = useState<string>(() => {
@@ -2505,17 +2495,16 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         }}
       />
 
-      {/* Course Detail Popup Modal: Headline, Subject Covered, Course Content, Download Syllabus & Unlock Now Rs 987 */}
-      <CourseDetailPopupModal
-        isOpen={Boolean(selectedDetailCourseId)}
-        courseId={selectedDetailCourseId || 'react-frontend-dev'}
-        onClose={() => setSelectedDetailCourseId(null)}
-        onUnlock={() => {
-          const cId = selectedDetailCourseId || 'course';
+      {/* Modern Future AI Super 30 Success Plan Modal (Razorpay Live Unlock) */}
+      <SuccessPlanModal
+        isOpen={unlockModalOpen || Boolean(selectedDetailCourseId)}
+        onClose={() => {
+          setUnlockModalOpen(false);
           setSelectedDetailCourseId(null);
-          setSelectedLockedModule(cId.toUpperCase());
-          setUnlockModalOpen(true);
         }}
+        courseId={selectedDetailCourseId || selectedLockedModule}
+        courseTitle={selectedLockedModule || selectedDetailCourseId || 'Data Analyst with GenAI'}
+        targetTopicTitle={selectedLockedModule}
       />
 
       {/* ─── WALLET WITHDRAWAL MODAL (CENTER POPUP) ─── */}
@@ -2554,17 +2543,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
 
       {/* ₹9 Pay to Unlock Modal — Razorpay Payment */}
-      <PayToUnlockModal
-        isOpen={unlockModalOpen}
-        onClose={() => setUnlockModalOpen(false)}
-        targetModuleName={selectedLockedModule}
-        courseId={selectedLockedModule.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}
-        courseTitle={selectedLockedModule}
-        price={9}
-        onSimulateUnlock={() => {
-          setIsNewStudentMode(false);
-        }}
-      />
+{/* Replaced by SuccessPlanModal above */}
 
       {/* 3D Floating Luminous Blue Marble Sphere (Bottom Left - media_1791029953384.jpg) */}
       <div className="hidden md:block dock-floating-sphere-bl" />

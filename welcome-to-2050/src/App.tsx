@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FutureAiHome } from './components/futureai/FutureAiHome';
 import { LearnerDashboard } from './components/futureai/LearnerDashboard';
 import { AtsResumeChecker } from './components/futureai/AtsResumeChecker';
-import { PayToUnlockModal } from './components/futureai/PayToUnlockModal';
+import { SuccessPlanModal } from './components/futureai/SuccessPlanModal';
 import { AdvisorModal } from './components/futureai/AdvisorModal';
 import { AdminHrSettingsModal } from './components/admin/AdminHrSettingsModal';
 import { AdminLeadManagerModal } from './components/futureai/AdminLeadManagerModal';
@@ -316,17 +316,11 @@ export const App: React.FC = () => {
         />
 
         {/* Global Course Enrollment Modal (₹9) */}
-        <PayToUnlockModal
+        <SuccessPlanModal
           isOpen={payModalOpen}
           onClose={() => setPayModalOpen(false)}
-          targetModuleName="Data Analytics with GenAI Flagship Course"
-          courseId="data-analytics-genai"
-          courseTitle="Data Analytics with GenAI Flagship Course"
-          price={9}
-          onSimulateUnlock={() => {
-            setPayModalOpen(false);
-            handleLogin(userName);
-          }}
+          courseId="data_analyst"
+          courseTitle="Data Analyst with GenAI"
         />
 
         {/* Admin HR Settings Console Modal */}

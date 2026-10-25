@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { isCourseUnlocked, isAnyCourseUnlocked } from '../../services/courseUnlockService';
 import { ExcelChallengeArena } from './ExcelChallengeArena';
 import {
   ALL_EXCEL_TOPICS,
@@ -71,7 +72,7 @@ export const ExcelChallengesPracticeHub: React.FC<ExcelChallengesPracticeHubProp
   const [internalEnrolled, setInternalEnrolled] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('futureai_course_enrolled');
-      if (saved === 'true') return true;
+      if (saved === 'true' || isCourseUnlocked('data_analyst') || isCourseUnlocked('ms_office_copilot') || isAnyCourseUnlocked()) return true;
     }
     return isEnrolled || false;
   });
@@ -81,6 +82,14 @@ export const ExcelChallengesPracticeHub: React.FC<ExcelChallengesPracticeHubProp
       setInternalEnrolled(isEnrolled);
     }
   }, [isEnrolled]);
+
+  useEffect(() => {
+    const handleUnlocked = () => {
+      setInternalEnrolled(true);
+    };
+    window.addEventListener('futureai_course_unlocked', handleUnlocked);
+    return () => window.removeEventListener('futureai_course_unlocked', handleUnlocked);
+  }, []);
 
   // Sync arena state with URL hash so Google Chrome's native back button exits arena
   useEffect(() => {
