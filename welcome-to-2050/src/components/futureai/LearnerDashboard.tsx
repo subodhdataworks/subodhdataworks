@@ -90,10 +90,7 @@ import { FullStackMernHub } from './FullStackMernHub';
 import { StudentCoursesDashboard } from './StudentCoursesDashboard';
 import { PythonIntroGameWorkspace } from './PythonIntroGameWorkspace';
 import { LearningModulesProgressModal } from './LearningModulesProgressModal';
-import { LiquidFloatingNavBar } from './LiquidFloatingNavBar';
 import { getLearnerTelemetry } from '../../services/realAuthService';
-import { MobileTopBar } from './mobile/MobileTopBar';
-import { MobileBottomNav, MobileTab } from './mobile/MobileBottomNav';
 import { MobileProfileSheet } from './mobile/MobileProfileSheet';
 import { MobileDashboardHome } from './mobile/MobileDashboardHome';
 import { MobilePlacementHub } from './mobile/MobilePlacementHub';
@@ -106,6 +103,8 @@ import { FutureAuthModal } from './FutureAuthModal';
 import { WalletWithdrawModal } from './WalletWithdrawModal';
 import { CurriculumModal } from './CurriculumModal';
 import { CourseDetailPopupModal } from './CourseDetailPopupModal';
+import { FutureAdvancedHeader } from './FutureAdvancedHeader';
+import { AtsResumeCheckerModal } from './AtsResumeCheckerModal';
 
 // =========================================================================
 // 10 AUTHENTIC 3D-STYLE VECTOR ICONS MATCHING media_1790589591068.jpg
@@ -479,6 +478,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   const [withdrawSuccess, setWithdrawSuccess] = useState<string | null>(null);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [mobileProfileSheetOpen, setMobileProfileSheetOpen] = useState(false);
+  const [isAtsResumeModalOpen, setIsAtsResumeModalOpen] = useState(false);
 
   // Live Learner Telemetry (Coins, Gems, Completed Topics) starting at 0
   const [telemetry, setTelemetry] = useState(getLearnerTelemetry);
@@ -639,45 +639,6 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     }
     return 1;
   });
-
-  const currentMobileTab: MobileTab =
-    dockTab === 'game'
-      ? 'game'
-      : dockTab === 'placement'
-      ? 'placement'
-      : dockTab === 'income' || dockTab === 'referral' || dockTab === 'wallet' || dockTab === 'withdraw'
-      ? 'earn'
-      : selectedModuleView === 'data_analyst' || selectedModuleView === 'data_science' || selectedModuleView === 'ml_engineering' || selectedModuleView === 'ai_engineering' || selectedModuleView === 'ai_tools_prompt' || selectedModuleView === 'ms_office_copilot' || selectedModuleView === 'full_stack_mern' || selectedModuleView === 'python' || selectedModuleView === 'sql' || selectedModuleView === 'excel' || selectedModuleView === 'powerbi' || selectedModuleView === 'genai' || selectedModuleView === 'stats'
-      ? 'learn'
-      : 'home';
-
-  const handleMobileTabSelect = (tab: MobileTab) => {
-    if (tab === 'home') {
-      setSelectedModuleView(null);
-      setActiveTopicWs(null);
-      setDockTab('home');
-      if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-    } else if (tab === 'learn') {
-      setSelectedModuleView('data_analyst');
-      setActiveTopicWs(null);
-      setDockTab('home');
-      if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-    } else if (tab === 'game' || tab === 'arena') {
-      setSelectedModuleView(null);
-      setActiveTopicWs(null);
-      setDockTab('game');
-      if (typeof window !== 'undefined') window.location.hash = '#game';
-    } else if (tab === 'earn') {
-      setSelectedModuleView(null);
-      setActiveTopicWs(null);
-      setDockTab('income');
-      if (typeof window !== 'undefined') window.location.hash = '#earnings';
-    } else if (tab === 'placement') {
-      setPlacementLockOpen(true);
-    } else if (tab === 'profile') {
-      setMobileProfileSheetOpen(true);
-    }
-  };
 
   // Sync hash changes
   useEffect(() => {
@@ -1563,298 +1524,82 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   return (
     <div className="dock-dashboard-page">
       
-      {/* ── Android Native Top App Bar on Mobile (< 768px) (Hidden on Game Zone to prevent duplicate header) ── */}
-      {dockTab !== 'game' && (
-        <div className="md:hidden">
-          <MobileTopBar
-            userName={currentUserName}
-            telemetry={telemetry}
-            onOpenProfile={() => setMobileProfileSheetOpen(true)}
-            onOpenWallet={() => setIsWithdrawModalOpen(true)}
-            onOpenNotifications={() => {
-              alert('🔔 Welcome to FUTURE IT INDUSTRY Android App Portal! Continue learning Python & earning commissions.');
-            }}
-            onOpenLogin={() => setAuthModalOpen(true)}
-          />
-        </div>
-      )}
-
-      {/* =========================================================================
-          1. TOP APP HEADER BAR (Desktop only >= 768px)
-          ========================================================================= */}
-      <header className="dock-top-navbar hidden md:flex">
-        {/* Logo */}
-        <div 
-          className="flex items-center gap-2 cursor-pointer select-none"
-          onClick={() => {
+{/* ─── ULTRA-ADVANCED NEW HEADER (Exact 1:1 Reference media_1792902949292_fb98d943.png) ─── */}
+      <FutureAdvancedHeader
+        userName={currentUserName}
+        activeNavTab={
+          isAtsResumeModalOpen
+            ? 'ats'
+            : dockTab === 'placement'
+            ? 'placement'
+            : dockTab === 'income' || dockTab === 'referral' || dockTab === 'wallet' || dockTab === 'withdraw'
+            ? 'earn'
+            : dockTab === 'game' || selectedModuleView === 'python_challenges' || selectedModuleView === 'sql_challenges' || selectedModuleView === 'excel_challenges'
+            ? 'practice'
+            : selectedModuleView !== null
+            ? 'learning'
+            : 'home'
+        }
+        onNavigateHome={() => {
+          setDockTab('home');
+          setSelectedModuleView(null);
+          setActiveTopicWs(null);
+          if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+        }}
+        onNavigateLearning={() => {
+          setDockTab('home');
+          setSelectedModuleView('data_analyst');
+          setActiveTopicWs(null);
+          if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+        }}
+        onNavigatePractice={(track) => {
+          if (track === 'python') {
+            setSelectedModuleView('python_challenges');
+            setActiveTopicWs(null);
+            if (typeof window !== 'undefined') window.location.hash = '#python-challenges';
+          } else if (track === 'sql') {
+            setSelectedModuleView('sql_challenges');
+            setActiveTopicWs(null);
+            if (typeof window !== 'undefined') window.location.hash = '#sql-challenges';
+          } else if (track === 'excel') {
+            setSelectedModuleView('excel_challenges');
+            setActiveTopicWs(null);
+            if (typeof window !== 'undefined') window.location.hash = '#excel-challenges';
+          } else {
             setSelectedModuleView(null);
-            if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-          }}
-        >
-          <FutureLogo size="md" />
-        </div>
+            setActiveTopicWs(null);
+            setDockTab('game');
+            if (typeof window !== 'undefined') window.location.hash = '#game';
+          }
+        }}
+        onOpenAtsResume={() => setIsAtsResumeModalOpen(true)}
+        onNavigateEarn={() => {
+          setSelectedModuleView(null);
+          setActiveTopicWs(null);
+          setDockTab('income');
+          if (typeof window !== 'undefined') window.location.hash = '#income';
+        }}
+        onNavigateInternship={() => {
+          setLockedSectionTarget('Internship');
+          setPlacementLockOpen(true);
+        }}
+        onNavigatePlacement={() => {
+          if (isPlacementLocked) {
+            setLockedSectionTarget('Placement');
+            setPlacementLockOpen(true);
+          } else {
+            setSelectedModuleView(null);
+            setActiveTopicWs(null);
+            setDockTab('placement');
+            if (typeof window !== 'undefined') window.location.hash = '#placement';
+          }
+        }}
+        onOpenProfile={() => setMobileProfileSheetOpen(true)}
+        onOpenWallet={() => setIsWithdrawModalOpen(true)}
+        onLogout={onLogout}
+      />
 
-        {/* Center Search Pill */}
-        <div className="dock-search-pill">
-          <Search className="w-4 h-4 text-sky-500 shrink-0" />
-          <input
-            type="text"
-            placeholder={dockTab === 'game' ? 'Search courses, tools or topics...' : 'Search for topics, modules, projects, interview questions or anything...'}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="dock-search-input"
-          />
-          <span className="dock-kbd-hint">Ctrl K</span>
-        </div>
-
-        {/* Right Actions: 13 Courses Dropdown + Notifications + User Profile (Exact 1:1 with media_1792862844688_4a7e1cf6.jpg) */}
-        <div className="flex items-center gap-3">
-          {/* 13 Courses Pill Button */}
-          <button
-            type="button"
-            onClick={() => {
-              setDockTab('game');
-              if (typeof window !== 'undefined') window.location.hash = '#game';
-            }}
-            className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-sm transition-all cursor-pointer active:scale-95"
-          >
-            <Layers className="w-4 h-4 text-[#1a73e8]" />
-            <span>13 Courses</span>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-          </button>
-
-          {/* Notifications bell with Red Dot Badge */}
-          <div className="relative cursor-pointer p-1.5 rounded-full hover:bg-sky-50 text-slate-600 transition-colors">
-            <Bell className="w-5 h-5" />
-            <span className="absolute 0.5 top-0.5 right-0.5 w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-white"></span>
-          </div>
-
-          {/* User Profile & Dropdown Menu */}
-          <div className="relative">
-            <div 
-              className="dock-user-profile hover:opacity-90 transition-opacity select-none cursor-pointer" 
-              onClick={(e) => {
-                e.stopPropagation();
-                setProfileDropdownOpen((prev) => !prev);
-              }}
-            >
-              <img 
-                src={(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_avatar') : null) || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"} 
-                alt={userName} 
-                className="dock-avatar-img" 
-              />
-              <div className="hidden sm:flex flex-col text-left">
-                <strong className="text-xs font-black text-slate-800 leading-tight">Hi, {userName || 'Rahul'}</strong>
-                <span className="text-[10px] text-slate-500 font-semibold">Learner</span>
-              </div>
-              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${profileDropdownOpen ? 'rotate-180' : ''}`} />
-            </div>
-
-            {/* Profile Dropdown Menu */}
-            {profileDropdownOpen && (
-              <>
-                {/* Backdrop overlay to close on outside click */}
-                <div 
-                  className="fixed inset-0 z-40" 
-                  onClick={() => setProfileDropdownOpen(false)} 
-                />
-                
-                <div className="absolute right-0 top-full mt-2 w-60 bg-white/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-100 py-2.5 px-2 z-50 animate-fadeIn text-left space-y-0.5">
-                  {/* 1. Dashboard */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setDockTab('home');
-                      setSelectedModuleView(null);
-                      setActiveTopicWs(null);
-                      setProfileDropdownOpen(false);
-                      if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-                    }}
-                    className={`w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] transition-colors cursor-pointer text-left ${
-                      dockTab === 'home' && selectedModuleView === null
-                        ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-sm'
-                        : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium'
-                    }`}
-                  >
-                    <Home className="w-[18px] h-[18px] shrink-0" />
-                    <span>Dashboard</span>
-                  </button>
-
-                  {/* 2. My Learning */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setDockTab('home');
-                      setSelectedModuleView('data_analyst');
-                      setActiveTopicWs(null);
-                      setProfileDropdownOpen(false);
-                      if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-                    }}
-                    className={`w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] transition-colors cursor-pointer text-left ${
-                      selectedModuleView !== null
-                        ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-sm'
-                        : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium'
-                    }`}
-                  >
-                    <GraduationCap className="w-[18px] h-[18px] shrink-0" />
-                    <span>My Learning</span>
-                  </button>
-
-                  {/* 3. Coding Practice */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedModuleView(null);
-                      setActiveTopicWs(null);
-                      setDockTab('game');
-                      setProfileDropdownOpen(false);
-                      if (typeof window !== 'undefined') window.location.hash = '#game';
-                    }}
-                    className={`w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] transition-colors cursor-pointer text-left ${
-                      dockTab === 'game' && selectedModuleView === null
-                        ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-sm'
-                        : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium'
-                    }`}
-                  >
-                    <Code2 className="w-[18px] h-[18px] shrink-0" />
-                    <span>Coding Practice</span>
-                  </button>
-
-                  {/* 4. Certifications */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setProfileDropdownOpen(false);
-                      setLockedSectionTarget('Certificate');
-                      setPlacementLockOpen(true);
-                    }}
-                    className="w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer text-left"
-                  >
-                    <Award className="w-[18px] h-[18px] shrink-0" />
-                    <span>Certifications</span>
-                  </button>
-
-                  {/* 5. Challenges */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedModuleView(null);
-                      setActiveTopicWs(null);
-                      setDockTab('game');
-                      setProfileDropdownOpen(false);
-                      if (typeof window !== 'undefined') window.location.hash = '#game';
-                    }}
-                    className="w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer text-left"
-                  >
-                    <Trophy className="w-[18px] h-[18px] shrink-0" />
-                    <span>Challenges</span>
-                  </button>
-
-                  {/* 6. Leaderboards */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setProfileDropdownOpen(false);
-                      alert('🏆 Global Leaderboard: You are Rank #12 among all active learners! Solve more coding challenges to climb into the Top 10.');
-                    }}
-                    className="w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer text-left"
-                  >
-                    <BarChart2 className="w-[18px] h-[18px] shrink-0" />
-                    <span>Leaderboards</span>
-                  </button>
-
-                  {/* 7. Tools & Resources */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedModuleView(null);
-                      setActiveTopicWs(null);
-                      setDockTab('game');
-                      setProfileDropdownOpen(false);
-                      if (typeof window !== 'undefined') window.location.hash = '#game';
-                    }}
-                    className="w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer text-left"
-                  >
-                    <Briefcase className="w-[18px] h-[18px] shrink-0" />
-                    <span>Tools & Resources</span>
-                  </button>
-
-                  {/* Divider line */}
-                  <div className="border-t border-slate-100 my-1.5" />
-
-                  {/* 8. Community */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setProfileDropdownOpen(false);
-                      alert('👥 Community Portal: Connect with 10,000+ data science and AI peers on our student discord & telegram channels.');
-                    }}
-                    className="w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer text-left"
-                  >
-                    <Users className="w-[18px] h-[18px] shrink-0" />
-                    <span>Community</span>
-                  </button>
-
-                  {/* 9. Affiliate */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedModuleView(null);
-                      setActiveTopicWs(null);
-                      setDockTab('income');
-                      setProfileDropdownOpen(false);
-                      if (typeof window !== 'undefined') window.location.hash = '#earnings';
-                    }}
-                    className={`w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] transition-colors cursor-pointer text-left ${
-                      dockTab === 'income' || dockTab === 'referral'
-                        ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-sm'
-                        : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium'
-                    }`}
-                  >
-                    <div className="w-[18px] h-[18px] rounded-full border-[1.8px] border-current flex items-center justify-center text-[10.5px] font-bold shrink-0">
-                      ₹
-                    </div>
-                    <span>Affiliate</span>
-                  </button>
-
-                  {/* 10. Placement */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setProfileDropdownOpen(false);
-                      setLockedSectionTarget('Placement');
-                      setPlacementLockOpen(true);
-                    }}
-                    className={`w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] transition-colors cursor-pointer text-left ${
-                      dockTab === 'placement'
-                        ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-sm'
-                        : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium'
-                    }`}
-                  >
-                    <Briefcase className="w-[18px] h-[18px] shrink-0" />
-                    <span>Placement</span>
-                  </button>
-
-                  {/* 11. Settings */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setProfileDropdownOpen(false);
-                      setMobileProfileSheetOpen(true);
-                    }}
-                    className="w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer text-left"
-                  >
-                    <Settings className="w-[18px] h-[18px] shrink-0" />
-                    <span>Settings</span>
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* =========================================================================
+            {/* =========================================================================
           2. MAIN DASHBOARD CONTENT GRID (media_1790998423618.jpg)
           ========================================================================= */}
       <div className="dock-main-container">
@@ -2947,60 +2692,14 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
       </div>
 
-      {/* =========================================================================
-          3. NAVIGATION: LIQUID DOCK ON DESKTOP & NATIVE ANDROID BOTTOM BAR ON MOBILE (HOMEPAGE ONLY)
-          ========================================================================= */}
-      {/* Desktop (>= 768px): 8-Section Liquid Floating Glass Dock - ONLY on Homepage */}
-      {selectedModuleView === null && activeTopicWs === null && dockTab === 'home' && (
-        <div className="hidden md:block">
-          <LiquidFloatingNavBar
-            activeTab="dashboard"
-            onSelectTab={(tabId) => {
-              if (tabId === 'dashboard') {
-                setDockTab('home');
-                setSelectedModuleView(null);
-                setActiveTopicWs(null);
-                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-              } else if (tabId === 'learning') {
-                setDockTab('home');
-                setSelectedModuleView('data_analyst');
-                setActiveTopicWs(null);
-                if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-              } else if (tabId === 'earning') {
-                setSelectedModuleView(null);
-                setActiveTopicWs(null);
-                setDockTab('income');
-                if (typeof window !== 'undefined') window.location.hash = '#earnings';
-              } else if (tabId === 'coding_game') {
-                setSelectedModuleView(null);
-                setActiveTopicWs(null);
-                setDockTab('game');
-                if (typeof window !== 'undefined') window.location.hash = '#game';
-              } else if (tabId === 'industrial_training' || tabId === 'internship' || tabId === 'job' || tabId === 'placement') {
-                setLockedSectionTarget(tabId === 'industrial_training' ? 'Industrial Training' : tabId === 'internship' ? 'Internship' : 'Placement & Job Assistance');
-                setPlacementLockOpen(true);
-              }
-            }}
-            onOpenLockedModal={(featureTitle) => {
-              setLockedSectionTarget(featureTitle);
-              setPlacementLockOpen(true);
-            }}
-          />
-        </div>
-      )}
+{/* ─── AI ATS RESUME CHECKER MODAL ─── */}
+      <AtsResumeCheckerModal
+        isOpen={isAtsResumeModalOpen}
+        onClose={() => setIsAtsResumeModalOpen(false)}
+        userName={currentUserName}
+      />
 
-      {/* Mobile (< 768px): Native Android 5-Tab Bottom Navigation Bar */}
-      {selectedModuleView === null && activeTopicWs === null && (dockTab === 'home' || dockTab === 'game') && (
-        <div className="md:hidden">
-          <MobileBottomNav
-            currentTab={currentMobileTab}
-            onSelectTab={handleMobileTabSelect}
-            unreadEarnBadge={true}
-          />
-        </div>
-      )}
-
-      {/* Android Mobile Profile Bottom Sheet Dialog */}
+            {/* Android Mobile Profile Bottom Sheet Dialog */}
       <MobileProfileSheet
         isOpen={mobileProfileSheetOpen}
         onClose={() => setMobileProfileSheetOpen(false)}
