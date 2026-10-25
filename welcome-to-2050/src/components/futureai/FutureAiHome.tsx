@@ -259,7 +259,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             const hash = track === 'python' ? '#python-challenges' : track === 'sql' ? '#sql-challenges' : track === 'excel' ? '#excel-challenges' : '#practice';
             window.location.hash = hash;
           }}
-          onOpenAtsResume={promptLogin}
+          onOpenAtsResume={() => { window.location.hash = '#ats'; }}
           onNavigateEarn={promptLogin}
           onNavigateInternship={promptLogin}
           onNavigatePlacement={promptLogin}
@@ -900,7 +900,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               <ul className="space-y-2.5 text-xs font-extrabold text-slate-900 drop-shadow-2xs">
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Courses</button></li>
                 <li><button onClick={() => { window.location.hash = "#practice"; }} className="hover:text-blue-600 transition-colors cursor-pointer">Coding Practice</button></li>
-                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">ATS Resume Checker</button></li>
+                <li><button onClick={() => { window.location.hash = "#ats"; }} className="hover:text-blue-600 transition-colors cursor-pointer">ATS Resume Checker</button></li>
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Internship</button></li>
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Success Stories</button></li>
               </ul>

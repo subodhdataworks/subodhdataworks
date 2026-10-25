@@ -209,11 +209,7 @@ export const MobileProfileSheet: React.FC<MobileProfileSheetProps> = ({
         <div className="relative z-10 px-3.5 pt-3.5 pb-2 space-y-3">
           
           {/* ─── Top Floating Glass Close "X" Button ─── */}
-          <div className="flex items-center justify-between pl-1">
-            <span className="text-[11px] font-black tracking-widest uppercase bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent flex items-center gap-1">
-              <Zap className="w-3 h-3 text-blue-600 fill-blue-600" />
-              <span>FUTURE PASS</span>
-            </span>
+          <div className="flex items-center justify-end pl-1">
             <button
               type="button"
               onClick={handleSmoothClose}

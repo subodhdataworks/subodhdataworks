@@ -148,17 +148,7 @@ export const AtsResumeCheckerModal: React.FC<AtsResumeCheckerModalProps> = ({
               </span>
             </label>
 
-            {/* Demo Button */}
-            <div className="text-center pt-1">
-              <button
-                type="button"
-                onClick={handleSimulateDemo}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs shadow-md shadow-emerald-600/20 active:scale-95 transition cursor-pointer"
-              >
-                <Zap className="w-4 h-4 text-emerald-200" />
-                <span>Scan Demo Resume ({userName})</span>
-              </button>
-            </div>
+            {/* Upload hint */}
           </div>
         )}
 

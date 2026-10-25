@@ -9,8 +9,8 @@
  * ⚠️ Remove the fallbacks before switching to LIVE keys.
  */
 
-const TEST_KEY_ID = 'rzp_test_TqpUS98jsKRR3R';
-const TEST_KEY_SECRET = 'YZUJYrib6ndFXQXq38zoZsDC';
+const DEFAULT_KEY_ID = 'rzp_live_Ts9J3D70GGIaTJ';
+const DEFAULT_KEY_SECRET = 'MV3Z97Xvt6ibwIt9FBYQqm1h';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -24,8 +24,8 @@ const json = (data, status = 200) =>
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-  const keyId = env.RAZORPAY_KEY_ID || TEST_KEY_ID;
-  const keySecret = env.RAZORPAY_KEY_SECRET || TEST_KEY_SECRET;
+  const keyId = env.RAZORPAY_KEY_ID || DEFAULT_KEY_ID;
+  const keySecret = env.RAZORPAY_KEY_SECRET || DEFAULT_KEY_SECRET;
 
   try {
     const body = await request.json().catch(() => ({}));

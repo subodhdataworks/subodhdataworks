@@ -1622,7 +1622,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             if (typeof window !== 'undefined') window.location.hash = '#game';
           }
         }}
-        onOpenAtsResume={() => setIsAtsResumeModalOpen(true)}
+        onOpenAtsResume={() => {
+          if (typeof window !== 'undefined') window.location.hash = '#ats';
+        }}
         onNavigateEarn={() => {
           setSelectedModuleView(null);
           setActiveTopicWs(null);

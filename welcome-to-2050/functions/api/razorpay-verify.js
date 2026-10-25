@@ -4,7 +4,7 @@
  *   HMAC_SHA256(order_id + "|" + payment_id, key_secret) === razorpay_signature
  */
 
-const TEST_KEY_SECRET = 'YZUJYrib6ndFXQXq38zoZsDC';
+const DEFAULT_KEY_SECRET = 'MV3Z97Xvt6ibwIt9FBYQqm1h';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -40,7 +40,7 @@ function safeEqual(a, b) {
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-  const keySecret = env.RAZORPAY_KEY_SECRET || TEST_KEY_SECRET;
+  const keySecret = env.RAZORPAY_KEY_SECRET || DEFAULT_KEY_SECRET;
 
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = await request.json();
