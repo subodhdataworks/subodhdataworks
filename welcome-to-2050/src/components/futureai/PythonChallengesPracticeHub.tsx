@@ -341,6 +341,7 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
   const [activeTab, setActiveTab] = useState<'all' | 'basic' | 'intermediate' | 'advanced' | 'popular'>('all');
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<number>>(new Set());
   const [activeChallengeArenaTopic, setActiveChallengeArenaTopic] = useState<{ topicId: number; initialTaskId?: number } | null>(null);
+  const [topic1Expanded, setTopic1Expanded] = useState<boolean>(true);
 
   // Collapsible accordion states
   const [statusOpen, setStatusOpen] = useState<boolean>(true);
@@ -630,10 +631,98 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
                         <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
                           {item.description}
                         </p>
+
+                        {/* Dropdown like Module and Topic underneath Title & Description */}
+                        {item.id === 1 && (
+                          <div className="mt-3.5 pt-3 border-t border-slate-100">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                              {/* Quick Topic Dropdown Selector */}
+                              <div className="relative flex-1 min-w-0">
+                                <label htmlFor="topic-dropdown-select" className="sr-only">Choose Topic</label>
+                                <select
+                                  id="topic-dropdown-select"
+                                  defaultValue=""
+                                  onChange={(e) => {
+                                    const val = Number(e.target.value);
+                                    if (val) {
+                                      setActiveChallengeArenaTopic({ topicId: 1, initialTaskId: val });
+                                    }
+                                  }}
+                                  className="w-full appearance-none bg-blue-50/80 hover:bg-blue-100/70 border border-blue-200 text-blue-900 font-bold text-xs sm:text-sm pl-3.5 pr-9 py-2 rounded-xl shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all truncate"
+                                  title="Choose Module Topic"
+                                >
+                                  <option value="" disabled className="bg-white text-slate-700 font-bold">
+                                    📚 Select Topic / Challenge (Topic 1 - 10) ▾
+                                  </option>
+                                  {TOPIC_1_TASKS.map((task) => (
+                                    <option key={task.id} value={task.taskNumber} className="bg-white text-slate-900 font-semibold py-1">
+                                      Topic {task.taskNumber}: {task.title}
+                                    </option>
+                                  ))}
+                                </select>
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-blue-600">
+                                  <ChevronDown className="w-4 h-4" />
+                                </div>
+                              </div>
+
+                              {/* Accordion view button */}
+                              <button
+                                type="button"
+                                onClick={() => setTopic1Expanded((prev) => !prev)}
+                                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer whitespace-nowrap shrink-0"
+                              >
+                                <Layers className="w-3.5 h-3.5 text-blue-600" />
+                                <span>{topic1Expanded ? 'Hide Topics' : 'Show All 10 Topics'}</span>
+                                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${topic1Expanded ? 'rotate-180' : ''}`} />
+                              </button>
+                            </div>
+
+                            {/* Expandable Module & Topic List */}
+                            {topic1Expanded && (
+                              <div className="mt-3 pt-2.5 border-t border-slate-100 space-y-1.5">
+                                <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 mb-1">
+                                  <span>MODULE 1 · TOPICS & CHALLENGES (10)</span>
+                                  <span className="text-blue-600 font-semibold">Click any topic to practice</span>
+                                </div>
+                                {TOPIC_1_TASKS.map((task) => (
+                                  <div
+                                    key={task.id}
+                                    onClick={() => setActiveChallengeArenaTopic({ topicId: 1, initialTaskId: task.taskNumber })}
+                                    className="group flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-slate-50/80 hover:bg-blue-50/80 border border-slate-200/60 hover:border-blue-300 transition-all cursor-pointer"
+                                  >
+                                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                                      <span className="w-6 h-6 rounded-lg bg-white group-hover:bg-blue-600 text-slate-700 group-hover:text-white border border-slate-200 group-hover:border-blue-600 text-xs font-bold flex items-center justify-center shrink-0 transition-colors">
+                                        {task.taskNumber < 10 ? `0${task.taskNumber}` : task.taskNumber}
+                                      </span>
+                                      <div className="min-w-0 flex-1 text-left">
+                                        <div className="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-blue-700 truncate transition-colors">
+                                          Topic {task.taskNumber}: {task.title}
+                                        </div>
+                                        <div className="text-[11px] text-slate-500 truncate">
+                                          {task.description}
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-2 shrink-0">
+                                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/50">
+                                        +{task.maxScore} XP
+                                      </span>
+                                      <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#1a73e8] group-hover:bg-blue-700 text-white font-bold text-[11px] shadow-xs transition-all">
+                                        <span>Solve</span>
+                                        <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                                      </span>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
 
-                    {/* Right: Bookmark Star + Challenge Dropdown / Action Button */}
+                    {/* Right: Bookmark Star + Action Button */}
                     <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
                       <button
                         type="button"
@@ -648,33 +737,15 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
                         />
                       </button>
 
-                      {/* For Topic 1: Replace Solve Challenge with Question Dropdown */}
                       {item.id === 1 ? (
-                        <div className="relative">
-                          <select
-                            defaultValue=""
-                            onChange={(e) => {
-                              const val = Number(e.target.value);
-                              if (val) {
-                                setActiveChallengeArenaTopic({ topicId: 1, initialTaskId: val });
-                              }
-                            }}
-                            className="appearance-none bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-bold text-xs sm:text-sm pl-4 pr-9 py-2.5 rounded-xl shadow-md shadow-blue-500/20 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
-                            title="Select a challenge to solve"
-                          >
-                            <option value="" disabled className="bg-white text-slate-800 font-bold">
-                              Choose Challenge (1-10) ▾
-                            </option>
-                            {TOPIC_1_TASKS.map((task) => (
-                              <option key={task.id} value={task.taskNumber} className="bg-white text-slate-900 font-medium py-1.5">
-                                {task.taskNumber}. {task.title}
-                              </option>
-                            ))}
-                          </select>
-                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-white">
-                            <ChevronDown className="w-4 h-4" />
-                          </div>
-                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setTopic1Expanded((prev) => !prev)}
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-semibold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap"
+                        >
+                          <span>{topic1Expanded ? 'Hide Topics' : '10 Topics'}</span>
+                          <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${topic1Expanded ? 'rotate-180' : ''}`} />
+                        </button>
                       ) : (
                         <button
                           type="button"
