@@ -498,7 +498,7 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
             </div>
           </div>
 
-          {/* Metric 3: Enrollments */}
+          {/* Metric 3: Paid Enrollments */}
           <div className="bg-white border border-slate-200/80 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex flex-col justify-between">
             <div className="w-7 h-7 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 mb-1.5">
               <Award className="w-4 h-4" />
@@ -508,28 +508,28 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
                 {paidEnrollments.toLocaleString('en-IN')}
               </div>
               <div className="text-[9px] sm:text-[10px] font-bold text-slate-800 leading-tight mt-0.5">
-                Enrollments
+                Paid Enrollments
               </div>
-              <div className="text-[8px] text-slate-400 font-medium leading-none mt-0.5 truncate">
-                ₹999 Verified
+              <div className="text-[8px] text-purple-600 font-semibold leading-none mt-0.5 truncate">
+                Verified Success
               </div>
             </div>
           </div>
 
-          {/* Metric 4: Total Earnings */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex flex-col justify-between">
-            <div className="w-7 h-7 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 mb-1.5">
+          {/* Metric 4: Available to Payout */}
+          <div className="bg-white border border-emerald-200/90 bg-emerald-50/20 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex flex-col justify-between">
+            <div className="w-7 h-7 rounded-xl bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-600 mb-1.5">
               <Wallet className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-base sm:text-lg font-black text-slate-950 leading-tight">
-                ₹{totalEarned.toLocaleString('en-IN')}
+              <div className="text-base sm:text-lg font-black text-emerald-700 leading-tight">
+                ₹{availableBalance.toLocaleString('en-IN')}
               </div>
-              <div className="text-[9px] sm:text-[10px] font-bold text-slate-800 leading-tight mt-0.5">
-                Total Earnings
+              <div className="text-[9px] sm:text-[10px] font-bold text-slate-900 leading-tight mt-0.5">
+                Available Payout
               </div>
-              <div className="text-[8px] text-slate-400 font-medium leading-none mt-0.5 truncate">
-                Lifetime
+              <div className="text-[8px] text-emerald-600 font-bold leading-none mt-0.5 truncate">
+                ₹100 / enroll
               </div>
             </div>
           </div>

@@ -187,18 +187,15 @@ export class ReferralEngine {
   // Switch between Student and Influencer
   public static switchReferrerType(type: ReferrerType) {
     const state = this.getState();
-    const isStudent = type === 'student';
 
     state.profile.referrerType = type;
-    state.profile.commissionRate = isStudent ? 125 : 100;
-    state.profile.referralStatus = isStudent
-      ? (state.profile.hasPaidEnrollment ? 'ACTIVE' : 'PENDING_ENROLLMENT')
-      : 'ACTIVE'; // Influencers do NOT need 999 purchase
+    state.profile.commissionRate = 100;
+    state.profile.referralStatus = 'ACTIVE';
 
-    // Recalculate balances based on commission rate
-    const rate = state.profile.commissionRate;
+    // Recalculate balances based on flat ₹100 commission rate
+    const rate = 100;
     state.availableCommission = state.successfulEnrollmentsCount * rate;
-    state.pendingCommission = 6 * rate;
+    state.pendingCommission = 0;
 
     // Update referrals commission amount
     state.referrals = state.referrals.map((r: ReferralRecord) => ({

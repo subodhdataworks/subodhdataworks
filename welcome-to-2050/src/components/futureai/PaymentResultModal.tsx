@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CheckCircle2, XCircle, Loader2, ArrowRight, Home } from 'lucide-react';
 import { unlockCourse } from '../../services/courseUnlockService';
+import { recordReferralPayment } from '../../services/realAuthService';
 
 type PaymentStatus = 'success' | 'failure' | 'pending' | null;
 
@@ -36,6 +37,13 @@ export const PaymentResultModal: React.FC<PaymentResultModalProps> = ({ onGoHome
           unlockCourse(resolvedCourse);
         }
       } catch (e) {}
+      if (resolvedTxn) {
+        recordReferralPayment({
+          paymentId: resolvedTxn,
+          amount: parseFloat(resolvedAmt) || 987,
+          courseTitle: resolvedCourse,
+        }).catch(() => {});
+      }
       setTimeout(() => { window.history.replaceState(null, '', window.location.pathname); }, 2500);
     } else if (hash.includes('payment-failure') || hash.includes('payment-failed') || params.get('status') === 'TXN_FAILURE' || params.get('status') === 'failure') {
       setStatus('failure');

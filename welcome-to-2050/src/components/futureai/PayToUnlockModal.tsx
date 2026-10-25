@@ -19,6 +19,7 @@ import {
 import { useThemeAccent } from '../../context/ThemeAccentContext';
 import { startRazorpayCheckout, getCurrentUserForPayment } from '../../services/razorpayService';
 import { unlockCourse, normalizeCourseId } from '../../services/courseUnlockService';
+import { recordReferralPayment } from '../../services/realAuthService';
 
 interface PayToUnlockModalProps {
   isOpen: boolean;
@@ -78,6 +79,21 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
         localStorage.setItem('futureai_payment_txn_id', result.paymentId);
       } catch {
         // ignore storage errors
+      }
+
+      // Anti-Fraud Referral Credit: Flat ₹100 upon verified Razorpay payment
+      try {
+        await recordReferralPayment({
+          paymentId: result.paymentId,
+          orderId: result.orderId,
+          amount: result.amount,
+          payerEmail: user.email,
+          payerPhone: phone.length === 10 ? phone : user.phone || undefined,
+          payerName: user.name,
+          courseTitle: displayTitle,
+        });
+      } catch (refErr) {
+        console.warn('Referral payment record notice:', refErr);
       }
 
       onSimulateUnlock?.();

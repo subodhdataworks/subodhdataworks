@@ -144,13 +144,17 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
           setHubState((prev) => {
             const nextClicks = Math.max(prev.clicks, real.clicks);
             const nextSignups = Math.max(prev.signups, real.signups);
-            const nextPending = Math.max(prev.pendingBalance, real.pendingBalance);
-            const nextEarned = Math.max(prev.totalEarned, real.totalEarned);
+            const nextPaidEnrollments = Math.max(prev.paidEnrollments, real.paidEnrollments || 0);
+            const nextAvailable = typeof real.availableBalance === 'number' ? real.availableBalance : (nextPaidEnrollments * 100 - prev.totalPaid);
+            const nextPending = typeof real.pendingBalance === 'number' ? real.pendingBalance : 0;
+            const nextEarned = typeof real.totalEarned === 'number' ? real.totalEarned : (nextPaidEnrollments * 100);
             const nextReferrals = real.referrals && real.referrals.length > 0 ? real.referrals : prev.referrals;
 
             if (
               nextClicks === prev.clicks &&
               nextSignups === prev.signups &&
+              nextPaidEnrollments === prev.paidEnrollments &&
+              nextAvailable === prev.availableBalance &&
               nextPending === prev.pendingBalance &&
               nextEarned === prev.totalEarned &&
               nextReferrals.length === prev.referrals.length
@@ -162,6 +166,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               ...prev,
               clicks: nextClicks,
               signups: nextSignups,
+              paidEnrollments: nextPaidEnrollments,
+              availableBalance: Math.max(0, nextAvailable),
               pendingBalance: nextPending,
               totalEarned: nextEarned,
               referrals: nextReferrals,
@@ -209,10 +215,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       navigator.clipboard.writeText(affiliateRefUrl);
     }
     setCopiedLink(true);
-    setHubState((prev) => ({
-      ...prev,
-      clicks: prev.clicks + 1
-    }));
+    // Clicks strictly tracked when unique student visitors open referral link
     try {
       confetti({
         particleCount: 65,

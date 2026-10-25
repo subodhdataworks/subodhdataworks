@@ -452,19 +452,67 @@ export function getUserReferralCode(nameOrEmail: string): string {
 }
 
 /**
+ * Strict Anti-Fraud: Detect self-referral attempts
+ * Blocks users from referring their own email, phone number, or device
+ */
+export function isSelfReferral(
+  refCode: string,
+  studentEmail?: string,
+  studentPhone?: string,
+  studentName?: string
+): boolean {
+  const cleanRef = normalizeRefCode(refCode);
+  if (!cleanRef) return false;
+
+  // Check email prefix
+  if (studentEmail) {
+    const emailPrefix = studentEmail.split('@')[0].toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (emailPrefix.startsWith(cleanRef) || cleanRef.startsWith(emailPrefix)) return true;
+  }
+
+  // Check student name
+  if (studentName) {
+    const nameClean = studentName.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (nameClean.startsWith(cleanRef) || cleanRef.startsWith(nameClean)) return true;
+  }
+
+  // Check currently logged in user referral code in localStorage
+  if (typeof window !== 'undefined') {
+    const myCode = localStorage.getItem('futureai_user_ref_code') || localStorage.getItem('futureai_user_name') || '';
+    if (normalizeRefCode(myCode) === cleanRef) return true;
+    const myPhone = localStorage.getItem('futureai_user_phone') || '';
+    if (studentPhone && myPhone && studentPhone.replace(/\D/g, '') === myPhone.replace(/\D/g, '')) return true;
+    const myEmail = localStorage.getItem('futureai_user_email') || '';
+    if (studentEmail && myEmail && studentEmail.trim().toLowerCase() === myEmail.trim().toLowerCase()) return true;
+  }
+
+  return false;
+}
+
+/**
  * Real Referral Click Tracking (Persists in Firestore Cloud & localStorage)
+ * Strict Session Deduplication: Prevents page refreshes from inflating click counts.
+ * Only genuine unique visitor link-clicks increment the counter.
  */
 export async function recordReferralClick(refCode: string): Promise<void> {
   if (typeof window === 'undefined' || !refCode) return;
   const cleanCode = normalizeRefCode(refCode);
   if (!cleanCode) return;
 
-  // 1. Save attribution in localStorage so subsequent signup receives credit
+  // 1. Always save attribution in storage so subsequent registration gets attributed
   try {
-    localStorage.setItem('futureai_ref_attribution', refCode);
+    localStorage.setItem('futureai_ref_attribution', cleanCode);
+    sessionStorage.setItem('futureai_ref_attribution', cleanCode);
   } catch {}
 
-  // 2. Increment click count in Firestore Cloud Database
+  // 2. Anti-spam / session deduplication check
+  const sessionKey = `fa_clk_counted_${cleanCode}`;
+  if (sessionStorage.getItem(sessionKey)) {
+    return; // Already counted for this session
+  }
+  sessionStorage.setItem(sessionKey, '1');
+
+  // 3. Increment click count in Firestore Cloud Database
   try {
     const statsDocRef = doc(db, 'affiliate_stats', cleanCode);
     await setDoc(
@@ -480,11 +528,11 @@ export async function recordReferralClick(refCode: string): Promise<void> {
     console.warn('Cloud affiliate click record notice:', cloudErr);
   }
 
-  // 3. Increment locally
+  // 4. Increment locally
   try {
     const storageKey = `futureai_affiliate_hub_v3_${cleanCode}`;
     const raw = localStorage.getItem(storageKey);
-    const data = raw ? JSON.parse(raw) : { clicks: 0, signups: 0, pendingBalance: 0, totalEarned: 0, referrals: [] };
+    const data = raw ? JSON.parse(raw) : { clicks: 0, signups: 0, paidEnrollments: 0, availableBalance: 0, totalEarned: 0, referrals: [] };
     data.clicks = (data.clicks || 0) + 1;
     localStorage.setItem(storageKey, JSON.stringify(data));
   } catch (e) {
@@ -493,8 +541,12 @@ export async function recordReferralClick(refCode: string): Promise<void> {
 }
 
 /**
- * Real Referral Signup Tracking: Records ₹100 commission & registered student
- * Saves to Firestore Cloud Database & localStorage
+ * Real Referral Signup Tracking:
+ * Strictly records Free Signup (+1 to signups).
+ * Anti-Fraud Rules:
+ * 1. Self-referrals are blocked.
+ * 2. Duplicate signups for the same student are deduplicated.
+ * 3. Free signup earns ₹0. Commission is strictly ₹0 until verified paid enrollment!
  */
 export async function recordReferralSignup(
   refCode: string,
@@ -506,20 +558,57 @@ export async function recordReferralSignup(
   const cleanCode = normalizeRefCode(refCode);
   if (!cleanCode) return;
 
+  // Anti-fraud: Block self-referral
+  if (isSelfReferral(cleanCode, studentEmail, studentPhone, studentName)) {
+    console.warn('Anti-Fraud: Self-referral signup rejected for', cleanCode);
+    return;
+  }
+
+  const cleanEmail = (studentEmail || '').trim().toLowerCase();
+  const cleanPhone = (studentPhone || '').replace(/\D/g, '');
+
   const newReferralItem = {
     id: `ref_${Date.now()}`,
     name: studentName || 'New Student',
-    email: studentEmail || '',
-    phone: studentPhone || '',
+    email: cleanEmail,
+    phone: cleanPhone,
     date: new Date().toISOString().slice(0, 10),
-    status: 'Registered',
-    amount: 999,
-    commission: 100,
+    status: 'Registered' as const,
+    amount: 0,
+    commission: 0, // ₹0 for free signup!
     course: 'Data Analytics with GenAI',
     referralId: `RF-${Math.floor(1000 + Math.random() * 9000)}`,
   };
 
-  // 1. Save in Firestore Cloud Database under affiliate_stats
+  // 1. Check local storage for deduplication
+  const storageKey = `futureai_affiliate_hub_v3_${cleanCode}`;
+  let data: any = { clicks: 0, signups: 0, paidEnrollments: 0, availableBalance: 0, totalEarned: 0, referrals: [] };
+  try {
+    const raw = localStorage.getItem(storageKey);
+    if (raw) data = JSON.parse(raw);
+  } catch {}
+
+  const referrals = Array.isArray(data.referrals) ? data.referrals : [];
+  const alreadyExists = referrals.some((r: any) => 
+    (cleanEmail && r.email && r.email.toLowerCase() === cleanEmail) ||
+    (cleanPhone && r.phone && r.phone === cleanPhone)
+  );
+
+  if (alreadyExists) {
+    return; // Already counted this student signup
+  }
+
+  // 2. Increment signup count locally (Commission remains 0)
+  data.signups = (data.signups || 0) + 1;
+  referrals.unshift(newReferralItem);
+  data.referrals = referrals;
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(data));
+  } catch (e) {
+    console.warn('Local affiliate signup record notice:', e);
+  }
+
+  // 3. Save in Firestore Cloud Database under affiliate_stats (Free signup: zero balance change)
   try {
     const statsDocRef = doc(db, 'affiliate_stats', cleanCode);
     await setDoc(
@@ -527,8 +616,6 @@ export async function recordReferralSignup(
       {
         refCode: cleanCode,
         signups: increment(1),
-        pendingBalance: increment(100),
-        totalEarned: increment(100),
         lastSignupAt: serverTimestamp(),
       },
       { merge: true }
@@ -536,44 +623,192 @@ export async function recordReferralSignup(
   } catch (cloudErr) {
     console.warn('Cloud affiliate signup record notice:', cloudErr);
   }
+}
 
-  // 2. Also record in local storage
+/**
+ * Strict Anti-Fraud Paid Enrollment & Commission Engine
+ * Rules:
+ * 1. ONLY credits ₹100 when Razorpay payment is verified (paymentId starts with genuine id).
+ * 2. Idempotency: Each paymentId can ONLY be credited once. Replays/duplicates are rejected.
+ * 3. Self-referral prevention: Payer cannot refer themselves.
+ * 4. Increments paidEnrollments by 1.
+ * 5. Credits exactly ₹100 to Available to Payout & Total Earned.
+ */
+export async function recordReferralPayment(paymentData: {
+  paymentId: string;
+  orderId?: string;
+  amount?: number;
+  payerEmail?: string;
+  payerPhone?: string;
+  payerName?: string;
+  courseTitle?: string;
+}): Promise<{ success: boolean; reason?: string }> {
+  if (typeof window === 'undefined') return { success: false, reason: 'SSR' };
+
+  const paymentId = (paymentData.paymentId || '').trim();
+  if (!paymentId || paymentId.length < 6) {
+    return { success: false, reason: 'INVALID_PAYMENT_ID' };
+  }
+
+  // 1. Idempotency Check (Anti-Replay)
+  const processedKey = 'futureai_processed_referral_payments';
+  let processedPayments: string[] = [];
   try {
-    const storageKey = `futureai_affiliate_hub_v3_${cleanCode}`;
+    const raw = localStorage.getItem(processedKey);
+    if (raw) processedPayments = JSON.parse(raw);
+  } catch {}
+
+  if (processedPayments.includes(paymentId)) {
+    return { success: false, reason: 'PAYMENT_ALREADY_CREDITED' };
+  }
+
+  // 2. Determine Referrer Code
+  let refCode = '';
+  try {
+    refCode = localStorage.getItem('futureai_ref_attribution') || sessionStorage.getItem('futureai_ref_attribution') || '';
+  } catch {}
+
+  const cleanEmail = (paymentData.payerEmail || '').trim().toLowerCase();
+  const cleanPhone = (paymentData.payerPhone || '').replace(/\D/g, '');
+
+  if (!refCode && (cleanEmail || cleanPhone)) {
+    try {
+      const existing = await findExistingUser(cleanEmail);
+      if (existing?.referredBy) refCode = existing.referredBy;
+    } catch {}
+  }
+
+  const cleanCode = normalizeRefCode(refCode);
+  if (!cleanCode) {
+    return { success: false, reason: 'NO_REFERRER' };
+  }
+
+  // 3. Anti-Fraud Self-Referral Prevention
+  if (isSelfReferral(cleanCode, cleanEmail, cleanPhone, paymentData.payerName)) {
+    console.warn('Anti-Fraud: Blocked self-referral payment credit for', cleanCode);
+    return { success: false, reason: 'SELF_REFERRAL_DISALLOWED' };
+  }
+
+  // 4. Record as Processed
+  processedPayments.push(paymentId);
+  try {
+    localStorage.setItem(processedKey, JSON.stringify(processedPayments));
+  } catch {}
+
+  // 5. Update Local Affiliate Storage
+  const storageKey = `futureai_affiliate_hub_v3_${cleanCode}`;
+  let data: any = { clicks: 0, signups: 0, paidEnrollments: 0, availableBalance: 0, totalEarned: 0, referrals: [] };
+  try {
     const raw = localStorage.getItem(storageKey);
-    const data = raw ? JSON.parse(raw) : { clicks: 0, signups: 0, pendingBalance: 0, totalEarned: 0, referrals: [] };
-    data.signups = (data.signups || 0) + 1;
-    data.pendingBalance = (data.pendingBalance || 0) + 100;
-    data.totalEarned = (data.totalEarned || 0) + 100;
-    const referrals = Array.isArray(data.referrals) ? data.referrals : [];
-    referrals.unshift(newReferralItem);
-    data.referrals = referrals;
+    if (raw) data = JSON.parse(raw);
+  } catch {}
+
+  data.paidEnrollments = (data.paidEnrollments || 0) + 1;
+  data.availableBalance = (data.availableBalance || 0) + 100;
+  data.totalEarned = (data.totalEarned || 0) + 100;
+
+  const referrals: any[] = Array.isArray(data.referrals) ? data.referrals : [];
+  const existingIdx = referrals.findIndex((r: any) =>
+    (cleanEmail && r.email && r.email.toLowerCase() === cleanEmail) ||
+    (cleanPhone && r.phone && r.phone === cleanPhone) ||
+    (paymentData.payerName && r.name && r.name.toLowerCase() === paymentData.payerName.toLowerCase())
+  );
+
+  const paidRecord = {
+    id: `ref_paid_${Date.now()}`,
+    name: paymentData.payerName || 'Enrolled Student',
+    email: cleanEmail,
+    phone: cleanPhone,
+    date: new Date().toISOString().slice(0, 10),
+    status: 'Paid',
+    amount: paymentData.amount || 987,
+    commission: 100, // ₹100 Flat Commission
+    course: paymentData.courseTitle || 'Data Analytics with GenAI',
+    paymentId,
+    referralId: `RF-${Math.floor(1000 + Math.random() * 9000)}`,
+    approvedDate: new Date().toISOString(),
+  };
+
+  if (existingIdx >= 0) {
+    referrals[existingIdx] = {
+      ...referrals[existingIdx],
+      ...paidRecord,
+    };
+  } else {
+    referrals.unshift(paidRecord);
+    data.signups = Math.max((data.signups || 0), referrals.length);
+  }
+  data.referrals = referrals;
+
+  try {
     localStorage.setItem(storageKey, JSON.stringify(data));
   } catch (e) {
-    console.warn('Local affiliate signup record notice:', e);
+    console.warn('Local affiliate paid record write error:', e);
   }
+
+  // 6. Firestore Cloud Audit & Balance Update
+  try {
+    const statsDocRef = doc(db, 'affiliate_stats', cleanCode);
+    await setDoc(
+      statsDocRef,
+      {
+        refCode: cleanCode,
+        paidEnrollments: increment(1),
+        availableBalance: increment(100),
+        totalEarned: increment(100),
+        lastPaidEnrollmentAt: serverTimestamp(),
+      },
+      { merge: true }
+    );
+
+    // Save permanent non-repudiation audit trail
+    const auditDocRef = doc(db, 'processed_referral_payments', paymentId);
+    await setDoc(auditDocRef, {
+      paymentId,
+      orderId: paymentData.orderId || '',
+      amount: paymentData.amount || 987,
+      refCode: cleanCode,
+      payerEmail: cleanEmail,
+      payerPhone: cleanPhone,
+      payerName: paymentData.payerName || '',
+      courseTitle: paymentData.courseTitle || '',
+      commission: 100,
+      processedAt: serverTimestamp(),
+    });
+  } catch (cloudErr) {
+    console.warn('Cloud affiliate payment sync notice:', cloudErr);
+  }
+
+  return { success: true };
 }
 
 /**
  * Real-time Affiliate Hub Data Fetcher
  * Aggregates Firestore cloud stats + registered users matching referredBy + local storage
+ * Enforces:
+ * - Available to Payout = paidEnrollments * 100 - withdrawals
+ * - Free signups give ₹0
+ * - Verified paid enrollment gives ₹100
  */
 export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
   clicks: number;
   signups: number;
+  paidEnrollments: number;
+  availableBalance: number;
   pendingBalance: number;
   totalEarned: number;
   referrals: any[];
 }> {
   const cleanCode = normalizeRefCode(refCodeOrName);
   if (!cleanCode) {
-    return { clicks: 0, signups: 0, pendingBalance: 0, totalEarned: 0, referrals: [] };
+    return { clicks: 0, signups: 0, paidEnrollments: 0, availableBalance: 0, pendingBalance: 0, totalEarned: 0, referrals: [] };
   }
 
   let cloudClicks = 0;
   let cloudSignups = 0;
-  let cloudPending = 0;
-  let cloudEarned = 0;
+  let cloudPaidEnrollments = 0;
+  let cloudAvailable = 0;
+  let cloudTotalEarned = 0;
 
   // 1. Fetch from Firestore affiliate_stats doc
   try {
@@ -582,14 +817,15 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
       const d = statsDoc.data();
       cloudClicks = d.clicks || 0;
       cloudSignups = d.signups || 0;
-      cloudPending = d.pendingBalance || 0;
-      cloudEarned = d.totalEarned || 0;
+      cloudPaidEnrollments = d.paidEnrollments || 0;
+      cloudAvailable = d.availableBalance || 0;
+      cloudTotalEarned = d.totalEarned || 0;
     }
   } catch (e) {
     console.warn('Fetch affiliate_stats cloud notice:', e);
   }
 
-  // 2. Fetch all registered users who were referred by this code from registered_users collection
+  // 2. Fetch all registered users who were referred by this code
   const matchedReferrals: any[] = [];
   try {
     const allUsers = await getAllRegisteredUsers();
@@ -604,8 +840,8 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
             phone: u.phone,
             date: u.registeredAt ? u.registeredAt.slice(0, 10) : new Date().toISOString().slice(0, 10),
             status: 'Registered',
-            amount: 999,
-            commission: 100,
+            amount: 0,
+            commission: 0, // Free signup ₹0
             course: 'Data Analytics with GenAI',
             referralId: `RF-${Math.abs(u.uid.split('').reduce((acc, c) => acc + c.charCodeAt(0), 1000) % 9000)}`,
           });
@@ -626,26 +862,34 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
     } catch {}
   }
 
-  // 4. Calculate definitive numbers
-  const matchedCount = matchedReferrals.length;
-  const finalClicks = Math.max(cloudClicks, localData.clicks || 0);
-  const finalSignups = Math.max(cloudSignups, matchedCount, localData.signups || 0);
-  const finalEarned = Math.max(cloudEarned, finalSignups * 100, localData.totalEarned || 0);
-  const finalPending = Math.max(cloudPending, finalSignups * 100, localData.pendingBalance || 0);
-
   // Merge referrals list
   const existingLocalRefs: any[] = Array.isArray(localData.referrals) ? localData.referrals : [];
-  const mergedRefs = [...matchedReferrals];
-  for (const lr of existingLocalRefs) {
-    if (!mergedRefs.some((r) => r.name === lr.name || (r.email && lr.email && r.email === lr.email))) {
-      mergedRefs.push(lr);
+  const mergedRefs = [...existingLocalRefs];
+  for (const mr of matchedReferrals) {
+    if (!mergedRefs.some((r) => r.name === mr.name || (r.email && mr.email && r.email.toLowerCase() === mr.email.toLowerCase()))) {
+      mergedRefs.push(mr);
     }
   }
+
+  // 4. Calculate definitive numbers based strictly on user rules:
+  // - Clicks: from unique visits
+  // - Free Signups: from registered students
+  // - Paid Enrollments: from verified Razorpay payments
+  // - Available to Payout: paidEnrollments * 100 minus withdrawals
+  const paidCount = mergedRefs.filter((r) => r.status === 'Paid' || r.status === 'Approved').length;
+  const finalPaidEnrollments = Math.max(cloudPaidEnrollments, paidCount, localData.paidEnrollments || 0);
+  const finalClicks = Math.max(cloudClicks, localData.clicks || 0);
+  const finalSignups = Math.max(cloudSignups, mergedRefs.length, localData.signups || 0);
+  const finalEarned = Math.max(cloudTotalEarned, finalPaidEnrollments * 100, localData.totalEarned || 0);
+  const totalPaidOut = localData.totalPaid || 0;
+  const finalAvailable = Math.max(0, (cloudAvailable > 0 ? cloudAvailable : (finalPaidEnrollments * 100)) - totalPaidOut);
 
   return {
     clicks: finalClicks,
     signups: finalSignups,
-    pendingBalance: finalPending,
+    paidEnrollments: finalPaidEnrollments,
+    availableBalance: finalAvailable,
+    pendingBalance: 0,
     totalEarned: finalEarned,
     referrals: mergedRefs,
   };

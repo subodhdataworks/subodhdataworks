@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { startRazorpayCheckout, getCurrentUserForPayment } from '../../services/razorpayService';
 import { unlockCourse, normalizeCourseId } from '../../services/courseUnlockService';
+import { recordReferralPayment } from '../../services/realAuthService';
 
 export interface SuccessPlanModalProps {
   isOpen: boolean;
@@ -70,6 +71,21 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
         localStorage.setItem('futureai_payment_order_id', result.orderId);
         localStorage.setItem('futureai_payment_txn_id', result.paymentId);
       } catch {}
+
+      // Anti-Fraud Referral Credit: Flat ₹100 upon verified Razorpay payment
+      try {
+        await recordReferralPayment({
+          paymentId: result.paymentId,
+          orderId: result.orderId,
+          amount: result.amount,
+          payerEmail: user.email,
+          payerPhone: user.phone || undefined,
+          payerName: user.name,
+          courseTitle: courseTitle,
+        });
+      } catch (refErr) {
+        console.warn('Referral payment record notice:', refErr);
+      }
 
       onClose();
       window.location.hash = `payment-success?txnid=${encodeURIComponent(result.paymentId)}&amount=${result.amount}&courseId=${encodeURIComponent(canonicalCourseId)}`;
