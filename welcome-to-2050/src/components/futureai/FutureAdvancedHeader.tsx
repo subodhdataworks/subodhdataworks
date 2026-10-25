@@ -41,6 +41,9 @@ export interface FutureAdvancedHeaderProps {
   onOpenNotifications?: () => void;
   onOpenSearch?: () => void;
   onLogout?: () => void;
+  isLoggedIn?: boolean;
+  onOpenLogin?: () => void;
+  onOpenSignUp?: () => void;
 }
 
 export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
@@ -57,7 +60,10 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
   onOpenWallet,
   onOpenNotifications,
   onOpenSearch,
-  onLogout
+  onLogout,
+  isLoggedIn = true,
+  onOpenLogin,
+  onOpenSignUp
 }) => {
   const [practiceDropdownOpen, setPracticeDropdownOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
@@ -492,103 +498,129 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               )}
             </div>
 
-            {/* User Profile Avatar Circle (Exact like reference image) */}
-            <div className="relative" ref={profileRef}>
-              <button
-                type="button"
-                onClick={() => {
-                  soundEffects.playClick();
-                  setProfileDropdownOpen((prev) => !prev);
-                  if (onOpenProfile) onOpenProfile();
-                }}
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-blue-50 to-indigo-50 border border-blue-200/90 text-blue-600 flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xs cursor-pointer select-none overflow-hidden"
-                title={`Logged in as ${userName}`}
-                aria-label="User Profile"
-              >
-                <User className="w-5 h-5 text-[#1a73e8]" />
-              </button>
+            {/* User Profile Avatar Circle OR Login / Sign Up buttons */}
+            {!isLoggedIn ? (
+              <div className="flex items-center gap-2 sm:gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEffects.playClick();
+                    onOpenLogin?.();
+                  }}
+                  className="inline-flex items-center px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-blue-600 text-blue-600 hover:bg-blue-50/80 font-bold text-xs sm:text-sm transition cursor-pointer"
+                >
+                  Login
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEffects.playClick();
+                    if (onOpenSignUp) onOpenSignUp();
+                    else onOpenLogin?.();
+                  }}
+                  className="inline-flex items-center px-4 sm:px-5 py-1.5 sm:py-2 rounded-xl bg-[#1a73e8] hover:bg-blue-700 text-white font-bold text-xs sm:text-sm transition shadow-sm cursor-pointer"
+                >
+                  Sign Up
+                </button>
+              </div>
+            ) : (
+              <div className="relative" ref={profileRef}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEffects.playClick();
+                    setProfileDropdownOpen((prev) => !prev);
+                    if (onOpenProfile) onOpenProfile();
+                  }}
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-blue-50 to-indigo-50 border border-blue-200/90 text-blue-600 flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xs cursor-pointer select-none overflow-hidden"
+                  title={`Logged in as ${userName}`}
+                  aria-label="User Profile"
+                >
+                  <User className="w-5 h-5 text-[#1a73e8]" />
+                </button>
 
-              {/* Profile Dropdown Menu */}
-              {profileDropdownOpen && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-white/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-100 py-2.5 px-2 z-50 animate-fadeIn text-left space-y-0.5">
-                  <div className="px-3 py-2 border-b border-slate-100 mb-1">
-                    <strong className="text-xs font-black text-slate-900 block truncate">{userName || 'Rahul Sharma'}</strong>
-                    <span className="text-[11px] text-slate-500">Student • Tech & AI Track</span>
+                {/* Profile Dropdown Menu */}
+                {profileDropdownOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-white/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-100 py-2.5 px-2 z-50 animate-fadeIn text-left space-y-0.5">
+                    <div className="px-3 py-2 border-b border-slate-100 mb-1">
+                      <strong className="text-xs font-black text-slate-900 block truncate">{userName || 'Rahul Sharma'}</strong>
+                      <span className="text-[11px] text-slate-500">Student • Tech & AI Track</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        soundEffects.playClick();
+                        setProfileDropdownOpen(false);
+                        scrollToTop(); onNavigateHome();
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition cursor-pointer"
+                    >
+                      <Home className="w-4 h-4 text-slate-500" />
+                      <span>Dashboard Home</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        soundEffects.playClick();
+                        setProfileDropdownOpen(false);
+                        scrollToTop(); onNavigatePractice('master');
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition cursor-pointer"
+                    >
+                      <Code2 className="w-4 h-4 text-slate-500" />
+                      <span>Practice Master Hub</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        soundEffects.playClick();
+                        setProfileDropdownOpen(false);
+                        onOpenAtsResume();
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition cursor-pointer"
+                    >
+                      <FileCheck2 className="w-4 h-4 text-slate-500" />
+                      <span>ATS Resume Checker</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        soundEffects.playClick();
+                        setProfileDropdownOpen(false);
+                        if (onOpenWallet) onOpenWallet();
+                        else scrollToTop(); onNavigateEarn();
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition cursor-pointer"
+                    >
+                      <Coins className="w-4 h-4 text-amber-500" />
+                      <span>Earnings & Wallet</span>
+                    </button>
+
+                    {onLogout && (
+                      <>
+                        <div className="my-1 border-t border-slate-100" />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            soundEffects.playClick();
+                            setProfileDropdownOpen(false);
+                            onLogout();
+                          }}
+                          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition cursor-pointer"
+                        >
+                          <X className="w-4 h-4 text-rose-500" />
+                          <span>Sign Out</span>
+                        </button>
+                      </>
+                    )}
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      soundEffects.playClick();
-                      setProfileDropdownOpen(false);
-                      scrollToTop(); onNavigateHome();
-                    }}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition cursor-pointer"
-                  >
-                    <Home className="w-4 h-4 text-slate-500" />
-                    <span>Dashboard Home</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      soundEffects.playClick();
-                      setProfileDropdownOpen(false);
-                      scrollToTop(); onNavigatePractice('master');
-                    }}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition cursor-pointer"
-                  >
-                    <Code2 className="w-4 h-4 text-slate-500" />
-                    <span>Practice Master Hub</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      soundEffects.playClick();
-                      setProfileDropdownOpen(false);
-                      onOpenAtsResume();
-                    }}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition cursor-pointer"
-                  >
-                    <FileCheck2 className="w-4 h-4 text-slate-500" />
-                    <span>ATS Resume Checker</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      soundEffects.playClick();
-                      setProfileDropdownOpen(false);
-                      if (onOpenWallet) onOpenWallet();
-                      else scrollToTop(); onNavigateEarn();
-                    }}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition cursor-pointer"
-                  >
-                    <Coins className="w-4 h-4 text-amber-500" />
-                    <span>Earnings & Wallet</span>
-                  </button>
-
-                  {onLogout && (
-                    <>
-                      <div className="my-1 border-t border-slate-100" />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          soundEffects.playClick();
-                          setProfileDropdownOpen(false);
-                          onLogout();
-                        }}
-                        className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition cursor-pointer"
-                      >
-                        <X className="w-4 h-4 text-rose-500" />
-                        <span>Sign Out</span>
-                      </button>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
 
             {/* Mobile / Tablet Hamburger Button (< 1280px) */}
             <button
