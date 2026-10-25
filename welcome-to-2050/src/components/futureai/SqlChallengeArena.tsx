@@ -469,14 +469,22 @@ export const SqlChallengeArena: React.FC<SqlChallengeArenaProps> = ({
           
           {/* Card Header: Title & Badges */}
           <div className="p-5 border-b border-slate-100">
-            <div className="flex items-center gap-2.5">
+            <div className="flex flex-wrap items-center gap-2.5">
               <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                {topicTitle}
+                Question {task.taskNumber} — {task.title}
               </h1>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#dcfce7] text-[#15803d]">
                 {task.difficulty}
               </span>
             </div>
+
+            {/* Concept Pill if present */}
+            {task.concept && (
+              <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-semibold">
+                <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+                <span>Concept: {task.concept}</span>
+              </div>
+            )}
 
             {/* Sub-Badges Line: Points | Success Rate | Skill */}
             <div className="flex flex-wrap items-center gap-3.5 mt-3 text-xs text-slate-600 font-medium">
