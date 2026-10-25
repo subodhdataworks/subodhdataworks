@@ -479,16 +479,22 @@ export const CourseDetailPopupModal: React.FC<CourseDetailPopupModalProps> = ({
             <span>Download Syllabus</span>
           </button>
 
-          <button
-            onClick={() => {
-              onClose();
-              onUnlock();
-            }}
-            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-5 py-2 rounded-xl text-xs font-black text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-700 shadow-md shadow-blue-500/25 active:scale-95 transition-transform cursor-pointer"
-          >
-            <Unlock className="w-3.5 h-3.5" />
-            <span>Unlock Now Rs 987</span>
-          </button>
+          {(() => {
+            const isDataAnalyst = courseId === 'data-analyst-genai' || course.id === 'data-analyst-genai' || course.headlineTitle.toLowerCase().includes('analyst');
+            const unlockPrice = isDataAnalyst ? 9 : 987;
+            return (
+              <button
+                onClick={() => {
+                  onClose();
+                  onUnlock();
+                }}
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-5 py-2 rounded-xl text-xs font-black text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-700 shadow-md shadow-blue-500/25 active:scale-95 transition-transform cursor-pointer"
+              >
+                <Unlock className="w-3.5 h-3.5" />
+                <span>Unlock Now Rs {unlockPrice}</span>
+              </button>
+            );
+          })()}
         </div>
 
       </div>

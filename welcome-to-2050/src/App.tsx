@@ -315,14 +315,14 @@ export const App: React.FC = () => {
           onClose={() => setAdvisorModalOpen(false)}
         />
 
-        {/* Global Course Enrollment Modal (₹987) */}
+        {/* Global Course Enrollment Modal (₹9) */}
         <PayToUnlockModal
           isOpen={payModalOpen}
           onClose={() => setPayModalOpen(false)}
           targetModuleName="Data Analytics with GenAI Flagship Course"
           courseId="data-analytics-genai"
           courseTitle="Data Analytics with GenAI Flagship Course"
-          price={987}
+          price={9}
           onSimulateUnlock={() => {
             setPayModalOpen(false);
             handleLogin(userName);

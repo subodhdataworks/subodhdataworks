@@ -50,6 +50,9 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
 
   if (!isOpen) return null;
 
+  const isDataAnalyst = normalizeCourseId(courseId || courseTitle || targetTopicTitle) === 'data_analyst';
+  const effectivePrice = isDataAnalyst ? 9 : 987;
+
   const handlePayNow = async () => {
     setError(null);
     const user = getCurrentUserForPayment();
@@ -58,7 +61,7 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
     setIsLoading(true);
     try {
       const result = await startRazorpayCheckout({
-        amount: 987,
+        amount: effectivePrice,
         courseId: canonicalCourseId,
         courseTitle: courseTitle,
         name: user.name || 'Student',
@@ -414,11 +417,11 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
                   </div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-emerald-600 to-teal-700 bg-clip-text text-transparent tracking-tight">
-                      ₹987
+                      ₹{effectivePrice}
                     </span>
                   </div>
                   <p className="text-[11.5px] font-semibold text-slate-700 leading-tight">
-                    Pay <strong className="text-slate-900 font-extrabold">₹987 now</strong> and pay the remaining{' '}
+                    Pay <strong className="text-slate-900 font-extrabold">₹{effectivePrice} now</strong> and pay the remaining{' '}
                     <strong className="text-slate-900 font-extrabold">₹18,000</strong> after getting a job offer (6–20 LPA*)
                   </p>
                 </div>
@@ -483,7 +486,7 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
                   </>
                 ) : (
                   <>
-                    <span>Pay ₹987 Now</span>
+                    <span>Pay ₹{effectivePrice} Now</span>
                     <ArrowRight className="w-5 h-5 group-hover/pay:translate-x-1.5 transition-transform duration-200" />
                   </>
                 )}
@@ -503,7 +506,7 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
                   <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-xs shadow-xs mb-1 group-hover/step:scale-110 transition-transform">
                     1
                   </div>
-                  <span className="text-[11px] font-black text-slate-900 leading-tight">Pay ₹987</span>
+                  <span className="text-[11px] font-black text-slate-900 leading-tight">Pay ₹{effectivePrice}</span>
                   <span className="text-[9.5px] text-slate-500 font-medium">Now (Enrollment)</span>
                 </div>
 

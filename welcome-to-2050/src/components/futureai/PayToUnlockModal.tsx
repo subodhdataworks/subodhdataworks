@@ -38,8 +38,10 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
   onSimulateUnlock,
   courseId = 'data-analyst-genai',
   courseTitle,
-  price = 987,
+  price: propPrice,
 }) => {
+  const isDataAnalyst = normalizeCourseId(courseId || courseTitle || targetModuleName) === 'data_analyst';
+  const price = propPrice !== undefined ? propPrice : (isDataAnalyst ? 9 : 987);
   const { playClick } = useThemeAccent();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

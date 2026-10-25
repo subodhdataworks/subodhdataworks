@@ -33,7 +33,7 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     ],
     jobRoles: 'Data Analyst | BI Consultant',
     salary: '₹6 - 15 LPA',
-    price: '₹987',
+    price: '₹9',
   },
   {
     id: 'data-science-agentic-ai',

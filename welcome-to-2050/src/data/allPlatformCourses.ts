@@ -42,7 +42,7 @@ export const ALL_PLATFORM_COURSES: PlatformCourseItem[] = [
     descLine1: 'Python • SQL • Advanced Excel • Power BI • Statistics • GenAI Copilot',
     descLine2: '28 Real-World Projects • Coding Practice • AI Mock Interviews',
     salaryRange: '₹6 LPA – ₹18 LPA',
-    courseFee: 'Rs 879',
+    courseFee: 'Rs 9',
     marketPrice: 'Rs 18,987',
     payAfterJob: 'Rs 18,000',
     modulesCount: '8 Modules',

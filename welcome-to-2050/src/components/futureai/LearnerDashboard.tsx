@@ -1317,7 +1317,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             targetModuleName={selectedLockedModule}
             courseId={selectedLockedModule.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}
             courseTitle={selectedLockedModule}
-            price={987}
+            price={9}
             onSimulateUnlock={() => {
               setIsNewStudentMode(false);
               setUnlockModalOpen(false);
@@ -1533,7 +1533,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           targetModuleName={selectedLockedModule}
           courseId={selectedLockedModule.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}
           courseTitle={selectedLockedModule}
-          price={987}
+          price={9}
           onSimulateUnlock={() => {
             setIsNewStudentMode(false);
             setUnlockModalOpen(false);
@@ -2518,14 +2518,14 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       />
 
 
-      {/* ₹987 Pay to Unlock Modal — Razorpay Payment */}
+      {/* ₹9 Pay to Unlock Modal — Razorpay Payment */}
       <PayToUnlockModal
         isOpen={unlockModalOpen}
         onClose={() => setUnlockModalOpen(false)}
         targetModuleName={selectedLockedModule}
         courseId={selectedLockedModule.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}
         courseTitle={selectedLockedModule}
-        price={987}
+        price={9}
         onSimulateUnlock={() => {
           setIsNewStudentMode(false);
           alert('🎉 Congratulations! All 10 Modules have been unlocked in your dashboard.');
