@@ -68,16 +68,25 @@ export const CANONICAL_COURSES: Record<CanonicalCourseId, { id: CanonicalCourseI
  */
 export function normalizeCourseId(raw: string = ''): CanonicalCourseId {
   const s = raw.toLowerCase().trim();
-  if (s.includes('analyst') || s.includes('analytics') || s.includes('tab-1')) return 'data_analyst';
-  if (s.includes('data science') || s.includes('agentic')) return 'data_science';
-  if (s.includes('machine learning') || s.includes('ml engineering') || s.includes('ml-eng')) return 'ml_engineering';
-  if (s.includes('deep learning') || s.includes('neural')) return 'deep_learning';
-  if (s.includes('ai engineering') || s.includes('llmops')) return 'ai_engineering';
-  if (s.includes('prompt') || s.includes('ai tools') || s.includes('ai tool') || s.includes('ai-tool') || s.includes('ai_tool')) return 'ai_tools_prompt';
-  if (s.includes('office') || s.includes('copilot') || s.includes('excel') || s.includes('microsoft') || s.includes('ms-office') || s.includes('ms_office')) return 'ms_office_copilot';
-  if (s.includes('mern') || s.includes('full stack') || s.includes('fullstack') || s.includes('full-stack') || s.includes('react') || s.includes('next')) return 'full_stack_mern';
+  if (s.includes('analyst') || s.includes('analytics') || s.includes('data-analyst') || s.includes('tab-1')) return 'data_analyst';
+  if (s.includes('data science') || s.includes('data-science') || s.includes('agentic') || s.includes('tab-2')) return 'data_science';
+  if (s.includes('machine learning') || s.includes('ml engineering') || s.includes('ml-eng') || s.includes('ml_eng') || s.includes('tab-3')) return 'ml_engineering';
+  if (s.includes('deep learning') || s.includes('deep-learning') || s.includes('neural')) return 'deep_learning';
+  if (s.includes('ai engineering') || s.includes('ai-engineering') || s.includes('llmops') || s.includes('tab-4')) return 'ai_engineering';
+  if (s.includes('prompt') || s.includes('ai tools') || s.includes('ai tool') || s.includes('ai-tool') || s.includes('ai_tool') || s.includes('tab-5')) return 'ai_tools_prompt';
+  if (s.includes('office') || s.includes('copilot') || s.includes('microsoft') || s.includes('ms-office') || s.includes('ms_office') || s.includes('tab-6')) return 'ms_office_copilot';
+  if (s.includes('mern') || s.includes('full stack') || s.includes('fullstack') || s.includes('full-stack') || s.includes('react') || s.includes('next') || s.includes('tab-7')) return 'full_stack_mern';
   
+  if (s.includes('excel')) return 'ms_office_copilot';
   return 'data_analyst';
+}
+
+export function isAnyCourseUnlocked(): boolean {
+  if (typeof window === 'undefined') return false;
+  const list = getUnlockedCourses();
+  if (list.length > 0) return true;
+  if (localStorage.getItem('futureai_course_enrolled') === 'true') return true;
+  return false;
 }
 
 /**
@@ -130,6 +139,7 @@ export function unlockCourse(courseKeyOrTitle: string): CanonicalCourseId {
       localStorage.setItem(STORAGE_KEY_UNLOCKED_COURSES, JSON.stringify(current));
     }
     localStorage.setItem(`futureai_unlocked_${canonical}`, 'true');
+    localStorage.setItem('futureai_course_enrolled', 'true');
 
     // Dispatch event so live UI components update immediately
     window.dispatchEvent(

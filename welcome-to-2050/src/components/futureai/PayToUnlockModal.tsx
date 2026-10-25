@@ -100,10 +100,25 @@ export const PayToUnlockModal: React.FC<PayToUnlockModalProps> = ({
 
       onSimulateUnlock?.();
       onClose();
-      // Show success modal (handled by PaymentResultModal)
+
       const canonical = normalizeCourseId(courseId || displayTitle);
-      window.location.hash = `payment-success?txnid=${encodeURIComponent(result.paymentId)}&amount=${result.amount}&courseId=${encodeURIComponent(canonical)}`;
-      window.location.reload();
+      unlockCourse(canonical);
+      try {
+        localStorage.setItem('futureai_course_enrolled', 'true');
+      } catch {}
+
+      // Dispatch real-time unlock event
+      window.dispatchEvent(new CustomEvent('futureai_course_unlocked', { detail: { courseId: canonical } }));
+
+      // Set hash for PaymentResultModal
+      const successHash = `#payment-success?txnid=${encodeURIComponent(result.paymentId)}&amount=${result.amount}&courseId=${encodeURIComponent(canonical)}`;
+      window.location.hash = successHash;
+
+      // Smooth unmount and page reload so browser doesn't freeze on Razorpay frame
+      setTimeout(() => {
+        window.location.href = window.location.pathname + successHash;
+        window.location.reload();
+      }, 400);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Payment failed. Please try again.';
       setError(msg);

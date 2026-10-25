@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { isCourseUnlocked, isAnyCourseUnlocked } from '../../services/courseUnlockService';
 import { SqlChallengeArena } from './SqlChallengeArena';
 import {
   ALL_SQL_TOPICS,
@@ -59,7 +60,7 @@ export const SqlChallengesPracticeHub: React.FC<SqlChallengesPracticeHubProps> =
   const [internalEnrolled, setInternalEnrolled] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('futureai_course_enrolled');
-      if (saved === 'true') return true;
+      if (saved === 'true' || isCourseUnlocked('data_analyst') || isAnyCourseUnlocked()) return true;
     }
     return isEnrolled || false;
   });

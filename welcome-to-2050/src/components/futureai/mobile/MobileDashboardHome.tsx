@@ -34,6 +34,7 @@ import {
 } from 'lucide-react';
 import { LearnerTelemetry } from '../../../services/realAuthService';
 import { useThemeAccent } from '../../../context/ThemeAccentContext';
+import { isCourseUnlocked } from '../../../services/courseUnlockService';
 import '../LearnerHomeHub.css';
 
 interface MobileDashboardHomeProps {
@@ -232,14 +233,14 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
     {
       id: 'data-analyst-genai',
       badgeNum: 1,
-      statusTag: 'ENROLLED • ACTIVE',
-      badgeIcon: '🔥',
-      badgeGradient: 'from-rose-500 via-pink-500 to-rose-600',
+      statusTag: isCourseUnlocked('data_analyst') ? 'ENROLLED • ACTIVE' : 'LOCKED • ₹9',
+      badgeIcon: isCourseUnlocked('data_analyst') ? '✓' : '🔥',
+      badgeGradient: isCourseUnlocked('data_analyst') ? 'from-emerald-500 to-teal-600' : 'from-rose-500 via-pink-500 to-rose-600',
       title: 'Data Analyst',
       subtitle: 'with GenAI',
       shortDesc: 'Master Python, SQL, Power BI, Excel & GenAI Analytics.',
       salaryRange: '₹6 LPA - ₹15 LPA',
-      courseFee: '₹18,999',
+      courseFee: '₹9',
       image: '/images/pot1_sharp_poster.jpg',
       holoImage: '/images/pot1_sharp_poster.jpg',
       video: '/videos/data_analyst_genai_v2.mp4',
@@ -255,19 +256,19 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
         btnClass: 'bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600 shadow-blue-500/30',
         priceBorder: 'border-sky-400',
       },
-      action: onOpenDataAnalyst || onStartPython,
+      action: isCourseUnlocked('data_analyst') ? (onOpenDataAnalyst || onStartPython || (() => {})) : (() => onOpenLockedModule('Data Analyst with GenAI')),
     },
     {
       id: 'data-science-agentic-ai',
       badgeNum: 2,
-      statusTag: 'HIGH DEMAND',
-      badgeIcon: '📊',
-      badgeGradient: 'from-purple-600 via-indigo-600 to-purple-700',
+      statusTag: isCourseUnlocked('data_science') ? 'ENROLLED • ACTIVE' : 'LOCKED • ₹987',
+      badgeIcon: isCourseUnlocked('data_science') ? '✓' : '🔒',
+      badgeGradient: isCourseUnlocked('data_science') ? 'from-emerald-500 to-teal-600' : 'from-purple-600 via-indigo-600 to-purple-700',
       title: 'Data Science &',
       subtitle: 'Agentic AI',
       shortDesc: 'Explore Machine Learning, Deep Learning, RAG & AI Agents.',
       salaryRange: '₹10 LPA - ₹22 LPA',
-      courseFee: '₹29,999',
+      courseFee: '₹987',
       image: '/images/pot2_sharp_poster.jpg',
       holoImage: '/images/pot2_sharp_poster.jpg',
       video: '/videos/data_science_agentic_ai_course.mp4',
@@ -283,7 +284,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
         btnClass: 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-purple-500/30',
         priceBorder: 'border-purple-400',
       },
-      action: onOpenDataScience || (onOpenGenAi ? onOpenGenAi : () => onOpenLockedModule('Data Science & Agentic AI')),
+      action: isCourseUnlocked('data_science') ? onOpenDataScience : (() => onOpenLockedModule('Data Science & Agentic AI')),
     },
     {
       id: 'ml-engineering',
@@ -813,7 +814,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
                 className={`fii-course-stage-card theme-${c.potTheme}`}
                 onClick={() => {
                   playClick?.();
-                  c.action();
+                  c.action?.();
                 }}
               >
                 <div className="fii-stage-outer-frame">
@@ -894,14 +895,25 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
                         onClick={(e) => {
                           e.stopPropagation();
                           playClick?.();
-                          c.action();
+                          c.action?.();
                         }}
                         className="fii-stage-start-btn"
                       >
-                        <span>Start Learning</span>
-                        <span className="fii-stage-arrow-disc">
-                          <ArrowRight className="w-3 h-3 stroke-[3]" />
-                        </span>
+                        {isCourseUnlocked(c.id) ? (
+                          <>
+                            <span>Resume Course</span>
+                            <span className="fii-stage-arrow-disc">
+                              <ArrowRight className="w-3 h-3 stroke-[3]" />
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <span>Unlock Course</span>
+                            <span className="fii-stage-arrow-disc">
+                              <ArrowRight className="w-3 h-3 stroke-[3]" />
+                            </span>
+                          </>
+                        )}
                       </button>
                     </div>
                   </div>

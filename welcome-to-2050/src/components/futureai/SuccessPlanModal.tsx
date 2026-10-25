@@ -91,8 +91,20 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
       }
 
       onClose();
-      window.location.hash = `payment-success?txnid=${encodeURIComponent(result.paymentId)}&amount=${result.amount}&courseId=${encodeURIComponent(canonicalCourseId)}`;
-      window.location.reload();
+      unlockCourse(canonicalCourseId);
+      try {
+        localStorage.setItem('futureai_course_enrolled', 'true');
+      } catch {}
+
+      window.dispatchEvent(new CustomEvent('futureai_course_unlocked', { detail: { courseId: canonicalCourseId } }));
+
+      const successHash = `#payment-success?txnid=${encodeURIComponent(result.paymentId)}&amount=${result.amount}&courseId=${encodeURIComponent(canonicalCourseId)}`;
+      window.location.hash = successHash;
+
+      setTimeout(() => {
+        window.location.href = window.location.pathname + successHash;
+        window.location.reload();
+      }, 400);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Payment failed. Please try again.';
       setError(msg);

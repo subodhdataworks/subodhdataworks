@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { soundEffects } from '../../services/soundEffects';
+import { isCourseUnlocked, isAnyCourseUnlocked } from '../../services/courseUnlockService';
 import {
   Search,
   Bell,
@@ -429,7 +430,7 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
   const [internalEnrolled, setInternalEnrolled] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('futureai_course_enrolled');
-      if (saved === 'true') return true;
+      if (saved === 'true' || isCourseUnlocked('data_analyst') || isAnyCourseUnlocked()) return true;
     }
     return isEnrolled || false;
   });

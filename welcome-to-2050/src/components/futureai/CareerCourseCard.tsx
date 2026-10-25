@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Briefcase } from 'lucide-react';
+import { ArrowRight, Briefcase, Lock, CheckCircle2 } from 'lucide-react';
 import { ToolIcon } from './CourseToolIcons';
 
 export interface CourseCardTool {
@@ -19,6 +19,7 @@ export interface CareerCourseCardProps {
   jobRoles: string;
   salary: string;
   price?: string;
+  isUnlocked?: boolean;
   onClick: () => void;
 }
 
@@ -33,6 +34,7 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
   jobRoles,
   salary,
   price = '₹987',
+  isUnlocked = false,
   onClick,
 }) => {
   const themeClass = `scd-pot-${theme}`;
@@ -180,24 +182,42 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
 
           {/* D. Dual Action Buttons */}
           <div className="flex items-center gap-2 pt-1 w-full px-1">
-            {/* Left: ₹987 mint pill */}
-            <div className="flex-1 py-1.5 rounded-full font-black text-xs sm:text-sm text-center bg-[#dcfce7] text-[#15803d] border border-[#86efac] shadow-xs select-none">
-              {price}
-            </div>
+            {/* Left: Status / Price Pill */}
+            {isUnlocked ? (
+              <div className="flex-1 py-1.5 rounded-full font-black text-[11px] sm:text-xs text-center bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-xs select-none flex items-center justify-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span>ENROLLED</span>
+              </div>
+            ) : (
+              <div className="flex-1 py-1.5 rounded-full font-black text-xs sm:text-sm text-center bg-amber-50 text-amber-800 border border-amber-300 shadow-xs select-none">
+                {price}
+              </div>
+            )}
 
-            {/* Right: Start Learning Button */}
+            {/* Right: Action Button */}
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 onClick();
               }}
-              className={`flex-[2] py-2 px-3 rounded-full font-black text-xs sm:text-[13px] flex items-center justify-center gap-1.5 shadow-md transition-all active:scale-95 cursor-pointer hover:brightness-105 ${themeStyles.buttonBg}`}
+              className={`flex-[2] py-2 px-3 rounded-full font-black text-xs sm:text-[13px] flex items-center justify-center gap-1.5 shadow-md transition-all active:scale-95 cursor-pointer hover:brightness-105 ${
+                isUnlocked ? themeStyles.buttonBg : 'bg-slate-900 hover:bg-slate-800 text-white shadow-slate-900/20'
+              }`}
             >
-              <span>Start Learning</span>
-              <span className="w-4 h-4 rounded-full bg-white flex items-center justify-center shrink-0 shadow-xs">
-                <ArrowRight className={`w-2.5 h-2.5 stroke-[3] ${themeStyles.arrowText}`} />
-              </span>
+              {isUnlocked ? (
+                <>
+                  <span>Resume Course</span>
+                  <span className="w-4 h-4 rounded-full bg-white flex items-center justify-center shrink-0 shadow-xs">
+                    <ArrowRight className={`w-2.5 h-2.5 stroke-[3] ${themeStyles.arrowText}`} />
+                  </span>
+                </>
+              ) : (
+                <>
+                  <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>Unlock Course</span>
+                </>
+              )}
             </button>
           </div>
         </div>

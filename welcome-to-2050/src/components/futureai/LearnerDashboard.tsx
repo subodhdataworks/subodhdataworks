@@ -62,6 +62,7 @@ import {
 import { FutureLogo } from './FutureLogo';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
 import { PayToUnlockModal } from './PayToUnlockModal';
+import { isCourseUnlocked, isAnyCourseUnlocked } from '../../services/courseUnlockService';
 import { PythonChapterView } from './PythonChapterView';
 import { SqlChapterView } from './SqlChapterView';
 import { PowerBiChapterView } from './PowerBiChapterView';
@@ -501,14 +502,24 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     };
   }, []);
 
-  // Student Enrollment State:
-  // "koi bhi new studend join krega to uska sab kuch 0 se start hoga and abhi sirf python unlock hoga baaki sab lock hoga click krne pr 999 wala page aa jayega"
+  // Student Enrollment State & Real Course Unlock Synchronization
   const [isNewStudentMode, setIsNewStudentMode] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('futureai_course_enrolled');
+      if (isCourseUnlocked('data_analyst') || isAnyCourseUnlocked() || localStorage.getItem('futureai_course_enrolled') === 'true') {
+        return false;
+      }
     }
     return true;
   });
+
+  // Keep enrollment state synced when courses are unlocked
+  useEffect(() => {
+    const handleUnlockSync = () => {
+      setIsNewStudentMode(false);
+    };
+    window.addEventListener('futureai_course_unlocked', handleUnlockSync);
+    return () => window.removeEventListener('futureai_course_unlocked', handleUnlockSync);
+  }, []);
   const [unlockModalOpen, setUnlockModalOpen] = useState(false);
   const [selectedLockedModule, setSelectedLockedModule] = useState<string>('SQL & Databases');
 
@@ -2149,36 +2160,60 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 }}
                 onOpenDataScienceCourse={() => {
                   playClick();
+                  if (!isCourseUnlocked('data_science')) {
+                    handleOpenCourseDetail('Data Science & Agentic AI');
+                    return;
+                  }
                   playCinema();
                   setSelectedModuleView('data_science');
                   if (typeof window !== 'undefined') window.location.hash = '#data-science';
                 }}
                 onOpenMlEngineeringCourse={() => {
                   playClick();
+                  if (!isCourseUnlocked('ml_engineering')) {
+                    handleOpenCourseDetail('Machine Learning Engineering');
+                    return;
+                  }
                   playCinema();
                   setSelectedModuleView('ml_engineering');
                   if (typeof window !== 'undefined') window.location.hash = '#ml-engineering';
                 }}
                 onOpenAiEngineeringCourse={() => {
                   playClick();
+                  if (!isCourseUnlocked('ai_engineering')) {
+                    handleOpenCourseDetail('AI Engineering');
+                    return;
+                  }
                   playCinema();
                   setSelectedModuleView('ai_engineering');
                   if (typeof window !== 'undefined') window.location.hash = '#ai-engineering';
                 }}
                 onOpenAiToolsPromptCourse={() => {
                   playClick();
+                  if (!isCourseUnlocked('ai_tools_prompt')) {
+                    handleOpenCourseDetail('AI Tools & Prompt Engineering Mastery');
+                    return;
+                  }
                   playCinema();
                   setSelectedModuleView('ai_tools_prompt');
                   if (typeof window !== 'undefined') window.location.hash = '#ai-tools-prompt';
                 }}
                 onOpenMsOfficeCopilotCourse={() => {
                   playClick();
+                  if (!isCourseUnlocked('ms_office_copilot')) {
+                    handleOpenCourseDetail('Microsoft 365 with Copilot AI');
+                    return;
+                  }
                   playCinema();
                   setSelectedModuleView('ms_office_copilot');
                   if (typeof window !== 'undefined') window.location.hash = '#ms-office-copilot';
                 }}
                 onOpenFullStackMernCourse={() => {
                   playClick();
+                  if (!isCourseUnlocked('full_stack_mern')) {
+                    handleOpenCourseDetail('Full-Stack MERN Development with AI');
+                    return;
+                  }
                   playCinema();
                   setSelectedModuleView('full_stack_mern');
                   if (typeof window !== 'undefined') window.location.hash = '#full-stack-web-dev';
@@ -2217,7 +2252,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           <div className="col-span-full">
             <CodingPracticeMasterHub
               userName={userName}
-              isEnrolled={!isNewStudentMode}
+              isEnrolled={!isNewStudentMode || isCourseUnlocked('data_analyst') || isAnyCourseUnlocked()}
               isLoggedIn={isLoggedIn}
               onOpenLogin={() => setAuthModalOpen(true)}
               onNavigateToCourses={() => {
@@ -2285,7 +2320,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           <div className="col-span-full">
             <PythonChallengesPracticeHub
               userName={userName}
-              isEnrolled={!isNewStudentMode}
+              isEnrolled={!isNewStudentMode || isCourseUnlocked('data_analyst') || isAnyCourseUnlocked()}
               onNavigateToCourses={() => {
                 setDockTab('home');
                 setSelectedModuleView(null);
@@ -2325,7 +2360,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           <div className="col-span-full">
             <SqlChallengesPracticeHub
               userName={userName}
-              isEnrolled={!isNewStudentMode}
+              isEnrolled={!isNewStudentMode || isCourseUnlocked('data_analyst') || isAnyCourseUnlocked()}
               onNavigateToCourses={() => {
                 setDockTab('home');
                 setSelectedModuleView(null);
@@ -2362,7 +2397,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           <div className="col-span-full">
             <ExcelChallengesPracticeHub
               userName={userName}
-              isEnrolled={!isNewStudentMode}
+              isEnrolled={!isNewStudentMode || isCourseUnlocked('data_analyst') || isAnyCourseUnlocked()}
               onNavigateToCourses={() => {
                 setDockTab('home');
                 setSelectedModuleView(null);
@@ -2528,7 +2563,6 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         price={9}
         onSimulateUnlock={() => {
           setIsNewStudentMode(false);
-          alert('🎉 Congratulations! All 10 Modules have been unlocked in your dashboard.');
         }}
       />
 

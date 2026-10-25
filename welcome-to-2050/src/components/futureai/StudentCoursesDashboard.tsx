@@ -32,6 +32,7 @@ import { RealSuccessStoriesShowcase } from './RealSuccessStoriesShowcase';
 import { ALL_PLATFORM_COURSES, PlatformCourseItem } from '../../data/allPlatformCourses';
 import { CareerCourseCard } from './CareerCourseCard';
 import { CAREER_COURSES_12 } from '../../data/careerCourses12';
+import { isCourseUnlocked } from '../../services/courseUnlockService';
 import './LearnerHomeHub.css';
 
 export interface StudentCoursesDashboardProps {
@@ -141,6 +142,12 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
 
   const handleCourseClick = (c: { id: string; title?: string; fullName?: string }) => {
     playClick();
+    const unlocked = isCourseUnlocked(c.id);
+    if (!unlocked) {
+      onOpenLockedCourse(c.fullName || c.title || 'Course');
+      return;
+    }
+
     if (c.id === 'data-analyst-genai') {
       onOpenDataAnalystCourse();
     } else if (c.id === 'data-science-agentic-ai') {
@@ -349,13 +356,17 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             ========================================================================= */}
         {viewMode === 'grid' ? (
           <div className="scd-pots-4grid">
-            {CAREER_COURSES_12.map((c) => (
-              <CareerCourseCard
-                key={c.id}
-                {...c}
-                onClick={() => handleCourseClick(c)}
-              />
-            ))}
+            {CAREER_COURSES_12.map((c) => {
+              const unlocked = isCourseUnlocked(c.id);
+              return (
+                <CareerCourseCard
+                  key={c.id}
+                  {...c}
+                  isUnlocked={unlocked}
+                  onClick={() => handleCourseClick(c)}
+                />
+              );
+            })}
           </div>
         ) : (
           /* List View */
