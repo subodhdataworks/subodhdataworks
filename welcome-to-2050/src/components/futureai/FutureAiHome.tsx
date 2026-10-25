@@ -645,7 +645,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           <img
             src="/images/home_sections/learn_by_doing_horizontal_banner.jpg"
             alt="Practical Learning Ecosystem: Learn by Doing – Real Skills for Real Jobs"
-            className="w-full h-auto max-h-[380px] lg:max-h-[420px] object-cover object-center group-hover:scale-[1.008] transition-transform duration-700 select-none"
+            className="w-full h-auto max-h-[210px] sm:max-h-[250px] lg:max-h-[280px] object-cover object-center group-hover:scale-[1.008] transition-transform duration-700 select-none"
           />
         </div>
 
