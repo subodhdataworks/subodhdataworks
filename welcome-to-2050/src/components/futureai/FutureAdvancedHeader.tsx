@@ -508,7 +508,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     if (onOpenSignUp) onOpenSignUp();
                     else onOpenLogin?.();
                   }}
-                  className="inline-flex items-center gap-1.5 px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-95 text-white font-black text-xs sm:text-sm shadow-sm hover:shadow-md transition-all duration-200"
+                  className="inline-flex items-center gap-1.5 px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-95 text-white font-normal text-xs sm:text-sm shadow-sm hover:shadow-md transition-all duration-200"
                 >
                   <span>Free Login / Sign Up</span>
                   <ArrowRight className="w-3.5 h-3.5" />

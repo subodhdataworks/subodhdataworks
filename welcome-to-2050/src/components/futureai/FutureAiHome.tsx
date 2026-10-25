@@ -763,7 +763,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         {/* Compact Real Comparison Showcase Banner */}
         <div 
           onClick={promptLogin}
-          className="relative max-w-2xl mx-auto w-full rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-slate-200/90 hover:border-blue-300 transition-all duration-300 cursor-pointer group bg-white mb-6 sm:mb-8"
+          className="relative max-w-4xl sm:max-w-5xl mx-auto w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-xl border border-slate-200/90 hover:border-blue-300 transition-all duration-300 cursor-pointer group bg-white mb-6 sm:mb-8"
         >
           <img
             src="/images/why_choose/why_choose_comparison_banner.jpg"
