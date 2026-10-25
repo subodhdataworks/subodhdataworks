@@ -286,29 +286,25 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
 
             </div>
 
-            {/* RIGHT COLUMN: Video Scaled Down & Balanced (Chota & Sleek Kiya) */}
+            {/* RIGHT COLUMN: Transparent Video without Black Background */}
             <div className="lg:col-span-6 xl:col-span-6 flex items-center justify-center relative z-10">
-              <div className="relative w-full max-w-[500px] lg:max-w-[540px] flex items-center justify-center">
+              <div className="relative w-full max-w-[540px] lg:max-w-[600px] flex items-center justify-center">
                 
                 {/* Glowing Radiant Backing Aura */}
-                <div className="absolute inset-0 bg-radial from-cyan-400/20 via-blue-500/12 to-transparent rounded-full blur-2xl scale-105 pointer-events-none" />
+                <div className="absolute inset-0 bg-radial from-cyan-400/25 via-blue-500/15 to-transparent rounded-full blur-2xl scale-110 pointer-events-none" />
                 
-                {/* Seamless Floating Animation Video (Balanced Size, No Cutting, Feathered Boundary) */}
-                <div 
-                  className="relative z-10 w-full flex items-center justify-center pointer-events-none select-none"
-                  style={{
-                    maskImage: 'radial-gradient(ellipse 85% 82% at 50% 50%, black 65%, transparent 98%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse 85% 82% at 50% 50%, black 65%, transparent 98%)',
-                  }}
-                >
+                {/* Transparent Video (No Black Background, True Alpha WebM/MP4) */}
+                <div className="relative z-10 w-full flex items-center justify-center pointer-events-none select-none">
                   <video
-                    src="/videos/hero_video.mp4"
                     autoPlay
                     loop
                     muted
                     playsInline
-                    className="w-full h-auto max-h-[340px] sm:max-h-[390px] lg:max-h-[430px] xl:max-h-[460px] object-contain pointer-events-none select-none drop-shadow-[0_15px_35px_rgba(26,115,232,0.18)]"
-                  />
+                    className="w-full h-auto max-h-[380px] sm:max-h-[440px] lg:max-h-[480px] xl:max-h-[520px] object-contain pointer-events-none select-none drop-shadow-[0_20px_40px_rgba(26,115,232,0.22)]"
+                  >
+                    <source src="/videos/header_hero_transparent.webm" type="video/webm" />
+                    <source src="/videos/header_transparent_video.mp4" type="video/mp4" />
+                  </video>
                 </div>
 
               </div>
