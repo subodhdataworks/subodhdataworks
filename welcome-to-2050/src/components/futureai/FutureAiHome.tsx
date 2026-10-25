@@ -1042,81 +1042,6 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 7: Ready to Start Your Learning Journey? (Bottom CTA Banner)
-      ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-        <div className="bg-gradient-to-r from-blue-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-10 text-white relative overflow-hidden shadow-2xl border border-blue-500/30">
-          
-          {/* Ambient Cosmic Aura Glows */}
-          <div className="absolute top-0 right-1/4 w-[400px] h-[400px] bg-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
-            
-            {/* Robot Mascot Graphic */}
-            <div className="shrink-0 flex items-center justify-center">
-              <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden border-2 border-white/20 shadow-xl bg-blue-950/50 backdrop-blur-md">
-                <img
-                  src="/images/why_choose/cta_robot.png"
-                  alt="Future IT Robot Mascot"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-
-            {/* Headline & Badges */}
-            <div className="flex-1 text-center lg:text-left">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white leading-tight">
-                Ready to Start{' '}
-                <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-200 bg-clip-text text-transparent">
-                  Your Learning Journey?
-                </span>
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-300 font-semibold mt-2 max-w-xl">
-                Join thousands of ambitious learners today and build high-demand AI and Data Science skills.
-              </p>
-
-              {/* 4 Feature Badges */}
-              <div className="mt-5 flex flex-wrap items-center justify-center lg:justify-start gap-2.5 text-[11px] font-bold">
-                <span className="px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 flex items-center gap-1.5 shadow-xs">
-                  <GraduationCap className="w-4 h-4 text-cyan-400" />
-                  <span>Lifetime Access</span>
-                </span>
-                <span className="px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 flex items-center gap-1.5 shadow-xs">
-                  <Award className="w-4 h-4 text-amber-400" />
-                  <span>Certificate</span>
-                </span>
-                <span className="px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 flex items-center gap-1.5 shadow-xs">
-                  <FileCheck className="w-4 h-4 text-emerald-400" />
-                  <span>Real Projects</span>
-                </span>
-                <span className="px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 flex items-center gap-1.5 shadow-xs">
-                  <Users className="w-4 h-4 text-purple-400" />
-                  <span>Industry Guidance</span>
-                </span>
-              </div>
-            </div>
-
-            {/* CTA Button + Learn Grow Flag */}
-            <div className="shrink-0 flex flex-col items-center lg:items-end gap-2.5">
-              <button
-                type="button"
-                onClick={promptLogin}
-                className="px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-black text-sm shadow-xl shadow-blue-500/40 hover:shadow-blue-500/60 transition-all cursor-pointer flex items-center gap-2.5 group active:scale-95"
-              >
-                <span>Sign Up Now</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-              <div className="text-xs text-cyan-300 font-bold italic tracking-wide">
-                Learn • Grow • Get Hired ↗
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════════════════
           SECTION 8: Comprehensive Modern Footer (Campus Background with Soft White Tint)
       ═══════════════════════════════════════════════════════════════════════════ */}
       <footer className="relative w-full border-t border-slate-200/90 overflow-hidden">
@@ -1129,7 +1054,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         />
 
         {/* Soft White Frost Glass Tint Overlay ("halka white") */}
-        <div className="absolute inset-0 bg-white/92 sm:bg-white/90 backdrop-blur-[3px] pointer-events-none" />
+        <div className="absolute inset-0 bg-white/50 sm:bg-white/45 backdrop-blur-[0.5px] pointer-events-none" />
 
         {/* Top Accent Gradient Line */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 pointer-events-none" />
@@ -1149,10 +1074,10 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                 <span>FUTURE IT</span>
                 <span className="text-blue-600 font-bold text-xs tracking-widest">— INDUSTRIES —</span>
               </div>
-              <p className="text-xs text-slate-600 mt-3 font-medium leading-relaxed max-w-sm">
+              <p className="text-xs text-slate-900 mt-3 font-bold leading-relaxed max-w-sm drop-shadow-2xs">
                 India&apos;s #1 AI &amp; Data Science Career Accelerator. Hands-on projects, real interview prep, and 100% placement support.
               </p>
-              <div className="text-xs text-blue-600 font-bold mt-2 flex items-center gap-1.5">
+              <div className="text-xs text-blue-700 font-black mt-2 flex items-center gap-1.5 drop-shadow-2xs">
                 <Sparkles className="w-3.5 h-3.5 text-blue-500" />
                 <span>Learn Today, Earn Tomorrow.</span>
               </div>
@@ -1169,7 +1094,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               <h4 className="text-xs font-black text-slate-900 tracking-wider uppercase mb-3.5">
                 Quick Links
               </h4>
-              <ul className="space-y-2.5 text-xs font-semibold text-slate-600">
+              <ul className="space-y-2.5 text-xs font-extrabold text-slate-900 drop-shadow-2xs">
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Courses</button></li>
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Coding Practice</button></li>
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">ATS Resume Checker</button></li>
@@ -1183,7 +1108,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               <h4 className="text-xs font-black text-slate-900 tracking-wider uppercase mb-3.5">
                 Company
               </h4>
-              <ul className="space-y-2.5 text-xs font-semibold text-slate-600">
+              <ul className="space-y-2.5 text-xs font-extrabold text-slate-900 drop-shadow-2xs">
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">About Us</button></li>
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Contact Us</button></li>
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Privacy Policy</button></li>
@@ -1196,7 +1121,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               <h4 className="text-xs font-black text-slate-900 tracking-wider uppercase mb-3.5">
                 Support
               </h4>
-              <ul className="space-y-2.5 text-xs font-semibold text-slate-600">
+              <ul className="space-y-2.5 text-xs font-extrabold text-slate-900 drop-shadow-2xs">
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Help Center</button></li>
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">FAQs</button></li>
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Refund Policy</button></li>
@@ -1230,9 +1155,9 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           </div>
 
           {/* Bottom Copyright */}
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600 font-semibold">
+          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-900 font-bold drop-shadow-2xs">
             <p>© 2026 Future IT Industry. All rights reserved.</p>
-            <p className="text-[11px] text-slate-500">Empowering learners across India to learn, practice, and get placed.</p>
+            <p className="text-[11px] text-slate-800 font-semibold">Empowering learners across India to learn, practice, and get placed.</p>
           </div>
 
         </div>
