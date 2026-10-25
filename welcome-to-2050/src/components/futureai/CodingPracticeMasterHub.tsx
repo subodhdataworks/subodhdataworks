@@ -427,7 +427,7 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
         break;
       case 'sql':
         if (onOpenSql) onOpenSql();
-        else window.location.hash = '#sql';
+        else window.location.hash = '#sql-challenges';
         break;
       case 'excel':
       case 'powerbi':

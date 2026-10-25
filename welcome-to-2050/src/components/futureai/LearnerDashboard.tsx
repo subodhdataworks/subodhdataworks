@@ -77,6 +77,7 @@ import { AffiliateEarningsHub } from './AffiliateEarningsHub';
 import { GameArenaHub } from './GameArenaHub';
 import { CodingPracticeMasterHub } from './CodingPracticeMasterHub';
 import { PythonChallengesPracticeHub } from './PythonChallengesPracticeHub';
+import { SqlChallengesPracticeHub } from './SqlChallengesPracticeHub';
 import { LearnerHomeHub } from './LearnerHomeHub';
 import { DataAnalystGenAiHub } from './DataAnalystGenAiHub';
 import { DataScienceAgenticAiHub } from './DataScienceAgenticAiHub';
@@ -463,7 +464,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   const [dockTab, setDockTab] = useState<'home' | 'game' | 'income' | 'referral' | 'wallet' | 'withdraw' | 'placement'>(() => {
     if (typeof window !== 'undefined') {
       const h = window.location.hash;
-      if (h === '#game' || h === '#games' || h === '#arena' || h === '#gamearena' || h.startsWith('#python-challenges') || h.startsWith('#pythonchallenges')) return 'game';
+      if (h === '#game' || h === '#games' || h === '#arena' || h === '#gamearena' || h.startsWith('#python-challenges') || h.startsWith('#pythonchallenges') || h.startsWith('#sql-challenges') || h.startsWith('#sqlchallenges')) return 'game';
       if (h === '#income' || h === '#earnings' || h === '#myearnings' || h === '#myearning' || h === '#earning') return 'income';
       if (h === '#placement' || h === '#jobs' || h === '#placements') return 'placement';
       if (h === '#referral') return 'referral';
@@ -539,7 +540,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   };
 
   // Sub-view: null = 4-Course Student Dashboard (#dashboard), 'data_analyst' = Data Analyst with GenAI 6-Module Hub (#data-analyst), 'python' = Python Module Detail Page, 'python_intro_game' = Python Introduction & Setup Game Workspace, 'sql' = SQL Chapter View, 'excel' = Excel Chapter View, 'powerbi' = Power BI Chapter View, 'stats' = Statistics Chapter View, 'genai' = GenAI Chapter View
-  const [selectedModuleView, setSelectedModuleView] = useState<'data_analyst' | 'data_science' | 'ml_engineering' | 'ai_engineering' | 'ai_tools_prompt' | 'ms_office_copilot' | 'full_stack_mern' | 'python' | 'python_intro_game' | 'python_challenges' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai' | null>(() => {
+  const [selectedModuleView, setSelectedModuleView] = useState<'data_analyst' | 'data_science' | 'ml_engineering' | 'ai_engineering' | 'ai_tools_prompt' | 'ms_office_copilot' | 'full_stack_mern' | 'python' | 'python_intro_game' | 'python_challenges' | 'sql_challenges' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai' | null>(() => {
     if (typeof window !== 'undefined') {
       const h = window.location.hash;
       const baseH = h.split('?')[0];
@@ -569,6 +570,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       }
       if (baseH === '#python-challenges' || baseH === '#pythonchallenges') {
         return 'python_challenges';
+      }
+      if (baseH === '#sql-challenges' || baseH === '#sqlchallenges') {
+        return 'sql_challenges';
       }
       if (baseH === '#stats') {
         return 'stats';
@@ -696,6 +700,10 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         setActiveTopicWs(null);
       } else if (baseH === '#python-challenges' || baseH === '#pythonchallenges') {
         setSelectedModuleView('python_challenges');
+        setActiveTopicWs(null);
+        setDockTab('game');
+      } else if (baseH === '#sql-challenges' || baseH === '#sqlchallenges') {
+        setSelectedModuleView('sql_challenges');
         setActiveTopicWs(null);
         setDockTab('game');
       } else if (h === '#game' || h === '#games' || h === '#arena' || h === '#gamearena') {
@@ -2404,8 +2412,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 if (typeof window !== 'undefined') window.location.hash = '#python-challenges';
               }}
               onOpenSql={() => {
-                setSelectedModuleView('sql');
-                if (typeof window !== 'undefined') window.location.hash = '#sql';
+                setSelectedModuleView('sql_challenges');
+                setActiveTopicWs(null);
+                if (typeof window !== 'undefined') window.location.hash = '#sql-challenges';
               }}
               onOpenDataAnalyst={() => {
                 setSelectedModuleView('data_analyst');
@@ -2462,6 +2471,30 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setActiveTopicWs(challengeId || 1);
                 setTargetStep('play');
                 if (typeof window !== 'undefined') window.location.hash = `#python?topic=${challengeId || 1}`;
+              }}
+            />
+          </div>
+        )}
+
+        {/* ─── TAB: SQL CODING PRACTICE CHALLENGES (Exact 1:1 with Reference Design) ─── */}
+        {selectedModuleView === 'sql_challenges' && (
+          <div className="col-span-full">
+            <SqlChallengesPracticeHub
+              userName={userName}
+              onBackToPractice={() => {
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                setDockTab('game');
+                if (typeof window !== 'undefined') window.location.hash = '#game';
+              }}
+              onBackToDashboard={() => {
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                setDockTab('home');
+                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+              }}
+              onSolveChallenge={(challengeId, title) => {
+                // Handled in arena
               }}
             />
           </div>
