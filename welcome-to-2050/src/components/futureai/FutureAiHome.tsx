@@ -752,7 +752,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           className="relative max-w-4xl sm:max-w-5xl mx-auto w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-xl border border-slate-200/90 hover:border-blue-300 transition-all duration-300 cursor-pointer group bg-white mb-6 sm:mb-8"
         >
           <img
-            src="/images/why_choose/why_choose_comparison_banner_hd.jpg?v=4k"
+            src="/images/why_choose/why_choose_comparison_banner_hd.jpg?v=5k"
             loading="eager"
             alt="Why Choose Future IT Industry? Real Skills • Real Projects • Career Support"
             className="w-full h-auto object-contain select-none group-hover:scale-[1.005] transition-transform duration-500"
