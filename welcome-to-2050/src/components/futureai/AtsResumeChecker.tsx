@@ -97,6 +97,15 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
     }
     return userName && userName !== 'Learner' ? userName : 'Subodh Kumar';
   });
+
+  // Verification check: Is candidate logged in?
+  const isCandidateVerified = Boolean(
+    (isLoggedIn && activeCandidateName && activeCandidateName !== 'Learner') ||
+    (typeof window !== 'undefined' &&
+      localStorage.getItem('futureai_logged_in') === 'true' &&
+      localStorage.getItem('futureai_user_name') &&
+      localStorage.getItem('futureai_user_name') !== 'Learner')
+  );
   // Step inputs
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [extractedText, setExtractedText] = useState<string>('');
@@ -657,27 +666,16 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
 
   // Handle clicking "Scan My Resume" - Require Candidate Login/Verification first
   const handleScanButtonClick = () => {
-    const isCandidateVerified =
-      (isLoggedIn && activeCandidateName && activeCandidateName !== 'Learner') ||
-      (typeof window !== 'undefined' &&
-        localStorage.getItem('futureai_logged_in') === 'true' &&
-        localStorage.getItem('futureai_user_name') &&
-        localStorage.getItem('futureai_user_name') !== 'Learner');
-
-    if (!isCandidateVerified) {
-      // Auto-detect candidate name/email from uploaded resume if available
-      const detected = extractCandidateInfo(extractedText, uploadedFile);
-      if (detected.name && detected.name !== 'Candidate Resume' && !candidateNameInput) {
-        setCandidateNameInput(detected.name);
-      }
-      if (detected.email && !candidateEmailInput) {
-        setCandidateEmailInput(detected.email);
-      }
-      setIsAuthModalOpen(true);
-      return;
+    // Auto-detect candidate name/email from uploaded resume if available for later unlock
+    const detected = extractCandidateInfo(extractedText, uploadedFile);
+    if (detected.name && detected.name !== 'Candidate Resume' && !candidateNameInput) {
+      setCandidateNameInput(detected.name);
+    }
+    if (detected.email && !candidateEmailInput) {
+      setCandidateEmailInput(detected.email);
     }
 
-    // Already verified, run real analysis directly
+    // Run real analysis so scanning animation and progress happens
     handleRunAnalysis(true);
   };
 
@@ -1014,7 +1012,69 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
             /* ══════════════════════════════════════════════════════════
                DEDICATED SEPARATE PAGE: ATS ANALYSIS RESULT (Full Width)
                ══════════════════════════════════════════════════════════ */
-            <div className="max-w-6xl mx-auto space-y-6 ats-dedicated-result-view">
+            !isCandidateVerified ? (
+              <div className="max-w-3xl mx-auto my-8 p-6 sm:p-10 rounded-3xl bg-white border border-blue-200/90 shadow-2xl text-center">
+                <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-lg mx-auto mb-4">
+                  <Lock className="w-8 h-8" />
+                </div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-black uppercase tracking-wider mb-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Scan Complete (ATS Score Ready)</span>
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                  Free Login / Sign Up to View Your Score
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-lg mx-auto mt-2 leading-relaxed">
+                  Your resume has been algorithmically parsed and evaluated against enterprise ATS standards. Free login required to unlock your 0–100 score, recruiter keyword match, and optimization suggestions.
+                </p>
+                <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsAuthModalOpen(true)}
+                    className="w-full sm:w-auto px-7 py-3 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-black text-sm shadow-md hover:shadow-lg active:scale-95 transition cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <span>Free Login / Sign Up to Unlock Result</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCheckerMode('input');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="w-full sm:w-auto px-5 py-3 rounded-xl border border-slate-200 text-slate-700 font-bold text-sm hover:bg-slate-50 transition cursor-pointer"
+                  >
+                    Upload Another Resume
+                  </button>
+                </div>
+                <p className="text-[11px] text-slate-400 font-semibold mt-3">
+                  100% Free • No Payment Required • Instant Unlock
+                </p>
+
+                {/* Blurred teaser preview of the score */}
+                <div className="mt-8 pt-6 border-t border-slate-100 opacity-40 filter blur-xs pointer-events-none select-none">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+                      <div className="text-xs font-bold text-slate-400">ATS Score</div>
+                      <div className="text-xl font-black text-slate-600">?? / 100</div>
+                    </div>
+                    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+                      <div className="text-xs font-bold text-slate-400">Keyword Match</div>
+                      <div className="text-xl font-black text-slate-600">?? %</div>
+                    </div>
+                    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+                      <div className="text-xs font-bold text-slate-400">Impact Words</div>
+                      <div className="text-xl font-black text-slate-600">?? %</div>
+                    </div>
+                    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+                      <div className="text-xs font-bold text-slate-400">ATS Formatting</div>
+                      <div className="text-xl font-black text-slate-600">Pass</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="max-w-6xl mx-auto space-y-6 ats-dedicated-result-view">
               {/* Top Navigation & Action Bar */}
               <div className="ats-result-top-action-bar">
                 <div className="flex items-center gap-3">
@@ -1753,6 +1813,7 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
                   )}
               </div>
             </div>
+            )
           ) : (
             /* ══════════════════════════════════════════════════════════
                INPUT MODE: 3-STEP RESUME OPTIMIZER (Exact Reference Image 1:1)

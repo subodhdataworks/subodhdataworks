@@ -255,7 +255,10 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
           onNavigateLearning={promptLogin}
-          onNavigatePractice={promptLogin}
+          onNavigatePractice={(track) => {
+            const hash = track === 'python' ? '#python-challenges' : track === 'sql' ? '#sql-challenges' : track === 'excel' ? '#excel-challenges' : '#practice';
+            window.location.hash = hash;
+          }}
           onOpenAtsResume={promptLogin}
           onNavigateEarn={promptLogin}
           onNavigateInternship={promptLogin}
@@ -757,18 +760,15 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           </p>
         </div>
 
-        {/* Master Video Showcase Container (Compact Centered Size) */}
+        {/* Compact Real Comparison Showcase Banner */}
         <div 
           onClick={promptLogin}
-          className="relative max-w-3xl mx-auto w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-xl border border-slate-200/90 hover:border-blue-300 transition-all duration-500 cursor-pointer group bg-slate-950 mb-6 sm:mb-8"
+          className="relative max-w-2xl mx-auto w-full rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-slate-200/90 hover:border-blue-300 transition-all duration-300 cursor-pointer group bg-white mb-6 sm:mb-8"
         >
-          <video
-            src="/videos/why_choose_showcase.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-auto max-h-[260px] sm:max-h-[320px] object-cover object-center group-hover:scale-[1.008] transition-transform duration-700 select-none"
+          <img
+            src="/images/why_choose/why_choose_comparison_banner.jpg"
+            alt="Why Choose Future IT Industry? Real Skills • Real Projects • Career Support"
+            className="w-full h-auto object-contain select-none group-hover:scale-[1.005] transition-transform duration-500"
           />
         </div>
 
@@ -912,7 +912,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               </h4>
               <ul className="space-y-2.5 text-xs font-extrabold text-slate-900 drop-shadow-2xs">
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Courses</button></li>
-                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Coding Practice</button></li>
+                <li><button onClick={() => { window.location.hash = "#practice"; }} className="hover:text-blue-600 transition-colors cursor-pointer">Coding Practice</button></li>
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">ATS Resume Checker</button></li>
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Internship</button></li>
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Success Stories</button></li>

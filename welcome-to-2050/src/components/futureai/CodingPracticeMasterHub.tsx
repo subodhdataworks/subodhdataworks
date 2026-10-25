@@ -198,6 +198,8 @@ const ReactIcon = () => (
 export interface CodingPracticeMasterHubProps {
   userName?: string;
   isEnrolled?: boolean;
+  isLoggedIn?: boolean;
+  onOpenLogin?: () => void;
   onNavigateToCourses?: () => void;
   onUnlockAll?: () => void;
   onOpenPython?: (topicId?: number) => void;
@@ -401,6 +403,8 @@ const CATEGORIES = ['All', 'Popular', 'Programming', 'Data & AI', 'Web Dev', 'To
 export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = ({
   userName = 'Rahul',
   isEnrolled,
+  isLoggedIn = false,
+  onOpenLogin,
   onNavigateToCourses,
   onUnlockAll,
   onOpenPython,
@@ -420,6 +424,7 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
   const [notifySuccess, setNotifySuccess] = useState<boolean>(false);
   const [activeBlankCourse, setActiveBlankCourse] = useState<PracticeCardItem | null>(null);
   const [lockedModalCourse, setLockedModalCourse] = useState<PracticeCardItem | null>(null);
+  const [showLoginGate, setShowLoginGate] = useState<boolean>(false);
 
   const [internalEnrolled, setInternalEnrolled] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
@@ -480,6 +485,24 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
   }, [activeCategory, searchFilter]);
 
   const handleCardClick = (card: PracticeCardItem) => {
+    const isAuth = Boolean(
+      isLoggedIn ||
+      (typeof window !== 'undefined' &&
+        localStorage.getItem('futureai_logged_in') === 'true' &&
+        localStorage.getItem('futureai_user_name') &&
+        localStorage.getItem('futureai_user_name') !== 'Learner')
+    );
+
+    if (!isAuth) {
+      soundEffects.playLock();
+      if (onOpenLogin) {
+        onOpenLogin();
+      } else {
+        setShowLoginGate(true);
+      }
+      return;
+    }
+
     switch (card.courseKey) {
       case 'python':
         if (onOpenPython) onOpenPython(1);

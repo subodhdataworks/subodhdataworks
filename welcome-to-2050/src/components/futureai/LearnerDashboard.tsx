@@ -352,6 +352,8 @@ const Capstone3DIcon: React.FC<{ className?: string }> = ({ className = 'w-9 h-9
 
 interface LearnerDashboardProps {
   userName?: string;
+  isLoggedIn?: boolean;
+  onOpenLogin?: () => void;
   onLogout?: () => void;
   onOpenAdvisor?: () => void;
   onLoginSuccess?: (name: string, email?: string, avatar?: string, role?: 'student' | 'influencer') => void;
@@ -359,6 +361,8 @@ interface LearnerDashboardProps {
 
 export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   userName = 'Subodh Kumar',
+  isLoggedIn = false,
+  onOpenLogin,
   onLogout,
   onOpenAdvisor,
   onLoginSuccess,
@@ -2212,6 +2216,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             <CodingPracticeMasterHub
               userName={userName}
               isEnrolled={!isNewStudentMode}
+              isLoggedIn={isLoggedIn}
+              onOpenLogin={() => setAuthModalOpen(true)}
               onNavigateToCourses={() => {
                 setDockTab('home');
                 setSelectedModuleView(null);
