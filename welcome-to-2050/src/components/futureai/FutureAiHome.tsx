@@ -32,6 +32,101 @@ interface FutureAiHomeProps {
   onLogout?: () => void;
 }
 
+// Hiring Partners list for continuous right-to-left marquee
+const HIRING_PARTNERS = [
+  {
+    id: 'tcs',
+    name: 'TCS',
+    node: <span className="text-rose-600 font-black text-xs sm:text-sm tracking-tighter">tcs</span>
+  },
+  {
+    id: 'infosys',
+    name: 'Infosys',
+    node: <span className="text-[#007cc3] font-black text-xs sm:text-sm tracking-tight">Infosys</span>
+  },
+  {
+    id: 'accenture',
+    name: 'Accenture',
+    node: (
+      <span className="text-purple-800 font-extrabold text-xs sm:text-sm tracking-tight flex items-center gap-0.5">
+        accenture <span className="text-[#a100ff]">&gt;</span>
+      </span>
+    )
+  },
+  {
+    id: 'wipro',
+    name: 'Wipro',
+    node: (
+      <span className="text-slate-800 font-black text-xs sm:text-sm tracking-normal flex items-center gap-1">
+        <span className="inline-block w-2 h-2 rounded-full bg-gradient-to-r from-red-500 via-amber-400 to-blue-500" />
+        wipro
+      </span>
+    )
+  },
+  {
+    id: 'google',
+    name: 'Google',
+    node: (
+      <span className="font-extrabold text-xs sm:text-sm tracking-tight flex items-center">
+        <span className="text-[#4285F4]">G</span>
+        <span className="text-[#EA4335]">o</span>
+        <span className="text-[#FBBC05]">o</span>
+        <span className="text-[#4285F4]">g</span>
+        <span className="text-[#34A853]">l</span>
+        <span className="text-[#EA4335]">e</span>
+      </span>
+    )
+  },
+  {
+    id: 'microsoft',
+    name: 'Microsoft',
+    node: (
+      <span className="text-slate-700 font-bold text-xs sm:text-sm tracking-tight flex items-center gap-1">
+        <span className="grid grid-cols-2 gap-0.5 w-2.5 h-2.5">
+          <span className="bg-[#f25022]" />
+          <span className="bg-[#7fba00]" />
+          <span className="bg-[#00a4ef]" />
+          <span className="bg-[#ffb900]" />
+        </span>
+        Microsoft
+      </span>
+    )
+  },
+  {
+    id: 'amazon',
+    name: 'Amazon',
+    node: <span className="text-slate-900 font-black text-xs sm:text-sm tracking-tight">amazon</span>
+  },
+  {
+    id: 'deloitte',
+    name: 'Deloitte',
+    node: (
+      <span className="text-slate-900 font-black text-xs sm:text-sm tracking-tight">
+        Deloitte<span className="text-emerald-500">.</span>
+      </span>
+    )
+  },
+  {
+    id: 'capgemini',
+    name: 'Capgemini',
+    node: (
+      <span className="text-[#0070ad] font-bold text-xs sm:text-sm tracking-tight flex items-center gap-0.5">
+        Capgemini <span className="text-[#0070ad] text-[10px]">♠</span>
+      </span>
+    )
+  },
+  {
+    id: 'ibm',
+    name: 'IBM',
+    node: <span className="text-[#1f70c1] font-black text-xs sm:text-sm tracking-widest font-mono">IBM</span>
+  },
+  {
+    id: 'more',
+    name: '700+ More',
+    node: <span className="text-slate-400 font-semibold text-[11px] whitespace-nowrap">and 700+ more...</span>
+  }
+];
+
 export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
   isLoggedIn = false,
   userName = 'Learner',
@@ -69,14 +164,14 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         />
       </div>
 
-      {/* ─── 2. MAIN HERO SECTION (Flex-1: Fits on 1 Screen without Scrolling) ─── */}
-      <section className="relative flex-1 flex items-center min-h-0 w-full px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-[#e8f2fe]/70 via-[#f0f6ff]/35 to-[#FBFDFF]">
+      {/* ─── 2. MAIN HERO SECTION (Bada Banner - Flex-1 Dominant) ─── */}
+      <section className="relative flex-1 flex items-center min-h-0 w-full px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-[#e8f2fe]/75 via-[#f0f6ff]/40 to-[#FBFDFF]">
         
         {/* Soft Ambient Aurora Lights */}
-        <div className="absolute top-0 left-1/4 w-[450px] h-[450px] bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-10 right-1/4 w-[450px] h-[450px] bg-cyan-400/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-400/12 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-10 right-1/4 w-[500px] h-[500px] bg-cyan-400/12 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-[1440px] w-full mx-auto h-full flex items-center">
+        <div className="max-w-[1440px] w-full mx-auto h-full flex items-center py-2 sm:py-3">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center w-full">
             
             {/* LEFT COLUMN: Punchy Headline & CTAs (lg:col-span-6) */}
@@ -89,8 +184,8 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                 <span>India&apos;s #1 Practical AI & Data Learning Academy</span>
               </div>
 
-              {/* Main Headline */}
-              <h1 className="text-2xl sm:text-4xl lg:text-[40px] xl:text-[48px] font-black tracking-tight leading-[1.08] text-[#0f172a]">
+              {/* Main Headline - Taller & Bolder */}
+              <h1 className="text-2xl sm:text-4xl lg:text-[42px] xl:text-[50px] font-black tracking-tight leading-[1.06] text-[#0f172a]">
                 <span className="block">World&apos;s First</span>
                 <span className="block text-[#1a73e8]">Affordable Easy</span>
                 <span className="block text-[#0f172a]">
@@ -99,13 +194,13 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               </h1>
 
               {/* Tagline */}
-              <div className="mt-2 text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-600 leading-snug max-w-lg mx-auto lg:mx-0">
+              <div className="mt-2.5 text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-600 leading-snug max-w-lg mx-auto lg:mx-0">
                 <p>Real Practical Courses. Real Projects. Industry Guidance.</p>
                 <p className="text-slate-900 font-bold mt-0.5">From Learning to Earning, We&apos;re With You.</p>
               </div>
 
               {/* Key Features Bullet points */}
-              <div className="mt-3 space-y-1 text-[11px] sm:text-xs text-slate-600 font-semibold max-w-md mx-auto lg:mx-0 hidden sm:block">
+              <div className="mt-2.5 space-y-1 text-[11px] sm:text-xs text-slate-600 font-semibold max-w-md mx-auto lg:mx-0 hidden sm:block">
                 <div className="flex items-center gap-2 justify-center lg:justify-start">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                   <span>100% Hands-On Coding Challenges & Industry Datasets</span>
@@ -121,7 +216,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               </div>
 
               {/* CTAs Row */}
-              <div className="mt-4 flex flex-wrap items-center justify-center lg:justify-start gap-3">
+              <div className="mt-3.5 flex flex-wrap items-center justify-center lg:justify-start gap-3">
                 <button
                   type="button"
                   onClick={promptLogin}
@@ -142,7 +237,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               </div>
 
               {/* Rating */}
-              <div className="mt-3 flex items-center justify-center lg:justify-start gap-2 text-[11px] text-slate-500 font-medium">
+              <div className="mt-2.5 flex items-center justify-center lg:justify-start gap-2 text-[11px] text-slate-500 font-medium">
                 <div className="flex items-center text-amber-400">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
@@ -155,16 +250,16 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
 
             {/* RIGHT COLUMN: Grand Center Visual Artwork (Student with Laptop & 7 Orbiting Badges) (lg:col-span-6) */}
             <div className="lg:col-span-6 xl:col-span-6 flex items-center justify-center relative z-10">
-              <div className="relative w-full max-w-[500px] lg:max-w-[540px] flex items-center justify-center">
+              <div className="relative w-full max-w-[520px] lg:max-w-[560px] flex items-center justify-center">
                 
                 {/* Glowing Radiant Backing Aura */}
-                <div className="absolute inset-0 bg-radial from-cyan-400/25 via-blue-500/15 to-transparent rounded-full blur-2xl scale-105 pointer-events-none" />
+                <div className="absolute inset-0 bg-radial from-cyan-400/30 via-blue-500/18 to-transparent rounded-full blur-2xl scale-105 pointer-events-none" />
                 
-                {/* Central Futuristic Tech Student Illustration */}
+                {/* Central Futuristic Tech Student Illustration - Enlarged */}
                 <img
                   src="/images/hero_tech_orbit_blended.png"
                   alt="Future IT Industries AI Learning Platform"
-                  className="relative z-10 w-full h-auto max-h-[260px] sm:max-h-[300px] lg:max-h-[340px] xl:max-h-[370px] object-contain drop-shadow-[0_20px_40px_rgba(26,115,232,0.20)] select-none pointer-events-none transform transition-transform hover:scale-102 duration-300"
+                  className="relative z-10 w-full h-auto max-h-[290px] sm:max-h-[350px] lg:max-h-[400px] xl:max-h-[440px] object-contain drop-shadow-[0_20px_45px_rgba(26,115,232,0.25)] select-none pointer-events-none transform transition-transform hover:scale-102 duration-300"
                 />
 
                 {/* Floating Highlight Chips */}
@@ -186,65 +281,65 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         </div>
       </section>
 
-      {/* ─── 3. METRICS / TRUST STAT BADGES (Row of 4 Glass Cards - Compact Fit) ─── */}
+      {/* ─── 3. METRICS / TRUST STAT BADGES (Row of 4 Compact Badges - Chota Kiya) ─── */}
       <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-1 shrink-0">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-2.5">
           
           {/* Card 1: 100K+ Students */}
-          <div className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/80 shadow-2xs flex items-center gap-3 hover:shadow-xs transition">
-            <div className="w-9 h-9 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-              <Users className="w-4 h-4 stroke-[2.2]" />
+          <div className="bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
+            <div className="w-7 h-7 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+              <Users className="w-3.5 h-3.5 stroke-[2.2]" />
             </div>
             <div>
-              <div className="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-none">
+              <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
                 100K+
               </div>
-              <div className="text-[10px] sm:text-[11px] text-slate-500 font-semibold mt-0.5">
+              <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
                 Students
               </div>
             </div>
           </div>
 
           {/* Card 2: 700+ Hiring Partners */}
-          <div className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/80 shadow-2xs flex items-center gap-3 hover:shadow-xs transition">
-            <div className="w-9 h-9 rounded-lg bg-pink-50 text-pink-600 flex items-center justify-center shrink-0">
-              <Building2 className="w-4 h-4 stroke-[2.2]" />
+          <div className="bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
+            <div className="w-7 h-7 rounded-md bg-pink-50 text-pink-600 flex items-center justify-center shrink-0">
+              <Building2 className="w-3.5 h-3.5 stroke-[2.2]" />
             </div>
             <div>
-              <div className="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-none">
+              <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
                 700+
               </div>
-              <div className="text-[10px] sm:text-[11px] text-slate-500 font-semibold mt-0.5">
+              <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
                 Hiring Partners
               </div>
             </div>
           </div>
 
           {/* Card 3: 99% Placement Support */}
-          <div className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/80 shadow-2xs flex items-center gap-3 hover:shadow-xs transition">
-            <div className="w-9 h-9 rounded-lg bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
-              <Trophy className="w-4 h-4 stroke-[2.2]" />
+          <div className="bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
+            <div className="w-7 h-7 rounded-md bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
+              <Trophy className="w-3.5 h-3.5 stroke-[2.2]" />
             </div>
             <div>
-              <div className="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-none">
+              <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
                 99%
               </div>
-              <div className="text-[10px] sm:text-[11px] text-slate-500 font-semibold mt-0.5">
+              <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
                 Placement Support
               </div>
             </div>
           </div>
 
           {/* Card 4: Industry Aligned Curriculum */}
-          <div className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/80 shadow-2xs flex items-center gap-3 hover:shadow-xs transition">
-            <div className="w-9 h-9 rounded-lg bg-yellow-50 text-yellow-500 flex items-center justify-center shrink-0">
-              <Star className="w-4 h-4 stroke-[2.2]" />
+          <div className="bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
+            <div className="w-7 h-7 rounded-md bg-yellow-50 text-yellow-500 flex items-center justify-center shrink-0">
+              <Star className="w-3.5 h-3.5 stroke-[2.2]" />
             </div>
             <div>
-              <div className="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-none">
+              <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
                 Industry
               </div>
-              <div className="text-[10px] sm:text-[11px] text-slate-500 font-semibold mt-0.5">
+              <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
                 Aligned Curriculum
               </div>
             </div>
@@ -253,24 +348,24 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         </div>
       </section>
 
-      {/* ─── 4. ACTION FEATURE CARDS (Row of 6 Horizontal Cards - Click prompts login) ─── */}
+      {/* ─── 4. ACTION FEATURE CARDS (Row of 6 Compact Horizontal Cards - Chota Kiya) ─── */}
       <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-1 shrink-0">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1.5 sm:gap-2">
           
           {/* Action 1: Industry-Focused Courses */}
           <div
             onClick={promptLogin}
-            className="group bg-white rounded-xl p-2 sm:p-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-blue-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
+            className="group bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-blue-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
           >
             <div className="flex items-center gap-2 min-w-0">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <BookOpen className="w-3.5 h-3.5" />
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <BookOpen className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </div>
               <div className="min-w-0">
-                <h3 className="text-[11px] sm:text-xs font-bold text-slate-900 leading-tight truncate">
+                <h3 className="text-[11px] font-bold text-slate-900 leading-tight truncate">
                   Industry Courses
                 </h3>
-                <p className="text-[10px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
+                <p className="text-[9.5px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
                   Job-ready curriculum
                 </p>
               </div>
@@ -281,17 +376,17 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           {/* Action 2: Coding Practice */}
           <div
             onClick={promptLogin}
-            className="group bg-white rounded-xl p-2 sm:p-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-indigo-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
+            className="group bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-indigo-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
           >
             <div className="flex items-center gap-2 min-w-0">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <Code2 className="w-3.5 h-3.5" />
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <Code2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </div>
               <div className="min-w-0">
-                <h3 className="text-[11px] sm:text-xs font-bold text-slate-900 leading-tight truncate">
+                <h3 className="text-[11px] font-bold text-slate-900 leading-tight truncate">
                   Coding Practice
                 </h3>
-                <p className="text-[10px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
+                <p className="text-[9.5px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
                   Build skills & solve
                 </p>
               </div>
@@ -302,17 +397,17 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           {/* Action 3: ATS Resume Checker */}
           <div
             onClick={promptLogin}
-            className="group bg-white rounded-xl p-2 sm:p-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-emerald-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
+            className="group bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-emerald-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
           >
             <div className="flex items-center gap-2 min-w-0">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <FileCheck className="w-3.5 h-3.5" />
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <FileCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </div>
               <div className="min-w-0">
-                <h3 className="text-[11px] sm:text-xs font-bold text-slate-900 leading-tight truncate">
+                <h3 className="text-[11px] font-bold text-slate-900 leading-tight truncate">
                   ATS Resume
                 </h3>
-                <p className="text-[10px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
+                <p className="text-[9.5px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
                   AI resume score
                 </p>
               </div>
@@ -323,17 +418,17 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           {/* Action 4: Earn Cash */}
           <div
             onClick={promptLogin}
-            className="group bg-white rounded-xl p-2 sm:p-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-pink-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
+            className="group bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-pink-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
           >
             <div className="flex items-center gap-2 min-w-0">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-pink-50 text-pink-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <Coins className="w-3.5 h-3.5" />
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md bg-pink-50 text-pink-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <Coins className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </div>
               <div className="min-w-0">
-                <h3 className="text-[11px] sm:text-xs font-bold text-slate-900 leading-tight truncate">
+                <h3 className="text-[11px] font-bold text-slate-900 leading-tight truncate">
                   Earn Cash
                 </h3>
-                <p className="text-[10px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
+                <p className="text-[9.5px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
                   Refer & earn money
                 </p>
               </div>
@@ -344,17 +439,17 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           {/* Action 5: Internship */}
           <div
             onClick={promptLogin}
-            className="group bg-white rounded-xl p-2 sm:p-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-purple-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
+            className="group bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-purple-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
           >
             <div className="flex items-center gap-2 min-w-0">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                 <GraduationCap className="w-3.5 h-3.5" />
               </div>
               <div className="min-w-0">
-                <h3 className="text-[11px] sm:text-xs font-bold text-slate-900 leading-tight truncate">
+                <h3 className="text-[11px] font-bold text-slate-900 leading-tight truncate">
                   Internship
                 </h3>
-                <p className="text-[10px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
+                <p className="text-[9.5px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
                   Real experience
                 </p>
               </div>
@@ -365,17 +460,17 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           {/* Action 6: Placement Support */}
           <div
             onClick={promptLogin}
-            className="group bg-white rounded-xl p-2 sm:p-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-rose-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
+            className="group bg-white rounded-lg py-1.5 px-2.5 border border-slate-200/80 shadow-2xs hover:shadow-xs hover:border-rose-300 transition-all cursor-pointer flex items-center justify-between gap-1.5"
           >
             <div className="flex items-center gap-2 min-w-0">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <Briefcase className="w-3.5 h-3.5" />
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <Briefcase className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </div>
               <div className="min-w-0">
-                <h3 className="text-[11px] sm:text-xs font-bold text-slate-900 leading-tight truncate">
+                <h3 className="text-[11px] font-bold text-slate-900 leading-tight truncate">
                   Placement
                 </h3>
-                <p className="text-[10px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
+                <p className="text-[9.5px] text-slate-500 leading-none mt-0.5 truncate hidden sm:block">
                   Top hiring partners
                 </p>
               </div>
@@ -386,79 +481,30 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         </div>
       </section>
 
-      {/* ─── 5. HIRING PARTNERS TICKER ROW (Footer - Compact Fit) ─── */}
-      <footer className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-1.5 sm:py-2 shrink-0 pb-2.5">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-2 sm:gap-4 px-3 sm:px-4 py-2 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
+      {/* ─── 5. HIRING PARTNERS CONTINUOUS TICKER ROW (Right to Left Scrolling Marquee) ─── */}
+      <footer className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-1 shrink-0 pb-1.5">
+        <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-1.5 bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
           
           {/* Label */}
-          <div className="text-[11px] sm:text-xs font-extrabold text-slate-700 whitespace-nowrap">
-            Our Hiring Partners
+          <div className="text-[11px] sm:text-xs font-black text-slate-800 whitespace-nowrap shrink-0 flex items-center gap-1.5 border-r border-slate-200 pr-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Our Hiring Partners</span>
           </div>
 
-          {/* Logos Row */}
-          <div className="flex flex-wrap items-center justify-center gap-3.5 sm:gap-5 text-xs font-bold text-slate-500">
-            {/* TCS */}
-            <span className="text-rose-600 font-black text-xs sm:text-sm tracking-tighter">tcs</span>
+          {/* Continuous Right-to-Left Infinite Marquee */}
+          <div className="relative overflow-hidden flex-1 select-none">
+            {/* Fade gradients at edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-6 sm:w-10 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-6 sm:w-10 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
-            {/* Infosys */}
-            <span className="text-[#007cc3] font-black text-xs sm:text-sm tracking-tight">Infosys</span>
-
-            {/* Accenture */}
-            <span className="text-purple-800 font-extrabold text-xs sm:text-sm tracking-tight flex items-center gap-0.5">
-              accenture <span className="text-[#a100ff]">&gt;</span>
-            </span>
-
-            {/* Wipro */}
-            <span className="text-slate-800 font-black text-xs sm:text-sm tracking-normal flex items-center gap-1">
-              <span className="inline-block w-2 h-2 rounded-full bg-gradient-to-r from-red-500 via-amber-400 to-blue-500" />
-              wipro
-            </span>
-
-            {/* Google */}
-            <span className="font-extrabold text-xs sm:text-sm tracking-tight flex items-center">
-              <span className="text-[#4285F4]">G</span>
-              <span className="text-[#EA4335]">o</span>
-              <span className="text-[#FBBC05]">o</span>
-              <span className="text-[#4285F4]">g</span>
-              <span className="text-[#34A853]">l</span>
-              <span className="text-[#EA4335]">e</span>
-            </span>
-
-            {/* Microsoft */}
-            <span className="text-slate-700 font-bold text-xs sm:text-sm tracking-tight flex items-center gap-1">
-              <span className="grid grid-cols-2 gap-0.5 w-2.5 h-2.5">
-                <span className="bg-[#f25022]" />
-                <span className="bg-[#7fba00]" />
-                <span className="bg-[#00a4ef]" />
-                <span className="bg-[#ffb900]" />
-              </span>
-              Microsoft
-            </span>
-
-            {/* Amazon */}
-            <span className="text-slate-900 font-black text-xs sm:text-sm tracking-tight">
-              amazon
-            </span>
-
-            {/* Deloitte */}
-            <span className="text-slate-900 font-black text-xs sm:text-sm tracking-tight">
-              Deloitte<span className="text-emerald-500">.</span>
-            </span>
-
-            {/* Capgemini */}
-            <span className="text-[#0070ad] font-bold text-xs sm:text-sm tracking-tight flex items-center gap-0.5">
-              Capgemini <span className="text-[#0070ad] text-[10px]">♠</span>
-            </span>
-
-            {/* IBM */}
-            <span className="text-[#1f70c1] font-black text-xs sm:text-sm tracking-widest font-mono">
-              IBM
-            </span>
-
-            {/* 700+ More */}
-            <span className="text-slate-400 font-semibold text-[11px] whitespace-nowrap">
-              and 700+ more...
-            </span>
+            {/* Scrolling Track */}
+            <div className="animate-marquee-left flex items-center gap-7 sm:gap-9 text-xs font-bold text-slate-600">
+              {[...HIRING_PARTNERS, ...HIRING_PARTNERS].map((partner, index) => (
+                <div key={partner.id + '-' + index} className="shrink-0 flex items-center">
+                  {partner.node}
+                </div>
+              ))}
+            </div>
           </div>
 
         </div>

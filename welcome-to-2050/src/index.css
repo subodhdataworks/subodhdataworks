@@ -261,3 +261,18 @@
 }
 
 
+
+@keyframes marqueeLeft {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+.animate-marquee-left {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: marqueeLeft 28s linear infinite;
+  will-change: transform;
+}
+.animate-marquee-left:hover {
+  animation-play-state: paused !important;
+}
