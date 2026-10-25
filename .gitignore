@@ -13,4 +13,8 @@ source-prepped.png
 # Python artifacts
 __pycache__/
 *.py[cod]
+# Environment files with secrets
 .env
+.env.local
+.env.*
+*.env

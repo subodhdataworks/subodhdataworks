@@ -35,5 +35,7 @@ dist-ssr
 /.playwright-mcp/
 
 # Environment files with secrets
+.env
 .env.local
-.env.*.local
+.env.*
+*.env

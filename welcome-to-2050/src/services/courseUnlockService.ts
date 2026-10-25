@@ -187,3 +187,43 @@ export function isTopicUnlocked(
 
   return chapterNum === 1 && topicNum <= 3;
 }
+
+
+/**
+ * Cryptographically verifies entitlement with server before granting course unlock
+ */
+export async function verifyAndUnlockWithProof(
+  courseKeyOrTitle: string,
+  proof: {
+    paymentId: string;
+    orderId: string;
+    verifiedAt: number;
+    entitlementProof: string;
+  }
+): Promise<{ success: boolean; canonicalCourse: CanonicalCourseId; error?: string }> {
+  const canonical = normalizeCourseId(courseKeyOrTitle);
+  try {
+    const res = await fetch('/api/entitlements', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        paymentId: proof.paymentId,
+        orderId: proof.orderId,
+        courseId: canonical,
+        verifiedAt: proof.verifiedAt,
+        entitlementProof: proof.entitlementProof,
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.entitled) {
+      return { success: false, canonicalCourse: canonical, error: data?.error || 'Server rejected course entitlement proof.' };
+    }
+    unlockCourse(canonical);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('futureai_proof_' + canonical, JSON.stringify(proof));
+    }
+    return { success: true, canonicalCourse: canonical };
+  } catch (err: any) {
+    return { success: false, canonicalCourse: canonical, error: err?.message || 'Network error verifying entitlement.' };
+  }
+}

@@ -36,6 +36,8 @@ export async function recordCourseEnrollmentInCloud(params: {
   paymentId: string;
   orderId?: string;
   amount: number;
+  entitlementProof?: string;
+  verifiedAt?: number;
 }): Promise<void> {
   const cleanEmail = (params.email || '').trim().toLowerCase();
   const cleanPhone = (params.phone || '').replace(/\D/g, '');
@@ -58,7 +60,9 @@ export async function recordCourseEnrollmentInCloud(params: {
     courseId: canonicalCourse,
     courseTitle: params.courseTitle || 'Data Analyst with GenAI',
     date: new Date().toISOString(),
-    status: 'captured'
+    status: 'captured',
+    entitlementProof: params.entitlementProof || null,
+    verifiedAt: params.verifiedAt || null
   };
 
   // 2. Persist in Firestore

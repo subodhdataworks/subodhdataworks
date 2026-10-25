@@ -1,10 +1,8 @@
 /**
  * Cloudflare Pages Function — /api/razorpay-verify
- * Verifies Razorpay payment signature:
- *   HMAC_SHA256(order_id + "|" + payment_id, key_secret) === razorpay_signature
+ * Verifies Razorpay payment signature server-side.
+ * Secret key is read exclusively from Cloudflare environment variables.
  */
-
-const DEFAULT_KEY_SECRET = 'MV3Z97Xvt6ibwIt9FBYQqm1h';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -31,35 +29,67 @@ async function hmacSha256Hex(secret, message) {
     .join('');
 }
 
+// Constant-time string comparison to prevent timing attacks
 function safeEqual(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
   if (a.length !== b.length) return false;
   let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  for (let i = 0; i < a.length; i++) {
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
   return diff === 0;
 }
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-  const keySecret = env.RAZORPAY_KEY_SECRET || DEFAULT_KEY_SECRET;
+  const keySecret = env?.RAZORPAY_KEY_SECRET;
+
+  if (!keySecret) {
+    return json(
+      {
+        success: false,
+        error: 'Payment verification secret is missing from environment configuration.',
+      },
+      500
+    );
+  }
 
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = await request.json();
+    const body = await request.json().catch(() => ({}));
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, courseId } = body;
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-      return json({ success: false, error: 'Missing payment fields' }, 400);
+      return json({ success: false, error: 'Missing required payment verification fields' }, 400);
     }
 
-    const expected = await hmacSha256Hex(keySecret, `${razorpay_order_id}|${razorpay_payment_id}`);
-    const verified = safeEqual(expected, String(razorpay_signature));
-
-    return json(
-      verified
-        ? { success: true, orderId: razorpay_order_id, paymentId: razorpay_payment_id }
-        : { success: false, error: 'Signature verification failed' },
-      verified ? 200 : 400
+    const expectedSignature = await hmacSha256Hex(
+      keySecret,
+      `${razorpay_order_id}|${razorpay_payment_id}`
     );
+
+    const isSignatureValid = safeEqual(expectedSignature, String(razorpay_signature));
+
+    if (!isSignatureValid) {
+      return json({ success: false, error: 'Payment signature verification failed' }, 400);
+    }
+
+    // Generate server-signed entitlement proof token
+    const verifiedTimestamp = Date.now();
+    const entitlementProof = await hmacSha256Hex(
+      keySecret,
+      `VERIFIED_ENTITLEMENT:${razorpay_payment_id}:${razorpay_order_id}:${courseId || 'data_analyst'}:${verifiedTimestamp}`
+    );
+
+    return json({
+      success: true,
+      orderId: razorpay_order_id,
+      paymentId: razorpay_payment_id,
+      courseId: courseId || 'data_analyst',
+      verifiedAt: verifiedTimestamp,
+      entitlementProof,
+    });
   } catch (err) {
-    return json({ success: false, error: 'Server error', message: String(err) }, 500);
+    return json({ success: false, error: 'Internal verification error' }, 500);
   }
 }
 

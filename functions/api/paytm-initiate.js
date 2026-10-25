@@ -18,7 +18,13 @@ export async function onRequestPost(context) {
     const { amount, orderId, custId } = body;
 
     const mid = env.PAYTM_MID || 'TeBDWo05912976663912';
-    const merchantKey = env.PAYTM_MERCHANT_KEY || '5CHexR2LJLiVAUXv';
+    const merchantKey = env.PAYTM_MERCHANT_KEY;
+    if (!merchantKey) {
+      return new Response(JSON.stringify({ success: false, error: 'Merchant configuration missing' }), {
+        status: 500,
+        headers: corsHeaders,
+      });
+    }
     const website = env.PAYTM_WEBSITE || 'WEBSTAGING';
 
     if (!amount || !orderId) {

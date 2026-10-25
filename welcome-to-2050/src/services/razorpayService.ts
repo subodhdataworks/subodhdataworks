@@ -4,8 +4,8 @@
  * Flow:
  * 1. POST /api/razorpay-order  → server creates order (uses key_secret securely)
  * 2. Open Razorpay Checkout popup (checkout.js) with order_id
- * 3. POST /api/razorpay-verify → server verifies HMAC signature
- * 4. Resolve with paymentId on success
+ * 3. POST /api/razorpay-verify → server verifies HMAC signature and signs entitlement proof
+ * 4. Resolve with paymentId and cryptographically signed entitlement proof
  */
 
 import { auth } from './firebase';
@@ -23,6 +23,9 @@ export interface RazorpayResult {
   orderId: string;
   paymentId: string;
   amount: number; // rupees
+  entitlementProof?: string;
+  verifiedAt?: number;
+  courseId?: string;
 }
 
 let scriptPromise: Promise<void> | null = null;
@@ -95,12 +98,15 @@ export async function startRazorpayCheckout(params: {
         razorpay_payment_id: string;
         razorpay_signature: string;
       }) => {
-        // 3. Verify signature on server
+        // 3. Verify signature on server & receive signed entitlement proof
         try {
           const vRes = await fetch('/api/razorpay-verify', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(response),
+            body: JSON.stringify({
+              ...response,
+              courseId: params.courseId || order.courseId,
+            }),
           });
           const v = await vRes.json().catch(() => ({}));
           if (!vRes.ok || !v.success) throw new Error(v.error || 'Payment verification failed.');
@@ -108,6 +114,9 @@ export async function startRazorpayCheckout(params: {
             orderId: response.razorpay_order_id,
             paymentId: response.razorpay_payment_id,
             amount: order.amount / 100,
+            entitlementProof: v.entitlementProof,
+            verifiedAt: v.verifiedAt,
+            courseId: v.courseId,
           });
         } catch (e) {
           reject(e instanceof Error ? e : new Error('Payment verification failed.'));

@@ -111,7 +111,13 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
 
   useEffect(() => {
     if (session) {
-      loadAllData();
+      AdminAuthService.verifyServerSession().then((isValid) => {
+        if (!isValid) {
+          setSession(null);
+        } else {
+          loadAllData();
+        }
+      });
     }
   }, [session]);
 

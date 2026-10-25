@@ -230,25 +230,15 @@ export async function loginWithEmailFirebase(
  * Real Firebase Mobile Number Login for Android Students
  * 100% trouble-free: Zero popups, works on all Android Webviews, Chrome & WhatsApp
  */
+/**
+ * Unverified phone login is strictly disabled to prevent creating unauthorized accounts.
+ * Real SMS OTP verification via verifyOtpAndLogin() is required.
+ */
 export async function loginWithMobileFirebase(
-  phone: string,
-  fullName?: string
+  _phone: string,
+  _fullName?: string
 ): Promise<{ name: string; phone: string; email: string; avatar: string; uid: string }> {
-  const cleanPhone = phone.replace(/\D/g, '');
-  const existing = await findUserByPhone(cleanPhone);
-  const finalName = (fullName || existing?.name || 'Learner').trim();
-  const uid = existing?.uid || `usr_${cleanPhone}`;
-  const generatedEmail = existing?.email || `student_${cleanPhone.slice(-4)}@futureitindustry.com`;
-
-  await recordUserInDatabase({
-    uid,
-    name: finalName,
-    phone: cleanPhone,
-    email: generatedEmail,
-    source: 'Phone',
-  });
-
-  return { name: finalName, phone: cleanPhone, email: generatedEmail, avatar: '', uid };
+  throw new Error('Direct unverified phone login is disabled for security. Please verify your phone number via real SMS OTP or authenticate using Google or Email.');
 }
 
 /**

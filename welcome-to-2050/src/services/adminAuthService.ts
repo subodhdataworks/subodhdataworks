@@ -1,18 +1,13 @@
-import { doc, getDoc, setDoc, collection, getDocs, serverTimestamp } from 'firebase/firestore';
-import { db } from './firebase';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { db, auth, googleProvider } from './firebase';
 import { AdminUser, AdminSession, AdminRole, AdminPermission, ROLE_PERMISSIONS, AdminAuditLog } from '../types/admin';
 
 const ADMIN_STORAGE_KEY = 'futureai_admin_session_v1';
-const ADMINS_COLLECTION = 'admin_users';
 const AUDIT_LOGS_COLLECTION = 'admin_audit_logs';
 
-// Default initial provisioned Super Admin credentials (secure bootstrap)
-// Can be customized via environment or changed securely in the Admin settings
-export const DEFAULT_SUPER_ADMIN: { email: string; passHash: string; rawPass: string; name: string } = {
+export const DEFAULT_SUPER_ADMIN = {
   email: 'admin@futureitindustry.com',
-  // SHA-256 for 'Admin@2050FutureIT#'
-  passHash: '9a8be4082d0033aeda7475aa7cf123b59a3176107611be02e7601ac698d63143',
-  rawPass: 'Admin@2050FutureIT#',
   name: 'Chief Executive Administrator',
 };
 
@@ -26,7 +21,7 @@ export async function sha256(message: string): Promise<string> {
 
 export class AdminAuthService {
   /**
-   * Check if current session exists, is valid, and not expired (8-hour session)
+   * Check if current session exists, is valid, and not expired
    */
   public static getCurrentSession(): AdminSession | null {
     if (typeof window === 'undefined') return null;
@@ -45,6 +40,52 @@ export class AdminAuthService {
   }
 
   /**
+   * Cryptographically re-verify active admin session with server-side /api/admin-verify
+   * Rejects forged localStorage flags
+   */
+  public static async verifyServerSession(): Promise<boolean> {
+    const session = this.getCurrentSession();
+    if (!session || !session.token) return false;
+
+    // Check if token looks like Firebase JWT (header.payload.signature)
+    if (!session.token.includes('.') || session.token.split('.').length !== 3) {
+      // Legacy or mock token — reject
+      console.warn('[AdminAuth] Invalid token structure. Requiring server re-authentication.');
+      await this.logout();
+      return false;
+    }
+
+    try {
+      const res = await fetch('/api/admin-verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.token}`,
+        },
+      });
+
+      if (!res.ok) {
+        console.warn('[AdminAuth] Server rejected admin token with status', res.status);
+        await this.logout();
+        return false;
+      }
+
+      const data = await res.json().catch(() => ({}));
+      if (!data.authorized) {
+        console.warn('[AdminAuth] Server authorization returned false');
+        await this.logout();
+        return false;
+      }
+
+      return true;
+    } catch (err) {
+      // In offline development or network failure, allow unexpired session
+      console.warn('[AdminAuth] Verification network check notice:', err);
+      return Boolean(session && Date.now() < session.expiresAt);
+    }
+  }
+
+  /**
    * Has permission check for currently authenticated admin
    */
   public static hasPermission(permission: AdminPermission): boolean {
@@ -55,9 +96,13 @@ export class AdminAuthService {
   }
 
   /**
-   * Authenticate admin with email and password
+   * Authenticate admin via Firebase Auth and server-side /api/admin-verify token verification
+   * Eliminates hardcoded passwords and unverified client-side privileges.
    */
-  public static async login(emailInput: string, passwordInput: string): Promise<{ success: boolean; session?: AdminSession; error?: string }> {
+  public static async login(
+    emailInput: string,
+    passwordInput: string
+  ): Promise<{ success: boolean; session?: AdminSession; error?: string }> {
     const cleanEmail = emailInput.trim().toLowerCase();
     const cleanPassword = passwordInput.trim();
 
@@ -65,101 +110,149 @@ export class AdminAuthService {
       return { success: false, error: 'Email and password are required.' };
     }
 
-    const hashedInput = await sha256(cleanPassword);
-
-    // 1. Check if user is the Provisioned Root Super Admin (allows direct convenience aliases)
-    const isSuperAdminEmail =
-      cleanEmail === DEFAULT_SUPER_ADMIN.email.toLowerCase() ||
-      cleanEmail === 'admin' ||
-      cleanEmail === 'admin@futureitindustry.com' ||
-      cleanEmail === 'admin@futureit.com';
-
-    const isSuperAdminPass =
-      hashedInput === DEFAULT_SUPER_ADMIN.passHash ||
-      cleanPassword === DEFAULT_SUPER_ADMIN.rawPass ||
-      cleanPassword === 'Admin@2050FutureIT#' ||
-      cleanPassword === 'admin123' ||
-      cleanPassword === 'admin';
-
-    if (isSuperAdminEmail && isSuperAdminPass) {
-        const superAdminUser: AdminUser = {
-          id: 'admin_root_super',
-          email: DEFAULT_SUPER_ADMIN.email,
-          name: DEFAULT_SUPER_ADMIN.name,
-          role: 'super_admin',
-          avatar: '/images/future_it_industry_logo.png',
-          createdAt: '2026-01-01T00:00:00.000Z',
-          lastLoginAt: new Date().toISOString(),
-          status: 'active',
-        };
-
-        const session: AdminSession = {
-          admin: superAdminUser,
-          token: `adm_tok_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-          expiresAt: Date.now() + 8 * 60 * 60 * 1000, // 8 hours
-        };
-
-        localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(session));
-
-        await this.logAudit({
-          action: 'ADMIN_LOGIN_SUCCESS',
-          category: 'AUTH',
-          details: `Super Admin ${superAdminUser.email} logged in successfully`,
-        });
-
-        return { success: true, session };
-    }
-
-    // 2. Check Database / Stored Team Admins
     try {
-      const storedAdmins = this.getLocalAdmins();
-      const matched = storedAdmins.find((a) => a.email.toLowerCase() === cleanEmail);
+      // 1. Authenticate with real Firebase Auth
+      const userCred = await signInWithEmailAndPassword(auth, cleanEmail, cleanPassword);
+      const idToken = await userCred.user.getIdToken(true);
 
-      if (matched) {
-        if (matched.status === 'suspended') {
-          return { success: false, error: 'Your admin account has been suspended. Contact Super Admin.' };
-        }
-        if (matched.passHash === hashedInput) {
-          const adminUser: AdminUser = {
-            id: matched.id,
-            email: matched.email,
-            name: matched.name,
-            role: matched.role,
-            avatar: matched.avatar,
-            createdAt: matched.createdAt,
-            lastLoginAt: new Date().toISOString(),
-            status: matched.status,
-          };
+      // 2. Validate token and admin allowlist against server-side /api/admin-verify
+      const verifyRes = await fetch('/api/admin-verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
 
-          const session: AdminSession = {
-            admin: adminUser,
-            token: `adm_tok_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-            expiresAt: Date.now() + 8 * 60 * 60 * 1000,
-          };
+      const verifyData = await verifyRes.json().catch(() => ({}));
 
-          localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(session));
-
-          await this.logAudit({
-            action: 'ADMIN_LOGIN_SUCCESS',
-            category: 'AUTH',
-            details: `Admin ${adminUser.name} (${adminUser.role}) logged in successfully`,
-          });
-
-          return { success: true, session };
-        }
+      if (!verifyRes.ok || !verifyData.authorized) {
+        await auth.signOut();
+        const errMsg =
+          verifyData?.error || 'Access Denied: Your account does not have platform administrator privileges.';
+        await this.logAudit({
+          action: 'ADMIN_LOGIN_UNAUTHORIZED',
+          category: 'AUTH',
+          details: `Account ${cleanEmail} attempted admin login but failed authorization.`,
+        });
+        return { success: false, error: errMsg };
       }
-    } catch (e) {
-      console.warn('Admin check error:', e);
+
+      // 3. Establish verified admin session
+      const adminUser: AdminUser = {
+        id: userCred.user.uid,
+        email: cleanEmail,
+        name: verifyData.admin?.name || userCred.user.displayName || 'Administrator',
+        role: verifyData.admin?.role || 'super_admin',
+        avatar: userCred.user.photoURL || '/images/future_it_industry_logo.png',
+        createdAt: userCred.user.metadata.creationTime || new Date().toISOString(),
+        lastLoginAt: new Date().toISOString(),
+        status: 'active',
+      };
+
+      const session: AdminSession = {
+        admin: adminUser,
+        token: idToken,
+        expiresAt: Date.now() + 8 * 60 * 60 * 1000, // 8 hours
+      };
+
+      localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(session));
+
+      await this.logAudit({
+        action: 'ADMIN_LOGIN_SUCCESS',
+        category: 'AUTH',
+        details: `Admin ${adminUser.email} authenticated successfully with verified Firebase ID token.`,
+      });
+
+      return { success: true, session };
+    } catch (firebaseErr: any) {
+      let errorMsg = 'Invalid admin email or password.';
+      if (
+        firebaseErr.code === 'auth/user-not-found' ||
+        firebaseErr.code === 'auth/wrong-password' ||
+        firebaseErr.code === 'auth/invalid-credential'
+      ) {
+        errorMsg = 'Incorrect admin email or password. Please verify your credentials.';
+      } else if (firebaseErr.code === 'auth/too-many-requests') {
+        errorMsg = 'Too many failed login attempts. Please wait a few minutes before trying again.';
+      } else if (firebaseErr.message) {
+        errorMsg = firebaseErr.message;
+      }
+
+      await this.logAudit({
+        action: 'ADMIN_LOGIN_FAILED',
+        category: 'AUTH',
+        details: `Failed admin login attempt for ${cleanEmail}: ${errorMsg}`,
+      });
+
+      return { success: false, error: errorMsg };
     }
+  }
 
-    // Failure audit log
-    await this.logAudit({
-      action: 'ADMIN_LOGIN_FAILED',
-      category: 'AUTH',
-      details: `Failed admin login attempt for email: ${cleanEmail}`,
-    });
+  /**
+   * Authenticate admin via Google Sign-In with server-side allowlist verification
+   */
+  public static async loginWithGoogleAdmin(): Promise<{
+    success: boolean;
+    session?: AdminSession;
+    error?: string;
+  }> {
+    try {
+      const userCred = await signInWithPopup(auth, googleProvider);
+      const idToken = await userCred.user.getIdToken(true);
+      const email = (userCred.user.email || '').toLowerCase().trim();
 
-    return { success: false, error: 'Invalid admin credentials or unauthorized account.' };
+      const verifyRes = await fetch('/api/admin-verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
+
+      const verifyData = await verifyRes.json().catch(() => ({}));
+
+      if (!verifyRes.ok || !verifyData.authorized) {
+        await auth.signOut();
+        const errMsg =
+          verifyData?.error || 'Access Denied: Google account ' + email + ' is not on the admin allowlist.';
+        await this.logAudit({
+          action: 'ADMIN_LOGIN_GOOGLE_UNAUTHORIZED',
+          category: 'AUTH',
+          details: `Google user ${email} attempted admin login but is not allowlisted.`,
+        });
+        return { success: false, error: errMsg };
+      }
+
+      const adminUser: AdminUser = {
+        id: userCred.user.uid,
+        email,
+        name: verifyData.admin?.name || userCred.user.displayName || 'Administrator',
+        role: verifyData.admin?.role || 'super_admin',
+        avatar: userCred.user.photoURL || '/images/future_it_industry_logo.png',
+        createdAt: userCred.user.metadata.creationTime || new Date().toISOString(),
+        lastLoginAt: new Date().toISOString(),
+        status: 'active',
+      };
+
+      const session: AdminSession = {
+        admin: adminUser,
+        token: idToken,
+        expiresAt: Date.now() + 8 * 60 * 60 * 1000,
+      };
+
+      localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(session));
+
+      await this.logAudit({
+        action: 'ADMIN_LOGIN_GOOGLE_SUCCESS',
+        category: 'AUTH',
+        details: `Admin ${email} signed in successfully via Google with verified ID token.`,
+      });
+
+      return { success: true, session };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Google admin sign-in failed.' };
+    }
   }
 
   /**
@@ -171,12 +264,15 @@ export class AdminAuthService {
       await this.logAudit({
         action: 'ADMIN_LOGOUT',
         category: 'AUTH',
-        details: `Admin ${session.admin.email} logged out`,
+        details: `Admin ${session.admin.email} logged out.`,
       });
     }
     if (typeof window !== 'undefined') {
       localStorage.removeItem(ADMIN_STORAGE_KEY);
     }
+    try {
+      await auth.signOut();
+    } catch {}
   }
 
   /**
@@ -208,7 +304,6 @@ export class AdminAuthService {
         const raw = localStorage.getItem('futureai_admin_audit_logs');
         const list: AdminAuditLog[] = raw ? JSON.parse(raw) : [];
         list.unshift(logItem);
-        // keep last 500 logs locally
         if (list.length > 500) list.pop();
         localStorage.setItem('futureai_admin_audit_logs', JSON.stringify(list));
       }
