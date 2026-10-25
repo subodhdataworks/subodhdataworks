@@ -498,19 +498,9 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               )}
             </div>
 
-            {/* User Profile Avatar Circle OR Login / Sign Up buttons */}
+            {/* User Profile Avatar Circle OR Single Free Login / Sign Up Button */}
             {!isLoggedIn ? (
-              <div className="flex items-center gap-2 sm:gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    soundEffects.playClick();
-                    onOpenLogin?.();
-                  }}
-                  className="inline-flex items-center px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-blue-600 text-blue-600 hover:bg-blue-50/80 font-bold text-xs sm:text-sm transition cursor-pointer"
-                >
-                  Login
-                </button>
+              <div className="flex items-center">
                 <button
                   type="button"
                   onClick={() => {
@@ -518,9 +508,10 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     if (onOpenSignUp) onOpenSignUp();
                     else onOpenLogin?.();
                   }}
-                  className="inline-flex items-center px-4 sm:px-5 py-1.5 sm:py-2 rounded-xl bg-[#1a73e8] hover:bg-blue-700 text-white font-bold text-xs sm:text-sm transition shadow-sm cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-95 text-white font-black text-xs sm:text-sm shadow-sm hover:shadow-md transition-all duration-200"
                 >
-                  Sign Up
+                  <span>Free Login / Sign Up</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             ) : (
