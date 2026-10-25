@@ -745,20 +745,6 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       ═══════════════════════════════════════════════════════════════════════════ */}
       <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
-            Why Choose{' '}
-<TypewriterHeading
-              words={['Future IT Industry?']}
-              className="bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent"
-              cursorClassName="text-cyan-500"
-            />
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1.5">
-            Real Skills • Real Projects • Career Support. Choose the proven path to career transformation.
-          </p>
-        </div>
 
         {/* Compact Real Comparison Showcase Banner */}
         <div 
