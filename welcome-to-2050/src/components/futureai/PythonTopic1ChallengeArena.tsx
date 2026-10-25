@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import confetti from 'canvas-confetti';
+import { soundEffects } from '../../services/soundEffects';
 import {
   ArrowLeft,
   Play,
@@ -27,7 +29,9 @@ import {
   FileText,
   BarChart3,
   Trophy,
-  Info
+  Info,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 
 export interface Topic1Task {
@@ -462,30 +466,47 @@ function executePythonSimulation(code: string): { output: string; error?: string
   }
 }
 
-interface PythonTopic1ChallengeArenaProps {
+import { TOPIC_QUESTIONS_MAP, ChallengeTask } from './data/pythonCodingChallengesBank';
+
+export interface PythonTopic1ChallengeArenaProps {
   userName?: string;
+  topicId?: number;
+  topicTitle?: string;
   initialTaskId?: number;
+  tasks?: ChallengeTask[];
   onBack: () => void;
   onCompleteAll?: () => void;
 }
 
 export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProps> = ({
   userName = 'Rahul',
+  topicId = 1,
+  topicTitle,
   initialTaskId = 1,
+  tasks,
   onBack,
   onCompleteAll
 }) => {
+  // Select task set based on topicId or passed tasks
+  const activeTasks: Topic1Task[] = React.useMemo(() => {
+    if (tasks && tasks.length > 0) return tasks as Topic1Task[];
+    if (topicId && TOPIC_QUESTIONS_MAP[topicId]) {
+      return TOPIC_QUESTIONS_MAP[topicId] as Topic1Task[];
+    }
+    return TOPIC_1_TASKS;
+  }, [tasks, topicId]);
+
   const [currentTaskIndex, setCurrentTaskIndex] = useState<number>(() => {
-    const idx = TOPIC_1_TASKS.findIndex((t) => t.taskNumber === initialTaskId);
+    const idx = activeTasks.findIndex((t) => t.taskNumber === initialTaskId);
     return idx >= 0 ? idx : 0;
   });
 
-  const task = TOPIC_1_TASKS[currentTaskIndex];
+  const task = activeTasks[currentTaskIndex] || activeTasks[0];
 
   // Codes dictionary per task
   const [codes, setCodes] = useState<Record<number, string>>(() => {
     const init: Record<number, string> = {};
-    TOPIC_1_TASKS.forEach((t) => {
+    activeTasks.forEach((t) => {
       init[t.id] = t.starterCode;
     });
     return init;
@@ -505,6 +526,10 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
     2: false,
     3: false
   });
+
+  // Sound and celebration states
+  const [soundOn, setSoundOn] = useState<boolean>(() => soundEffects.getSoundEnabled());
+  const [showCelebrationToast, setShowCelebrationToast] = useState<boolean>(false);
 
   // Editor states
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
@@ -537,6 +562,7 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
   };
 
   const handleCopy = (text: string, sectionKey: string) => {
+    soundEffects.playWaterDrop();
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(text);
     }
@@ -547,6 +573,7 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
   };
 
   const toggleEyeVisibility = (caseNum: number) => {
+    soundEffects.playHover();
     setTestCaseVisibility((prev) => ({
       ...prev,
       [caseNum]: !prev[caseNum]
@@ -554,6 +581,7 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
   };
 
   const handleRunCode = () => {
+    soundEffects.playClick();
     setIsRunning(true);
     setRightTab('result');
 
@@ -566,17 +594,31 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
       setExecutionTime(`${elapsed}s`);
 
       if (res.error) {
+        soundEffects.playError();
         setTerminalOutput(`Traceback (most recent call last):\n  File "solution.py", line 1\n${res.error}`);
         setTestResult({ passed: false, message: 'Execution encountered an error.' });
       } else {
         setTerminalOutput(res.output || '(No output produced)');
         const validation = task.validate(currentCode, res.output);
         setTestResult(validation);
+        if (validation.passed) {
+          soundEffects.playSuccess();
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            origin: { y: 0.65 }
+          });
+          setShowCelebrationToast(true);
+          setTimeout(() => setShowCelebrationToast(false), 3000);
+        } else {
+          soundEffects.playError();
+        }
       }
     }, 300);
   };
 
   const handleSubmitCode = () => {
+    soundEffects.playClick();
     setIsRunning(true);
     setRightTab('result');
 
@@ -597,16 +639,29 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
       setSubmissionsList((prev) => [newSub, ...prev]);
 
       if (isAccepted) {
+        soundEffects.playLevelUp();
+        confetti({
+          particleCount: 90,
+          spread: 80,
+          origin: { y: 0.6 },
+          colors: ['#1a73e8', '#34a853', '#fbbc05', '#ea4335', '#a855f7']
+        });
+        setShowCelebrationToast(true);
+        setTimeout(() => setShowCelebrationToast(false), 3500);
+
         setSolvedTaskIds((prev) => {
           const next = new Set(prev);
           next.add(task.id);
           return next;
         });
+      } else {
+        soundEffects.playError();
       }
     }, 450);
   };
 
   const handlePrevTask = () => {
+    soundEffects.playColorChange();
     if (currentTaskIndex > 0) {
       setCurrentTaskIndex((prev) => prev - 1);
       setRightTab('testcases');
@@ -616,6 +671,7 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
   };
 
   const handleNextTask = () => {
+    soundEffects.playColorChange();
     if (currentTaskIndex < TOPIC_1_TASKS.length - 1) {
       setCurrentTaskIndex((prev) => prev + 1);
       setRightTab('testcases');
@@ -630,17 +686,20 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
   const codeLines = currentCode.split('\n');
   const lineCount = Math.max(codeLines.length, 18);
 
-  const progressPercent = Math.round(((currentTaskIndex + 1) / TOPIC_1_TASKS.length) * 100);
+  const progressPercent = Math.round(((currentTaskIndex + 1) / activeTasks.length) * 100);
 
   return (
     <div className={`min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col ${isFullscreen ? 'fixed inset-0 z-50 overflow-y-auto' : ''}`}>
       
-      {/* ─── Top Navigation Bar with Back & Question Selector ─── */}
+      {/* ─── Top Navigation Bar with Back, Sound Toggle & Question Selector ─── */}
       <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-2.5 flex items-center justify-between sticky top-0 z-20 shadow-xs">
         <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={onBack}
+            onClick={() => {
+              soundEffects.playClick();
+              onBack();
+            }}
             className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-bold"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -649,39 +708,71 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
           <div className="h-4 w-px bg-slate-200" />
           <div className="flex items-center gap-2">
             <span className="text-xs font-extrabold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
-              Topic 1
+              Topic {topicId}
             </span>
             <span className="text-xs font-bold text-slate-800 hidden md:inline truncate max-w-[280px]">
-              Say Hello, World! With Python
+              {topicTitle || (topicId === 1 ? 'Say Hello, World! With Python' : `Topic ${topicId} Challenge`)}
             </span>
           </div>
         </div>
 
-        {/* Quick Question Dropdown in Navbar */}
-        <div className="flex items-center gap-2">
-          <label htmlFor="nav-task-select" className="text-xs font-bold text-slate-500 hidden sm:inline">
-            Challenge:
-          </label>
-          <select
-            id="nav-task-select"
-            value={currentTaskIndex}
-            onChange={(e) => {
-              setCurrentTaskIndex(Number(e.target.value));
-              setRightTab('testcases');
-              setTerminalOutput('');
-              setTestResult(null);
+        {/* Right Tools: Sound FX Toggle + Question Dropdown in Navbar */}
+        <div className="flex items-center gap-3">
+          {/* Sound Toggle with Live Audio Feedback */}
+          <button
+            type="button"
+            onClick={() => {
+              const next = soundEffects.toggleSound();
+              setSoundOn(next);
             }}
-            className="bg-slate-50 hover:bg-slate-100 border border-slate-300 text-slate-800 font-bold text-xs px-3 py-1.5 rounded-lg shadow-2xs focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer max-w-[220px] sm:max-w-[260px] truncate"
+            title={soundOn ? 'Sound Effects ON (Click to Mute)' : 'Sound Effects Muted (Click to Unmute)'}
+            className={`px-2.5 py-1.5 rounded-lg border flex items-center gap-1.5 text-xs font-bold transition-all cursor-pointer ${
+              soundOn
+                ? 'bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100'
+                : 'bg-slate-50 border-slate-200 text-slate-400 hover:text-slate-600'
+            }`}
           >
-            {TOPIC_1_TASKS.map((t, idx) => (
-              <option key={t.id} value={idx}>
-                {solvedTaskIds.has(t.id) ? '✅ ' : `${t.taskNumber}. `}
-                {t.title}
-              </option>
-            ))}
-          </select>
+            {soundOn ? <Volume2 className="w-3.5 h-3.5 text-blue-600 animate-pulse" /> : <VolumeX className="w-3.5 h-3.5" />}
+            <span className="hidden lg:inline text-[11px]">{soundOn ? 'Sound ON' : 'Muted'}</span>
+          </button>
+
+          <div className="flex items-center gap-1.5">
+            <label htmlFor="nav-task-select" className="text-xs font-bold text-slate-500 hidden sm:inline">
+              Challenge:
+            </label>
+            <select
+              id="nav-task-select"
+              value={currentTaskIndex}
+              onChange={(e) => {
+                soundEffects.playColorChange();
+                setCurrentTaskIndex(Number(e.target.value));
+                setRightTab('testcases');
+                setTerminalOutput('');
+                setTestResult(null);
+              }}
+              className="bg-slate-50 hover:bg-slate-100 border border-slate-300 text-slate-800 font-bold text-xs px-3 py-1.5 rounded-lg shadow-2xs focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer max-w-[200px] sm:max-w-[250px] truncate"
+            >
+              {activeTasks.map((t, idx) => (
+                <option key={t.id} value={idx}>
+                  {solvedTaskIds.has(t.id) ? '✅ ' : `${t.taskNumber}. `}
+                  {t.title}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
+
+      {/* Floating Animated Celebration Toast */}
+      {showCelebrationToast && (
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-bounce pointer-events-none transition-all duration-300">
+          <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white font-extrabold text-xs sm:text-sm px-6 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2.5 border-2 border-emerald-300/80">
+            <Sparkles className="w-4 h-4 text-amber-300 animate-spin" />
+            <span>🎉 All 3 Test Cases Passed! +{task.points} Points Earned!</span>
+            <Trophy className="w-4 h-4 text-amber-300" />
+          </div>
+        </div>
+      )}
 
       {/* ─── MAIN 3-COLUMN WORKSPACE (EXACT SCREENSHOT LAYOUT) ─── */}
       <div className="flex-1 p-3 sm:p-5 max-w-[1720px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
@@ -720,8 +811,11 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
           <div className="flex items-center border-b border-slate-200 px-5 gap-6 text-sm">
             <button
               type="button"
-              onClick={() => setLeftTab('problem')}
-              className={`pb-2.5 pt-1 font-bold cursor-pointer transition-colors relative ${
+              onClick={() => {
+                soundEffects.playClick();
+                setLeftTab('problem');
+              }}
+              className={`pb-2.5 pt-1 font-bold cursor-pointer transition-all duration-200 relative ${
                 leftTab === 'problem'
                   ? 'text-[#1a73e8] border-b-2 border-[#1a73e8]'
                   : 'text-slate-500 hover:text-slate-800'
@@ -731,8 +825,11 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
             </button>
             <button
               type="button"
-              onClick={() => setLeftTab('submissions')}
-              className={`pb-2.5 pt-1 font-semibold cursor-pointer transition-colors relative ${
+              onClick={() => {
+                soundEffects.playClick();
+                setLeftTab('submissions');
+              }}
+              className={`pb-2.5 pt-1 font-semibold cursor-pointer transition-all duration-200 relative ${
                 leftTab === 'submissions'
                   ? 'text-[#1a73e8] border-b-2 border-[#1a73e8]'
                   : 'text-slate-500 hover:text-slate-800'
@@ -742,8 +839,11 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
             </button>
             <button
               type="button"
-              onClick={() => setLeftTab('discussion')}
-              className={`pb-2.5 pt-1 font-semibold cursor-pointer transition-colors relative ${
+              onClick={() => {
+                soundEffects.playClick();
+                setLeftTab('discussion');
+              }}
+              className={`pb-2.5 pt-1 font-semibold cursor-pointer transition-all duration-200 relative ${
                 leftTab === 'discussion'
                   ? 'text-[#1a73e8] border-b-2 border-[#1a73e8]'
                   : 'text-slate-500 hover:text-slate-800'
@@ -942,24 +1042,31 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
             <div className="flex items-center gap-1.5 text-slate-500">
               <button
                 type="button"
-                onClick={() => setIsDarkMode((prev) => !prev)}
+                onClick={() => {
+                  soundEffects.playColorChange();
+                  setIsDarkMode((prev) => !prev);
+                }}
                 title={isDarkMode ? 'Light mode' : 'Dark mode'}
-                className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer active:scale-90"
               >
                 {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
               </button>
               <button
                 type="button"
-                onClick={() => setIsFullscreen((prev) => !prev)}
+                onClick={() => {
+                  soundEffects.playClick();
+                  setIsFullscreen((prev) => !prev);
+                }}
                 title={isFullscreen ? 'Exit full screen' : 'Full screen'}
-                className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer active:scale-90"
               >
                 {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
               </button>
               <button
                 type="button"
                 title="Settings"
-                className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+                onClick={() => soundEffects.playClick()}
+                className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer active:scale-90"
               >
                 <Settings className="w-4 h-4" />
               </button>
@@ -1005,8 +1112,11 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
             <div className="flex items-center border-b border-slate-200 gap-6 text-sm mb-3.5">
               <button
                 type="button"
-                onClick={() => setRightTab('testcases')}
-                className={`pb-2 font-bold cursor-pointer transition-colors relative ${
+                onClick={() => {
+                  soundEffects.playClick();
+                  setRightTab('testcases');
+                }}
+                className={`pb-2 font-bold cursor-pointer transition-all duration-200 relative ${
                   rightTab === 'testcases'
                     ? 'text-[#1a73e8] border-b-2 border-[#1a73e8]'
                     : 'text-slate-500 hover:text-slate-800'
@@ -1016,8 +1126,11 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
               </button>
               <button
                 type="button"
-                onClick={() => setRightTab('result')}
-                className={`pb-2 font-semibold cursor-pointer transition-colors relative ${
+                onClick={() => {
+                  soundEffects.playClick();
+                  setRightTab('result');
+                }}
+                className={`pb-2 font-semibold cursor-pointer transition-all duration-200 relative ${
                   rightTab === 'result'
                     ? 'text-[#1a73e8] border-b-2 border-[#1a73e8]'
                     : 'text-slate-500 hover:text-slate-800'
@@ -1134,20 +1247,24 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
                 type="button"
                 onClick={handleRunCode}
                 disabled={isRunning}
-                className="w-full bg-white hover:bg-blue-50/60 active:scale-95 border-2 border-[#1a73e8] text-[#1a73e8] font-bold text-xs sm:text-sm py-2.5 rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                className={`w-full bg-white hover:bg-blue-50/70 active:scale-95 border-2 border-[#1a73e8] text-[#1a73e8] font-bold text-xs sm:text-sm py-2.5 rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 ${
+                  isRunning ? 'ring-2 ring-blue-400 ring-offset-1 animate-pulse' : ''
+                }`}
               >
-                <Play className="w-4 h-4 fill-current" />
-                <span>Run Code</span>
+                <Play className={`w-4 h-4 fill-current ${isRunning ? 'animate-spin' : ''}`} />
+                <span>{isRunning ? 'Running...' : 'Run Code'}</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleSubmitCode}
                 disabled={isRunning}
-                className="w-full bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-bold text-xs sm:text-sm py-2.5 rounded-xl shadow-md shadow-blue-500/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                className={`w-full bg-gradient-to-r from-[#1a73e8] to-blue-600 hover:from-blue-700 hover:to-indigo-700 active:scale-95 text-white font-bold text-xs sm:text-sm py-2.5 rounded-xl shadow-md shadow-blue-500/25 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 ${
+                  isRunning ? 'ring-2 ring-indigo-400 ring-offset-1 animate-pulse' : ''
+                }`}
               >
-                <Send className="w-3.5 h-3.5" />
-                <span>Submit Code</span>
+                <Send className={`w-3.5 h-3.5 ${isRunning ? 'translate-x-1 -translate-y-1 transition-transform' : ''}`} />
+                <span>{isRunning ? 'Checking...' : 'Submit Code'}</span>
               </button>
             </div>
 
@@ -1161,21 +1278,21 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
           </div>
 
           {/* Card 2: Challenge Progress Box */}
-          <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm">
+          <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
             <h3 className="text-sm font-bold text-slate-800">Challenge Progress</h3>
             <div className="flex items-baseline justify-between mt-1 mb-2">
               <span className="text-xl font-extrabold text-slate-900 tracking-tight">
-                {task.taskNumber} / {TOPIC_1_TASKS.length}
+                {task.taskNumber} / {activeTasks.length}
               </span>
-              <span className="text-xs font-bold text-blue-600">
+              <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
                 {progressPercent}%
               </span>
             </div>
 
-            {/* Progress Bar Track */}
-            <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+            {/* Progress Bar Track with Smooth Gradient Shimmer */}
+            <div className="w-full h-2.5 rounded-full bg-slate-100 overflow-hidden relative">
               <div
-                className="h-full bg-[#1a73e8] rounded-full transition-all duration-300"
+                className="h-full bg-gradient-to-r from-blue-600 via-indigo-500 to-sky-500 rounded-full transition-all duration-500 ease-out shadow-xs"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -1201,7 +1318,7 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
               onClick={handleNextTask}
               className="flex-1 py-2.5 px-3 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-bold text-xs sm:text-sm shadow-md shadow-blue-500/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
-              <span>{currentTaskIndex === TOPIC_1_TASKS.length - 1 ? 'Complete Topic 1' : 'Next Challenge →'}</span>
+              <span>{currentTaskIndex === activeTasks.length - 1 ? `Complete Topic ${topicId}` : 'Next Challenge →'}</span>
             </button>
           </div>
 
