@@ -449,31 +449,23 @@ export function isSelfReferral(
   refCode: string,
   studentEmail?: string,
   studentPhone?: string,
-  studentName?: string
+  _studentName?: string
 ): boolean {
   const cleanRef = normalizeRefCode(refCode);
-  if (!cleanRef) return false;
+  if (!cleanRef || cleanRef === 'PARTNER' || cleanRef === 'LEARNER' || cleanRef === 'STUDENT') return false;
 
-  // Check email prefix
-  if (studentEmail) {
-    const emailPrefix = studentEmail.split('@')[0].toUpperCase().replace(/[^A-Z0-9]/g, '');
-    if (emailPrefix.startsWith(cleanRef) || cleanRef.startsWith(emailPrefix)) return true;
-  }
+  const cleanStudentEmail = (studentEmail || '').trim().toLowerCase();
+  const cleanStudentPhone = (studentPhone || '').replace(/\\D/g, '');
 
-  // Check student name
-  if (studentName) {
-    const nameClean = studentName.toUpperCase().replace(/[^A-Z0-9]/g, '');
-    if (nameClean.startsWith(cleanRef) || cleanRef.startsWith(nameClean)) return true;
-  }
-
-  // Check currently logged in user referral code in localStorage
   if (typeof window !== 'undefined') {
-    const myCode = localStorage.getItem('futureai_user_ref_code') || localStorage.getItem('futureai_user_name') || '';
-    if (normalizeRefCode(myCode) === cleanRef) return true;
-    const myPhone = localStorage.getItem('futureai_user_phone') || '';
-    if (studentPhone && myPhone && studentPhone.replace(/\D/g, '') === myPhone.replace(/\D/g, '')) return true;
-    const myEmail = localStorage.getItem('futureai_user_email') || '';
-    if (studentEmail && myEmail && studentEmail.trim().toLowerCase() === myEmail.trim().toLowerCase()) return true;
+    const myPhone = (localStorage.getItem('futureai_user_phone') || '').replace(/\\D/g, '');
+    if (cleanStudentPhone && myPhone && cleanStudentPhone.length >= 10 && cleanStudentPhone === myPhone) {
+      return true;
+    }
+    const myEmail = (localStorage.getItem('futureai_user_email') || '').trim().toLowerCase();
+    if (cleanStudentEmail && myEmail && cleanStudentEmail === myEmail) {
+      return true;
+    }
   }
 
   return false;
@@ -632,6 +624,7 @@ export async function recordReferralPayment(paymentData: {
   payerPhone?: string;
   payerName?: string;
   courseTitle?: string;
+  refCode?: string;
 }): Promise<{ success: boolean; reason?: string }> {
   if (typeof window === 'undefined') return { success: false, reason: 'SSR' };
 
@@ -653,10 +646,12 @@ export async function recordReferralPayment(paymentData: {
   }
 
   // 2. Determine Referrer Code
-  let refCode = '';
-  try {
-    refCode = localStorage.getItem('futureai_ref_attribution') || sessionStorage.getItem('futureai_ref_attribution') || '';
-  } catch {}
+  let refCode = (paymentData.refCode || '').trim();
+  if (!refCode) {
+    try {
+      refCode = localStorage.getItem('futureai_ref_attribution') || sessionStorage.getItem('futureai_ref_attribution') || '';
+    } catch {}
+  }
 
   const cleanEmail = (paymentData.payerEmail || '').trim().toLowerCase();
   const cleanPhone = (paymentData.payerPhone || '').replace(/\D/g, '');
@@ -767,6 +762,16 @@ export async function recordReferralPayment(paymentData: {
     });
   } catch (cloudErr) {
     console.warn('Cloud affiliate payment sync notice:', cloudErr);
+  }
+
+  if (typeof window !== 'undefined') {
+    try {
+      window.dispatchEvent(
+        new CustomEvent('futureai_affiliate_updated', {
+          detail: { refCode: cleanCode, amount: 100 },
+        })
+      );
+    } catch {}
   }
 
   return { success: true };

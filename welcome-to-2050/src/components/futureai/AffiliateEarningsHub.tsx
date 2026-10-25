@@ -83,7 +83,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   onNavigateTab,
 }) => {
   // Real user referral code & storage key
-  const cleanRefCode = normalizeRefCode(userName) || 'PARTNER';
+  const storedCode = typeof window !== 'undefined' ? (localStorage.getItem('futureai_user_ref_code') || '') : '';
+  const cleanRefCode = normalizeRefCode(storedCode || userName) || 'PARTNER';
   const affiliateRefUrl = `https://futureitindustry.com/?ref=${cleanRefCode}100`;
   const storageKey = `futureai_affiliate_hub_v3_${cleanRefCode}`;
 
@@ -181,9 +182,12 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
 
     syncRealCloudData();
     const interval = setInterval(syncRealCloudData, 2500);
+    const onAffiliateUpdated = () => syncRealCloudData();
+    window.addEventListener('futureai_affiliate_updated', onAffiliateUpdated);
     return () => {
       isMounted = false;
       clearInterval(interval);
+      window.removeEventListener('futureai_affiliate_updated', onAffiliateUpdated);
     };
   }, [cleanRefCode]);
 

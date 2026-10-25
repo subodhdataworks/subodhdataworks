@@ -231,7 +231,13 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
         console.warn('Cloud sync record notice:', cloudErr);
       }
 
-      // Anti-Fraud Referral Credit: Flat 100 credited upon verified Razorpay payment
+      // Anti-Fraud Referral Credit: Flat ₹100 credited upon verified Razorpay payment
+      const storedRefCode =
+        (typeof window !== 'undefined'
+          ? localStorage.getItem('futureai_ref_attribution') ||
+            sessionStorage.getItem('futureai_ref_attribution')
+          : '') || '';
+
       try {
         await recordReferralPayment({
           paymentId: result.paymentId,
@@ -241,6 +247,7 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
           payerPhone: user.phone || undefined,
           payerName: user.name,
           courseTitle: displayTitle,
+          refCode: storedRefCode,
         });
       } catch (refErr) {
         console.warn('Referral payment record notice:', refErr);
@@ -248,13 +255,10 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
 
       onClose();
       window.dispatchEvent(new CustomEvent('futureai_course_unlocked', { detail: { courseId: canonicalCourseId } }));
+      window.dispatchEvent(new CustomEvent('futureai_affiliate_updated', { detail: { refCode: storedRefCode, amount: 100 } }));
 
       const successHash = `#payment-success?txnid=${encodeURIComponent(result.paymentId)}&amount=${result.amount}&courseId=${encodeURIComponent(canonicalCourseId)}`;
       window.location.hash = successHash;
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 350);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Payment failed. Please try again.';
       setError(msg);

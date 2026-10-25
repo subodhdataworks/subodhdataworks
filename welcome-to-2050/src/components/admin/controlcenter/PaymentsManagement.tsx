@@ -18,6 +18,7 @@ import {
 import { SystemPaymentRecord } from '../../../types/admin';
 import { AdminDataService } from '../../../services/adminDataService';
 import { AdminAuthService } from '../../../services/adminAuthService';
+import { recordReferralPayment } from '../../../services/realAuthService';
 
 interface PaymentsManagementProps {
   payments: SystemPaymentRecord[];
@@ -30,6 +31,62 @@ export const PaymentsManagement: React.FC<PaymentsManagementProps> = ({ payments
   const [statusFilter, setStatusFilter] = useState<'all' | 'SUCCESS' | 'PENDING' | 'FAILED' | 'REFUNDED'>('all');
   const [providerFilter, setProviderFilter] = useState<string>('all');
   const [isRecordModalOpen, setIsRecordModalOpen] = useState(false);
+  const [creditReferralModal, setCreditReferralModal] = useState<{
+    open: boolean;
+    payment: SystemPaymentRecord | null;
+    code: string;
+    isSubmitting: boolean;
+    message: string | null;
+  }>({
+    open: false,
+    payment: null,
+    code: '',
+    isSubmitting: false,
+    message: null,
+  });
+
+  const handleCreditReferralCommission = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!creditReferralModal.payment || !creditReferralModal.code.trim()) {
+      return;
+    }
+    setCreditReferralModal((prev) => ({ ...prev, isSubmitting: true, message: null }));
+    try {
+      const res = await recordReferralPayment({
+        paymentId: creditReferralModal.payment.paymentRef || creditReferralModal.payment.id,
+        orderId: creditReferralModal.payment.orderId || '',
+        amount: creditReferralModal.payment.amount,
+        payerEmail: creditReferralModal.payment.userEmail,
+        payerPhone: creditReferralModal.payment.userPhone,
+        payerName: creditReferralModal.payment.userName,
+        courseTitle: creditReferralModal.payment.courseName,
+        refCode: creditReferralModal.code.trim(),
+      });
+      if (res.success) {
+        setCreditReferralModal((prev) => ({
+          ...prev,
+          isSubmitting: false,
+          message: `Success! ₹100 referral commission credited to affiliate ${prev.code.trim()}`,
+        }));
+        setTimeout(() => {
+          setCreditReferralModal({ open: false, payment: null, code: '', isSubmitting: false, message: null });
+          onRefresh();
+        }, 1200);
+      } else {
+        setCreditReferralModal((prev) => ({
+          ...prev,
+          isSubmitting: false,
+          message: `Could not credit: ${res.reason || 'Failed'}`,
+        }));
+      }
+    } catch (err: any) {
+      setCreditReferralModal((prev) => ({
+        ...prev,
+        isSubmitting: false,
+        message: err?.message || 'Error crediting referral',
+      }));
+    }
+  };
 
   const cardBg = isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200/90 shadow-sm';
   const textPrimary = isDark ? 'text-white' : 'text-slate-900';
@@ -201,7 +258,8 @@ export const PaymentsManagement: React.FC<PaymentsManagementProps> = ({ payments
                 <th className="py-3 px-4">Course Program</th>
                 <th className="py-3 px-4">Gateway &amp; Reference (UTR)</th>
                 <th className="py-3 px-4">Amount</th>
-                <th className="py-3 px-4 text-right">Payment Status</th>
+                <th className="py-3 px-4 text-center">Payment Status</th>
+                <th className="py-3 px-4 text-right">Referral Commission</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
@@ -244,7 +302,7 @@ export const PaymentsManagement: React.FC<PaymentsManagementProps> = ({ payments
                       ₹{pay.amount.toLocaleString()}
                     </td>
 
-                    <td className="py-3.5 px-4 text-right">
+                    <td className="py-3.5 px-4 text-center">
                       <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black border ${
                         pay.status === 'SUCCESS'
                           ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
@@ -257,6 +315,25 @@ export const PaymentsManagement: React.FC<PaymentsManagementProps> = ({ payments
                         {pay.status === 'FAILED' && <AlertCircle className="w-3 h-3" />}
                         <span>{pay.status}</span>
                       </span>
+                    </td>
+                    <td className="py-3.5 px-4 text-right">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setCreditReferralModal({
+                            open: true,
+                            payment: pay,
+                            code: '',
+                            isSubmitting: false,
+                            message: null,
+                          })
+                        }
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-blue-500/15 hover:bg-blue-500/25 text-blue-400 border border-blue-500/30 transition-all cursor-pointer"
+                        title="Credit ₹100 Referral Commission to an affiliate"
+                      >
+                        <IndianRupee className="w-3 h-3" />
+                        <span>Credit ₹100</span>
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -351,6 +428,73 @@ export const PaymentsManagement: React.FC<PaymentsManagementProps> = ({ payments
               >
                 {isSubmittingPay ? 'Recording in Ledger...' : 'Verify & Record in Ledger ➔'}
               </button>
+            </form>
+          </div>
+        </div>
+      )}
+      {/* ── Credit Referral Commission Modal ── */}
+      {creditReferralModal.open && creditReferralModal.payment && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-fadeIn">
+          <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl relative text-left">
+            <button
+              type="button"
+              onClick={() => setCreditReferralModal({ open: false, payment: null, code: '', isSubmitting: false, message: null })}
+              className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[11px] font-mono font-bold mb-3">
+              <IndianRupee className="w-3 h-3" />
+              <span>Affiliate Commission Dispatch</span>
+            </div>
+
+            <h3 className="text-base font-black text-white mb-1">Credit ₹100 Referral Commission</h3>
+            <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+              Assign this payment of <strong className="text-white font-mono">₹{creditReferralModal.payment.amount}</strong> from <strong className="text-white">{creditReferralModal.payment.userName}</strong> to an affiliate partner.
+            </p>
+
+            {creditReferralModal.message && (
+              <div className="mb-4 p-3 rounded-xl bg-blue-950/40 border border-blue-500/30 text-blue-300 text-xs font-semibold">
+                {creditReferralModal.message}
+              </div>
+            )}
+
+            <form onSubmit={handleCreditReferralCommission} className="space-y-4 text-xs">
+              <div>
+                <label className="block text-slate-300 font-bold mb-1.5">
+                  Affiliate Referral Code or Partner Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  autoFocus
+                  value={creditReferralModal.code}
+                  onChange={(e) => setCreditReferralModal((prev) => ({ ...prev, code: e.target.value }))}
+                  placeholder="e.g. SUBODH100 or SUBODH"
+                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 font-mono text-sm uppercase"
+                />
+                <span className="text-[10px] text-slate-500 mt-1 block">
+                  The ₹100 will immediately reflect in the partner's Available Balance and Total Earned.
+                </span>
+              </div>
+
+              <div className="pt-2 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setCreditReferralModal({ open: false, payment: null, code: '', isSubmitting: false, message: null })}
+                  className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={creditReferralModal.isSubmitting}
+                  className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl shadow-lg shadow-blue-600/25 transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {creditReferralModal.isSubmitting ? 'Crediting...' : 'Confirm Credit ₹100 ➔'}
+                </button>
+              </div>
             </form>
           </div>
         </div>

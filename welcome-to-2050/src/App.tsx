@@ -26,23 +26,32 @@ export const App: React.FC = () => {
   const profile = StorageService.getProfile();
   const [payModalOpen, setPayModalOpen] = useState(false);
 
-  // Check referral code in URL immediately on page load
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
+  // Check referral code in URL immediately on page load and on navigation
+  const captureReferralAttribution = () => {
+    if (typeof window === 'undefined') return;
+    try {
       const searchParams = new URLSearchParams(window.location.search);
-      let refCode = searchParams.get('ref');
+      let refCode = searchParams.get('ref') || searchParams.get('refCode') || searchParams.get('referredBy');
       if (!refCode && window.location.hash.includes('?')) {
         const hashParams = new URLSearchParams(window.location.hash.split('?')[1]);
-        refCode = hashParams.get('ref');
+        refCode = hashParams.get('ref') || hashParams.get('refCode') || hashParams.get('referredBy');
       }
       if (refCode) {
-        localStorage.setItem('futureai_ref_attribution', refCode.trim());
-        recordReferralClick(refCode.trim());
+        const clean = refCode.trim();
+        localStorage.setItem('futureai_ref_attribution', clean);
+        sessionStorage.setItem('futureai_ref_attribution', clean);
+        recordReferralClick(clean);
       }
-      try {
-        restoreUserEntitlementsFromCloud();
-      } catch {}
-    }
+    } catch {}
+  };
+
+  useEffect(() => {
+    captureReferralAttribution();
+    try {
+      restoreUserEntitlementsFromCloud();
+    } catch {}
+    window.addEventListener('hashchange', captureReferralAttribution);
+    return () => window.removeEventListener('hashchange', captureReferralAttribution);
   }, []);
 
   // Permanent Firebase Session Sync (IndexedDB Auto-Recovery)
