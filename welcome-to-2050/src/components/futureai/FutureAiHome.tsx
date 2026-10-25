@@ -175,7 +175,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </div>
 
       {/* ─── 2. MAIN HERO SECTION (Color-Matched to Video Studio Background) ─── */}
-      <section className="relative w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-10 overflow-hidden bg-gradient-to-r from-[#d1dce7] via-[#d5e0eb] to-[#d8e8f2]">
+      <section className="relative w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-10 overflow-hidden bg-gradient-to-r from-[#dce7f2] via-[#e5eef7] to-[#edf4fb]">
         
         {/* Soft Ambient Aurora Lights */}
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-300/20 rounded-full blur-3xl pointer-events-none" />
@@ -183,10 +183,10 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-b from-transparent to-[#F4F8FC] pointer-events-none" />
 
         <div className="max-w-[1440px] w-full mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center w-full">
             
-            {/* LEFT COLUMN: Punchy Headline & CTAs (lg:col-span-6) */}
-            <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center text-center lg:text-left z-10 pl-0 lg:pl-3">
+            {/* LEFT COLUMN: Punchy Headline & CTAs (lg:col-span-5) */}
+            <div className="lg:col-span-5 xl:col-span-5 flex flex-col justify-center text-center lg:text-left z-10 pl-0 lg:pl-3">
               
               {/* Main Headline - Taller & Bolder */}
               <h1 className="text-3xl sm:text-5xl lg:text-[44px] xl:text-[52px] font-black tracking-tight leading-[1.06] text-[#0f172a]">
@@ -252,19 +252,19 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
 
             </div>
 
-            {/* RIGHT COLUMN: Video Player from Google Drive */}
-            <div className="lg:col-span-6 xl:col-span-6 flex items-center justify-center relative z-10">
-              <div className="relative w-full max-w-[540px] lg:max-w-[580px] flex items-center justify-center">
+            {/* RIGHT COLUMN: Video Shifted Left & Big - Full Unclipped Display */}
+            <div className="lg:col-span-7 xl:col-span-7 flex items-center justify-center lg:justify-start lg:-ml-8 xl:-ml-16 relative z-10">
+              <div className="relative w-full max-w-[680px] lg:max-w-[780px] xl:max-w-[850px] lg:-translate-x-6 xl:-translate-x-10 flex items-center justify-center">
                 
                 {/* Glowing Radiant Backing Aura */}
-                <div className="absolute inset-0 bg-radial from-cyan-400/25 via-blue-500/15 to-transparent rounded-full blur-2xl scale-105 pointer-events-none" />
+                <div className="absolute inset-0 bg-radial from-cyan-400/25 via-blue-500/15 to-transparent rounded-full blur-3xl scale-110 pointer-events-none" />
                 
-                {/* Seamless Floating Animation Video (Soft Feathered Edges, No Box, No Controls) */}
+                {/* Seamless Floating Animation Video (Unclipped, Full Scale, Feathered Boundary) */}
                 <div 
                   className="relative z-10 w-full flex items-center justify-center pointer-events-none select-none"
                   style={{
-                    maskImage: 'radial-gradient(ellipse 72% 70% at 50% 50%, black 50%, transparent 95%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse 72% 70% at 50% 50%, black 50%, transparent 95%)',
+                    maskImage: 'radial-gradient(ellipse 88% 86% at 50% 50%, black 72%, transparent 98%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse 88% 86% at 50% 50%, black 72%, transparent 98%)',
                   }}
                 >
                   <video
@@ -273,7 +273,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                     loop
                     muted
                     playsInline
-                    className="w-full h-auto max-h-[380px] sm:max-h-[440px] lg:max-h-[500px] xl:max-h-[540px] object-cover scale-105 pointer-events-none select-none drop-shadow-[0_20px_45px_rgba(26,115,232,0.25)]"
+                    className="w-full h-auto max-h-[440px] sm:max-h-[520px] lg:max-h-[600px] xl:max-h-[660px] object-contain pointer-events-none select-none drop-shadow-[0_20px_45px_rgba(26,115,232,0.22)]"
                   />
                 </div>
 
