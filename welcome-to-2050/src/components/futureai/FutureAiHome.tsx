@@ -514,124 +514,55 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           </div>
         </div>
 
-        {/* 4 Career Programs Cards Grid */}
+        {/* 4 Career Programs Cards Grid (Video + Course Name Only) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           
-          {/* Program Card 1: Data Analyst (Most Popular) */}
+          {/* Program Card 1: Data Analyst with Gen AI */}
           <div
             onClick={promptLogin}
-            className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-blue-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
+            className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-blue-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
           >
-            <div>
-              {/* Video Banner with Badge */}
-              <div className="relative w-full h-[155px] sm:h-[165px] overflow-hidden bg-slate-900">
-                <video
-                  src="/videos/data_analyst_genai_v2.mp4"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md z-10">
-                  <Flame className="w-3 h-3 fill-white" />
-                  <span>Most Popular</span>
-                </div>
-                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-bold z-10">
-                  <span className="bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/20">8–12 Weeks</span>
-                  <span className="text-amber-300 font-black">₹6 – 12 LPA</span>
-                </div>
-              </div>
-
-              {/* Title & Desc */}
-              <div className="p-4 sm:p-5">
-                <h3 className="text-lg font-black text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">
-                  Data Analyst with Gen AI
-                </h3>
-                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed line-clamp-2">
-                  Turn raw data into actionable business insights with interactive dashboards and automation.
-                </p>
-              </div>
+            <div className="relative w-full h-[185px] sm:h-[200px] overflow-hidden bg-slate-900">
+              <video
+                src="/videos/data_analyst_genai_v2.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
             </div>
-
-            {/* Bottom Tech Pills + Action */}
-            <div className="p-4 sm:p-5 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between gap-2">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-100 flex items-center gap-1">
-                  <FileSpreadsheet className="w-3 h-3 text-emerald-600" />
-                  Excel
-                </span>
-                <span className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-100 flex items-center gap-1">
-                  <Database className="w-3 h-3 text-blue-600" />
-                  SQL
-                </span>
-                <span className="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100 flex items-center gap-1">
-                  <BarChart3 className="w-3 h-3 text-amber-600" />
-                  Power BI
-                </span>
-              </div>
-
-              <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-blue-700 transition-all shadow-sm">
-                <ArrowRight className="w-4 h-4" />
+            <div className="p-4 sm:p-5 flex items-center justify-between gap-3">
+              <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">
+                Data Analyst with Gen AI
+              </h3>
+              <div className="w-8 h-8 rounded-full bg-blue-50 group-hover:bg-blue-600 text-blue-600 group-hover:text-white flex items-center justify-center shrink-0 transition-colors shadow-2xs">
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </div>
             </div>
           </div>
 
-          {/* Program Card 2: Data Scientist */}
+          {/* Program Card 2: Data Science & Agentic AI */}
           <div
             onClick={promptLogin}
-            className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-purple-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
+            className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-purple-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
           >
-            <div>
-              <div className="relative w-full h-[155px] sm:h-[165px] overflow-hidden bg-slate-900">
-                <video
-                  src="/videos/data_science_agentic_ai_course.mp4"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md z-10">
-                  <Sparkles className="w-3 h-3 text-white" />
-                  <span>AI &amp; Research</span>
-                </div>
-                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-bold z-10">
-                  <span className="bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/20">12–16 Weeks</span>
-                  <span className="text-purple-300 font-black">₹8 – 18 LPA</span>
-                </div>
-              </div>
-
-              <div className="p-4 sm:p-5">
-                <h3 className="text-lg font-black text-slate-900 tracking-tight group-hover:text-purple-600 transition-colors">
-                  Data Science &amp; Agentic AI
-                </h3>
-                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed line-clamp-2">
-                  Work with big data, build predictive AI models and solve high-impact industrial problems.
-                </p>
-              </div>
+            <div className="relative w-full h-[185px] sm:h-[200px] overflow-hidden bg-slate-900">
+              <video
+                src="/videos/data_science_agentic_ai_course.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
             </div>
-
-            <div className="p-4 sm:p-5 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between gap-2">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100 flex items-center gap-1">
-                  <Code2 className="w-3 h-3 text-indigo-600" />
-                  Python
-                </span>
-                <span className="px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700 text-[10px] font-bold border border-purple-100 flex items-center gap-1">
-                  <Brain className="w-3 h-3 text-purple-600" />
-                  ML
-                </span>
-                <span className="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 text-[10px] font-bold border border-rose-100 flex items-center gap-1">
-                  <BarChart3 className="w-3 h-3 text-rose-600" />
-                  Statistics
-                </span>
-              </div>
-
-              <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-purple-700 transition-all shadow-sm">
-                <ArrowRight className="w-4 h-4" />
+            <div className="p-4 sm:p-5 flex items-center justify-between gap-3">
+              <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight group-hover:text-purple-600 transition-colors">
+                Data Science &amp; Agentic AI
+              </h3>
+              <div className="w-8 h-8 rounded-full bg-purple-50 group-hover:bg-purple-600 text-purple-600 group-hover:text-white flex items-center justify-center shrink-0 transition-colors shadow-2xs">
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </div>
             </div>
           </div>
@@ -639,57 +570,24 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           {/* Program Card 3: AI Engineering */}
           <div
             onClick={promptLogin}
-            className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-sky-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
+            className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-sky-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
           >
-            <div>
-              <div className="relative w-full h-[155px] sm:h-[165px] overflow-hidden bg-slate-900">
-                <video
-                  src="/videos/ai_engineering_course.mp4"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md z-10">
-                  <Zap className="w-3 h-3 text-white" />
-                  <span>High Demand</span>
-                </div>
-                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-bold z-10">
-                  <span className="bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/20">12–16 Weeks</span>
-                  <span className="text-cyan-300 font-black">₹10 – 24 LPA</span>
-                </div>
-              </div>
-
-              <div className="p-4 sm:p-5">
-                <h3 className="text-lg font-black text-slate-900 tracking-tight group-hover:text-sky-600 transition-colors">
-                  AI Engineering
-                </h3>
-                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed line-clamp-2">
-                  Build production Generative AI applications with real-world LLMs, agents, and API toolchains.
-                </p>
-              </div>
+            <div className="relative w-full h-[185px] sm:h-[200px] overflow-hidden bg-slate-900">
+              <video
+                src="/videos/ai_engineering_course.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
             </div>
-
-            <div className="p-4 sm:p-5 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between gap-2">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100 flex items-center gap-1">
-                  <Code2 className="w-3 h-3 text-indigo-600" />
-                  Python
-                </span>
-                <span className="px-2.5 py-1 rounded-lg bg-cyan-50 text-cyan-700 text-[10px] font-bold border border-cyan-100 flex items-center gap-1">
-                  <Cpu className="w-3 h-3 text-cyan-600" />
-                  GenAI
-                </span>
-                <span className="px-2.5 py-1 rounded-lg bg-sky-50 text-sky-700 text-[10px] font-bold border border-sky-100 flex items-center gap-1">
-                  <Layers className="w-3 h-3 text-sky-600" />
-                  LLMs
-                </span>
-              </div>
-
-              <div className="w-8 h-8 rounded-full bg-sky-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-sky-700 transition-all shadow-sm">
-                <ArrowRight className="w-4 h-4" />
+            <div className="p-4 sm:p-5 flex items-center justify-between gap-3">
+              <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight group-hover:text-sky-600 transition-colors">
+                AI Engineering
+              </h3>
+              <div className="w-8 h-8 rounded-full bg-sky-50 group-hover:bg-sky-600 text-sky-600 group-hover:text-white flex items-center justify-center shrink-0 transition-colors shadow-2xs">
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </div>
             </div>
           </div>
@@ -697,57 +595,24 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           {/* Program Card 4: ML Engineering */}
           <div
             onClick={promptLogin}
-            className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-pink-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
+            className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-pink-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
           >
-            <div>
-              <div className="relative w-full h-[155px] sm:h-[165px] overflow-hidden bg-slate-900">
-                <video
-                  src="/videos/ml_engineering_course.mp4"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md z-10">
-                  <Rocket className="w-3 h-3 text-white" />
-                  <span>Deployment Pro</span>
-                </div>
-                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-bold z-10">
-                  <span className="bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/20">12–16 Weeks</span>
-                  <span className="text-pink-300 font-black">₹9 – 20 LPA</span>
-                </div>
-              </div>
-
-              <div className="p-4 sm:p-5">
-                <h3 className="text-lg font-black text-slate-900 tracking-tight group-hover:text-pink-600 transition-colors">
-                  ML Engineering
-                </h3>
-                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed line-clamp-2">
-                  Design, deploy, automate and scale ML systems in production clouds for real-world impact.
-                </p>
-              </div>
+            <div className="relative w-full h-[185px] sm:h-[200px] overflow-hidden bg-slate-900">
+              <video
+                src="/videos/ml_engineering_course.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
             </div>
-
-            <div className="p-4 sm:p-5 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between gap-2">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700 text-[10px] font-bold border border-purple-100 flex items-center gap-1">
-                  <InfinityIcon className="w-3 h-3 text-purple-600" />
-                  MLOps
-                </span>
-                <span className="px-2.5 py-1 rounded-lg bg-sky-50 text-sky-700 text-[10px] font-bold border border-sky-100 flex items-center gap-1">
-                  <Cloud className="w-3 h-3 text-sky-600" />
-                  Cloud
-                </span>
-                <span className="px-2.5 py-1 rounded-lg bg-pink-50 text-pink-700 text-[10px] font-bold border border-pink-100 flex items-center gap-1">
-                  <Rocket className="w-3 h-3 text-pink-600" />
-                  Deploy
-                </span>
-              </div>
-
-              <div className="w-8 h-8 rounded-full bg-pink-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-pink-700 transition-all shadow-sm">
-                <ArrowRight className="w-4 h-4" />
+            <div className="p-4 sm:p-5 flex items-center justify-between gap-3">
+              <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight group-hover:text-pink-600 transition-colors">
+                ML Engineering
+              </h3>
+              <div className="w-8 h-8 rounded-full bg-pink-50 group-hover:bg-pink-600 text-pink-600 group-hover:text-white flex items-center justify-center shrink-0 transition-colors shadow-2xs">
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </div>
             </div>
           </div>
@@ -756,191 +621,91 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 2: Learn by Doing – Real Skills for Real Jobs (Vibrant 3D Icon Badges)
+          SECTION 2: Learn by Doing – Real Skills for Real Jobs (Master Showcase)
       ═══════════════════════════════════════════════════════════════════════════ */}
       <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7">
         
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-6">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-[11px] font-black uppercase tracking-wider mb-2 shadow-2xs">
-            <Target className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Practical Learning Ecosystem</span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
-            Learn by Doing –{' '}
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Real Skills for Real Jobs
-            </span>
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-2">
-            Not just theory. Practice, build, and apply your skills with real-world projects and direct placement assistance.
-          </p>
+        {/* Desktop / Tablet Master Banner */}
+        <div 
+          onClick={promptLogin}
+          className="hidden md:block relative w-full rounded-3xl overflow-hidden shadow-md border border-slate-200/90 hover:shadow-xl transition-all duration-300 cursor-pointer group bg-white"
+        >
+          <img
+            src="/images/home_sections/learn_by_doing_master_banner.png"
+            alt="Learn by Doing – Real Skills for Real Jobs"
+            className="w-full h-auto object-contain select-none pointer-events-none group-hover:scale-[1.005] transition-transform duration-500"
+          />
         </div>
 
-        {/* 6 High-End Interactive Feature Cards with 3D Glowing Gradient Badges */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4">
-          
-          {/* Card 1: Industry-Focused Courses */}
-          <div
-            onClick={promptLogin}
-            className="group relative bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-blue-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col justify-between"
-          >
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 mb-4">
-                <BookOpen className="w-6 h-6 stroke-[2.2]" />
-              </div>
-              <span className="inline-block px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[9.5px] font-black uppercase tracking-wide mb-1.5">
-                Curriculum
+        {/* Mobile Responsive Version */}
+        <div className="md:hidden flex flex-col gap-3">
+          <div className="text-center mb-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-[10.5px] font-black uppercase tracking-wider mb-1.5">
+              <Target className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Practical Learning Ecosystem</span>
+            </div>
+            <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">
+              Learn by Doing –{' '}
+              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                Real Skills for Real Jobs
               </span>
-              <h4 className="text-xs sm:text-[13.5px] font-black text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">
-                Industry-Focused Courses
-              </h4>
-              <p className="text-[10.5px] text-slate-500 font-medium mt-1.5 leading-relaxed">
-                Learn from basics to advanced with structured curriculum.
-              </p>
-            </div>
-            <div className="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-blue-600">
-              <span>Explore</span>
-              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-            </div>
+            </h2>
+            <p className="text-xs text-slate-500 font-semibold mt-1">
+              Not just theory. Practice, build, and apply your skills with real-world projects and direct placement assistance.
+            </p>
           </div>
 
-          {/* Card 2: Coding Practice */}
-          <div
-            onClick={promptLogin}
-            className="group relative bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-emerald-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col justify-between"
-          >
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/25 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 mb-4">
-                <Code2 className="w-6 h-6 stroke-[2.2]" />
+          <div className="grid grid-cols-2 gap-2.5">
+            <div onClick={promptLogin} className="p-3 rounded-2xl bg-white border border-slate-200 shadow-2xs">
+              <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-2">
+                <BookOpen className="w-4 h-4" />
               </div>
-              <span className="inline-block px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[9.5px] font-black uppercase tracking-wide mb-1.5">
-                Live IDE
-              </span>
-              <h4 className="text-xs sm:text-[13.5px] font-black text-slate-900 group-hover:text-emerald-600 transition-colors leading-snug">
-                Coding Practice
-              </h4>
-              <p className="text-[10.5px] text-slate-500 font-medium mt-1.5 leading-relaxed">
-                Practice, build skills and solve real problems.
-              </p>
+              <h4 className="text-xs font-black text-slate-900">Industry-Focused Courses</h4>
+              <p className="text-[10px] text-slate-500 mt-1">Learn from basics to advanced with structured curriculum.</p>
             </div>
-            <div className="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-emerald-600">
-              <span>Code Now</span>
-              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+            <div onClick={promptLogin} className="p-3 rounded-2xl bg-white border border-slate-200 shadow-2xs">
+              <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2">
+                <Code2 className="w-4 h-4" />
+              </div>
+              <h4 className="text-xs font-black text-slate-900">Hands-On Practice</h4>
+              <p className="text-[10px] text-slate-500 mt-1">Solve real problems and improve your coding skills.</p>
+            </div>
+            <div onClick={promptLogin} className="p-3 rounded-2xl bg-white border border-slate-200 shadow-2xs">
+              <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-2">
+                <Briefcase className="w-4 h-4" />
+              </div>
+              <h4 className="text-xs font-black text-slate-900">Real Projects</h4>
+              <p className="text-[10px] text-slate-500 mt-1">Work on industry-relevant projects and build your portfolio.</p>
+            </div>
+            <div onClick={promptLogin} className="p-3 rounded-2xl bg-white border border-slate-200 shadow-2xs">
+              <div className="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mb-2">
+                <FileCheck className="w-4 h-4" />
+              </div>
+              <h4 className="text-xs font-black text-slate-900">ATS Resume Checker</h4>
+              <p className="text-[10px] text-slate-500 mt-1">Get AI-powered resume score and improvement tips.</p>
+            </div>
+            <div onClick={promptLogin} className="col-span-2 p-3 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                <MessageSquare className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="text-xs font-black text-slate-900">Interview Preparation</h4>
+                <p className="text-[10px] text-slate-500 mt-0.5">Practice real interview questions with AI.</p>
+              </div>
             </div>
           </div>
-
-          {/* Card 3: Real Projects */}
-          <div
-            onClick={promptLogin}
-            className="group relative bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-purple-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col justify-between"
-          >
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 text-white flex items-center justify-center shadow-lg shadow-purple-500/25 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 mb-4">
-                <Briefcase className="w-6 h-6 stroke-[2.2]" />
-              </div>
-              <span className="inline-block px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 text-[9.5px] font-black uppercase tracking-wide mb-1.5">
-                Portfolio
-              </span>
-              <h4 className="text-xs sm:text-[13.5px] font-black text-slate-900 group-hover:text-purple-600 transition-colors leading-snug">
-                Real Projects
-              </h4>
-              <p className="text-[10.5px] text-slate-500 font-medium mt-1.5 leading-relaxed">
-                Work on industry-relevant projects and build portfolio.
-              </p>
-            </div>
-            <div className="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-purple-600">
-              <span>Build</span>
-              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Card 4: ATS Resume Checker */}
-          <div
-            onClick={promptLogin}
-            className="group relative bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-sky-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col justify-between"
-          >
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-500 to-cyan-500 text-white flex items-center justify-center shadow-lg shadow-sky-500/25 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 mb-4">
-                <FileCheck className="w-6 h-6 stroke-[2.2]" />
-              </div>
-              <span className="inline-block px-2 py-0.5 rounded-md bg-sky-50 text-sky-700 text-[9.5px] font-black uppercase tracking-wide mb-1.5">
-                AI Powered
-              </span>
-              <h4 className="text-xs sm:text-[13.5px] font-black text-slate-900 group-hover:text-sky-600 transition-colors leading-snug">
-                ATS Resume Checker
-              </h4>
-              <p className="text-[10.5px] text-slate-500 font-medium mt-1.5 leading-relaxed">
-                Get AI-powered resume score and improvement tips.
-              </p>
-            </div>
-            <div className="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-sky-600">
-              <span>Scan AI</span>
-              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Card 5: Interview Preparation */}
-          <div
-            onClick={promptLogin}
-            className="group relative bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-amber-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col justify-between"
-          >
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/25 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 mb-4">
-                <MessageSquare className="w-6 h-6 stroke-[2.2]" />
-              </div>
-              <span className="inline-block px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 text-[9.5px] font-black uppercase tracking-wide mb-1.5">
-                AI Voice
-              </span>
-              <h4 className="text-xs sm:text-[13.5px] font-black text-slate-900 group-hover:text-amber-600 transition-colors leading-snug">
-                Interview Preparation
-              </h4>
-              <p className="text-[10.5px] text-slate-500 font-medium mt-1.5 leading-relaxed">
-                Practice real interview questions with AI.
-              </p>
-            </div>
-            <div className="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-amber-600">
-              <span>Practice</span>
-              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Card 6: Get Job */}
-          <div
-            onClick={promptLogin}
-            className="group relative bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-rose-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col justify-between"
-          >
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-rose-500 to-red-600 text-white flex items-center justify-center shadow-lg shadow-rose-500/25 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 mb-4">
-                <Trophy className="w-6 h-6 stroke-[2.2]" />
-              </div>
-              <span className="inline-block px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 text-[9.5px] font-black uppercase tracking-wide mb-1.5">
-                Target CTC
-              </span>
-              <h4 className="text-xs sm:text-[13.5px] font-black text-slate-900 group-hover:text-rose-600 transition-colors leading-snug">
-                Get Job
-              </h4>
-              <p className="text-[10.5px] text-slate-500 font-medium mt-1.5 leading-relaxed">
-                Target roles: <strong className="text-rose-600 font-bold">₹6 – 15 LPA</strong>
-              </p>
-            </div>
-            <div className="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-rose-600">
-              <span>Placement</span>
-              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
         </div>
+
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 3: Your Journey From Learning to Earning (Connected Stepper Track)
+          SECTION 3: Your Journey From Learning to Earning (3D Visual Stepper Roadmap)
       ═══════════════════════════════════════════════════════════════════════════ */}
       <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7">
-        <div className="bg-gradient-to-b from-white via-blue-50/20 to-white rounded-3xl p-6 sm:p-10 border border-slate-200/90 shadow-sm relative overflow-hidden">
+        <div className="bg-gradient-to-b from-white via-blue-50/25 to-white rounded-3xl p-5 sm:p-8 border border-slate-200/90 shadow-sm relative overflow-hidden">
           
           {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 relative z-10">
             <div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100/70 text-blue-700 text-[11px] font-black uppercase tracking-wider mb-2">
                 <span>The 6-Step Career Roadmap</span>
@@ -964,24 +729,36 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             </div>
           </div>
 
-          {/* 6 Step Cards with Glowing Number Badges and Connected Pathway */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-3.5 relative z-10">
+          {/* 3D Roadmap Hero Banner */}
+          <div 
+            onClick={promptLogin}
+            className="relative w-full rounded-2xl overflow-hidden shadow-sm border border-slate-200 mb-6 cursor-pointer group bg-slate-950"
+          >
+            <img
+              src="/images/home_sections/journey_roadmap_3d.jpg"
+              alt="The 6-Step Career Roadmap Your Journey From Learning to Earning"
+              className="w-full h-auto max-h-[360px] object-cover group-hover:scale-[1.01] transition-transform duration-500"
+            />
+          </div>
+
+          {/* 6 Step Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-3.5 relative z-10">
             
             {/* Step 1: Learn */}
             <div
               onClick={promptLogin}
-              className="group bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-pink-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
+              className="group bg-white rounded-2xl p-4 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-pink-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
             >
-              <div className="w-8 h-8 rounded-full bg-pink-500 text-white font-black text-xs flex items-center justify-center shadow-md shadow-pink-500/30 mb-3 group-hover:scale-110 transition-transform">
+              <div className="w-7 h-7 rounded-full bg-pink-500 text-white font-black text-xs flex items-center justify-center shadow-md shadow-pink-500/30 mb-2.5 group-hover:scale-110 transition-transform">
                 01
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center mb-3 group-hover:rotate-6 transition-transform">
-                <BookOpen className="w-6 h-6 stroke-[2.2]" />
+              <div className="w-10 h-10 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center mb-2 group-hover:rotate-6 transition-transform">
+                <BookOpen className="w-5 h-5 stroke-[2.2]" />
               </div>
               <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-pink-600 transition-colors">
                 Learn
               </h4>
-              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
                 Industry-focused courses with practical approach.
               </p>
             </div>
@@ -989,18 +766,18 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             {/* Step 2: Practice */}
             <div
               onClick={promptLogin}
-              className="group bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-purple-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
+              className="group bg-white rounded-2xl p-4 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-purple-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
             >
-              <div className="w-8 h-8 rounded-full bg-purple-600 text-white font-black text-xs flex items-center justify-center shadow-md shadow-purple-600/30 mb-3 group-hover:scale-110 transition-transform">
+              <div className="w-7 h-7 rounded-full bg-purple-600 text-white font-black text-xs flex items-center justify-center shadow-md shadow-purple-600/30 mb-2.5 group-hover:scale-110 transition-transform">
                 02
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mb-3 group-hover:rotate-6 transition-transform">
-                <Code2 className="w-6 h-6 stroke-[2.2]" />
+              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-2 group-hover:rotate-6 transition-transform">
+                <Code2 className="w-5 h-5 stroke-[2.2]" />
               </div>
               <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-purple-600 transition-colors">
                 Practice
               </h4>
-              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
                 Solve problems and work on real projects.
               </p>
             </div>
@@ -1008,18 +785,18 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             {/* Step 3: Mock Interview */}
             <div
               onClick={promptLogin}
-              className="group bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-sky-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
+              className="group bg-white rounded-2xl p-4 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-sky-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
             >
-              <div className="w-8 h-8 rounded-full bg-sky-500 text-white font-black text-xs flex items-center justify-center shadow-md shadow-sky-500/30 mb-3 group-hover:scale-110 transition-transform">
+              <div className="w-7 h-7 rounded-full bg-sky-500 text-white font-black text-xs flex items-center justify-center shadow-md shadow-sky-500/30 mb-2.5 group-hover:scale-110 transition-transform">
                 03
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center mb-3 group-hover:rotate-6 transition-transform">
-                <MessageSquare className="w-6 h-6 stroke-[2.2]" />
+              <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mb-2 group-hover:rotate-6 transition-transform">
+                <MessageSquare className="w-5 h-5 stroke-[2.2]" />
               </div>
               <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-sky-600 transition-colors">
                 Mock Interview
               </h4>
-              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
                 Practice with real interview questions.
               </p>
             </div>
@@ -1027,18 +804,18 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             {/* Step 4: Build Portfolio */}
             <div
               onClick={promptLogin}
-              className="group bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-emerald-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
+              className="group bg-white rounded-2xl p-4 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-emerald-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
             >
-              <div className="w-8 h-8 rounded-full bg-emerald-500 text-white font-black text-xs flex items-center justify-center shadow-md shadow-emerald-500/30 mb-3 group-hover:scale-110 transition-transform">
+              <div className="w-7 h-7 rounded-full bg-emerald-500 text-white font-black text-xs flex items-center justify-center shadow-md shadow-emerald-500/30 mb-2.5 group-hover:scale-110 transition-transform">
                 04
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3 group-hover:rotate-6 transition-transform">
-                <FileCheck className="w-6 h-6 stroke-[2.2]" />
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 group-hover:rotate-6 transition-transform">
+                <FileCheck className="w-5 h-5 stroke-[2.2]" />
               </div>
               <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-emerald-600 transition-colors">
                 Build Portfolio
               </h4>
-              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
                 Showcase your skills with real projects.
               </p>
             </div>
@@ -1046,18 +823,18 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             {/* Step 5: Internship */}
             <div
               onClick={promptLogin}
-              className="group bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-orange-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
+              className="group bg-white rounded-2xl p-4 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-orange-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
             >
-              <div className="w-8 h-8 rounded-full bg-orange-500 text-white font-black text-xs flex items-center justify-center shadow-md shadow-orange-500/30 mb-3 group-hover:scale-110 transition-transform">
+              <div className="w-7 h-7 rounded-full bg-orange-500 text-white font-black text-xs flex items-center justify-center shadow-md shadow-orange-500/30 mb-2.5 group-hover:scale-110 transition-transform">
                 05
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mb-3 group-hover:rotate-6 transition-transform">
-                <GraduationCap className="w-6 h-6 stroke-[2.2]" />
+              <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center mb-2 group-hover:rotate-6 transition-transform">
+                <GraduationCap className="w-5 h-5 stroke-[2.2]" />
               </div>
               <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-orange-600 transition-colors">
                 Internship
               </h4>
-              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
                 Get real-world experience with industry projects.
               </p>
             </div>
@@ -1065,30 +842,22 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             {/* Step 6: Get Job */}
             <div
               onClick={promptLogin}
-              className="group bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-blue-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
+              className="group bg-white rounded-2xl p-4 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-blue-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
             >
-              <div className="w-8 h-8 rounded-full bg-blue-600 text-white font-black text-xs flex items-center justify-center shadow-md shadow-blue-600/30 mb-3 group-hover:scale-110 transition-transform">
+              <div className="w-7 h-7 rounded-full bg-blue-600 text-white font-black text-xs flex items-center justify-center shadow-md shadow-blue-600/30 mb-2.5 group-hover:scale-110 transition-transform">
                 06
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mb-3 group-hover:rotate-6 transition-transform">
-                <Briefcase className="w-6 h-6 stroke-[2.2]" />
+              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-2 group-hover:rotate-6 transition-transform">
+                <Briefcase className="w-5 h-5 stroke-[2.2]" />
               </div>
               <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-blue-600 transition-colors">
                 Get Job
               </h4>
-              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
                 Get recruitment letter and start your career.
               </p>
             </div>
 
-          </div>
-
-          <div className="absolute right-0 bottom-0 pointer-events-none opacity-15 max-w-[340px] overflow-hidden">
-            <img
-              src="/images/home_sections/mountain_bg.jpg"
-              alt="Career Summit"
-              className="w-full h-auto object-cover"
-            />
           </div>
 
         </div>
