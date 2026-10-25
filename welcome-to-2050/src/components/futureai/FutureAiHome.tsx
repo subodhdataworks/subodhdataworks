@@ -258,16 +258,21 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                 {/* Glowing Radiant Backing Aura */}
                 <div className="absolute inset-0 bg-radial from-cyan-400/25 via-blue-500/15 to-transparent rounded-full blur-2xl scale-105 pointer-events-none" />
                 
-                {/* Modern Video Card Container */}
-                <div className="relative z-10 w-full rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(26,115,232,0.22)] border-2 border-white/90 bg-slate-900 aspect-video max-h-[300px] sm:max-h-[360px] lg:max-h-[410px] xl:max-h-[440px] flex items-center justify-center group">
+                {/* Seamless Floating Animation Video (Soft Feathered Edges, No Box, No Controls) */}
+                <div 
+                  className="relative z-10 w-full flex items-center justify-center pointer-events-none select-none"
+                  style={{
+                    maskImage: 'radial-gradient(ellipse 72% 70% at 50% 50%, black 50%, transparent 95%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse 72% 70% at 50% 50%, black 50%, transparent 95%)',
+                  }}
+                >
                   <video
                     src="/videos/hero_video.mp4"
                     autoPlay
                     loop
                     muted
                     playsInline
-                    controls
-                    className="w-full h-full object-cover rounded-2xl"
+                    className="w-full h-auto max-h-[380px] sm:max-h-[440px] lg:max-h-[500px] xl:max-h-[540px] object-cover scale-105 pointer-events-none select-none drop-shadow-[0_20px_45px_rgba(26,115,232,0.25)]"
                   />
                 </div>
 
