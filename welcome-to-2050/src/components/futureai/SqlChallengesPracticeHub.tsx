@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { SqlChallengeArena } from './SqlChallengeArena';
 import {
   ALL_SQL_TOPICS,
@@ -25,11 +25,18 @@ import {
   Layers,
   Sparkles,
   Play,
-  Table
+  Table,
+  Lock,
+  Unlock,
+  CheckCircle2,
+  X
 } from 'lucide-react';
 
 export interface SqlChallengesPracticeHubProps {
   userName?: string;
+  isEnrolled?: boolean;
+  onNavigateToCourses?: () => void;
+  onUnlockAll?: () => void;
   onBackToPractice?: () => void;
   onBackToDashboard?: () => void;
   onSolveChallenge?: (challengeId: number, title: string) => void;
@@ -37,6 +44,9 @@ export interface SqlChallengesPracticeHubProps {
 
 export const SqlChallengesPracticeHub: React.FC<SqlChallengesPracticeHubProps> = ({
   userName = 'Rahul',
+  isEnrolled,
+  onNavigateToCourses,
+  onUnlockAll,
   onBackToPractice,
   onBackToDashboard,
   onSolveChallenge
@@ -44,6 +54,21 @@ export const SqlChallengesPracticeHub: React.FC<SqlChallengesPracticeHubProps> =
   const [activeTab, setActiveTab] = useState<'all' | 'basic' | 'intermediate' | 'advanced' | 'popular'>('all');
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<number>>(new Set());
   const [activeChallengeArenaTopic, setActiveChallengeArenaTopic] = useState<{ topicId: number; initialTaskId?: number } | null>(null);
+  const [lockedModalTopic, setLockedModalTopic] = useState<{ title: string; count: number } | null>(null);
+
+  const [internalEnrolled, setInternalEnrolled] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('futureai_course_enrolled');
+      if (saved === 'true') return true;
+    }
+    return isEnrolled || false;
+  });
+
+  useEffect(() => {
+    if (isEnrolled !== undefined) {
+      setInternalEnrolled(isEnrolled);
+    }
+  }, [isEnrolled]);
 
   // Collapsible accordion states
   const [statusOpen, setStatusOpen] = useState<boolean>(true);
@@ -274,6 +299,7 @@ export const SqlChallengesPracticeHub: React.FC<SqlChallengesPracticeHubProps> =
           ) : (
             filteredChallenges.map((item) => {
               const isBookmarked = bookmarkedIds.has(item.id);
+              const isLocked = !internalEnrolled && item.id !== 1;
 
               return (
                 <div
@@ -301,8 +327,25 @@ export const SqlChallengesPracticeHub: React.FC<SqlChallengesPracticeHubProps> =
                           {item.title}
                         </h2>
 
-                        {/* Badges Bar: Difficulty + Max Score + Skill */}
+                        {/* Badges Bar: Free / Locked Status + Difficulty + Max Score + Skill */}
                         <div className="flex flex-wrap items-center gap-2 mt-2">
+                          {/* Free or Lock status */}
+                          {item.id === 1 ? (
+                            <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/50">
+                              Free Topic
+                            </span>
+                          ) : isLocked ? (
+                            <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200/50 flex items-center gap-1">
+                              <Lock className="w-3 h-3 text-amber-600" />
+                              Locked
+                            </span>
+                          ) : (
+                            <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/50 flex items-center gap-1">
+                              <Unlock className="w-3 h-3 text-emerald-600" />
+                              Unlocked
+                            </span>
+                          )}
+
                           {/* Difficulty */}
                           <span
                             className={`text-[10.5px] font-bold px-2.5 py-0.5 rounded-full ${
@@ -340,6 +383,12 @@ export const SqlChallengesPracticeHub: React.FC<SqlChallengesPracticeHubProps> =
                               id={`sql-topic-select-${item.id}`}
                               defaultValue=""
                               onChange={(e) => {
+                                if (isLocked) {
+                                  soundEffects.playLock();
+                                  setLockedModalTopic({ title: item.title, count: item.questions?.length || 10 });
+                                  e.target.value = '';
+                                  return;
+                                }
                                 const val = Number(e.target.value);
                                 if (val) {
                                   soundEffects.playClick();
@@ -381,17 +430,31 @@ export const SqlChallengesPracticeHub: React.FC<SqlChallengesPracticeHubProps> =
                         />
                       </button>
 
-                      <button
-                        type="button"
-                        onClick={() => {
-                          soundEffects.playClick();
-                          setActiveChallengeArenaTopic({ topicId: item.id, initialTaskId: 1 });
-                        }}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0284c7] hover:bg-sky-700 active:scale-95 text-white font-semibold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap"
-                      >
-                        <span>Solve Challenge</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
+                      {isLocked ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            soundEffects.playLock();
+                            setLockedModalTopic({ title: item.title, count: item.questions?.length || 10 });
+                          }}
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 active:scale-95 font-bold text-xs shadow-2xs transition-all cursor-pointer whitespace-nowrap"
+                        >
+                          <Lock className="w-3.5 h-3.5 text-amber-600" />
+                          <span>Unlock Topic</span>
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            soundEffects.playClick();
+                            setActiveChallengeArenaTopic({ topicId: item.id, initialTaskId: 1 });
+                          }}
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0284c7] hover:bg-sky-700 active:scale-95 text-white font-semibold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap"
+                        >
+                          <span>Solve Challenge</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -569,6 +632,93 @@ export const SqlChallengesPracticeHub: React.FC<SqlChallengesPracticeHubProps> =
 
         </div>
       </div>
+
+      {/* Course Enrollment Locked Modal */}
+      {lockedModalTopic && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-3xl border border-slate-200 max-w-md w-full p-6 sm:p-7 shadow-2xl relative text-left">
+            {/* Close button */}
+            <button
+              onClick={() => {
+                soundEffects.playClick();
+                setLockedModalTopic(null);
+              }}
+              className="absolute top-5 right-5 p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Lock Badge & Icon */}
+            <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center mb-4 shadow-xs">
+              <Lock className="w-7 h-7" />
+            </div>
+
+            {/* Topic pill */}
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold mb-2">
+              <span>SQL • {lockedModalTopic.title}</span>
+            </div>
+
+            <h3 className="text-xl font-black text-slate-900 tracking-tight mb-2">
+              Enroll in Any 1 Course to Unlock
+            </h3>
+
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
+              <strong>{lockedModalTopic.title}</strong> aur aage ke sabhi topics unlock karne ke liye kisi bhi <strong>1 Course</strong> me enroll karein. Kisi ek me enroll hone ke baad tabhi ye open hoga!
+            </p>
+
+            {/* Benefits List */}
+            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-3.5 space-y-2 mb-5 text-xs text-slate-700 font-medium">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>All 25 SQL practical challenge topics unlock</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Python, Excel &amp; Full Stack live coding access</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Real schema tables, complex queries &amp; interview challenges</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playClick();
+                  setLockedModalTopic(null);
+                  if (onNavigateToCourses) {
+                    onNavigateToCourses();
+                  } else {
+                    window.location.hash = '#courses';
+                  }
+                }}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs sm:text-sm shadow-md shadow-blue-500/20 active:scale-98 transition cursor-pointer"
+              >
+                <span>Explore &amp; Enroll in Courses →</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playCelebration();
+                  setInternalEnrolled(true);
+                  if (typeof window !== 'undefined') {
+                    localStorage.setItem('futureai_course_enrolled', 'true');
+                  }
+                  if (onUnlockAll) onUnlockAll();
+                  setLockedModalTopic(null);
+                }}
+                className="w-full py-2 px-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold text-xs transition cursor-pointer text-center"
+              >
+                Simulate Course Enrollment (Unlock Demo)
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

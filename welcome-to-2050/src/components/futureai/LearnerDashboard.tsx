@@ -2486,6 +2486,19 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           <div className="col-span-full">
             <PythonChallengesPracticeHub
               userName={userName}
+              isEnrolled={!isNewStudentMode}
+              onNavigateToCourses={() => {
+                setDockTab('home');
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                if (typeof window !== 'undefined') window.location.hash = '#courses';
+              }}
+              onUnlockAll={() => {
+                setIsNewStudentMode(false);
+                if (typeof window !== 'undefined') {
+                  localStorage.setItem('futureai_course_enrolled', 'true');
+                }
+              }}
               onBackToPractice={() => {
                 setSelectedModuleView(null);
                 setActiveTopicWs(null);
@@ -2513,6 +2526,19 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           <div className="col-span-full">
             <SqlChallengesPracticeHub
               userName={userName}
+              isEnrolled={!isNewStudentMode}
+              onNavigateToCourses={() => {
+                setDockTab('home');
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                if (typeof window !== 'undefined') window.location.hash = '#courses';
+              }}
+              onUnlockAll={() => {
+                setIsNewStudentMode(false);
+                if (typeof window !== 'undefined') {
+                  localStorage.setItem('futureai_course_enrolled', 'true');
+                }
+              }}
               onBackToPractice={() => {
                 setSelectedModuleView(null);
                 setActiveTopicWs(null);
@@ -2537,6 +2563,19 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           <div className="col-span-full">
             <ExcelChallengesPracticeHub
               userName={userName}
+              isEnrolled={!isNewStudentMode}
+              onNavigateToCourses={() => {
+                setDockTab('home');
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                if (typeof window !== 'undefined') window.location.hash = '#courses';
+              }}
+              onUnlockAll={() => {
+                setIsNewStudentMode(false);
+                if (typeof window !== 'undefined') {
+                  localStorage.setItem('futureai_course_enrolled', 'true');
+                }
+              }}
               onBackToPractice={() => {
                 setSelectedModuleView(null);
                 setActiveTopicWs(null);

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { ExcelChallengeArena } from './ExcelChallengeArena';
 import {
   ALL_EXCEL_TOPICS,
@@ -26,11 +26,17 @@ import {
   Play,
   Table,
   CheckCircle2,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Lock,
+  Unlock,
+  X
 } from 'lucide-react';
 
 export interface ExcelChallengesPracticeHubProps {
   userName?: string;
+  isEnrolled?: boolean;
+  onNavigateToCourses?: () => void;
+  onUnlockAll?: () => void;
   onBackToPractice?: () => void;
   onBackToDashboard?: () => void;
   onSolveChallenge?: (challengeId: number, title: string) => void;
@@ -50,6 +56,9 @@ const Excel3DIcon = () => (
 
 export const ExcelChallengesPracticeHub: React.FC<ExcelChallengesPracticeHubProps> = ({
   userName = 'Rahul',
+  isEnrolled,
+  onNavigateToCourses,
+  onUnlockAll,
   onBackToPractice,
   onBackToDashboard,
   onSolveChallenge
@@ -57,6 +66,21 @@ export const ExcelChallengesPracticeHub: React.FC<ExcelChallengesPracticeHubProp
   const [activeTab, setActiveTab] = useState<'all' | 'basic' | 'intermediate' | 'advanced' | 'popular'>('all');
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<number>>(new Set());
   const [activeChallengeArenaTopic, setActiveChallengeArenaTopic] = useState<{ topicId: number; initialTaskId?: number } | null>(null);
+  const [lockedModalTopic, setLockedModalTopic] = useState<{ title: string; count: number } | null>(null);
+
+  const [internalEnrolled, setInternalEnrolled] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('futureai_course_enrolled');
+      if (saved === 'true') return true;
+    }
+    return isEnrolled || false;
+  });
+
+  useEffect(() => {
+    if (isEnrolled !== undefined) {
+      setInternalEnrolled(isEnrolled);
+    }
+  }, [isEnrolled]);
 
   // Selected question per card
   const [selectedTaskPerTopic, setSelectedTaskPerTopic] = useState<Record<number, number>>({});
@@ -324,6 +348,7 @@ export const ExcelChallengesPracticeHub: React.FC<ExcelChallengesPracticeHubProp
               filteredTopics.map((topic, index) => {
                 const selectedTaskId = selectedTaskPerTopic[topic.id] || 1;
                 const isBookmarked = bookmarkedIds.has(topic.id);
+                const isLocked = !internalEnrolled && topic.id !== 1 && topic.id !== 201;
 
                 return (
                   <div
@@ -333,6 +358,21 @@ export const ExcelChallengesPracticeHub: React.FC<ExcelChallengesPracticeHubProp
                     {/* Top Row: Category Pill, Difficulty & Bookmark */}
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
+                        {topic.id === 1 || topic.id === 201 ? (
+                          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            Free Topic
+                          </span>
+                        ) : isLocked ? (
+                          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200 flex items-center gap-1">
+                            <Lock className="w-3 h-3 text-amber-600" />
+                            Locked
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
+                            <Unlock className="w-3 h-3 text-emerald-600" />
+                            Unlocked
+                          </span>
+                        )}
                         <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700">
                           {topic.category}
                         </span>
@@ -368,6 +408,11 @@ export const ExcelChallengesPracticeHub: React.FC<ExcelChallengesPracticeHubProp
                         <select
                           value={selectedTaskId}
                           onChange={(e) => {
+                            if (isLocked) {
+                              soundEffects.playLock();
+                              setLockedModalTopic({ title: topic.title, count: topic.tasks?.length || 10 });
+                              return;
+                            }
                             const val = parseInt(e.target.value, 10);
                             setSelectedTaskPerTopic((prev) => ({
                               ...prev,
@@ -401,19 +446,33 @@ export const ExcelChallengesPracticeHub: React.FC<ExcelChallengesPracticeHubProp
                         <span className="text-emerald-700 font-bold">10 Progressive Tasks</span>
                       </div>
 
-                      <button
-                        onClick={() => {
-                          soundEffects.playClick();
-                          setActiveChallengeArenaTopic({
-                            topicId: topic.id,
-                            initialTaskId: selectedTaskId
-                          });
-                        }}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#107c41] hover:bg-[#0b5e28] text-white font-bold text-xs shadow-xs hover:shadow transition cursor-pointer"
-                      >
-                        <span>Solve Challenge</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
+                      {isLocked ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            soundEffects.playLock();
+                            setLockedModalTopic({ title: topic.title, count: topic.tasks?.length || 10 });
+                          }}
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 active:scale-95 font-bold text-xs shadow-2xs transition-all cursor-pointer whitespace-nowrap"
+                        >
+                          <Lock className="w-3.5 h-3.5 text-amber-600" />
+                          <span>Unlock Topic</span>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            soundEffects.playClick();
+                            setActiveChallengeArenaTopic({
+                              topicId: topic.id,
+                              initialTaskId: selectedTaskId
+                            });
+                          }}
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#107c41] hover:bg-[#0b5e28] text-white font-bold text-xs shadow-xs hover:shadow transition cursor-pointer"
+                        >
+                          <span>Solve Challenge</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 );
@@ -568,6 +627,93 @@ export const ExcelChallengesPracticeHub: React.FC<ExcelChallengesPracticeHubProp
           </div>
         </div>
       </div>
+
+      {/* Course Enrollment Locked Modal */}
+      {lockedModalTopic && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-3xl border border-slate-200 max-w-md w-full p-6 sm:p-7 shadow-2xl relative text-left">
+            {/* Close button */}
+            <button
+              onClick={() => {
+                soundEffects.playClick();
+                setLockedModalTopic(null);
+              }}
+              className="absolute top-5 right-5 p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Lock Badge & Icon */}
+            <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center mb-4 shadow-xs">
+              <Lock className="w-7 h-7" />
+            </div>
+
+            {/* Topic pill */}
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold mb-2">
+              <span>Excel • {lockedModalTopic.title}</span>
+            </div>
+
+            <h3 className="text-xl font-black text-slate-900 tracking-tight mb-2">
+              Enroll in Any 1 Course to Unlock
+            </h3>
+
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
+              <strong>{lockedModalTopic.title}</strong> aur aage ke sabhi topics unlock karne ke liye kisi bhi <strong>1 Course</strong> me enroll karein. Kisi ek me enroll hone ke baad tabhi ye open hoga!
+            </p>
+
+            {/* Benefits List */}
+            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-3.5 space-y-2 mb-5 text-xs text-slate-700 font-medium">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>All 25 Excel practical challenge topics unlock</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Python, SQL &amp; Full Stack live coding access</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Live grid simulator, formula validation &amp; instant results</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playClick();
+                  setLockedModalTopic(null);
+                  if (onNavigateToCourses) {
+                    onNavigateToCourses();
+                  } else {
+                    window.location.hash = '#courses';
+                  }
+                }}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs sm:text-sm shadow-md shadow-blue-500/20 active:scale-98 transition cursor-pointer"
+              >
+                <span>Explore &amp; Enroll in Courses →</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playCelebration();
+                  setInternalEnrolled(true);
+                  if (typeof window !== 'undefined') {
+                    localStorage.setItem('futureai_course_enrolled', 'true');
+                  }
+                  if (onUnlockAll) onUnlockAll();
+                  setLockedModalTopic(null);
+                }}
+                className="w-full py-2 px-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold text-xs transition cursor-pointer text-center"
+              >
+                Simulate Course Enrollment (Unlock Demo)
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
