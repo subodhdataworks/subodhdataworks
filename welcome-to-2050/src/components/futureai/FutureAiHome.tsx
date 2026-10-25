@@ -20,6 +20,8 @@ import {
   BarChart3,
   FileSpreadsheet,
   Infinity as InfinityIcon,
+  Laptop,
+  FolderGit2,
   Cloud,
   Rocket,
   MessageSquare,
@@ -676,249 +678,191 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 4: Why Choose Future IT Industry? (Exact Same-to-Same Master Showcase)
+          SECTION 4: Why Choose Future IT Industry? (Ultra-Advanced Interactive Showcase)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         
-        {/* ─── DESKTOP & TABLET: Exact 1:1 Masterwork Comparison Showcase Banner ─── */}
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200/90 text-blue-700 text-xs font-black uppercase tracking-wider mb-2.5 shadow-2xs">
+            <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+            <span>Honest &amp; Transparent Comparison</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
+            Why Choose{' '}
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent">
+              Future IT Industry?
+            </span>
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1.5">
+            Real Skills • Real Projects • Career Support. Choose the proven path to career transformation.
+          </p>
+        </div>
+
+        {/* Master Showcase Banner (Responsive on Desktop, Tablet & Mobile) */}
         <div 
           onClick={promptLogin}
-          className="hidden md:block relative w-full rounded-3xl overflow-hidden shadow-md border border-slate-200/90 hover:shadow-xl transition-all duration-300 cursor-pointer group bg-white"
+          className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl border border-slate-200/90 transition-all duration-500 cursor-pointer group bg-white mb-6 sm:mb-8"
         >
           <img
             src="/images/why_choose/why_choose_comparison_banner.jpg"
-            alt="Why Choose Future IT Industry? Honest Transparent Comparison"
-            className="w-full h-auto object-contain select-none pointer-events-none group-hover:scale-[1.005] transition-transform duration-500"
+            alt="Why Choose Future IT Industry? Real Skills • Real Projects • Career Support"
+            className="w-full h-auto object-contain select-none group-hover:scale-[1.006] transition-transform duration-700"
           />
         </div>
 
-        {/* ─── MOBILE: Responsive Stacked Version for Crystal Clear Readability on Small Screens ─── */}
-        <div className="md:hidden flex flex-col gap-4">
-          
-          {/* Mobile Header */}
-          <div className="text-center">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-[10.5px] font-black uppercase tracking-wider mb-2">
-              <BarChart3 className="w-3 h-3 text-blue-600" />
-              <span>Honest Transparent Comparison</span>
+        {/* 4 Core Value Pillars (Matching the High-Impact Trust Bar) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 mb-6">
+          <div 
+            onClick={promptLogin}
+            className="group/pillar p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-blue-400 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer flex items-start gap-3.5"
+          >
+            <div className="w-11 h-11 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover/pillar:bg-blue-600 group-hover/pillar:text-white transition-colors duration-300 shadow-2xs">
+              <Coins className="w-5 h-5" />
             </div>
-            <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-tight">
-              Why Choose{' '}
-              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                Future IT Industry?
-              </span>
-            </h2>
-            <p className="text-xs text-slate-500 font-semibold mt-1">
-              Same goal — different experience. Choose the right path for your career and financial freedom.
-            </p>
-          </div>
-
-          {/* Left Card: Other Institutes (Red Negative Tone) */}
-          <div className="bg-gradient-to-br from-rose-50/90 via-white to-red-50/40 rounded-2xl p-4 border-2 border-red-200/90 shadow-2xs">
-            <div className="flex items-center gap-2.5 pb-3 border-b border-red-100">
-              <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-black shadow-xs shrink-0">
-                <X className="w-4 h-4 stroke-[3]" />
-              </div>
-              <div>
-                <h3 className="text-base font-black text-slate-900 leading-tight">
-                  Other Institutes
-                </h3>
-                <p className="text-[10px] font-bold text-red-600 mt-0.5">
-                  High Fees, Less Support, No Real Results
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-1.5 mt-3">
-              <div className="flex items-center gap-2 p-2 rounded-xl bg-white/80 border border-red-100">
-                <div className="w-6 h-6 rounded-md bg-red-100 text-red-600 flex items-center justify-center shrink-0">
-                  <Coins className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <div className="text-xs font-black text-slate-900 leading-tight">High Fee</div>
-                  <div className="text-[10px] text-slate-500 font-semibold">₹ 1 Lakh – ₹ 2 Lakh</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 p-2 rounded-xl bg-white/80 border border-red-100">
-                <div className="w-6 h-6 rounded-md bg-red-100 text-red-600 flex items-center justify-center shrink-0">
-                  <CreditCard className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <div className="text-xs font-black text-slate-900 leading-tight">EMI Tention</div>
-                  <div className="text-[10px] text-slate-500 font-semibold">Long EMI, financial pressure</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 p-2 rounded-xl bg-white/80 border border-red-100">
-                <div className="w-6 h-6 rounded-md bg-red-100 text-red-600 flex items-center justify-center shrink-0">
-                  <Frown className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <div className="text-xs font-black text-slate-900 leading-tight">Boring Lecture</div>
-                  <div className="text-[10px] text-slate-500 font-semibold">Theoretical and boring classes</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 p-2 rounded-xl bg-white/80 border border-red-100">
-                <div className="w-6 h-6 rounded-md bg-red-100 text-red-600 flex items-center justify-center shrink-0">
-                  <VideoIcon className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <div className="text-xs font-black text-slate-900 leading-tight">Sleepy Video</div>
-                  <div className="text-[10px] text-slate-500 font-semibold">Long and uninteresting videos</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 p-2 rounded-xl bg-white/80 border border-red-100">
-                <div className="w-6 h-6 rounded-md bg-red-100 text-red-600 flex items-center justify-center shrink-0">
-                  <Clock className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <div className="text-xs font-black text-slate-900 leading-tight">Old Learning Method</div>
-                  <div className="text-[10px] text-slate-500 font-semibold">Outdated content and style</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 p-2 rounded-xl bg-white/80 border border-red-100">
-                <div className="w-6 h-6 rounded-md bg-red-100 text-red-600 flex items-center justify-center shrink-0">
-                  <UserX className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <div className="text-xs font-black text-slate-900 leading-tight">No Internship</div>
-                  <div className="text-[10px] text-slate-500 font-semibold">No real industry exposure</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 p-2 rounded-xl bg-white/80 border border-red-100">
-                <div className="w-6 h-6 rounded-md bg-red-100 text-red-600 flex items-center justify-center shrink-0">
-                  <Briefcase className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <div className="text-xs font-black text-slate-900 leading-tight">No Job Support</div>
-                  <div className="text-[10px] text-slate-500 font-semibold">No placement or guidance</div>
-                </div>
-              </div>
+            <div className="min-w-0">
+              <h4 className="text-sm font-black text-slate-900 group-hover/pillar:text-blue-600 transition-colors">
+                Affordable Learning
+              </h4>
+              <p className="text-xs text-slate-500 font-medium mt-0.5 leading-relaxed">
+                High-Quality Education at the Right Price. No overpriced fee pressure.
+              </p>
             </div>
           </div>
 
-          {/* Right Card: Future IT Industry (Bright Sapphire Blue) */}
-          <div className="bg-gradient-to-br from-blue-50/90 via-white to-cyan-50/50 rounded-2xl p-4 border-2 border-blue-400 shadow-md relative overflow-hidden">
-            <div className="flex items-center justify-between pb-3 border-b border-blue-100">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-black shadow-xs shrink-0">
-                  <Check className="w-4 h-4 stroke-[3]" />
+          <div 
+            onClick={promptLogin}
+            className="group/pillar p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-indigo-400 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer flex items-start gap-3.5"
+          >
+            <div className="w-11 h-11 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover/pillar:bg-indigo-600 group-hover/pillar:text-white transition-colors duration-300 shadow-2xs">
+              <InfinityIcon className="w-5 h-5" />
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-sm font-black text-slate-900 group-hover/pillar:text-indigo-600 transition-colors">
+                Lifetime Course Access
+              </h4>
+              <p className="text-xs text-slate-500 font-medium mt-0.5 leading-relaxed">
+                Learn at Your Own Pace, Anytime, Anywhere with future curriculum updates.
+              </p>
+            </div>
+          </div>
+
+          <div 
+            onClick={promptLogin}
+            className="group/pillar p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-cyan-400 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer flex items-start gap-3.5"
+          >
+            <div className="w-11 h-11 rounded-2xl bg-cyan-50 text-cyan-600 flex items-center justify-center shrink-0 group-hover/pillar:bg-cyan-600 group-hover/pillar:text-white transition-colors duration-300 shadow-2xs">
+              <Laptop className="w-5 h-5" />
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-sm font-black text-slate-900 group-hover/pillar:text-cyan-600 transition-colors">
+                Hands-on Practice
+              </h4>
+              <p className="text-xs text-slate-500 font-medium mt-0.5 leading-relaxed">
+                Live In-Browser Coding Sandbox, Real Cloud Tools &amp; Automated Evaluation.
+              </p>
+            </div>
+          </div>
+
+          <div 
+            onClick={promptLogin}
+            className="group/pillar p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-emerald-400 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer flex items-start gap-3.5"
+          >
+            <div className="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover/pillar:bg-emerald-600 group-hover/pillar:text-white transition-colors duration-300 shadow-2xs">
+              <FolderGit2 className="w-5 h-5" />
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-sm font-black text-slate-900 group-hover/pillar:text-emerald-600 transition-colors">
+                Project Portfolio
+              </h4>
+              <p className="text-xs text-slate-500 font-medium mt-0.5 leading-relaxed">
+                Build Real Production Projects to showcase verifiable skills to recruiters.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Interactive Feature Comparison Matrix for Deep-Dive */}
+        <div className="bg-gradient-to-b from-slate-50/80 via-white to-blue-50/30 rounded-3xl p-5 sm:p-7 border border-slate-200/90 shadow-xs">
+          <div className="text-center max-w-xl mx-auto mb-6">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-blue-700 text-xs font-black uppercase tracking-wider mb-2">
+              <BarChart3 className="w-3.5 h-3.5 text-blue-600" />
+              <span>Feature-By-Feature Breakdown</span>
+            </span>
+            <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              Traditional Learning <span className="text-slate-400 font-normal">vs</span> Future IT Industry
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Traditional Learning Column */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-rose-50/60 border border-red-200/80 space-y-3">
+              <div className="flex items-center gap-2.5 pb-2.5 border-b border-red-200/60">
+                <div className="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center font-black shadow-2xs">
+                  <X className="w-4 h-4 stroke-[3]" />
                 </div>
                 <div>
-                  <h3 className="text-base font-black text-slate-900 leading-tight">
-                    Future IT Industry
-                  </h3>
-                  <p className="text-[10px] font-bold text-blue-600 mt-0.5">
-                    Practical Learning. 100% Placement.
-                  </p>
+                  <h4 className="text-sm font-black text-slate-900">Traditional Learning</h4>
+                  <p className="text-[11px] text-red-600 font-semibold">Legacy &amp; Theoretical Approach</p>
                 </div>
               </div>
-
-              <div className="px-3 py-1 rounded-full bg-amber-400 text-slate-950 font-black text-[10px] shadow-xs">
-                Only ₹987
+              <div className="space-y-2">
+                {[
+                  { title: 'Passive Video Lectures', desc: 'Hours of one-way recorded video without live interactive code feedback' },
+                  { title: 'Limited Hands-on Practice', desc: 'Theoretical concepts with minimal real industry problem-solving' },
+                  { title: 'Outdated Learning Paths', desc: 'Legacy curriculums not matched to 2026 AI industry standards' },
+                  { title: 'Limited Career Guidance', desc: 'No personalized resume optimization or real interview simulations' },
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white/90 border border-red-100">
+                    <div className="w-5 h-5 rounded-full bg-red-100 text-red-600 flex items-center justify-center shrink-0 mt-0.5">
+                      <X className="w-3 h-3 stroke-[3]" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-black text-slate-800">{item.title}</div>
+                      <div className="text-[11px] text-slate-500 font-medium leading-tight mt-0.5">{item.desc}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 mt-3">
-              <div className="p-2 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-center gap-2">
-                <Gamepad2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <div className="min-w-0">
-                  <div className="text-[10.5px] font-black text-slate-900 truncate">Coding Game</div>
-                  <div className="text-[8.5px] text-slate-500 leading-none truncate">Play &amp; practice</div>
+            {/* Future IT Industry Column */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-blue-50/70 border-2 border-blue-300/90 shadow-sm space-y-3">
+              <div className="flex items-center justify-between pb-2.5 border-b border-blue-200/80">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black shadow-2xs">
+                    <Check className="w-4 h-4 stroke-[3]" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-black text-slate-900">Future IT Industry</h4>
+                    <p className="text-[11px] text-blue-700 font-bold">100% Practical &amp; AI-Powered</p>
+                  </div>
+                </div>
+                <div className="px-2.5 py-1 rounded-full bg-emerald-500 text-white font-black text-[11px] shadow-2xs">
+                  Pro Ready
                 </div>
               </div>
-              <div className="p-2 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-center gap-2">
-                <FileCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                <div className="min-w-0">
-                  <div className="text-[10.5px] font-black text-slate-900 truncate">Real Projects</div>
-                  <div className="text-[8.5px] text-slate-500 leading-none truncate">Industry portfolio</div>
-                </div>
-              </div>
-              <div className="p-2 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-center gap-2">
-                <Layers className="w-4 h-4 text-purple-600 shrink-0" />
-                <div className="min-w-0">
-                  <div className="text-[10.5px] font-black text-slate-900 truncate">Modern Method</div>
-                  <div className="text-[8.5px] text-slate-500 leading-none truncate">Updated tools</div>
-                </div>
-              </div>
-              <div className="p-2 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-center gap-2">
-                <BadgeCheck className="w-4 h-4 text-sky-600 shrink-0" />
-                <div className="min-w-0">
-                  <div className="text-[10.5px] font-black text-slate-900 truncate">ATS Resume</div>
-                  <div className="text-[8.5px] text-slate-500 leading-none truncate">AI score checker</div>
-                </div>
-              </div>
-              <div className="p-2 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-center gap-2">
-                <Coins className="w-4 h-4 text-amber-600 shrink-0" />
-                <div className="min-w-0">
-                  <div className="text-[10.5px] font-black text-slate-900 truncate">Only ₹987</div>
-                  <div className="text-[8.5px] text-slate-500 leading-none truncate">No EMI pressure</div>
-                </div>
-              </div>
-              <div className="p-2 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-center gap-2">
-                <Briefcase className="w-4 h-4 text-purple-600 shrink-0" />
-                <div className="min-w-0">
-                  <div className="text-[10.5px] font-black text-slate-900 truncate">Internship</div>
-                  <div className="text-[8.5px] text-slate-500 leading-none truncate">Real experience</div>
-                </div>
-              </div>
-              <div className="p-2 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-center gap-2">
-                <InfinityIcon className="w-4 h-4 text-rose-600 shrink-0" />
-                <div className="min-w-0">
-                  <div className="text-[10.5px] font-black text-slate-900 truncate">Mock Interview</div>
-                  <div className="text-[8.5px] text-slate-500 leading-none truncate">Unlimited practice</div>
-                </div>
-              </div>
-              <div className="p-2 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-center gap-2">
-                <Award className="w-4 h-4 text-red-600 shrink-0" />
-                <div className="min-w-0">
-                  <div className="text-[10.5px] font-black text-slate-900 truncate">LOR Letter</div>
-                  <div className="text-[8.5px] text-slate-500 leading-none truncate">Recommendation</div>
-                </div>
-              </div>
-              <div className="p-2 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-center gap-2">
-                <Code2 className="w-4 h-4 text-blue-600 shrink-0" />
-                <div className="min-w-0">
-                  <div className="text-[10.5px] font-black text-slate-900 truncate">Coding Practice</div>
-                  <div className="text-[8.5px] text-slate-500 leading-none truncate">Build &amp; solve</div>
-                </div>
-              </div>
-              <div className="p-2 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-center gap-2">
-                <Trophy className="w-4 h-4 text-yellow-600 shrink-0" />
-                <div className="min-w-0">
-                  <div className="text-[10.5px] font-black text-slate-900 truncate">100% Placement</div>
-                  <div className="text-[8.5px] text-slate-500 leading-none truncate">Our goal success</div>
-                </div>
+              <div className="space-y-2">
+                {[
+                  { title: 'Live Coding Practice', desc: 'Write. Run. Learn. In-browser sandbox with automated test cases' },
+                  { title: 'Real-World Projects', desc: 'Build production repositories & portfolio apps recruiters value' },
+                  { title: 'AI Mock Interviews', desc: 'Real-time speech & technical evaluation to boost confidence' },
+                  { title: 'ATS Resume Feedback', desc: 'Algorithmic resume parsing to beat enterprise recruitment filters' },
+                  { title: 'Career Support', desc: '1-on-1 mentor guidance & active referral pipeline at every step' },
+                ].map((item, idx) => (
+                  <div key={idx} onClick={promptLogin} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white border border-blue-200/80 shadow-2xs hover:border-blue-400 hover:shadow-xs transition cursor-pointer">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 stroke-[3]" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-black text-slate-900">{item.title}</div>
+                      <div className="text-[11px] text-slate-600 font-medium leading-tight mt-0.5">{item.desc}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-
-          {/* Mobile 6 Trust Badges */}
-          <div className="grid grid-cols-2 gap-2 mt-2">
-            <div onClick={promptLogin} className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2">
-              <GraduationCap className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-              <span className="text-[10px] font-bold text-slate-800">Industry Curriculum</span>
-            </div>
-            <div onClick={promptLogin} className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2">
-              <Award className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-              <span className="text-[10px] font-bold text-slate-800">Lifetime Access</span>
-            </div>
-            <div onClick={promptLogin} className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2">
-              <Users className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-              <span className="text-[10px] font-bold text-slate-800">Expert Mentorship</span>
-            </div>
-            <div onClick={promptLogin} className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2">
-              <Briefcase className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-              <span className="text-[10px] font-bold text-slate-800">Real Projects</span>
-            </div>
-            <div onClick={promptLogin} className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2">
-              <Building2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-              <span className="text-[10px] font-bold text-slate-800">Internship Assistance</span>
-            </div>
-            <div onClick={promptLogin} className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2">
-              <ShieldCheck className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-              <span className="text-[10px] font-bold text-slate-800">Job Placement</span>
-            </div>
-          </div>
-
         </div>
 
       </section>
