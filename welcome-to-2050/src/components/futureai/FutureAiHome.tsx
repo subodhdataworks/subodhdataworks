@@ -316,8 +316,8 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         </div>
       </section>
 
-      {/* ─── 3. METRICS / TRUST STAT BADGES (Row of 4 Compact Badges) ─── */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-2 shrink-0">
+      {/* ─── 3. METRICS / TRUST STAT BADGES (Row of 4 Compact Badges - Shifted Up Higher) ─── */}
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-8 relative z-20 shrink-0">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
           
           {/* Card 1: 100K+ Students */}
@@ -413,9 +413,9 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 1: Explore Our Career Programs (Ultra-Premium Luxury Cards)
+          SECTION 1: Explore Our Career Programs (Ultra-Premium Luxury Cards - Shifted Higher)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 sm:pt-5 sm:pb-10">
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8">
@@ -454,19 +454,22 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-blue-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
           >
             <div>
-              {/* Image Banner with Badge */}
+              {/* Video Banner with Badge */}
               <div className="relative w-full h-[155px] sm:h-[165px] overflow-hidden bg-slate-900">
-                <img
-                  src="/images/home_sections/card_da_banner.jpg"
-                  alt="Data Analyst Program"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95 group-hover:opacity-100"
+                <video
+                  src="/videos/data_analyst_genai_v2.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md">
+                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md z-10">
                   <Flame className="w-3 h-3 fill-white" />
                   <span>Most Popular</span>
                 </div>
-                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-bold">
+                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-bold z-10">
                   <span className="bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/20">8–12 Weeks</span>
                   <span className="text-amber-300 font-black">₹6 – 12 LPA</span>
                 </div>
@@ -475,7 +478,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               {/* Title & Desc */}
               <div className="p-4 sm:p-5">
                 <h3 className="text-lg font-black text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">
-                  Data Analyst
+                  Data Analyst with Gen AI
                 </h3>
                 <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed line-clamp-2">
                   Turn raw data into actionable business insights with interactive dashboards and automation.
@@ -513,17 +516,20 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           >
             <div>
               <div className="relative w-full h-[155px] sm:h-[165px] overflow-hidden bg-slate-900">
-                <img
-                  src="/images/home_sections/card_ds_banner.jpg"
-                  alt="Data Scientist Program"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95 group-hover:opacity-100"
+                <video
+                  src="/videos/data_science_agentic_ai_course.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md">
+                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md z-10">
                   <Sparkles className="w-3 h-3 text-white" />
                   <span>AI &amp; Research</span>
                 </div>
-                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-bold">
+                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-bold z-10">
                   <span className="bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/20">12–16 Weeks</span>
                   <span className="text-purple-300 font-black">₹8 – 18 LPA</span>
                 </div>
@@ -531,7 +537,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
 
               <div className="p-4 sm:p-5">
                 <h3 className="text-lg font-black text-slate-900 tracking-tight group-hover:text-purple-600 transition-colors">
-                  Data Scientist
+                  Data Science &amp; Agentic AI
                 </h3>
                 <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed line-clamp-2">
                   Work with big data, build predictive AI models and solve high-impact industrial problems.
@@ -568,17 +574,20 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           >
             <div>
               <div className="relative w-full h-[155px] sm:h-[165px] overflow-hidden bg-slate-900">
-                <img
-                  src="/images/home_sections/card_ai_banner.jpg"
-                  alt="AI Engineering Program"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95 group-hover:opacity-100"
+                <video
+                  src="/videos/ai_engineering_course.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md">
+                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md z-10">
                   <Zap className="w-3 h-3 text-white" />
                   <span>High Demand</span>
                 </div>
-                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-bold">
+                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-bold z-10">
                   <span className="bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/20">12–16 Weeks</span>
                   <span className="text-cyan-300 font-black">₹10 – 24 LPA</span>
                 </div>
@@ -623,17 +632,20 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           >
             <div>
               <div className="relative w-full h-[155px] sm:h-[165px] overflow-hidden bg-slate-900">
-                <img
-                  src="/images/home_sections/card_ml_banner.jpg"
-                  alt="ML Engineering Program"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95 group-hover:opacity-100"
+                <video
+                  src="/videos/ml_engineering_course.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md">
+                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md z-10">
                   <Rocket className="w-3 h-3 text-white" />
                   <span>Deployment Pro</span>
                 </div>
-                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-bold">
+                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-bold z-10">
                   <span className="bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/20">12–16 Weeks</span>
                   <span className="text-pink-300 font-black">₹9 – 20 LPA</span>
                 </div>
