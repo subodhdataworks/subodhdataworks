@@ -501,8 +501,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   // "koi bhi new studend join krega to uska sab kuch 0 se start hoga and abhi sirf python unlock hoga baaki sab lock hoga click krne pr 999 wala page aa jayega"
   const [isNewStudentMode, setIsNewStudentMode] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('futureai_course_enrolled');
-      if (saved === 'true') return false;
+      localStorage.removeItem('futureai_course_enrolled');
     }
     return true;
   });

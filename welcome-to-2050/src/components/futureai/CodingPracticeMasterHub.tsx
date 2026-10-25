@@ -843,23 +843,6 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
                 <span>Explore &amp; Enroll in Courses →</span>
               </button>
 
-              <button
-                type="button"
-                onClick={() => {
-                  soundEffects.playSuccess();
-                  setInternalEnrolled(true);
-                  if (typeof window !== 'undefined') {
-                    localStorage.setItem('futureai_course_enrolled', 'true');
-                  }
-                  if (onUnlockAll) onUnlockAll();
-                  const targetCard = lockedModalCourse;
-                  setLockedModalCourse(null);
-                  setActiveBlankCourse(targetCard);
-                }}
-                className="w-full py-2 px-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold text-xs transition cursor-pointer text-center"
-              >
-                Simulate Course Enrollment (Unlock Demo)
-              </button>
             </div>
           </div>
         </div>
