@@ -36,7 +36,11 @@ import {
   Sparkles,
   HelpCircle,
   Phone,
-  ShieldCheck
+  ShieldCheck,
+  Quote,
+  Target,
+  BadgeCheck,
+  Zap
 } from 'lucide-react';
 
 const YoutubeIcon = () => (
@@ -409,82 +413,94 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 1: Explore Our Career Programs
+          SECTION 1: Explore Our Career Programs (Ultra-Premium Luxury Cards)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8">
           <div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-blue-700 text-[11px] font-black uppercase tracking-wider mb-2.5 shadow-2xs">
+              <Sparkles className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
+              <span>Job-Ready Master Programs</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
               Explore Our{' '}
               <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
                 Career Programs
               </span>
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1">
-              Choose a program and start your journey towards a successful career.
+            <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1 max-w-xl">
+              Choose an industry-curated program designed to take you from foundational basics to high-paying tech placements.
             </p>
           </div>
 
           <button
             type="button"
             onClick={promptLogin}
-            className="self-start md:self-auto px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-blue-600 font-extrabold text-xs sm:text-sm border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all cursor-pointer flex items-center gap-1.5 group"
+            className="self-start md:self-auto px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-blue-600 font-extrabold text-xs sm:text-sm border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-sm transition-all cursor-pointer flex items-center gap-2 group active:scale-95"
           >
             <span>View All Courses</span>
-            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
 
         {/* 4 Career Programs Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           
           {/* Program Card 1: Data Analyst (Most Popular) */}
           <div
             onClick={promptLogin}
-            className="group bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-lg hover:border-blue-300 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
+            className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-blue-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
           >
             <div>
-              <div className="relative w-full h-[140px] sm:h-[155px] overflow-hidden bg-slate-900">
+              {/* Image Banner with Badge */}
+              <div className="relative w-full h-[155px] sm:h-[165px] overflow-hidden bg-slate-900">
                 <img
                   src="/images/home_sections/card_da_banner.jpg"
                   alt="Data Analyst Program"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95 group-hover:opacity-100"
                 />
-                <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md">
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md">
                   <Flame className="w-3 h-3 fill-white" />
                   <span>Most Popular</span>
                 </div>
+                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-bold">
+                  <span className="bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/20">8–12 Weeks</span>
+                  <span className="text-amber-300 font-black">₹6 – 12 LPA</span>
+                </div>
               </div>
 
-              <div className="p-4">
-                <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">
+              {/* Title & Desc */}
+              <div className="p-4 sm:p-5">
+                <h3 className="text-lg font-black text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">
                   Data Analyst
                 </h3>
-                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed">
-                  Turn data into insights and build a career in analytics.
+                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed line-clamp-2">
+                  Turn raw data into actionable business insights with interactive dashboards and automation.
                 </p>
               </div>
             </div>
 
-            <div className="p-4 pt-0 flex items-center justify-between gap-2 border-t border-slate-100 mt-2">
+            {/* Bottom Tech Pills + Action */}
+            <div className="p-4 sm:p-5 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-100 flex items-center gap-1">
-                  <FileSpreadsheet className="w-2.5 h-2.5" />
+                <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-100 flex items-center gap-1">
+                  <FileSpreadsheet className="w-3 h-3 text-emerald-600" />
                   Excel
                 </span>
-                <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-100 flex items-center gap-1">
-                  <Database className="w-2.5 h-2.5" />
+                <span className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-100 flex items-center gap-1">
+                  <Database className="w-3 h-3 text-blue-600" />
                   SQL
                 </span>
-                <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100 flex items-center gap-1">
-                  <BarChart3 className="w-2.5 h-2.5" />
+                <span className="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100 flex items-center gap-1">
+                  <BarChart3 className="w-3 h-3 text-amber-600" />
                   Power BI
                 </span>
               </div>
 
-              <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-blue-700 transition-all shadow-xs">
+              <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-blue-700 transition-all shadow-sm">
                 <ArrowRight className="w-4 h-4" />
               </div>
             </div>
@@ -493,44 +509,53 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           {/* Program Card 2: Data Scientist */}
           <div
             onClick={promptLogin}
-            className="group bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-lg hover:border-purple-300 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
+            className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-purple-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
           >
             <div>
-              <div className="relative w-full h-[140px] sm:h-[155px] overflow-hidden bg-slate-900">
+              <div className="relative w-full h-[155px] sm:h-[165px] overflow-hidden bg-slate-900">
                 <img
                   src="/images/home_sections/card_ds_banner.jpg"
                   alt="Data Scientist Program"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95 group-hover:opacity-100"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md">
+                  <Sparkles className="w-3 h-3 text-white" />
+                  <span>AI &amp; Research</span>
+                </div>
+                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-bold">
+                  <span className="bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/20">12–16 Weeks</span>
+                  <span className="text-purple-300 font-black">₹8 – 18 LPA</span>
+                </div>
               </div>
 
-              <div className="p-4">
-                <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight group-hover:text-purple-600 transition-colors">
+              <div className="p-4 sm:p-5">
+                <h3 className="text-lg font-black text-slate-900 tracking-tight group-hover:text-purple-600 transition-colors">
                   Data Scientist
                 </h3>
-                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed">
-                  Work with data, build AI models and solve real-world problems.
+                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed line-clamp-2">
+                  Work with big data, build predictive AI models and solve high-impact industrial problems.
                 </p>
               </div>
             </div>
 
-            <div className="p-4 pt-0 flex items-center justify-between gap-2 border-t border-slate-100 mt-2">
+            <div className="p-4 sm:p-5 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100 flex items-center gap-1">
-                  <Code2 className="w-2.5 h-2.5" />
+                <span className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100 flex items-center gap-1">
+                  <Code2 className="w-3 h-3 text-indigo-600" />
                   Python
                 </span>
-                <span className="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 text-[10px] font-bold border border-purple-100 flex items-center gap-1">
-                  <Brain className="w-2.5 h-2.5" />
+                <span className="px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700 text-[10px] font-bold border border-purple-100 flex items-center gap-1">
+                  <Brain className="w-3 h-3 text-purple-600" />
                   ML
                 </span>
-                <span className="px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 text-[10px] font-bold border border-rose-100 flex items-center gap-1">
-                  <BarChart3 className="w-2.5 h-2.5" />
+                <span className="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 text-[10px] font-bold border border-rose-100 flex items-center gap-1">
+                  <BarChart3 className="w-3 h-3 text-rose-600" />
                   Statistics
                 </span>
               </div>
 
-              <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-purple-700 transition-all shadow-xs">
+              <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-purple-700 transition-all shadow-sm">
                 <ArrowRight className="w-4 h-4" />
               </div>
             </div>
@@ -539,44 +564,53 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           {/* Program Card 3: AI Engineering */}
           <div
             onClick={promptLogin}
-            className="group bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-lg hover:border-sky-300 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
+            className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-sky-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
           >
             <div>
-              <div className="relative w-full h-[140px] sm:h-[155px] overflow-hidden bg-slate-900">
+              <div className="relative w-full h-[155px] sm:h-[165px] overflow-hidden bg-slate-900">
                 <img
                   src="/images/home_sections/card_ai_banner.jpg"
                   alt="AI Engineering Program"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95 group-hover:opacity-100"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md">
+                  <Zap className="w-3 h-3 text-white" />
+                  <span>High Demand</span>
+                </div>
+                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-bold">
+                  <span className="bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/20">12–16 Weeks</span>
+                  <span className="text-cyan-300 font-black">₹10 – 24 LPA</span>
+                </div>
               </div>
 
-              <div className="p-4">
-                <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight group-hover:text-sky-600 transition-colors">
+              <div className="p-4 sm:p-5">
+                <h3 className="text-lg font-black text-slate-900 tracking-tight group-hover:text-sky-600 transition-colors">
                   AI Engineering
                 </h3>
-                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed">
-                  Build AI applications with real-world projects and industry tools.
+                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed line-clamp-2">
+                  Build production Generative AI applications with real-world LLMs, agents, and API toolchains.
                 </p>
               </div>
             </div>
 
-            <div className="p-4 pt-0 flex items-center justify-between gap-2 border-t border-slate-100 mt-2">
+            <div className="p-4 sm:p-5 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100 flex items-center gap-1">
-                  <Code2 className="w-2.5 h-2.5" />
+                <span className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100 flex items-center gap-1">
+                  <Code2 className="w-3 h-3 text-indigo-600" />
                   Python
                 </span>
-                <span className="px-2 py-0.5 rounded-md bg-cyan-50 text-cyan-700 text-[10px] font-bold border border-cyan-100 flex items-center gap-1">
-                  <Cpu className="w-2.5 h-2.5" />
+                <span className="px-2.5 py-1 rounded-lg bg-cyan-50 text-cyan-700 text-[10px] font-bold border border-cyan-100 flex items-center gap-1">
+                  <Cpu className="w-3 h-3 text-cyan-600" />
                   GenAI
                 </span>
-                <span className="px-2 py-0.5 rounded-md bg-sky-50 text-sky-700 text-[10px] font-bold border border-sky-100 flex items-center gap-1">
-                  <Layers className="w-2.5 h-2.5" />
+                <span className="px-2.5 py-1 rounded-lg bg-sky-50 text-sky-700 text-[10px] font-bold border border-sky-100 flex items-center gap-1">
+                  <Layers className="w-3 h-3 text-sky-600" />
                   LLMs
                 </span>
               </div>
 
-              <div className="w-8 h-8 rounded-full bg-sky-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-sky-700 transition-all shadow-xs">
+              <div className="w-8 h-8 rounded-full bg-sky-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-sky-700 transition-all shadow-sm">
                 <ArrowRight className="w-4 h-4" />
               </div>
             </div>
@@ -585,44 +619,53 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           {/* Program Card 4: ML Engineering */}
           <div
             onClick={promptLogin}
-            className="group bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-lg hover:border-pink-300 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
+            className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-pink-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
           >
             <div>
-              <div className="relative w-full h-[140px] sm:h-[155px] overflow-hidden bg-slate-900">
+              <div className="relative w-full h-[155px] sm:h-[165px] overflow-hidden bg-slate-900">
                 <img
                   src="/images/home_sections/card_ml_banner.jpg"
                   alt="ML Engineering Program"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95 group-hover:opacity-100"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-black text-[10px] tracking-wide flex items-center gap-1 shadow-md">
+                  <Rocket className="w-3 h-3 text-white" />
+                  <span>Deployment Pro</span>
+                </div>
+                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-bold">
+                  <span className="bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/20">12–16 Weeks</span>
+                  <span className="text-pink-300 font-black">₹9 – 20 LPA</span>
+                </div>
               </div>
 
-              <div className="p-4">
-                <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight group-hover:text-pink-600 transition-colors">
+              <div className="p-4 sm:p-5">
+                <h3 className="text-lg font-black text-slate-900 tracking-tight group-hover:text-pink-600 transition-colors">
                   ML Engineering
                 </h3>
-                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed">
-                  Design, deploy and scale ML systems for real-world impact.
+                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed line-clamp-2">
+                  Design, deploy, automate and scale ML systems in production clouds for real-world impact.
                 </p>
               </div>
             </div>
 
-            <div className="p-4 pt-0 flex items-center justify-between gap-2 border-t border-slate-100 mt-2">
+            <div className="p-4 sm:p-5 pt-0 border-t border-slate-100 mt-2 flex items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 text-[10px] font-bold border border-purple-100 flex items-center gap-1">
-                  <InfinityIcon className="w-2.5 h-2.5" />
+                <span className="px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700 text-[10px] font-bold border border-purple-100 flex items-center gap-1">
+                  <InfinityIcon className="w-3 h-3 text-purple-600" />
                   MLOps
                 </span>
-                <span className="px-2 py-0.5 rounded-md bg-sky-50 text-sky-700 text-[10px] font-bold border border-sky-100 flex items-center gap-1">
-                  <Cloud className="w-2.5 h-2.5" />
+                <span className="px-2.5 py-1 rounded-lg bg-sky-50 text-sky-700 text-[10px] font-bold border border-sky-100 flex items-center gap-1">
+                  <Cloud className="w-3 h-3 text-sky-600" />
                   Cloud
                 </span>
-                <span className="px-2 py-0.5 rounded-md bg-pink-50 text-pink-700 text-[10px] font-bold border border-pink-100 flex items-center gap-1">
-                  <Rocket className="w-2.5 h-2.5" />
-                  Deployment
+                <span className="px-2.5 py-1 rounded-lg bg-pink-50 text-pink-700 text-[10px] font-bold border border-pink-100 flex items-center gap-1">
+                  <Rocket className="w-3 h-3 text-pink-600" />
+                  Deploy
                 </span>
               </div>
 
-              <div className="w-8 h-8 rounded-full bg-pink-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-pink-700 transition-all shadow-xs">
+              <div className="w-8 h-8 rounded-full bg-pink-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-pink-700 transition-all shadow-sm">
                 <ArrowRight className="w-4 h-4" />
               </div>
             </div>
@@ -632,155 +675,177 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 2: Learn by Doing – Real Skills for Real Jobs
+          SECTION 2: Learn by Doing – Real Skills for Real Jobs (Vibrant 3D Icon Badges)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         
         {/* Section Header */}
-        <div className="mb-6">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
+        <div className="text-center max-w-3xl mx-auto mb-10">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-[11px] font-black uppercase tracking-wider mb-2.5 shadow-2xs">
+            <Target className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Practical Learning Ecosystem</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
             Learn by Doing –{' '}
             <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
               Real Skills for Real Jobs
             </span>
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1">
-            Not just theory. Practice, build, and apply your skills with real-world projects.
+          <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-2">
+            Not just theory. Practice, build, and apply your skills with real-world projects and direct placement assistance.
           </p>
         </div>
 
-        {/* 6 Feature Cards Row */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+        {/* 6 High-End Interactive Feature Cards with 3D Glowing Gradient Badges */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4">
           
           {/* Card 1: Industry-Focused Courses */}
           <div
             onClick={promptLogin}
-            className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-blue-300 transition-all cursor-pointer flex flex-col items-start gap-3"
+            className="group relative bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-blue-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
-            <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
-              <img
-                src="/images/home_sections/icon_laptop.jpg"
-                alt="Industry-Focused Courses"
-                className="w-full h-full object-cover"
-              />
-            </div>
             <div>
-              <h4 className="text-xs sm:text-[13px] font-black text-slate-900 group-hover:text-blue-600 transition-colors leading-tight">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 mb-4">
+                <BookOpen className="w-6 h-6 stroke-[2.2]" />
+              </div>
+              <span className="inline-block px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[9.5px] font-black uppercase tracking-wide mb-1.5">
+                Curriculum
+              </span>
+              <h4 className="text-xs sm:text-[13.5px] font-black text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">
                 Industry-Focused Courses
               </h4>
-              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10.5px] text-slate-500 font-medium mt-1.5 leading-relaxed">
                 Learn from basics to advanced with structured curriculum.
               </p>
+            </div>
+            <div className="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-blue-600">
+              <span>Explore</span>
+              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
 
           {/* Card 2: Coding Practice */}
           <div
             onClick={promptLogin}
-            className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-indigo-300 transition-all cursor-pointer flex flex-col items-start gap-3"
+            className="group relative bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-emerald-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
-            <div className="w-12 h-12 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
-              <img
-                src="/images/home_sections/icon_code.jpg"
-                alt="Coding Practice"
-                className="w-full h-full object-cover"
-              />
-            </div>
             <div>
-              <h4 className="text-xs sm:text-[13px] font-black text-slate-900 group-hover:text-indigo-600 transition-colors leading-tight">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/25 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 mb-4">
+                <Code2 className="w-6 h-6 stroke-[2.2]" />
+              </div>
+              <span className="inline-block px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[9.5px] font-black uppercase tracking-wide mb-1.5">
+                Live IDE
+              </span>
+              <h4 className="text-xs sm:text-[13.5px] font-black text-slate-900 group-hover:text-emerald-600 transition-colors leading-snug">
                 Coding Practice
               </h4>
-              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10.5px] text-slate-500 font-medium mt-1.5 leading-relaxed">
                 Practice, build skills and solve real problems.
               </p>
+            </div>
+            <div className="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-emerald-600">
+              <span>Code Now</span>
+              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
 
           {/* Card 3: Real Projects */}
           <div
             onClick={promptLogin}
-            className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-emerald-300 transition-all cursor-pointer flex flex-col items-start gap-3"
+            className="group relative bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-purple-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
-              <img
-                src="/images/home_sections/icon_folder.jpg"
-                alt="Real Projects"
-                className="w-full h-full object-cover"
-              />
-            </div>
             <div>
-              <h4 className="text-xs sm:text-[13px] font-black text-slate-900 group-hover:text-emerald-600 transition-colors leading-tight">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 text-white flex items-center justify-center shadow-lg shadow-purple-500/25 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 mb-4">
+                <Briefcase className="w-6 h-6 stroke-[2.2]" />
+              </div>
+              <span className="inline-block px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 text-[9.5px] font-black uppercase tracking-wide mb-1.5">
+                Portfolio
+              </span>
+              <h4 className="text-xs sm:text-[13.5px] font-black text-slate-900 group-hover:text-purple-600 transition-colors leading-snug">
                 Real Projects
               </h4>
-              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10.5px] text-slate-500 font-medium mt-1.5 leading-relaxed">
                 Work on industry-relevant projects and build portfolio.
               </p>
+            </div>
+            <div className="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-purple-600">
+              <span>Build</span>
+              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
 
           {/* Card 4: ATS Resume Checker */}
           <div
             onClick={promptLogin}
-            className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-sky-300 transition-all cursor-pointer flex flex-col items-start gap-3"
+            className="group relative bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-sky-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
-            <div className="w-12 h-12 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
-              <img
-                src="/images/home_sections/icon_ats.jpg"
-                alt="ATS Resume Checker"
-                className="w-full h-full object-cover"
-              />
-            </div>
             <div>
-              <h4 className="text-xs sm:text-[13px] font-black text-slate-900 group-hover:text-sky-600 transition-colors leading-tight">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-500 to-cyan-500 text-white flex items-center justify-center shadow-lg shadow-sky-500/25 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 mb-4">
+                <FileCheck className="w-6 h-6 stroke-[2.2]" />
+              </div>
+              <span className="inline-block px-2 py-0.5 rounded-md bg-sky-50 text-sky-700 text-[9.5px] font-black uppercase tracking-wide mb-1.5">
+                AI Powered
+              </span>
+              <h4 className="text-xs sm:text-[13.5px] font-black text-slate-900 group-hover:text-sky-600 transition-colors leading-snug">
                 ATS Resume Checker
               </h4>
-              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10.5px] text-slate-500 font-medium mt-1.5 leading-relaxed">
                 Get AI-powered resume score and improvement tips.
               </p>
+            </div>
+            <div className="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-sky-600">
+              <span>Scan AI</span>
+              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
 
           {/* Card 5: Interview Preparation */}
           <div
             onClick={promptLogin}
-            className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-amber-300 transition-all cursor-pointer flex flex-col items-start gap-3"
+            className="group relative bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-amber-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
-            <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
-              <img
-                src="/images/home_sections/icon_interview.jpg"
-                alt="Interview Preparation"
-                className="w-full h-full object-cover"
-              />
-            </div>
             <div>
-              <h4 className="text-xs sm:text-[13px] font-black text-slate-900 group-hover:text-amber-600 transition-colors leading-tight">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/25 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 mb-4">
+                <MessageSquare className="w-6 h-6 stroke-[2.2]" />
+              </div>
+              <span className="inline-block px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 text-[9.5px] font-black uppercase tracking-wide mb-1.5">
+                AI Voice
+              </span>
+              <h4 className="text-xs sm:text-[13.5px] font-black text-slate-900 group-hover:text-amber-600 transition-colors leading-snug">
                 Interview Preparation
               </h4>
-              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10.5px] text-slate-500 font-medium mt-1.5 leading-relaxed">
                 Practice real interview questions with AI.
               </p>
+            </div>
+            <div className="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-amber-600">
+              <span>Practice</span>
+              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
 
           {/* Card 6: Get Job */}
           <div
             onClick={promptLogin}
-            className="group bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-blue-300 transition-all cursor-pointer flex flex-col items-start gap-3"
+            className="group relative bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-rose-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
-            <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
-              <img
-                src="/images/home_sections/icon_briefcase.jpg"
-                alt="Get Job"
-                className="w-full h-full object-cover"
-              />
-            </div>
             <div>
-              <h4 className="text-xs sm:text-[13px] font-black text-slate-900 group-hover:text-blue-600 transition-colors leading-tight">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-rose-500 to-red-600 text-white flex items-center justify-center shadow-lg shadow-rose-500/25 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 mb-4">
+                <Trophy className="w-6 h-6 stroke-[2.2]" />
+              </div>
+              <span className="inline-block px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 text-[9.5px] font-black uppercase tracking-wide mb-1.5">
+                Target CTC
+              </span>
+              <h4 className="text-xs sm:text-[13.5px] font-black text-slate-900 group-hover:text-rose-600 transition-colors leading-snug">
                 Get Job
               </h4>
-              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
-                Target roles: <strong className="text-blue-600">₹6 – 15 LPA</strong>
+              <p className="text-[10.5px] text-slate-500 font-medium mt-1.5 leading-relaxed">
+                Target roles: <strong className="text-rose-600 font-bold">₹6 – 15 LPA</strong>
               </p>
+            </div>
+            <div className="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-rose-600">
+              <span>Placement</span>
+              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
 
@@ -788,14 +853,17 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 3: Your Journey From Learning to Earning
+          SECTION 3: Your Journey From Learning to Earning (Connected Stepper Track)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-        <div className="bg-gradient-to-b from-white to-[#f0f6ff]/60 rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm relative overflow-hidden">
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+        <div className="bg-gradient-to-b from-white via-blue-50/20 to-white rounded-3xl p-6 sm:p-10 border border-slate-200/90 shadow-sm relative overflow-hidden">
           
-          {/* Section Header with 'Learn Grow Get Hired' badge */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 relative z-10">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 relative z-10">
             <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100/70 text-blue-700 text-[11px] font-black uppercase tracking-wider mb-2">
+                <span>The 6-Step Career Roadmap</span>
+              </div>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
                 Your Journey From{' '}
                 <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
@@ -807,32 +875,32 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               </p>
             </div>
 
-            <div className="self-end md:self-auto text-right">
-              <div className="inline-flex items-center gap-1.5 text-blue-700 font-black italic tracking-wide text-xs sm:text-sm">
+            <div className="self-end md:self-auto">
+              <div className="px-4 py-2 rounded-xl bg-blue-50 border border-blue-200/80 text-blue-700 font-black italic tracking-wide text-xs sm:text-sm flex items-center gap-2 shadow-2xs">
                 <span>Learn • Grow • Get Hired</span>
-                <span className="text-lg">↗</span>
+                <span className="text-base">↗</span>
               </div>
             </div>
           </div>
 
-          {/* 6 Step Roadmap Connected Line */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-3 relative z-10">
+          {/* 6 Step Cards with Glowing Number Badges and Connected Pathway */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-3.5 relative z-10">
             
             {/* Step 1: Learn */}
             <div
               onClick={promptLogin}
-              className="bg-white/90 backdrop-blur-xs rounded-2xl p-4 border border-slate-200/70 shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group"
+              className="group bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-pink-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
             >
-              <div className="w-7 h-7 rounded-full bg-pink-500 text-white font-black text-xs flex items-center justify-center shadow-xs mb-3 group-hover:scale-110 transition-transform">
+              <div className="w-8 h-8 rounded-full bg-pink-500 text-white font-black text-xs flex items-center justify-center shadow-md shadow-pink-500/30 mb-3 group-hover:scale-110 transition-transform">
                 01
               </div>
-              <div className="w-10 h-10 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center mb-2">
-                <BookOpen className="w-5 h-5 stroke-[2.2]" />
+              <div className="w-12 h-12 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center mb-3 group-hover:rotate-6 transition-transform">
+                <BookOpen className="w-6 h-6 stroke-[2.2]" />
               </div>
               <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-pink-600 transition-colors">
                 Learn
               </h4>
-              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-1 leading-snug">
                 Industry-focused courses with practical approach.
               </p>
             </div>
@@ -840,18 +908,18 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             {/* Step 2: Practice */}
             <div
               onClick={promptLogin}
-              className="bg-white/90 backdrop-blur-xs rounded-2xl p-4 border border-slate-200/70 shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group"
+              className="group bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-purple-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
             >
-              <div className="w-7 h-7 rounded-full bg-purple-600 text-white font-black text-xs flex items-center justify-center shadow-xs mb-3 group-hover:scale-110 transition-transform">
+              <div className="w-8 h-8 rounded-full bg-purple-600 text-white font-black text-xs flex items-center justify-center shadow-md shadow-purple-600/30 mb-3 group-hover:scale-110 transition-transform">
                 02
               </div>
-              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-2">
-                <Code2 className="w-5 h-5 stroke-[2.2]" />
+              <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mb-3 group-hover:rotate-6 transition-transform">
+                <Code2 className="w-6 h-6 stroke-[2.2]" />
               </div>
               <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-purple-600 transition-colors">
                 Practice
               </h4>
-              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-1 leading-snug">
                 Solve problems and work on real projects.
               </p>
             </div>
@@ -859,18 +927,18 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             {/* Step 3: Mock Interview */}
             <div
               onClick={promptLogin}
-              className="bg-white/90 backdrop-blur-xs rounded-2xl p-4 border border-slate-200/70 shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group"
+              className="group bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-sky-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
             >
-              <div className="w-7 h-7 rounded-full bg-sky-500 text-white font-black text-xs flex items-center justify-center shadow-xs mb-3 group-hover:scale-110 transition-transform">
+              <div className="w-8 h-8 rounded-full bg-sky-500 text-white font-black text-xs flex items-center justify-center shadow-md shadow-sky-500/30 mb-3 group-hover:scale-110 transition-transform">
                 03
               </div>
-              <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mb-2">
-                <MessageSquare className="w-5 h-5 stroke-[2.2]" />
+              <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center mb-3 group-hover:rotate-6 transition-transform">
+                <MessageSquare className="w-6 h-6 stroke-[2.2]" />
               </div>
               <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-sky-600 transition-colors">
                 Mock Interview
               </h4>
-              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-1 leading-snug">
                 Practice with real interview questions.
               </p>
             </div>
@@ -878,18 +946,18 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             {/* Step 4: Build Portfolio */}
             <div
               onClick={promptLogin}
-              className="bg-white/90 backdrop-blur-xs rounded-2xl p-4 border border-slate-200/70 shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group"
+              className="group bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-emerald-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
             >
-              <div className="w-7 h-7 rounded-full bg-emerald-500 text-white font-black text-xs flex items-center justify-center shadow-xs mb-3 group-hover:scale-110 transition-transform">
+              <div className="w-8 h-8 rounded-full bg-emerald-500 text-white font-black text-xs flex items-center justify-center shadow-md shadow-emerald-500/30 mb-3 group-hover:scale-110 transition-transform">
                 04
               </div>
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2">
-                <FileCheck className="w-5 h-5 stroke-[2.2]" />
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3 group-hover:rotate-6 transition-transform">
+                <FileCheck className="w-6 h-6 stroke-[2.2]" />
               </div>
               <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-emerald-600 transition-colors">
                 Build Portfolio
               </h4>
-              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-1 leading-snug">
                 Showcase your skills with real projects.
               </p>
             </div>
@@ -897,18 +965,18 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             {/* Step 5: Internship */}
             <div
               onClick={promptLogin}
-              className="bg-white/90 backdrop-blur-xs rounded-2xl p-4 border border-slate-200/70 shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group"
+              className="group bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-orange-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
             >
-              <div className="w-7 h-7 rounded-full bg-orange-500 text-white font-black text-xs flex items-center justify-center shadow-xs mb-3 group-hover:scale-110 transition-transform">
+              <div className="w-8 h-8 rounded-full bg-orange-500 text-white font-black text-xs flex items-center justify-center shadow-md shadow-orange-500/30 mb-3 group-hover:scale-110 transition-transform">
                 05
               </div>
-              <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center mb-2">
-                <GraduationCap className="w-5 h-5 stroke-[2.2]" />
+              <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mb-3 group-hover:rotate-6 transition-transform">
+                <GraduationCap className="w-6 h-6 stroke-[2.2]" />
               </div>
               <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-orange-600 transition-colors">
                 Internship
               </h4>
-              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-1 leading-snug">
                 Get real-world experience with industry projects.
               </p>
             </div>
@@ -916,25 +984,25 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             {/* Step 6: Get Job */}
             <div
               onClick={promptLogin}
-              className="bg-white/90 backdrop-blur-xs rounded-2xl p-4 border border-slate-200/70 shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center group"
+              className="group bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-lg hover:border-blue-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center text-center relative"
             >
-              <div className="w-7 h-7 rounded-full bg-blue-600 text-white font-black text-xs flex items-center justify-center shadow-xs mb-3 group-hover:scale-110 transition-transform">
+              <div className="w-8 h-8 rounded-full bg-blue-600 text-white font-black text-xs flex items-center justify-center shadow-md shadow-blue-600/30 mb-3 group-hover:scale-110 transition-transform">
                 06
               </div>
-              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-2">
-                <Briefcase className="w-5 h-5 stroke-[2.2]" />
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mb-3 group-hover:rotate-6 transition-transform">
+                <Briefcase className="w-6 h-6 stroke-[2.2]" />
               </div>
               <h4 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-blue-600 transition-colors">
                 Get Job
               </h4>
-              <p className="text-[10px] text-slate-500 font-medium mt-1 leading-snug">
+              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-1 leading-snug">
                 Get recruitment letter and start your career.
               </p>
             </div>
 
           </div>
 
-          <div className="absolute right-0 bottom-0 pointer-events-none opacity-20 max-w-[320px] overflow-hidden">
+          <div className="absolute right-0 bottom-0 pointer-events-none opacity-15 max-w-[340px] overflow-hidden">
             <img
               src="/images/home_sections/mountain_bg.jpg"
               alt="Career Summit"
@@ -946,32 +1014,38 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 4: Why Choose Future IT Industry? (Other Institutes VS Future IT)
+          SECTION 4: Why Choose Future IT Industry? (Luxury Comparison Showcase)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
         
         {/* Title */}
-        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-[11px] font-black uppercase tracking-wider mb-2.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
+            <span>Honest Transparent Comparison</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
             Why Choose{' '}
             <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
               Future IT Industry?
             </span>
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1.5">
-            Same goal — different experience. Choose the right path for your career.
+          <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-2">
+            Same goal — different experience. Choose the right path for your career and financial freedom.
           </p>
         </div>
 
         {/* Comparison Stage Grid */}
-        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
           {/* ─── LEFT CARD: Other Institutes (Red Negative Tone) (lg:col-span-5) ─── */}
-          <div className="lg:col-span-5 bg-gradient-to-br from-red-50/70 via-white to-red-50/40 rounded-3xl p-5 sm:p-6 border-2 border-red-200/80 shadow-sm flex flex-col justify-between">
+          <div className="lg:col-span-5 bg-gradient-to-br from-rose-50/90 via-white to-red-50/40 rounded-3xl p-5 sm:p-7 border-2 border-red-200/90 shadow-sm flex flex-col justify-between relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-red-400/10 rounded-full blur-2xl pointer-events-none" />
+
             <div>
               {/* Header */}
               <div className="flex items-center gap-3 pb-4 border-b border-red-100">
-                <div className="w-9 h-9 rounded-full bg-red-600 text-white flex items-center justify-center font-black shadow-xs shrink-0">
+                <div className="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center font-black shadow-md shadow-red-500/25 shrink-0">
                   <X className="w-5 h-5 stroke-[3]" />
                 </div>
                 <div>
@@ -985,98 +1059,98 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               </div>
 
               {/* Graphic + 7 Pain Points List */}
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 mt-5 items-center">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 mt-6 items-center">
                 
                 {/* Stressed Student Illustration (sm:col-span-5) */}
                 <div className="sm:col-span-5 flex flex-col items-center justify-center relative">
-                  <div className="relative w-full max-w-[180px] rounded-2xl overflow-hidden shadow-xs border border-slate-200">
+                  <div className="relative w-full max-w-[190px] rounded-2xl overflow-hidden shadow-xs border border-red-200/80 bg-slate-100">
                     <img
                       src="/images/why_choose/stressed_student.jpg"
-                      alt="Other Institutes High Fees Stress"
+                      alt="Other Institutes Stressed Student"
                       className="w-full h-auto object-cover grayscale contrast-125"
                     />
-                    <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-slate-900/80 text-white text-[9px] font-bold">
+                    <div className="absolute top-2 left-2 px-2.5 py-0.5 rounded-md bg-slate-900/85 text-white text-[9px] font-black border border-white/10">
                       High Fees
                     </div>
-                    <div className="absolute top-8 left-2 px-2 py-0.5 rounded-md bg-slate-900/80 text-white text-[9px] font-bold">
+                    <div className="absolute top-8 left-2 px-2.5 py-0.5 rounded-md bg-slate-900/85 text-white text-[9px] font-black border border-white/10">
                       No Internship
                     </div>
-                    <div className="absolute top-14 left-2 px-2 py-0.5 rounded-md bg-slate-900/80 text-white text-[9px] font-bold">
+                    <div className="absolute top-14 left-2 px-2.5 py-0.5 rounded-md bg-slate-900/85 text-white text-[9px] font-black border border-white/10">
                       No Job
                     </div>
                   </div>
                 </div>
 
                 {/* 7 Red Pain Points (sm:col-span-7) */}
-                <div className="sm:col-span-7 space-y-2.5">
+                <div className="sm:col-span-7 space-y-2">
                   
-                  <div className="flex items-start gap-2.5">
-                    <div className="w-6 h-6 rounded-md bg-red-100 text-red-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/80 border border-red-100 shadow-2xs">
+                    <div className="w-7 h-7 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
                       <Coins className="w-3.5 h-3.5" />
                     </div>
                     <div>
                       <div className="text-xs font-black text-slate-900 leading-tight">High Fee</div>
-                      <div className="text-[10px] text-slate-500 font-medium">₹ 1 Lakh – ₹ 2 Lakh</div>
+                      <div className="text-[10px] text-slate-500 font-semibold">₹ 1 Lakh – ₹ 2 Lakh</div>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-2.5">
-                    <div className="w-6 h-6 rounded-md bg-red-100 text-red-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/80 border border-red-100 shadow-2xs">
+                    <div className="w-7 h-7 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
                       <CreditCard className="w-3.5 h-3.5" />
                     </div>
                     <div>
                       <div className="text-xs font-black text-slate-900 leading-tight">EMI Tention</div>
-                      <div className="text-[10px] text-slate-500 font-medium">Long EMI, financial pressure</div>
+                      <div className="text-[10px] text-slate-500 font-semibold">Long EMI, financial pressure</div>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-2.5">
-                    <div className="w-6 h-6 rounded-md bg-red-100 text-red-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/80 border border-red-100 shadow-2xs">
+                    <div className="w-7 h-7 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
                       <Frown className="w-3.5 h-3.5" />
                     </div>
                     <div>
                       <div className="text-xs font-black text-slate-900 leading-tight">Boring Lecture</div>
-                      <div className="text-[10px] text-slate-500 font-medium">Theoretical and boring classes</div>
+                      <div className="text-[10px] text-slate-500 font-semibold">Theoretical and boring classes</div>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-2.5">
-                    <div className="w-6 h-6 rounded-md bg-red-100 text-red-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/80 border border-red-100 shadow-2xs">
+                    <div className="w-7 h-7 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
                       <VideoIcon className="w-3.5 h-3.5" />
                     </div>
                     <div>
                       <div className="text-xs font-black text-slate-900 leading-tight">Sleepy Video</div>
-                      <div className="text-[10px] text-slate-500 font-medium">Long and uninteresting videos</div>
+                      <div className="text-[10px] text-slate-500 font-semibold">Long and uninteresting videos</div>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-2.5">
-                    <div className="w-6 h-6 rounded-md bg-red-100 text-red-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/80 border border-red-100 shadow-2xs">
+                    <div className="w-7 h-7 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
                       <Clock className="w-3.5 h-3.5" />
                     </div>
                     <div>
                       <div className="text-xs font-black text-slate-900 leading-tight">Old Learning Method</div>
-                      <div className="text-[10px] text-slate-500 font-medium">Outdated content and teaching style</div>
+                      <div className="text-[10px] text-slate-500 font-semibold">Outdated content and style</div>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-2.5">
-                    <div className="w-6 h-6 rounded-md bg-red-100 text-red-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/80 border border-red-100 shadow-2xs">
+                    <div className="w-7 h-7 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
                       <UserX className="w-3.5 h-3.5" />
                     </div>
                     <div>
                       <div className="text-xs font-black text-slate-900 leading-tight">No Internship</div>
-                      <div className="text-[10px] text-slate-500 font-medium">No real industry exposure</div>
+                      <div className="text-[10px] text-slate-500 font-semibold">No real industry exposure</div>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-2.5">
-                    <div className="w-6 h-6 rounded-md bg-red-100 text-red-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/80 border border-red-100 shadow-2xs">
+                    <div className="w-7 h-7 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
                       <Briefcase className="w-3.5 h-3.5" />
                     </div>
                     <div>
                       <div className="text-xs font-black text-slate-900 leading-tight">No Job Support</div>
-                      <div className="text-[10px] text-slate-500 font-medium">No placement or career guidance</div>
+                      <div className="text-[10px] text-slate-500 font-semibold">No placement or guidance</div>
                     </div>
                   </div>
 
@@ -1086,26 +1160,26 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             </div>
           </div>
 
-          {/* ─── CENTER: Glowing 3D "VS" Shield Badge (Hidden on mobile or centered) ─── */}
+          {/* ─── CENTER: Glowing 3D "VS" Shield Badge ─── */}
           <div className="hidden lg:flex absolute left-[41.6%] top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 items-center justify-center">
-            <div className="w-13 h-13 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 text-white font-black text-base flex items-center justify-center shadow-xl shadow-blue-500/40 border-4 border-white transform hover:scale-110 transition-transform">
+            <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 text-white font-black text-base flex items-center justify-center shadow-xl shadow-blue-500/40 border-4 border-white transform hover:scale-110 transition-transform">
               VS
             </div>
           </div>
 
-          {/* ─── RIGHT CARD: Future IT Industry (Bright Blue / Winner Theme) (lg:col-span-7) ─── */}
-          <div className="lg:col-span-7 bg-gradient-to-br from-blue-50/80 via-white to-cyan-50/50 rounded-3xl p-5 sm:p-6 border-2 border-blue-400 shadow-md relative overflow-hidden flex flex-col justify-between">
+          {/* ─── RIGHT CARD: Future IT Industry (Bright Sapphire Blue / Winner Theme) (lg:col-span-7) ─── */}
+          <div className="lg:col-span-7 bg-gradient-to-br from-blue-50/90 via-white to-cyan-50/50 rounded-3xl p-5 sm:p-7 border-2 border-blue-400 shadow-md relative overflow-hidden flex flex-col justify-between">
             
             {/* Top Right Yellow Fee Ribbon */}
-            <div className="absolute top-0 right-0 px-4 py-1.5 rounded-bl-2xl bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-xs tracking-tight shadow-sm flex items-center gap-1.5 z-10">
-              <Flame className="w-3.5 h-3.5 fill-slate-950" />
+            <div className="absolute top-0 right-0 px-5 py-2 rounded-bl-2xl bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-xs tracking-tight shadow-md flex items-center gap-1.5 z-10">
+              <Flame className="w-4 h-4 fill-slate-950" />
               <span>Affordable Fee Only ₹987</span>
             </div>
 
             <div>
               {/* Header */}
               <div className="flex items-center gap-3 pb-4 border-b border-blue-100">
-                <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-black shadow-xs shrink-0">
+                <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-black shadow-md shadow-blue-500/25 shrink-0">
                   <Check className="w-5 h-5 stroke-[3]" />
                 </div>
                 <div>
@@ -1119,132 +1193,132 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               </div>
 
               {/* Graphic + 10 Features Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 mt-5 items-center">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-5 mt-6 items-center">
                 
                 {/* 3D Robot Mascot + Student Graphic (sm:col-span-5) */}
                 <div className="sm:col-span-5 flex flex-col items-center justify-center">
-                  <div className="relative w-full max-w-[210px] rounded-2xl overflow-hidden shadow-sm border border-blue-200">
+                  <div className="relative w-full max-w-[210px] rounded-2xl overflow-hidden shadow-sm border border-blue-200 bg-blue-50/50">
                     <img
                       src="/images/why_choose/future_mascot_student.jpg"
                       alt="Future IT Industry Robot Mascot and Student"
                       className="w-full h-auto object-cover"
                     />
-                    <div className="absolute top-2 left-2 right-2 px-2 py-1 rounded-lg bg-blue-600/90 backdrop-blur-xs text-white text-[9.5px] font-black text-center shadow-xs">
+                    <div className="absolute top-2 left-2 right-2 px-2.5 py-1 rounded-lg bg-blue-600/95 backdrop-blur-xs text-white text-[10px] font-black text-center shadow-xs">
                       👑 World&apos;s First Coding Game Platform 🎮
                     </div>
                   </div>
                 </div>
 
                 {/* 10 Benefit Cards in 2 Columns (sm:col-span-7) */}
-                <div className="sm:col-span-7 grid grid-cols-2 gap-2">
+                <div className="sm:col-span-7 grid grid-cols-2 gap-2.5">
                   
                   {/* Item 1 */}
-                  <div className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                      <Gamepad2 className="w-3.5 h-3.5" />
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                      <Gamepad2 className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-[10px] font-black text-slate-900 truncate">Coding Game</div>
-                      <div className="text-[8.5px] text-slate-500 leading-none truncate">Play & practice</div>
+                      <div className="text-[11px] font-black text-slate-900 truncate">Coding Game</div>
+                      <div className="text-[9px] text-slate-500 leading-none truncate">Play &amp; practice</div>
                     </div>
                   </div>
 
                   {/* Item 2 */}
-                  <div className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                      <FileCheck className="w-3.5 h-3.5" />
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                      <FileCheck className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-[10px] font-black text-slate-900 truncate">Real Projects</div>
-                      <div className="text-[8.5px] text-slate-500 leading-none truncate">Industry portfolio</div>
+                      <div className="text-[11px] font-black text-slate-900 truncate">Real Projects</div>
+                      <div className="text-[9px] text-slate-500 leading-none truncate">Industry portfolio</div>
                     </div>
                   </div>
 
                   {/* Item 3 */}
-                  <div className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-                      <Layers className="w-3.5 h-3.5" />
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                      <Layers className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-[10px] font-black text-slate-900 truncate">Modern Method</div>
-                      <div className="text-[8.5px] text-slate-500 leading-none truncate">Updated tools</div>
+                      <div className="text-[11px] font-black text-slate-900 truncate">Modern Method</div>
+                      <div className="text-[9px] text-slate-500 leading-none truncate">Updated tools</div>
                     </div>
                   </div>
 
                   {/* Item 4 */}
-                  <div className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
-                      <FileCheck className="w-3.5 h-3.5" />
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+                      <BadgeCheck className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-[10px] font-black text-slate-900 truncate">ATS Resume</div>
-                      <div className="text-[8.5px] text-slate-500 leading-none truncate">AI score checker</div>
+                      <div className="text-[11px] font-black text-slate-900 truncate">ATS Resume</div>
+                      <div className="text-[9px] text-slate-500 leading-none truncate">AI score checker</div>
                     </div>
                   </div>
 
                   {/* Item 5 */}
-                  <div className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-                      <Coins className="w-3.5 h-3.5" />
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                      <Coins className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-[10px] font-black text-slate-900 truncate">Only ₹987</div>
-                      <div className="text-[8.5px] text-slate-500 leading-none truncate">No EMI pressure</div>
+                      <div className="text-[11px] font-black text-slate-900 truncate">Only ₹987</div>
+                      <div className="text-[9px] text-slate-500 leading-none truncate">No EMI pressure</div>
                     </div>
                   </div>
 
                   {/* Item 6 */}
-                  <div className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-                      <Briefcase className="w-3.5 h-3.5" />
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                      <Briefcase className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-[10px] font-black text-slate-900 truncate">Internship</div>
-                      <div className="text-[8.5px] text-slate-500 leading-none truncate">Real experience</div>
+                      <div className="text-[11px] font-black text-slate-900 truncate">Internship</div>
+                      <div className="text-[9px] text-slate-500 leading-none truncate">Real experience</div>
                     </div>
                   </div>
 
                   {/* Item 7 */}
-                  <div className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
-                      <InfinityIcon className="w-3.5 h-3.5" />
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                      <InfinityIcon className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-[10px] font-black text-slate-900 truncate">Mock Interview</div>
-                      <div className="text-[8.5px] text-slate-500 leading-none truncate">Unlimited practice</div>
+                      <div className="text-[11px] font-black text-slate-900 truncate">Mock Interview</div>
+                      <div className="text-[9px] text-slate-500 leading-none truncate">Unlimited practice</div>
                     </div>
                   </div>
 
                   {/* Item 8 */}
-                  <div className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-red-50 text-red-600 flex items-center justify-center shrink-0">
-                      <Award className="w-3.5 h-3.5" />
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-red-50 text-red-600 flex items-center justify-center shrink-0">
+                      <Award className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-[10px] font-black text-slate-900 truncate">LOR Letter</div>
-                      <div className="text-[8.5px] text-slate-500 leading-none truncate">Recommendation</div>
+                      <div className="text-[11px] font-black text-slate-900 truncate">LOR Letter</div>
+                      <div className="text-[9px] text-slate-500 leading-none truncate">Recommendation</div>
                     </div>
                   </div>
 
                   {/* Item 9 */}
-                  <div className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                      <Code2 className="w-3.5 h-3.5" />
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                      <Code2 className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-[10px] font-black text-slate-900 truncate">Coding Practice</div>
-                      <div className="text-[8.5px] text-slate-500 leading-none truncate">Build skills & solve</div>
+                      <div className="text-[11px] font-black text-slate-900 truncate">Coding Practice</div>
+                      <div className="text-[9px] text-slate-500 leading-none truncate">Build &amp; solve</div>
                     </div>
                   </div>
 
                   {/* Item 10 */}
-                  <div className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-yellow-50 text-yellow-600 flex items-center justify-center shrink-0">
-                      <Trophy className="w-3.5 h-3.5" />
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center shrink-0">
+                      <Trophy className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-[10px] font-black text-slate-900 truncate">100% Placement</div>
-                      <div className="text-[8.5px] text-slate-500 leading-none truncate">Our goal success</div>
+                      <div className="text-[11px] font-black text-slate-900 truncate">100% Placement</div>
+                      <div className="text-[9px] text-slate-500 leading-none truncate">Our goal success</div>
                     </div>
                   </div>
 
@@ -1258,13 +1332,17 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 5: Success Stories (3 Testimonial Cards)
+          SECTION 5: Success Stories (Luxury Testimonial Glass Cards)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-blue-700 text-[11px] font-black uppercase tracking-wider mb-2.5 shadow-2xs">
+              <BadgeCheck className="w-3.5 h-3.5 text-blue-600" />
+              <span>Verified Placement Records</span>
+            </div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
               Success{' '}
               <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
@@ -1272,107 +1350,158 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               </span>
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1">
-              Real people. Real skills. Real careers.
+              Real people. Real skills. Real careers. See how our learners secured top packages.
             </p>
           </div>
 
           <button
             type="button"
             onClick={promptLogin}
-            className="self-start md:self-auto px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-blue-600 font-extrabold text-xs sm:text-sm border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all cursor-pointer flex items-center gap-1.5 group"
+            className="self-start md:self-auto px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-blue-600 font-extrabold text-xs sm:text-sm border border-slate-200 shadow-2xs hover:border-blue-400 hover:shadow-sm transition-all cursor-pointer flex items-center gap-2 group active:scale-95"
           >
             <span>View All Stories</span>
-            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
 
         {/* 3 Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           
           {/* Testimonial 1 */}
           <div
             onClick={promptLogin}
-            className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-md transition-all cursor-pointer flex gap-3.5 items-start group"
+            className="group bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-blue-300 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
-            <div className="w-13 h-13 rounded-xl overflow-hidden shrink-0 border border-slate-200">
-              <img
-                src="/images/why_choose/avatar_1.jpg"
-                alt="Student placed as Data Analyst"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs text-slate-600 italic leading-relaxed">
-                &ldquo;The practical projects and mentorship helped me build real skills. The platform is easy to use and very helpful for my career.&rdquo;
-              </p>
-              <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[10px] font-bold">
-                <span className="text-blue-700">Placed as Data Analyst</span>
-                <span className="text-slate-400">•</span>
-                <span className="text-emerald-600 font-black">7.5 LPA</span>
-                <div className="flex items-center text-amber-400 ml-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-2.5 h-2.5 fill-amber-400" />
-                  ))}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="relative w-13 h-13 rounded-2xl overflow-hidden shrink-0 border-2 border-blue-100 shadow-xs">
+                    <img
+                      src="/images/why_choose/avatar_1.jpg"
+                      alt="Student placed as Data Analyst"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-black text-slate-900">Placed as Data Analyst</h4>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 mt-0.5">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" />
+                      Verified Offer Letter
+                    </span>
+                  </div>
+                </div>
+
+                <div className="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 font-black text-xs font-mono">
+                  7.5 LPA
                 </div>
               </div>
+
+              <div className="flex items-center text-amber-400 mb-3">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
+                ))}
+              </div>
+
+              <p className="text-xs text-slate-600 font-medium italic leading-relaxed">
+                &ldquo;The practical projects and mentorship helped me build real skills. The platform is easy to use and very helpful for my career.&rdquo;
+              </p>
+            </div>
+
+            <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-semibold">
+              <span>Read Full Case Study</span>
+              <ArrowRight className="w-3.5 h-3.5 text-blue-600 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
 
           {/* Testimonial 2 */}
           <div
             onClick={promptLogin}
-            className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-md transition-all cursor-pointer flex gap-3.5 items-start group"
+            className="group bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-purple-300 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
-            <div className="w-13 h-13 rounded-xl overflow-hidden shrink-0 border border-slate-200">
-              <img
-                src="/images/why_choose/avatar_2.jpg"
-                alt="Student placed as BI Analyst"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs text-slate-600 italic leading-relaxed">
-                &ldquo;I loved the hands-on projects and interview practice. It helped me gain confidence and improve my skills.&rdquo;
-              </p>
-              <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[10px] font-bold">
-                <span className="text-blue-700">Placed as BI Analyst</span>
-                <span className="text-slate-400">•</span>
-                <span className="text-emerald-600 font-black">8 LPA</span>
-                <div className="flex items-center text-amber-400 ml-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-2.5 h-2.5 fill-amber-400" />
-                  ))}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="relative w-13 h-13 rounded-2xl overflow-hidden shrink-0 border-2 border-purple-100 shadow-xs">
+                    <img
+                      src="/images/why_choose/avatar_2.jpg"
+                      alt="Student placed as BI Analyst"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-black text-slate-900">Placed as BI Analyst</h4>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 mt-0.5">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" />
+                      Verified Offer Letter
+                    </span>
+                  </div>
+                </div>
+
+                <div className="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 font-black text-xs font-mono">
+                  8 LPA
                 </div>
               </div>
+
+              <div className="flex items-center text-amber-400 mb-3">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
+                ))}
+              </div>
+
+              <p className="text-xs text-slate-600 font-medium italic leading-relaxed">
+                &ldquo;I loved the hands-on projects and interview practice. It helped me gain confidence and improve my skills.&rdquo;
+              </p>
+            </div>
+
+            <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-semibold">
+              <span>Read Full Case Study</span>
+              <ArrowRight className="w-3.5 h-3.5 text-purple-600 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
 
           {/* Testimonial 3 */}
           <div
             onClick={promptLogin}
-            className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-md transition-all cursor-pointer flex gap-3.5 items-start group"
+            className="group bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-blue-300 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
-            <div className="w-13 h-13 rounded-xl overflow-hidden shrink-0 border border-slate-200">
-              <img
-                src="/images/why_choose/avatar_3.jpg"
-                alt="Student placed as Data Analyst"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs text-slate-600 italic leading-relaxed">
-                &ldquo;The industry guidance and resume support were very useful. I got to learn real-world skills at my own pace.&rdquo;
-              </p>
-              <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[10px] font-bold">
-                <span className="text-blue-700">Placed as Data Analyst</span>
-                <span className="text-slate-400">•</span>
-                <span className="text-emerald-600 font-black">6.5 LPA</span>
-                <div className="flex items-center text-amber-400 ml-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-2.5 h-2.5 fill-amber-400" />
-                  ))}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="relative w-13 h-13 rounded-2xl overflow-hidden shrink-0 border-2 border-blue-100 shadow-xs">
+                    <img
+                      src="/images/why_choose/avatar_3.jpg"
+                      alt="Student placed as Data Analyst"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-black text-slate-900">Placed as Data Analyst</h4>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 mt-0.5">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" />
+                      Verified Offer Letter
+                    </span>
+                  </div>
+                </div>
+
+                <div className="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 font-black text-xs font-mono">
+                  6.5 LPA
                 </div>
               </div>
+
+              <div className="flex items-center text-amber-400 mb-3">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
+                ))}
+              </div>
+
+              <p className="text-xs text-slate-600 font-medium italic leading-relaxed">
+                &ldquo;The industry guidance and resume support were very useful. I got to learn real-world skills at my own pace.&rdquo;
+              </p>
+            </div>
+
+            <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-semibold">
+              <span>Read Full Case Study</span>
+              <ArrowRight className="w-3.5 h-3.5 text-blue-600 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
 
@@ -1380,14 +1509,19 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 6: Our Students Work At (Hiring Partners Strip)
+          SECTION 6: Our Students Work At (Luxury Marquee Brand Strip)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-        <div className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-2xs">
-          <div className="text-xs font-black text-slate-800 mb-3 tracking-tight">
-            Our Students Work At
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden">
+          
+          <div className="shrink-0 flex items-center gap-2 border-b md:border-b-0 md:border-r border-slate-200 pb-3 md:pb-0 md:pr-6">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-black text-slate-900 tracking-tight whitespace-nowrap">
+              Our Students Work At
+            </span>
           </div>
-          <div className="flex flex-wrap items-center justify-between gap-4 text-xs font-bold text-slate-600">
+
+          <div className="flex-1 flex flex-wrap items-center justify-between gap-5 sm:gap-6 text-xs font-bold text-slate-600 w-full">
             <span className="text-rose-600 font-black text-xs sm:text-sm tracking-tighter">tcs</span>
             <span className="text-[#007cc3] font-black text-xs sm:text-sm tracking-tight">Infosys</span>
             <span className="text-purple-800 font-extrabold text-xs sm:text-sm tracking-tight flex items-center gap-0.5">
@@ -1424,24 +1558,25 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             <span className="text-[#1f70c1] font-black text-xs sm:text-sm tracking-widest font-mono">IBM</span>
             <span className="text-slate-400 font-semibold text-[11px] whitespace-nowrap">and 700+ more...</span>
           </div>
+
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
           SECTION 7: Ready to Start Your Learning Journey? (Bottom CTA Banner)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-xl border border-blue-500/30">
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+        <div className="bg-gradient-to-r from-blue-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-10 text-white relative overflow-hidden shadow-2xl border border-blue-500/30">
           
-          {/* Ambient Glows */}
-          <div className="absolute top-0 right-1/4 w-[350px] h-[350px] bg-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-1/4 w-[350px] h-[350px] bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
+          {/* Ambient Cosmic Aura Glows */}
+          <div className="absolute top-0 right-1/4 w-[400px] h-[400px] bg-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
             
             {/* Robot Mascot Graphic */}
             <div className="shrink-0 flex items-center justify-center">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-white/20 shadow-md">
+              <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden border-2 border-white/20 shadow-xl bg-blue-950/50 backdrop-blur-md">
                 <img
                   src="/images/why_choose/cta_robot.png"
                   alt="Future IT Robot Mascot"
@@ -1452,48 +1587,48 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
 
             {/* Headline & Badges */}
             <div className="flex-1 text-center lg:text-left">
-              <h2 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-white">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white leading-tight">
                 Ready to Start{' '}
                 <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-200 bg-clip-text text-transparent">
                   Your Learning Journey?
                 </span>
               </h2>
-              <p className="text-xs sm:text-sm text-slate-300 font-semibold mt-1">
-                Join thousands of learners and build your future with Future IT Industry.
+              <p className="text-xs sm:text-sm text-slate-300 font-semibold mt-2 max-w-xl">
+                Join thousands of ambitious learners today and build high-demand AI and Data Science skills.
               </p>
 
               {/* 4 Feature Badges */}
-              <div className="mt-3.5 flex flex-wrap items-center justify-center lg:justify-start gap-2 text-[11px] font-bold">
-                <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 flex items-center gap-1.5">
-                  <GraduationCap className="w-3.5 h-3.5 text-cyan-400" />
+              <div className="mt-5 flex flex-wrap items-center justify-center lg:justify-start gap-2.5 text-[11px] font-bold">
+                <span className="px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 flex items-center gap-1.5 shadow-xs">
+                  <GraduationCap className="w-4 h-4 text-cyan-400" />
                   <span>Lifetime Access</span>
                 </span>
-                <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 flex items-center gap-1.5">
-                  <Award className="w-3.5 h-3.5 text-amber-400" />
+                <span className="px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 flex items-center gap-1.5 shadow-xs">
+                  <Award className="w-4 h-4 text-amber-400" />
                   <span>Certificate</span>
                 </span>
-                <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 flex items-center gap-1.5">
-                  <FileCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 flex items-center gap-1.5 shadow-xs">
+                  <FileCheck className="w-4 h-4 text-emerald-400" />
                   <span>Real Projects</span>
                 </span>
-                <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 flex items-center gap-1.5">
-                  <Users className="w-3.5 h-3.5 text-purple-400" />
+                <span className="px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 flex items-center gap-1.5 shadow-xs">
+                  <Users className="w-4 h-4 text-purple-400" />
                   <span>Industry Guidance</span>
                 </span>
               </div>
             </div>
 
             {/* CTA Button + Learn Grow Flag */}
-            <div className="shrink-0 flex flex-col items-center lg:items-end gap-2">
+            <div className="shrink-0 flex flex-col items-center lg:items-end gap-2.5">
               <button
                 type="button"
                 onClick={promptLogin}
-                className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black text-sm shadow-xl shadow-blue-500/30 transition-all cursor-pointer flex items-center gap-2 group active:scale-95"
+                className="px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-black text-sm shadow-xl shadow-blue-500/40 hover:shadow-blue-500/60 transition-all cursor-pointer flex items-center gap-2.5 group active:scale-95"
               >
                 <span>Sign Up Now</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
-              <div className="text-[11px] text-cyan-300 font-bold italic tracking-wide">
+              <div className="text-xs text-cyan-300 font-bold italic tracking-wide">
                 Learn • Grow • Get Hired ↗
               </div>
             </div>
@@ -1505,33 +1640,33 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       {/* ═══════════════════════════════════════════════════════════════════════════
           SECTION 8: Comprehensive Modern Footer
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <footer className="w-full bg-[#070b15] text-slate-400 pt-12 pb-8 border-t border-slate-800">
+      <footer className="w-full bg-[#070b15] text-slate-400 pt-14 pb-8 border-t border-slate-800">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-10 border-b border-slate-800/80">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-12 border-b border-slate-800/80">
             
             {/* Column 1: Brand & Logo */}
             <div className="lg:col-span-2">
-              <div className="flex items-center gap-2 text-white font-black text-lg tracking-tight">
-                <span className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center font-mono text-sm">
+              <div className="flex items-center gap-2.5 text-white font-black text-xl tracking-tight">
+                <span className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center font-mono text-base shadow-md shadow-blue-500/30">
                   F
                 </span>
                 <span>FUTURE IT</span>
                 <span className="text-cyan-400 font-semibold text-xs tracking-widest">— INDUSTRIES —</span>
               </div>
-              <p className="text-xs text-slate-400 mt-2 font-medium leading-relaxed max-w-sm">
-                India&apos;s #1 AI & Data Science Career Accelerator. Hands-on projects, real interview prep, and 100% placement support.
+              <p className="text-xs text-slate-400 mt-3 font-medium leading-relaxed max-w-sm">
+                India&apos;s #1 AI &amp; Data Science Career Accelerator. Hands-on projects, real interview prep, and 100% placement support.
               </p>
-              <div className="text-[11px] text-slate-500 font-bold mt-2">
+              <div className="text-xs text-cyan-400 font-bold mt-2">
                 Learn Today, Earn Tomorrow.
               </div>
             </div>
 
             {/* Column 2: Quick Links */}
             <div>
-              <h4 className="text-xs font-black text-white tracking-wider uppercase mb-3">
+              <h4 className="text-xs font-black text-white tracking-wider uppercase mb-3.5">
                 Quick Links
               </h4>
-              <ul className="space-y-2 text-xs">
+              <ul className="space-y-2.5 text-xs font-medium">
                 <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Courses</button></li>
                 <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Coding Practice</button></li>
                 <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">ATS Resume Checker</button></li>
@@ -1542,23 +1677,23 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
 
             {/* Column 3: Company */}
             <div>
-              <h4 className="text-xs font-black text-white tracking-wider uppercase mb-3">
+              <h4 className="text-xs font-black text-white tracking-wider uppercase mb-3.5">
                 Company
               </h4>
-              <ul className="space-y-2 text-xs">
+              <ul className="space-y-2.5 text-xs font-medium">
                 <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">About Us</button></li>
                 <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Contact Us</button></li>
                 <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Privacy Policy</button></li>
-                <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Terms & Conditions</button></li>
+                <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Terms &amp; Conditions</button></li>
               </ul>
             </div>
 
             {/* Column 4: Support & Follow Us */}
             <div>
-              <h4 className="text-xs font-black text-white tracking-wider uppercase mb-3">
+              <h4 className="text-xs font-black text-white tracking-wider uppercase mb-3.5">
                 Support
               </h4>
-              <ul className="space-y-2 text-xs">
+              <ul className="space-y-2.5 text-xs font-medium">
                 <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Help Center</button></li>
                 <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">FAQs</button></li>
                 <li><button onClick={promptLogin} className="hover:text-cyan-400 transition-colors">Refund Policy</button></li>
@@ -1567,21 +1702,21 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
 
               {/* Social Media */}
               <div className="mt-5">
-                <h5 className="text-[11px] font-bold text-white mb-2">Follow Us</h5>
+                <h5 className="text-[11px] font-bold text-white mb-2.5">Follow Us</h5>
                 <div className="flex items-center gap-2">
-                  <a href="#" onClick={(e) => { e.preventDefault(); promptLogin(); }} className="w-7 h-7 rounded-lg bg-red-600 text-white flex items-center justify-center hover:scale-110 transition-transform">
+                  <a href="#" onClick={(e) => { e.preventDefault(); promptLogin(); }} className="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-xs">
                     <YoutubeIcon />
                   </a>
-                  <a href="#" onClick={(e) => { e.preventDefault(); promptLogin(); }} className="w-7 h-7 rounded-lg bg-blue-700 text-white flex items-center justify-center hover:scale-110 transition-transform">
+                  <a href="#" onClick={(e) => { e.preventDefault(); promptLogin(); }} className="w-8 h-8 rounded-xl bg-blue-700 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-xs">
                     <LinkedinIcon />
                   </a>
-                  <a href="#" onClick={(e) => { e.preventDefault(); promptLogin(); }} className="w-7 h-7 rounded-lg bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white flex items-center justify-center hover:scale-110 transition-transform">
+                  <a href="#" onClick={(e) => { e.preventDefault(); promptLogin(); }} className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-xs">
                     <InstagramIcon />
                   </a>
-                  <a href="#" onClick={(e) => { e.preventDefault(); promptLogin(); }} className="w-7 h-7 rounded-lg bg-sky-500 text-white flex items-center justify-center hover:scale-110 transition-transform">
+                  <a href="#" onClick={(e) => { e.preventDefault(); promptLogin(); }} className="w-8 h-8 rounded-xl bg-sky-500 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-xs">
                     <TwitterIcon />
                   </a>
-                  <a href="#" onClick={(e) => { e.preventDefault(); promptLogin(); }} className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center hover:scale-110 transition-transform">
+                  <a href="#" onClick={(e) => { e.preventDefault(); promptLogin(); }} className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-xs">
                     <FacebookIcon />
                   </a>
                 </div>
@@ -1592,7 +1727,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           </div>
 
           {/* Bottom Copyright */}
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-medium">
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-medium">
             <p>© 2026 Future IT Industry. All rights reserved.</p>
             <p className="text-[11px]">Empowering learners across India to learn, practice, and get placed.</p>
           </div>
