@@ -284,14 +284,18 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
   const leaderboard: LeaderboardUser[] = ReferralEngine.getLeaderboard();
 
   // Chart data simulation matching timeframe
+  const totalClks = engineState.clicksCount || 0;
+  const totalEnrl = engineState.successfulEnrollmentsCount || 0;
+
+  // Real Dynamic Chart Points: Flat zero if fresh, or proportional to actual traffic
   const chartPoints = [
-    { date: '1 Sep',  clicks: 24, enrollments: 3,  x: 20,  yClicks: 70, yEnroll: 88 },
-    { date: '5 Sep',  clicks: 35, enrollments: 4,  x: 65,  yClicks: 60, yEnroll: 85 },
-    { date: '10 Sep', clicks: 42, enrollments: 5,  x: 110, yClicks: 52, yEnroll: 82 },
-    { date: '15 Sep', clicks: 58, enrollments: 7,  x: 155, yClicks: 40, yEnroll: 75 },
-    { date: '20 Sep', clicks: 52, enrollments: 8,  x: 200, yClicks: 45, yEnroll: 70 },
-    { date: '25 Sep', clicks: 76, enrollments: 10, x: 245, yClicks: 28, yEnroll: 60 },
-    { date: '30 Sep', clicks: 64, enrollments: 12, x: 290, yClicks: 35, yEnroll: 50 }
+    { date: 'Day 1', clicks: 0, enrollments: 0, x: 20,  yClicks: 95, yEnroll: 95 },
+    { date: 'Day 5', clicks: Math.round(totalClks * 0.15), enrollments: Math.round(totalEnrl * 0.1), x: 65,  yClicks: totalClks > 0 ? Math.max(30, 95 - Math.round(totalClks * 0.15)) : 95, yEnroll: totalEnrl > 0 ? Math.max(30, 95 - Math.round(totalEnrl * 10)) : 95 },
+    { date: 'Day 10', clicks: Math.round(totalClks * 0.3), enrollments: Math.round(totalEnrl * 0.25), x: 110, yClicks: totalClks > 0 ? Math.max(30, 95 - Math.round(totalClks * 0.3)) : 95, yEnroll: totalEnrl > 0 ? Math.max(30, 95 - Math.round(totalEnrl * 15)) : 95 },
+    { date: 'Day 15', clicks: Math.round(totalClks * 0.5), enrollments: Math.round(totalEnrl * 0.4), x: 155, yClicks: totalClks > 0 ? Math.max(30, 95 - Math.round(totalClks * 0.5)) : 95, yEnroll: totalEnrl > 0 ? Math.max(30, 95 - Math.round(totalEnrl * 20)) : 95 },
+    { date: 'Day 20', clicks: Math.round(totalClks * 0.7), enrollments: Math.round(totalEnrl * 0.6), x: 200, yClicks: totalClks > 0 ? Math.max(30, 95 - Math.round(totalClks * 0.7)) : 95, yEnroll: totalEnrl > 0 ? Math.max(30, 95 - Math.round(totalEnrl * 25)) : 95 },
+    { date: 'Day 25', clicks: Math.round(totalClks * 0.85), enrollments: Math.round(totalEnrl * 0.8), x: 245, yClicks: totalClks > 0 ? Math.max(30, 95 - Math.round(totalClks * 0.85)) : 95, yEnroll: totalEnrl > 0 ? Math.max(30, 95 - Math.round(totalEnrl * 30)) : 95 },
+    { date: 'Today', clicks: totalClks, enrollments: totalEnrl, x: 290, yClicks: totalClks > 0 ? Math.max(25, 95 - Math.round(totalClks * 1.0)) : 95, yEnroll: totalEnrl > 0 ? Math.max(25, 95 - Math.round(totalEnrl * 35)) : 95 }
   ];
 
   return (
@@ -536,7 +540,7 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
           <div className="ref-metric-content">
             <div className="ref-metric-val-row">
               <span className="ref-metric-val">₹{engineState.availableCommission.toLocaleString('en-IN')}</span>
-              <span className="ref-metric-trend green">↑ 32%</span>
+              <span className="ref-metric-trend green">Real-Time</span>
             </div>
             <span className="ref-metric-label">Total Earnings</span>
           </div>
@@ -569,7 +573,7 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
           <div className="ref-metric-content">
             <div className="ref-metric-val-row">
               <span className="ref-metric-val">{engineState.successfulEnrollmentsCount}</span>
-              <span className="ref-metric-trend green">↑ 50%</span>
+              <span className="ref-metric-trend green">₹100 / enroll</span>
             </div>
             <span className="ref-metric-label">Successful Enrollments</span>
           </div>
@@ -583,7 +587,7 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
           <div className="ref-metric-content">
             <div className="ref-metric-val-row">
               <span className="ref-metric-val">{engineState.clicksCount}</span>
-              <span className="ref-metric-trend green">↑ 28%</span>
+              <span className="ref-metric-trend green">Live clicks</span>
             </div>
             <span className="ref-metric-label">Total Clicks</span>
           </div>
@@ -595,9 +599,9 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
             <Award className="w-5 h-5 text-amber-500" />
           </div>
           <div className="ref-metric-content">
-            <span className="ref-metric-val rank-val">#3</span>
+            <span className="ref-metric-val rank-val">{engineState.successfulEnrollmentsCount > 0 ? `#${Math.max(1, 10 - engineState.successfulEnrollmentsCount)}` : 'Starter'}</span>
             <span className="ref-metric-label">Your Rank</span>
-            <span className="ref-metric-subtext gold">Top 5% Referrers</span>
+            <span className="ref-metric-subtext gold">{engineState.successfulEnrollmentsCount > 0 ? 'Top Partner' : 'Share link to rank up'}</span>
           </div>
         </div>
 
@@ -776,13 +780,13 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
 
                   {/* Enrollments Area Fill */}
                   <path
-                    d={`M 20 88 L 65 85 L 110 82 L 155 75 L 200 70 L 245 60 L 290 50 L 290 95 L 20 95 Z`}
+                    d={`M ${chartPoints.map(p => `${p.x} ${p.yEnroll}`).join(' L ')} L 290 95 L 20 95 Z`}
                     fill="url(#linePurpleGrad)"
                   />
 
                   {/* Enrollments Purple Line */}
                   <path
-                    d={`M 20 88 L 65 85 L 110 82 L 155 75 L 200 70 L 245 60 L 290 50`}
+                    d={`M ${chartPoints.map(p => `${p.x} ${p.yEnroll}`).join(' L ')}`}
                     fill="none"
                     stroke="#9333ea"
                     strokeWidth="2.5"
@@ -935,7 +939,14 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {referrals.slice(0, 5).map((ref, idx) => (
+                  {referrals.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="text-center py-8 text-slate-400 text-xs font-semibold">
+                        Abhi tak koi referral nahi hai. Apna link share karein aur har paid enrollment par flat ₹100 payout kamayein!
+                      </td>
+                    </tr>
+                  ) : (
+                    referrals.slice(0, 5).map((ref, idx) => (
                     <tr key={ref.id}>
                       <td className="ref-td-num">{idx + 1}</td>
                       <td>
@@ -998,7 +1009,7 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
                         </button>
                       </td>
                     </tr>
-                  ))}
+                  )))}
                 </tbody>
               </table>
             </div>

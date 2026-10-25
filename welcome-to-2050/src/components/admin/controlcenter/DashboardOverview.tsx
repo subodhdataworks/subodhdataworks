@@ -135,12 +135,12 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
               <Users className="w-5 h-5" />
             </div>
             <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-0.5">
-              ↗ 12% from last month
+              Live in cloud
             </span>
           </div>
           <span className="text-xs font-bold text-slate-500 block">Total Users</span>
           <div className="text-3xl font-black text-slate-900 mt-0.5 tracking-tight">
-            {(stats.totalUsers > 12548 ? stats.totalUsers : 12548).toLocaleString()}
+            {stats.totalUsers.toLocaleString()}
           </div>
         </div>
 
@@ -151,12 +151,12 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
               <UserCheck className="w-5 h-5" />
             </div>
             <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-0.5">
-              ↗ 18% from last month
+              Live in cloud
             </span>
           </div>
           <span className="text-xs font-bold text-slate-500 block">Active Users</span>
           <div className="text-3xl font-black text-slate-900 mt-0.5 tracking-tight">
-            {(stats.activeUsers > 4823 ? stats.activeUsers : 4823).toLocaleString()}
+            {stats.activeUsers.toLocaleString()}
           </div>
         </div>
 
@@ -167,12 +167,12 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
               <Briefcase className="w-5 h-5" />
             </div>
             <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-0.5">
-              ↗ 25% from last month
+              Verified payments
             </span>
           </div>
           <span className="text-xs font-bold text-slate-500 block">Paid Enrollments</span>
           <div className="text-3xl font-black text-slate-900 mt-0.5 tracking-tight">
-            {(stats.enrolledStudents > 1286 ? stats.enrolledStudents : 1286).toLocaleString()}
+            {stats.enrolledStudents.toLocaleString()}
           </div>
         </div>
 
@@ -183,12 +183,12 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
               <IndianRupee className="w-5 h-5" />
             </div>
             <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-0.5">
-              ↗ 32% from last month
+              Direct Razorpay
             </span>
           </div>
           <span className="text-xs font-bold text-slate-500 block">Total Revenue</span>
           <div className="text-3xl font-black text-slate-900 mt-0.5 tracking-tight">
-            ₹{(stats.totalRevenue > 1242680 ? stats.totalRevenue : 1242680).toLocaleString()}
+            ₹{stats.totalRevenue.toLocaleString()}
           </div>
         </div>
 
@@ -374,7 +374,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                 <FileCheck className="w-4 h-4" />
               </div>
               <span className="text-[11px] font-bold text-slate-400 block">Submissions</span>
-              <div className="text-lg font-black text-slate-900">32,689</div>
+              <div className="text-lg font-black text-slate-900">0</div>
             </div>
 
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-center space-y-1">
@@ -382,7 +382,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                 <CheckCircle2 className="w-4 h-4" />
               </div>
               <span className="text-[11px] font-bold text-slate-400 block">Success Rate</span>
-              <div className="text-lg font-black text-emerald-600">68%</div>
+              <div className="text-lg font-black text-emerald-600">0%</div>
             </div>
 
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-center space-y-1">
@@ -390,7 +390,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                 <Award className="w-4 h-4" />
               </div>
               <span className="text-[11px] font-bold text-slate-400 block">Avg. Score</span>
-              <div className="text-lg font-black text-slate-900">72/100</div>
+              <div className="text-lg font-black text-slate-900">0/100</div>
             </div>
 
           </div>
@@ -471,7 +471,14 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {displayUsers.map((u, i) => (
+                {recentUsers.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-8 text-center text-slate-400 text-xs font-medium">
+                      No users registered yet. New signups will appear here live in real-time.
+                    </td>
+                  </tr>
+                ) : (
+                  recentUsers.slice(0, 5).map((u: any, i: number) => (
                   <tr key={u.uid || i} className="hover:bg-slate-50/70 transition-colors">
                     <td className="py-2.5 px-3 font-bold text-slate-900 flex items-center gap-2">
                       <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 font-black text-[10px] flex items-center justify-center shrink-0">
@@ -500,7 +507,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                       </button>
                     </td>
                   </tr>
-                ))}
+                )))}
               </tbody>
             </table>
           </div>
@@ -533,17 +540,24 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {recentEnrollments.map((e, idx) => (
+                {recentPayments.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="py-8 text-center text-slate-400 text-xs font-medium">
+                      No paid enrollments yet. Verified course purchases will appear here live.
+                    </td>
+                  </tr>
+                ) : (
+                  recentPayments.slice(0, 5).map((e: any, idx: number) => (
                   <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
                     <td className="py-2.5 px-3 font-bold text-slate-900 flex items-center gap-2">
                       <span className={`w-2 h-2 rounded-full ${e.color} shrink-0`} />
-                      <span className="truncate max-w-[140px]">{e.course}</span>
+                      <span className="truncate max-w-[140px]">{e.courseTitle || e.course || 'Course'}</span>
                     </td>
-                    <td className="py-2.5 px-3 text-slate-600 font-medium">{e.student}</td>
-                    <td className="py-2.5 px-3 font-black text-slate-900">{e.amount}</td>
-                    <td className="py-2.5 px-3 text-slate-500 text-[11px] text-right">{e.date}</td>
+                    <td className="py-2.5 px-3 text-slate-600 font-medium">{e.studentName || e.email || e.phone || 'Learner'}</td>
+                    <td className="py-2.5 px-3 font-black text-slate-900">₹{e.amount}</td>
+                    <td className="py-2.5 px-3 text-slate-500 text-[11px] text-right">{e.date ? String(e.date).slice(0, 10) : 'Today'}</td>
                   </tr>
-                ))}
+                )))}
               </tbody>
             </table>
           </div>

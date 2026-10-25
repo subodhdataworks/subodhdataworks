@@ -169,7 +169,18 @@ export class ReferralEngine {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
         return initial;
       }
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      // Clean up any legacy fake/demo numbers (e.g. 45890) from previous mock builds
+      if (parsed && typeof parsed === 'object') {
+        if (parsed.clicksCount === 45890 || (parsed.clicksCount > 1000 && (!parsed.referrals || parsed.referrals.length === 0))) {
+          parsed.clicksCount = 0;
+          parsed.successfulEnrollmentsCount = 0;
+          parsed.availableCommission = 0;
+          parsed.pendingCommission = 0;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+        }
+      }
+      return parsed;
     } catch {
       return this.defaultState();
     }

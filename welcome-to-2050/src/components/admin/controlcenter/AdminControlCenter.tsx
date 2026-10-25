@@ -137,7 +137,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
   // Navigation Sidebar Items Matching Screenshot: media_1792940388047_60fc0a29.jpg
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'users', label: 'Users', icon: Users, badge: users.length > 0 ? users.length : '12,548' },
+    { id: 'users', label: 'Users', icon: Users, badge: users.length },
     { id: 'courses', label: 'Courses', icon: BookOpen },
     { id: 'practice', label: 'Coding Practice', icon: Code2 },
     { id: 'questions', label: 'Questions', icon: HelpCircle },
@@ -497,24 +497,39 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
           {activeTab === 'referrals' && (
             <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs space-y-4 text-left">
               <h3 className="text-lg font-black text-slate-900">Affiliate Referral Engine Management</h3>
-              <p className="text-xs text-slate-500">Live click-throughs, free signups, and paid commissions (₹100 flat / verified Razorpay enrollment)</p>
+              <p className="text-xs text-slate-500">Live verified click-throughs, registered free signups, and paid commissions (₹100 flat per verified Razorpay enrollment)</p>
 
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 pt-2">
                 <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-center">
                   <span className="text-xs font-bold text-blue-600 block">Total Link Clicks</span>
-                  <div className="text-2xl font-black text-blue-950 mt-1">45,890</div>
+                  <div className="text-2xl font-black text-blue-950 mt-1">
+                    {(() => {
+                      try {
+                        const s = typeof window !== 'undefined' ? localStorage.getItem('futureai_referral_state_v2') : null;
+                        if (s) {
+                          const p = JSON.parse(s);
+                          return (p.clicksCount || 0).toLocaleString();
+                        }
+                      } catch {}
+                      return 0;
+                    })()}
+                  </div>
                 </div>
                 <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-200 text-center">
                   <span className="text-xs font-bold text-indigo-600 block">Free Signups</span>
-                  <div className="text-2xl font-black text-indigo-950 mt-1">12,548</div>
+                  <div className="text-2xl font-black text-indigo-950 mt-1">{users.length.toLocaleString()}</div>
                 </div>
                 <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-center">
                   <span className="text-xs font-bold text-emerald-600 block">Paid Enrollments</span>
-                  <div className="text-2xl font-black text-emerald-950 mt-1">1,286</div>
+                  <div className="text-2xl font-black text-emerald-950 mt-1">
+                    {payments.filter(p => p.status === 'SUCCESS').length.toLocaleString()}
+                  </div>
                 </div>
                 <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-center">
                   <span className="text-xs font-bold text-amber-600 block">Commissions Paid</span>
-                  <div className="text-2xl font-black text-amber-950 mt-1">₹1,28,600</div>
+                  <div className="text-2xl font-black text-amber-950 mt-1">
+                    ₹{withdrawals.filter(w => w.status === 'PAID').reduce((sum, w) => sum + (w.amount || 0), 0).toLocaleString()}
+                  </div>
                 </div>
               </div>
             </div>
@@ -526,7 +541,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
               <p className="text-xs text-slate-500">Manage digital graduation credentials & official verification hashes</p>
 
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center text-xs text-slate-500">
-                1,286 Certificates Issued with QR Code & Blockchain Hash Verification
+                {payments.filter(p => p.status === 'SUCCESS').length} Certificates Issued with Verification Hash
               </div>
             </div>
           )}
@@ -538,16 +553,18 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
 
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
                 <div className="flex justify-between text-xs font-bold">
-                  <span>Visitor to Free Signup Conversion:</span>
-                  <span className="text-blue-600 font-extrabold">27.3%</span>
+                  <span>Registered Learners Count:</span>
+                  <span className="text-blue-600 font-extrabold">{users.length}</span>
                 </div>
                 <div className="flex justify-between text-xs font-bold">
-                  <span>Signup to Paid Course Unlock (₹9 / ₹987):</span>
-                  <span className="text-emerald-600 font-extrabold">10.2%</span>
+                  <span>Paid Course Unlock Ratio:</span>
+                  <span className="text-emerald-600 font-extrabold">
+                    {users.length > 0 ? ((payments.filter(p => p.status === 'SUCCESS').length / users.length) * 100).toFixed(1) : 0}%
+                  </span>
                 </div>
                 <div className="flex justify-between text-xs font-bold">
-                  <span>Practice Arena Daily Active Students:</span>
-                  <span className="text-indigo-600 font-extrabold">4,823 Students/day</span>
+                  <span>Active Enrolled Students:</span>
+                  <span className="text-indigo-600 font-extrabold">{payments.filter(p => p.status === 'SUCCESS').length} Students</span>
                 </div>
               </div>
             </div>
