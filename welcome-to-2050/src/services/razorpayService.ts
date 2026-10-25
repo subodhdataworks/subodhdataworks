@@ -54,8 +54,17 @@ export async function startRazorpayCheckout(params: {
   name?: string;
   email?: string;
   phone?: string;
+  refCode?: string;
 }): Promise<RazorpayResult> {
   await loadCheckoutScript();
+
+  const refCode =
+    params.refCode ||
+    (typeof window !== 'undefined'
+      ? localStorage.getItem('futureai_ref_attribution') ||
+        sessionStorage.getItem('futureai_ref_attribution') ||
+        ''
+      : '');
 
   // 1. Create order on server
   const orderRes = await fetch('/api/razorpay-order', {
@@ -66,6 +75,7 @@ export async function startRazorpayCheckout(params: {
       courseId: params.courseId,
       courseTitle: params.courseTitle,
       email: params.email,
+      refCode,
     }),
   });
   const order = await orderRes.json().catch(() => ({}));
