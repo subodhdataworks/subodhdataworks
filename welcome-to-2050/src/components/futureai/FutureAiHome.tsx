@@ -744,10 +744,6 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200/90 text-blue-700 text-xs font-black uppercase tracking-wider mb-2.5 shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-            <span>Honest &amp; Transparent Comparison</span>
-          </div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
             Why Choose{' '}
 <TypewriterHeading
@@ -761,10 +757,10 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           </p>
         </div>
 
-        {/* Master Video Showcase Container */}
+        {/* Master Video Showcase Container (Compact Centered Size) */}
         <div 
           onClick={promptLogin}
-          className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl border border-slate-200/90 hover:border-blue-300 transition-all duration-500 cursor-pointer group bg-slate-950 mb-6 sm:mb-8"
+          className="relative max-w-3xl mx-auto w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-xl border border-slate-200/90 hover:border-blue-300 transition-all duration-500 cursor-pointer group bg-slate-950 mb-6 sm:mb-8"
         >
           <video
             src="/videos/why_choose_showcase.mp4"
@@ -772,7 +768,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             loop
             muted
             playsInline
-            className="w-full h-auto max-h-[460px] object-cover object-center group-hover:scale-[1.008] transition-transform duration-700 select-none"
+            className="w-full h-auto max-h-[260px] sm:max-h-[320px] object-cover object-center group-hover:scale-[1.008] transition-transform duration-700 select-none"
           />
         </div>
 
