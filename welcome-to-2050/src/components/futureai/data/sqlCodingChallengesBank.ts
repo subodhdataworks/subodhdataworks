@@ -1,4 +1,15 @@
 // Complete SQL Coding Practice Question Bank (25 Topics + Recursive CTE + 4 Popular Challenges)
+export interface SchemaColumn {
+  name: string;
+  type: string;
+  desc: string;
+}
+
+export interface OutputColumn {
+  name: string;
+  desc: string;
+}
+
 export interface SqlChallengeTask {
   id: number;
   taskNumber: number;
@@ -9,6 +20,16 @@ export interface SqlChallengeTask {
   difficulty: 'Easy' | 'Medium' | 'Hard';
   problemStatement: string;
   highlightedKeyword: string;
+  tableName?: string;
+  schemaColumns?: SchemaColumn[];
+  inputFormat?: string;
+  outputFormat?: string;
+  outputColumns?: OutputColumn[];
+  constraints?: string[];
+  sampleInputRows?: Record<string, string | number>[];
+  sampleInputHeaders?: string[];
+  expectedOutputRows?: Record<string, string | number>[];
+  expectedOutputHeaders?: string[];
   tableSchema: string;
   sampleInput: string;
   sampleOutput: string;
@@ -89,49 +110,469 @@ function makeSqlTask(
 }
 
 // ─────────────────────────────────────────────────────────────
-// 1. SELECT Basics (Basic)
+// 1. SELECT Basics (Basic) - 10 Challenges
 // ─────────────────────────────────────────────────────────────
 const TOPIC_1_QUESTIONS: SqlChallengeTask[] = [
-  makeSqlTask(1, 1, 'Select All Columns from Employees', 'Easy', 'SQL Basics', 5, '98.2%',
-    'Write a SQL query to retrieve all columns and all records from the employees table.',
-    'SELECT *',
-    'employees (emp_id INT, first_name VARCHAR, last_name VARCHAR, department VARCHAR, salary INT)',
-    'emp_id | first_name | last_name | department  | salary\n101    | Rahul      | Sharma    | Engineering | 85000\n102    | Priya      | Patel     | Marketing   | 62000\n103    | Amit       | Verma     | Engineering | 91000',
-    'emp_id | first_name | last_name | department  | salary\n101    | Rahul      | Sharma    | Engineering | 85000\n102    | Priya      | Patel     | Marketing   | 62000\n103    | Amit       | Verma     | Engineering | 91000',
-    'Use SELECT * FROM employees;',
-    'SELECT * FROM employees;'),
-  makeSqlTask(1, 2, 'Select Specific Columns: Name and Salary', 'Easy', 'SQL Basics', 5, '97.5%',
-    'Retrieve only the first_name, last_name, and salary columns from the employees table.',
-    'SELECT columns',
-    'employees (emp_id INT, first_name VARCHAR, last_name VARCHAR, salary INT)',
-    'first_name | last_name | salary\nRahul      | Sharma    | 85000\nPriya      | Patel     | 62000',
-    'first_name | last_name | salary\nRahul      | Sharma    | 85000\nPriya      | Patel     | 62000',
-    'List columns separated by commas: SELECT first_name, last_name, salary FROM employees;',
-    'SELECT first_name, last_name, salary FROM employees;'),
-  makeSqlTask(1, 3, 'Select Product Names and Unit Prices with Aliases', 'Easy', 'SQL Basics', 5, '96.1%',
-    'Query the products table to return product_name as "Item" and unit_price as "Price".',
-    'AS alias',
-    'products (product_id INT, product_name VARCHAR, unit_price DECIMAL)',
-    'Item       | Price\nLaptop     | 75000.00\nWireless Mouse | 1200.00',
-    'Item       | Price\nLaptop     | 75000.00\nWireless Mouse | 1200.00',
-    'Use the AS keyword: SELECT product_name AS Item, unit_price AS Price FROM products;',
-    'SELECT product_name AS Item, unit_price AS Price FROM products;'),
-  makeSqlTask(1, 4, 'Select Calculated Total Cost (Price * Quantity)', 'Easy', 'SQL Basics', 5, '94.8%',
-    'Calculate the total revenue per item by multiplying price by quantity as total_cost.',
-    'Arithmetic Expression',
-    'order_items (item_id INT, price DECIMAL, quantity INT)',
-    'item_id | total_cost\n1       | 500.00\n2       | 1200.00',
-    'item_id | total_cost\n1       | 500.00\n2       | 1200.00',
-    'SELECT item_id, (price * quantity) AS total_cost FROM order_items;',
-    'SELECT item_id, (price * quantity) AS total_cost FROM order_items;'),
-  makeSqlTask(1, 5, 'Select Constant Literals and Static Labels', 'Easy', 'SQL Basics', 5, '93.4%',
-    'Select the company name "Future AI Corp" as company and the current version number 2050.',
-    'Literal Values',
-    'No table required or use dual',
-    'company        | version\nFuture AI Corp | 2050',
-    'company        | version\nFuture AI Corp | 2050',
-    'SELECT \'Future AI Corp\' AS company, 2050 AS version;',
-    'SELECT \'Future AI Corp\' AS company, 2050 AS version;')
+  {
+    id: 101,
+    taskNumber: 1,
+    title: 'SELECT Basics',
+    points: 5,
+    successRate: '92.4%',
+    skill: 'SQL Basics',
+    difficulty: 'Easy',
+    problemStatement: 'Retrieve the names and ages of all employees from the',
+    highlightedKeyword: 'employees',
+    tableName: 'employees',
+    schemaColumns: [
+      { name: 'id', type: 'INT', desc: 'Unique employee ID' },
+      { name: 'name', type: 'VARCHAR(100)', desc: 'Employee name' },
+      { name: 'age', type: 'INT', desc: 'Employee age' },
+      { name: 'department', type: 'VARCHAR(50)', desc: 'Department name' },
+      { name: 'salary', type: 'INT', desc: 'Monthly salary' }
+    ],
+    inputFormat: 'No input is required.',
+    outputFormat: 'Return a table with two columns:',
+    outputColumns: [
+      { name: 'name', desc: 'employee name' },
+      { name: 'age', desc: 'employee age' }
+    ],
+    constraints: [
+      'Use only the SELECT statement.',
+      'Row order does not matter.'
+    ],
+    sampleInputHeaders: ['id', 'name', 'age', 'department', 'salary'],
+    sampleInputRows: [
+      { id: 1, name: 'Rahul Sharma', age: 28, department: 'IT', salary: 60000 },
+      { id: 2, name: 'Priya Singh', age: 25, department: 'HR', salary: 50000 },
+      { id: 3, name: 'Amit Kumar', age: 32, department: 'Finance', salary: 70000 },
+      { id: 4, name: 'Neha Gupta', age: 29, department: 'Marketing', salary: 55000 },
+      { id: 5, name: 'Vikram Mehta', age: 30, department: 'IT', salary: 65000 }
+    ],
+    expectedOutputHeaders: ['name', 'age'],
+    expectedOutputRows: [
+      { name: 'Rahul Sharma', age: 28 },
+      { name: 'Priya Singh', age: 25 },
+      { name: 'Amit Kumar', age: 32 },
+      { name: 'Neha Gupta', age: 29 },
+      { name: 'Vikram Mehta', age: 30 }
+    ],
+    tableSchema: 'employees (id INT, name VARCHAR(100), age INT, department VARCHAR(50), salary INT)',
+    sampleInput: 'id | name | age | department | salary\n1 | Rahul Sharma | 28 | IT | 60000\n2 | Priya Singh | 25 | HR | 50000\n3 | Amit Kumar | 32 | Finance | 70000\n4 | Neha Gupta | 29 | Marketing | 55000\n5 | Vikram Mehta | 30 | IT | 65000',
+    sampleOutput: 'name | age\nRahul Sharma | 28\nPriya Singh | 25\nAmit Kumar | 32\nNeha Gupta | 29\nVikram Mehta | 30',
+    starterCode: '-- Write your SQL query here\n',
+    hint: 'Use SELECT name, age FROM employees;',
+    solution: 'SELECT name, age FROM employees;',
+    testCases: [
+      { inputDesc: 'Public execution on employees (5 rows)', expected: 'name | age\nRahul Sharma | 28\nPriya Singh | 25\nAmit Kumar | 32\nNeha Gupta | 29\nVikram Mehta | 30', hidden: false },
+      { inputDesc: 'Hidden dataset 1 (50 employees)', expected: 'Correct name and age column projections', hidden: true },
+      { inputDesc: 'Hidden dataset 2 (Edge cases with unique names)', expected: 'Exact match with schema constraints', hidden: true }
+    ]
+  },
+  {
+    id: 102,
+    taskNumber: 2,
+    title: 'Select All Columns from Employees',
+    points: 5,
+    successRate: '98.2%',
+    skill: 'SQL Basics',
+    difficulty: 'Easy',
+    problemStatement: 'Retrieve all columns and rows from the',
+    highlightedKeyword: 'employees',
+    tableName: 'employees',
+    schemaColumns: [
+      { name: 'id', type: 'INT', desc: 'Unique employee ID' },
+      { name: 'name', type: 'VARCHAR(100)', desc: 'Employee name' },
+      { name: 'age', type: 'INT', desc: 'Employee age' },
+      { name: 'department', type: 'VARCHAR(50)', desc: 'Department name' },
+      { name: 'salary', type: 'INT', desc: 'Monthly salary' }
+    ],
+    inputFormat: 'No input is required.',
+    outputFormat: 'Return all columns (*):',
+    outputColumns: [
+      { name: 'id', desc: 'employee id' },
+      { name: 'name', desc: 'employee name' },
+      { name: 'age', desc: 'employee age' },
+      { name: 'department', desc: 'department' },
+      { name: 'salary', desc: 'monthly salary' }
+    ],
+    constraints: ['Use SELECT * statement.'],
+    sampleInputHeaders: ['id', 'name', 'age', 'department', 'salary'],
+    sampleInputRows: [
+      { id: 1, name: 'Rahul Sharma', age: 28, department: 'IT', salary: 60000 },
+      { id: 2, name: 'Priya Singh', age: 25, department: 'HR', salary: 50000 }
+    ],
+    expectedOutputHeaders: ['id', 'name', 'age', 'department', 'salary'],
+    expectedOutputRows: [
+      { id: 1, name: 'Rahul Sharma', age: 28, department: 'IT', salary: 60000 },
+      { id: 2, name: 'Priya Singh', age: 25, department: 'HR', salary: 50000 }
+    ],
+    tableSchema: 'employees (id INT, name VARCHAR, age INT, department VARCHAR, salary INT)',
+    sampleInput: 'id | name | age | department | salary\n1 | Rahul Sharma | 28 | IT | 60000\n2 | Priya Singh | 25 | HR | 50000',
+    sampleOutput: 'id | name | age | department | salary\n1 | Rahul Sharma | 28 | IT | 60000\n2 | Priya Singh | 25 | HR | 50000',
+    starterCode: '-- Write your SQL query here\n',
+    hint: 'Use SELECT * FROM employees;',
+    solution: 'SELECT * FROM employees;',
+    testCases: [
+      { inputDesc: 'All columns match', expected: 'id, name, age, department, salary', hidden: false },
+      { inputDesc: 'Hidden dataset projection check', expected: 'Full projection match', hidden: true },
+      { inputDesc: 'Performance check', expected: 'Instant scan', hidden: true }
+    ]
+  },
+  {
+    id: 103,
+    taskNumber: 3,
+    title: 'Select Name and Salary with Column Aliases',
+    points: 5,
+    successRate: '95.4%',
+    skill: 'SQL Basics',
+    difficulty: 'Easy',
+    problemStatement: 'Query employee name as "Employee_Name" and salary as "Monthly_Pay" from',
+    highlightedKeyword: 'employees',
+    tableName: 'employees',
+    schemaColumns: [
+      { name: 'name', type: 'VARCHAR(100)', desc: 'Employee name' },
+      { name: 'salary', type: 'INT', desc: 'Monthly salary' }
+    ],
+    inputFormat: 'No input is required.',
+    outputFormat: 'Return two aliased columns:',
+    outputColumns: [
+      { name: 'Employee_Name', desc: 'aliased name' },
+      { name: 'Monthly_Pay', desc: 'aliased salary' }
+    ],
+    constraints: ['Use AS keyword for column aliases.'],
+    sampleInputHeaders: ['name', 'salary'],
+    sampleInputRows: [
+      { name: 'Rahul Sharma', salary: 60000 },
+      { name: 'Priya Singh', salary: 50000 }
+    ],
+    expectedOutputHeaders: ['Employee_Name', 'Monthly_Pay'],
+    expectedOutputRows: [
+      { Employee_Name: 'Rahul Sharma', Monthly_Pay: 60000 },
+      { Employee_Name: 'Priya Singh', Monthly_Pay: 50000 }
+    ],
+    tableSchema: 'employees (name VARCHAR, salary INT)',
+    sampleInput: 'name | salary\nRahul Sharma | 60000\nPriya Singh | 50000',
+    sampleOutput: 'Employee_Name | Monthly_Pay\nRahul Sharma | 60000\nPriya Singh | 50000',
+    starterCode: '-- Write your SQL query here\n',
+    hint: 'SELECT name AS Employee_Name, salary AS Monthly_Pay FROM employees;',
+    solution: 'SELECT name AS Employee_Name, salary AS Monthly_Pay FROM employees;',
+    testCases: [
+      { inputDesc: 'Alias check', expected: 'Employee_Name | Monthly_Pay', hidden: false },
+      { inputDesc: 'Hidden dataset', expected: 'Exact aliases', hidden: true },
+      { inputDesc: 'Execution test', expected: 'Passed', hidden: true }
+    ]
+  },
+  {
+    id: 104,
+    taskNumber: 4,
+    title: 'Calculate Annual Salary Expression',
+    points: 5,
+    successRate: '94.1%',
+    skill: 'SQL Basics',
+    difficulty: 'Easy',
+    problemStatement: 'Calculate annual salary by multiplying monthly salary by 12 as "annual_salary" from',
+    highlightedKeyword: 'employees',
+    tableName: 'employees',
+    schemaColumns: [
+      { name: 'name', type: 'VARCHAR(100)', desc: 'Employee name' },
+      { name: 'salary', type: 'INT', desc: 'Monthly salary' }
+    ],
+    inputFormat: 'No input is required.',
+    outputFormat: 'Return name and calculated annual_salary:',
+    outputColumns: [
+      { name: 'name', desc: 'employee name' },
+      { name: 'annual_salary', desc: 'salary * 12' }
+    ],
+    constraints: ['Calculate salary * 12 AS annual_salary.'],
+    sampleInputHeaders: ['name', 'salary'],
+    sampleInputRows: [
+      { name: 'Rahul Sharma', salary: 60000 },
+      { name: 'Priya Singh', salary: 50000 }
+    ],
+    expectedOutputHeaders: ['name', 'annual_salary'],
+    expectedOutputRows: [
+      { name: 'Rahul Sharma', annual_salary: 720000 },
+      { name: 'Priya Singh', annual_salary: 600000 }
+    ],
+    tableSchema: 'employees (name VARCHAR, salary INT)',
+    sampleInput: 'name | salary\nRahul Sharma | 60000\nPriya Singh | 50000',
+    sampleOutput: 'name | annual_salary\nRahul Sharma | 720000\nPriya Singh | 600000',
+    starterCode: '-- Write your SQL query here\n',
+    hint: 'SELECT name, (salary * 12) AS annual_salary FROM employees;',
+    solution: 'SELECT name, (salary * 12) AS annual_salary FROM employees;',
+    testCases: [
+      { inputDesc: 'Arithmetic multiplication', expected: 'name | annual_salary', hidden: false },
+      { inputDesc: 'Large volume', expected: 'Correct numeric calculation', hidden: true },
+      { inputDesc: 'Precision test', expected: 'Passed', hidden: true }
+    ]
+  },
+  {
+    id: 105,
+    taskNumber: 5,
+    title: 'Select Distinct Departments',
+    points: 5,
+    successRate: '96.8%',
+    skill: 'SQL Basics',
+    difficulty: 'Easy',
+    problemStatement: 'Retrieve all unique department names without duplicates from the',
+    highlightedKeyword: 'employees',
+    tableName: 'employees',
+    schemaColumns: [
+      { name: 'department', type: 'VARCHAR(50)', desc: 'Department name' }
+    ],
+    inputFormat: 'No input is required.',
+    outputFormat: 'Return unique department values:',
+    outputColumns: [{ name: 'department', desc: 'unique department name' }],
+    constraints: ['Use SELECT DISTINCT department.'],
+    sampleInputHeaders: ['department'],
+    sampleInputRows: [
+      { department: 'IT' },
+      { department: 'HR' },
+      { department: 'Finance' },
+      { department: 'Marketing' },
+      { department: 'IT' }
+    ],
+    expectedOutputHeaders: ['department'],
+    expectedOutputRows: [
+      { department: 'IT' },
+      { department: 'HR' },
+      { department: 'Finance' },
+      { department: 'Marketing' }
+    ],
+    tableSchema: 'employees (department VARCHAR)',
+    sampleInput: 'department\nIT\nHR\nFinance\nMarketing\nIT',
+    sampleOutput: 'department\nIT\nHR\nFinance\nMarketing',
+    starterCode: '-- Write your SQL query here\n',
+    hint: 'SELECT DISTINCT department FROM employees;',
+    solution: 'SELECT DISTINCT department FROM employees;',
+    testCases: [
+      { inputDesc: 'Deduplicated rows', expected: '4 unique departments', hidden: false },
+      { inputDesc: 'Hidden duplicates check', expected: 'Unique list', hidden: true },
+      { inputDesc: 'Ordering invariance', expected: 'Passed', hidden: true }
+    ]
+  },
+  {
+    id: 106,
+    taskNumber: 6,
+    title: 'Select Employee ID and Department',
+    points: 5,
+    successRate: '97.0%',
+    skill: 'SQL Basics',
+    difficulty: 'Easy',
+    problemStatement: 'Retrieve only employee id and department from the',
+    highlightedKeyword: 'employees',
+    tableName: 'employees',
+    schemaColumns: [
+      { name: 'id', type: 'INT', desc: 'Employee ID' },
+      { name: 'department', type: 'VARCHAR(50)', desc: 'Department name' }
+    ],
+    inputFormat: 'No input is required.',
+    outputFormat: 'Return two columns: id and department.',
+    outputColumns: [
+      { name: 'id', desc: 'employee id' },
+      { name: 'department', desc: 'department name' }
+    ],
+    constraints: ['Select only id and department.'],
+    sampleInputHeaders: ['id', 'department'],
+    sampleInputRows: [
+      { id: 1, department: 'IT' },
+      { id: 2, department: 'HR' }
+    ],
+    expectedOutputHeaders: ['id', 'department'],
+    expectedOutputRows: [
+      { id: 1, department: 'IT' },
+      { id: 2, department: 'HR' }
+    ],
+    tableSchema: 'employees (id INT, department VARCHAR)',
+    sampleInput: 'id | department\n1 | IT\n2 | HR',
+    sampleOutput: 'id | department\n1 | IT\n2 | HR',
+    starterCode: '-- Write your SQL query here\n',
+    hint: 'SELECT id, department FROM employees;',
+    solution: 'SELECT id, department FROM employees;',
+    testCases: [
+      { inputDesc: 'Projection test', expected: 'id | department', hidden: false },
+      { inputDesc: 'Hidden rows', expected: 'Matched', hidden: true },
+      { inputDesc: 'Execution test', expected: 'Passed', hidden: true }
+    ]
+  },
+  {
+    id: 107,
+    taskNumber: 7,
+    title: 'Select Constant Status Label',
+    points: 5,
+    successRate: '93.8%',
+    skill: 'SQL Basics',
+    difficulty: 'Easy',
+    problemStatement: 'Retrieve employee name and a constant literal column "Active" as status from',
+    highlightedKeyword: 'employees',
+    tableName: 'employees',
+    schemaColumns: [
+      { name: 'name', type: 'VARCHAR(100)', desc: 'Employee name' }
+    ],
+    inputFormat: 'No input is required.',
+    outputFormat: 'Return name and literal column status:',
+    outputColumns: [
+      { name: 'name', desc: 'employee name' },
+      { name: 'status', desc: 'literal value "Active"' }
+    ],
+    constraints: ['Include \'Active\' AS status in SELECT.'],
+    sampleInputHeaders: ['name'],
+    sampleInputRows: [{ name: 'Rahul Sharma' }, { name: 'Priya Singh' }],
+    expectedOutputHeaders: ['name', 'status'],
+    expectedOutputRows: [
+      { name: 'Rahul Sharma', status: 'Active' },
+      { name: 'Priya Singh', status: 'Active' }
+    ],
+    tableSchema: 'employees (name VARCHAR)',
+    sampleInput: 'name\nRahul Sharma\nPriya Singh',
+    sampleOutput: 'name | status\nRahul Sharma | Active\nPriya Singh | Active',
+    starterCode: '-- Write your SQL query here\n',
+    hint: 'SELECT name, \'Active\' AS status FROM employees;',
+    solution: 'SELECT name, \'Active\' AS status FROM employees;',
+    testCases: [
+      { inputDesc: 'Static literal', expected: 'name | status', hidden: false },
+      { inputDesc: 'String literal validation', expected: 'Matched', hidden: true },
+      { inputDesc: 'Performance check', expected: 'Passed', hidden: true }
+    ]
+  },
+  {
+    id: 108,
+    taskNumber: 8,
+    title: 'Select with Bonus Calculation (10%)',
+    points: 5,
+    successRate: '92.9%',
+    skill: 'SQL Basics',
+    difficulty: 'Easy',
+    problemStatement: 'Compute a 10% bonus for each employee as "bonus" from',
+    highlightedKeyword: 'employees',
+    tableName: 'employees',
+    schemaColumns: [
+      { name: 'name', type: 'VARCHAR(100)', desc: 'Employee name' },
+      { name: 'salary', type: 'INT', desc: 'Monthly salary' }
+    ],
+    inputFormat: 'No input is required.',
+    outputFormat: 'Return name, salary, and bonus:',
+    outputColumns: [
+      { name: 'name', desc: 'employee name' },
+      { name: 'salary', desc: 'monthly salary' },
+      { name: 'bonus', desc: 'salary * 0.10' }
+    ],
+    constraints: ['Calculate salary * 0.10 AS bonus.'],
+    sampleInputHeaders: ['name', 'salary'],
+    sampleInputRows: [
+      { name: 'Rahul Sharma', salary: 60000 },
+      { name: 'Priya Singh', salary: 50000 }
+    ],
+    expectedOutputHeaders: ['name', 'salary', 'bonus'],
+    expectedOutputRows: [
+      { name: 'Rahul Sharma', salary: 60000, bonus: 6000 },
+      { name: 'Priya Singh', salary: 50000, bonus: 5000 }
+    ],
+    tableSchema: 'employees (name VARCHAR, salary INT)',
+    sampleInput: 'name | salary\nRahul Sharma | 60000\nPriya Singh | 50000',
+    sampleOutput: 'name | salary | bonus\nRahul Sharma | 60000 | 6000\nPriya Singh | 50000 | 5000',
+    starterCode: '-- Write your SQL query here\n',
+    hint: 'SELECT name, salary, salary * 0.10 AS bonus FROM employees;',
+    solution: 'SELECT name, salary, salary * 0.10 AS bonus FROM employees;',
+    testCases: [
+      { inputDesc: '10% calculation', expected: 'salary * 0.10', hidden: false },
+      { inputDesc: 'Hidden dataset', expected: 'Calculated bonus', hidden: true },
+      { inputDesc: 'Numeric scale', expected: 'Passed', hidden: true }
+    ]
+  },
+  {
+    id: 109,
+    taskNumber: 9,
+    title: 'Select Name and Department Order Independent',
+    points: 5,
+    successRate: '96.2%',
+    skill: 'SQL Basics',
+    difficulty: 'Easy',
+    problemStatement: 'Query employee full name and their assigned department from',
+    highlightedKeyword: 'employees',
+    tableName: 'employees',
+    schemaColumns: [
+      { name: 'name', type: 'VARCHAR(100)', desc: 'Employee name' },
+      { name: 'department', type: 'VARCHAR(50)', desc: 'Department name' }
+    ],
+    inputFormat: 'No input is required.',
+    outputFormat: 'Return two columns: name and department.',
+    outputColumns: [
+      { name: 'name', desc: 'employee name' },
+      { name: 'department', desc: 'department' }
+    ],
+    constraints: ['Use SELECT name, department FROM employees.'],
+    sampleInputHeaders: ['name', 'department'],
+    sampleInputRows: [
+      { name: 'Rahul Sharma', department: 'IT' },
+      { name: 'Priya Singh', department: 'HR' }
+    ],
+    expectedOutputHeaders: ['name', 'department'],
+    expectedOutputRows: [
+      { name: 'Rahul Sharma', department: 'IT' },
+      { name: 'Priya Singh', department: 'HR' }
+    ],
+    tableSchema: 'employees (name VARCHAR, department VARCHAR)',
+    sampleInput: 'name | department\nRahul Sharma | IT\nPriya Singh | HR',
+    sampleOutput: 'name | department\nRahul Sharma | IT\nPriya Singh | HR',
+    starterCode: '-- Write your SQL query here\n',
+    hint: 'SELECT name, department FROM employees;',
+    solution: 'SELECT name, department FROM employees;',
+    testCases: [
+      { inputDesc: 'Name and department', expected: 'name | department', hidden: false },
+      { inputDesc: 'Hidden check', expected: 'Matched', hidden: true },
+      { inputDesc: 'Execution test', expected: 'Passed', hidden: true }
+    ]
+  },
+  {
+    id: 110,
+    taskNumber: 10,
+    title: 'Select ID, Name, Age, and Salary Projection',
+    points: 5,
+    successRate: '95.0%',
+    skill: 'SQL Basics',
+    difficulty: 'Easy',
+    problemStatement: 'Retrieve id, name, age, and salary excluding the department column from',
+    highlightedKeyword: 'employees',
+    tableName: 'employees',
+    schemaColumns: [
+      { name: 'id', type: 'INT', desc: 'Employee ID' },
+      { name: 'name', type: 'VARCHAR(100)', desc: 'Employee name' },
+      { name: 'age', type: 'INT', desc: 'Employee age' },
+      { name: 'salary', type: 'INT', desc: 'Monthly salary' }
+    ],
+    inputFormat: 'No input is required.',
+    outputFormat: 'Return four columns: id, name, age, and salary.',
+    outputColumns: [
+      { name: 'id', desc: 'employee id' },
+      { name: 'name', desc: 'employee name' },
+      { name: 'age', desc: 'employee age' },
+      { name: 'salary', desc: 'salary' }
+    ],
+    constraints: ['Exclude department column.'],
+    sampleInputHeaders: ['id', 'name', 'age', 'salary'],
+    sampleInputRows: [
+      { id: 1, name: 'Rahul Sharma', age: 28, salary: 60000 },
+      { id: 2, name: 'Priya Singh', age: 25, salary: 50000 }
+    ],
+    expectedOutputHeaders: ['id', 'name', 'age', 'salary'],
+    expectedOutputRows: [
+      { id: 1, name: 'Rahul Sharma', age: 28, salary: 60000 },
+      { id: 2, name: 'Priya Singh', age: 25, salary: 50000 }
+    ],
+    tableSchema: 'employees (id INT, name VARCHAR, age INT, salary INT)',
+    sampleInput: 'id | name | age | salary\n1 | Rahul Sharma | 28 | 60000\n2 | Priya Singh | 25 | 50000',
+    sampleOutput: 'id | name | age | salary\n1 | Rahul Sharma | 28 | 60000\n2 | Priya Singh | 25 | 50000',
+    starterCode: '-- Write your SQL query here\n',
+    hint: 'SELECT id, name, age, salary FROM employees;',
+    solution: 'SELECT id, name, age, salary FROM employees;',
+    testCases: [
+      { inputDesc: '4 columns projection', expected: 'id | name | age | salary', hidden: false },
+      { inputDesc: 'Hidden check', expected: 'Matched', hidden: true },
+      { inputDesc: 'Execution test', expected: 'Passed', hidden: true }
+    ]
+  }
 ];
 
 // ─────────────────────────────────────────────────────────────
