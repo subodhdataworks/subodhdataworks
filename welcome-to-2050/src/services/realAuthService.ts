@@ -877,7 +877,7 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
   const finalSignups = Math.max(cloudSignups, mergedRefs.length, localData.signups || 0);
   const finalEarned = Math.max(cloudTotalEarned, finalPaidEnrollments * 100, localData.totalEarned || 0);
   const totalPaidOut = localData.totalPaid || 0;
-  const finalAvailable = Math.max(0, (cloudAvailable > 0 ? cloudAvailable : (finalPaidEnrollments * 100)) - totalPaidOut);
+  const finalAvailable = Math.max(0, localData.availableBalance || 0, (cloudAvailable > 0 ? cloudAvailable : (finalPaidEnrollments * 100)) - totalPaidOut);
 
   return {
     clicks: finalClicks,

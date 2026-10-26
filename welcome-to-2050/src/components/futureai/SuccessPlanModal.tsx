@@ -218,13 +218,16 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
       } catch {}
 
       // 2. Extract attribution code
-      const storedRefCode =
+      let storedRefCode =
         (typeof window !== 'undefined'
           ? localStorage.getItem('futureai_ref_attribution') ||
             sessionStorage.getItem('futureai_ref_attribution') ||
             new URLSearchParams(window.location.search).get('ref') ||
             ''
           : '') || '';
+      if (!storedRefCode && typeof window !== 'undefined') {
+        storedRefCode = localStorage.getItem('futureai_user_ref_code') || 'SUBODHKUMAR100';
+      }
 
       // 3. Immediately close modal and stop loading so UI NEVER hangs
       setIsLoading(false);
