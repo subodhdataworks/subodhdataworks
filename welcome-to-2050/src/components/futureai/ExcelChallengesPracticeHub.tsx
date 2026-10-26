@@ -71,8 +71,7 @@ export const ExcelChallengesPracticeHub: React.FC<ExcelChallengesPracticeHubProp
 
   const [internalEnrolled, setInternalEnrolled] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('futureai_course_enrolled');
-      if (saved === 'true' || isCourseUnlocked('data_analyst') || isCourseUnlocked('ms_office_copilot') || isAnyCourseUnlocked()) return true;
+      if (isCourseUnlocked('data_analyst') || isCourseUnlocked('ms_office_copilot')) return true;
     }
     return isEnrolled || false;
   });

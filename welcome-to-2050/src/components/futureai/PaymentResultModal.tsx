@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { CheckCircle2, XCircle, Loader2, ArrowRight, Home } from 'lucide-react';
-import { unlockCourse } from '../../services/courseUnlockService';
-import { recordReferralPayment } from '../../services/realAuthService';
+import { CheckCircle2, XCircle, ArrowRight, Home } from 'lucide-react';
+import { isCourseUnlocked } from '../../services/courseUnlockService';
 
 type PaymentStatus = 'success' | 'failure' | 'pending' | null;
 
@@ -10,10 +9,10 @@ interface PaymentResultModalProps {
 }
 
 /**
- * Shows payment result after Razorpay checkout completes.
- * Triggered via URL hash:
- *   Success: /#payment-success?txnid=...&amount=...
- *   Failure: /#payment-failure?txnid=...
+ * Shows payment result after verified Razorpay checkout completes.
+ * SECURITY: Never unlocks a course merely from URL hash parameters.
+ * Course unlocking happens exclusively after cryptographic payment signature verification
+ * in `SuccessPlanModal` / `/api/razorpay-verify` / `/api/entitlements`.
  */
 export const PaymentResultModal: React.FC<PaymentResultModalProps> = ({ onGoHome }) => {
   const [status, setStatus] = useState<PaymentStatus>(null);
@@ -23,34 +22,61 @@ export const PaymentResultModal: React.FC<PaymentResultModalProps> = ({ onGoHome
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash || '';
-      const searchStr = (hash.split('?')[1] || '') || (window.location.search ? window.location.search.replace(/^\?/, '') : '');
+      const searchStr =
+        hash.split('?')[1] ||
+        (window.location.search ? window.location.search.replace(/^\?/, '') : '');
       const params = new URLSearchParams(searchStr);
 
-      if (hash.includes('payment-success') || params.get('status') === 'TXN_SUCCESS' || params.get('status') === 'success') {
-        setStatus('success');
-        const resolvedTxn = params.get('txnid') || params.get('txnId') || params.get('TXNID') || params.get('mihpayid') || params.get('orderId') || params.get('ORDERID') || '';
+      if (
+        hash.includes('payment-success') ||
+        params.get('status') === 'TXN_SUCCESS' ||
+        params.get('status') === 'success'
+      ) {
+        const resolvedTxn =
+          params.get('txnid') ||
+          params.get('txnId') ||
+          params.get('TXNID') ||
+          params.get('mihpayid') ||
+          params.get('orderId') ||
+          params.get('ORDERID') ||
+          '';
         const resolvedAmt = params.get('amount') || params.get('TXNAMOUNT') || '987';
         const resolvedCourse = params.get('courseId') || params.get('course') || '';
-        const resolvedRef = params.get('ref') || (typeof window !== 'undefined' ? localStorage.getItem('futureai_ref_attribution') : '') || '';
+
+        // Verify that this payment transaction was genuinely verified in the current session for this user
+        const verifiedSessionTxn = localStorage.getItem('futureai_payment_txn_id') || '';
+        const hasVerifiedCourseAccess =
+          Boolean(resolvedTxn) &&
+          resolvedTxn === verifiedSessionTxn &&
+          (!resolvedCourse || isCourseUnlocked(resolvedCourse));
+
+        if (!hasVerifiedCourseAccess) {
+          // Reject tampered or unverified URL hash manipulation
+          window.history.replaceState(null, '', window.location.pathname);
+          setStatus(null);
+          return;
+        }
+
+        setStatus('success');
         setTxnId(resolvedTxn);
         setAmount(resolvedAmt);
-        try {
-          if (resolvedCourse) {
-            unlockCourse(resolvedCourse);
-          }
-        } catch (e) {}
-        if (resolvedTxn) {
-          recordReferralPayment({
-            paymentId: resolvedTxn,
-            amount: parseFloat(resolvedAmt) || 987,
-            courseTitle: resolvedCourse,
-            refCode: resolvedRef || undefined,
-          }).catch(() => {});
-        }
-        setTimeout(() => { window.history.replaceState(null, '', window.location.pathname); }, 2500);
-      } else if (hash.includes('payment-failure') || hash.includes('payment-failed') || params.get('status') === 'TXN_FAILURE' || params.get('status') === 'failure') {
+        setTimeout(() => {
+          window.history.replaceState(null, '', window.location.pathname);
+        }, 2500);
+      } else if (
+        hash.includes('payment-failure') ||
+        hash.includes('payment-failed') ||
+        params.get('status') === 'TXN_FAILURE' ||
+        params.get('status') === 'failure'
+      ) {
         setStatus('failure');
-        const resolvedTxn = params.get('txnid') || params.get('txnId') || params.get('TXNID') || params.get('orderId') || params.get('ORDERID') || '';
+        const resolvedTxn =
+          params.get('txnid') ||
+          params.get('txnId') ||
+          params.get('TXNID') ||
+          params.get('orderId') ||
+          params.get('ORDERID') ||
+          '';
         setTxnId(resolvedTxn);
       }
     };
@@ -72,19 +98,26 @@ export const PaymentResultModal: React.FC<PaymentResultModalProps> = ({ onGoHome
             </div>
             <h2 className="text-2xl font-black text-slate-900 mb-1">Payment Successful! 🎉</h2>
             <p className="text-sm font-semibold text-slate-600 mb-4">
-              Congratulations! Your enrollment is confirmed. All modules are now unlocked.
+              Congratulations! Your enrollment is confirmed. All modules for this course are now unlocked for your account.
             </p>
             {txnId && (
               <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 mb-4 text-xs font-bold text-emerald-700">
                 Transaction ID: {txnId}
-                {amount && <span className="block text-emerald-600 mt-0.5">Amount Paid: ₹{parseFloat(amount).toLocaleString('en-IN')}</span>}
+                {amount && (
+                  <span className="block text-emerald-600 mt-0.5">
+                    Amount Paid: ₹{parseFloat(amount).toLocaleString('en-IN')}
+                  </span>
+                )}
               </div>
             )}
             <p className="text-xs text-slate-500 mb-6">
               A confirmation email has been sent. Welcome to FUTURE IT INDUSTRY! 🚀
             </p>
             <button
-              onClick={() => { onGoHome(); setStatus(null); }}
+              onClick={() => {
+                onGoHome();
+                setStatus(null);
+              }}
               className="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-extrabold rounded-xl flex items-center justify-center gap-2"
             >
               <Home className="w-4 h-4" /> Start Learning Now
@@ -113,7 +146,10 @@ export const PaymentResultModal: React.FC<PaymentResultModalProps> = ({ onGoHome
                 <ArrowRight className="w-4 h-4" /> Try Again
               </button>
               <button
-                onClick={() => { onGoHome(); setStatus(null); }}
+                onClick={() => {
+                  onGoHome();
+                  setStatus(null);
+                }}
                 className="w-full py-2.5 bg-slate-100 text-slate-700 font-bold rounded-xl text-sm"
               >
                 Go to Home

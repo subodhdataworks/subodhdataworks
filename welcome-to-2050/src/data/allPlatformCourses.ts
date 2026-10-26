@@ -29,6 +29,11 @@ export interface PlatformCourseItem {
   skillsList: string[];
 }
 
+/**
+ * Shared Catalog Definitions for the 7 Dashboard Courses.
+ * IMPORTANT: Catalog definitions must always default `isUnlocked` to `false`.
+ * Actual unlock/enrollment status is resolved per authenticated user via `isCourseUnlocked(course.id)`.
+ */
 export const ALL_PLATFORM_COURSES: PlatformCourseItem[] = [
   {
     id: 'data-analyst-genai',
@@ -52,8 +57,8 @@ export const ALL_PLATFORM_COURSES: PlatformCourseItem[] = [
     holoImage: '/images/pot1_sharp_poster.jpg',
     video: '/videos/data_analyst_genai_v2.mp4',
     progress: 0,
-    btnText: 'Start Course →',
-    isUnlocked: true,
+    btnText: 'Unlock Course',
+    isUnlocked: false,
     potTheme: 'blue',
     themeColor: '#00f2fe',
     btnGradient: 'linear-gradient(90deg, #0284c7 0%, #00f2fe 100%)',
@@ -82,8 +87,8 @@ export const ALL_PLATFORM_COURSES: PlatformCourseItem[] = [
     holoImage: '/images/pot2_sharp_poster.jpg',
     video: '/videos/data_science_agentic_ai_course.mp4',
     progress: 0,
-    btnText: 'Start Course →',
-    isUnlocked: true,
+    btnText: 'Unlock Course',
+    isUnlocked: false,
     potTheme: 'purple',
     themeColor: '#c084fc',
     btnGradient: 'linear-gradient(90deg, #7c3aed 0%, #c084fc 100%)',
@@ -112,8 +117,8 @@ export const ALL_PLATFORM_COURSES: PlatformCourseItem[] = [
     holoImage: '/images/pot3_sharp_poster.jpg',
     video: '/videos/ml_engineering_course.mp4',
     progress: 0,
-    btnText: 'Start Course →',
-    isUnlocked: true,
+    btnText: 'Unlock Course',
+    isUnlocked: false,
     potTheme: 'gold',
     themeColor: '#f59e0b',
     btnGradient: 'linear-gradient(90deg, #d97706 0%, #fbbf24 100%)',
@@ -142,8 +147,8 @@ export const ALL_PLATFORM_COURSES: PlatformCourseItem[] = [
     holoImage: '/images/pot4_sharp_poster.jpg',
     video: '/videos/ai_engineering_course.mp4',
     progress: 0,
-    btnText: 'Start Course →',
-    isUnlocked: true,
+    btnText: 'Unlock Course',
+    isUnlocked: false,
     potTheme: 'emerald',
     themeColor: '#10b981',
     btnGradient: 'linear-gradient(90deg, #059669 0%, #34d399 100%)',
@@ -172,8 +177,8 @@ export const ALL_PLATFORM_COURSES: PlatformCourseItem[] = [
     holoImage: '/images/cube_genai.jpg',
     video: '/videos/card_video_genai.mp4',
     progress: 0,
-    btnText: 'Start Course →',
-    isUnlocked: true,
+    btnText: 'Unlock Course',
+    isUnlocked: false,
     potTheme: 'gold',
     themeColor: '#f59e0b',
     btnGradient: 'linear-gradient(90deg, #d97706 0%, #fbbf24 100%)',
@@ -202,8 +207,8 @@ export const ALL_PLATFORM_COURSES: PlatformCourseItem[] = [
     holoImage: '/images/msoffice_365_copilot_poster.jpg',
     video: '/videos/card_video_excel.mp4',
     progress: 0,
-    btnText: 'Start Course →',
-    isUnlocked: true,
+    btnText: 'Unlock Course',
+    isUnlocked: false,
     potTheme: 'blue',
     themeColor: '#00f2fe',
     btnGradient: 'linear-gradient(90deg, #0284c7 0%, #00f2fe 100%)',
@@ -232,8 +237,8 @@ export const ALL_PLATFORM_COURSES: PlatformCourseItem[] = [
     holoImage: '/images/full_stack_web_development_poster.jpg',
     video: '/videos/card_video_python.mp4',
     progress: 0,
-    btnText: 'Start Course →',
-    isUnlocked: true,
+    btnText: 'Unlock Course',
+    isUnlocked: false,
     potTheme: 'emerald',
     themeColor: '#10b981',
     btnGradient: 'linear-gradient(90deg, #059669 0%, #34d399 100%)',

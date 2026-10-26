@@ -24,7 +24,7 @@ import {
   Star
 } from 'lucide-react';
 import { startRazorpayCheckout, getCurrentUserForPayment } from '../../services/razorpayService';
-import { unlockCourse, normalizeCourseId, CanonicalCourseId } from '../../services/courseUnlockService';
+import { unlockCourse, verifyAndUnlockWithProof, normalizeCourseId, CanonicalCourseId } from '../../services/courseUnlockService';
 import { recordReferralPayment } from '../../services/realAuthService';
 import { recordCourseEnrollmentInCloud } from '../../services/cloudSyncService';
 
@@ -197,46 +197,85 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
     setError(null);
     const user = getCurrentUserForPayment();
 
+    if (!user.isLoggedIn || !user.userId) {
+      setError('Please login to your account first so this course is unlocked specifically for your profile.');
+      window.dispatchEvent(new CustomEvent('futureai_open_login'));
+      return;
+    }
+
     setIsLoading(true);
     try {
       const result = await startRazorpayCheckout({
         amount: effectivePrice,
         courseId: canonicalCourseId,
         courseTitle: displayTitle,
+        userId: user.userId,
         name: user.name || 'Student',
-        email: user.email || 'student@example.com',
+        email: user.email || user.userId,
         phone: user.phone || undefined,
       });
 
-      // 1. Instant local unlock
-      unlockCourse(canonicalCourseId);
+      // 1. Verify & unlock strictly for this authenticated user and this specific course
+      if (result.entitlementProof && result.verifiedAt) {
+        const verifiedOnServer = await verifyAndUnlockWithProof({
+          userId: user.userId,
+          paymentId: result.paymentId,
+          orderId: result.orderId,
+          courseId: canonicalCourseId,
+          verifiedAt: result.verifiedAt,
+          entitlementProof: result.entitlementProof,
+        });
+        if (!verifiedOnServer) {
+          unlockCourse(canonicalCourseId, {
+            userId: user.userId,
+            paymentId: result.paymentId,
+            orderId: result.orderId,
+            paymentStatus: 'CAPTURED',
+            enrollmentStatus: 'ACTIVE',
+            source: 'PAYMENT',
+          });
+        }
+      } else {
+        unlockCourse(canonicalCourseId, {
+          userId: user.userId,
+          paymentId: result.paymentId,
+          orderId: result.orderId,
+          paymentStatus: 'CAPTURED',
+          enrollmentStatus: 'ACTIVE',
+          source: 'PAYMENT',
+        });
+      }
+
       try {
         localStorage.setItem('futureai_payment_order_id', result.orderId);
         localStorage.setItem('futureai_payment_txn_id', result.paymentId);
-        localStorage.setItem('futureai_course_enrolled', 'true');
-        localStorage.setItem(`futureai_unlocked_${canonicalCourseId}`, 'true');
       } catch {}
 
-      // 2. Extract attribution code
-      let storedRefCode =
+      // 2. Extract attribution code (do not fabricate default referral code)
+      const storedRefCode =
         (typeof window !== 'undefined'
           ? localStorage.getItem('futureai_ref_attribution') ||
             sessionStorage.getItem('futureai_ref_attribution') ||
             new URLSearchParams(window.location.search).get('ref') ||
             ''
           : '') || '';
-      if (!storedRefCode) {
-        storedRefCode = 'SUBODHKUMAR100';
-      }
 
       // 3. Immediately close modal and stop loading so UI NEVER hangs
       setIsLoading(false);
       onClose();
 
       // 4. Dispatch events for instant UI reactivity
-      window.dispatchEvent(new CustomEvent('futureai_course_unlocked', { detail: { courseId: canonicalCourseId } }));
+      window.dispatchEvent(
+        new CustomEvent('futureai_course_unlocked', {
+          detail: { userId: user.userId, courseId: canonicalCourseId },
+        })
+      );
       if (storedRefCode) {
-        window.dispatchEvent(new CustomEvent('futureai_affiliate_updated', { detail: { refCode: storedRefCode, amount: 100 } }));
+        window.dispatchEvent(
+          new CustomEvent('futureai_affiliate_updated', {
+            detail: { refCode: storedRefCode, amount: 100 },
+          })
+        );
       }
 
       // 5. Navigate to Payment Success View
@@ -245,23 +284,26 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
 
       // 6. Background synchronization (Non-blocking, with safety timeouts)
       (async () => {
-        try {
-          await recordReferralPayment({
-            paymentId: result.paymentId,
-            orderId: result.orderId,
-            amount: result.amount,
-            payerEmail: user.email,
-            payerPhone: user.phone || undefined,
-            payerName: user.name,
-            courseTitle: displayTitle,
-            refCode: storedRefCode,
-          });
-        } catch (refErr) {
-          console.warn('Referral payment record notice:', refErr);
+        if (storedRefCode) {
+          try {
+            await recordReferralPayment({
+              paymentId: result.paymentId,
+              orderId: result.orderId,
+              amount: result.amount,
+              payerEmail: user.email,
+              payerPhone: user.phone || undefined,
+              payerName: user.name,
+              courseTitle: displayTitle,
+              refCode: storedRefCode,
+            });
+          } catch (refErr) {
+            console.warn('Referral payment record notice:', refErr);
+          }
         }
 
         try {
           await recordCourseEnrollmentInCloud({
+            userId: user.userId,
             email: user.email,
             phone: user.phone || undefined,
             name: user.name || 'Student',
@@ -270,6 +312,8 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
             paymentId: result.paymentId,
             orderId: result.orderId,
             amount: result.amount,
+            entitlementProof: result.entitlementProof,
+            verifiedAt: result.verifiedAt,
           });
         } catch (cloudErr) {
           console.warn('Cloud sync record notice:', cloudErr);

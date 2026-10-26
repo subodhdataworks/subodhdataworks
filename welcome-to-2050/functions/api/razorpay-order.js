@@ -1,11 +1,14 @@
 /**
  * Cloudflare Pages Function — /api/razorpay-order
  * Creates a Razorpay Order server-side (credentials read exclusively from Cloudflare env).
+ * Binds both userId and courseId into the order notes for strict user-wise course unlocking.
  *
  * Environment variables required in Cloudflare Pages dashboard:
  *   RAZORPAY_KEY_ID
  *   RAZORPAY_KEY_SECRET
  */
+
+import { normalizeCourseKey, normalizeUserId } from './entitlements.js';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -29,19 +32,6 @@ const CANONICAL_COURSE_PRICES_INR = {
   full_stack_mern: 987,
 };
 
-function normalizeCourseKey(rawId = '') {
-  const s = String(rawId).toLowerCase().trim();
-  if (s.includes('analyst') || s.includes('analytics') || s.includes('tab-1')) return 'data_analyst';
-  if (s.includes('data_science') || s.includes('data-science') || s.includes('tab-2')) return 'data_science';
-  if (s.includes('ml_engineering') || s.includes('ml-eng') || s.includes('tab-3')) return 'ml_engineering';
-  if (s.includes('deep_learning') || s.includes('deep-learning')) return 'deep_learning';
-  if (s.includes('ai_engineering') || s.includes('ai-eng') || s.includes('tab-4')) return 'ai_engineering';
-  if (s.includes('prompt') || s.includes('ai_tools') || s.includes('tab-5')) return 'ai_tools_prompt';
-  if (s.includes('office') || s.includes('copilot') || s.includes('tab-6')) return 'ms_office_copilot';
-  if (s.includes('mern') || s.includes('full_stack') || s.includes('tab-7')) return 'full_stack_mern';
-  return 'data_analyst';
-}
-
 export async function onRequestPost(context) {
   const { request, env } = context;
 
@@ -62,7 +52,8 @@ export async function onRequestPost(context) {
   try {
     const body = await request.json().catch(() => ({}));
     const rawCourseId = String(body.courseId || 'data_analyst');
-    const canonicalCourse = normalizeCourseKey(rawCourseId);
+    const canonicalCourse = normalizeCourseKey(rawCourseId) || 'data_analyst';
+    const cleanUserId = normalizeUserId(body.userId || body.email || body.phone || '');
 
     // Server enforces canonical price so malicious clients cannot underpay
     const canonicalPrice = CANONICAL_COURSE_PRICES_INR[canonicalCourse] || 987;
@@ -84,9 +75,10 @@ export async function onRequestPost(context) {
         currency: 'INR',
         receipt,
         notes: {
+          userId: cleanUserId.slice(0, 200),
           courseId: canonicalCourse,
           courseTitle: String(body.courseTitle || canonicalCourse).slice(0, 200),
-          email: String(body.email || '').slice(0, 200),
+          email: String(body.email || cleanUserId || '').slice(0, 200),
           refCode: String(body.refCode || '').slice(0, 50),
           affiliateEpoch: 'v5_clean',
         },
@@ -109,6 +101,7 @@ export async function onRequestPost(context) {
       amount: data.amount,
       currency: data.currency,
       courseId: canonicalCourse,
+      userId: cleanUserId || undefined,
     });
   } catch (err) {
     return json({ success: false, error: 'Internal gateway error' }, 500);

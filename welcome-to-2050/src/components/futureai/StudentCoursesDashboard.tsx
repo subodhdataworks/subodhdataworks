@@ -32,7 +32,7 @@ import { RealSuccessStoriesShowcase } from './RealSuccessStoriesShowcase';
 import { ALL_PLATFORM_COURSES, PlatformCourseItem } from '../../data/allPlatformCourses';
 import { CareerCourseCard } from './CareerCourseCard';
 import { CAREER_COURSES_12 } from '../../data/careerCourses12';
-import { isCourseUnlocked } from '../../services/courseUnlockService';
+import { isCourseUnlocked, syncUserEnrollmentsFromServer } from '../../services/courseUnlockService';
 import './LearnerHomeHub.css';
 
 export interface StudentCoursesDashboardProps {
@@ -101,6 +101,20 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
   const [filter, setFilter] = useState<CourseFilterType>('all');
   const [categoryTab, setCategoryTab] = useState<'all' | 'flagship' | 'core' | 'ai'>('all');
   const [viewMode, setViewMode] = useState<CourseViewModeType>('grid');
+  const [, setUnlockRefreshTick] = useState<number>(0);
+
+  useEffect(() => {
+    const refreshUserCourseAccess = () => {
+      setUnlockRefreshTick((t) => t + 1);
+    };
+    syncUserEnrollmentsFromServer().then(refreshUserCourseAccess).catch(() => {});
+    window.addEventListener('futureai_course_unlocked', refreshUserCourseAccess);
+    window.addEventListener('storage', refreshUserCourseAccess);
+    return () => {
+      window.removeEventListener('futureai_course_unlocked', refreshUserCourseAccess);
+      window.removeEventListener('storage', refreshUserCourseAccess);
+    };
+  }, [userName]);
 
   // Continuous Typewriter effect for "Get Career-Ready."
   const careerReadyTargetText = 'Get Career-Ready.';
@@ -428,7 +442,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                     style={{ background: c.btnGradient }}
                     onClick={() => handleCourseClick(c)}
                   >
-                    {c.btnText}
+                    {isCourseUnlocked(c.id) ? 'Resume Course →' : 'Unlock Course'}
                   </button>
                 </div>
               </div>

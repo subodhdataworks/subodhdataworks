@@ -1,6 +1,11 @@
-import { doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where, serverTimestamp, arrayUnion } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, getDocs, query, where, serverTimestamp, arrayUnion } from 'firebase/firestore';
 import { db } from './firebase';
-import { unlockCourse, normalizeCourseId, CanonicalCourseId } from './courseUnlockService';
+import {
+  unlockCourse,
+  normalizeCourseId,
+  normalizeUserId,
+  replaceUserEnrollmentsCache,
+} from './courseUnlockService';
 
 export interface CloudStudentEntitlement {
   uid: string;
@@ -32,9 +37,11 @@ export function withTimeout<T>(promise: Promise<T>, ms: number = 2500): Promise<
 }
 
 /**
- * Persist course enrollment to Firebase Firestore so it NEVER gets lost
+ * Persist user-specific course enrollment to Firebase Firestore (`course_enrollments` & `registered_users`)
+ * and user-scoped local storage. Never writes global/shared course unlock keys.
  */
 export async function recordCourseEnrollmentInCloud(params: {
+  userId?: string;
   email?: string;
   phone?: string;
   name?: string;
@@ -48,188 +55,363 @@ export async function recordCourseEnrollmentInCloud(params: {
 }): Promise<void> {
   const cleanEmail = (params.email || '').trim().toLowerCase();
   const cleanPhone = (params.phone || '').replace(/\D/g, '');
+  const cleanUserId = normalizeUserId(params.userId || cleanEmail || cleanPhone);
   const cleanName = (params.name || 'Learner').trim();
   const canonicalCourse = normalizeCourseId(params.courseId || params.courseTitle);
 
-  // 1. Always unlock locally immediately
-  unlockCourse(canonicalCourse);
-  if (typeof window !== 'undefined') {
-    try {
-      localStorage.setItem('futureai_course_enrolled', 'true');
-      localStorage.setItem(`futureai_unlocked_${canonicalCourse}`, 'true');
-    } catch {}
+  if (!cleanUserId || !params.paymentId) {
+    console.warn('[CloudSync] Refused to record enrollment without a valid userId and paymentId.');
+    return;
   }
 
+  // 1. Unlock locally strictly for this specific userId and courseId
+  unlockCourse(canonicalCourse, {
+    userId: cleanUserId,
+    paymentId: params.paymentId,
+    orderId: params.orderId || '',
+    paymentStatus: 'CAPTURED',
+    enrollmentStatus: 'ACTIVE',
+    source: 'PAYMENT',
+  });
+
+  const nowIso = new Date().toISOString();
   const paymentRecord = {
     paymentId: params.paymentId,
     orderId: params.orderId || `ord_${Date.now()}`,
     amount: params.amount,
+    userId: cleanUserId,
     courseId: canonicalCourse,
     courseTitle: params.courseTitle || 'Data Analyst with GenAI',
-    date: new Date().toISOString(),
+    date: nowIso,
     status: 'captured',
     entitlementProof: params.entitlementProof || null,
-    verifiedAt: params.verifiedAt || null
+    verifiedAt: params.verifiedAt || null,
   };
 
-  // 2. Persist in Firestore
+  const enrollmentId = `ENR_${cleanUserId.replace(/[^a-zA-Z0-9]/g, '_')}_${canonicalCourse}`;
+
+  // 2. Persist in Firestore (dedicated `course_enrollments` table + user document + `platform_payments`)
   try {
-    const userDocId = cleanEmail ? cleanEmail.replace(/[^a-zA-Z0-9]/g, '_') : cleanPhone ? `phone_${cleanPhone}` : `usr_${Date.now()}`;
+    const enrollmentRef = doc(db, 'course_enrollments', enrollmentId);
+    await withTimeout(
+      setDoc(
+        enrollmentRef,
+        {
+          id: enrollmentId,
+          userId: cleanUserId,
+          email: cleanEmail,
+          phone: cleanPhone,
+          courseId: canonicalCourse,
+          courseTitle: params.courseTitle || canonicalCourse,
+          enrollmentStatus: 'ACTIVE',
+          paymentStatus: 'CAPTURED',
+          paymentTransactionId: params.paymentId,
+          orderId: paymentRecord.orderId,
+          amount: params.amount,
+          unlockedAt: nowIso,
+          createdAt: nowIso,
+          updatedAt: nowIso,
+          timestamp: serverTimestamp(),
+        },
+        { merge: true }
+      ),
+      2500
+    );
+
+    const userDocId = cleanEmail
+      ? cleanEmail.replace(/[^a-zA-Z0-9]/g, '_')
+      : cleanPhone
+      ? `phone_${cleanPhone}`
+      : `usr_${cleanUserId.replace(/[^a-zA-Z0-9]/g, '_')}`;
     const userRef = doc(db, 'registered_users', userDocId);
-    
-    await withTimeout(setDoc(userRef, {
-      email: cleanEmail,
-      phone: cleanPhone,
-      name: cleanName,
-      enrolledCourses: arrayUnion(canonicalCourse),
-      isEnrolled: true,
-      lastPayment: paymentRecord,
-      lastEnrolledAt: serverTimestamp(),
-      status: 'active'
-    }, { merge: true }), 2500);
 
-    // Also write to global payments collection
+    await withTimeout(
+      setDoc(
+        userRef,
+        {
+          userId: cleanUserId,
+          email: cleanEmail,
+          phone: cleanPhone,
+          name: cleanName,
+          enrolledCourses: arrayUnion(canonicalCourse),
+          isEnrolled: true,
+          lastPayment: paymentRecord,
+          lastEnrolledAt: serverTimestamp(),
+          status: 'active',
+        },
+        { merge: true }
+      ),
+      2500
+    );
+
+    // Also write to global payments collection keyed by unique paymentId
     const paymentRef = doc(db, 'platform_payments', params.paymentId);
-    await withTimeout(setDoc(paymentRef, {
-      ...paymentRecord,
-      studentName: cleanName,
-      email: cleanEmail,
-      phone: cleanPhone,
-      timestamp: serverTimestamp()
-    }, { merge: true }), 2500);
-
+    await withTimeout(
+      setDoc(
+        paymentRef,
+        {
+          ...paymentRecord,
+          studentName: cleanName,
+          email: cleanEmail,
+          phone: cleanPhone,
+          timestamp: serverTimestamp(),
+        },
+        { merge: true }
+      ),
+      2500
+    );
   } catch (err) {
-    console.warn('Firestore cloud enrollment save warning (offline fallback active):', err);
+    console.warn('Firestore cloud enrollment save warning (user-scoped local record active):', err);
   }
 
-  // 3. Cache locally
+  // 3. Cache user-attributed record locally
   if (typeof window !== 'undefined') {
     try {
       const existing = localStorage.getItem(LOCAL_CLOUD_CACHE_KEY);
-      const list: any[] = existing ? JSON.parse(existing) : [];
-      list.push({ ...paymentRecord, name: cleanName, email: cleanEmail, phone: cleanPhone });
-      localStorage.setItem(LOCAL_CLOUD_CACHE_KEY, JSON.stringify(list));
-    } catch {}
+      const parsed = existing ? JSON.parse(existing) : {};
+      const map: Record<string, any> = Array.isArray(parsed) ? {} : parsed || {};
+      const prevCourses: string[] = Array.isArray(map[cleanUserId]?.unlockedCourses)
+        ? map[cleanUserId].unlockedCourses
+        : [];
+      const nextCourses = Array.from(new Set([...prevCourses, canonicalCourse]));
+      map[cleanUserId] = {
+        userId: cleanUserId,
+        email: cleanEmail,
+        phone: cleanPhone,
+        name: cleanName,
+        unlockedCourses: nextCourses,
+        lastPaymentId: params.paymentId,
+        updatedAt: nowIso,
+      };
+      localStorage.setItem(LOCAL_CLOUD_CACHE_KEY, JSON.stringify(map));
+    } catch {
+      // Ignore storage errors
+    }
   }
 }
 
 /**
- * Restore all enrolled courses & wallet balance from Firestore cloud
- * Called on login or page load to guarantee courses NEVER disappear
+ * Restore all enrolled courses for the specific authenticated user from Firestore (`course_enrollments` & `registered_users`).
+ * Never writes global unlock keys; scopes restored courses strictly to `cleanUserId`.
  */
 export async function restoreUserEntitlementsFromCloud(identifier?: {
   email?: string;
   phone?: string;
   uid?: string;
 }): Promise<string[]> {
-  const cleanEmail = (identifier?.email || (typeof window !== 'undefined' ? localStorage.getItem('futureai_user_email') : '') || '').trim().toLowerCase();
-  const cleanPhone = (identifier?.phone || (typeof window !== 'undefined' ? localStorage.getItem('futureai_user_phone') : '') || '').replace(/\D/g, '');
+  const cleanEmail = (
+    identifier?.email ||
+    (typeof window !== 'undefined' ? localStorage.getItem('futureai_user_email') : '') ||
+    ''
+  )
+    .trim()
+    .toLowerCase();
+  const cleanPhone = (
+    identifier?.phone ||
+    (typeof window !== 'undefined' ? localStorage.getItem('futureai_user_phone') : '') ||
+    ''
+  ).replace(/\D/g, '');
+  const cleanUid = normalizeUserId(
+    identifier?.uid || (typeof window !== 'undefined' ? localStorage.getItem('futureai_user_uid') : '')
+  );
 
-  if (!cleanEmail && !cleanPhone) {
+  const cleanUserId = cleanEmail || cleanPhone || cleanUid;
+  if (!cleanUserId) {
     return [];
   }
 
-  const restoredCourses: string[] = [];
+  const restoredCoursesSet = new Set<string>();
 
   try {
-    // Check by email in Firestore
+    // 1. Check dedicated `course_enrollments` collection for this specific userId
+    try {
+      const enrollCol = collection(db, 'course_enrollments');
+      const enrollQuery = query(enrollCol, where('userId', '==', cleanUserId));
+      const enrollSnap = await withTimeout(getDocs(enrollQuery), 2500);
+      enrollSnap.forEach((docSnap) => {
+        const d = docSnap.data();
+        if (
+          d &&
+          normalizeUserId(d.userId) === cleanUserId &&
+          d.enrollmentStatus === 'ACTIVE' &&
+          (d.paymentStatus === 'CAPTURED' || d.paymentStatus === 'ADMIN_GRANTED') &&
+          d.courseId
+        ) {
+          const canonical = normalizeCourseId(d.courseId);
+          unlockCourse(canonical, {
+            userId: cleanUserId,
+            paymentId: d.paymentTransactionId || `CLOUD_${cleanUserId}_${canonical}`,
+            orderId: d.orderId || '',
+            paymentStatus: d.paymentStatus,
+            enrollmentStatus: 'ACTIVE',
+            unlockedAt: d.unlockedAt,
+            source: 'CLOUD_SYNC',
+          });
+          restoredCoursesSet.add(canonical);
+        }
+      });
+    } catch {
+      // Ignore if collection query is offline
+    }
+
+    // 2. Check user's `registered_users` record by email (preserving legitimate user-attributed purchases)
     if (cleanEmail) {
       const userDocId = cleanEmail.replace(/[^a-zA-Z0-9]/g, '_');
       const userRef = doc(db, 'registered_users', userDocId);
-      const snap = await getDoc(userRef);
+      const snap = await withTimeout(getDoc(userRef), 2500);
 
       if (snap.exists()) {
         const data = snap.data();
-        if (data && Array.isArray(data.enrolledCourses)) {
+        const ownerEmail = normalizeUserId(data?.email);
+        if (ownerEmail === cleanEmail && Array.isArray(data?.enrolledCourses)) {
           data.enrolledCourses.forEach((c: string) => {
             const canonical = normalizeCourseId(c);
-            unlockCourse(canonical);
-            restoredCourses.push(canonical);
+            unlockCourse(canonical, {
+              userId: cleanUserId,
+              paymentId: data?.lastPayment?.paymentId || `CLOUD_RESTORE_${cleanEmail}_${canonical}`,
+              paymentStatus: data?.lastUnlockedBy ? 'ADMIN_GRANTED' : 'CAPTURED',
+              enrollmentStatus: 'ACTIVE',
+              source: 'CLOUD_SYNC',
+            });
+            restoredCoursesSet.add(canonical);
           });
         }
       } else {
-        // Query by email field
         const col = collection(db, 'registered_users');
         const q = query(col, where('email', '==', cleanEmail));
-        const res = await getDocs(q);
+        const res = await withTimeout(getDocs(q), 2500);
         if (!res.empty) {
           const docData = res.docs[0].data();
-          if (docData && Array.isArray(docData.enrolledCourses)) {
+          if (normalizeUserId(docData?.email) === cleanEmail && Array.isArray(docData?.enrolledCourses)) {
             docData.enrolledCourses.forEach((c: string) => {
               const canonical = normalizeCourseId(c);
-              unlockCourse(canonical);
-              restoredCourses.push(canonical);
+              unlockCourse(canonical, {
+                userId: cleanUserId,
+                paymentId: docData?.lastPayment?.paymentId || `CLOUD_RESTORE_${cleanEmail}_${canonical}`,
+                paymentStatus: docData?.lastUnlockedBy ? 'ADMIN_GRANTED' : 'CAPTURED',
+                enrollmentStatus: 'ACTIVE',
+                source: 'CLOUD_SYNC',
+              });
+              restoredCoursesSet.add(canonical);
             });
           }
         }
       }
     }
 
-    // Check by phone if email didn't match
-    if (restoredCourses.length === 0 && cleanPhone && cleanPhone.length >= 10) {
+    // 3. Check by phone if email didn't match
+    if (restoredCoursesSet.size === 0 && cleanPhone && cleanPhone.length >= 10) {
       const col = collection(db, 'registered_users');
       const q = query(col, where('phone', '==', cleanPhone));
-      const res = await getDocs(q);
+      const res = await withTimeout(getDocs(q), 2500);
       if (!res.empty) {
         const docData = res.docs[0].data();
-        if (docData && Array.isArray(docData.enrolledCourses)) {
+        if (Array.isArray(docData?.enrolledCourses)) {
           docData.enrolledCourses.forEach((c: string) => {
             const canonical = normalizeCourseId(c);
-            unlockCourse(canonical);
-            restoredCourses.push(canonical);
+            unlockCourse(canonical, {
+              userId: cleanUserId,
+              paymentId: docData?.lastPayment?.paymentId || `CLOUD_RESTORE_${cleanPhone}_${canonical}`,
+              paymentStatus: docData?.lastUnlockedBy ? 'ADMIN_GRANTED' : 'CAPTURED',
+              enrollmentStatus: 'ACTIVE',
+              source: 'CLOUD_SYNC',
+            });
+            restoredCoursesSet.add(canonical);
           });
         }
       }
     }
 
+    const restoredCourses = Array.from(restoredCoursesSet);
     if (restoredCourses.length > 0 && typeof window !== 'undefined') {
-      localStorage.setItem('futureai_course_enrolled', 'true');
-      window.dispatchEvent(new CustomEvent('futureai_course_unlocked', { detail: { courses: restoredCourses } }));
+      replaceUserEnrollmentsCache(cleanUserId, restoredCourses, 'CLOUD_RESTORE');
+      window.dispatchEvent(
+        new CustomEvent('futureai_course_unlocked', {
+          detail: { userId: cleanUserId, courses: restoredCourses },
+        })
+      );
     }
-
+    return restoredCourses;
   } catch (err) {
-    console.warn('Cloud restore notice (running local cache):', err);
+    console.warn('Cloud restore notice (running user-scoped local cache):', err);
+    return Array.from(restoredCoursesSet);
   }
-
-  return restoredCourses;
 }
 
 /**
- * ADMIN ACTION: Manually unlock/grant any course to a student
- * Instantly fixes any "mera course gayab ho gya" complaint in 1 click!
+ * ADMIN ACTION: Explicitly grant a single course to a specific student (`studentEmailOrPhone`).
+ * Records a user-specific entitlement (`paymentStatus: 'ADMIN_GRANTED'`) and NEVER unlocks globally.
  */
-export async function adminGrantCourseToStudent(studentEmailOrPhone: string, courseId: string): Promise<boolean> {
-  const cleanId = studentEmailOrPhone.trim().toLowerCase();
+export async function adminGrantCourseToStudent(
+  studentEmailOrPhone: string,
+  courseId: string
+): Promise<boolean> {
+  const cleanId = normalizeUserId(studentEmailOrPhone);
   const canonicalCourse = normalizeCourseId(courseId);
+  if (!cleanId) return false;
+
+  const nowIso = new Date().toISOString();
+  const enrollmentId = `ENR_${cleanId.replace(/[^a-zA-Z0-9]/g, '_')}_${canonicalCourse}`;
+  const adminTxId = `ADMIN_GRANT_${cleanId}_${canonicalCourse}_${Date.now()}`;
 
   try {
-    const userDocId = cleanId.includes('@') ? cleanId.replace(/[^a-zA-Z0-9]/g, '_') : `phone_${cleanId.replace(/\D/g, '')}`;
-    const userRef = doc(db, 'registered_users', userDocId);
-    
-    await setDoc(userRef, {
-      enrolledCourses: arrayUnion(canonicalCourse),
-      isEnrolled: true,
-      lastManualUnlockAt: serverTimestamp(),
-      lastUnlockedBy: 'Admin Control Center'
-    }, { merge: true });
+    const enrollmentRef = doc(db, 'course_enrollments', enrollmentId);
+    await setDoc(
+      enrollmentRef,
+      {
+        id: enrollmentId,
+        userId: cleanId,
+        courseId: canonicalCourse,
+        enrollmentStatus: 'ACTIVE',
+        paymentStatus: 'ADMIN_GRANTED',
+        paymentTransactionId: adminTxId,
+        orderId: 'ADMIN_CONTROL_CENTER',
+        unlockedAt: nowIso,
+        createdAt: nowIso,
+        updatedAt: nowIso,
+        timestamp: serverTimestamp(),
+      },
+      { merge: true }
+    );
 
-    // Also unlock locally if this is the active user
-    unlockCourse(canonicalCourse);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('futureai_course_enrolled', 'true');
-      localStorage.setItem(`futureai_unlocked_${canonicalCourse}`, 'true');
-      window.dispatchEvent(new CustomEvent('futureai_course_unlocked', { detail: { courseId: canonicalCourse } }));
-    }
+    const userDocId = cleanId.includes('@')
+      ? cleanId.replace(/[^a-zA-Z0-9]/g, '_')
+      : `phone_${cleanId.replace(/\D/g, '')}`;
+    const userRef = doc(db, 'registered_users', userDocId);
+
+    await setDoc(
+      userRef,
+      {
+        userId: cleanId,
+        enrolledCourses: arrayUnion(canonicalCourse),
+        isEnrolled: true,
+        lastManualUnlockAt: serverTimestamp(),
+        lastUnlockedBy: 'Admin Control Center',
+      },
+      { merge: true }
+    );
+
+    // Unlock locally strictly for `cleanId` (does NOT affect any other user!)
+    unlockCourse(canonicalCourse, {
+      userId: cleanId,
+      paymentId: adminTxId,
+      orderId: 'ADMIN_CONTROL_CENTER',
+      paymentStatus: 'ADMIN_GRANTED',
+      enrollmentStatus: 'ACTIVE',
+      source: 'ADMIN',
+    });
 
     return true;
   } catch (err) {
     console.error('Admin grant course error:', err);
-    // Offline / LocalStorage fallback
-    unlockCourse(canonicalCourse);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(`futureai_unlocked_${canonicalCourse}`, 'true');
-      localStorage.setItem('futureai_course_enrolled', 'true');
-    }
+    unlockCourse(canonicalCourse, {
+      userId: cleanId,
+      paymentId: adminTxId,
+      orderId: 'ADMIN_CONTROL_CENTER',
+      paymentStatus: 'ADMIN_GRANTED',
+      enrollmentStatus: 'ACTIVE',
+      source: 'ADMIN',
+    });
     return true;
   }
 }
@@ -243,25 +425,30 @@ export async function adminAdjustStudentWallet(
   reason: string
 ): Promise<number> {
   const cleanId = studentEmailOrPhone.trim().toLowerCase();
-  const userDocId = cleanId.includes('@') ? cleanId.replace(/[^a-zA-Z0-9]/g, '_') : `phone_${cleanId.replace(/\D/g, '')}`;
+  const userDocId = cleanId.includes('@')
+    ? cleanId.replace(/[^a-zA-Z0-9]/g, '_')
+    : `phone_${cleanId.replace(/\D/g, '')}`;
   const userRef = doc(db, 'registered_users', userDocId);
-  
+
   let newBalance = 0;
   try {
     const snap = await getDoc(userRef);
-    const current = snap.exists() ? (snap.data().walletBalance || 0) : 0;
+    const current = snap.exists() ? snap.data().walletBalance || 0 : 0;
     newBalance = Math.max(0, current + deltaAmount);
-    
-    await setDoc(userRef, {
-      walletBalance: newBalance,
-      lastWalletAdjustment: {
-        delta: deltaAmount,
-        reason: reason || 'Admin Credit / Adjustment',
-        timestamp: new Date().toISOString()
-      }
-    }, { merge: true });
 
-    // Also record in platform ledger
+    await setDoc(
+      userRef,
+      {
+        walletBalance: newBalance,
+        lastWalletAdjustment: {
+          delta: deltaAmount,
+          reason: reason || 'Admin Credit / Adjustment',
+          timestamp: new Date().toISOString(),
+        },
+      },
+      { merge: true }
+    );
+
     const ledgerRef = doc(db, 'wallet_ledger', `adj_${Date.now()}`);
     await setDoc(ledgerRef, {
       userId: userDocId,
@@ -270,21 +457,10 @@ export async function adminAdjustStudentWallet(
       balanceAfter: newBalance,
       reason: reason || 'Manual Admin Adjustment',
       adjustedBy: 'Admin Control Center',
-      timestamp: serverTimestamp()
+      timestamp: serverTimestamp(),
     });
-
   } catch (err) {
     console.warn('Wallet adjustment firestore warning:', err);
-  }
-
-  // Also update local storage if this is active user
-  if (typeof window !== 'undefined') {
-    try {
-      const cur = parseFloat(localStorage.getItem('futureai_user_wallet') || '0');
-      const updated = Math.max(0, cur + deltaAmount);
-      localStorage.setItem('futureai_user_wallet', updated.toString());
-      window.dispatchEvent(new CustomEvent('futureai_wallet_updated', { detail: { newBalance: updated } }));
-    } catch {}
   }
 
   return newBalance;

@@ -58,8 +58,14 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
 
   const [internalEnrolled, setInternalEnrolled] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('futureai_course_enrolled');
-      if (saved === 'true' || isCourseUnlocked('data_analyst') || isAnyCourseUnlocked()) return true;
+      if (
+        isCourseUnlocked('data_analyst') ||
+        isCourseUnlocked('data_science') ||
+        isCourseUnlocked('ml_engineering') ||
+        isCourseUnlocked('ai_engineering')
+      ) {
+        return true;
+      }
     }
     return isEnrolled || false;
   });

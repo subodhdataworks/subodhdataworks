@@ -1,8 +1,14 @@
 /**
  * Cloudflare Pages Function — /api/razorpay-verify
- * Verifies Razorpay payment signature server-side.
+ * Verifies Razorpay payment signature server-side and generates user-bound entitlement proofs.
  * Secret key is read exclusively from Cloudflare environment variables.
  */
+
+import {
+  normalizeCourseKey,
+  normalizeUserId,
+  upsertVerifiedEnrollment,
+} from './entitlements.js';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -56,7 +62,31 @@ export async function onRequestPost(context) {
 
   try {
     const body = await request.json().catch(() => ({}));
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, courseId } = body;
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      courseId,
+      userId,
+      email,
+      paymentStatus,
+    } = body;
+
+    // Never verify or unlock if payment status is explicitly failed/cancelled/pending
+    if (
+      paymentStatus &&
+      ['FAILED', 'CANCELLED', 'PENDING', 'CREATED', 'REFUNDED'].includes(
+        String(paymentStatus).toUpperCase()
+      )
+    ) {
+      return json(
+        {
+          success: false,
+          error: `Payment verification rejected: payment status is ${paymentStatus}`,
+        },
+        400
+      );
+    }
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
       return json({ success: false, error: 'Missing required payment verification fields' }, 400);
@@ -73,20 +103,44 @@ export async function onRequestPost(context) {
       return json({ success: false, error: 'Payment signature verification failed' }, 400);
     }
 
-    // Generate server-signed entitlement proof token
+    const canonicalCourseId = normalizeCourseKey(courseId || 'data_analyst') || String(courseId || 'data_analyst');
+    const cleanUserId = normalizeUserId(userId || email || '');
+
+    // Generate server-signed entitlement proof token (bound to userId when provided)
     const verifiedTimestamp = Date.now();
-    const entitlementProof = await hmacSha256Hex(
-      keySecret,
-      `VERIFIED_ENTITLEMENT:${razorpay_payment_id}:${razorpay_order_id}:${courseId || 'data_analyst'}:${verifiedTimestamp}`
-    );
+    const proofPayload = cleanUserId
+      ? `VERIFIED_ENTITLEMENT:${cleanUserId}:${razorpay_payment_id}:${razorpay_order_id}:${canonicalCourseId}:${verifiedTimestamp}`
+      : `VERIFIED_ENTITLEMENT:${razorpay_payment_id}:${razorpay_order_id}:${courseId || 'data_analyst'}:${verifiedTimestamp}`;
+
+    const entitlementProof = await hmacSha256Hex(keySecret, proofPayload);
+
+    // If an authenticated userId is provided, record the enrollment immediately and atomically for that user & course
+    let enrollmentRecord = null;
+    if (cleanUserId) {
+      const enrollRes = upsertVerifiedEnrollment({
+        userId: cleanUserId,
+        courseId: canonicalCourseId,
+        paymentTransactionId: razorpay_payment_id,
+        orderId: razorpay_order_id,
+        paymentStatus: 'CAPTURED',
+        enrollmentStatus: 'ACTIVE',
+        unlockedAt: new Date(verifiedTimestamp).toISOString(),
+      });
+      if (!enrollRes.ok) {
+        return json({ success: false, error: enrollRes.error }, enrollRes.status || 409);
+      }
+      enrollmentRecord = enrollRes.record;
+    }
 
     return json({
       success: true,
+      userId: cleanUserId || undefined,
       orderId: razorpay_order_id,
       paymentId: razorpay_payment_id,
-      courseId: courseId || 'data_analyst',
+      courseId: canonicalCourseId,
       verifiedAt: verifiedTimestamp,
       entitlementProof,
+      enrollment: enrollmentRecord || undefined,
     });
   } catch (err) {
     return json({ success: false, error: 'Internal verification error' }, 500);

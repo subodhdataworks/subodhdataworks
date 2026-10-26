@@ -495,7 +495,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   // Student Enrollment State & Real Course Unlock Synchronization
   const [isNewStudentMode, setIsNewStudentMode] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
-      if (isCourseUnlocked('data_analyst') || isAnyCourseUnlocked() || localStorage.getItem('futureai_course_enrolled') === 'true') {
+      if (isCourseUnlocked('data_analyst') || isAnyCourseUnlocked()) {
         return false;
       }
     }
@@ -2230,7 +2230,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               onUnlockAll={() => {
                 setIsNewStudentMode(false);
                 if (typeof window !== 'undefined') {
-                  localStorage.setItem('futureai_course_enrolled', 'true');
+                  setUnlockModalOpen(true);
                 }
               }}
               onOpenPython={(topicId) => {
@@ -2296,7 +2296,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               onUnlockAll={() => {
                 setIsNewStudentMode(false);
                 if (typeof window !== 'undefined') {
-                  localStorage.setItem('futureai_course_enrolled', 'true');
+                  setUnlockModalOpen(true);
                 }
               }}
               onBackToPractice={() => {
@@ -2336,7 +2336,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               onUnlockAll={() => {
                 setIsNewStudentMode(false);
                 if (typeof window !== 'undefined') {
-                  localStorage.setItem('futureai_course_enrolled', 'true');
+                  setUnlockModalOpen(true);
                 }
               }}
               onBackToPractice={() => {
@@ -2373,7 +2373,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               onUnlockAll={() => {
                 setIsNewStudentMode(false);
                 if (typeof window !== 'undefined') {
-                  localStorage.setItem('futureai_course_enrolled', 'true');
+                  setUnlockModalOpen(true);
                 }
               }}
               onBackToPractice={() => {

@@ -21,6 +21,7 @@ import { auth } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { findExistingUser, recordUserInDatabase, runAffiliateSystemResetMigrationOnce } from './services/realAuthService';
 import { restoreUserEntitlementsFromCloud } from './services/cloudSyncService';
+import { clearActiveCourseSessionCacheOnLogout } from './services/courseUnlockService';
 
 export const App: React.FC = () => {
   // ─── CONTROLLED VERSIONED ONE-TIME AFFILIATE SYSTEM v5 RESET MIGRATION ───
@@ -219,11 +220,16 @@ export const App: React.FC = () => {
       localStorage.removeItem('futureai_logged_in');
       localStorage.removeItem('futureai_user_name');
       localStorage.removeItem('futureai_user_email');
+      localStorage.removeItem('futureai_user_phone');
+      localStorage.removeItem('futureai_user_uid');
       localStorage.removeItem('futureai_user_avatar');
       localStorage.removeItem('futureai_user_role');
       localStorage.removeItem('futureai_user_wallet');
       localStorage.removeItem('futureai_user_coins');
       localStorage.removeItem('futureai_user_gems');
+      localStorage.removeItem('futureai_payment_order_id');
+      localStorage.removeItem('futureai_payment_txn_id');
+      clearActiveCourseSessionCacheOnLogout();
       window.location.hash = '#home';
       window.location.reload();
     }

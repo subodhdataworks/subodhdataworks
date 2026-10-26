@@ -2,10 +2,10 @@
  * Razorpay Payment Gateway Service
  *
  * Flow:
- * 1. POST /api/razorpay-order  → server creates order (uses key_secret securely)
+ * 1. POST /api/razorpay-order  → server creates order (uses key_secret securely, binds userId & courseId)
  * 2. Open Razorpay Checkout popup (checkout.js) with order_id
- * 3. POST /api/razorpay-verify → server verifies HMAC signature and signs entitlement proof
- * 4. Resolve with paymentId and cryptographically signed entitlement proof
+ * 3. POST /api/razorpay-verify → server verifies HMAC signature and signs user-bound entitlement proof
+ * 4. Resolve with paymentId and cryptographically signed entitlement proof (never fabricates unverified proofs)
  */
 
 import { auth } from './firebase';
@@ -23,6 +23,7 @@ export interface RazorpayResult {
   orderId: string;
   paymentId: string;
   amount: number; // rupees
+  userId?: string;
   entitlementProof?: string;
   verifiedAt?: number;
   courseId?: string;
@@ -51,11 +52,17 @@ export async function startRazorpayCheckout(params: {
   amount: number;
   courseId?: string;
   courseTitle?: string;
+  userId?: string;
   name?: string;
   email?: string;
   phone?: string;
   refCode?: string;
 }): Promise<RazorpayResult> {
+  const cleanUserId = (params.userId || params.email || params.phone || '').trim().toLowerCase();
+  if (!cleanUserId) {
+    throw new Error('Please sign in to your account before purchasing a course.');
+  }
+
   await loadCheckoutScript();
 
   const refCode =
@@ -66,7 +73,7 @@ export async function startRazorpayCheckout(params: {
         ''
       : '');
 
-  // 1. Create order on server
+  // 1. Create order on server (binds userId & courseId)
   const orderRes = await fetch('/api/razorpay-order', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -74,7 +81,9 @@ export async function startRazorpayCheckout(params: {
       amount: params.amount,
       courseId: params.courseId,
       courseTitle: params.courseTitle,
-      email: params.email,
+      userId: cleanUserId,
+      email: params.email || cleanUserId,
+      phone: params.phone,
       refCode,
     }),
   });
@@ -99,9 +108,11 @@ export async function startRazorpayCheckout(params: {
         contact: params.phone || '',
       },
       notes: {
-        courseId: params.courseId || '',
+        userId: cleanUserId,
+        courseId: params.courseId || order.courseId || '',
         courseTitle: params.courseTitle || 'Data Analyst with GenAI',
         name: params.name || '',
+        email: params.email || cleanUserId,
         refCode: refCode || '',
         affiliateEpoch: 'v5_clean',
       },
@@ -114,51 +125,44 @@ export async function startRazorpayCheckout(params: {
         razorpay_payment_id: string;
         razorpay_signature: string;
       }) => {
-        // 3. Verify signature on server with safe timeout & non-blocking fallback
+        // 3. Verify cryptographic signature on server — never fabricate fake proofs if rejected
         try {
-          let v: any = {};
-          try {
-            const controller = new AbortController();
-            const timer = setTimeout(() => controller.abort(), 6000);
-            const vRes = await fetch('/api/razorpay-verify', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                ...response,
-                courseId: params.courseId || order.courseId,
-              }),
-              signal: controller.signal,
-            }).catch(() => null);
-            clearTimeout(timer);
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 8000);
+          const vRes = await fetch('/api/razorpay-verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              ...response,
+              userId: cleanUserId,
+              email: params.email || cleanUserId,
+              courseId: params.courseId || order.courseId,
+            }),
+            signal: controller.signal,
+          });
+          clearTimeout(timer);
 
-            if (vRes) {
-              v = await vRes.json().catch(() => ({}));
-            }
-          } catch (netErr) {
-            console.warn('Signature verify network warning:', netErr);
+          const v = await vRes.json().catch(() => ({}));
+          if (!vRes.ok || !v.success || !v.entitlementProof) {
+            reject(new Error(v?.error || 'Payment signature verification failed on server.'));
+            return;
           }
 
           resolve({
             orderId: response.razorpay_order_id,
             paymentId: response.razorpay_payment_id,
             amount: order.amount / 100,
-            entitlementProof: v?.entitlementProof || `ENT_PROOF_${response.razorpay_payment_id}`,
-            verifiedAt: v?.verifiedAt || Date.now(),
-            courseId: v?.courseId || params.courseId || order.courseId,
+            userId: cleanUserId,
+            entitlementProof: v.entitlementProof,
+            verifiedAt: v.verifiedAt,
+            courseId: v.courseId || params.courseId || order.courseId,
           });
         } catch (e) {
-          if (response.razorpay_payment_id) {
-            resolve({
-              orderId: response.razorpay_order_id,
-              paymentId: response.razorpay_payment_id,
-              amount: order.amount / 100,
-              entitlementProof: `ENT_PROOF_${response.razorpay_payment_id}`,
-              verifiedAt: Date.now(),
-              courseId: params.courseId || order.courseId,
-            });
-          } else {
-            reject(e instanceof Error ? e : new Error('Payment verification failed.'));
-          }
+          reject(
+            e instanceof Error
+              ? e
+              : new Error('Payment verification failed. Please contact support with your payment ID.')
+          );
         }
       },
     });
@@ -173,10 +177,10 @@ export async function startRazorpayCheckout(params: {
 
 /**
  * Get current logged-in user details for pre-filling checkout.
- * Supports Firebase auth, Google One-Tap (GIS), Mobile OTP and Email login
- * (all of which persist the session in localStorage `futureai_*` keys).
+ * Supports Firebase auth, Google One-Tap (GIS), Mobile OTP and Email login.
  */
 export function getCurrentUserForPayment(): {
+  userId: string;
   name: string;
   email: string;
   phone: string;
@@ -191,7 +195,7 @@ export function getCurrentUserForPayment(): {
   };
 
   const fbUser = auth.currentUser;
-  const email = fbUser?.email || ls('futureai_user_email');
+  const email = (fbUser?.email || ls('futureai_user_email')).trim().toLowerCase();
   const storedName = ls('futureai_user_name');
   const name =
     fbUser?.displayName ||
@@ -200,8 +204,9 @@ export function getCurrentUserForPayment(): {
     'Student';
   const rawPhone = (fbUser?.phoneNumber || ls('futureai_user_phone')).replace(/\D/g, '');
   const phone = rawPhone.length >= 10 ? rawPhone.slice(-10) : '';
+  const userId = email || phone || (fbUser?.uid || ls('futureai_user_uid')).trim().toLowerCase();
 
-  const isLoggedIn = Boolean(fbUser || email || phone || ls('futureai_logged_in') === 'true');
+  const isLoggedIn = Boolean((fbUser || ls('futureai_logged_in') === 'true') && userId);
 
-  return { name, email, phone, isLoggedIn };
+  return { userId, name, email, phone, isLoggedIn };
 }

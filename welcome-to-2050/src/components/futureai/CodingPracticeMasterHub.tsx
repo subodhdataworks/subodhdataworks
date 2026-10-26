@@ -429,8 +429,8 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
 
   const [internalEnrolled, setInternalEnrolled] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('futureai_course_enrolled');
-      if (saved === 'true' || isCourseUnlocked('data_analyst') || isAnyCourseUnlocked()) return true;
+
+      if (isCourseUnlocked('data_analyst') || isAnyCourseUnlocked()) return true;
     }
     return isEnrolled || false;
   });
@@ -500,7 +500,7 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
       isEnrolledStudent ||
       (typeof window !== 'undefined' && (
         localStorage.getItem('futureai_logged_in') === 'true' ||
-        localStorage.getItem('futureai_course_enrolled') === 'true' ||
+        localStorage.getItem('futureai_logged_in') === 'true' ||
         localStorage.getItem('futureai_user_email') ||
         localStorage.getItem('futureai_user_phone')
       ))

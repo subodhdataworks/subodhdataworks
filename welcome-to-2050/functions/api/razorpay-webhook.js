@@ -3,14 +3,17 @@
  *
  * Secure Razorpay Webhook Handler:
  * 1. Cryptographic HMAC-SHA256 signature verification (x-razorpay-signature header)
- * 2. Idempotent processing with duplicate-event protection
- * 3. Canonical amount, currency (INR), and course entitlement verification
- * 4. Safe mode toggle (ENABLE_LIVE_WEBHOOK) for staging/dry-run safety
- *
- * Environment variables:
- *   RAZORPAY_WEBHOOK_SECRET  (Required: Webhook secret configured in Razorpay dashboard)
- *   ENABLE_LIVE_WEBHOOK      (Optional: 'true' to enable live database writes; defaults to 'false' staging mode)
+ * 2. Idempotent processing with duplicate-event & duplicate-paymentTransactionId protection
+ * 3. Canonical amount, currency (INR), userId, and courseId entitlement verification
+ * 4. Rejects failed/cancelled payments without creating any course unlock
+ * 5. Safe mode toggle (ENABLE_LIVE_WEBHOOK) for staging/dry-run safety
  */
+
+import {
+  normalizeCourseKey,
+  normalizeUserId,
+  upsertVerifiedEnrollment,
+} from './entitlements.js';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -22,8 +25,9 @@ const corsHeaders = {
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), { status, headers: corsHeaders });
 
-// In-memory set for deduplication / idempotency (scoped to function instance)
+// In-memory sets for deduplication / idempotency (scoped to function instance)
 const processedEventIds = new Set();
+const processedPaymentIds = new Map(); // paymentId -> { userId, courseId, enrollmentId }
 
 // Canonical course prices in INR
 const CANONICAL_COURSE_PRICES_INR = {
@@ -122,7 +126,6 @@ export async function onRequestPost(context) {
         eventId,
       });
     }
-    // Prevent unbounded memory growth: keep last 10,000 events
     if (processedEventIds.size > 10000) {
       const firstKey = processedEventIds.keys().next().value;
       if (firstKey) processedEventIds.delete(firstKey);
@@ -131,6 +134,22 @@ export async function onRequestPost(context) {
   }
 
   const eventType = eventPayload?.event;
+
+  // Explicitly handle failed/cancelled payments: NEVER create an enrollment or unlock a course
+  if (eventType === 'payment.failed' || eventType === 'order.failed' || eventType === 'payment.cancelled') {
+    const failedEntity =
+      eventPayload?.payload?.payment?.entity || eventPayload?.payload?.order?.entity || {};
+    return json({
+      success: true,
+      verified: true,
+      event: eventType,
+      eventId,
+      paymentId: failedEntity.id || null,
+      entitled: false,
+      enrollmentCreated: false,
+      message: 'Failed/cancelled payment logged; no course access or enrollment granted.',
+    });
+  }
 
   // 3. Handle Supported Events: payment.captured, order.paid
   if (eventType === 'payment.captured' || eventType === 'order.paid') {
@@ -141,14 +160,31 @@ export async function onRequestPost(context) {
       return json({ success: false, error: 'Payment entity missing from event payload.' }, 400);
     }
 
-    const { id: paymentId, order_id: orderId, amount, currency, notes } = paymentEntity;
+    const { id: paymentId, order_id: orderId, amount, currency, notes, status: entityStatus } = paymentEntity;
+
+    // Reject if entity status is explicitly failed or refunded
+    if (
+      entityStatus &&
+      ['failed', 'cancelled', 'refunded'].includes(String(entityStatus).toLowerCase())
+    ) {
+      return json(
+        {
+          success: false,
+          entitled: false,
+          enrollmentCreated: false,
+          error: `Payment status '${entityStatus}' is not eligible for course enrollment.`,
+        },
+        400
+      );
+    }
 
     // Validate currency
     if (currency && currency.toUpperCase() !== 'INR') {
       return json({ success: false, error: `Unsupported currency: ${currency}` }, 400);
     }
 
-    const courseId = notes?.courseId || 'data_analyst';
+    const rawCourseId = notes?.courseId || 'data_analyst';
+    const courseId = normalizeCourseKey(rawCourseId) || rawCourseId;
     const canonicalPrice = CANONICAL_COURSE_PRICES_INR[courseId];
     const amountInRupees = amount ? Math.round(amount / 100) : 0;
 
@@ -163,6 +199,29 @@ export async function onRequestPost(context) {
       );
     }
 
+    // Extract user-specific identity from notes or payment entity
+    const cleanUserId = normalizeUserId(
+      notes?.userId || notes?.email || paymentEntity?.email || paymentEntity?.contact || ''
+    );
+
+    // Check paymentId idempotency even if delivered under a different webhook eventId
+    if (paymentId && processedPaymentIds.has(paymentId)) {
+      const prior = processedPaymentIds.get(paymentId);
+      return json({
+        success: true,
+        idempotent: true,
+        verified: true,
+        event: eventType,
+        eventId,
+        paymentId,
+        orderId,
+        userId: prior.userId,
+        courseId: prior.courseId,
+        enrollment: prior.record || undefined,
+        message: 'Payment already fulfilled idempotently.',
+      });
+    }
+
     // 4. Safe Mode Check (Do not activate live mutations in staging)
     const isLiveEnabled = env?.ENABLE_LIVE_WEBHOOK === 'true';
 
@@ -175,23 +234,51 @@ export async function onRequestPost(context) {
         eventId,
         paymentId,
         orderId,
+        userId: cleanUserId || undefined,
         courseId,
         amount: amountInRupees,
         message: 'Webhook signature and payload validated successfully in staging safe-mode.',
       });
     }
 
-    // Live fulfillment mode
+    // Live fulfillment mode: create user-specific enrollment when userId is present
+    let enrollmentRecord = null;
+    let idempotentEnrollment = false;
+
+    if (cleanUserId && paymentId) {
+      const enrollRes = upsertVerifiedEnrollment({
+        userId: cleanUserId,
+        courseId,
+        paymentTransactionId: paymentId,
+        orderId: orderId || '',
+        paymentStatus: 'CAPTURED',
+        enrollmentStatus: 'ACTIVE',
+      });
+      if (!enrollRes.ok) {
+        return json({ success: false, error: enrollRes.error }, enrollRes.status || 409);
+      }
+      enrollmentRecord = enrollRes.record;
+      idempotentEnrollment = enrollRes.idempotent;
+      processedPaymentIds.set(paymentId, {
+        userId: cleanUserId,
+        courseId,
+        record: enrollmentRecord,
+      });
+    }
+
     return json({
       success: true,
       mode: 'live_fulfilled',
       verified: true,
+      idempotent: idempotentEnrollment,
       event: eventType,
       eventId,
       paymentId,
       orderId,
+      userId: cleanUserId || undefined,
       courseId,
       amount: amountInRupees,
+      enrollment: enrollmentRecord || undefined,
     });
   }
 

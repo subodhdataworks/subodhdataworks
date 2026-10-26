@@ -84,6 +84,17 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'all' | 'in-progress' | 'explore' | 'completed'>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [, setUnlockRefreshTick] = useState(0);
+
+  useEffect(() => {
+    const refreshUserCourseAccess = () => setUnlockRefreshTick((t) => t + 1);
+    window.addEventListener('futureai_course_unlocked', refreshUserCourseAccess);
+    window.addEventListener('storage', refreshUserCourseAccess);
+    return () => {
+      window.removeEventListener('futureai_course_unlocked', refreshUserCourseAccess);
+      window.removeEventListener('storage', refreshUserCourseAccess);
+    };
+  }, []);
 
   // Hiring Partners & Real People Home Showcase State
   const [activeStoryIdx, setActiveStoryIdx] = useState(0);
@@ -826,7 +837,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
                       {/* Top-left Badge over the video */}
                       <span className={`fii-stage-media-badge bg-gradient-to-r ${c.badgeGradient}`}>
                         <span>{c.badgeIcon}</span>
-                        <span>{c.statusTag}</span>
+                        <span>{isCourseUnlocked(c.id) ? 'ENROLLED • ACTIVE' : c.statusTag}</span>
                       </span>
 
                       {/* Optimized Crisp Course Card Visual */}
