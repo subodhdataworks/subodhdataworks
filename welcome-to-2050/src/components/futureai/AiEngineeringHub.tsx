@@ -432,7 +432,7 @@ export const AiEngineeringHub: React.FC<AiEngineeringHubProps> = ({
                           {chapter.topics.map((topic, tIdx) => {
                             const isTopicFree = isTopicUnlocked('ai_engineering', chapter.chapterNum, topic.topicNum || tIdx + 1);
                             const isLocked = !isTopicFree;
-                            const isDone = isTopicFree && (topic.topicNum || tIdx + 1) <= 3;
+                            const isDone = false;
                             const isCurrent = isTopicFree && !isDone;
 
                             return (

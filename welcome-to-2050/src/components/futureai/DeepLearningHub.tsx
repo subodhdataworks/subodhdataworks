@@ -432,7 +432,7 @@ export const DeepLearningHub: React.FC<DeepLearningHubProps> = ({
                           {chapter.topics.map((topic, tIdx) => {
                             const isTopicFree = isTopicUnlocked('deep_learning', chapter.chapterNum, topic.topicNum || tIdx + 1);
                             const isLocked = !isTopicFree;
-                            const isDone = isTopicFree && (topic.topicNum || tIdx + 1) <= 3;
+                            const isDone = false;
                             const isCurrent = isTopicFree && !isDone;
 
                             return (

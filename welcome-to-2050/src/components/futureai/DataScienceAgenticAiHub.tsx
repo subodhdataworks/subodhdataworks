@@ -433,7 +433,7 @@ export const DataScienceAgenticAiHub: React.FC<DataScienceAgenticAiHubProps> = (
                           {chapter.topics.map((topic, tIdx) => {
                             const isTopicFree = isTopicUnlocked('data_science', chapter.chapterNum, topic.topicNum || tIdx + 1);
                             const isLocked = !isTopicFree;
-                            const isDone = isTopicFree && (topic.topicNum || tIdx + 1) <= 3;
+                            const isDone = false;
                             const isCurrent = isTopicFree && !isDone;
 
                             return (

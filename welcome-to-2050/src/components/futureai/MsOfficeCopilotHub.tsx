@@ -432,7 +432,7 @@ export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
                           {chapter.topics.map((topic, tIdx) => {
                             const isTopicFree = isTopicUnlocked('ms_office_copilot', chapter.chapterNum, topic.topicNum || tIdx + 1);
                             const isLocked = !isTopicFree;
-                            const isDone = isTopicFree && (topic.topicNum || tIdx + 1) <= 3;
+                            const isDone = false;
                             const isCurrent = isTopicFree && !isDone;
 
                             return (

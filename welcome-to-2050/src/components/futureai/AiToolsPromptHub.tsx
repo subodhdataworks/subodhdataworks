@@ -436,7 +436,7 @@ export const AiToolsPromptHub: React.FC<AiToolsPromptHubProps> = ({
                           {chapter.topics.map((topic, tIdx) => {
                             const isTopicFree = isTopicUnlocked('ai_tools_prompt', chapter.chapterNum, topic.topicNum || tIdx + 1);
                             const isLocked = !isTopicFree;
-                            const isDone = isTopicFree && (topic.topicNum || tIdx + 1) <= 3;
+                            const isDone = false;
                             const isCurrent = isTopicFree && !isDone;
 
                             return (

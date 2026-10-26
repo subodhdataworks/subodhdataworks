@@ -162,10 +162,9 @@ export function unlockCourse(courseKeyOrTitle: string): CanonicalCourseId {
 /**
  * Core Rule Check: Is a specific topic unlocked?
  * 1. If course is unlocked -> TRUE (all topics unlocked)
- * 2. User requirement: "ai tool , microsoft office full stack ka saare topic lock kro"
- *    -> ai_tools_prompt, ms_office_copilot, full_stack_mern are 100% LOCKED until course fee is paid!
- * 3. For other courses: chapterNum === 1 and topicNum <= 3 -> TRUE (1st module first 3 topics are FREE)
- * 4. Otherwise -> FALSE (LOCKED)
+ * 2. User rule: "saare course ka 1st module ka topic 1 free rahega baaki lock rahega"
+ *    -> For ALL courses, ONLY Module 1, Topic 1 (chapterNum === 1 && topicNum === 1) is FREE.
+ * 3. All other topics (topicNum >= 2 in Module 1, and all topics in Module 2 onwards) are LOCKED.
  */
 export function isTopicUnlocked(
   courseKeyOrTitle: string,
@@ -175,17 +174,9 @@ export function isTopicUnlocked(
   if (isCourseUnlocked(courseKeyOrTitle)) {
     return true;
   }
-  const canonical = normalizeCourseId(courseKeyOrTitle);
-  // Strictly lock all topics for AI Tools, MS Office, and Full Stack
-  if (
-    canonical === 'ai_tools_prompt' ||
-    canonical === 'ms_office_copilot' ||
-    canonical === 'full_stack_mern'
-  ) {
-    return false;
-  }
 
-  return chapterNum === 1 && topicNum <= 3;
+  // Saare course ka 1st module ka topic 1 free rahega, baaki sab lock rahega
+  return chapterNum === 1 && topicNum === 1;
 }
 
 
