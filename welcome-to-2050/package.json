@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && cp -r functions dist/functions 2>/dev/null || xcopy /E /I /Y functions dist\\functions || true",
+    "build": "tsc -b && vite build && node -e \"const fs=require('fs'); if(fs.existsSync('functions')) fs.cpSync('functions', 'dist/functions', {recursive:true});\"",
     "lint": "oxlint",
     "preview": "vite preview"
   },

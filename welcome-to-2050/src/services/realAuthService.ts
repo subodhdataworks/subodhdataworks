@@ -694,7 +694,38 @@ export async function recordReferralPayment(paymentData: {
     localStorage.setItem(processedKey, JSON.stringify(processedPayments));
   } catch {}
 
-  // 5. Update Local Affiliate Storage
+  // 5. Post to Cloudflare Pages Serverless API (/api/affiliate) for instant cross-device delivery
+  try {
+    await withTimeout(
+      fetch('/api/affiliate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          refCode: cleanCode,
+          paymentId,
+          orderId: paymentData.orderId,
+          amount: paymentData.amount || 4,
+          payerName: paymentData.payerName || 'Enrolled Student',
+          payerEmail: cleanEmail,
+          payerPhone: cleanPhone,
+          courseTitle: paymentData.courseTitle || 'Data Analyst with GenAI',
+        }),
+      }),
+      3500
+    );
+  } catch (apiErr) {
+    console.warn('Affiliate server post notice:', apiErr);
+  }
+
+  // 6. Update local storage only if this device belongs to the referrer (not the buyer!)
+  const myOwnUserCode = normalizeRefCode(
+    (typeof window !== 'undefined' ? localStorage.getItem('futureai_user_ref_code') : '') || ''
+  );
+  const myEmail = (typeof window !== 'undefined' ? (localStorage.getItem('futureai_user_email') || '') : '').toLowerCase();
+  const isThisUserTheReferrer =
+    (myOwnUserCode && myOwnUserCode === cleanCode) ||
+    (cleanCode === 'SUBODHKUMAR' && myEmail.includes('subodh'));
+
   const storageKey = `futureai_affiliate_hub_v3_${cleanCode}`;
   let data: any = { clicks: 0, signups: 0, paidEnrollments: 0, availableBalance: 0, totalEarned: 0, referrals: [] };
   try {
@@ -739,10 +770,12 @@ export async function recordReferralPayment(paymentData: {
   }
   data.referrals = referrals;
 
-  try {
-    localStorage.setItem(storageKey, JSON.stringify(data));
-  } catch (e) {
-    console.warn('Local affiliate paid record write error:', e);
+  if (isThisUserTheReferrer) {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(data));
+    } catch (e) {
+      console.warn('Local affiliate paid record write error:', e);
+    }
   }
 
   // 6. Firestore Cloud Audit & Balance Update
@@ -811,6 +844,37 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
   const cleanCode = normalizeRefCode(refCodeOrName);
   if (!cleanCode) {
     return { clicks: 0, signups: 0, paidEnrollments: 0, availableBalance: 0, pendingBalance: 0, totalEarned: 0, referrals: [] };
+  }
+
+  // 1. Fetch live server-verified cross-device data from Cloudflare Pages API (/api/affiliate)
+  try {
+    const res = await withTimeout(fetch(`/api/affiliate?refCode=${encodeURIComponent(cleanCode)}`), 3500);
+    if (res.ok) {
+      const serverData = await res.json();
+      if (serverData && typeof serverData.paidEnrollments === 'number' && serverData.paidEnrollments > 0) {
+        if (typeof window !== 'undefined') {
+          try {
+            const storageKey = `futureai_affiliate_hub_v3_${cleanCode}`;
+            const existing = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            localStorage.setItem(storageKey, JSON.stringify({
+              ...existing,
+              ...serverData,
+            }));
+          } catch {}
+        }
+        return {
+          clicks: serverData.clicks || serverData.paidEnrollments,
+          signups: serverData.signups || serverData.paidEnrollments,
+          paidEnrollments: serverData.paidEnrollments,
+          availableBalance: serverData.availableBalance,
+          pendingBalance: serverData.pendingBalance || 0,
+          totalEarned: serverData.totalEarned,
+          referrals: Array.isArray(serverData.referrals) ? serverData.referrals : [],
+        };
+      }
+    }
+  } catch (apiErr) {
+    console.info('Affiliate API query notice:', apiErr);
   }
 
   let cloudClicks = 0;

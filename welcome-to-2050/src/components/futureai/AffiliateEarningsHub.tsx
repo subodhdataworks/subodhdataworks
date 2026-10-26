@@ -84,110 +84,74 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   onNavigateTab,
 }) => {
   // Real user referral code & storage key
-  const urlRef = typeof window !== 'undefined'
-    ? (new URLSearchParams(window.location.search).get('ref') ||
-       new URLSearchParams(window.location.hash.includes('?') ? window.location.hash.split('?')[1] : '').get('ref') ||
-       localStorage.getItem('futureai_ref_attribution') ||
-       sessionStorage.getItem('futureai_ref_attribution') ||
-       localStorage.getItem('futureai_user_ref_code') ||
-       localStorage.getItem('futureai_user_email') ||
-       '')
-    : '';
-  const storedCode = typeof window !== 'undefined' ? (localStorage.getItem('futureai_user_ref_code') || '') : '';
-  const cleanRefCode = normalizeRefCode(urlRef || storedCode || userName) || 'SUBODHKUMAR';
+  // Strictly derive the identity of the CURRENT USER on this device.
+  // NEVER use urlRef or futureai_ref_attribution (which belong to the person who invited this user).
+  const myEmail = typeof window !== 'undefined' ? (localStorage.getItem('futureai_user_email') || '') : '';
+  const myStoredName = typeof window !== 'undefined' ? (localStorage.getItem('futureai_user_name') || userName || '') : userName;
+  const myStoredCode = typeof window !== 'undefined' ? (localStorage.getItem('futureai_user_ref_code') || '') : '';
+
+  // Determine if this user is owner Subodh
+  const isOwnerSubodh =
+    myEmail.toLowerCase().includes('subodh') ||
+    myStoredName.toLowerCase().includes('subodh') ||
+    userName.toLowerCase().includes('subodh');
+
+  // Deterministic unique referral code for THIS user's own affiliate link
+  const cleanRefCode = isOwnerSubodh
+    ? 'SUBODHKUMAR'
+    : (myStoredCode
+        ? normalizeRefCode(myStoredCode)
+        : (myEmail
+            ? normalizeRefCode(getUserReferralCode(myEmail))
+            : (myStoredName && myStoredName.toLowerCase() !== 'learner'
+                ? normalizeRefCode(getUserReferralCode(myStoredName))
+                : 'PARTNER'
+              )
+          )
+      ) || 'PARTNER';
+
+  // Persist user's own referral code so every user has their own unique permanent code
+  useEffect(() => {
+    if (typeof window !== 'undefined' && cleanRefCode && cleanRefCode !== 'PARTNER') {
+      localStorage.setItem('futureai_user_ref_code', cleanRefCode);
+    }
+  }, [cleanRefCode]);
+
   const affiliateRefUrl = `https://futureitindustry.com/?ref=${cleanRefCode}100`;
   const storageKey = `futureai_affiliate_hub_v3_${cleanRefCode}`;
 
-  // Live Financial State (User-Scoped & Defaults to 0)
+  // Live Financial State (User-Scoped & Defaults strictly to 0)
   const [hubState, setHubState] = useState<HubState>(() => {
     try {
       if (typeof window !== 'undefined') {
-        const isSubodh = cleanRefCode === 'SUBODHKUMAR' || cleanRefCode.startsWith('SUBODH');
-        const hasEnrolled = localStorage.getItem('futureai_course_enrolled') === 'true' || isAnyCourseUnlocked() || isSubodh;
         const saved = localStorage.getItem(storageKey);
         if (saved) {
           const parsed = JSON.parse(saved);
-          const paidEnrollments = Math.max(
-            typeof parsed.paidEnrollments === 'number' ? parsed.paidEnrollments : 0,
-            hasEnrolled ? 1 : 0
-          );
-          const totalEarned = Math.max(
-            typeof parsed.totalEarned === 'number' ? parsed.totalEarned : 0,
-            paidEnrollments * 100
-          );
-          const totalPaid = typeof parsed.totalPaid === 'number' ? parsed.totalPaid : 0;
-          const availableBalance = Math.max(
-            typeof parsed.availableBalance === 'number' ? parsed.availableBalance : 0,
-            totalEarned - totalPaid
-          );
-
           return {
-            availableBalance: isSubodh ? Math.max(100, availableBalance) : availableBalance,
+            availableBalance: typeof parsed.availableBalance === 'number' ? parsed.availableBalance : 0,
             pendingBalance: typeof parsed.pendingBalance === 'number' ? parsed.pendingBalance : 0,
-            totalPaid,
-            totalEarned: isSubodh ? Math.max(100, totalEarned) : totalEarned,
-            clicks: Math.max(typeof parsed.clicks === 'number' ? parsed.clicks : 0, paidEnrollments > 0 ? 1 : 0),
-            signups: Math.max(typeof parsed.signups === 'number' ? parsed.signups : 0, paidEnrollments),
-            paidEnrollments,
-            referrals: Array.isArray(parsed.referrals) && parsed.referrals.length > 0
-              ? (parsed.referrals as ReferralItem[])
-              : (paidEnrollments > 0 ? [{
-                  id: 'ref_paid_init',
-                  name: 'Subodh Kumar (Verified Enrollment)',
-                  date: new Date().toISOString().slice(0, 10),
-                  status: 'Paid' as const,
-                  amount: 4,
-                  commission: 100,
-                  course: 'Data Analyst with GenAI',
-                  referralId: 'RF-8821',
-                }] : []),
-            withdrawals: Array.isArray(parsed.withdrawals) ? (parsed.withdrawals as WithdrawalItem[]) : ([] as WithdrawalItem[]),
-          };
-        } else if (hasEnrolled) {
-          return {
-            availableBalance: 100,
-            pendingBalance: 0,
-            totalPaid: 0,
-            totalEarned: 100,
-            clicks: 1,
-            signups: 1,
-            paidEnrollments: 1,
-            referrals: [{
-              id: 'ref_paid_init',
-              name: 'Subodh Kumar (Verified Enrollment)',
-              date: new Date().toISOString().slice(0, 10),
-              status: 'Paid' as const,
-              amount: 4,
-              commission: 100,
-              course: 'Data Analyst with GenAI',
-              referralId: 'RF-8821',
-            }],
-            withdrawals: [] as WithdrawalItem[],
+            totalPaid: typeof parsed.totalPaid === 'number' ? parsed.totalPaid : 0,
+            totalEarned: typeof parsed.totalEarned === 'number' ? parsed.totalEarned : 0,
+            clicks: typeof parsed.clicks === 'number' ? parsed.clicks : 0,
+            signups: typeof parsed.signups === 'number' ? parsed.signups : 0,
+            paidEnrollments: typeof parsed.paidEnrollments === 'number' ? parsed.paidEnrollments : 0,
+            referrals: Array.isArray(parsed.referrals) ? (parsed.referrals as ReferralItem[]) : [],
+            withdrawals: Array.isArray(parsed.withdrawals) ? (parsed.withdrawals as WithdrawalItem[]) : [],
           };
         }
       }
     } catch {
       // ignore
     }
-    const isSubodhDefault = cleanRefCode === 'SUBODHKUMAR' || cleanRefCode.startsWith('SUBODH');
     return {
-      availableBalance: isSubodhDefault ? 100 : 0,
+      availableBalance: 0,
       pendingBalance: 0,
       totalPaid: 0,
-      totalEarned: isSubodhDefault ? 100 : 0,
-      clicks: isSubodhDefault ? 1 : 0,
-      signups: isSubodhDefault ? 1 : 0,
-      paidEnrollments: isSubodhDefault ? 1 : 0,
-      referrals: isSubodhDefault ? [{
-        id: 'ref_paid_init',
-        name: 'Subodh Kumar (Verified Enrollment)',
-        date: new Date().toISOString().slice(0, 10),
-        status: 'Paid' as const,
-        amount: 4,
-        commission: 100,
-        course: 'Data Analyst with GenAI',
-        referralId: 'RF-8821',
-      }] : [] as ReferralItem[],
+      totalEarned: 0,
+      clicks: 0,
+      signups: 0,
+      paidEnrollments: 0,
+      referrals: [] as ReferralItem[],
       withdrawals: [] as WithdrawalItem[],
     };
   });
@@ -202,40 +166,6 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       // ignore
     }
   }, [hubState, storageKey]);
-
-  
-  // Auto-recover and credit recent verified payment (e.g. from Razorpay test)
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    try {
-      const storedTxn = localStorage.getItem('futureai_payment_txn_id') || '';
-      const processedKey = 'futureai_processed_referral_payments';
-      let processed: string[] = [];
-      try {
-        const raw = localStorage.getItem(processedKey);
-        if (raw) processed = JSON.parse(raw);
-      } catch {}
-
-      if (storedTxn && !processed.includes(storedTxn)) {
-        recordReferralPayment({
-          paymentId: storedTxn,
-          amount: 4,
-          refCode: cleanRefCode,
-          courseTitle: 'Data Analyst with GenAI',
-          payerName: userName,
-        }).then((res) => {
-          if (res.success) {
-            showToast('🎉 ₹100 Referral Commission credited to your wallet!', 'success');
-            const storageKey = `futureai_affiliate_hub_v3_${cleanRefCode}`;
-            const updatedRaw = localStorage.getItem(storageKey);
-            if (updatedRaw) {
-              setHubState(JSON.parse(updatedRaw));
-            }
-          }
-        }).catch(() => {});
-      }
-    } catch {}
-  }, [cleanRefCode, userName]);
 
   // Live real-time sync with Cloud Database & Master Registry for 100% accurate referral signups
   useEffect(() => {
