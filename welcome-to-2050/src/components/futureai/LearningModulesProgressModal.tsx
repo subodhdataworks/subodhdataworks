@@ -210,7 +210,7 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
           <img
             src="/images/placement/placement_offer_letter_hero.jpg"
             alt="Placed Student Holding Offer Letter"
-            className="w-full h-auto max-h-[195px] sm:max-h-[210px] object-cover object-top block select-none pointer-events-none"
+            className="w-full h-auto block select-none pointer-events-none"
           />
 
           {/* Compact Close (X) Button */}
@@ -228,11 +228,11 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
         </div>
 
         {/* ── Compact Body Content ── */}
-        <div className="overflow-y-auto px-3.5 sm:px-4 pb-3.5 pt-0 space-y-2.5">
-          {/* ── Compact Main Heading Pill ── */}
-          <div className="-mt-3.5 relative z-10 bg-[#f4f9ff] border border-[#cfe4fc] rounded-[14px] py-2 px-3 text-center shadow-xs">
+        <div className="overflow-y-auto px-3.5 sm:px-4 pb-2.5 pt-2 space-y-1.5">
+          {/* ── Compact Main Heading Pill (Moved Slightly Lower Below Photo) ── */}
+          <div className="relative z-10 bg-[#f4f9ff] border border-[#cfe4fc] rounded-[12px] py-1.5 px-2.5 text-center shadow-2xs">
             <h2
-              className="text-[15px] sm:text-[17px] font-black tracking-tight leading-tight"
+              className="text-[14px] sm:text-[16px] font-black tracking-tight leading-tight"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               <span>🏆 </span>
@@ -241,7 +241,7 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
               <span> 🚀</span>
             </h2>
             <p
-              className="text-[10.5px] sm:text-[11px] font-medium text-[#4b6082] mt-0.5 leading-tight"
+              className="text-[10px] sm:text-[10.5px] font-medium text-[#4b6082] leading-tight"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               Unlock Your Internship, Certificate &amp; Placement
@@ -252,7 +252,7 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
           <div className="space-y-1">
             <div className="flex items-center justify-between px-0.5">
               <span
-                className="text-[9.5px] sm:text-[10px] font-extrabold uppercase tracking-wider text-slate-500"
+                className="text-[9px] sm:text-[9.5px] font-extrabold uppercase tracking-wider text-slate-500"
                 style={{ fontFamily: "'Poppins', sans-serif" }}
               >
                 YOUR ENROLLED COURSE
@@ -262,7 +262,7 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
                 <button
                   type="button"
                   onClick={() => setCourseSelectorOpen(!courseSelectorOpen)}
-                  className="inline-flex items-center gap-0.5 text-[10px] sm:text-[11px] font-bold text-[#145BFF] hover:underline cursor-pointer"
+                  className="inline-flex items-center gap-0.5 text-[9.5px] sm:text-[10px] font-bold text-[#145BFF] hover:underline cursor-pointer"
                   style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                   <span>Change Course</span>
@@ -272,7 +272,7 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
                 <button
                   type="button"
                   onClick={handleChooseCourseCatalog}
-                  className="text-[10px] sm:text-[11px] font-bold text-[#145BFF] hover:underline cursor-pointer"
+                  className="text-[9.5px] sm:text-[10px] font-bold text-[#145BFF] hover:underline cursor-pointer"
                   style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                   Choose Your Course →
@@ -283,7 +283,7 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
             {/* Course Selector Dropdown */}
             {courseSelectorOpen && enrolledCourseIds.length > 1 && (
               <div className="p-1.5 bg-white rounded-xl border border-blue-200 shadow-md space-y-1 animate-fadeIn">
-                <p className="text-[9.5px] font-bold text-slate-400 px-1.5 py-0.5 uppercase tracking-wide">
+                <p className="text-[9px] font-bold text-slate-400 px-1.5 py-0.5 uppercase tracking-wide">
                   Select Active Course:
                 </p>
                 {enrolledCourseIds.map((cid) => {
@@ -303,8 +303,8 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
                       }`}
                     >
                       <div className="flex items-center gap-2">
-                        <img src={c.icon} alt="" className="w-5 h-5 object-contain" />
-                        <span className="text-[11px] font-bold text-[#08152F]">{c.title}</span>
+                        <img src={c.icon} alt="" className="w-4 h-4 object-contain" />
+                        <span className="text-[10.5px] font-bold text-[#08152F]">{c.title}</span>
                       </div>
                       {isSelected && <Check className="w-3.5 h-3.5 text-[#145BFF] stroke-[2.5]" />}
                     </button>
@@ -313,31 +313,31 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
               </div>
             )}
 
-            {/* Compact Course Card */}
-            <div className="bg-[#f0f6ff] border border-blue-100/90 rounded-xl p-2 sm:p-2.5 flex items-center justify-between gap-2.5">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 rounded-lg bg-white border border-blue-100 flex items-center justify-center shrink-0 shadow-2xs p-1">
+            {/* Extra Compact Course Card */}
+            <div className="bg-[#f0f6ff] border border-blue-100/90 rounded-lg py-1.5 px-2.5 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-6 h-6 rounded-md bg-white border border-blue-100 flex items-center justify-center shrink-0 shadow-2xs p-0.5">
                   <img
                     src={activeCourse.icon}
                     alt={activeCourse.title}
-                    className="w-6 h-6 object-contain"
+                    className="w-4.5 h-4.5 object-contain"
                   />
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
                     <h3
-                      className="text-[12px] sm:text-[13px] font-black text-[#08152F] truncate leading-tight"
+                      className="text-[11px] sm:text-[11.5px] font-black text-[#08152F] truncate leading-tight"
                       style={{ fontFamily: "'Poppins', sans-serif" }}
                     >
                       {activeCourse.title}
                     </h3>
                     {hasEnrolledCourses && (
-                      <span className="shrink-0 bg-emerald-100/80 text-emerald-700 text-[9px] font-bold px-1.5 py-0.2 rounded-full">
+                      <span className="shrink-0 bg-emerald-100/80 text-emerald-700 text-[8.5px] font-bold px-1.5 py-0.2 rounded-full">
                         Enrolled
                       </span>
                     )}
                   </div>
-                  <p className="text-[10px] sm:text-[10.5px] text-slate-600 truncate">
+                  <p className="text-[9px] sm:text-[9.5px] text-slate-600 truncate leading-tight">
                     {activeCourse.subtitle}
                   </p>
                 </div>
@@ -347,7 +347,7 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
                 <button
                   type="button"
                   onClick={handleChooseCourseCatalog}
-                  className="shrink-0 text-[10px] font-bold bg-white hover:bg-blue-50 text-[#145BFF] border border-blue-200 px-2.5 py-1 rounded-lg shadow-2xs active:scale-95 transition-all cursor-pointer"
+                  className="shrink-0 text-[9.5px] font-bold bg-white hover:bg-blue-50 text-[#145BFF] border border-blue-200 px-2 py-0.5 rounded-md shadow-2xs active:scale-95 transition-all cursor-pointer"
                 >
                   Choose
                 </button>
@@ -356,8 +356,8 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
           </div>
 
           {/* ── Compact Course Progress Bar ── */}
-          <div className="space-y-1">
-            <div className="flex items-center justify-between text-[10.5px] sm:text-[11px]">
+          <div className="space-y-0.5">
+            <div className="flex items-center justify-between text-[10px]">
               <span
                 className="font-bold text-slate-700"
                 style={{ fontFamily: "'Poppins', sans-serif" }}
@@ -372,7 +372,7 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
               </span>
             </div>
 
-            <div className="w-full h-[5px] bg-blue-100/70 rounded-full overflow-hidden">
+            <div className="w-full h-[4px] bg-blue-100/70 rounded-full overflow-hidden">
               <div
                 className="h-full bg-[#145BFF] rounded-full transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
@@ -381,14 +381,14 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
           </div>
 
           {/* ── 4 Compact Career Benefits Tabs ── */}
-          <div className="grid grid-cols-4 gap-1.5 pt-0.5">
+          <div className="grid grid-cols-4 gap-1.5">
             {/* Benefit 1 */}
-            <div className="bg-slate-50/90 border border-slate-100 rounded-xl p-1.5 flex flex-col items-center text-center justify-start transition-all hover:bg-blue-50/50 hover:border-blue-100">
-              <div className="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-[#145BFF] mb-1 shadow-2xs">
-                <Briefcase className="w-3.5 h-3.5 stroke-[2.2]" />
+            <div className="bg-slate-50/90 border border-slate-100 rounded-lg p-1.5 flex flex-col items-center text-center justify-start transition-all hover:bg-blue-50/50 hover:border-blue-100">
+              <div className="w-6 h-6 rounded-md bg-blue-50 border border-blue-100 flex items-center justify-center text-[#145BFF] mb-1 shadow-2xs">
+                <Briefcase className="w-3 h-3 stroke-[2.2]" />
               </div>
               <span
-                className="text-[9px] sm:text-[9.5px] font-bold text-[#08152F] leading-tight"
+                className="text-[8.5px] sm:text-[9px] font-bold text-[#08152F] leading-tight"
                 style={{ fontFamily: "'Poppins', sans-serif" }}
               >
                 Get Internship<br />Opportunities
@@ -396,12 +396,12 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
             </div>
 
             {/* Benefit 2 */}
-            <div className="bg-slate-50/90 border border-slate-100 rounded-xl p-1.5 flex flex-col items-center text-center justify-start transition-all hover:bg-purple-50/50 hover:border-purple-100">
-              <div className="w-7 h-7 rounded-lg bg-purple-50 border border-purple-100 flex items-center justify-center text-[#8B5CF6] mb-1 shadow-2xs">
-                <FileText className="w-3.5 h-3.5 stroke-[2.2]" />
+            <div className="bg-slate-50/90 border border-slate-100 rounded-lg p-1.5 flex flex-col items-center text-center justify-start transition-all hover:bg-purple-50/50 hover:border-purple-100">
+              <div className="w-6 h-6 rounded-md bg-purple-50 border border-purple-100 flex items-center justify-center text-[#8B5CF6] mb-1 shadow-2xs">
+                <FileText className="w-3 h-3 stroke-[2.2]" />
               </div>
               <span
-                className="text-[9px] sm:text-[9.5px] font-bold text-[#08152F] leading-tight"
+                className="text-[8.5px] sm:text-[9px] font-bold text-[#08152F] leading-tight"
                 style={{ fontFamily: "'Poppins', sans-serif" }}
               >
                 Recommendation<br />Letter
@@ -409,12 +409,12 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
             </div>
 
             {/* Benefit 3 */}
-            <div className="bg-slate-50/90 border border-slate-100 rounded-xl p-1.5 flex flex-col items-center text-center justify-start transition-all hover:bg-pink-50/50 hover:border-pink-100">
-              <div className="w-7 h-7 rounded-lg bg-pink-50 border border-pink-100 flex items-center justify-center text-[#EC4899] mb-1 shadow-2xs">
-                <Award className="w-3.5 h-3.5 stroke-[2.2]" />
+            <div className="bg-slate-50/90 border border-slate-100 rounded-lg p-1.5 flex flex-col items-center text-center justify-start transition-all hover:bg-pink-50/50 hover:border-pink-100">
+              <div className="w-6 h-6 rounded-md bg-pink-50 border border-pink-100 flex items-center justify-center text-[#EC4899] mb-1 shadow-2xs">
+                <Award className="w-3 h-3 stroke-[2.2]" />
               </div>
               <span
-                className="text-[9px] sm:text-[9.5px] font-bold text-[#08152F] leading-tight"
+                className="text-[8.5px] sm:text-[9px] font-bold text-[#08152F] leading-tight"
                 style={{ fontFamily: "'Poppins', sans-serif" }}
               >
                 Earn Verified<br />Certificate
@@ -422,12 +422,12 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
             </div>
 
             {/* Benefit 4 */}
-            <div className="bg-slate-50/90 border border-slate-100 rounded-xl p-1.5 flex flex-col items-center text-center justify-start transition-all hover:bg-emerald-50/50 hover:border-emerald-100">
-              <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center text-[#10B981] mb-1 shadow-2xs">
-                <TrendingUp className="w-3.5 h-3.5 stroke-[2.2]" />
+            <div className="bg-slate-50/90 border border-slate-100 rounded-lg p-1.5 flex flex-col items-center text-center justify-start transition-all hover:bg-emerald-50/50 hover:border-emerald-100">
+              <div className="w-6 h-6 rounded-md bg-emerald-50 border border-emerald-100 flex items-center justify-center text-[#10B981] mb-1 shadow-2xs">
+                <TrendingUp className="w-3 h-3 stroke-[2.2]" />
               </div>
               <span
-                className="text-[9px] sm:text-[9.5px] font-bold text-[#08152F] leading-tight"
+                className="text-[8.5px] sm:text-[9px] font-bold text-[#08152F] leading-tight"
                 style={{ fontFamily: "'Poppins', sans-serif" }}
               >
                 Access Job<br />Opportunities
@@ -435,16 +435,16 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
             </div>
           </div>
 
-          {/* ── Compact Primary CTA Button ── */}
-          <div className="pt-1">
+          {/* ── Extra Compact Primary CTA Button ── */}
+          <div className="pt-0.5">
             <button
               type="button"
               onClick={handleCtaClick}
-              className="w-full h-[38px] sm:h-[40px] rounded-[11px] bg-gradient-to-r from-[#075BFF] to-[#079CFF] hover:from-[#0051e8] hover:to-[#008fe6] text-white font-bold text-[12px] sm:text-[13px] flex items-center justify-center gap-1.5 shadow-[0_8px_18px_rgba(7,91,255,0.3)] active:scale-[0.98] transition-all cursor-pointer"
+              className="w-full h-[34px] sm:h-[36px] rounded-[10px] bg-gradient-to-r from-[#075BFF] to-[#079CFF] hover:from-[#0051e8] hover:to-[#008fe6] text-white font-bold text-[11px] sm:text-[12px] flex items-center justify-center gap-1.5 shadow-[0_6px_14px_rgba(7,91,255,0.28)] active:scale-[0.98] transition-all cursor-pointer"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               <span>Continue to Your Learning Modules</span>
-              <ArrowRight className="w-4 h-4 text-white stroke-[2.5]" />
+              <ArrowRight className="w-3.5 h-3.5 text-white stroke-[2.5]" />
             </button>
           </div>
         </div>
