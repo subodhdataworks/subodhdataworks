@@ -266,7 +266,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
   };
   const activeCourseKey = tabCourseMap[urlTabId] || 'data_analyst';
   const isCurrentTopicLocked = useMemo(() => {
-    return !isTopicUnlocked(activeCourseKey, 1, topicId);
+    return !isTopicUnlocked(activeCourseKey, 1, topicId, urlTabId);
   }, [activeCourseKey, topicId]);
 
   useEffect(() => {

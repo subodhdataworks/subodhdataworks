@@ -59,7 +59,7 @@ export const FullStackMernHub: React.FC<FullStackMernHubProps> = ({
     topic: { id: string; title: string; topicNum?: number; status?: string },
     chapterNum: number = 1
   ) => {
-    const isTopicFree = isTopicUnlocked('full_stack_mern', chapterNum, topic.topicNum || 1);
+    const isTopicFree = isTopicUnlocked('full_stack_mern', chapterNum, topic.topicNum || 1, activeTabId);
 
     if (!isTopicFree) {
       handleOpenSuccessPlan(topic.title);
@@ -399,7 +399,7 @@ export const FullStackMernHub: React.FC<FullStackMernHubProps> = ({
                     {isExpanded && (
                       <div className="border-t border-slate-100 bg-[#fbfcfe] px-3 sm:px-4 py-2 space-y-1.5 divide-y divide-slate-100/70">
                         {chapter.topics.map((topic, tIdx) => {
-                          const isTopicFree = isTopicUnlocked('full_stack_mern', chapter.chapterNum, topic.topicNum || tIdx + 1);
+                          const isTopicFree = isTopicUnlocked('full_stack_mern', chapter.chapterNum, topic.topicNum || tIdx + 1, activeTabId);
                           const isLocked = !isTopicFree;
                           const isDone = false;
                           const isInProg = isTopicFree && !isDone;

@@ -183,7 +183,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
   const activeCourseKey = tabCourseMap[urlTabId] || 'data_analyst';
   const [internalTopicId, setInternalTopicId] = useState<number>(urlTopicId ?? topicId ?? 1);
   const isCurrentTopicLocked = useMemo(() => {
-    return !isTopicUnlocked(activeCourseKey, 1, internalTopicId);
+    return !isTopicUnlocked(activeCourseKey, 1, internalTopicId, urlTabId);
   }, [activeCourseKey, internalTopicId]);
   const effectiveTopicId = internalTopicId;
   const setEffectiveTopicId = (newId: number) => {

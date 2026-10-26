@@ -61,7 +61,7 @@ export const MlEngineeringHub: React.FC<MlEngineeringHubProps> = ({
     topic: { id: string; title: string; topicNum?: number; status?: string },
     chapterNum: number = 1
   ) => {
-    const isTopicFree = isTopicUnlocked('ml_engineering', chapterNum, topic.topicNum || 1);
+    const isTopicFree = isTopicUnlocked('ml_engineering', chapterNum, topic.topicNum || 1, activeTabId);
 
     if (!isTopicFree) {
       handleOpenSuccessPlan(topic.title);
@@ -430,7 +430,7 @@ export const MlEngineeringHub: React.FC<MlEngineeringHubProps> = ({
                       >
                         <div className="overflow-hidden divide-y divide-slate-100 border-t border-slate-200/80 bg-white">
                           {chapter.topics.map((topic, tIdx) => {
-                            const isTopicFree = isTopicUnlocked('ml_engineering', chapter.chapterNum, topic.topicNum || tIdx + 1);
+                            const isTopicFree = isTopicUnlocked('ml_engineering', chapter.chapterNum, topic.topicNum || tIdx + 1, activeTabId);
                             const isLocked = !isTopicFree;
                             const isDone = false;
                             const isCurrent = isTopicFree && !isDone;

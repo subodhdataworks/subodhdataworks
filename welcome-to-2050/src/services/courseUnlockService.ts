@@ -169,7 +169,8 @@ export function unlockCourse(courseKeyOrTitle: string): CanonicalCourseId {
 export function isTopicUnlocked(
   courseKeyOrTitle: string,
   chapterNum: number = 1,
-  topicNum: number = 1
+  topicNum: number = 1,
+  tabIdOrNum: string | number = 1
 ): boolean {
   const canonical = normalizeCourseId(courseKeyOrTitle);
 
@@ -178,15 +179,17 @@ export function isTopicUnlocked(
     return true;
   }
 
-  // User strict rule: "saare course ka 1st tab ka 1 module ka 1st topic hi unlock rahega"
-  // ONLY Tab 1 (Data Analyst with GenAI), Module 1, Topic 1 is FREE.
-  if (canonical === 'data_analyst') {
-    return chapterNum === 1 && topicNum === 1;
-  }
+  // Parse tab number (e.g. 'tab-1' -> 1, 'tab-2' -> 2, 1 -> 1, etc.)
+  const tabNum = typeof tabIdOrNum === 'string'
+    ? (parseInt(tabIdOrNum.replace(/\D/g, ''), 10) || 1)
+    : (Number(tabIdOrNum) || 1);
 
-  // Tabs 2, 3, 4, 5, 6, 7, 8 (Data Science, ML, AI Engineering, AI Tools, MS Office, Full Stack, etc.)
-  // are 100% LOCKED until course fee is paid!
-  return false;
+  // User strict rule:
+  // "saare course data analyst with gen ai , data scientic ai ml ka 1st tab ka 1st topic open hoga baaki lock hoga"
+  // In EVERY course: ONLY Tab 1, Module 1, Topic 1 is FREE (tabNum === 1 && chapterNum === 1 && topicNum === 1).
+  // Tabs 2, 3, 4, 5, 6, 7, 8 are 100% LOCKED until course fee is paid!
+  // In Tab 1: Topic 2, 3, 4, 5... are 100% LOCKED until course fee is paid!
+  return tabNum === 1 && chapterNum === 1 && topicNum === 1;
 }
 
 

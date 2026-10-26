@@ -62,7 +62,7 @@ export const DataScienceAgenticAiHub: React.FC<DataScienceAgenticAiHubProps> = (
     topic: { id: string; title: string; topicNum?: number; status?: string },
     chapterNum: number = 1
   ) => {
-    const isTopicFree = isTopicUnlocked('data_science', chapterNum, topic.topicNum || 1);
+    const isTopicFree = isTopicUnlocked('data_science', chapterNum, topic.topicNum || 1, activeTabId);
 
     if (!isTopicFree) {
       handleOpenSuccessPlan(topic.title);
@@ -431,7 +431,7 @@ export const DataScienceAgenticAiHub: React.FC<DataScienceAgenticAiHubProps> = (
                       >
                         <div className="overflow-hidden divide-y divide-slate-100 border-t border-slate-200/80 bg-white">
                           {chapter.topics.map((topic, tIdx) => {
-                            const isTopicFree = isTopicUnlocked('data_science', chapter.chapterNum, topic.topicNum || tIdx + 1);
+                            const isTopicFree = isTopicUnlocked('data_science', chapter.chapterNum, topic.topicNum || tIdx + 1, activeTabId);
                             const isLocked = !isTopicFree;
                             const isDone = false;
                             const isCurrent = isTopicFree && !isDone;
