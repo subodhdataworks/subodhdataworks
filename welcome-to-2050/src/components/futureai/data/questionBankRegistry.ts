@@ -399,6 +399,10 @@ export interface SyncedTopicActivityState {
   missionIdx: number;
   missionDone: boolean;
   matchedPairs: Record<number, string>;
+  interviewCurrentQIdx?: number;
+  interviewSubmittedTextByQId?: Record<number, string>;
+  interviewEvaluationsByQId?: Record<number, any>;
+  interviewScorePct?: number;
   updatedAt: string;
 }
 
@@ -476,6 +480,10 @@ export async function saveSyncedTopicProgress(
     missionIdx?: number;
     missionDone?: boolean;
     matchedPairs?: Record<number, string>;
+    interviewCurrentQIdx?: number;
+    interviewSubmittedTextByQId?: Record<number, string>;
+    interviewEvaluationsByQId?: Record<number, any>;
+    interviewScorePct?: number;
   }
 ): Promise<void> {
   if (typeof window === 'undefined') return;
@@ -502,6 +510,10 @@ export async function saveSyncedTopicProgress(
     missionIdx: update.missionIdx ?? prevTopic.missionIdx ?? 0,
     missionDone: update.missionDone ?? prevTopic.missionDone ?? false,
     matchedPairs: update.matchedPairs ?? prevTopic.matchedPairs ?? {},
+    interviewCurrentQIdx: update.interviewCurrentQIdx ?? prevTopic.interviewCurrentQIdx ?? 0,
+    interviewSubmittedTextByQId: update.interviewSubmittedTextByQId ?? prevTopic.interviewSubmittedTextByQId ?? {},
+    interviewEvaluationsByQId: update.interviewEvaluationsByQId ?? prevTopic.interviewEvaluationsByQId ?? {},
+    interviewScorePct: update.interviewScorePct ?? prevTopic.interviewScorePct,
     updatedAt: nowIso,
   };
 

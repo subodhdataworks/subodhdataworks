@@ -2140,7 +2140,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
       </header>
 
       {/* ── 1. UNIFIED TOP BAR: Exact Match to media_1792847065914_f68382f0.png ── */}
-      <div className={`plw-top-unified-bar ${activeStep === 'play' && isTab1Topic ? 'ppa-hide-unified-on-mobile' : ''}`}>
+      <div className={`plw-top-unified-bar ${(activeStep === 'play' && isTab1Topic) || activeStep === 'interview' ? 'ppa-hide-unified-on-mobile' : ''}`}>
         {/* Left: Back button & Breadcrumbs */}
         <div className="plw-top-crumbs-group">
           <button
@@ -4742,6 +4742,8 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
               onLanguageChange={handleSelectActivityLang}
               hrSettings={hrSettings}
               onOpenHrSettings={() => setAdminHrModalOpen(true)}
+              onBackToCourse={onBack}
+              onSelectTopic={(nextId) => setEffectiveTopicId(nextId)}
               onEndInterview={(finalAveragePercent) => {
                 if (typeof finalAveragePercent === 'number') {
                   setZeroCostInterviewScorePct(finalAveragePercent);

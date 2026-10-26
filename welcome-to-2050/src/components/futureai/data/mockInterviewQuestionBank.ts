@@ -59,6 +59,8 @@ export interface PreloadedInterviewQuestion {
   importantConcepts: ConceptRule[];
   commonMistakes: CommonMistakeRule[];
   scoringRules: ScoringRulesConfig;
+  published?: boolean;
+  deleted?: boolean;
 }
 
 export interface DeterministicEvaluationResult {
@@ -827,6 +829,7 @@ export function saveCustomInterviewQuestionsForTopic(topicId: number, questions:
   const current = getCustomInterviewQuestions();
   current[topicId] = questions;
   localStorage.setItem(CUSTOM_QUESTIONS_STORAGE_KEY, JSON.stringify(current));
+  window.dispatchEvent(new CustomEvent('futureai_question_bank_updated', { detail: { topicId } }));
 }
 
 export function resetCustomInterviewQuestionsForTopic(topicId: number): void {
@@ -834,48 +837,55 @@ export function resetCustomInterviewQuestionsForTopic(topicId: number): void {
   const current = getCustomInterviewQuestions();
   delete current[topicId];
   localStorage.setItem(CUSTOM_QUESTIONS_STORAGE_KEY, JSON.stringify(current));
+  window.dispatchEvent(new CustomEvent('futureai_question_bank_updated', { detail: { topicId } }));
 }
 
-// Build a complete 5-question list for any Topic ID, merging topic-specific questions from module01TopicContent
+// Build a complete question list for any Topic ID, merging topic-specific questions from shared registry & module01TopicContent
 export function getPreloadedInterviewQuestionsForTopic(topicId: number = 1, tabId: number = 1): PreloadedInterviewQuestion[] {
   // Check for admin custom configured questions first
   const custom = getCustomInterviewQuestions();
   if (custom[topicId] && Array.isArray(custom[topicId]) && custom[topicId].length > 0) {
-    return custom[topicId];
+    const publishedCustom = custom[topicId].filter((q) => q && q.published !== false && q.deleted !== true);
+    if (publishedCustom.length > 0) {
+      return publishedCustom;
+    }
   }
 
   // Check Master Question Bank (Tab 1: Foundations, Tab 2: Data Science, etc.)
   const qb = getTopicQuestionBank(tabId, topicId);
   if (qb && qb.mockInterview && qb.mockInterview.length > 0) {
-    return qb.mockInterview.map((item, idx) => ({
-      id: item.id || idx + 1,
-      topicId: topicId,
-      topic: qb.topicTitle,
-      difficulty: 'Medium' as const,
-      questionEn: item.question,
-      questionHi: item.question,
-      hintEn: `Focus on explaining ${qb.topicTitle} with business examples.`,
-      hintHi: `${qb.topicTitle} ko aasan shabdon me samjhayein.`,
-      idealAnswerEn: item.sampleAnswer,
-      idealAnswerHi: item.sampleAnswer,
-      exampleAnswerEn: item.sampleAnswer,
-      exampleAnswerHi: item.sampleAnswer,
-      requiredKeywords: [
-        { id: 'k1', labelEn: qb.topicTitle, labelHi: qb.topicTitle, weight: 3.5, synonyms: [qb.topicTitle.toLowerCase(), 'data', 'analytics'] },
-        { id: 'k2', labelEn: 'business', labelHi: 'business', weight: 2.5, synonyms: ['business', 'decision', 'analysis'] },
-      ],
-      importantConcepts: [
-        { id: 'c1', conceptEn: 'Core Definition', conceptHi: 'Mukhya Paribhasha', weight: 2.5, patterns: ['concept', 'information', 'process'] },
-      ],
-      commonMistakes: [],
-      scoringRules: {
-        keywordWeight: 5.0,
-        conceptWeight: 3.5,
-        structureWeight: 1.5,
-        minWordCount: 6,
-        maxScore: 10,
-      },
-    }));
+    const publishedBankQs = qb.mockInterview.filter((item) => item && item.published !== false && item.deleted !== true);
+    if (publishedBankQs.length > 0) {
+      return publishedBankQs.map((item, idx) => ({
+        id: item.id || idx + 1,
+        topicId: topicId,
+        topic: qb.topicTitle,
+        difficulty: (item as any).difficulty || ('Medium' as const),
+        questionEn: item.question,
+        questionHi: (item as any).questionHi || item.question,
+        hintEn: (item as any).hintEn || `Focus on explaining ${qb.topicTitle} with business examples.`,
+        hintHi: (item as any).hintHi || `${qb.topicTitle} ko aasan shabdon me samjhayein.`,
+        idealAnswerEn: item.sampleAnswer,
+        idealAnswerHi: (item as any).sampleAnswerHi || item.sampleAnswer,
+        exampleAnswerEn: item.sampleAnswer,
+        exampleAnswerHi: (item as any).sampleAnswerHi || item.sampleAnswer,
+        requiredKeywords: [
+          { id: 'k1', labelEn: qb.topicTitle, labelHi: qb.topicTitle, weight: 3.5, synonyms: [qb.topicTitle.toLowerCase(), 'data', 'analytics'] },
+          { id: 'k2', labelEn: 'business', labelHi: 'business', weight: 2.5, synonyms: ['business', 'decision', 'analysis'] },
+        ],
+        importantConcepts: [
+          { id: 'c1', conceptEn: 'Core Definition', conceptHi: 'Mukhya Paribhasha', weight: 2.5, patterns: ['concept', 'information', 'process'] },
+        ],
+        commonMistakes: [],
+        scoringRules: {
+          keywordWeight: 5.0,
+          conceptWeight: 3.5,
+          structureWeight: 1.5,
+          minWordCount: 6,
+          maxScore: 10,
+        },
+      }));
+    }
   }
 
   if (topicId === 1) {

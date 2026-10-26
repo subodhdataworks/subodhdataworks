@@ -20,12 +20,16 @@ import {
   FileText,
   Sparkles,
   ArrowRight,
+  ArrowLeft,
   ChevronRight,
+  ChevronLeft,
+  ChevronDown,
   Globe,
   PhoneOff,
   Eraser,
   ListChecks,
   Info,
+  Target,
 } from 'lucide-react';
 import { soundEffects } from '../../../services/soundEffects';
 import { HrSettingsConfig, HrSettingsService } from '../../../services/hrSettingsService';
@@ -36,6 +40,14 @@ import {
   getPreloadedInterviewQuestionsForTopic,
   evaluateInterviewAnswerDeterministically,
 } from '../data/mockInterviewQuestionBank';
+import {
+  getTopicQuestionBank,
+  getTopicListForTab,
+  revalidateQuestionBankFromBackend,
+  getSyncedTopicProgress,
+  saveSyncedTopicProgress,
+  pullSyncedLearningProgressFromCloud,
+} from '../data/questionBankRegistry';
 import './ZeroCostMockInterviewRoom.css';
 
 export interface ZeroCostMockInterviewRoomProps {
@@ -46,6 +58,8 @@ export interface ZeroCostMockInterviewRoomProps {
   onLanguageChange: (lang: 'en' | 'hi') => void;
   hrSettings: HrSettingsConfig;
   onOpenHrSettings: () => void;
+  onBackToCourse?: () => void;
+  onSelectTopic?: (topicId: number) => void;
   onEndInterview: (averageScoreOutOf100?: number) => void;
 }
 
@@ -57,16 +71,78 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
   onLanguageChange,
   hrSettings,
   onOpenHrSettings,
+  onBackToCourse,
+  onSelectTopic,
   onEndInterview,
 }) => {
-  // 1. Preloaded Local Question Bank (10 questions, zero AI generation)
-  const questions = useMemo<PreloadedInterviewQuestion[]>(
-    () => getPreloadedInterviewQuestionsForTopic(topicId, tabId),
-    [topicId]
+  // 0. Live Backend Revalidation & Shared Question Bank Sync
+  const [bankRevision, setBankRevision] = useState<number>(0);
+  const [hintExpanded, setHintExpanded] = useState<boolean>(true);
+
+  const registeredBank = useMemo(
+    () => getTopicQuestionBank(tabId, topicId),
+    [tabId, topicId, bankRevision]
+  );
+  const currentTabTopics = useMemo(
+    () => getTopicListForTab(tabId),
+    [tabId, bankRevision]
   );
 
-  const [currentQIdx, setCurrentQIdx] = useState<number>(0);
-  const currentQ = questions[currentQIdx] || questions[0];
+  // 1. Preloaded / Live Synchronized Question Bank
+  const questions = useMemo<PreloadedInterviewQuestion[]>(
+    () => getPreloadedInterviewQuestionsForTopic(topicId, tabId),
+    [topicId, tabId, bankRevision]
+  );
+
+  const [currentQIdx, setCurrentQIdx] = useState<number>(() => {
+    const synced = getSyncedTopicProgress(tabId, topicId).topicState;
+    return synced?.interviewCurrentQIdx || 0;
+  });
+  const currentQ = questions[Math.min(currentQIdx, Math.max(0, questions.length - 1))] || questions[0];
+
+  // Clamp currentQIdx safely if admin deletes or unpublishes a question during an active interview
+  useEffect(() => {
+    if (questions.length > 0 && currentQIdx >= questions.length) {
+      setCurrentQIdx(Math.max(0, questions.length - 1));
+    }
+  }, [questions.length, currentQIdx]);
+
+  // Revalidate interview questions & student progress from backend on mount / focus / visibility
+  useEffect(() => {
+    let active = true;
+    const syncAll = async () => {
+      const bankUpdated = await revalidateQuestionBankFromBackend(tabId, topicId);
+      if (bankUpdated && active) {
+        setBankRevision((r) => r + 1);
+      }
+      await pullSyncedLearningProgressFromCloud();
+    };
+    syncAll();
+
+    const handleBankUpdated = () => {
+      if (active) setBankRevision((r) => r + 1);
+    };
+    const handleStorage = (e: StorageEvent) => {
+      if (!e.key || e.key.includes('question_bank') || e.key.includes('interview_questions')) {
+        if (active) setBankRevision((r) => r + 1);
+      }
+    };
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        syncAll();
+      }
+    };
+
+    window.addEventListener('futureai_question_bank_updated', handleBankUpdated);
+    window.addEventListener('storage', handleStorage);
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => {
+      active = false;
+      window.removeEventListener('futureai_question_bank_updated', handleBankUpdated);
+      window.removeEventListener('storage', handleStorage);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [tabId, topicId]);
 
   // 2. Session Timer (10:00 countdown) & Per-Question Answer Timer (02:00)
   const [sessionSecondsLeft, setSessionSecondsLeft] = useState<number>(10 * 60); // 10 minutes timing (10:00)
@@ -102,10 +178,16 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
 
-  // 6. Deterministic Local Evaluation & Right-Panel Tabs
+  // 6. Deterministic Local Evaluation & Right-Panel Tabs (Synced with Student Account)
   const [activeRightTab, setActiveRightTab] = useState<'feedback' | 'model' | 'keypoints'>('feedback');
-  const [evaluationsByQId, setEvaluationsByQId] = useState<Record<number, DeterministicEvaluationResult>>({});
-  const [submittedTextByQId, setSubmittedTextByQId] = useState<Record<number, string>>({});
+  const [evaluationsByQId, setEvaluationsByQId] = useState<Record<number, DeterministicEvaluationResult>>(() => {
+    const synced = getSyncedTopicProgress(tabId, topicId).topicState;
+    return synced?.interviewEvaluationsByQId || {};
+  });
+  const [submittedTextByQId, setSubmittedTextByQId] = useState<Record<number, string>>(() => {
+    const synced = getSyncedTopicProgress(tabId, topicId).topicState;
+    return synced?.interviewSubmittedTextByQId || {};
+  });
 
   const currentEvaluation = evaluationsByQId[currentQ.id] || null;
 
@@ -1115,11 +1197,13 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
 
     // Save confirmed text
     updateConfirmedAnswer(finalAnswerText);
-    setSubmittedTextByQId((prev) => ({ ...prev, [currentQ.id]: finalAnswerText }));
+    const nextSubmittedMap = { ...submittedTextByQId, [currentQ.id]: finalAnswerText };
+    setSubmittedTextByQId(nextSubmittedMap);
 
     // Run 100% deterministic local rule-based evaluation
     const result = evaluateInterviewAnswerDeterministically(finalAnswerText, currentQ);
-    setEvaluationsByQId((prev) => ({ ...prev, [currentQ.id]: result }));
+    const nextEvalsMap = { ...evaluationsByQId, [currentQ.id]: result };
+    setEvaluationsByQId(nextEvalsMap);
     setActiveRightTab('feedback');
 
     const isSelectedVerdict = result.score >= 6.0;
@@ -1128,6 +1212,20 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
     } else {
       soundEffects.playClick();
     }
+
+    // Sync student interview progress & score to shared user account across Desktop & Mobile
+    const evalValues = Object.values(nextEvalsMap);
+    const avgPct =
+      evalValues.length > 0
+        ? Math.round((evalValues.reduce((acc, r) => acc + r.score, 0) / evalValues.length) * 10)
+        : Math.round(result.score * 10);
+    saveSyncedTopicProgress(tabId, topicId, {
+      interviewCurrentQIdx: currentQIdx,
+      interviewSubmittedTextByQId: nextSubmittedMap,
+      interviewEvaluationsByQId: nextEvalsMap,
+      interviewScorePct: avgPct,
+      pointsDelta: isSelectedVerdict ? 15 : 5,
+    });
 
     // Speak "Selected" or "Rejected" aloud according to score number + deterministic summary,
     // and once HR finishes speaking the result, AUTOMATICALLY advance & ask the next question!
@@ -1149,6 +1247,7 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
           updateConfirmedAnswer('');
           setAnswerElapsedSeconds(0);
           setActiveRightTab('feedback');
+          saveSyncedTopicProgress(tabId, topicId, { interviewCurrentQIdx: nextIdx });
         }, 900);
       }
     });
@@ -1215,6 +1314,68 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
 
   return (
     <div className="zmi-wrapper">
+      {/* ─────────────────────────────────────────────────────────────────────
+          MOBILE-ONLY TOP BREADCRUMB & TOPIC SELECTOR CARD (< 768px)
+          Matches media_1793048129658_bdcc3cfc.png while keeping Desktop unchanged
+          ───────────────────────────────────────────────────────────────────── */}
+      <div className="zmi-mobile-breadcrumb-card">
+        <button
+          type="button"
+          className="zmi-mbc-back-btn"
+          onClick={() => {
+            soundEffects.playClick();
+            if (onBackToCourse) onBackToCourse();
+            else if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+          }}
+          aria-label="Back to Course"
+        >
+          <ArrowLeft className="w-4 h-4 text-blue-600" />
+        </button>
+
+        <div className="zmi-mbc-content">
+          <div className="zmi-mbc-crumbs">
+            <span
+              className="zmi-mbc-link"
+              onClick={() => {
+                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+              }}
+            >
+              Home
+            </span>
+            <ChevronRight className="w-3 h-3 text-slate-400 shrink-0" />
+            <span className="zmi-mbc-link" onClick={() => onBackToCourse?.()}>
+              {(registeredBank?.tabName || 'Data Analytics').replace(' Foundations', '')}
+            </span>
+            <ChevronRight className="w-3 h-3 text-slate-400 shrink-0" />
+            <span className="zmi-mbc-mod" onClick={() => onBackToCourse?.()}>
+              {registeredBank?.moduleName || 'Understanding Data and Analytics'}
+            </span>
+          </div>
+
+          <div className="zmi-mbc-select-box">
+            <select
+              value={topicId}
+              onChange={(e) => {
+                const nextId = Number(e.target.value);
+                if (onSelectTopic) onSelectTopic(nextId);
+              }}
+              className="zmi-mbc-select"
+              aria-label="Select Topic"
+            >
+              {currentTabTopics.map((t) => {
+                const tId = t.id || Number(t.topicKey.split('.')[1]) || 1;
+                return (
+                  <option key={t.topicKey} value={tId}>
+                    Topic {t.topicKey}: {t.topicTitle} (Module {t.moduleId || 1})
+                  </option>
+                );
+              })}
+            </select>
+            <ChevronDown className="zmi-mbc-select-icon" />
+          </div>
+        </div>
+      </div>
+
       {/* =====================================================================
           MAIN 2-COLUMN ASYMMETRIC INTERVIEW GRID (No Left Setup Panel!)
           ===================================================================== */}
@@ -1257,6 +1418,17 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
                         : 'Technical Recruiter • Indian English'}
                     </span>
                   </div>
+                </div>
+
+                {/* Mobile Top-Right Timer Pill inside HR Half (Matches media_1793048129658_bdcc3cfc.png) */}
+                <div className="zmi-mobile-hr-timer">
+                  <Clock className="w-4 h-4 text-sky-400 shrink-0" />
+                  <strong className="zmi-timer-digits">{formatTime(sessionSecondsLeft)}</strong>
+                  <span className="zmi-mobile-timer-sub">
+                    TIME
+                    <br />
+                    LEFT
+                  </span>
                 </div>
 
                 {/* HR QUESTION LIVE TYPING BOX — Directly inside HR's Own Box! */}
@@ -1589,7 +1761,7 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
             <div className="zmi-card-head">
               <div className="flex items-center gap-2">
                 <div className="zmi-blue-icon-badge">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                  <Target className="w-3.5 h-3.5 text-white" />
                 </div>
                 <strong className="zmi-card-title">
                   {language === 'hi' ? 'इंटरव्यू प्रगति (Interview Progress)' : 'Interview Progress'}
@@ -1603,7 +1775,10 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
             </div>
 
             {/* Segmented Progress Bar */}
-            <div className="zmi-segmented-bar">
+            <div
+              className="zmi-segmented-bar"
+              style={{ gridTemplateColumns: `repeat(${Math.max(1, questions.length)}, minmax(0, 1fr))` }}
+            >
               {questions.map((q, idx) => {
                 const isDone = Boolean(evaluationsByQId[q.id]);
                 const isCurrent = idx === currentQIdx;
@@ -1616,8 +1791,11 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
               })}
             </div>
 
-            {/* 1..10 Question Buttons */}
-            <div className="zmi-q-numbers-row">
+            {/* Dynamic Question Buttons */}
+            <div
+              className="zmi-q-numbers-row"
+              style={{ gridTemplateColumns: `repeat(${Math.max(1, questions.length)}, minmax(0, 1fr))` }}
+            >
               {questions.map((q, idx) => {
                 const isCurrent = idx === currentQIdx;
                 const isDone = Boolean(evaluationsByQId[q.id]);
@@ -1655,21 +1833,35 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
               {language === 'hi' ? currentQ.questionHi : currentQ.questionEn}
             </h2>
 
-            <div className="zmi-hint-box">
+            <div
+              className="zmi-hint-box"
+              onClick={() => setHintExpanded((prev) => !prev)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setHintExpanded((prev) => !prev);
+                }
+              }}
+            >
               <div className="zmi-hint-icon">💡</div>
               <div className="zmi-hint-body">
                 <strong className="zmi-hint-title">
                   {language === 'hi' ? 'संकेत (Hint)' : 'Hint'}
                 </strong>
-                <p className="zmi-hint-text">
-                  {language === 'hi' ? currentQ.hintHi : currentQ.hintEn}
-                </p>
+                {hintExpanded && (
+                  <p className="zmi-hint-text">
+                    {language === 'hi' ? currentQ.hintHi : currentQ.hintEn}
+                  </p>
+                )}
               </div>
+              <ChevronDown className={`zmi-hint-chevron ${hintExpanded ? '' : 'collapsed'}`} />
             </div>
           </div>
 
           {/* Card 3: Tabbed Feedback / Model Answer / Key Points */}
-          <div className="zmi-side-card zmi-evaluation-card">
+          <div className={`zmi-side-card zmi-evaluation-card ${activeRightTab === 'feedback' && !currentEvaluation ? 'is-empty-feedback' : ''}`}>
             <div className="zmi-eval-tabs">
               <button
                 type="button"
