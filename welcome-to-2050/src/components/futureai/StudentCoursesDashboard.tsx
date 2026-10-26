@@ -142,34 +142,29 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
 
   const handleCourseClick = (c: { id: string; title?: string; fullName?: string }) => {
     playClick();
-    const unlocked = isCourseUnlocked(c.id);
-    if (!unlocked) {
-      onOpenLockedCourse(c.fullName || c.title || 'Course');
-      return;
-    }
 
     if (c.id === 'data-analyst-genai') {
       onOpenDataAnalystCourse();
     } else if (c.id === 'data-science-agentic-ai') {
       if (onOpenDataScienceCourse) onOpenDataScienceCourse();
-      else onOpenLockedCourse(c.fullName || c.title || 'Data Science & Agentic AI');
+      else onOpenDataAnalystCourse();
     } else if (c.id === 'ml-engineering') {
       if (onOpenMlEngineeringCourse) onOpenMlEngineeringCourse();
-      else onOpenLockedCourse(c.fullName || c.title || 'Machine Learning Engineering');
+      else onOpenDataAnalystCourse();
     } else if (c.id === 'ai-engineering') {
       if (onOpenAiEngineeringCourse) onOpenAiEngineeringCourse();
-      else onOpenLockedCourse(c.fullName || c.title || 'AI Engineering');
+      else onOpenDataAnalystCourse();
     } else if (c.id === 'ai-tools-prompt' || c.id === 'ai-tools-prompt-mastery' || c.id === 'ai-tool-and-prompt') {
       if (onOpenAiToolsPromptCourse) onOpenAiToolsPromptCourse();
-      else onOpenLockedCourse(c.fullName || c.title || 'AI Tools & Prompt Engineering Mastery');
+      else onOpenDataAnalystCourse();
     } else if (c.id === 'ms-office-copilot' || c.id === 'msoffice-365-copilot') {
       if (onOpenMsOfficeCopilotCourse) onOpenMsOfficeCopilotCourse();
-      else onOpenLockedCourse(c.fullName || c.title || 'Microsoft 365 with Copilot AI');
+      else onOpenDataAnalystCourse();
     } else if (c.id === 'full-stack-web-dev' || c.id === 'full-stack' || c.id === 'mern') {
       if (onOpenFullStackMernCourse) onOpenFullStackMernCourse();
-      else onOpenLockedCourse(c.fullName || c.title || 'Full-Stack MERN Development with AI');
+      else onOpenDataAnalystCourse();
     } else {
-      onOpenLockedCourse(c.fullName || c.title || 'Course');
+      onOpenDataAnalystCourse();
     }
   };
 
@@ -185,24 +180,24 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
       else if (type === 'project') onOpenDataAnalystCourse();
     } else if (c.id === 'data-science-agentic-ai') {
       if (onOpenDataScienceCourse) onOpenDataScienceCourse();
-      else onOpenLockedCourse(c.fullName || c.title || 'Data Science & Agentic AI');
+      else onOpenDataAnalystCourse();
     } else if (c.id === 'ml-engineering') {
       if (onOpenMlEngineeringCourse) onOpenMlEngineeringCourse();
-      else onOpenLockedCourse(c.fullName || c.title || 'Machine Learning Engineering');
+      else onOpenDataAnalystCourse();
     } else if (c.id === 'ai-engineering') {
       if (onOpenAiEngineeringCourse) onOpenAiEngineeringCourse();
-      else onOpenLockedCourse(c.fullName || c.title || 'AI Engineering');
+      else onOpenDataAnalystCourse();
     } else if (c.id === 'ai-tools-prompt' || c.id === 'ai-tools-prompt-mastery' || c.id === 'ai-tool-and-prompt') {
       if (onOpenAiToolsPromptCourse) onOpenAiToolsPromptCourse();
-      else onOpenLockedCourse(c.fullName || c.title || 'AI Tools & Prompt Engineering Mastery');
+      else onOpenDataAnalystCourse();
     } else if (c.id === 'ms-office-copilot' || c.id === 'msoffice-365-copilot') {
       if (onOpenMsOfficeCopilotCourse) onOpenMsOfficeCopilotCourse();
-      else onOpenLockedCourse(c.fullName || c.title || 'Microsoft 365 with Copilot AI');
+      else onOpenDataAnalystCourse();
     } else if (c.id === 'full-stack-web-dev' || c.id === 'full-stack' || c.id === 'mern') {
       if (onOpenFullStackMernCourse) onOpenFullStackMernCourse();
-      else onOpenLockedCourse(c.fullName || c.title || 'Full-Stack MERN Development with AI');
+      else onOpenDataAnalystCourse();
     } else {
-      onOpenLockedCourse(c.fullName || c.title);
+      onOpenDataAnalystCourse();
     }
   };
 

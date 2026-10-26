@@ -2150,60 +2150,36 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 }}
                 onOpenDataScienceCourse={() => {
                   playClick();
-                  if (!isCourseUnlocked('data_science')) {
-                    handleOpenCourseDetail('Data Science & Agentic AI');
-                    return;
-                  }
                   playCinema();
                   setSelectedModuleView('data_science');
                   if (typeof window !== 'undefined') window.location.hash = '#data-science';
                 }}
                 onOpenMlEngineeringCourse={() => {
                   playClick();
-                  if (!isCourseUnlocked('ml_engineering')) {
-                    handleOpenCourseDetail('Machine Learning Engineering');
-                    return;
-                  }
                   playCinema();
                   setSelectedModuleView('ml_engineering');
                   if (typeof window !== 'undefined') window.location.hash = '#ml-engineering';
                 }}
                 onOpenAiEngineeringCourse={() => {
                   playClick();
-                  if (!isCourseUnlocked('ai_engineering')) {
-                    handleOpenCourseDetail('AI Engineering');
-                    return;
-                  }
                   playCinema();
                   setSelectedModuleView('ai_engineering');
                   if (typeof window !== 'undefined') window.location.hash = '#ai-engineering';
                 }}
                 onOpenAiToolsPromptCourse={() => {
                   playClick();
-                  if (!isCourseUnlocked('ai_tools_prompt')) {
-                    handleOpenCourseDetail('AI Tools & Prompt Engineering Mastery');
-                    return;
-                  }
                   playCinema();
                   setSelectedModuleView('ai_tools_prompt');
                   if (typeof window !== 'undefined') window.location.hash = '#ai-tools-prompt';
                 }}
                 onOpenMsOfficeCopilotCourse={() => {
                   playClick();
-                  if (!isCourseUnlocked('ms_office_copilot')) {
-                    handleOpenCourseDetail('Microsoft 365 with Copilot AI');
-                    return;
-                  }
                   playCinema();
                   setSelectedModuleView('ms_office_copilot');
                   if (typeof window !== 'undefined') window.location.hash = '#ms-office-copilot';
                 }}
                 onOpenFullStackMernCourse={() => {
                   playClick();
-                  if (!isCourseUnlocked('full_stack_mern')) {
-                    handleOpenCourseDetail('Full-Stack MERN Development with AI');
-                    return;
-                  }
                   playCinema();
                   setSelectedModuleView('full_stack_mern');
                   if (typeof window !== 'undefined') window.location.hash = '#full-stack-web-dev';

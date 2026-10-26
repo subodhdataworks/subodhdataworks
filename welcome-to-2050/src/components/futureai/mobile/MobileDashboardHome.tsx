@@ -233,14 +233,14 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
     {
       id: 'data-analyst-genai',
       badgeNum: 1,
-      statusTag: isCourseUnlocked('data_analyst') ? 'ENROLLED • ACTIVE' : 'LOCKED • ₹9',
+      statusTag: isCourseUnlocked('data_analyst') ? 'ENROLLED • ACTIVE' : 'LOCKED • ₹4',
       badgeIcon: isCourseUnlocked('data_analyst') ? '✓' : '🔥',
       badgeGradient: isCourseUnlocked('data_analyst') ? 'from-emerald-500 to-teal-600' : 'from-rose-500 via-pink-500 to-rose-600',
       title: 'Data Analyst',
       subtitle: 'with GenAI',
       shortDesc: 'Master Python, SQL, Power BI, Excel & GenAI Analytics.',
       salaryRange: '₹6 LPA - ₹15 LPA',
-      courseFee: '₹9',
+      courseFee: '₹4',
       image: '/images/pot1_sharp_poster.jpg',
       holoImage: '/images/pot1_sharp_poster.jpg',
       video: '/videos/data_analyst_genai_v2.mp4',
@@ -256,7 +256,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
         btnClass: 'bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600 shadow-blue-500/30',
         priceBorder: 'border-sky-400',
       },
-      action: isCourseUnlocked('data_analyst') ? (onOpenDataAnalyst || onStartPython || (() => {})) : (() => onOpenLockedModule('Data Analyst with GenAI')),
+      action: onOpenDataAnalyst || onStartPython || (() => {}),
     },
     {
       id: 'data-science-agentic-ai',
@@ -284,7 +284,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
         btnClass: 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-purple-500/30',
         priceBorder: 'border-purple-400',
       },
-      action: isCourseUnlocked('data_science') ? onOpenDataScience : (() => onOpenLockedModule('Data Science & Agentic AI')),
+      action: onOpenDataScience || onOpenGenAi || (() => {}),
     },
     {
       id: 'ml-engineering',
@@ -312,7 +312,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
         btnClass: 'bg-gradient-to-r from-amber-600 to-orange-500 hover:from-amber-700 hover:to-orange-600 shadow-amber-500/30',
         priceBorder: 'border-amber-400',
       },
-      action: () => (onOpenPowerBi ? onOpenPowerBi() : onOpenLockedModule('ML Engineering')),
+      action: onOpenMlEngineering || onOpenPowerBi || (() => {}),
     },
     {
       id: 'ai-engineering',
@@ -340,7 +340,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
         btnClass: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-emerald-500/30',
         priceBorder: 'border-emerald-400',
       },
-      action: onOpenAiEngineering || (() => onOpenLockedModule('AI Engineering')),
+      action: onOpenAiEngineering || (() => {}),
     },
     {
       id: 'msoffice-365-copilot',
@@ -368,7 +368,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
         btnClass: 'bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600 shadow-blue-500/30',
         priceBorder: 'border-sky-400',
       },
-      action: onOpenMsOfficeCopilot || (() => onOpenLockedModule('Microsoft 365 with Copilot AI')),
+      action: onOpenMsOfficeCopilot || (() => {}),
     },
     {
       id: 'full-stack-web-dev',
@@ -396,7 +396,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
         btnClass: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-emerald-500/30',
         priceBorder: 'border-emerald-400',
       },
-      action: onOpenFullStackMern || (() => onOpenLockedModule('Full-Stack MERN Development with AI')),
+      action: onOpenFullStackMern || (() => {}),
     },
     {
       id: 'ui-ux-design-figma-ai',
@@ -452,7 +452,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
         btnClass: 'bg-gradient-to-r from-amber-600 to-orange-500 hover:from-amber-700 hover:to-orange-600 shadow-amber-500/30',
         priceBorder: 'border-amber-400',
       },
-      action: onOpenAiToolsPrompt || (() => onOpenLockedModule('AI Tool & Prompt Engineering Mastery')),
+      action: onOpenAiToolsPrompt || (() => {}),
     },
     {
       id: 'ai-for-techies-python-sprint',
@@ -480,7 +480,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
         btnClass: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-emerald-500/30',
         priceBorder: 'border-emerald-400',
       },
-      action: onStartPython || (() => onOpenLockedModule('AI for Techies (30 Days Python Sprint)')),
+      action: onStartPython || (() => {}),
     },
     ];
 
@@ -568,7 +568,8 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
           <div
             onClick={() => {
               playClick?.();
-              onStartPython();
+              if (onOpenDataAnalyst) onOpenDataAnalyst();
+              else onStartPython();
             }}
             className="p-1.5 sm:p-2 rounded-2xl bg-sky-50/90 border border-sky-200/90 flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-2xs"
           >
@@ -586,8 +587,8 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
           <div
             onClick={() => {
               playClick?.();
-              if (onOpenGenAi) onOpenGenAi();
-              else onOpenLockedModule('Data Science & Agentic AI');
+              if (onOpenDataScience) onOpenDataScience();
+              else if (onOpenGenAi) onOpenGenAi();
             }}
             className="p-1.5 sm:p-2 rounded-2xl bg-purple-50/90 border border-purple-200/90 flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-2xs"
           >
@@ -605,8 +606,8 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
           <div
             onClick={() => {
               playClick?.();
-              if (onOpenPowerBi) onOpenPowerBi();
-              else onOpenLockedModule('ML Engineering');
+              if (onOpenMlEngineering) onOpenMlEngineering();
+              else if (onOpenPowerBi) onOpenPowerBi();
             }}
             className="p-1.5 sm:p-2 rounded-2xl bg-amber-50/90 border border-amber-200/90 flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-2xs"
           >
@@ -624,7 +625,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
           <div
             onClick={() => {
               playClick?.();
-              onOpenLockedModule('Full-Stack AI Engineering');
+              if (onOpenAiEngineering) onOpenAiEngineering();
             }}
             className="p-1.5 sm:p-2 rounded-2xl bg-emerald-50/90 border border-emerald-200/90 flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-2xs"
           >
