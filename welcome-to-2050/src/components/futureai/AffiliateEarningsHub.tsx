@@ -245,12 +245,11 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
         const real = await fetchAffiliateRealData(cleanRefCode);
         if (isMounted) {
           setHubState((prev) => {
-            const nextClicks = Math.max(prev.clicks, real.clicks);
-            const nextSignups = Math.max(prev.signups, real.signups);
-            const isEnrolledNow = typeof window !== 'undefined' && (localStorage.getItem('futureai_course_enrolled') === 'true' || isAnyCourseUnlocked());
-            const nextPaidEnrollments = Math.max(prev.paidEnrollments, real.paidEnrollments || 0, isEnrolledNow ? 1 : 0);
+            const nextClicks = Math.max(prev.clicks, real.clicks || 0);
+            const nextSignups = Math.max(prev.signups, real.signups || 0);
+            const nextPaidEnrollments = Math.max(prev.paidEnrollments, real.paidEnrollments || 0);
             const nextEarned = Math.max(prev.totalEarned, real.totalEarned || 0, nextPaidEnrollments * 100);
-            const nextAvailable = Math.max(prev.availableBalance, real.availableBalance || 0, nextEarned - prev.totalPaid);
+            const nextAvailable = Math.max(0, real.availableBalance || 0, nextEarned - prev.totalPaid);
             const nextPending = typeof real.pendingBalance === 'number' ? real.pendingBalance : 0;
             const nextReferrals = real.referrals && real.referrals.length > 0 ? real.referrals : prev.referrals;
 

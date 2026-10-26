@@ -23,6 +23,22 @@ import { findExistingUser, recordUserInDatabase } from './services/realAuthServi
 import { restoreUserEntitlementsFromCloud } from './services/cloudSyncService';
 
 export const App: React.FC = () => {
+  // ─── FACTORY PURGE: RESET ALL USERS, ALL WALLETS, ALL PURCHASES, ALL REFERRALS TO 0 ───
+  if (typeof window !== 'undefined' && localStorage.getItem('futureai_factory_reset_all_zero_v1') !== 'true') {
+    try {
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && (k.startsWith('futureai_') || k.startsWith('fa_'))) {
+          keysToRemove.push(k);
+        }
+      }
+      keysToRemove.forEach((k) => localStorage.removeItem(k));
+      sessionStorage.clear();
+      localStorage.setItem('futureai_factory_reset_all_zero_v1', 'true');
+    } catch {}
+  }
+
   const profile = StorageService.getProfile();
   const [payModalOpen, setPayModalOpen] = useState(false);
 
