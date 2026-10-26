@@ -241,14 +241,10 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
     setTimeout(() => setWithdrawSuccessToast(false), 4000);
   };
 
-  // Top 5 Earners exactly matching reference image media_1792354829800_184cecda.png
-  const topEarners = [
-    { rank: 1, name: 'Aditi Sharma', xp: '2,450 XP', amount: '₹12,500', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces', crown: true },
-    { rank: 2, name: 'Rahul Verma', xp: '2,320 XP', amount: '₹10,800', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&h=100&fit=crop&crop=faces', crown: false },
-    { rank: 3, name: 'Neha Gupta', xp: '2,100 XP', amount: '₹9,300', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces', crown: false },
-    { rank: 4, name: 'Aman Kumar', xp: '1,980 XP', amount: '₹8,700', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces', crown: false },
-    { rank: 5, name: 'Subodh Kumar', xp: '1,750 XP', amount: '₹5,600', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces', crown: false },
-  ];
+  // Leaderboard populated strictly from valid new-system v5 earnings (empty until new activity arrives)
+  const topEarners = paidEnrollments > 0 && totalEarned > 0
+    ? [{ rank: 1, name: userName || 'Partner', xp: `${paidEnrollments} Verified Enrollments`, amount: `₹${totalEarned.toLocaleString('en-IN')}`, avatar: '/images/profile_student_avatar.png', crown: true }]
+    : [];
 
   // 3 Distinct Real Human Banners for Auto-Slider (100% Real Photography, Zero Cartoon)
   const bannerSlides = [
@@ -856,82 +852,42 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
               <text x="5" y="114" fontSize="9" fill="#94a3b8" fontWeight="bold">100</text>
               <text x="15" y="144" fontSize="9" fill="#94a3b8" fontWeight="bold">0</text>
 
-              {/* Vertical Stacked Bars */}
-              {/* Sep 24 */}
-              <rect x="52" y="115" width="6" height="25" rx="3" fill="#0066ff" />
-              <rect x="60" y="120" width="6" height="20" rx="3" fill="#10b981" />
-              <rect x="68" y="112" width="6" height="28" rx="3" fill="#f59e0b" />
+              {/* Dynamic Bars strictly from live activity (Zero-State until new activity occurs) */}
+              {clicks > 0 && (
+                <rect x="390" y={Math.max(25, 140 - Math.min(110, clicks * 8))} width="6" height={Math.min(110, clicks * 8)} rx="3" fill="#0066ff" />
+              )}
+              {signups > 0 && (
+                <rect x="398" y={Math.max(25, 140 - Math.min(110, signups * 10))} width="6" height={Math.min(110, signups * 10)} rx="3" fill="#10b981" />
+              )}
+              {paidEnrollments > 0 && (
+                <rect x="406" y={Math.max(25, 140 - Math.min(110, paidEnrollments * 15))} width="6" height={Math.min(110, paidEnrollments * 15)} rx="3" fill="#f59e0b" />
+              )}
 
-              {/* Sep 26 */}
-              <rect x="110" y="122" width="6" height="18" rx="3" fill="#0066ff" />
-              <rect x="118" y="125" width="6" height="15" rx="3" fill="#10b981" />
-              <rect x="126" y="128" width="6" height="12" rx="3" fill="#f59e0b" />
-
-              {/* Sep 28 */}
-              <rect x="165" y="125" width="6" height="15" rx="3" fill="#0066ff" />
-              <rect x="173" y="120" width="6" height="20" rx="3" fill="#10b981" />
-              <rect x="181" y="128" width="6" height="12" rx="3" fill="#f59e0b" />
-
-              {/* Sep 30 */}
-              <rect x="220" y="110" width="6" height="30" rx="3" fill="#0066ff" />
-              <rect x="228" y="95" width="6" height="45" rx="3" fill="#10b981" />
-              <rect x="236" y="105" width="6" height="35" rx="3" fill="#f59e0b" />
-
-              {/* Oct 2 */}
-              <rect x="280" y="125" width="6" height="15" rx="3" fill="#0066ff" />
-              <rect x="288" y="128" width="6" height="12" rx="3" fill="#10b981" />
-              <rect x="296" y="118" width="6" height="22" rx="3" fill="#f59e0b" />
-
-              {/* Oct 4 */}
-              <rect x="335" y="115" width="6" height="25" rx="3" fill="#0066ff" />
-              <rect x="343" y="120" width="6" height="20" rx="3" fill="#10b981" />
-              <rect x="351" y="112" width="6" height="28" rx="3" fill="#f59e0b" />
-
-              {/* Oct 6 */}
-              <rect x="390" y="112" width="6" height="28" rx="3" fill="#0066ff" />
-              <rect x="398" y="115" width="6" height="25" rx="3" fill="#10b981" />
-              <rect x="406" y="118" width="6" height="22" rx="3" fill="#f59e0b" />
-
-              {/* Spline Area Fill */}
+              {/* Zero baseline or live line */}
               <path
-                d="M 40 125 C 80 120, 110 135, 140 132 C 180 130, 200 125, 230 115 C 270 100, 300 70, 335 70 C 370 70, 400 110, 435 95 L 435 140 L 40 140 Z"
-                fill="url(#purpleAreaGrad)"
-              />
-
-              {/* Spline Line */}
-              <path
-                d="M 40 125 C 80 120, 110 135, 140 132 C 180 130, 200 125, 230 115 C 270 100, 300 70, 335 70 C 370 70, 400 110, 435 95"
+                d={totalEarned > 0 ? `M 40 140 L 350 140 L 405 ${Math.max(25, 140 - Math.min(110, (totalEarned / 100) * 14))}` : "M 40 140 L 435 140"}
                 fill="none"
                 stroke="#8b5cf6"
                 strokeWidth="2.5"
                 strokeLinecap="round"
               />
+              <circle cx="405" cy={totalEarned > 0 ? Math.max(25, 140 - Math.min(110, (totalEarned / 100) * 14)) : 140} r="4" fill="#8b5cf6" stroke="#ffffff" strokeWidth="1.5" />
 
-              {/* Data Point Markers */}
-              <circle cx="70" cy="122" r="3.5" fill="#8b5cf6" stroke="#ffffff" strokeWidth="1.5" />
-              <circle cx="125" cy="132" r="3.5" fill="#8b5cf6" stroke="#ffffff" strokeWidth="1.5" />
-              <circle cx="180" cy="128" r="3.5" fill="#8b5cf6" stroke="#ffffff" strokeWidth="1.5" />
-              <circle cx="235" cy="112" r="3.5" fill="#8b5cf6" stroke="#ffffff" strokeWidth="1.5" />
-              <circle cx="335" cy="70" r="4.5" fill="#8b5cf6" stroke="#ffffff" strokeWidth="2" />
-              <circle cx="395" cy="100" r="3.5" fill="#8b5cf6" stroke="#ffffff" strokeWidth="1.5" />
-              <circle cx="435" cy="95" r="3.5" fill="#8b5cf6" stroke="#ffffff" strokeWidth="1.5" />
-
-              {/* Tooltip on Sep 30 Point */}
-              <g transform="translate(300, 28)">
-                <rect x="0" y="0" width="85" height="34" rx="6" fill="#ffffff" stroke="#e2e8f0" strokeWidth="1" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.08))" />
-                <text x="6" y="11" fontSize="7" fill="#64748b" fontWeight="bold">Sep 30 2026</text>
-                <text x="6" y="21" fontSize="8" fill="#7c3aed" fontWeight="900">₹750 commission</text>
-                <text x="6" y="29" fontSize="7" fill="#f59e0b" fontWeight="bold">6 enrollments</text>
+              {/* Live Status Tooltip */}
+              <g transform="translate(275, 28)">
+                <rect x="0" y="0" width="110" height="36" rx="6" fill="#ffffff" stroke="#e2e8f0" strokeWidth="1" />
+                <text x="6" y="11" fontSize="7" fill="#64748b" fontWeight="bold">Live ({analyticsRange})</text>
+                <text x="6" y="21" fontSize="8" fill="#7c3aed" fontWeight="900">₹{totalEarned.toLocaleString('en-IN')} commission</text>
+                <text x="6" y="30" fontSize="7" fill="#f59e0b" fontWeight="bold">{paidEnrollments} enrollments</text>
               </g>
 
-              {/* X-Axis Dates */}
-              <text x="50" y="154" fontSize="8" fill="#94a3b8" fontWeight="bold">Sep 24</text>
-              <text x="110" y="154" fontSize="8" fill="#94a3b8" fontWeight="bold">Sep 26</text>
-              <text x="165" y="154" fontSize="8" fill="#94a3b8" fontWeight="bold">Sep 28</text>
-              <text x="225" y="154" fontSize="8" fill="#94a3b8" fontWeight="bold">Sep 30</text>
-              <text x="285" y="154" fontSize="8" fill="#94a3b8" fontWeight="bold">Oct 2</text>
-              <text x="345" y="154" fontSize="8" fill="#94a3b8" fontWeight="bold">Oct 4</text>
-              <text x="400" y="154" fontSize="8" fill="#94a3b8" fontWeight="bold">Oct 6</text>
+              {/* X-Axis Labels */}
+              <text x="50" y="154" fontSize="8" fill="#94a3b8" fontWeight="bold">D1</text>
+              <text x="115" y="154" fontSize="8" fill="#94a3b8" fontWeight="bold">D2</text>
+              <text x="180" y="154" fontSize="8" fill="#94a3b8" fontWeight="bold">D3</text>
+              <text x="245" y="154" fontSize="8" fill="#94a3b8" fontWeight="bold">D4</text>
+              <text x="310" y="154" fontSize="8" fill="#94a3b8" fontWeight="bold">D5</text>
+              <text x="385" y="154" fontSize="8" fill="#94a3b8" fontWeight="bold">Today</text>
             </svg>
           </div>
         </div>
@@ -986,9 +942,19 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
               ))}
             </div>
 
-            {/* Top 5 Earners List */}
+            {/* Leaderboard List (Empty State until new v5 activity occurs) */}
             <div className="space-y-1.5 pt-1">
-              {topEarners.map((u) => (
+              {topEarners.length === 0 ? (
+                <div className="py-6 px-3 text-center">
+                  <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center mx-auto mb-2 text-lg">
+                    🏆
+                  </div>
+                  <div className="text-xs font-black text-slate-900">Leaderboard Reset — Season Open</div>
+                  <p className="text-[10px] text-slate-500 mt-1 leading-relaxed">
+                    Rankings populate automatically as new verified ₹100 enrollments are recorded.
+                  </p>
+                </div>
+              ) : topEarners.map((u) => (
                 <div
                   key={u.rank}
                   className={`flex items-center justify-between p-2 rounded-xl border transition-all ${

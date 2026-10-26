@@ -19,25 +19,14 @@ import { AboutUsView } from './components/legal/AboutUsView';
 import { PaymentResultModal } from './components/futureai/PaymentResultModal';
 import { auth } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { findExistingUser, recordUserInDatabase } from './services/realAuthService';
+import { findExistingUser, recordUserInDatabase, runAffiliateSystemResetMigrationOnce } from './services/realAuthService';
 import { restoreUserEntitlementsFromCloud } from './services/cloudSyncService';
 
 export const App: React.FC = () => {
-  // ─── FACTORY PURGE: RESET ALL USERS, ALL WALLETS, ALL PURCHASES, ALL REFERRALS TO 0 ───
-  if (typeof window !== 'undefined' && localStorage.getItem('futureai_factory_reset_all_zero_v3') !== 'true') {
-    try {
-      const keysToRemove: string[] = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i);
-        if (k && (k.startsWith('futureai_') || k.startsWith('fa_'))) {
-          keysToRemove.push(k);
-        }
-      }
-      keysToRemove.forEach((k) => localStorage.removeItem(k));
-      sessionStorage.clear();
-      localStorage.setItem('futureai_factory_reset_all_zero_v3', 'true');
-    } catch {}
-  }
+  // ─── CONTROLLED VERSIONED ONE-TIME AFFILIATE SYSTEM v5 RESET MIGRATION ───
+  // Resets only affiliate metrics, affiliate wallets, payout history, and bank/UPI links once.
+  // Preserves user login accounts, authentication sessions, and course enrollment records.
+  runAffiliateSystemResetMigrationOnce();
 
   const profile = StorageService.getProfile();
   const [payModalOpen, setPayModalOpen] = useState(false);

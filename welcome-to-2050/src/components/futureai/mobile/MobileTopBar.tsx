@@ -40,7 +40,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
       if (customWallet) return parseInt(customWallet, 10);
       for (let i = 0; i < localStorage.length; i++) {
         const k = localStorage.key(i);
-        if (k && k.startsWith('futureai_affiliate_hub_v4_')) {
+        if (k && k.startsWith('futureai_affiliate_hub_v5_')) {
           try {
             const item = localStorage.getItem(k);
             if (item) {
@@ -77,7 +77,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
         }
         for (let i = 0; i < localStorage.length; i++) {
           const k = localStorage.key(i);
-          if (k && k.startsWith('futureai_affiliate_hub_v4_')) {
+          if (k && k.startsWith('futureai_affiliate_hub_v5_')) {
             try {
               const item = localStorage.getItem(k);
               if (item) {

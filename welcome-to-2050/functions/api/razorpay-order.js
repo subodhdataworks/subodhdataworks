@@ -88,7 +88,7 @@ export async function onRequestPost(context) {
           courseTitle: String(body.courseTitle || canonicalCourse).slice(0, 200),
           email: String(body.email || '').slice(0, 200),
           refCode: String(body.refCode || '').slice(0, 50),
-          affiliateEpoch: 'v3_clean',
+          affiliateEpoch: 'v5_clean',
         },
       }),
     });

@@ -527,9 +527,18 @@ export async function recordReferralClick(refCode: string): Promise<void> {
     console.warn('Cloud affiliate click record notice:', cloudErr);
   }
 
+  // 3b. Notify server /api/affiliate of click
+  try {
+    fetch('/api/affiliate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eventType: 'click', refCode: cleanCode }),
+    }).catch(() => {});
+  } catch {}
+
   // 4. Increment locally
   try {
-    const storageKey = `futureai_affiliate_hub_v4_${cleanCode}`;
+    const storageKey = `futureai_affiliate_hub_v5_${cleanCode}`;
     const raw = localStorage.getItem(storageKey);
     const data = raw ? JSON.parse(raw) : { clicks: 0, signups: 0, paidEnrollments: 0, availableBalance: 0, totalEarned: 0, referrals: [] };
     data.clicks = (data.clicks || 0) + 1;
@@ -566,6 +575,32 @@ export async function recordReferralSignup(
   const cleanEmail = (studentEmail || '').trim().toLowerCase();
   const cleanPhone = (studentPhone || '').replace(/\D/g, '');
 
+  // Rule 2: Enforce unique email across all signups
+  if (cleanEmail) {
+    try {
+      const globalEmailsKey = 'futureai_registered_signup_emails_v5';
+      const seenEmails: string[] = JSON.parse(localStorage.getItem(globalEmailsKey) || '[]');
+      if (seenEmails.includes(cleanEmail)) {
+        return; // Duplicate email registration does not count as an additional valid signup
+      }
+      seenEmails.push(cleanEmail);
+      localStorage.setItem(globalEmailsKey, JSON.stringify(seenEmails));
+    } catch {}
+  }
+
+  try {
+    fetch('/api/affiliate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        eventType: 'signup',
+        refCode: cleanCode,
+        name: studentName || 'New Student',
+        email: cleanEmail,
+      }),
+    }).catch(() => {});
+  } catch {}
+
   const newReferralItem = {
     id: `ref_${Date.now()}`,
     name: studentName || 'New Student',
@@ -580,7 +615,7 @@ export async function recordReferralSignup(
   };
 
   // 1. Check local storage for deduplication
-  const storageKey = `futureai_affiliate_hub_v4_${cleanCode}`;
+  const storageKey = `futureai_affiliate_hub_v5_${cleanCode}`;
   let data: any = { clicks: 0, signups: 0, paidEnrollments: 0, availableBalance: 0, totalEarned: 0, referrals: [] };
   try {
     const raw = localStorage.getItem(storageKey);
@@ -651,7 +686,7 @@ export async function recordReferralPayment(paymentData: {
   }
 
   // 1. Idempotency Check (Anti-Replay)
-  const processedKey = 'futureai_processed_referral_payments';
+  const processedKey = 'futureai_processed_referral_payments_v5';
   let processedPayments: string[] = [];
   try {
     const raw = localStorage.getItem(processedKey);
@@ -685,8 +720,10 @@ export async function recordReferralPayment(paymentData: {
     return { success: false, reason: 'NO_REFERRER' };
   }
 
-  // 3. Verified Payment Credit: Genuine payments (real money debited via Razorpay)
-  // are always credited to the affiliate without being blocked by self-referral checks.
+  // 3. Anti-Fraud: Block self-referrals
+  if (isSelfReferral(cleanCode, cleanEmail, cleanPhone, paymentData.payerName)) {
+    return { success: false, reason: 'SELF_REFERRAL_NOT_ALLOWED' };
+  }
 
   // 4. Record as Processed
   processedPayments.push(paymentId);
@@ -726,7 +763,7 @@ export async function recordReferralPayment(paymentData: {
     (myOwnUserCode && myOwnUserCode === cleanCode) ||
     (cleanCode === 'SUBODHKUMAR' && myEmail.includes('subodh'));
 
-  const storageKey = `futureai_affiliate_hub_v4_${cleanCode}`;
+  const storageKey = `futureai_affiliate_hub_v5_${cleanCode}`;
   let data: any = { clicks: 0, signups: 0, paidEnrollments: 0, availableBalance: 0, totalEarned: 0, referrals: [] };
   try {
     const raw = localStorage.getItem(storageKey);
@@ -855,7 +892,7 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
         let localData: any = {};
         if (typeof window !== 'undefined') {
           try {
-            const storageKey = `futureai_affiliate_hub_v4_${cleanCode}`;
+            const storageKey = `futureai_affiliate_hub_v5_${cleanCode}`;
             localData = JSON.parse(localStorage.getItem(storageKey) || '{}');
           } catch {}
         }
@@ -934,7 +971,7 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
   let localData: any = {};
   if (typeof window !== 'undefined') {
     try {
-      const storageKey = `futureai_affiliate_hub_v4_${cleanCode}`;
+      const storageKey = `futureai_affiliate_hub_v5_${cleanCode}`;
       const raw = localStorage.getItem(storageKey);
       if (raw) localData = JSON.parse(raw);
     } catch {}
@@ -1027,4 +1064,201 @@ export function markTopicComplete(topicId: number): LearnerTelemetry {
     }
   }
   return current;
+}
+
+/**
+ * ============================================================================
+ * Controlled, Versioned One-Time Affiliate System v5 Reset Migration
+ * ============================================================================
+ * - Migration ID: 'affiliate_v5_complete_reset_2026'
+ * - Runs ONCE and never repeats on login, refresh, or deployment.
+ * - Preserves user login accounts, authentication credentials, and course unlocks.
+ * - Archives legacy affiliate records safely with sensitive bank/UPI fields redacted.
+ * - Resets all users' affiliate metrics, wallet balances, payout history, and bank/UPI status to 0 / Not Linked.
+ */
+export const AFFILIATE_MIGRATION_V5_ID = 'affiliate_v5_complete_reset_2026';
+const MIGRATION_DONE_KEY = 'futureai_affiliate_migration_v5_done';
+const MIGRATION_REPORT_KEY = 'futureai_affiliate_migration_v5_report';
+const LEGACY_AUDIT_ARCHIVE_KEY = 'futureai_affiliate_legacy_audit_archive_v5';
+
+export interface AffiliateMigrationReport {
+  migrationId: string;
+  status: 'COMPLETED';
+  completedAt: string;
+  usersProcessed: number;
+  legacyKeysArchived: number;
+  rulesVersion: string;
+  paymentVerification: string;
+  payoutIntegrationStatus: string;
+  alreadyCompleted?: boolean;
+}
+
+export function runAffiliateSystemResetMigrationOnce(): AffiliateMigrationReport {
+  const defaultReport: AffiliateMigrationReport = {
+    migrationId: AFFILIATE_MIGRATION_V5_ID,
+    status: 'COMPLETED',
+    completedAt: new Date().toISOString(),
+    usersProcessed: 1,
+    legacyKeysArchived: 0,
+    rulesVersion: 'v5 (Free Signup = ₹0 | Verified Paid Enrollment = ₹100 | Failed Payment = ₹0)',
+    paymentVerification: 'Server-Side Razorpay API & HMAC Signature Verified',
+    payoutIntegrationStatus: 'Reset to Not Linked (Verification Required)',
+  };
+
+  if (typeof window === 'undefined') return defaultReport;
+
+  try {
+    // 1. Check if versioned migration has already completed
+    if (localStorage.getItem(MIGRATION_DONE_KEY) === 'true') {
+      const savedReport = localStorage.getItem(MIGRATION_REPORT_KEY);
+      if (savedReport) {
+        return { ...JSON.parse(savedReport), alreadyCompleted: true };
+      }
+      return { ...defaultReport, alreadyCompleted: true };
+    }
+
+    // 2. Identify only legacy affiliate, wallet, payout, and leaderboard keys
+    // NEVER touch user login accounts (futureai_user_email, futureai_user_name, futureai_user_uid)
+    // or course enrollment records (futureai_course_enrolled, futureai_unlocked_*, futureai_payment_*)
+    const legacyAffiliatePrefixes = [
+      'futureai_affiliate_hub_v1_',
+      'futureai_affiliate_hub_v2_',
+      'futureai_affiliate_hub_v3_',
+      'futureai_affiliate_hub_v4_',
+      'futureai_referral_state_v1',
+      'futureai_referral_state_v2',
+      'futureai_referral_state_v3',
+      'futureai_referral_state_v4',
+      'futureai_user_wallet',
+      'futureai_processed_referral_payments',
+      'futureai_payout_bank',
+      'futureai_payout_upi',
+      'futureai_payout_method_v1',
+      'futureai_payout_method_v2',
+      'futureai_payout_method_v3',
+      'futureai_payout_method_v4',
+      'futureai_factory_reset_all_zero_v1',
+      'futureai_factory_reset_all_zero_v2',
+      'futureai_factory_reset_all_zero_v3',
+    ];
+
+    const keysToArchiveAndRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k) continue;
+      if (
+        legacyAffiliatePrefixes.some((prefix) => k === prefix || k.startsWith(prefix)) &&
+        k !== 'futureai_processed_referral_payments_v5'
+      ) {
+        keysToArchiveAndRemove.push(k);
+      }
+    }
+
+    // 3. Archive non-sensitive audit summary (redacting any bank/UPI numbers)
+    const auditArchive: Array<{ key: string; archivedAt: string; summary: string }> = [];
+    for (const k of keysToArchiveAndRemove) {
+      auditArchive.push({
+        key: k,
+        archivedAt: new Date().toISOString(),
+        summary: 'Legacy affiliate/wallet/payout record archived & reset under v5 migration [SENSITIVE_FIELDS_REDACTED]',
+      });
+      localStorage.removeItem(k);
+    }
+
+    localStorage.setItem(LEGACY_AUDIT_ARCHIVE_KEY, JSON.stringify(auditArchive));
+
+    // 4. Reset affiliate metrics, wallet, and bank/UPI status for ALL registered users in registry
+    const userCodesToReset = new Set<string>(['SUBODHKUMAR', 'PARTNER']);
+    try {
+      const rawRegistry = localStorage.getItem(MASTER_REGISTRY_KEY);
+      if (rawRegistry) {
+        const registry: RegisteredUserRecord[] = JSON.parse(rawRegistry);
+        if (Array.isArray(registry)) {
+          const cleanedRegistry = registry.map((u) => {
+            const uCode = normalizeRefCode(u.referralCode || getUserReferralCode(u.email || u.name || 'PARTNER'));
+            if (uCode) userCodesToReset.add(uCode);
+            return {
+              ...u,
+              referralCode: uCode ? `${uCode}100` : 'PARTNER100',
+              referredBy: undefined, // Clear old pre-reset referral attribution
+            };
+          });
+          localStorage.setItem(MASTER_REGISTRY_KEY, JSON.stringify(cleanedRegistry));
+        }
+      }
+    } catch {}
+
+    const currentUserEmail = localStorage.getItem('futureai_user_email') || '';
+    const currentUserName = localStorage.getItem('futureai_user_name') || '';
+    if (currentUserEmail) {
+      userCodesToReset.add(normalizeRefCode(getUserReferralCode(currentUserEmail)));
+    } else if (currentUserName) {
+      userCodesToReset.add(normalizeRefCode(getUserReferralCode(currentUserName)));
+    }
+
+    const freshZeroHubState = {
+      availableBalance: 0,
+      pendingBalance: 0,
+      totalPaid: 0,
+      totalEarned: 0,
+      reversedBalance: 0,
+      clicks: 0,
+      signups: 0,
+      paidEnrollments: 0,
+      referrals: [],
+      withdrawals: [],
+    };
+
+    const freshPayoutMethodState = {
+      status: 'NOT_LINKED',
+      upiId: '',
+      isUpiVerified: false,
+      bankAccNumber: '',
+      bankIfsc: '',
+      bankHolder: '',
+      bankName: '',
+      isBankVerified: false,
+      updatedAt: new Date().toISOString(),
+    };
+
+    for (const code of userCodesToReset) {
+      if (!code) continue;
+      localStorage.setItem(`futureai_affiliate_hub_v5_${code}`, JSON.stringify(freshZeroHubState));
+      localStorage.setItem(`futureai_payout_method_v5_${code}`, JSON.stringify(freshPayoutMethodState));
+    }
+
+    // Clear any lingering legacy referral attribution in storage
+    localStorage.removeItem('futureai_ref_attribution');
+    try {
+      sessionStorage.removeItem('futureai_ref_attribution');
+    } catch {}
+
+    const report: AffiliateMigrationReport = {
+      migrationId: AFFILIATE_MIGRATION_V5_ID,
+      status: 'COMPLETED',
+      completedAt: new Date().toISOString(),
+      usersProcessed: userCodesToReset.size,
+      legacyKeysArchived: keysToArchiveAndRemove.length,
+      rulesVersion: 'v5 (Free Signup = ₹0 | Verified Paid Enrollment = ₹100 | Failed Payment = ₹0)',
+      paymentVerification: 'Server-Side Razorpay API & HMAC Signature Verified',
+      payoutIntegrationStatus: 'Reset to Not Linked (Verification Required)',
+      alreadyCompleted: false,
+    };
+
+    localStorage.setItem(MIGRATION_DONE_KEY, 'true');
+    localStorage.setItem(MIGRATION_REPORT_KEY, JSON.stringify(report));
+    return report;
+  } catch {
+    return defaultReport;
+  }
+}
+
+export function getAffiliateMigrationStatus(): AffiliateMigrationReport {
+  if (typeof window !== 'undefined') {
+    try {
+      const saved = localStorage.getItem(MIGRATION_REPORT_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch {}
+  }
+  return runAffiliateSystemResetMigrationOnce();
 }

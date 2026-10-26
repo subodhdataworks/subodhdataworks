@@ -103,7 +103,7 @@ export async function startRazorpayCheckout(params: {
         courseTitle: params.courseTitle || 'Data Analyst with GenAI',
         name: params.name || '',
         refCode: refCode || '',
-        affiliateEpoch: 'v3_clean',
+        affiliateEpoch: 'v5_clean',
       },
       theme: { color: '#0284c7' },
       modal: {

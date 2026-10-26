@@ -124,7 +124,7 @@ export interface LeaderboardUser {
   isCurrentUser?: boolean;
 }
 
-const STORAGE_KEY = 'futureai_referral_state_v2';
+const STORAGE_KEY = 'futureai_referral_state_v5';
 const ATTRIBUTION_KEY = 'futureai_ref_attribution';
 
 export class ReferralEngine {

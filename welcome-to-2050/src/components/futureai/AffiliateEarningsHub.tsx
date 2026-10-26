@@ -118,7 +118,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   }, [cleanRefCode]);
 
   const affiliateRefUrl = `https://futureitindustry.com/?ref=${cleanRefCode}100`;
-  const storageKey = `futureai_affiliate_hub_v4_${cleanRefCode}`;
+  const storageKey = `futureai_affiliate_hub_v5_${cleanRefCode}`;
   if (typeof window !== 'undefined') {
     try { localStorage.removeItem(`futureai_affiliate_hub_v3_${cleanRefCode}`); } catch {}
   }
@@ -364,16 +364,59 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   // Top Partners Leaderboard Tab
   const [partnerLeaderboardTab, setPartnerLeaderboardTab] = useState<'week' | 'month' | 'all'>('week');
 
-  // Withdrawal Form State
-  const [withdrawAmount, setWithdrawAmount] = useState<string>('2500');
+  // Payout Method & Withdrawal Form State (Reset to Not Linked under v5 rules)
+  const payoutStorageKey = `futureai_payout_method_v5_${cleanRefCode}`;
+  const [withdrawAmount, setWithdrawAmount] = useState<string>('100');
   const [payoutMethod, setPayoutMethod] = useState<'upi' | 'bank'>('upi');
-  const [upiId, setUpiId] = useState<string>('learner@upi');
-  const [isUpiVerified, setIsUpiVerified] = useState(true);
-  const [bankAccNumber, setBankAccNumber] = useState('50100429184521');
-  const [bankIfsc, setBankIfsc] = useState('HDFC0001234');
-  const [bankHolder, setBankHolder] = useState(userName || 'Account Holder');
-  const [bankName, setBankName] = useState('HDFC Bank');
+  const [upiId, setUpiId] = useState<string>(() => {
+    if (typeof window === 'undefined') return '';
+    try { return JSON.parse(localStorage.getItem(payoutStorageKey) || '{}').upiId || ''; } catch { return ''; }
+  });
+  const [isUpiVerified, setIsUpiVerified] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    try { return Boolean(JSON.parse(localStorage.getItem(payoutStorageKey) || '{}').isUpiVerified); } catch { return false; }
+  });
+  const [bankAccNumber, setBankAccNumber] = useState<string>(() => {
+    if (typeof window === 'undefined') return '';
+    try { return JSON.parse(localStorage.getItem(payoutStorageKey) || '{}').bankAccNumber || ''; } catch { return ''; }
+  });
+  const [bankIfsc, setBankIfsc] = useState<string>(() => {
+    if (typeof window === 'undefined') return '';
+    try { return JSON.parse(localStorage.getItem(payoutStorageKey) || '{}').bankIfsc || ''; } catch { return ''; }
+  });
+  const [bankHolder, setBankHolder] = useState<string>(() => {
+    if (typeof window === 'undefined') return '';
+    try { return JSON.parse(localStorage.getItem(payoutStorageKey) || '{}').bankHolder || ''; } catch { return ''; }
+  });
+  const [bankName, setBankName] = useState<string>(() => {
+    if (typeof window === 'undefined') return '';
+    try { return JSON.parse(localStorage.getItem(payoutStorageKey) || '{}').bankName || ''; } catch { return ''; }
+  });
+  const [isBankVerified, setIsBankVerified] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    try { return Boolean(JSON.parse(localStorage.getItem(payoutStorageKey) || '{}').isBankVerified); } catch { return false; }
+  });
   const [withdrawStep, setWithdrawStep] = useState<'form' | 'confirm' | 'success'>('form');
+  const isPayoutMethodLinked = (payoutMethod === 'upi' && isUpiVerified && upiId.includes('@')) ||
+    (payoutMethod === 'bank' && isBankVerified && bankAccNumber.length >= 8 && bankIfsc.length >= 8);
+  const hasAnyVerifiedPayout = (isUpiVerified && upiId.includes('@')) || (isBankVerified && bankAccNumber.length >= 8);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(payoutStorageKey, JSON.stringify({
+        status: hasAnyVerifiedPayout ? 'LINKED' : 'NOT_LINKED',
+        upiId,
+        isUpiVerified,
+        bankAccNumber,
+        bankIfsc,
+        bankHolder,
+        bankName,
+        isBankVerified,
+        updatedAt: new Date().toISOString(),
+      }));
+    } catch {}
+  }, [payoutStorageKey, hasAnyVerifiedPayout, upiId, isUpiVerified, bankAccNumber, bankIfsc, bankHolder, bankName, isBankVerified]);
 
   // Auto-Sliding Dual HD Hero Banners
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
@@ -463,29 +506,25 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     });
   }, [referralsList, referralStatusFilter, referralSearch]);
 
-  // Chart Data (30-day timeline)
+  // Chart Data (Dynamic from actual referral database records — zero-state when no activity)
+  const [analyticsRangeFilter, setAnalyticsRangeFilter] = useState<'7D' | '30D' | '3M' | 'ALL'>('7D');
   const chartDays = useMemo(() => {
-    const dates = [
-      'Sep 6', 'Sep 7', 'Sep 8', 'Sep 9', 'Sep 10', 'Sep 11', 'Sep 12', 'Sep 13', 'Sep 14', 'Sep 15',
-      'Sep 16', 'Sep 17', 'Sep 18', 'Sep 19', 'Sep 20', 'Sep 21', 'Sep 22', 'Sep 23', 'Sep 24', 'Sep 25',
-      'Sep 26', 'Sep 27', 'Sep 28', 'Sep 29', 'Sep 30', 'Oct 1', 'Oct 2', 'Oct 3', 'Oct 4', 'Oct 5', 'Oct 6'
-    ];
-    const commissions = [
-      200, 300, 450, 350, 500, 400, 600, 550, 650, 700,
-      600, 750, 800, 700, 850, 600, 700, 800, 750, 900,
-      850, 950, 850, 900, 950, 1000, 950, 1100, 1050, 1150, 1200
-    ];
-    const enrollments = [
-      2, 3, 4, 3, 4, 3, 5, 4, 5, 6,
-      5, 6, 7, 6, 7, 5, 6, 7, 6, 8,
-      7, 8, 6, 7, 8, 9, 8, 10, 9, 10, 11
-    ];
-    return dates.map((date, idx) => ({
-      date,
-      commission: commissions[idx] || 500,
-      enrollments: enrollments[idx] || 5,
-    }));
-  }, []);
+    const labels = analyticsRangeFilter === '7D'
+      ? ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Today']
+      : analyticsRangeFilter === '30D'
+      ? ['W1', 'W2', 'W3', 'W4', 'W5', 'Current']
+      : ['M1', 'M2', 'M3', 'M4', 'M5', 'Current'];
+    return labels.map((label, idx) => {
+      const isLatest = idx === labels.length - 1;
+      return {
+        date: label,
+        clicks: isLatest ? clicks : 0,
+        signups: isLatest ? signups : 0,
+        enrollments: isLatest ? paidEnrollments : 0,
+        commission: isLatest ? totalEarned : 0,
+      };
+    });
+  }, [analyticsRangeFilter, clicks, signups, paidEnrollments, totalEarned]);
 
   // Social Sharing Handlers
   const handleShareSocial = (platform: 'whatsapp' | 'instagram' | 'telegram' | 'linkedin' | 'more') => {
@@ -540,7 +579,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
 
       if (res.success) {
         showToast('🎉 Verified! ₹100 referral commission credited to your wallet!', 'success');
-        const storageKey = `futureai_affiliate_hub_v4_${cleanRefCode}`;
+        const storageKey = `futureai_affiliate_hub_v5_${cleanRefCode}`;
         const updatedRaw = localStorage.getItem(storageKey);
         if (updatedRaw) {
           setHubState(JSON.parse(updatedRaw));
@@ -582,6 +621,10 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     }
     if (amt > availableBalance) {
       showToast(`Insufficient balance! Available: ₹${availableBalance.toLocaleString('en-IN')}`, 'error');
+      return;
+    }
+    if (!isPayoutMethodLinked) {
+      showToast('Please add and verify your Bank Account or UPI ID before requesting a withdrawal.', 'error');
       return;
     }
 
@@ -1438,24 +1481,21 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
             </div>
 
             
-            {/* Quick Claim / Sync Banner for verified payments */}
-            <div className="mt-3 p-3 rounded-2xl bg-gradient-to-r from-amber-50 to-emerald-50 border border-amber-200/80 flex flex-col sm:flex-row items-center justify-between gap-2.5">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
-                <span className="text-xs font-bold text-slate-800">
-                  Enrolled via Referral? Claim your ₹100 Flat Credit
+            {/* Official Commission Rules Box (Rule 2, 3, 4, 5) */}
+            <div className="mt-3 p-3 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-black text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>New Affiliate Commission Rules</span>
                 </span>
+                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">Active</span>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  playUiSound('click');
-                  setIsClaimModalOpen(true);
-                }}
-                className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-emerald-600 hover:from-amber-600 hover:to-emerald-700 active:scale-95 text-white font-black text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5"
-              >
-                <span>⚡ Claim ₹100 Credit</span>
-              </button>
+              <div className="grid grid-cols-2 gap-1.5 text-[10px] font-semibold text-slate-600 pt-0.5">
+                <div>• Free Signup: <strong className="text-slate-900">₹0</strong></div>
+                <div>• Paid Enrollment: <strong className="text-emerald-600">₹100</strong></div>
+                <div>• Failed Payment: <strong className="text-rose-600">₹0</strong></div>
+                <div>• Unique Email &amp; Verified Only</div>
+              </div>
             </div>
 
             {/* 3 Mini Stats */}
@@ -1483,18 +1523,39 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               </div>
             </div>
 
-            {/* Linked Bank / UPI Pill */}
+            {/* Bank / UPI Setup Row (Starts as Not Linked until user adds & verifies details) */}
             <div className="aff-linked-account-row">
-              <div className="aff-hdfc-badge">
-                <span>HDFC</span>
+              <div className="aff-hdfc-badge" style={{ background: hasAnyVerifiedPayout ? '#059669' : '#64748b' }}>
+                <span>{hasAnyVerifiedPayout ? 'LINKED' : 'SETUP'}</span>
               </div>
               <div className="flex-1 min-w-0">
-                <strong className="aff-linked-main truncate block">Linked: {bankName} (••••{bankAccNumber.slice(-4)})</strong>
-                <span className="aff-linked-sub truncate block">{upiId}</span>
+                {hasAnyVerifiedPayout ? (
+                  <>
+                    <strong className="aff-linked-main truncate block">
+                      {isBankVerified && bankAccNumber.length >= 4
+                        ? `Linked: ${bankName || 'Bank'} (••••${bankAccNumber.slice(-4)})`
+                        : `Linked UPI: ${upiId}`}
+                    </strong>
+                    <span className="aff-linked-sub truncate block text-emerald-600 font-bold">Verified Payout Method ✓</span>
+                  </>
+                ) : (
+                  <>
+                    <strong className="aff-linked-main truncate block text-slate-700">Bank / UPI Status: Not Linked</strong>
+                    <span className="aff-linked-sub truncate block">Add &amp; verify Bank or UPI to enable withdrawals</span>
+                  </>
+                )}
               </div>
-              <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0">
-                <Check className="w-3 h-3 stroke-[3]" />
-              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  playUiSound('click');
+                  setWithdrawStep('form');
+                  setIsWithdrawModalOpen(true);
+                }}
+                className="px-2.5 py-1 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-[10px] font-black shrink-0 cursor-pointer"
+              >
+                {hasAnyVerifiedPayout ? 'Manage' : '+ Link Now'}
+              </button>
             </div>
           </div>
 
@@ -1616,10 +1677,10 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   <button
                     key={rng}
                     type="button"
-                    className={`aff-range-pill ${rng === '7D' ? 'active' : ''}`}
+                    className={`aff-range-pill ${analyticsRangeFilter === rng ? 'active' : ''}`}
                     onClick={() => {
                       playUiSound('tab');
-                      showToast(`Filtered data by ${rng} range`, 'info');
+                      setAnalyticsRangeFilter(rng);
                     }}
                   >
                     {rng}
@@ -1663,7 +1724,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 </div>
               </div>
 
-              {/* Center SVG Chart Area */}
+              {/* Center SVG Chart Area (Zero-State until real database activity occurs) */}
               <div className="aff-chart-svg-area">
                 <svg viewBox="0 0 380 180" className="w-full h-[180px]" preserveAspectRatio="none">
                   <defs>
@@ -1689,58 +1750,33 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   <line x1="0" y1="148" x2="380" y2="148" stroke="#f1f5f9" strokeWidth="1" />
                   <line x1="0" y1="170" x2="380" y2="170" stroke="#e2e8f0" strokeWidth="1" />
 
-                  {/* Sep 6 (x = 30) */}
-                  <rect x="20" y="130" width="6" height="40" rx="1.5" fill="url(#barBlue)" />
-                  <rect x="28" y="145" width="6" height="25" rx="1.5" fill="url(#barGreen)" />
-                  <rect x="36" y="158" width="6" height="12" rx="1.5" fill="url(#barPurple)" />
+                  {/* Dynamic Bars rendered strictly from live counts (0 height when count is 0) */}
+                  {clicks > 0 && (
+                    <rect x="320" y={Math.max(30, 170 - Math.min(130, clicks * 8))} width="8" height={Math.min(130, clicks * 8)} rx="1.5" fill="url(#barBlue)" />
+                  )}
+                  {signups > 0 && (
+                    <rect x="332" y={Math.max(30, 170 - Math.min(130, signups * 10))} width="8" height={Math.min(130, signups * 10)} rx="1.5" fill="url(#barGreen)" />
+                  )}
+                  {paidEnrollments > 0 && (
+                    <rect x="344" y={Math.max(30, 170 - Math.min(130, paidEnrollments * 15))} width="8" height={Math.min(130, paidEnrollments * 15)} rx="1.5" fill="url(#barPurple)" />
+                  )}
 
-                  {/* Sep 12 (x = 92) */}
-                  <rect x="82" y="115" width="6" height="55" rx="1.5" fill="url(#barBlue)" />
-                  <rect x="90" y="138" width="6" height="32" rx="1.5" fill="url(#barGreen)" />
-                  <rect x="98" y="152" width="6" height="18" rx="1.5" fill="url(#barPurple)" />
-
-                  {/* Sep 18 (x = 154) */}
-                  <rect x="144" y="100" width="6" height="70" rx="1.5" fill="url(#barBlue)" />
-                  <rect x="152" y="125" width="6" height="45" rx="1.5" fill="url(#barGreen)" />
-                  <rect x="160" y="145" width="6" height="25" rx="1.5" fill="url(#barPurple)" />
-
-                  {/* Sep 24 (x = 216) */}
-                  <rect x="206" y="80" width="6" height="90" rx="1.5" fill="url(#barBlue)" />
-                  <rect x="214" y="110" width="6" height="60" rx="1.5" fill="url(#barGreen)" />
-                  <rect x="222" y="135" width="6" height="35" rx="1.5" fill="url(#barPurple)" />
-
-                  {/* Sep 30 (x = 278) */}
-                  <rect x="268" y="60" width="6" height="110" rx="1.5" fill="url(#barBlue)" />
-                  <rect x="276" y="95" width="6" height="75" rx="1.5" fill="url(#barGreen)" />
-                  <rect x="284" y="122" width="6" height="48" rx="1.5" fill="url(#barPurple)" />
-
-                  {/* Oct 6 (x = 340) */}
-                  <rect x="330" y="40" width="6" height="130" rx="1.5" fill="url(#barBlue)" />
-                  <rect x="338" y="80" width="6" height="90" rx="1.5" fill="url(#barGreen)" />
-                  <rect x="346" y="110" width="6" height="60" rx="1.5" fill="url(#barPurple)" />
-
-                  {/* Commission Line Series (Orange) */}
+                  {/* Flat 0 baseline when no earnings, or dynamic line when earnings > 0 */}
                   <polyline
                     fill="none"
                     stroke="#f59e0b"
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    points="30,145 92,130 154,110 216,85 278,60 340,32"
+                    points={totalEarned > 0 ? `30,170 92,170 154,170 216,170 278,170 340,${Math.max(30, 170 - Math.min(135, (totalEarned / 100) * 14))}` : "30,170 92,170 154,170 216,170 278,170 340,170"}
                   />
 
-                  {/* Points on Line */}
-                  <circle cx="30" cy="145" r="3.5" fill="#f59e0b" stroke="#ffffff" strokeWidth="1.5" />
-                  <circle cx="92" cy="130" r="3.5" fill="#f59e0b" stroke="#ffffff" strokeWidth="1.5" />
-                  <circle cx="154" cy="110" r="3.5" fill="#f59e0b" stroke="#ffffff" strokeWidth="1.5" />
-                  <circle cx="216" cy="85" r="4.5" fill="#f59e0b" stroke="#ffffff" strokeWidth="2" />
-                  <circle cx="278" cy="60" r="3.5" fill="#f59e0b" stroke="#ffffff" strokeWidth="1.5" />
-                  <circle cx="340" cy="32" r="3.5" fill="#f59e0b" stroke="#ffffff" strokeWidth="1.5" />
+                  <circle cx="340" cy={totalEarned > 0 ? Math.max(30, 170 - Math.min(135, (totalEarned / 100) * 14)) : 170} r="4" fill="#f59e0b" stroke="#ffffff" strokeWidth="2" />
                 </svg>
 
                 {/* Live Status Tooltip */}
-                <div className="aff-chart-active-tooltip" style={{ left: '52%', top: '15%' }}>
-                  <div className="text-[9.5px] font-semibold text-slate-400">Live Performance</div>
+                <div className="aff-chart-active-tooltip" style={{ left: '48%', top: '18%' }}>
+                  <div className="text-[9.5px] font-semibold text-slate-400">Live Activity ({analyticsRangeFilter})</div>
                   <div className="text-[11px] font-black text-amber-400 leading-tight">₹{totalEarned.toLocaleString('en-IN')} commission</div>
                   <div className="text-[9.5px] font-bold text-purple-300 leading-tight">{paidEnrollments} enrollments</div>
                   <div className="aff-tooltip-arrow" />
@@ -1762,12 +1798,9 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
 
             {/* X-Axis Labels */}
             <div className="aff-x-axis-row">
-              <span>Sep 6</span>
-              <span>Sep 12</span>
-              <span>Sep 18</span>
-              <span>Sep 24</span>
-              <span>Sep 30</span>
-              <span>Oct 6</span>
+              {chartDays.map((d) => (
+                <span key={d.date}>{d.date}</span>
+              ))}
             </div>
           </div>
 
@@ -2022,8 +2055,12 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                         <button
                           className="text-[10px] font-bold text-sky-600 cursor-pointer"
                           onClick={() => {
+                            if (!upiId.trim() || !upiId.includes('@')) {
+                              showToast('Please enter a valid UPI ID (e.g. yourname@upi)', 'error');
+                              return;
+                            }
                             setIsUpiVerified(true);
-                            showToast('UPI Handle verified successfully!', 'success');
+                            showToast('UPI Handle verified & linked successfully!', 'success');
                           }}
                         >
                           Verify Handle
@@ -2043,31 +2080,72 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   </div>
                 ) : (
                   <div className="mt-3.5 p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col gap-2">
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-500 block">Account Holder</span>
-                      <strong className="text-xs text-slate-800">{bankHolder}</strong>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-slate-600">Bank Account Details</span>
+                      {isBankVerified ? (
+                        <span className="text-[10px] font-bold text-emerald-600">Verified ✓</span>
+                      ) : (
+                        <button
+                          type="button"
+                          className="text-[10px] font-bold text-sky-600 cursor-pointer"
+                          onClick={() => {
+                            if (!bankHolder.trim() || bankAccNumber.trim().length < 8 || bankIfsc.trim().length < 8) {
+                              showToast('Please enter valid Account Holder, Account Number, and IFSC Code.', 'error');
+                              return;
+                            }
+                            setIsBankVerified(true);
+                            showToast('Bank account details verified & linked!', 'success');
+                          }}
+                        >
+                          Verify &amp; Link Bank
+                        </button>
+                      )}
                     </div>
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-500 block">Bank &amp; Masked Account</span>
-                      <strong className="text-xs text-slate-800">{bankName} (XXXX XXXX {bankAccNumber.slice(-4)})</strong>
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-500 block">IFSC Code</span>
-                      <strong className="text-xs text-slate-800">{bankIfsc}</strong>
-                    </div>
+                    <input
+                      type="text"
+                      placeholder="Account Holder Name"
+                      value={bankHolder}
+                      onChange={(e) => { setBankHolder(e.target.value); setIsBankVerified(false); }}
+                      className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold text-slate-800 focus:outline-none"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Bank Name (e.g. SBI, HDFC, ICICI)"
+                      value={bankName}
+                      onChange={(e) => { setBankName(e.target.value); setIsBankVerified(false); }}
+                      className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold text-slate-800 focus:outline-none"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Account Number"
+                      value={bankAccNumber}
+                      onChange={(e) => { setBankAccNumber(e.target.value.replace(/\D/g, '')); setIsBankVerified(false); }}
+                      className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold text-slate-800 focus:outline-none"
+                    />
+                    <input
+                      type="text"
+                      placeholder="IFSC Code (e.g. SBIN0001234)"
+                      value={bankIfsc}
+                      onChange={(e) => { setBankIfsc(e.target.value.toUpperCase()); setIsBankVerified(false); }}
+                      className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold text-slate-800 focus:outline-none"
+                    />
                   </div>
                 )}
 
                 <button
-                  disabled={availableBalance < 500}
+                  disabled={availableBalance < 100 || !isPayoutMethodLinked}
                   className={`w-full mt-5 py-3 rounded-xl font-black text-sm shadow-lg transition-all ${
-                    availableBalance >= 100
+                    availableBalance >= 100 && isPayoutMethodLinked
                       ? 'bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sky-500/25 cursor-pointer active:scale-95'
                       : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
                   }`}
                   onClick={handleProcessWithdrawal}
                 >
-                  {availableBalance >= 100 ? 'Proceed to Confirmation →' : 'Minimum ₹100 Balance Required'}
+                  {!isPayoutMethodLinked
+                    ? 'Verify UPI / Bank Method First'
+                    : availableBalance >= 100
+                    ? 'Proceed to Confirmation →'
+                    : 'Minimum ₹100 Balance Required'}
                 </button>
               </div>
             )}
