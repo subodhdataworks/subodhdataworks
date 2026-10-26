@@ -2054,6 +2054,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         onGoToModules={() => {
           goToLearningModules();
         }}
+        onOpenLogin={() => setAuthModalOpen(true)}
         onNavigateToModule={(modId) => {
           if (modId === 'python') {
             setSelectedModuleView('python');
