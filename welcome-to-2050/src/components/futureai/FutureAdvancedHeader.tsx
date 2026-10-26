@@ -257,8 +257,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
         if (typeof window !== 'undefined') window.location.hash = '#practice';
         break;
       case 'earn':
-        if (onOpenWallet) onOpenWallet();
-        else onNavigateEarn();
+        onNavigateEarn();
         if (typeof window !== 'undefined') window.location.hash = '#income';
         break;
       case 'certificate':
@@ -294,7 +293,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
       case 'practice':
         return activeNavTab === 'practice' || h.includes('#practice') || h.includes('#challenge') || h.includes('#game') || h.includes('#arena');
       case 'earn':
-        return activeNavTab === 'earn' || h.includes('#income') || h.includes('#wallet') || h.includes('#earn') || h.includes('#referral');
+        return activeNavTab === 'earn' || h.includes('#income') || h.includes('#wallet') || h.includes('#earn') || h.includes('#referral') || h.includes('#earnings') || h.includes('#earncash');
       case 'certificate':
         return h.includes('#cert');
       case 'internship':
@@ -813,7 +812,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
               </button>
 
-              {/* 4. Earning & Wallet — Wallet */}
+              {/* 4. Earning & Wallet — Earn Cash */}
               <button
                 type="button"
                 onClick={() => handleDrawerNavigate('earn')}
@@ -824,10 +823,15 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Wallet className={`w-5 h-5 shrink-0 ${isItemActive('earn') ? 'text-amber-500' : 'text-slate-500 group-hover:text-amber-500'}`} />
+                  <Coins className={`w-5 h-5 shrink-0 ${isItemActive('earn') ? 'text-amber-500' : 'text-slate-500 group-hover:text-amber-500'}`} />
                   <span className="text-sm">Earning &amp; Wallet</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200/60">
+                    Earn Cash
+                  </span>
+                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
+                </div>
               </button>
 
               {/* 5. Certificate — Award */}

@@ -468,6 +468,32 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
 
   const affiliateBanners = useMemo(() => [
     {
+      id: 'banner-share-earn',
+      theme: 'share-earn',
+      bgImage: '/images/affiliate/bg_share_earn_light_real_girl.jpg',
+      badgeTag: '🔥 EARN CASH • CREATOR & STUDENT PARTNER PROGRAM',
+      badgeClass: 'badge-emerald',
+      titleLine1: 'Earn Cash & Share',
+      titleLine2: 'Real Money 🚀',
+      subtitle: 'Invite students to join Future IT and earn flat ₹100 commission for every enrollment.',
+      steps: [
+        { num: '1', icon: '👤+', label: 'Share Link' },
+        { num: '2', icon: '👥', label: 'Students Join' },
+        { num: '3', icon: '🎓', label: 'They Enroll' },
+        { num: '4', icon: '💰', label: 'Earn Commission' },
+      ],
+      featurePills: [
+        { icon: '🪙', label: 'Flat ₹100 / Enrollment' },
+        { icon: '👥', label: 'Zero Purchase Needed' },
+        { icon: '🎁', label: 'Real-Time Tracking' },
+        { icon: '⚡', label: 'Unlimited Earnings' },
+      ],
+      ctaText: 'Copy Referral Link 🔗',
+      ctaType: 'copy',
+      socialProof: '12,500+ Active Student Partners',
+      alt: 'Earn Cash & Share Real Money'
+    },
+    {
       id: 'banner-withdraw',
       theme: 'withdraw',
       bgImage: '/images/affiliate/bg_withdraw_light_real_boy.jpg',
@@ -486,35 +512,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       ctaType: availableBalance >= 100 ? 'withdraw' : 'copy',
       socialProof: '₹24.5 Lakhs+ Verified Payouts',
       alt: 'Withdraw Earnings Anytime Hassle-Free - Real Student'
-    },
-    {
-      id: 'banner-share-earn',
-      theme: 'share-earn',
-      bgImage: '/images/affiliate/bg_share_earn_light_real_girl.jpg',
-      badgeTag: '🔥 CREATOR & STUDENT PARTNER PROGRAM',
-      badgeClass: 'badge-emerald',
-      titleLine1: 'Share & Earn',
-      titleLine2: 'Real Money 🚀',
-      subtitle: 'Invite students to join Future IT and earn flat ₹100 commission for every enrollment.',
-      steps: [
-        { num: '1', icon: '👤+', label: 'Share Link' },
-        { num: '2', icon: '👥', label: 'Students Join' },
-        { num: '3', icon: '🎓', label: 'They Enroll' },
-        { num: '4', icon: '💰', label: 'Earn Commission' },
-      ],
-      featurePills: [
-        { icon: '🪙', label: 'Flat ₹100 / Enrollment' },
-        { icon: '👥', label: 'Zero Purchase Needed' },
-        { icon: '🎁', label: 'Real-Time Tracking' },
-        { icon: '⚡', label: 'Unlimited Earnings' },
-      ],
-      ctaText: 'Copy Referral Link 🔗',
-      ctaType: 'copy',
-      socialProof: '12,500+ Active Student Partners',
-      alt: 'Share & Earn Real Money'
     }
   ], [availableBalance]);
-
   useEffect(() => {
     if (isBannerHovered) return;
     const interval = setInterval(() => {

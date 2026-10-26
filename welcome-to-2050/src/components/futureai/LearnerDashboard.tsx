@@ -404,7 +404,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     if (typeof window !== 'undefined') {
       const h = window.location.hash;
       if (h === '#game' || h === '#games' || h === '#arena' || h === '#gamearena' || h.startsWith('#python-challenges') || h.startsWith('#pythonchallenges') || h.startsWith('#sql-challenges') || h.startsWith('#sqlchallenges')) return 'game';
-      if (h === '#income' || h === '#earnings' || h === '#myearnings' || h === '#myearning' || h === '#earning') return 'income';
+      if (h === '#income' || h === '#earnings' || h === '#myearnings' || h === '#myearning' || h === '#earning' || h === '#earn' || h === '#earncash' || h === '#earn-cash' || h === '#wallet') return 'income';
       if (h === '#placement' || h === '#jobs' || h === '#placements') return 'placement';
       if (h === '#referral') return 'referral';
       if (h === '#wallet') return 'wallet';
@@ -675,7 +675,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         setSelectedModuleView(null);
         setActiveTopicWs(null);
         setDockTab('game');
-      } else if (baseH === '#income' || baseH === '#earnings' || baseH === '#myearnings' || baseH === '#myearning' || baseH === '#earning') {
+      } else if (baseH === '#income' || baseH === '#earnings' || baseH === '#myearnings' || baseH === '#myearning' || baseH === '#earning' || baseH === '#earn' || baseH === '#earncash' || baseH === '#earn-cash' || baseH === '#wallet') {
         setSelectedModuleView(null);
         setActiveTopicWs(null);
         setDockTab('income');

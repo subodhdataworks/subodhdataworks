@@ -330,7 +330,7 @@ export const App: React.FC = () => {
                 '#ml-engineering', '#mlengineering', '#ml-eng', '#ml',
                 '#ai-engineering', '#aiengineering', '#ai-eng', '#ai',
                 '#full-stack', '#fullstack', '#fullstack-mern',
-                '#intro-game', '#pyintro', '#earnings', '#wallet', '#withdraw',
+                '#intro-game', '#pyintro', '#earnings', '#wallet', '#withdraw', '#earn', '#earncash', '#earn-cash',
                 '#placement', '#income', '#referral', '#dashboard',
                 '#certificate', '#certificates', '#internship', '#internships',
                 '#recommendation', '#recommendation-letter'
