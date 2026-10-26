@@ -6274,3 +6274,72 @@
     text-align: center !important;
   }
 }
+
+/* =========================================================
+   EXTRA MOBILE BREAKPOINTS for StudentCoursesDashboard
+   Ensuring 320px–430px screens render correctly.
+   ========================================================= */
+@media (max-width: 600px) {
+  .scd-native-hero-banner {
+    min-height: auto !important;
+    max-height: none !important;
+    height: auto !important;
+    border-radius: 14px !important;
+    margin-top: 0 !important;
+  }
+  .scd-nhb-content {
+    max-width: 100% !important;
+    padding: 12px 12px !important;
+    gap: 5px !important;
+  }
+  .scd-future-eyebrow-pill {
+    font-size: 9px !important;
+    padding: 2px 8px !important;
+  }
+  .scd-future-hero-hl {
+    font-size: clamp(14px, 4vw, 18px) !important;
+    line-height: 1.25 !important;
+  }
+  .scd-future-hero-sub {
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+  }
+  .scd-future-pills-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    overflow-x: hidden !important;
+  }
+  .scd-future-pill {
+    font-size: 10px !important;
+    padding: 3px 8px !important;
+  }
+  .scd-future-cta-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+  }
+  .scd-future-explore-btn {
+    font-size: 12px !important;
+    padding: 8px 16px !important;
+  }
+  /* Section header controls wrap on mobile */
+  .lhh-controls-group {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+  /* What Will You Get section */
+  .lhh-wyg-full-section {
+    padding: 14px 12px !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .scd-nhb-bg-img {
+    opacity: 0.35 !important;
+  }
+  .scd-nhb-gradient-overlay {
+    background: rgba(255,255,255,0.88) !important;
+  }
+}
