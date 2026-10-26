@@ -255,6 +255,18 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
             <Search className="w-4 h-4" />
           </button>
 
+          {/* 2. Wallet Icon with Dynamic Amount */}
+          <button
+            type="button"
+            onClick={handleWalletClick}
+            className="flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 text-emerald-700 font-bold text-[11px] transition-all active:scale-95 cursor-pointer shadow-2xs"
+            aria-label="Wallet Balance"
+            title="Your Earnings Wallet"
+          >
+            <Wallet className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+            <span>₹{walletBalance.toLocaleString('en-IN')}</span>
+          </button>
+
           {/* 3. Notification Bell (Only show badge when unread > 0, default 0) */}
           <button
             type="button"

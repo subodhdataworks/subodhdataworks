@@ -129,6 +129,56 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
     return userAvatar || '';
   });
 
+  // Dynamic Wallet Balance State
+  const readWalletBalance = (): number => {
+    if (typeof window === 'undefined') return 0;
+    try {
+      const loggedIn = isLoggedIn || localStorage.getItem('futureai_logged_in') === 'true';
+      if (!loggedIn) return 0;
+      const customWallet = localStorage.getItem('futureai_user_wallet');
+      if (customWallet !== null && customWallet !== '') {
+        const parsed = parseInt(customWallet, 10);
+        if (!isNaN(parsed) && parsed >= 0) return parsed;
+      }
+      const email = (localStorage.getItem('futureai_user_email') || '').trim().toLowerCase();
+      const phone = (localStorage.getItem('futureai_user_phone') || '').trim();
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('futureai_affiliate_hub_v5_')) {
+          if ((email && k.toLowerCase().includes(email)) || (phone && k.includes(phone))) {
+            const item = localStorage.getItem(k);
+            if (item) {
+              const p = JSON.parse(item);
+              if (typeof p.availableBalance === 'number' && p.availableBalance >= 0) {
+                return p.availableBalance;
+              }
+            }
+          }
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return 0;
+  };
+
+  const [walletBalance, setWalletBalance] = useState<number>(readWalletBalance);
+
+  useEffect(() => {
+    const syncWallet = () => setWalletBalance(readWalletBalance());
+    syncWallet();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', syncWallet);
+      window.addEventListener('focus', syncWallet);
+      window.addEventListener('futureai_wallet_updated', syncWallet);
+      return () => {
+        window.removeEventListener('storage', syncWallet);
+        window.removeEventListener('focus', syncWallet);
+        window.removeEventListener('futureai_wallet_updated', syncWallet);
+      };
+    }
+  }, [isLoggedIn, userName]);
+
   // Edit form state
   const [editNameInput, setEditNameInput] = useState(studentName);
   const [editPhoneInput, setEditPhoneInput] = useState(studentPhone);
@@ -490,27 +540,9 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               <GraduationCap className={`w-4 h-4 ${activeNavTab === 'internship' ? 'text-[#1a73e8]' : 'text-slate-500'}`} />
               <span>Internship</span>
             </button>
-
-            {/* 7. Placement */}
-            <button
-              type="button"
-              onClick={() => {
-                soundEffects.playClick();
-                scrollToTop();
-                onNavigatePlacement();
-              }}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all duration-200 cursor-pointer ${
-                activeNavTab === 'placement'
-                  ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-xs'
-                  : 'text-slate-700 hover:text-[#1a73e8] hover:bg-slate-50'
-              }`}
-            >
-              <Briefcase className={`w-4 h-4 ${activeNavTab === 'placement' ? 'text-[#1a73e8]' : 'text-slate-500'}`} />
-              <span>Placement</span>
-            </button>
           </nav>
 
-          {/* RIGHT: Search → Notification → Profile Picture → Hamburger Menu (☰) */}
+          {/* RIGHT: Search → Wallet + Amount → Notification → Profile Picture → Hamburger Menu (☰) */}
           <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-2.5 shrink-0">
             {/* Subtle Divider (Desktop) */}
             <div className="hidden lg:block h-6 w-[1px] bg-slate-200/90 mx-0.5" />
@@ -530,7 +562,24 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               <Search className="w-5 h-5 text-slate-700" />
             </button>
 
-            {/* 2. Notification Bell with Red Badge Dot */}
+            {/* 2. Wallet Icon with Dynamic Balance Amount (Next to Notification) */}
+            <button
+              type="button"
+              onClick={() => {
+                soundEffects.playClick();
+                scrollToTop();
+                onNavigateEarn();
+                if (typeof window !== 'undefined') window.location.hash = '#income';
+              }}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100/90 border border-emerald-200/80 text-emerald-700 font-bold text-xs sm:text-[13px] transition-all active:scale-95 cursor-pointer shadow-2xs"
+              title="Your Earnings Wallet"
+              aria-label="Wallet Balance"
+            >
+              <Wallet className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>₹{walletBalance.toLocaleString('en-IN')}</span>
+            </button>
+
+            {/* 3. Notification Bell with Red Badge Dot */}
             <div className="relative" ref={notificationsRef}>
               <button
                 type="button"
