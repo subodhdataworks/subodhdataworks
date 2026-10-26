@@ -20,7 +20,10 @@ import {
   Filter,
   Check,
   Zap,
-  BookOpen
+  BookOpen,
+  BarChart3,
+  Trophy,
+  BriefcaseBusiness
 } from 'lucide-react';
 
 // =========================================================================
@@ -613,34 +616,72 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
   return (
     <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 text-slate-800">
       
-      {/* ─── 1. HERO BANNER (Original 3D AI Generated Art, No Crop) ─── */}
-      <section className="relative rounded-3xl bg-gradient-to-r from-[#eef6ff] via-[#f3f7fd] to-[#ebf3ff] border border-[#d6e6fe] shadow-[0_4px_24px_rgba(37,99,235,0.06)] p-4 min-[375px]:p-6 sm:p-8 md:p-10 overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
-        {/* Soft Background Radial Light */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-10 w-72 h-72 bg-indigo-300/15 rounded-full blur-2xl pointer-events-none" />
+      {/* ─── 1. HERO BANNER (Compact Premium Reference Design) ─── */}
+      <section className="relative rounded-[22px] bg-gradient-to-r from-[#f7fbff] via-[#eef5ff] to-[#e3eeff] border border-[#d6e6fe] shadow-[0_6px_28px_rgba(37,99,235,0.08)] overflow-hidden flex flex-col md:flex-row items-stretch md:h-[320px] md:max-h-[340px]">
+        {/* Soft futuristic glow & waves */}
+        <div className="absolute -top-24 left-1/3 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-10 w-80 h-80 bg-sky-300/20 rounded-full blur-3xl pointer-events-none" />
+        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-60" viewBox="0 0 1200 320" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 250 C 250 180, 450 320, 700 240 S 1050 160, 1200 220" fill="none" stroke="#bcd6ff" strokeWidth="1.5" />
+          <path d="M0 280 C 300 220, 500 330, 760 270 S 1080 200, 1200 260" fill="none" stroke="#d3e4ff" strokeWidth="1.2" />
+        </svg>
 
-        {/* Left Typography */}
-        <div className="relative z-10 text-left max-w-xl w-full md:w-auto">
-          <h1 className="text-2xl min-[375px]:text-3xl sm:text-4xl md:text-5xl font-black text-[#0f172a] tracking-tight leading-tight">
-            Coding <span className="text-[#1a73e8]">Practice</span>
+        {/* Left Content */}
+        <div className="relative z-10 text-left flex flex-col justify-center px-5 pt-6 pb-4 sm:px-8 md:pl-10 md:pr-4 md:py-6 md:w-[46%] lg:w-[44%] shrink-0">
+          <span className="inline-flex items-center gap-1.5 self-start px-3 py-1 rounded-full bg-[#e3eeff] border border-[#c9dcff] text-[#1a5fe0] text-[10px] sm:text-[11px] font-extrabold tracking-wide uppercase">
+            <Code2 className="w-3.5 h-3.5" />
+            Practice Today, Get Job-Ready
+          </span>
+          <h1 className="mt-2.5 text-[28px] min-[375px]:text-[32px] sm:text-[40px] lg:text-[46px] font-black text-[#0b1a3a] tracking-tight leading-[1.05]">
+            Coding <span className="text-[#1a6bff]">Practice</span>
           </h1>
-          <p className="mt-2 sm:mt-3 text-slate-600 text-xs min-[375px]:text-sm sm:text-base md:text-lg font-normal leading-relaxed">
-            Practice course-wise code, complete challenges and level up your skills.
+          <p className="mt-2 text-slate-600 text-[13px] sm:text-[15px] leading-snug max-w-md">
+            Practice course-wise code, solve real-world problems and level up your skills.
           </p>
+
+          {/* Feature highlights */}
+          <ul className="mt-3.5 grid grid-cols-4 max-w-md">
+            {[
+              { icon: <Code2 className="w-4 h-4" />, bg: 'bg-blue-50 text-[#1a6bff] border-blue-100', l1: 'Course-wise', l2: 'Problems' },
+              { icon: <BarChart3 className="w-4 h-4" />, bg: 'bg-emerald-50 text-emerald-600 border-emerald-100', l1: 'Track Your', l2: 'Progress' },
+              { icon: <Trophy className="w-4 h-4" />, bg: 'bg-amber-50 text-amber-500 border-amber-100', l1: 'Challenge', l2: 'Yourself' },
+              { icon: <BriefcaseBusiness className="w-4 h-4" />, bg: 'bg-rose-50 text-rose-500 border-rose-100', l1: 'Get', l2: 'Job-Ready' },
+            ].map((f, i) => (
+              <li key={f.l2} className={`flex flex-col items-start gap-1 px-1.5 sm:px-3 ${i > 0 ? 'border-l border-slate-200' : '!pl-0'}`}>
+                <span className={`w-7 h-7 rounded-lg border flex items-center justify-center ${f.bg}`}>{f.icon}</span>
+                <span className="text-[10px] min-[375px]:text-[11px] sm:text-xs font-bold text-[#0b1a3a] leading-tight">
+                  {f.l1}<br />{f.l2}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <button
+            type="button"
+            onClick={() => {
+              soundEffects.playClick();
+              document.getElementById('practice-courses')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }}
+            className="mt-4 self-start inline-flex items-center gap-2 h-11 px-6 rounded-full bg-gradient-to-r from-[#1a6bff] to-[#0b5cf0] hover:from-[#0b5cf0] hover:to-[#0047d6] text-white text-sm font-bold shadow-[0_6px_18px_rgba(26,107,255,0.35)] transition-all active:scale-95 cursor-pointer"
+          >
+            Start Practicing Now
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
 
-        {/* Right 3D Developer & Floating Badges (Original Uncropped Render) */}
-        <div className="relative z-10 shrink-0 w-full md:w-auto flex items-center justify-center">
+        {/* Right Illustration (from provided reference) */}
+        <div className="relative z-0 flex-1 min-w-0 flex items-end justify-center md:justify-end">
           <img
-            src="/images/arena/coding_practice_hero_original.jpg"
-            alt="Hackathon/DSA Practice 3D Character"
-            className="w-full max-w-[340px] sm:max-w-[400px] md:max-w-[440px] rounded-2xl object-cover shadow-sm transition-transform hover:scale-[1.02] duration-300 select-none"
+            src="/images/arena/coding_practice_hero_v2.png"
+            alt="3D student coding on a laptop with Python, DSA, SQL and Web Dev books"
+            className="w-full h-auto md:h-full md:w-auto max-w-full object-contain object-right-bottom select-none [mask-image:linear-gradient(to_right,transparent,black_12%)]"
+            draggable={false}
           />
         </div>
       </section>
 
       {/* ─── 2. FILTER PILLS & 13 COURSES BAR (1:1 with Reference Design) ─── */}
-      <section className="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <section id="practice-courses" className="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 scroll-mt-24">
         {/* Filter Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full no-scrollbar">
           {CATEGORIES.map((cat) => {
