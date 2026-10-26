@@ -311,115 +311,94 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center w-full">
             
             {/* LEFT COLUMN: Punchy Headline & CTAs (lg:col-span-6) */}
-            <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center text-center lg:text-left z-10 pl-0 lg:pl-3 min-w-0">
+            <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center text-left z-10 pl-0 lg:pl-3 min-w-0">
               
-              {/* Main Headline — Exact 3-Line Premium Typography */}
-              <h1 className="flex flex-col items-center lg:items-start tracking-tight">
+              {/* Main Headli{/* Main Headline — Exact 3-Line Poppins Black Hierarchy */}
+              <h1 className="flex flex-col items-start text-left font-poppins">
                 
-                {/* Line 1: World's First (Biggest & Most Eye-Catching: 76–84px Desktop, #0866FF → #5825E8 Gradient) */}
-                <div className="relative inline-block mt-3 sm:mt-4 lg:mt-5 mb-1 sm:mb-1.5 lg:mb-2">
+                {/* Line 1: World's First (54px Desktop, Medium-Large, #0866FF → #5727E8 Gradient) */}
+                <div className="relative inline-block mt-3 sm:mt-4 lg:mt-4 mb-0.5">
                   
-                  {/* Golden Crown above the word "World's" */}
+                  {/* Small premium golden crown above the left side of "World's" */}
                   <span
-                    className="absolute -top-5 sm:-top-6 lg:-top-8 left-1 sm:left-2 -rotate-12 z-20 pointer-events-none select-none"
+                    className="absolute -top-4 sm:-top-5 lg:-top-6 left-0.5 sm:left-1 -rotate-12 z-20 pointer-events-none select-none"
                     aria-hidden="true"
                   >
                     <svg
-                      className="w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10 drop-shadow-[0_4px_10px_rgba(245,158,11,0.5)]"
+                      className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-[#FFB800] drop-shadow-[0_2px_6px_rgba(255,184,0,0.45)]"
                       viewBox="0 0 24 24"
-                      fill="none"
+                      fill="currentColor"
                     >
-                      <defs>
-                        <linearGradient id="goldCrownHero" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor="#FDE047" />
-                          <stop offset="45%" stopColor="#F59E0B" />
-                          <stop offset="100%" stopColor="#D97706" />
-                        </linearGradient>
-                      </defs>
-                      <path
-                        d="M2.5 7.5L7 12L12 4L17 12L21.5 7.5L19.5 18.5H4.5L2.5 7.5Z"
-                        fill="url(#goldCrownHero)"
-                        stroke="#B45309"
-                        strokeWidth="0.75"
-                        strokeLinejoin="round"
-                      />
-                      <circle cx="2.5" cy="7.5" r="1.5" fill="#FEF08A" />
-                      <circle cx="12" cy="4" r="1.8" fill="#FEF08A" />
-                      <circle cx="21.5" cy="7.5" r="1.5" fill="#FEF08A" />
-                      <rect x="4" y="19" width="16" height="2" rx="1" fill="url(#goldCrownHero)" stroke="#B45309" strokeWidth="0.5" />
+                      <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" />
+                      <circle cx="3" cy="5" r="1.2" fill="#FFE580" />
+                      <circle cx="12" cy="4" r="1.4" fill="#FFE580" />
+                      <circle cx="21" cy="5" r="1.2" fill="#FFE580" />
                     </svg>
                   </span>
 
-                  {/* Subtle decorative blue accent strokes near "First" */}
+                  {/* Three small cyan accent strokes beside "First" */}
                   <span
-                    className="absolute -top-2 sm:-top-3 lg:-top-4 -right-6 sm:-right-8 lg:-right-10 pointer-events-none select-none"
+                    className="absolute -top-1 sm:-top-1.5 lg:-top-2 -right-5 sm:-right-6 lg:-right-7 pointer-events-none select-none"
                     aria-hidden="true"
                   >
                     <svg
-                      className="w-6 h-6 sm:w-7 sm:h-7 lg:w-9 lg:h-9 text-[#00D2FF] drop-shadow-[0_0_12px_rgba(0,210,255,0.85)] animate-pulse"
-                      viewBox="0 0 24 24"
+                      className="w-4 h-4 sm:w-5 sm:h-5 lg:w-5 lg:h-5 text-[#00D2FF]"
+                      viewBox="0 0 20 20"
                       fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
                     >
-                      <line x1="12" y1="2" x2="12" y2="7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                      <line x1="21" y1="8" x2="16.5" y2="10.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                      <line x1="19" y1="18" x2="15" y2="15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                      <path d="M7 11L8.5 15L12.5 16.5L8.5 18L7 22L5.5 18L1.5 16.5L5.5 15L7 11Z" fill="#00D2FF" />
+                      <line x1="10" y1="2" x2="10" y2="7" />
+                      <line x1="17" y1="6" x2="13" y2="9.5" />
+                      <line x1="17" y1="15" x2="13" y2="12.5" />
                     </svg>
                   </span>
 
-                  {/* Line 1 Text */}
-                  <span className="text-[38px] min-[390px]:text-[44px] sm:text-[60px] md:text-[68px] lg:text-[76px] xl:text-[84px] font-black tracking-tight leading-[1.03] bg-gradient-to-r from-[#0866FF] to-[#5825E8] bg-clip-text text-transparent block select-text">
+                  {/* Line 1 Text: World's First (Large Desktop: 54px, Laptop: 46px, Tablet: 38px, Mobile: 30px) */}
+                  <span className="text-[30px] sm:text-[38px] lg:text-[46px] xl:text-[54px] font-black tracking-[-1.5px] leading-[1.05] bg-gradient-to-r from-[#0866FF] to-[#5727E8] bg-clip-text text-transparent block select-text">
                     World&apos;s First
                   </span>
 
-                  {/* Thin curved electric-blue underline */}
+                  {/* Thin curved blue-purple underline below the text */}
                   <svg
-                    className="absolute -bottom-2 sm:-bottom-2.5 lg:-bottom-3.5 left-0 w-full h-3 sm:h-3.5 lg:h-4 overflow-visible pointer-events-none select-none"
-                    viewBox="0 0 300 20"
+                    className="absolute -bottom-1 sm:-bottom-1.5 lg:-bottom-2 left-0 w-full h-2.5 sm:h-3 lg:h-3.5 overflow-visible pointer-events-none select-none"
+                    viewBox="0 0 300 16"
                     fill="none"
                     preserveAspectRatio="none"
                     aria-hidden="true"
                   >
                     <defs>
-                      <linearGradient id="electricBlueUnderline" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#0866FF" stopOpacity="0.4" />
-                        <stop offset="25%" stopColor="#00D2FF" stopOpacity="1" />
-                        <stop offset="75%" stopColor="#00D2FF" stopOpacity="1" />
-                        <stop offset="100%" stopColor="#5825E8" stopOpacity="0.4" />
+                      <linearGradient id="heroCurvedUnderline" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#0866FF" />
+                        <stop offset="100%" stopColor="#5727E8" />
                       </linearGradient>
-                      <filter id="glowUnderline" x="-10%" y="-50%" width="120%" height="200%">
-                        <feGaussianBlur stdDeviation="1.5" result="glow" />
-                        <feMerge>
-                          <feMergeNode in="glow" />
-                          <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                      </filter>
                     </defs>
                     <path
-                      d="M 6,15 Q 150,3 294,13"
-                      stroke="url(#electricBlueUnderline)"
-                      strokeWidth="3.5"
+                      d="M 4,12 Q 150,2 296,10"
+                      stroke="url(#heroCurvedUnderline)"
+                      strokeWidth="2.5"
                       strokeLinecap="round"
-                      filter="url(#glowUnderline)"
                     />
                   </svg>
                 </div>
 
-                {/* Line 2: Learn Coding (62px on Desktop) */}
-                <span className="text-[30px] min-[390px]:text-[34px] sm:text-[46px] md:text-[52px] lg:text-[58px] xl:text-[62px] font-black tracking-tight leading-[1.06] text-[#0F172A] block mt-1 sm:mt-1.5">
+                {/* Line 2: Learn Coding (Largest and Most Prominent: Large Desktop: 70px, Laptop: 60px, Tablet: 48px, Mobile: 38px, Deep Navy #08152F) */}
+                <span className="text-[38px] sm:text-[48px] lg:text-[60px] xl:text-[70px] font-black text-[#08152F] leading-[1.05] tracking-[-2px] block mt-2 text-left select-text">
                   Learn Coding
                 </span>
 
-                {/* Line 3: by Playing Games */}
-                <span className="text-[28px] min-[390px]:text-[32px] sm:text-[42px] md:text-[48px] lg:text-[54px] xl:text-[58px] font-black tracking-tight leading-[1.08] text-[#0F172A] block mt-0.5 sm:mt-1">
-                  by{' '}
-                  <span className="bg-gradient-to-r from-[#0866FF] via-[#00A3FF] to-[#25D366] bg-clip-text text-transparent">
-                    Playing Games
+                {/* Line 3: by Playing Games (Large Desktop: 64px, Laptop: 54px, Tablet: 42px, Mobile: 32px) */}
+                <span className="text-[32px] sm:text-[42px] lg:text-[54px] xl:text-[64px] font-black leading-[1.08] tracking-[-1.5px] block mt-1 text-left select-text whitespace-normal lg:whitespace-nowrap">
+                  <span className="text-[#08152F]">by</span>{' '}
+                  <span className="bg-gradient-to-r from-[#0866FF] to-[#A100E8] bg-clip-text text-transparent">
+                    Playing
+                  </span>{' '}
+                  <span className="bg-gradient-to-r from-[#F02C62] to-[#FF8A00] bg-clip-text text-transparent">
+                    Games
                   </span>
                 </span>
-              </h1>
-
-              {/* Tagline */}
+              </h1>   {/* Tagline */}
               <div className="mt-2 sm:mt-2.5 text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-600 leading-snug max-w-lg mx-auto lg:mx-0">
                 <p>Real Practical Courses. Real Projects. Industry Guidance.</p>
                 <p className="text-slate-900 font-bold mt-0.5">From Learning to Earning, We&apos;re With You.</p>

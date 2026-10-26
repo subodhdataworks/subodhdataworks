@@ -44,6 +44,7 @@ export default {
         }
       },
       fontFamily: {
+        poppins: ["'Poppins'", 'sans-serif'],
         sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"Segoe UI"', 'Roboto', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', '"SF Mono"', 'Menlo', 'monospace'],
       },
