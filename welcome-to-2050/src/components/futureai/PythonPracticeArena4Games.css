@@ -2169,3 +2169,602 @@
   letter-spacing: 0.02em;
   margin-left: 2px;
 }
+
+.ppa-voice-controls-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Hide mobile-only sections on Desktop (>= 768px) so Desktop stays 100% unchanged */
+.ppa-mobile-course-hero,
+.ppa-mobile-breadcrumb-card,
+.ppa-mobile-indian-pill {
+  display: none;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE LEARNING INTERFACE (< 768px)
+   Exact 1:1 Match to Approved Reference Design media_1793045687114_c95a15e7.png
+   Desktop (>= 768px) remains 100% untouched.
+   ════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  .ptw-top-navbar,
+  .ppa-hide-unified-on-mobile,
+  .ppa-left-card-col,
+  .ppa-sound-toggle-btn,
+  .ppa-desktop-voice-lbl {
+    display: none !important;
+  }
+
+  .ptw-root-container {
+    padding: 8px 10px 24px 10px !important;
+    background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 35%, #f8fafc 100%) !important;
+  }
+
+  .ppa-container {
+    gap: 10px;
+  }
+
+  /* ── 1. Mobile Top Course Hero Card ── */
+  .ppa-mobile-course-hero {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(224, 242, 254, 0.92) 55%, rgba(240, 249, 255, 0.96) 100%);
+    border: 1.5px solid rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 14px 10px 12px 12px;
+    box-shadow: 0 8px 24px rgba(15, 76, 189, 0.08);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ppa-mch-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .ppa-mch-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ppa-mch-title {
+    font-size: 1.32rem;
+    font-weight: 900;
+    color: #0f172a;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin: 0 0 4px 0;
+  }
+
+  .ppa-mch-subtitle {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 6px 0;
+    line-height: 1.25;
+  }
+
+  .ppa-mch-progress-block {
+    max-width: 210px;
+  }
+
+  .ppa-mch-progress-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 5px;
+  }
+
+  .ppa-mch-progress-track {
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.28);
+    overflow: hidden;
+  }
+
+  .ppa-mch-progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #1d4ed8, #3b82f6);
+  }
+
+  .ppa-mch-mascot-wrap {
+    width: 132px;
+    height: 102px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ppa-mch-mascot-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 14px;
+    mix-blend-mode: darken;
+    filter: drop-shadow(0 6px 14px rgba(2, 132, 199, 0.18));
+  }
+
+  .ppa-mch-pills-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .ppa-mch-pill-btn {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid #dbeafe;
+    border-radius: 9px;
+    padding: 5px 4px;
+    font-size: 0.56rem;
+    font-weight: 800;
+    color: #0f172a;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  }
+
+  .ppa-mch-pill-icon {
+    width: 15px;
+    height: 15px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    flex-shrink: 0;
+  }
+
+  .ppa-mch-pill-icon svg {
+    width: 10px !important;
+    height: 10px !important;
+  }
+
+  .ppa-mch-pill-icon.blue {
+    background: #0284c7;
+  }
+  .ppa-mch-pill-icon.purple {
+    background: #7c3aed;
+  }
+  .ppa-mch-pill-icon.pink {
+    background: #db2777;
+  }
+  .ppa-mch-pill-icon.green {
+    background: #10b981;
+  }
+
+  /* ── 2. Mobile Breadcrumb & Topic Selector Card ── */
+  .ppa-mobile-breadcrumb-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1.5px solid rgba(226, 232, 240, 0.95);
+    border-radius: 18px;
+    padding: 10px 12px;
+    box-shadow: 0 4px 16px rgba(15, 76, 189, 0.05);
+  }
+
+  .ppa-mbc-back-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .ppa-mbc-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ppa-mbc-crumbs {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 3px;
+    font-size: 0.72rem;
+    line-height: 1.25;
+  }
+
+  .ppa-mbc-link {
+    color: #0284c7;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .ppa-mbc-mod {
+    color: #334155;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .ppa-mbc-select-box {
+    position: relative;
+    width: 100%;
+  }
+
+  .ppa-mbc-select {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    background: #f8fbff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 6px 26px 6px 10px;
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: #1d4ed8;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ppa-mbc-select-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    color: #2563eb;
+    pointer-events: none;
+  }
+
+  /* ── 3. Mobile 4-Step Horizontal Stepper Bar ── */
+  .ppa-stepper-bar {
+    height: auto !important;
+    padding: 5px 6px !important;
+    border-radius: 16px !important;
+    gap: 2px !important;
+    margin-bottom: 2px !important;
+    justify-content: space-between;
+    overflow-x: hidden !important;
+  }
+
+  .ppa-step-item {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    padding: 4px 3px !important;
+    gap: 3px !important;
+    border-radius: 11px !important;
+  }
+
+  .ppa-step-item.active {
+    flex: 1.15 1 0% !important;
+    background: #f0f9ff !important;
+    border: 1.5px solid #7dd3fc !important;
+    box-shadow: 0 2px 10px rgba(56, 189, 248, 0.2) !important;
+    padding: 4px 5px !important;
+    border-radius: 12px !important;
+  }
+
+  .ppa-step-badges-wrap {
+    gap: 2px !important;
+    flex-shrink: 0;
+  }
+
+  .ppa-step-circle-badge {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .ppa-step-circle-badge svg {
+    width: 11px !important;
+    height: 11px !important;
+  }
+
+  .ppa-step-num-pill {
+    width: 13px !important;
+    height: 13px !important;
+    font-size: 8px !important;
+  }
+
+  .ppa-step-meta {
+    min-width: 0;
+  }
+
+  .ppa-step-name {
+    font-size: 0.56rem !important;
+    line-height: 1.08 !important;
+    white-space: normal !important;
+  }
+
+  .ppa-step-sub {
+    font-size: 0.49rem !important;
+    white-space: nowrap !important;
+    margin-top: 1px;
+  }
+
+  .ppa-step-connector-line {
+    flex: 0 0 4px !important;
+    min-width: 4px !important;
+    max-width: 5px !important;
+  }
+
+  .ppa-step-dot {
+    width: 3px !important;
+    height: 3px !important;
+  }
+
+  .ppa-lock-icon {
+    display: none !important;
+  }
+
+  /* ── 4. Mobile Main Active Activity Card ── */
+  .ppa-main-card {
+    padding: 14px 12px !important;
+    border-radius: 20px !important;
+    min-height: auto !important;
+    gap: 10px !important;
+  }
+
+  .ppa-card-header {
+    position: relative !important;
+    flex-wrap: wrap;
+    align-items: flex-start !important;
+    gap: 6px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .ppa-header-left {
+    width: 100%;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    position: relative;
+  }
+
+  .ppa-card-icon-bubble {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 8px !important;
+  }
+
+  .ppa-header-titles {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ppa-card-title-row {
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+    padding-right: 124px;
+    min-height: 30px;
+  }
+
+  .ppa-card-title {
+    font-size: 1.08rem !important;
+    white-space: nowrap;
+  }
+
+  .ppa-card-count-badge {
+    font-size: 0.64rem !important;
+    padding: 2px 7px !important;
+    border-radius: 999px !important;
+    background: #eff6ff !important;
+    border-color: #bfdbfe !important;
+    color: #1d4ed8 !important;
+    white-space: nowrap;
+  }
+
+  .ppa-card-desc {
+    font-size: 0.72rem !important;
+    margin-top: 4px !important;
+    margin-left: -38px !important;
+    line-height: 1.3 !important;
+  }
+
+  .ppa-header-right {
+    position: absolute !important;
+    right: 0 !important;
+    top: 1px !important;
+    gap: 4px !important;
+  }
+
+  .ppa-timer-pill,
+  .ppa-points-pill,
+  .ppa-streak-pill {
+    padding: 3px 7px !important;
+    font-size: 0.68rem !important;
+    border-radius: 999px !important;
+  }
+
+  /* Prompt Banner on Mobile */
+  .ppa-prompt-banner {
+    padding: 10px 10px !important;
+    border-radius: 14px !important;
+  }
+
+  .ppa-prompt-tag {
+    font-size: 0.72rem !important;
+  }
+
+  .ppa-btn-help {
+    padding: 4px 10px !important;
+    font-size: 0.7rem !important;
+  }
+
+  .ppa-prompt-question-row {
+    margin: 6px 0 4px 0 !important;
+    gap: 8px !important;
+  }
+
+  .ppa-prompt-question {
+    font-size: 0.96rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .ppa-speech-btn {
+    padding: 5px 8px !important;
+    border-radius: 999px !important;
+  }
+
+  .ppa-mobile-indian-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: #ffffff;
+    border: 1.5px solid #dbeafe;
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #0284c7;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(2, 132, 199, 0.08);
+  }
+
+  /* 1-Column Vertical Answer Stack on Mobile */
+  .ppa-quiz-options-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .ppa-quiz-opt-btn {
+    min-height: 48px !important;
+    padding: 10px 12px !important;
+    border-radius: 14px !important;
+    gap: 10px !important;
+  }
+
+  .ppa-opt-key-badge {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50% !important;
+    font-size: 0.82rem !important;
+  }
+
+  .ppa-opt-text {
+    font-size: 0.86rem !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Responsive Grids for Game 2, 3, 4 on Mobile */
+  .ppa-puzzle-grid,
+  .ppa-match-grid,
+  .ppa-mission-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  /* Action Footer Row on Mobile (< Previous | Skip Question » | Submit Answer →) */
+  .ppa-card-footer {
+    gap: 6px !important;
+    padding-top: 10px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .ppa-btn-prev {
+    padding: 9px 10px !important;
+    border-radius: 12px !important;
+    font-size: 0.72rem !important;
+    white-space: nowrap !important;
+  }
+
+  .ppa-btn-skip-pill {
+    padding: 9px 11px !important;
+    border-radius: 12px !important;
+    font-size: 0.72rem !important;
+    white-space: nowrap !important;
+  }
+
+  .ppa-btn-submit-main {
+    padding: 9px 12px !important;
+    border-radius: 12px !important;
+    font-size: 0.74rem !important;
+    flex: 1;
+    justify-content: center;
+    white-space: nowrap !important;
+  }
+
+  /* ── 5. Bottom 2-Column Side-by-Side Row: AI Mentor Hint + Points & Streak ── */
+  .ppa-sidebar-col {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    align-items: stretch;
+  }
+
+  .ppa-ai-mentor-card,
+  .ppa-points-streak-card {
+    padding: 10px !important;
+    border-radius: 16px !important;
+    justify-content: space-between;
+  }
+
+  .ppa-mentor-speech-text {
+    font-size: 0.68rem !important;
+    padding: 4px 6px !important;
+    background: transparent !important;
+    border: none !important;
+  }
+
+  .ppa-mentor-mascot-img {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .ppa-mentor-help-cta-btn {
+    font-size: 0.66rem !important;
+    padding: 5px 6px !important;
+    border-style: solid !important;
+    background: #f0f9ff !important;
+    border-color: #bae6fd !important;
+  }
+
+  .ppa-ps-stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px !important;
+  }
+
+  .ppa-ps-stat-box {
+    padding: 6px 6px !important;
+    gap: 5px !important;
+  }
+
+  .ppa-ps-stat-box svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .ppa-ps-stat-val {
+    font-size: 1rem !important;
+  }
+
+  .ppa-ps-stat-lbl {
+    font-size: 0.56rem !important;
+  }
+
+  .ppa-progress-card {
+    grid-column: 1 / -1;
+    border-radius: 16px !important;
+  }
+}

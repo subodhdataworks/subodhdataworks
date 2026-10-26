@@ -1,4 +1,13 @@
-import { getTopicQuestionBank, getTab1TopicList, getTopicListForTab, TopicQuestionBank } from './data/questionBankRegistry';
+import {
+  getTopicQuestionBank,
+  getTab1TopicList,
+  getTopicListForTab,
+  TopicQuestionBank,
+  revalidateQuestionBankFromBackend,
+  getSyncedTopicProgress,
+  saveSyncedTopicProgress,
+  pullSyncedLearningProgressFromCloud,
+} from './data/questionBankRegistry';
 import React, { useState, useEffect, useMemo } from 'react';
 import './PythonPracticeArena4Games.css';
 import {
@@ -12,9 +21,11 @@ import {
   Star,
   Check,
   RotateCcw,
+  ArrowLeft,
   ArrowRight,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Play,
   Lightbulb,
   Lock,
@@ -44,6 +55,7 @@ export interface PythonPracticeArena4GamesProps {
   tabId?: number;
   topicId?: number | string;
   onSelectTopic?: (topicId: number) => void;
+  onBackToCourse?: () => void;
   onBackToVideo?: () => void;
   onNextToInterview?: () => void;
   onNavigateDock?: (tab: string) => void;
@@ -54,6 +66,7 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
   tabId = 1,
   topicId = 1,
   onSelectTopic,
+  onBackToCourse,
   onBackToVideo,
   onNextToInterview,
   onNavigateDock,
@@ -63,12 +76,39 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
   const topicData: TopicAssessmentData = useMemo(() => getModule01TopicData(numericTopicId), [numericTopicId]);
   const hindiActivity = useMemo(() => getHindiTopicActivity(numericTopicId), [numericTopicId]);
 
-  // Master Question Bank for Tab 1 / current topic
-  const registeredBank: TopicQuestionBank | null = useMemo(() => {
-    return getTopicQuestionBank(tabId, topicId);
+  // Live question bank revision counter for real-time admin sync
+  const [bankRevision, setBankRevision] = useState<number>(0);
+
+  useEffect(() => {
+    revalidateQuestionBankFromBackend(tabId, topicId);
+    pullSyncedLearningProgressFromCloud();
+
+    const handleBankUpdate = () => setBankRevision((r) => r + 1);
+    const handleVisibilityOrFocus = () => {
+      if (typeof document === 'undefined' || document.visibilityState === 'visible') {
+        revalidateQuestionBankFromBackend(tabId, topicId);
+        pullSyncedLearningProgressFromCloud();
+      }
+    };
+
+    window.addEventListener('futureai_question_bank_updated', handleBankUpdate);
+    window.addEventListener('storage', handleBankUpdate);
+    window.addEventListener('focus', handleVisibilityOrFocus);
+    document.addEventListener('visibilitychange', handleVisibilityOrFocus);
+    return () => {
+      window.removeEventListener('futureai_question_bank_updated', handleBankUpdate);
+      window.removeEventListener('storage', handleBankUpdate);
+      window.removeEventListener('focus', handleVisibilityOrFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityOrFocus);
+    };
   }, [tabId, topicId]);
 
-  const currentTabTopics = useMemo(() => getTopicListForTab(tabId), [tabId]);
+  // Master Question Bank for Tab 1..8 / current topic (auto-refreshes when admin publishes changes)
+  const registeredBank: TopicQuestionBank | null = useMemo(() => {
+    return getTopicQuestionBank(tabId, topicId);
+  }, [tabId, topicId, bankRevision]);
+
+  const currentTabTopics = useMemo(() => getTopicListForTab(tabId), [tabId, bankRevision]);
 
   const courseKey = tabId === 4 ? 'ai_engineering' : tabId === 3 ? 'ml_engineering' : tabId === 2 ? 'data_science' : 'data_analyst';
   const courseTitle = tabId === 4 ? 'AI Engineering & LLMOps' : tabId === 3 ? 'Machine Learning Engineering' : tabId === 2 ? 'Data Science & Agentic AI' : 'Data Analyst with GenAI';
@@ -88,21 +128,30 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
   }, [courseKey, numericTopicId, isCoursePaid]);
 
   // Active game (1: Quick Quiz, 2: Puzzle Challenge, 3: Match the Code, 4: Real-Life Mission)
-  const [activeGame, setActiveGame] = useState<number>(1);
-  const [unlockedGame, setUnlockedGame] = useState<number>(1);
+  const [activeGame, setActiveGame] = useState<number>(() => {
+    const synced = getSyncedTopicProgress(tabId, numericTopicId);
+    return synced.topicState?.activeGame || 1;
+  });
+  const [unlockedGame, setUnlockedGame] = useState<number>(() => {
+    const synced = getSyncedTopicProgress(tabId, numericTopicId);
+    return synced.topicState?.unlockedGame || 1;
+  });
 
-  // Reset state when topicId or tabId changes
+  // Reset or restore synced state when topicId or tabId changes
   useEffect(() => {
-    setQuizIdx(0);
+    const synced = getSyncedTopicProgress(tabId, numericTopicId);
+    setQuizScore(synced.totalPoints || 0);
+    setStreak(synced.dayStreak || 0);
+    setQuizIdx(synced.topicState?.quizIdx || 0);
     setSelectedQuizKey(null);
     setQuizFeedback(null);
-    setPuzzleIdx(0);
+    setPuzzleIdx(synced.topicState?.puzzleIdx || 0);
     setPlacedSlots([null, null, null, null]);
     setPuzzleStatus('idle');
-    setMatchedPairs({});
+    setMatchedPairs(synced.topicState?.matchedPairs || {});
     setSelectedSnippet(null);
-    setMissionIdx(0);
-    setMissionDone(false);
+    setMissionIdx(synced.topicState?.missionIdx || 0);
+    setMissionDone(Boolean(synced.topicState?.missionDone));
     if (tabId === 4) {
       if (numericTopicId === 2) {
         setMissionCode(`def classify_message(message):\n    text = message.lower()\n    if "free prize" in text or "claim reward" in text:\n        return "Potential spam — review this message"\n    return "No matching spam phrase found"\n\nmessage = input("Enter a message: ")\nresult = classify_message(message)\nprint("Result:", result)`);
@@ -112,12 +161,33 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
         setMissionCode(`temperature = 38\nif temperature >= 38:\n    print("High temperature detected")\nelse:\n    print("Temperature is below 38")`);
       }
     }
-    setActiveGame(1);
-    setUnlockedGame(1);
-  }, [topicId, tabId]);
+    setActiveGame(synced.topicState?.activeGame || 1);
+    setUnlockedGame(synced.topicState?.unlockedGame || 1);
+  }, [topicId, tabId, numericTopicId]);
+
+  // Synchronize live progress updates across tabs/devices without resetting active quiz answer or timer
+  useEffect(() => {
+    const handleProgressSync = () => {
+      const synced = getSyncedTopicProgress(tabId, numericTopicId);
+      setQuizScore((prev) => Math.max(prev, synced.totalPoints || 0));
+      setStreak(synced.dayStreak ?? 0);
+      if (synced.topicState) {
+        setUnlockedGame((prev) => Math.max(prev, synced.topicState?.unlockedGame || 1));
+        if (synced.topicState.missionDone) {
+          setMissionDone(true);
+        }
+      }
+    };
+    window.addEventListener('futureai_learning_progress_updated', handleProgressSync);
+    window.addEventListener('storage', handleProgressSync);
+    return () => {
+      window.removeEventListener('futureai_learning_progress_updated', handleProgressSync);
+      window.removeEventListener('storage', handleProgressSync);
+    };
+  }, [tabId, numericTopicId]);
 
   // Gamification: Streak, XP toast & Sound Toggle
-  const [streak, setStreak] = useState<number>(0);
+  const [streak, setStreak] = useState<number>(() => getSyncedTopicProgress(tabId, numericTopicId).dayStreak || 0);
   const [floatingXp, setFloatingXp] = useState<string | null>(null);
   const [soundOn, setSoundOn] = useState<boolean>(soundEffects.getSoundEnabled());
 
@@ -132,12 +202,12 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
   const [reportSuccess, setReportSuccess] = useState<boolean>(false);
 
   // ─────────────────────────────────────────────────────────────────────────────
-  // GAME 1: QUICK QUIZ STATE (5 Questions)
+  // GAME 1: QUICK QUIZ STATE (Dynamic Questions from Shared Question Bank)
   // ─────────────────────────────────────────────────────────────────────────────
-  const [quizIdx, setQuizIdx] = useState<number>(0);
+  const [quizIdx, setQuizIdx] = useState<number>(() => getSyncedTopicProgress(tabId, numericTopicId).topicState?.quizIdx || 0);
   const [selectedQuizKey, setSelectedQuizKey] = useState<string | null>(null);
   const [quizFeedback, setQuizFeedback] = useState<'correct' | 'wrong' | null>(null);
-  const [quizScore, setQuizScore] = useState<number>(0);
+  const [quizScore, setQuizScore] = useState<number>(() => getSyncedTopicProgress(tabId, numericTopicId).totalPoints || 0);
   const [quizSeconds, setQuizSeconds] = useState<number>(25);
 
   // Typewriter & Text-to-Speech (TTS) states
@@ -146,7 +216,7 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
 
   const quizQuestions = useMemo(() => {
-    if (registeredBank?.game1Quiz && registeredBank.game1Quiz.length >= 5) {
+    if (registeredBank?.game1Quiz && registeredBank.game1Quiz.length > 0) {
       return registeredBank.game1Quiz;
     }
     return [
@@ -404,6 +474,13 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     };
   }, []);
 
+  // Safely handle deleted or unpublished questions during an active session without resetting timer/answers
+  useEffect(() => {
+    if (quizQuestions.length > 0 && quizIdx >= quizQuestions.length) {
+      setQuizIdx(Math.max(0, quizQuestions.length - 1));
+    }
+  }, [quizQuestions.length, quizIdx]);
+
   // 1. SELECT OPTION ONLY (User requirement: apne aap submit nhi hoga)
   const handleSelectQuizOption = (key: string) => {
     if (quizFeedback === 'correct') return;
@@ -424,10 +501,25 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     if (isRight) {
       setQuizFeedback('correct');
       soundEffects.playQuizCorrect();
-      setQuizScore((s) => s + 10);
-      setStreak((s) => s + 1);
+      const nextScore = quizScore + 10;
+      const nextStreak = streak + 1;
+      setQuizScore(nextScore);
+      setStreak(nextStreak);
       setFloatingXp('+10 XP ✨');
       setTimeout(() => setFloatingXp(null), 1500);
+
+      const isLastQuiz = quizIdx >= quizQuestions.length - 1;
+      const nextQuizIdx = isLastQuiz ? quizIdx : quizIdx + 1;
+      const nextUnlocked = isLastQuiz ? Math.max(unlockedGame, 2) : unlockedGame;
+
+      saveSyncedTopicProgress(tabId, numericTopicId, {
+        totalPoints: nextScore,
+        dayStreak: nextStreak,
+        pointsDelta: 10,
+        quizIdx: nextQuizIdx,
+        unlockedGame: nextUnlocked,
+        activeGame: isLastQuiz ? 2 : 1,
+      });
 
       // Build direct voice feedback with Indian voice (NO question repetition!)
       // Direct full answer: "Right answer! [Option text]"
@@ -459,6 +551,9 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
       setQuizFeedback('wrong');
       soundEffects.playQuizWrong();
       setStreak(0);
+      saveSyncedTopicProgress(tabId, numericTopicId, {
+        dayStreak: 0,
+      });
       speakWithFullVoice('Galat jawab, try again!', currentVoiceGender);
     }
   };
@@ -554,9 +649,22 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
       setPuzzleStatus('correct');
       soundEffects.playQuizCorrect();
       confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
-      setStreak((s) => s + 1);
+      const nextScore = quizScore + 15;
+      const nextStreak = streak + 1;
+      setQuizScore(nextScore);
+      setStreak(nextStreak);
       setFloatingXp('+15 XP ✨');
       setTimeout(() => setFloatingXp(null), 1200);
+
+      const isLastPuzzle = puzzleIdx >= puzzleChallenges.length - 1;
+      saveSyncedTopicProgress(tabId, numericTopicId, {
+        totalPoints: nextScore,
+        dayStreak: nextStreak,
+        pointsDelta: 15,
+        puzzleIdx: isLastPuzzle ? puzzleIdx : puzzleIdx + 1,
+        unlockedGame: isLastPuzzle ? Math.max(unlockedGame, 3) : unlockedGame,
+        activeGame: isLastPuzzle ? 3 : 2,
+      });
 
       setTimeout(() => {
         if (puzzleIdx < puzzleChallenges.length - 1) {
@@ -573,6 +681,9 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
       setPuzzleStatus('wrong');
       soundEffects.playQuizWrong();
       setStreak(0);
+      saveSyncedTopicProgress(tabId, numericTopicId, {
+        dayStreak: 0,
+      });
     }
   };
 
@@ -647,11 +758,25 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
       setMatchedPairs(nextMatches);
       setSelectedSnippet(null);
       soundEffects.playQuizCorrect();
+      const nextScore = quizScore + 10;
+      const nextStreak = streak + 1;
+      setQuizScore(nextScore);
+      setStreak(nextStreak);
       setFloatingXp('+10 XP ✨');
       setTimeout(() => setFloatingXp(null), 1000);
 
-      // Check if all 5 matched
-      if (Object.keys(nextMatches).length === matchPairs.length) {
+      const allMatched = Object.keys(nextMatches).length === matchPairs.length;
+      saveSyncedTopicProgress(tabId, numericTopicId, {
+        totalPoints: nextScore,
+        dayStreak: nextStreak,
+        pointsDelta: 10,
+        matchedPairs: nextMatches,
+        unlockedGame: allMatched ? Math.max(unlockedGame, 4) : unlockedGame,
+        activeGame: allMatched ? 4 : 3,
+      });
+
+      // Check if all matched
+      if (allMatched) {
         confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
         soundEffects.playCelebration();
         setUnlockedGame((prev) => Math.max(prev, 4));
@@ -711,10 +836,25 @@ print(result)`
     soundEffects.playCelebration();
     confetti({ particleCount: 100, spread: 100, origin: { y: 0.5 } });
     setMissionDone(true);
+    const nextScore = quizScore + 25;
+    const nextStreak = streak + 1;
+    setQuizScore(nextScore);
+    setStreak(nextStreak);
     setFloatingXp('+25 XP 🏆');
     setTimeout(() => setFloatingXp(null), 1500);
 
     const totalMissions = registeredBank?.game4Missions?.length || 2;
+    const isAllMissionsDone = missionIdx >= totalMissions - 1;
+    saveSyncedTopicProgress(tabId, numericTopicId, {
+      totalPoints: nextScore,
+      dayStreak: nextStreak,
+      pointsDelta: 25,
+      missionIdx: isAllMissionsDone ? missionIdx : missionIdx + 1,
+      missionDone: isAllMissionsDone,
+      unlockedGame: 4,
+      activeGame: 4,
+    });
+
     if (missionIdx < totalMissions - 1) {
       setTimeout(() => {
         setMissionIdx((prev) => prev + 1);
@@ -1606,6 +1746,8 @@ print(result)`
     };
   }, [activeGame, quizIdx, puzzleIdx, quizQuestions, currentPuzzle, matchPairs, currentMission]);
 
+  const missionsCount = registeredBank?.game4Missions?.length || 2;
+
   // Skip Question Handler
   const handleSkipQuestion = () => {
     soundEffects.playClick();
@@ -1614,17 +1756,25 @@ print(result)`
       setQuizFeedback(null);
       setQuizSeconds(25);
       if (quizIdx < quizQuestions.length - 1) {
-        setQuizIdx((i) => i + 1);
+        const nextIdx = quizIdx + 1;
+        setQuizIdx(nextIdx);
+        saveSyncedTopicProgress(tabId, numericTopicId, { quizIdx: nextIdx });
       } else {
-        setUnlockedGame((prev) => Math.max(prev, 2));
+        const nextUnlocked = Math.max(unlockedGame, 2);
+        setUnlockedGame(nextUnlocked);
         setActiveGame(2);
+        saveSyncedTopicProgress(tabId, numericTopicId, { unlockedGame: nextUnlocked, activeGame: 2 });
       }
     } else if (activeGame === 2) {
       if (puzzleIdx < puzzleChallenges.length - 1) {
-        setPuzzleIdx((i) => i + 1);
+        const nextIdx = puzzleIdx + 1;
+        setPuzzleIdx(nextIdx);
+        saveSyncedTopicProgress(tabId, numericTopicId, { puzzleIdx: nextIdx });
       } else {
-        setUnlockedGame((prev) => Math.max(prev, 3));
+        const nextUnlocked = Math.max(unlockedGame, 3);
+        setUnlockedGame(nextUnlocked);
         setActiveGame(3);
+        saveSyncedTopicProgress(tabId, numericTopicId, { unlockedGame: nextUnlocked, activeGame: 3 });
       }
     } else if (activeGame === 3) {
       const allMatches: Record<number, string> = {};
@@ -1632,14 +1782,23 @@ print(result)`
         allMatches[p.id] = p.snippet;
       });
       setMatchedPairs(allMatches);
-      setUnlockedGame((prev) => Math.max(prev, 4));
+      const nextUnlocked = Math.max(unlockedGame, 4);
+      setUnlockedGame(nextUnlocked);
+      saveSyncedTopicProgress(tabId, numericTopicId, {
+        matchedPairs: allMatches,
+        unlockedGame: nextUnlocked,
+        activeGame: 4,
+      });
       setTimeout(() => setActiveGame(4), 500);
     } else if (activeGame === 4) {
-      const totalMissions = registeredBank?.game4Missions?.length || 2;
+      const totalMissions = missionsCount;
       if (missionIdx < totalMissions - 1) {
-        setMissionIdx((prev) => prev + 1);
+        const nextIdx = missionIdx + 1;
+        setMissionIdx(nextIdx);
+        saveSyncedTopicProgress(tabId, numericTopicId, { missionIdx: nextIdx });
       } else {
         setMissionDone(true);
+        saveSyncedTopicProgress(tabId, numericTopicId, { missionDone: true });
         if (onNextToInterview) {
           onNextToInterview();
         }
@@ -1672,6 +1831,175 @@ print(result)`
       )}
 
       {/* ─────────────────────────────────────────────────────────────
+          0. MOBILE COURSE BANNER & BREADCRUMB SELECTOR (Mobile Only < 768px)
+          Exact 1:1 Match to Reference Design media_1793045687114_c95a15e7.png
+          ───────────────────────────────────────────────────────────── */}
+      <section className="ppa-mobile-course-hero" aria-label="Course Overview">
+        <div className="ppa-mch-top">
+          <div className="ppa-mch-info">
+            <h1 className="ppa-mch-title">
+              {registeredBank?.tabName || 'Data Analytics Foundations'}
+            </h1>
+            <p className="ppa-mch-subtitle">
+              {registeredBank ? `${registeredBank.topicKey} ${registeredBank.topicTitle}` : '1.1 What is Data Analytics?'}
+            </p>
+            <div className="ppa-mch-progress-block">
+              <span className="ppa-mch-progress-label">
+                {Math.max(20, totalProgressPercent)}% Complete
+              </span>
+              <div className="ppa-mch-progress-track">
+                <div
+                  className="ppa-mch-progress-fill"
+                  style={{ width: `${Math.max(20, totalProgressPercent)}%` }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="ppa-mch-mascot-wrap">
+            <img
+              src="/images/dashboard/py_robot_mascot_laptop.png"
+              alt="AI Learning Robot"
+              className="ppa-mch-mascot-img"
+            />
+          </div>
+        </div>
+
+        <div className="ppa-mch-pills-row">
+          <button
+            type="button"
+            className="ppa-mch-pill-btn"
+            onClick={() => {
+              soundEffects.playClick();
+              onBackToVideo?.();
+            }}
+          >
+            <span className="ppa-mch-pill-icon blue">
+              <BookOpen className="w-3 h-3" />
+            </span>
+            <span>Lesson Notes</span>
+          </button>
+
+          <button
+            type="button"
+            className="ppa-mch-pill-btn"
+            onClick={() => {
+              soundEffects.playClick();
+              setActiveGame(3);
+            }}
+          >
+            <span className="ppa-mch-pill-icon purple">
+              <Code2 className="w-3 h-3" />
+            </span>
+            <span>Code Examples</span>
+          </button>
+
+          <button
+            type="button"
+            className="ppa-mch-pill-btn"
+            onClick={() => {
+              soundEffects.playClick();
+              window.print();
+            }}
+          >
+            <span className="ppa-mch-pill-icon pink">
+              <FileText className="w-3 h-3" />
+            </span>
+            <span>Download PDF</span>
+          </button>
+
+          <button
+            type="button"
+            className="ppa-mch-pill-btn"
+            onClick={() => {
+              soundEffects.playClick();
+              onNextToInterview?.();
+            }}
+          >
+            <span className="ppa-mch-pill-icon green">
+              <MessageSquare className="w-3 h-3" />
+            </span>
+            <span>Discussion</span>
+          </button>
+        </div>
+      </section>
+
+      <section className="ppa-mobile-breadcrumb-card" aria-label="Topic Selector">
+        <button
+          type="button"
+          className="ppa-mbc-back-btn"
+          onClick={() => {
+            soundEffects.playClick();
+            if (onBackToCourse) onBackToCourse();
+            else if (onBackToVideo) onBackToVideo();
+          }}
+          title="Back to Course"
+        >
+          <ArrowLeft className="w-4 h-4 text-blue-600" />
+        </button>
+
+        <div className="ppa-mbc-content">
+          <div className="ppa-mbc-crumbs">
+            <span
+              className="ppa-mbc-link"
+              onClick={() => onNavigateDock?.('home')}
+            >
+              Home
+            </span>
+            <ChevronRight className="w-3 h-3 text-slate-400 shrink-0" />
+            <span
+              className="ppa-mbc-link"
+              onClick={() => onBackToCourse?.()}
+            >
+              {registeredBank?.tabName?.replace(' Foundations', '') || 'Data Analytics'}
+            </span>
+            <ChevronRight className="w-3 h-3 text-slate-400 shrink-0" />
+            <span
+              className="ppa-mbc-mod"
+              onClick={() => onBackToCourse?.()}
+            >
+              {registeredBank?.moduleName || topicHierarchy.moduleTitle}
+            </span>
+            <ChevronRight className="w-3 h-3 text-slate-400 shrink-0" />
+          </div>
+
+          <div className="ppa-mbc-select-box">
+            <select
+              className="ppa-mbc-select"
+              value={numericTopicId}
+              onChange={(e) => {
+                const nextId = Number(e.target.value);
+                const isTargetFree = isTopicUnlocked(courseKey, 1, nextId);
+                if (!isTargetFree) {
+                  const tgt = currentTabTopics.find(
+                    (t) => (t.id || Number(t.topicKey.split('.')[1])) === nextId
+                  );
+                  setLockedTopicTitle(
+                    tgt ? `Topic ${tgt.topicKey}: ${tgt.topicTitle}` : 'Full Course Access'
+                  );
+                  setIsSuccessModalOpen(true);
+                  return;
+                }
+                if (onSelectTopic) onSelectTopic(nextId);
+              }}
+              title={`Switch Topic in ${registeredBank?.tabName || 'Data Analytics Foundations'}`}
+            >
+              {currentTabTopics.map((t) => {
+                const tId = t.id || Number(t.topicKey.split('.')[1]) || 1;
+                const isFree = isTopicUnlocked(courseKey, 1, tId);
+                return (
+                  <option key={t.topicKey} value={tId}>
+                    {isFree ? '' : '🔒 '}Topic {t.topicKey}: {t.topicTitle} (Module {t.moduleId})
+                  </option>
+                );
+              })}
+            </select>
+            <ChevronDown className="ppa-mbc-select-icon" />
+          </div>
+        </div>
+      </section>
+
+      {/* ─────────────────────────────────────────────────────────────
           1. TOP 5-STEP SUB-STEPPER BAR (Pills 1 to 5 - Ultra Sleek)
           ───────────────────────────────────────────────────────────── */}
       <nav className="ppa-stepper-bar" aria-label="Practice Sub-Steps">
@@ -1689,7 +2017,7 @@ print(result)`
           </div>
           <div className="ppa-step-meta">
             <span className="ppa-step-name">Quick Quiz</span>
-            <span className="ppa-step-sub">{unlockedGame > 1 ? '5/5 Done' : '5 Questions'}</span>
+            <span className="ppa-step-sub">{unlockedGame > 1 ? `${quizQuestions.length}/${quizQuestions.length} Done` : `${quizQuestions.length} Questions`}</span>
           </div>
         </button>
 
@@ -1716,7 +2044,7 @@ print(result)`
           </div>
           <div className="ppa-step-meta">
             <span className="ppa-step-name">Puzzle Challenge</span>
-            <span className="ppa-step-sub">{unlockedGame > 2 ? '3/3 Done' : '3 Challenges'}</span>
+            <span className="ppa-step-sub">{unlockedGame > 2 ? `${puzzleChallenges.length}/${puzzleChallenges.length} Done` : `${puzzleChallenges.length} Challenges`}</span>
           </div>
           {unlockedGame < 2 && <Lock className="w-3.5 h-3.5 text-slate-300 ml-auto ppa-lock-icon" />}
         </button>
@@ -1744,7 +2072,7 @@ print(result)`
           </div>
           <div className="ppa-step-meta">
             <span className="ppa-step-name">Match Code</span>
-            <span className="ppa-step-sub">{unlockedGame > 3 ? '5/5 Done' : '5 Pairs'}</span>
+            <span className="ppa-step-sub">{unlockedGame > 3 ? `${matchPairs.length}/${matchPairs.length} Done` : `${matchPairs.length} Pairs`}</span>
           </div>
           {unlockedGame < 3 && <Lock className="w-3.5 h-3.5 text-slate-300 ml-auto ppa-lock-icon" />}
         </button>
@@ -1772,7 +2100,7 @@ print(result)`
           </div>
           <div className="ppa-step-meta">
             <span className="ppa-step-name">Real-Life Mission</span>
-            <span className="ppa-step-sub">{missionDone ? '2/2 Done' : '2 Missions'}</span>
+            <span className="ppa-step-sub">{missionDone ? `${missionsCount}/${missionsCount} Done` : `${missionsCount} Missions`}</span>
           </div>
           {unlockedGame < 4 && <Lock className="w-3.5 h-3.5 text-slate-300 ml-auto ppa-lock-icon" />}
         </button>
@@ -1955,10 +2283,10 @@ print(result)`
                     {activeGame === 4 && 'Real-Life Mission'}
                   </h2>
                   <span className="ppa-card-count-badge">
-                    {activeGame === 1 && '5 Questions'}
-                    {activeGame === 2 && '3 Challenges'}
-                    {activeGame === 3 && '5 Matches'}
-                    {activeGame === 4 && '2 Missions'}
+                    {activeGame === 1 && `${quizQuestions.length} Questions`}
+                    {activeGame === 2 && `${puzzleChallenges.length} Challenges`}
+                    {activeGame === 3 && `${matchPairs.length} Matches`}
+                    {activeGame === 4 && `${missionsCount} Missions`}
                   </span>
                 </div>
                 <p className="ppa-card-desc">
@@ -2025,7 +2353,7 @@ print(result)`
                 <div className="flex items-center justify-between gap-2">
                   <div className="ppa-prompt-tag">
                     <Lightbulb className="w-3.5 h-3.5 fill-amber-300" />
-                    <span>QUESTION {quizIdx + 1} OF 5</span>
+                    <span>QUESTION {quizIdx + 1} OF {quizQuestions.length}</span>
                   </div>
                   <button
                     type="button"
@@ -2045,37 +2373,48 @@ print(result)`
                     {typedQuestion || currentQuestionText}
                     {isTyping && <span className="ppa-typing-cursor">|</span>}
                   </h3>
-                  <button
-                    type="button"
-                    className={`ppa-speech-btn ${isSpeaking ? 'speaking' : ''}`}
-                    onClick={() => {
-                      if (isSpeaking) {
-                        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-                          window.speechSynthesis.cancel();
+                  <div className="ppa-voice-controls-group">
+                    <button
+                      type="button"
+                      className={`ppa-speech-btn ${isSpeaking ? 'speaking' : ''}`}
+                      onClick={() => {
+                        if (isSpeaking) {
+                          if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+                            window.speechSynthesis.cancel();
+                          }
+                          setIsSpeaking(false);
+                        } else {
+                          speakQuestionText(currentQuestionText);
                         }
-                        setIsSpeaking(false);
-                      } else {
-                        speakQuestionText(currentQuestionText);
+                      }}
+                      title={
+                        isSpeaking
+                          ? 'Mute voice'
+                          : `Listen (${currentVoiceGender === 'female' ? 'Female' : 'Male'} Indian Voice)`
                       }
-                    }}
-                    title={
-                      isSpeaking
-                        ? 'Mute voice'
-                        : `Listen (${currentVoiceGender === 'female' ? 'Female' : 'Male'} Indian Voice)`
-                    }
-                  >
-                    <Volume2 className={`w-4 h-4 ${isSpeaking ? 'text-sky-600 animate-pulse' : 'text-slate-500'}`} />
-                    <span className="ppa-voice-gender-pill">
-                      {currentVoiceGender === 'female' ? '👩 Indian' : '👨 Indian'}
-                    </span>
-                    {isSpeaking && (
-                      <span className="ppa-speaking-waves">
-                        <span className="sbar sbar-1"></span>
-                        <span className="sbar sbar-2"></span>
-                        <span className="sbar sbar-3"></span>
+                    >
+                      <Volume2 className={`w-4 h-4 ${isSpeaking ? 'text-sky-600 animate-pulse' : 'text-slate-500'}`} />
+                      <span className="ppa-voice-gender-pill ppa-desktop-voice-lbl">
+                        {currentVoiceGender === 'female' ? '👩 Indian' : '👨 Indian'}
                       </span>
-                    )}
-                  </button>
+                      {isSpeaking && (
+                        <span className="ppa-speaking-waves">
+                          <span className="sbar sbar-1"></span>
+                          <span className="sbar sbar-2"></span>
+                          <span className="sbar sbar-3"></span>
+                        </span>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      className="ppa-mobile-indian-pill"
+                      onClick={() => speakQuestionText(currentQuestionText)}
+                      title={`Listen in Indian Accent (${currentVoiceGender === 'female' ? 'Female' : 'Male'})`}
+                    >
+                      <span>🇮🇳</span>
+                      <span>Indian</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -2563,31 +2902,29 @@ print(result)`
                   <div className="ppa-check-dot-icon">
                     {unlockedGame > 1 ? '✓' : ''}
                   </div>
-                  <span>Quick Quiz ({unlockedGame > 1 ? '5/5' : `${quizIdx}/5`})</span>
+                  <span>Quick Quiz ({unlockedGame > 1 ? `${quizQuestions.length}/${quizQuestions.length}` : `${quizIdx}/${quizQuestions.length}`})</span>
                 </div>
 
                 <div className={`ppa-check-item ${unlockedGame > 2 ? 'completed' : activeGame === 2 ? 'active' : ''}`}>
                   <div className="ppa-check-dot-icon">
                     {unlockedGame > 2 ? '✓' : ''}
                   </div>
-                  <span>Puzzle Challenge ({unlockedGame > 2 ? '3/3' : `${puzzleIdx}/3`})</span>
+                  <span>Puzzle Challenge ({unlockedGame > 2 ? `${puzzleChallenges.length}/${puzzleChallenges.length}` : `${puzzleIdx}/${puzzleChallenges.length}`})</span>
                 </div>
 
                 <div className={`ppa-check-item ${unlockedGame > 3 ? 'completed' : activeGame === 3 ? 'active' : ''}`}>
                   <div className="ppa-check-dot-icon">
                     {unlockedGame > 3 ? '✓' : ''}
                   </div>
-                  <span>Match Code ({Object.keys(matchedPairs).length}/5)</span>
+                  <span>Match Code ({Object.keys(matchedPairs).length}/{matchPairs.length})</span>
                 </div>
 
                 <div className={`ppa-check-item ${missionDone ? 'completed' : activeGame === 4 ? 'active' : ''}`}>
                   <div className="ppa-check-dot-icon">
                     {missionDone ? '✓' : ''}
                   </div>
-                  <span>Real-Life Mission ({missionDone ? '2/2' : `${missionIdx}/2`})</span>
+                  <span>Real-Life Mission ({missionDone ? `${missionsCount}/${missionsCount}` : `${missionIdx}/${missionsCount}`})</span>
                 </div>
-
-                
               </div>
             </div>
           </div>

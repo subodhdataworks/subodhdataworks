@@ -1268,8 +1268,96 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   if (selectedModuleView === 'python') {
     return (
       <div className="relative dock-dashboard-page">
+        {/* Preserve exact existing mobile header on Android/Mobile (< md) */}
+        <div className="md:hidden">
+          <FutureAdvancedHeader
+            isLoggedIn={isLoggedIn}
+            userName={currentUserName || userName}
+            onOpenLogin={onOpenLogin}
+            onOpenSignUp={onOpenLogin}
+            activeNavTab="learning"
+            onNavigateHome={() => {
+              setDockTab('home');
+              setSelectedModuleView(null);
+              setActiveTopicWs(null);
+              if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+            }}
+            onNavigateLearning={() => {
+              setDockTab('home');
+              setSelectedModuleView('data_analyst');
+              setActiveTopicWs(null);
+              if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+            }}
+            onNavigatePractice={(track) => {
+              if (track === 'python') {
+                setSelectedModuleView('python_challenges');
+                setActiveTopicWs(null);
+                if (typeof window !== 'undefined') window.location.hash = '#python-challenges';
+              } else if (track === 'sql') {
+                setSelectedModuleView('sql_challenges');
+                setActiveTopicWs(null);
+                if (typeof window !== 'undefined') window.location.hash = '#sql-challenges';
+              } else if (track === 'excel') {
+                setSelectedModuleView('excel_challenges');
+                setActiveTopicWs(null);
+                if (typeof window !== 'undefined') window.location.hash = '#excel-challenges';
+              } else {
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                setDockTab('game');
+                if (typeof window !== 'undefined') window.location.hash = '#game';
+              }
+            }}
+            onOpenAtsResume={() => {
+              if (typeof window !== 'undefined') window.location.hash = '#ats';
+            }}
+            onNavigateEarn={() => {
+              setSelectedModuleView(null);
+              setActiveTopicWs(null);
+              setDockTab('income');
+              if (typeof window !== 'undefined') window.location.hash = '#income';
+            }}
+            onNavigateInternship={() => {
+              setLockedSectionTarget('Internship');
+              setPlacementLockOpen(true);
+            }}
+            onNavigatePlacement={() => {
+              if (isPlacementLocked) {
+                setLockedSectionTarget('Placement');
+                setPlacementLockOpen(true);
+              } else {
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                setDockTab('placement');
+                if (typeof window !== 'undefined') window.location.hash = '#placement';
+              }
+            }}
+            onNavigateCertificate={() => {
+              setSelectedModuleView(null);
+              setActiveTopicWs(null);
+              setLockedSectionTarget('Certificate');
+              setPlacementLockOpen(true);
+            }}
+            onNavigateRecommendation={() => {
+              setSelectedModuleView(null);
+              setActiveTopicWs(null);
+              setLockedSectionTarget('Recommendation Letter');
+              setPlacementLockOpen(true);
+            }}
+            onOpenHelp={() => {
+              if (onOpenAdvisor) onOpenAdvisor();
+              else window.location.hash = '#contact-us';
+            }}
+            onOpenContact={() => {
+              window.location.hash = '#contact-us';
+            }}
+            onOpenWallet={() => setIsWithdrawModalOpen(true)}
+            onLogout={onLogout}
+          />
+        </div>
+
         <PythonTopicWorkspace
-          userName={userName}
+          userName={currentUserName || userName}
           topicId={activeTopicWs || 1}
           initialStep={targetStep}
           onBack={() => {
@@ -1334,10 +1422,77 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             setUnlockModalOpen(false);
           }}
         />
-                <FutureAuthModal
+        <WalletWithdrawModal
+          isOpen={isWithdrawModalOpen}
+          onClose={() => setIsWithdrawModalOpen(false)}
+          onSuccess={() => setTelemetry(getLearnerTelemetry())}
+        />
+        <FutureAuthModal
           isOpen={authModalOpen}
           onClose={() => setAuthModalOpen(false)}
           onSuccess={handleAuthSuccess}
+        />
+
+        {/* Preserve exact existing mobile bottom navigation on Android/Mobile (< md) */}
+        <div className="md:hidden h-20 shrink-0" aria-hidden="true" />
+        <MobileDashboardBottomNav
+          active="learning"
+          onHome={() => {
+            playClick();
+            setDockTab('home');
+            setSelectedModuleView(null);
+            setActiveTopicWs(null);
+            if (typeof window !== 'undefined') {
+              window.location.hash = '#dashboard';
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+          onLearning={() => {
+            playClick();
+            setDockTab('home');
+            setSelectedModuleView('data_analyst');
+            setActiveTopicWs(null);
+            if (typeof window !== 'undefined') {
+              window.location.hash = '#data-analyst';
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+          onPractice={() => {
+            playClick();
+            setSelectedModuleView(null);
+            setActiveTopicWs(null);
+            setDockTab('game');
+            if (typeof window !== 'undefined') {
+              window.location.hash = '#game';
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+          onEarn={() => {
+            playClick();
+            setSelectedModuleView(null);
+            setActiveTopicWs(null);
+            setDockTab('income');
+            if (typeof window !== 'undefined') {
+              window.location.hash = '#income';
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+          onProfile={() => {
+            playClick();
+            if (!isLoggedIn) {
+              setAuthModalOpen(true);
+              return;
+            }
+            if (typeof document !== 'undefined') {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              const profileBtn = document.querySelector<HTMLButtonElement>('button[aria-label="Student Profile"]');
+              if (profileBtn) {
+                profileBtn.click();
+                return;
+              }
+            }
+            if (onOpenLogin) onOpenLogin();
+          }}
         />
       </div>
     );

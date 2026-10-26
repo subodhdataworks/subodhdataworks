@@ -1,4 +1,9 @@
-import { getTopicQuestionBank, getTab1TopicList } from './data/questionBankRegistry';
+import {
+  getTopicQuestionBank,
+  getTab1TopicList,
+  getTopicListForTab,
+  revalidateQuestionBankFromBackend,
+} from './data/questionBankRegistry';
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Play,
@@ -199,9 +204,27 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
     }
   }, [topicId]);
   const topicHierarchy = useMemo(() => getTopicHierarchyInfo(effectiveTopicId), [effectiveTopicId]);
+  const [questionBankRev, setQuestionBankRev] = useState<number>(0);
+
+  useEffect(() => {
+    revalidateQuestionBankFromBackend(urlTabId, effectiveTopicId);
+    const handleBankUpdate = () => setQuestionBankRev((r) => r + 1);
+    const handleFocus = () => {
+      revalidateQuestionBankFromBackend(urlTabId, effectiveTopicId);
+    };
+    window.addEventListener('futureai_question_bank_updated', handleBankUpdate);
+    window.addEventListener('storage', handleBankUpdate);
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      window.removeEventListener('futureai_question_bank_updated', handleBankUpdate);
+      window.removeEventListener('storage', handleBankUpdate);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [urlTabId, effectiveTopicId]);
+
   const isTab1Topic = useMemo(() => {
     return !!getTopicQuestionBank(urlTabId, effectiveTopicId) || (effectiveTopicId >= 1 && effectiveTopicId <= 26);
-  }, [urlTabId, effectiveTopicId]);
+  }, [urlTabId, effectiveTopicId, questionBankRev]);
   const isTopicWithoutCoding = isTab1Topic;
   const isTopicWithoutMcq = isTab1Topic;
 
@@ -2068,8 +2091,8 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
 
   return (
     <div className="ptw-root-container">
-      {/* ── 1. Top Navbar (Identical Global Navbar) ── */}
-      <header className="ptw-top-navbar">
+      {/* ── 1. Top Navbar (Identical Global Navbar on Desktop; Mobile uses FutureAdvancedHeader) ── */}
+      <header className="ptw-top-navbar hidden md:flex">
         <div className="ptw-nav-brand-wrap" onClick={onBack}>
           <FutureLogo />
         </div>
@@ -2117,7 +2140,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
       </header>
 
       {/* ── 1. UNIFIED TOP BAR: Exact Match to media_1792847065914_f68382f0.png ── */}
-      <div className="plw-top-unified-bar">
+      <div className={`plw-top-unified-bar ${activeStep === 'play' && isTab1Topic ? 'ppa-hide-unified-on-mobile' : ''}`}>
         {/* Left: Back button & Breadcrumbs */}
         <div className="plw-top-crumbs-group">
           <button
@@ -2132,20 +2155,22 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
           <div className="plw-crumbs flex items-center gap-1.5 text-xs">
             <span className="crumb-link text-slate-600 hover:text-blue-600 cursor-pointer" onClick={() => onNavigateDock?.('home')}>Home</span>
             <ChevronRight className="w-3 h-3 text-slate-400" />
-            <span className="crumb-link text-slate-600 hover:text-blue-600 cursor-pointer" onClick={onBack}>Data Analytics</span>
-            <ChevronRight className="w-3 h-3 text-slate-400" />
             <span className="crumb-link text-slate-600 hover:text-blue-600 cursor-pointer" onClick={onBack}>
-              {getTopicQuestionBank(1, effectiveTopicId)?.moduleName || topicHierarchy.moduleTitle}
+              {getTopicQuestionBank(urlTabId, effectiveTopicId)?.tabName?.replace(' Foundations', '') || 'Data Analytics'}
             </span>
             <ChevronRight className="w-3 h-3 text-slate-400" />
-            {/* Quick Interactive Topic Switcher for Testing all 26 Tab 1 Topics */}
+            <span className="crumb-link text-slate-600 hover:text-blue-600 cursor-pointer" onClick={onBack}>
+              {getTopicQuestionBank(urlTabId, effectiveTopicId)?.moduleName || topicHierarchy.moduleTitle}
+            </span>
+            <ChevronRight className="w-3 h-3 text-slate-400" />
+            {/* Quick Interactive Topic Switcher for All Published Topics */}
             <select
               className="bg-blue-50 border border-blue-200 text-blue-700 font-bold rounded-lg px-2 py-0.5 text-xs cursor-pointer hover:bg-blue-100 transition-colors shadow-xs"
               value={effectiveTopicId}
               onChange={(e) => setEffectiveTopicId(Number(e.target.value))}
-              title="Switch Topic in Tab 1 (Data Analytics Foundations)"
+              title={`Switch Topic in ${getTopicQuestionBank(urlTabId, effectiveTopicId)?.tabName || 'Data Analytics Foundations'}`}
             >
-              {getTab1TopicList().map((t) => (
+              {getTopicListForTab(urlTabId).map((t) => (
                 <option key={t.topicKey} value={t.id}>
                   Topic {t.topicKey}: {t.topicTitle} (Module {t.moduleId})
                 </option>
@@ -3190,6 +3215,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                 tabId={urlTabId}
                 topicId={effectiveTopicId}
                 onSelectTopic={(newId) => setEffectiveTopicId(newId)}
+                onBackToCourse={onBack}
                 onBackToVideo={() => handleSelectTab('learn')}
                 onNextToInterview={() => handleSelectTab('interview')}
                 onNavigateDock={onNavigateDock}

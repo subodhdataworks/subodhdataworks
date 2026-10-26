@@ -9,6 +9,11 @@ import {
 import { ReferralEngine, WithdrawalRequest, ReferralRecord } from './referralEngine';
 import { COURSES_CATALOG } from '../data/coursesCatalog';
 import { TOPICS } from '../components/futureai/PythonChapterView';
+import {
+  getQuestionBankOverrides,
+  saveQuestionBankOverride,
+  TopicQuestionBank,
+} from '../components/futureai/data/questionBankRegistry';
 import { SystemPaymentRecord, PlatformStats } from '../types/admin';
 import { AdminAuthService } from './adminAuthService';
 
@@ -383,6 +388,29 @@ export class AdminDataService {
       category: 'COURSE',
       targetId: courseId,
       details: `Updated course settings for ${courseId}`,
+    });
+  }
+
+  public static getQuestionBankOverrides() {
+    return getQuestionBankOverrides();
+  }
+
+  public static async saveQuestionBankTopicOverride(
+    tabId: number | string,
+    topicKeyOrId: string | number,
+    overrideData: Partial<TopicQuestionBank>
+  ): Promise<void> {
+    if (!AdminAuthService.hasPermission('manage_courses')) {
+      throw new Error('Permission denied to modify learning questions.');
+    }
+
+    await saveQuestionBankOverride(tabId, topicKeyOrId, overrideData);
+
+    await AdminAuthService.logAudit({
+      action: 'COURSE_UPDATED',
+      category: 'COURSE',
+      targetId: `tab_${tabId}_topic_${topicKeyOrId}`,
+      details: `Synchronized question bank content for Tab ${tabId} Topic ${topicKeyOrId}`,
     });
   }
 
