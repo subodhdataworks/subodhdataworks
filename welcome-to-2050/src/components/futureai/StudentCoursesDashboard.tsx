@@ -33,6 +33,7 @@ import { ALL_PLATFORM_COURSES, PlatformCourseItem } from '../../data/allPlatform
 import { CareerCourseCard } from './CareerCourseCard';
 import { CAREER_COURSES_12 } from '../../data/careerCourses12';
 import { isCourseUnlocked, syncUserEnrollmentsFromServer } from '../../services/courseUnlockService';
+import { MobileCompactDashboard } from './mobile/MobileCompactDashboard';
 import './LearnerHomeHub.css';
 
 export interface StudentCoursesDashboardProps {
@@ -49,6 +50,8 @@ export interface StudentCoursesDashboardProps {
   onOpenPythonDirect?: () => void;
   onOpenMockInterview?: () => void;
   onOpenGameArena?: () => void;
+  onOpenCodingPracticeHub?: () => void;
+  onOpenPlacementSupport?: () => void;
   onOpenAdvisor?: () => void;
   onOpenLogin?: () => void;
 }
@@ -94,6 +97,8 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
   onOpenPythonDirect,
   onOpenMockInterview,
   onOpenGameArena,
+  onOpenCodingPracticeHub,
+  onOpenPlacementSupport,
   onOpenAdvisor,
   onOpenLogin,
 }) => {
@@ -218,8 +223,41 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
   return (
     <div className="lhh-wrapper">
       {/* =========================================================================
-          1. NATIVE 1:1 GENERATED TOP HERO BANNER (Matches Reference Image)
+          0. MOBILE APP-STYLE DASHBOARD BELOW HEADER (Mobile Only: < md)
           ========================================================================= */}
+      <MobileCompactDashboard
+        playClick={playClick}
+        onCourseClick={(course) => handleCourseClick(course)}
+        onOpenMyCourses={() => {
+          onOpenDataAnalystCourse();
+        }}
+        onOpenCodingPractice={() => {
+          if (onOpenCodingPracticeHub) {
+            onOpenCodingPracticeHub();
+          } else if (typeof window !== 'undefined') {
+            window.location.hash = '#game';
+          }
+        }}
+        onOpenMockInterview={() => {
+          if (onOpenMockInterview) {
+            onOpenMockInterview();
+          } else if (typeof window !== 'undefined') {
+            window.location.hash = '#mockinterview';
+          }
+        }}
+        onOpenJobSupport={() => {
+          if (onOpenPlacementSupport) {
+            onOpenPlacementSupport();
+          } else if (typeof window !== 'undefined') {
+            window.location.hash = '#placement';
+          }
+        }}
+      />
+
+      {/* =========================================================================
+          1. NATIVE 1:1 GENERATED TOP HERO BANNER (Desktop Only: >= md)
+          ========================================================================= */}
+      <div className="hidden md:block">
       <section className="scd-native-hero-banner">
         {/* Background Image: Future IT Industries Campus Zoomed Out */}
         <img
@@ -452,6 +490,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
 
         
       </section>
+      </div>
 
       {/* ============================================================
           WHAT WILL YOU GET? (Full Certificates, No Blur, No Cut)

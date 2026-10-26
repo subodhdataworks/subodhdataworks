@@ -87,6 +87,7 @@ import { AiToolsPromptHub } from './AiToolsPromptHub';
 import { MsOfficeCopilotHub } from './MsOfficeCopilotHub';
 import { FullStackMernHub } from './FullStackMernHub';
 import { StudentCoursesDashboard } from './StudentCoursesDashboard';
+import { MobileDashboardBottomNav } from './mobile/MobileDashboardBottomNav';
 import { PythonIntroGameWorkspace } from './PythonIntroGameWorkspace';
 import { LearningModulesProgressModal } from './LearningModulesProgressModal';
 import { getLearnerTelemetry } from '../../services/realAuthService';
@@ -1779,6 +1780,25 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                   setSelectedModuleView('python_intro_game');
                   if (typeof window !== 'undefined') window.location.hash = '#coding_game';
                 }}
+                onOpenCodingPracticeHub={() => {
+                  playClick();
+                  setSelectedModuleView(null);
+                  setActiveTopicWs(null);
+                  setDockTab('game');
+                  if (typeof window !== 'undefined') window.location.hash = '#game';
+                }}
+                onOpenPlacementSupport={() => {
+                  playClick();
+                  if (isPlacementLocked) {
+                    setLockedSectionTarget('Placement');
+                    setPlacementLockOpen(true);
+                  } else {
+                    setSelectedModuleView(null);
+                    setActiveTopicWs(null);
+                    setDockTab('placement');
+                    if (typeof window !== 'undefined') window.location.hash = '#placement';
+                  }
+                }}
               />
           </div>
         )}
@@ -2073,6 +2093,79 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
       {/* 3D Floating Luminous Blue Marble Sphere (Bottom Left - media_1791029953384.jpg) */}
       <div className="hidden md:block dock-floating-sphere-bl" />
+
+      {/* ─── FIXED MOBILE BOTTOM NAVIGATION (Mobile Only: < md) ─── */}
+      <div className="md:hidden h-20 shrink-0" aria-hidden="true" />
+      <MobileDashboardBottomNav
+        active={
+          dockTab === 'income' || dockTab === 'referral' || dockTab === 'wallet' || dockTab === 'withdraw'
+            ? 'earn'
+            : dockTab === 'game' ||
+              selectedModuleView === 'python_challenges' ||
+              selectedModuleView === 'sql_challenges' ||
+              selectedModuleView === 'excel_challenges'
+            ? 'practice'
+            : selectedModuleView !== null
+            ? 'learning'
+            : 'home'
+        }
+        onHome={() => {
+          playClick();
+          setDockTab('home');
+          setSelectedModuleView(null);
+          setActiveTopicWs(null);
+          if (typeof window !== 'undefined') {
+            window.location.hash = '#dashboard';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }}
+        onLearning={() => {
+          playClick();
+          setDockTab('home');
+          setSelectedModuleView('data_analyst');
+          setActiveTopicWs(null);
+          if (typeof window !== 'undefined') {
+            window.location.hash = '#data-analyst';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }}
+        onPractice={() => {
+          playClick();
+          setSelectedModuleView(null);
+          setActiveTopicWs(null);
+          setDockTab('game');
+          if (typeof window !== 'undefined') {
+            window.location.hash = '#game';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }}
+        onEarn={() => {
+          playClick();
+          setSelectedModuleView(null);
+          setActiveTopicWs(null);
+          setDockTab('income');
+          if (typeof window !== 'undefined') {
+            window.location.hash = '#income';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }}
+        onProfile={() => {
+          playClick();
+          if (!isLoggedIn) {
+            setAuthModalOpen(true);
+            return;
+          }
+          if (typeof document !== 'undefined') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const profileBtn = document.querySelector<HTMLButtonElement>('button[aria-label="Student Profile"]');
+            if (profileBtn) {
+              profileBtn.click();
+              return;
+            }
+          }
+          if (onOpenLogin) onOpenLogin();
+        }}
+      />
 
     </div>
   );
