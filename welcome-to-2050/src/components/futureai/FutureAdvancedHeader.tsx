@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FutureLogo } from './FutureLogo';
+import { WalletWithdrawModal } from './WalletWithdrawModal';
 import { soundEffects } from '../../services/soundEffects';
 import {
   House,
@@ -99,6 +100,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [editProfileModalOpen, setEditProfileModalOpen] = useState(false);
+  const [headerWithdrawModalOpen, setHeaderWithdrawModalOpen] = useState(false);
 
   const profileRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
@@ -573,13 +575,15 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               type="button"
               onClick={() => {
                 soundEffects.playClick();
-                scrollToTop();
-                onNavigateEarn();
-                if (typeof window !== 'undefined') window.location.hash = '#income';
+                if (onOpenWallet) {
+                  onOpenWallet();
+                } else {
+                  setHeaderWithdrawModalOpen(true);
+                }
               }}
               className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100/90 border border-emerald-200/80 text-emerald-700 font-bold text-xs sm:text-[13px] transition-all active:scale-95 cursor-pointer shadow-2xs"
-              title="Your Earnings Wallet"
-              aria-label="Wallet Balance"
+              title="Withdraw Earnings"
+              aria-label="Wallet Balance - Withdraw Earnings"
             >
               <Wallet className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>₹{walletBalance.toLocaleString('en-IN')}</span>
@@ -1135,6 +1139,13 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
           </div>
         </div>
       )}
+
+      {/* ─── HEADER WALLET WITHDRAW EARNINGS MODAL (Matches Earn Cash Wallet Withdraw) ─── */}
+      <WalletWithdrawModal
+        isOpen={headerWithdrawModalOpen}
+        onClose={() => setHeaderWithdrawModalOpen(false)}
+        onSuccess={() => setWalletBalance(readWalletBalance())}
+      />
     </>
   );
 };
