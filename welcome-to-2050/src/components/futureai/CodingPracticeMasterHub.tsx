@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import './CodingPracticeMasterHub.css';
 import { soundEffects } from '../../services/soundEffects';
 import { isCourseUnlocked, isAnyCourseUnlocked } from '../../services/courseUnlockService';
 import {
@@ -614,8 +615,215 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 text-slate-800">
+    <div className="cpm-root-container w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 text-slate-800">
       
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      {/* MOBILE INTERFACE (< 768px) - 1:1 WITH REFERENCE DESIGN               */}
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      <div className="cpm-mobile-only">
+        {/* 1. Compact Mobile Hero Banner */}
+        <section className="cpm-mobile-hero">
+          <div className="cpm-hero-left">
+            <span className="cpm-hero-pill">
+              <Code2 className="w-2.5 h-2.5 text-[#1a5fe0]" />
+              Practice Today, Get Job-Ready
+            </span>
+            <h1 className="cpm-hero-title">
+              Coding <span>Practice</span>
+            </h1>
+            <p className="cpm-hero-desc">
+              Practice course-wise code, solve real-world problems and level up your skills.
+            </p>
+
+            {/* 4 Feature Highlights */}
+            <ul className="cpm-hero-features">
+              <li className="cpm-hero-feature-item">
+                <span className="cpm-feature-icon-box bg-blue-50 text-[#1a73e8] border-blue-100">
+                  <Code2 className="w-2.5 h-2.5" />
+                </span>
+                <span className="cpm-feature-text">
+                  Course-wise<br />Problems
+                </span>
+              </li>
+              <li className="cpm-hero-feature-item">
+                <span className="cpm-feature-icon-box bg-emerald-50 text-emerald-600 border-emerald-100">
+                  <BarChart3 className="w-2.5 h-2.5" />
+                </span>
+                <span className="cpm-feature-text">
+                  Track Your<br />Progress
+                </span>
+              </li>
+              <li className="cpm-hero-feature-item">
+                <span className="cpm-feature-icon-box bg-amber-50 text-amber-500 border-amber-100">
+                  <Trophy className="w-2.5 h-2.5" />
+                </span>
+                <span className="cpm-feature-text">
+                  Challenge<br />Yourself
+                </span>
+              </li>
+              <li className="cpm-hero-feature-item">
+                <span className="cpm-feature-icon-box bg-rose-50 text-rose-500 border-rose-100">
+                  <BriefcaseBusiness className="w-2.5 h-2.5" />
+                </span>
+                <span className="cpm-feature-text">
+                  Get<br />Job-Ready
+                </span>
+              </li>
+            </ul>
+
+            <button
+              type="button"
+              onClick={() => {
+                soundEffects.playClick();
+                document.getElementById('mobile-practice-courses')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="cpm-hero-btn"
+            >
+              Start Practicing Now
+              <ArrowRight className="w-3 h-3" />
+            </button>
+          </div>
+
+          <div className="cpm-hero-right">
+            <img
+              src="/images/arena/coding_practice_hero_v2.png"
+              alt="Student Coding"
+              className="cpm-hero-illustration"
+              draggable={false}
+            />
+          </div>
+        </section>
+
+        {/* 2. Horizontally Scrollable Category Pills */}
+        <div id="mobile-practice-courses" className="cpm-tabs-scroll scroll-mt-20">
+          {CATEGORIES.map((cat) => {
+            const isActive = activeCategory === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => {
+                  soundEffects.playClick();
+                  setActiveCategory(cat);
+                }}
+                className={`cpm-tab-pill ${isActive ? 'is-active' : ''}`}
+              >
+                {cat}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* 3. Section Header: Heading + Dynamic Course Count Dropdown */}
+        <div className="cpm-section-header">
+          <div className="cpm-section-titles">
+            <h2 className="cpm-section-heading">Choose a Course &amp; Start Practicing</h2>
+            <p className="cpm-section-subheading">Learn by doing. Solve problems and build real skills.</p>
+          </div>
+
+          <div className="cpm-course-count-dropdown">
+            <button
+              type="button"
+              onClick={() => setCourseDropdownOpen((prev) => !prev)}
+              className="cpm-course-count-btn"
+            >
+              <span>📚</span>
+              <span>{filteredCards.length} Courses</span>
+              <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform duration-200 ${courseDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* Dropdown Menu on Mobile */}
+            {courseDropdownOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setCourseDropdownOpen(false)}
+                />
+                <div className="absolute right-0 top-full mt-2 w-56 bg-white/95 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-2xl py-2 z-50 animate-fadeIn text-left">
+                  <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 mb-1">
+                    Select Practice Course
+                  </div>
+                  <div className="max-h-60 overflow-y-auto">
+                    {PRACTICE_CARDS.map((c) => (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => {
+                          setCourseDropdownOpen(false);
+                          handleCardClick(c);
+                        }}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors text-left"
+                      >
+                        <span
+                          className="w-4 h-4 rounded text-white text-[9px] font-black flex items-center justify-center shrink-0"
+                          style={{ backgroundColor: c.numBg }}
+                        >
+                          {c.num}
+                        </span>
+                        <span className="truncate">{c.title}</span>
+                        <span className="text-[10px] text-slate-400 ml-auto">{c.topicsCount} T</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* 4. Two-Column Compact Course Grid */}
+        <div className="cpm-cards-grid">
+          {filteredCards.map((card) => (
+            <div
+              key={card.id}
+              onClick={() => handleCardClick(card)}
+              className="cpm-course-card"
+            >
+              <div className="cpm-card-top">
+                <div
+                  className="cpm-card-badge"
+                  style={{ backgroundColor: card.numBg }}
+                >
+                  {card.num}
+                </div>
+                <div className="cpm-card-icon-wrap">
+                  {card.iconComponent}
+                </div>
+                <div className="cpm-card-info">
+                  <h3 className="cpm-card-title">{card.title}</h3>
+                  <div className="cpm-card-subtitle">
+                    {card.subtitle1}
+                    <br />
+                    {card.subtitle2}
+                  </div>
+                </div>
+              </div>
+
+              {/* Progress bar */}
+              <div>
+                <div className="cpm-card-progress-track">
+                  <div className="cpm-card-progress-fill" style={{ width: '0%' }} />
+                </div>
+                <div className="cpm-card-bottom">
+                  <span className="cpm-card-topics-count">0 / {card.topicsCount} Topics</span>
+                  <button
+                    type="button"
+                    aria-label={`Open ${card.title} practice`}
+                    className="cpm-card-arrow-btn"
+                  >
+                    <ArrowRight className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      {/* DESKTOP INTERFACE (>= 768px) - 100% UNTOUCHED ORIGINAL LAYOUT        */}
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      <div className="cpm-desktop-only">
       {/* ─── 1. HERO BANNER (Compact Premium Reference Design) ─── */}
       <section className="relative rounded-[22px] bg-gradient-to-r from-[#f7fbff] via-[#eef5ff] to-[#e3eeff] border border-[#d6e6fe] shadow-[0_6px_28px_rgba(37,99,235,0.08)] overflow-hidden flex flex-col md:flex-row items-stretch md:h-[320px] md:max-h-[340px]">
         {/* Soft futuristic glow & waves */}
@@ -878,6 +1086,7 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
           </div>
         </div>
       </section>
+      </div>
 
       {/* ─── MODAL: ENROLL IN COURSE TO UNLOCK PRACTICE TRACK ─── */}
       {lockedModalCourse && (

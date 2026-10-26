@@ -1,0 +1,451 @@
+/* ============================================================================
+   FUTURE IT INDUSTRY — CODING PRACTICE MASTER HUB MOBILE REDESIGN STYLESHEET
+   Desktop (>= 768px) remains 100% untouched.
+   Mobile (< 768px) implements the Android App-Style UI matching media_1793052434069_c0a5d12e.png
+   ============================================================================ */
+
+.cpm-mobile-only {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .cpm-desktop-only {
+    display: none !important;
+  }
+
+  .cpm-mobile-only {
+    display: block !important;
+  }
+
+  /* Root Container */
+  .cpm-root-container {
+    padding: 10px 10px 32px 10px !important;
+    background:
+      radial-gradient(circle at 90% 4%, rgba(147, 197, 253, 0.42) 0%, transparent 35%),
+      radial-gradient(circle at 10% 8%, rgba(191, 219, 254, 0.45) 0%, transparent 38%),
+      linear-gradient(180deg, #dbeafe 0%, #eff6ff 16%, #f1f5f9 42%, #f8fafc 100%) !important;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── 1. COMPACT MOBILE HERO BANNER ── */
+  .cpm-mobile-hero {
+    position: relative !important;
+    border-radius: 20px !important;
+    background: linear-gradient(135deg, #f0f7ff 0%, #e3eeff 55%, #d5e6ff 100%) !important;
+    border: 1.5px solid #cce0ff !important;
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.08) !important;
+    overflow: hidden !important;
+    padding: 12px 10px 10px 12px !important;
+    margin-bottom: 12px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    justify-content: space-between !important;
+    min-height: 180px !important;
+  }
+
+  .cpm-hero-left {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    z-index: 2 !important;
+    text-align: left !important;
+    padding-right: 4px !important;
+  }
+
+  .cpm-hero-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    align-self: flex-start !important;
+    padding: 2.5px 8px !important;
+    border-radius: 999px !important;
+    background: #e3eeff !important;
+    border: 1px solid #c2d8ff !important;
+    color: #1a5fe0 !important;
+    font-size: 8.5px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.02em !important;
+    text-transform: uppercase !important;
+    line-height: 1.2 !important;
+  }
+
+  .cpm-hero-title {
+    margin: 4px 0 0 0 !important;
+    font-size: 21px !important;
+    font-weight: 900 !important;
+    color: #0b1a3a !important;
+    letter-spacing: -0.025em !important;
+    line-height: 1.08 !important;
+    white-space: nowrap !important;
+  }
+
+  .cpm-hero-title span {
+    color: #1a73e8 !important;
+  }
+
+  .cpm-hero-desc {
+    margin: 3px 0 0 0 !important;
+    font-size: 10px !important;
+    line-height: 1.28 !important;
+    color: #475569 !important;
+    font-weight: 500 !important;
+  }
+
+  /* 4 Feature Highlights Grid */
+  .cpm-hero-features {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 3px !important;
+    margin-top: 6px !important;
+    margin-bottom: 6px !important;
+    padding: 0 !important;
+    list-style: none !important;
+  }
+
+  .cpm-hero-feature-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 2px !important;
+    padding: 0 2px !important;
+    border-left: 1px solid rgba(148, 163, 184, 0.3) !important;
+  }
+
+  .cpm-hero-feature-item:first-child {
+    border-left: none !important;
+    padding-left: 0 !important;
+  }
+
+  .cpm-feature-icon-box {
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 10px !important;
+    border: 1px solid transparent !important;
+    flex-shrink: 0 !important;
+  }
+
+  .cpm-feature-text {
+    font-size: 8px !important;
+    font-weight: 800 !important;
+    color: #0b1a3a !important;
+    line-height: 1.1 !important;
+    text-align: left !important;
+    white-space: nowrap !important;
+  }
+
+  .cpm-hero-btn {
+    align-self: flex-start !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 6px 12px !important;
+    border-radius: 999px !important;
+    background: linear-gradient(180deg, #1d4ed8 0%, #1a73e8 100%) !important;
+    color: #ffffff !important;
+    font-size: 10.5px !important;
+    font-weight: 800 !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(26, 115, 232, 0.28) !important;
+    cursor: pointer !important;
+    line-height: 1.2 !important;
+    margin-top: 2px !important;
+  }
+
+  .cpm-hero-right {
+    position: relative !important;
+    flex: 0 0 42% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: flex-end !important;
+    z-index: 1 !important;
+  }
+
+  .cpm-hero-illustration {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 175px !important;
+    object-fit: contain !important;
+    object-position: right bottom !important;
+    user-select: none !important;
+    pointer-events: none !important;
+  }
+
+  /* ── 2. HORIZONTALLY SCROLLABLE CATEGORY TABS ── */
+  .cpm-tabs-scroll {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 6px !important;
+    overflow-x: auto !important;
+    padding-bottom: 2px !important;
+    margin-bottom: 12px !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .cpm-tabs-scroll::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  .cpm-tab-pill {
+    padding: 6px 14px !important;
+    border-radius: 999px !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+    border: 1px solid transparent !important;
+    transition: all 0.15s ease !important;
+    line-height: 1.2 !important;
+  }
+
+  .cpm-tab-pill.is-active {
+    background: #1a73e8 !important;
+    color: #ffffff !important;
+    border-color: #1a73e8 !important;
+    box-shadow: 0 3px 8px rgba(26, 115, 232, 0.25) !important;
+  }
+
+  .cpm-tab-pill:not(.is-active) {
+    background: #ffffff !important;
+    color: #475569 !important;
+    border-color: #dbeafe !important;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03) !important;
+  }
+
+  /* ── 3. SECTION HEADER: HEADING + DYNAMIC COURSE COUNT ── */
+  .cpm-section-header {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    margin-bottom: 10px !important;
+    text-align: left !important;
+  }
+
+  .cpm-section-titles {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  .cpm-section-heading {
+    margin: 0 !important;
+    font-size: 15.5px !important;
+    font-weight: 900 !important;
+    color: #0f172a !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.2 !important;
+  }
+
+  .cpm-section-subheading {
+    margin: 2px 0 0 0 !important;
+    font-size: 10.5px !important;
+    color: #64748b !important;
+    font-weight: 500 !important;
+    line-height: 1.25 !important;
+  }
+
+  .cpm-course-count-dropdown {
+    position: relative !important;
+    flex-shrink: 0 !important;
+  }
+
+  .cpm-course-count-btn {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 4px !important;
+    background: #ffffff !important;
+    border: 1px solid #dbeafe !important;
+    border-radius: 11px !important;
+    padding: 5px 9px !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    cursor: pointer !important;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+    line-height: 1.2 !important;
+  }
+
+  /* ── 4. PREMIUM TWO-COLUMN COURSE GRID ── */
+  .cpm-cards-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .cpm-course-card {
+    background: #ffffff !important;
+    border-radius: 16px !important;
+    border: 1.5px solid #e2e8f0 !important;
+    padding: 9px 9px 8px 9px !important;
+    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.03) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease !important;
+    min-height: 106px !important;
+  }
+
+  .cpm-course-card:active {
+    transform: scale(0.98) !important;
+  }
+
+  .cpm-card-top {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+    min-width: 0 !important;
+  }
+
+  .cpm-card-badge {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    border-radius: 5px !important;
+    color: #ffffff !important;
+    font-size: 9.5px !important;
+    font-weight: 900 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-top: 1px !important;
+    flex-shrink: 0 !important;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.1) !important;
+  }
+
+  .cpm-card-icon-wrap {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  .cpm-card-icon-wrap svg {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .cpm-card-info {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    text-align: left !important;
+  }
+
+  .cpm-card-title {
+    margin: 0 !important;
+    font-size: 12px !important;
+    font-weight: 900 !important;
+    color: #0f172a !important;
+    letter-spacing: -0.015em !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .cpm-card-subtitle {
+    margin-top: 2px !important;
+    font-size: 8.5px !important;
+    color: #64748b !important;
+    line-height: 1.15 !important;
+    font-weight: 500 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  /* Progress Bar inside Card */
+  .cpm-card-progress-track {
+    width: 100% !important;
+    height: 4.5px !important;
+    background: #e2e8f0 !important;
+    border-radius: 999px !important;
+    overflow: hidden !important;
+    margin: 6px 0 5px 0 !important;
+  }
+
+  .cpm-card-progress-fill {
+    height: 100% !important;
+    background: #1a73e8 !important;
+    border-radius: 999px !important;
+  }
+
+  /* Card Bottom: Topics count + Arrow */
+  .cpm-card-bottom {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  .cpm-card-topics-count {
+    font-size: 9.5px !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+  }
+
+  .cpm-card-arrow-btn {
+    width: 22px !important;
+    height: 22px !important;
+    min-width: 22px !important;
+    border-radius: 50% !important;
+    background: #f0f6ff !important;
+    color: #1a73e8 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+    transition: background 0.15s ease, color 0.15s ease !important;
+  }
+
+  .cpm-course-card:hover .cpm-card-arrow-btn {
+    background: #1a73e8 !important;
+    color: #ffffff !important;
+  }
+}
+
+/* Extra-compact phones (360px) */
+@media (max-width: 374px) {
+  .cpm-hero-title {
+    font-size: 19px !important;
+  }
+
+  .cpm-hero-right {
+    flex: 0 0 38% !important;
+  }
+
+  .cpm-card-title {
+    font-size: 11px !important;
+  }
+
+  .cpm-card-subtitle {
+    font-size: 8px !important;
+  }
+}
