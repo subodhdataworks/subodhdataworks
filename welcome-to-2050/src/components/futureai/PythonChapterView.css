@@ -456,4 +456,9 @@
   .pcv-hero {
     padding: 14px 12px;
   }
+  .pcv-lstatus,
+  .pcv-continue,
+  .pcv-lgo {
+    display: none !important;
+  }
 }

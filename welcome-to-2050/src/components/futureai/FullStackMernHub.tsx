@@ -445,7 +445,7 @@ export const FullStackMernHub: React.FC<FullStackMernHubProps> = ({
                                 </div>
                               </div>
 
-                              <div className="flex items-center gap-2 shrink-0">
+                              <div className="hidden sm:flex items-center gap-2 shrink-0">
                                 <span className="text-[10px] text-slate-600 font-bold hidden sm:inline-block">
                                   {topic.duration}
                                 </span>

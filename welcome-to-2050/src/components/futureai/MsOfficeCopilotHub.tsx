@@ -479,8 +479,8 @@ export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
                                   </span>
                                 </div>
 
-                                {/* Right: Duration + Status Pill + Action Button */}
-                                <div className="flex items-center gap-2.5 shrink-0">
+                                {/* Right: Duration + Status Pill + Action Button (Desktop Only: hidden on mobile so topic title is fully visible) */}
+                                <div className="hidden sm:flex items-center gap-2.5 shrink-0">
                                   <span className="text-[11px] font-medium text-slate-400 hidden sm:inline">
                                     {topic.duration}
                                   </span>

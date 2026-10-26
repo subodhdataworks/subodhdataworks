@@ -859,4 +859,9 @@
     height: 180px;
     object-fit: cover;
   }
+  .scv-lstatus,
+  .scv-continue,
+  .scv-lgo {
+    display: none !important;
+  }
 }
