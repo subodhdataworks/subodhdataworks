@@ -14,8 +14,6 @@ import {
   FileBadge,
   BriefcaseBusiness,
   Briefcase,
-  CircleHelp,
-  MessageCircle,
   LogOut,
   Pencil,
   Phone,
@@ -33,6 +31,16 @@ import {
   Lock,
   FileCheck2,
 } from 'lucide-react';
+
+const WA_SUPPORT_PHONE = '917632099528';
+const WA_SUPPORT_MESSAGE = 'Hello Future IT Industry Support Team, I need help regarding my course or student account. Please assist me.';
+const WA_SUPPORT_URL = `https://wa.me/${WA_SUPPORT_PHONE}?text=${encodeURIComponent(WA_SUPPORT_MESSAGE)}`;
+
+const WhatsAppIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
+    <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.24-.75-.67-1.26-1.49-1.41-1.74-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.17 0-.44.06-.66.31-.23.25-.88.86-.88 2.09s.9 2.43 1.03 2.6c.13.17 1.77 2.7 4.29 3.78.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.07-.11-.23-.17-.48-.29" />
+  </svg>
+);
 
 export interface FutureAdvancedHeaderProps {
   userName?: string;
@@ -203,6 +211,14 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
   const handleDrawerNavigate = (target: string) => {
     soundEffects.playClick();
     setHamburgerDrawerOpen(false);
+
+    if (target === 'help') {
+      if (typeof window !== 'undefined') {
+        window.open(WA_SUPPORT_URL, '_blank', 'noopener,noreferrer');
+      }
+      return;
+    }
+
     scrollToTop();
 
     if (!isLoggedIn) {
@@ -261,14 +277,6 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
         onNavigatePlacement();
         if (typeof window !== 'undefined') window.location.hash = '#placement';
         break;
-      case 'help':
-        if (onOpenHelp) onOpenHelp();
-        else if (typeof window !== 'undefined') window.location.hash = '#contact-us';
-        break;
-      case 'contact':
-        if (onOpenContact) onOpenContact();
-        else if (typeof window !== 'undefined') window.location.hash = '#contact-us';
-        break;
       default:
         break;
     }
@@ -295,10 +303,6 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
         return h.includes('#recom') || h.includes('#lor');
       case 'placement':
         return activeNavTab === 'placement' || h.includes('#place');
-      case 'help':
-        return h.includes('#help');
-      case 'contact':
-        return h.includes('#contact');
       default:
         return false;
     }
@@ -897,38 +901,19 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               {/* Thin Divider */}
               <div className="my-2 border-t border-slate-100" />
 
-              {/* 9. Help and Support — CircleHelp */}
+              {/* 9. Help and Support — Direct WhatsApp Chat */}
               <button
                 type="button"
                 onClick={() => handleDrawerNavigate('help')}
-                className={`w-full h-[50px] px-3.5 rounded-[12px] flex items-center justify-between transition-all duration-200 cursor-pointer group ${
-                  isItemActive('help')
-                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold border-l-4 border-[#1a73e8] shadow-xs'
-                    : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
-                }`}
+                className="w-full h-[50px] px-3.5 rounded-[12px] flex items-center justify-between transition-all duration-200 cursor-pointer group text-[#10234A] hover:bg-emerald-50/80 hover:text-[#075E54] font-semibold"
               >
                 <div className="flex items-center gap-3">
-                  <CircleHelp className={`w-5 h-5 shrink-0 ${isItemActive('help') ? 'text-[#1a73e8]' : 'text-slate-500 group-hover:text-[#1a73e8]'}`} />
+                  <span className="w-5 h-5 flex items-center justify-center text-[#25D366] group-hover:scale-110 transition-transform">
+                    <WhatsAppIcon className="w-5 h-5" />
+                  </span>
                   <span className="text-sm">Help and Support</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
-              </button>
-
-              {/* 10. Contact Support — MessageCircle */}
-              <button
-                type="button"
-                onClick={() => handleDrawerNavigate('contact')}
-                className={`w-full h-[50px] px-3.5 rounded-[12px] flex items-center justify-between transition-all duration-200 cursor-pointer group ${
-                  isItemActive('contact')
-                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold border-l-4 border-[#1a73e8] shadow-xs'
-                    : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <MessageCircle className={`w-5 h-5 shrink-0 ${isItemActive('contact') ? 'text-[#1a73e8]' : 'text-slate-500 group-hover:text-[#1a73e8]'}`} />
-                  <span className="text-sm">Contact Support</span>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
+                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-transform" />
               </button>
 
               {/* Thin Divider */}
