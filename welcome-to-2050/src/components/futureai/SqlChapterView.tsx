@@ -7,7 +7,6 @@ import {
   TrendingUp, LineChart, Edit3, Server, Eye, ShieldCheck, Binary,
   Gauge, FileJson, PieChart, Share2
 } from 'lucide-react';
-import { MobileSqlChapterView } from './mobile/MobileSqlChapterView';
 import './SqlChapterView.css';
 
 interface Props {
@@ -588,18 +587,7 @@ export const SqlChapterView: React.FC<Props> = ({
 
   return (
     <>
-      {/* ── Native Android Mobile App View (< 768px) ── */}
-      <div className="md:hidden">
-        <MobileSqlChapterView
-          userName={userName}
-          onBack={onBack}
-          onOpenUnlockModal={onOpenUnlockModal}
-          onOpenAdvisor={onOpenAdvisor}
-        />
-      </div>
-
-      {/* ── Desktop Experience (>= 768px) ── */}
-      <div className="hidden md:block">
+      <div>
         <div className="scv-root">
           {/* ================= LEFT ================= */}
       <div className="scv-left">

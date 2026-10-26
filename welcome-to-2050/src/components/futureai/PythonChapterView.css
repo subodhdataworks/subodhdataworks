@@ -439,3 +439,21 @@
   }
   .pcv-hero-logo { width: 64px; height: 64px; }
 }
+
+/* =========================================================
+   Extra Mobile Responsive Overrides for PythonChapterView
+   (was previously hidden on < 768px via md:hidden)
+   ========================================================= */
+@media (max-width: 767px) {
+  .pcv-root {
+    padding: 10px 8px 16px;
+    gap: 10px;
+  }
+  .pcv-right {
+    position: static;
+    top: auto;
+  }
+  .pcv-hero {
+    padding: 14px 12px;
+  }
+}

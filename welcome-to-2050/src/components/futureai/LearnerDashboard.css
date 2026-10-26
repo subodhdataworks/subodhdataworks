@@ -5164,10 +5164,10 @@
 
 
 /* =========================================================================
-   MOBILE ANDROID APP RESPONSIVE SYSTEM (< 768px)
+   FULLY RESPONSIVE LAYOUT (< 768px)
    ========================================================================= */
 @media (max-width: 768px) {
-  /* 1. Mobile Android App Top Bar: Desktop header is strictly hidden on mobile */
+  /* 1. The old dock top navbar is not used; FutureAdvancedHeader handles navigation */
   .dock-top-navbar {
     display: none !important;
   }

@@ -7,7 +7,6 @@ import {
 } from 'lucide-react';
 import type { WorkspaceStepId } from './PythonTopicWorkspace';
 import { getLearnerTelemetry } from '../../services/realAuthService';
-import { MobilePythonChapterView } from './mobile/MobilePythonChapterView';
 import './PythonChapterView.css';
 
 interface Props {
@@ -643,19 +642,7 @@ export const PythonChapterView: React.FC<Props> = ({
 
   return (
     <>
-      {/* ── Native Android Mobile App View (< 768px) ── */}
-      <div className="md:hidden">
-        <MobilePythonChapterView
-          userName={userName}
-          onBack={onBack}
-          onOpenTopic={onOpenTopic}
-          onOpenUnlockModal={onOpenUnlockModal}
-          onOpenAdvisor={onOpenAdvisor}
-        />
-      </div>
-
-      {/* ── Desktop Experience (>= 768px) ── */}
-      <div className="hidden md:block">
+      <div>
         <div className="pcv-root">
           {/* ================= FULL-WIDTH TOP BANNER ================= */}
       <div className="pcv-top-full">

@@ -4,7 +4,6 @@ import {
   BarChart3, CheckCircle2, BookOpen, FolderKanban, Wrench, ArrowRight, Zap, Award,
   Timer, Bot, Sparkles, Circle, Table2, Layers, Cpu, TrendingUp
 } from 'lucide-react';
-import { MobileExcelChapterView } from './mobile/MobileExcelChapterView';
 import './SqlChapterView.css';
 
 interface Props {
@@ -580,18 +579,7 @@ export const ExcelChapterView: React.FC<Props> = ({ userName, onBack, onOpenUnlo
 
   return (
     <>
-      {/* ── Native Android Mobile Experience (< 768px) ── */}
-      <div className="md:hidden">
-        <MobileExcelChapterView
-          userName={userName}
-          onBack={onBack}
-          onOpenUnlockModal={onOpenUnlockModal}
-          onOpenAdvisor={onOpenAdvisor}
-        />
-      </div>
-
-      {/* ── Desktop Experience (>= 768px) ── */}
-      <div className="hidden md:block">
+      <div>
         <div className="scv-root">
       {/* ================= LEFT ================= */}
       <div className="scv-left">

@@ -838,3 +838,25 @@
     font-size: 20px;
   }
 }
+
+/* =========================================================
+   Extra Mobile Responsive Overrides for SqlChapterView
+   (was previously hidden on < 768px via md:hidden)
+   ========================================================= */
+@media (max-width: 767px) {
+  .scv-root {
+    padding: 10px 8px 16px;
+    gap: 10px;
+  }
+  .scv-right {
+    position: static;
+    top: auto;
+  }
+  .scv-hero {
+    padding: 14px 12px;
+  }
+  .scv-hero video {
+    height: 180px;
+    object-fit: cover;
+  }
+}

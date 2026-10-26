@@ -3605,3 +3605,21 @@
     border-radius: 14px;
   }
 }
+
+/* =========================================================
+   Extra Mobile Responsive Overrides for GameArenaHub
+   (was previously hidden on < 768px via md:hidden)
+   ========================================================= */
+@media (max-width: 767px) {
+  .py-arena-page-root {
+    padding: 0 2px;
+    min-height: auto;
+    flex-direction: column;
+  }
+  .py-arena-content-layout {
+    grid-template-columns: 1fr;
+  }
+  .py-arena-aside {
+    display: none;
+  }
+}

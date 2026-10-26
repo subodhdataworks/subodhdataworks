@@ -17,11 +17,14 @@
   color: #0f172a;
 }
 
+/* Responsive Affiliate Container across all screen sizes */
 @media (max-width: 767px) {
   .affiliate-hub-container {
-    display: none !important;
+    padding: 8px 10px 100px;
+    gap: 12px;
   }
 }
+
 
 /* Ambient Radial Glow Spots */
 .affiliate-ambient-glow {
