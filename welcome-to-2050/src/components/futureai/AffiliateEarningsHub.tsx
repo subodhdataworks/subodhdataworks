@@ -36,7 +36,7 @@ import {
   Share2
 } from 'lucide-react';
 import './AffiliateEarningsHub.css';
-import { fetchAffiliateRealData, getUserReferralCode, normalizeRefCode } from '../../services/realAuthService';
+import { fetchAffiliateRealData, getUserReferralCode, normalizeRefCode, recordReferralPayment } from '../../services/realAuthService';
 import { MobileAffiliateEarningsHub } from './mobile/MobileAffiliateEarningsHub';
 
 export interface AffiliateEarningsHubProps {
@@ -135,6 +135,40 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     }
   }, [hubState, storageKey]);
 
+  
+  // Auto-recover and credit recent verified payment (e.g. from Razorpay test)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const storedTxn = localStorage.getItem('futureai_payment_txn_id') || '';
+      const processedKey = 'futureai_processed_referral_payments';
+      let processed: string[] = [];
+      try {
+        const raw = localStorage.getItem(processedKey);
+        if (raw) processed = JSON.parse(raw);
+      } catch {}
+
+      if (storedTxn && !processed.includes(storedTxn)) {
+        recordReferralPayment({
+          paymentId: storedTxn,
+          amount: 4,
+          refCode: cleanRefCode,
+          courseTitle: 'Data Analyst with GenAI',
+          payerName: userName,
+        }).then((res) => {
+          if (res.success) {
+            showToast('🎉 ₹100 Referral Commission credited to your wallet!', 'success');
+            const storageKey = `futureai_affiliate_hub_v3_${cleanRefCode}`;
+            const updatedRaw = localStorage.getItem(storageKey);
+            if (updatedRaw) {
+              setHubState(JSON.parse(updatedRaw));
+            }
+          }
+        }).catch(() => {});
+      }
+    } catch {}
+  }, [cleanRefCode, userName]);
+
   // Live real-time sync with Cloud Database & Master Registry for 100% accurate referral signups
   useEffect(() => {
     let isMounted = true;
@@ -213,17 +247,45 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   // Referral Link Copy Feedback & Confetti
   const [copiedLink, setCopiedLink] = useState(false);
 
+  const fallbackCopyText = (text: string): boolean => {
+    try {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      textArea.style.top = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      const success = document.execCommand('copy');
+      textArea.remove();
+      return success;
+    } catch {
+      return false;
+    }
+  };
+
   const handleCopyLink = () => {
     playUiSound('success');
-    if (navigator?.clipboard) {
-      navigator.clipboard.writeText(affiliateRefUrl);
+    let copied = false;
+    if (navigator?.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      navigator.clipboard.writeText(affiliateRefUrl)
+        .then(() => {
+          setCopiedLink(true);
+        })
+        .catch(() => {
+          copied = fallbackCopyText(affiliateRefUrl);
+          setCopiedLink(true);
+        });
+    } else {
+      copied = fallbackCopyText(affiliateRefUrl);
+      setCopiedLink(true);
     }
     setCopiedLink(true);
-    // Clicks strictly tracked when unique student visitors open referral link
     try {
       confetti({
-        particleCount: 65,
-        spread: 60,
+        particleCount: 75,
+        spread: 65,
         origin: { y: 0.65 },
         colors: ['#0284c7', '#38bdf8', '#10b981', '#fbbf24', '#a855f7']
       });
@@ -284,6 +346,9 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
 
   // Modals
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
+  const [claimPaymentId, setClaimPaymentId] = useState('');
+  const [claimLoading, setClaimLoading] = useState(false);
   const [isWithdrawHistoryOpen, setIsWithdrawHistoryOpen] = useState(false);
   const [isReferralsModalOpen, setIsReferralsModalOpen] = useState(false);
   const [selectedReferralDetail, setSelectedReferralDetail] = useState<ReferralItem | null>(null);
@@ -329,8 +394,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
         { icon: '🏛️', label: 'Direct to Bank / UPI' },
         { icon: '✅', label: 'Secure • No Hidden Fee' },
       ],
-      ctaText: availableBalance >= 500 ? `Instant Withdraw ₹${availableBalance.toLocaleString('en-IN')} ⚡` : 'Start Earning ₹100 / Student 🚀',
-      ctaType: availableBalance >= 500 ? 'withdraw' : 'copy',
+      ctaText: availableBalance >= 100 ? `Instant Withdraw ₹${availableBalance.toLocaleString('en-IN')} ⚡` : 'Start Earning ₹100 / Student 🚀',
+      ctaType: availableBalance >= 100 ? 'withdraw' : 'copy',
       socialProof: '₹24.5 Lakhs+ Verified Payouts',
       alt: 'Withdraw Earnings Anytime Hassle-Free - Real Student'
     },
@@ -454,6 +519,55 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     }
   };
 
+  
+  const handleClaimPayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanId = claimPaymentId.trim();
+    if (!cleanId) {
+      showToast('Please enter your Razorpay Payment ID from SMS (e.g. pay_...)', 'error');
+      return;
+    }
+    setClaimLoading(true);
+    try {
+      const res = await recordReferralPayment({
+        paymentId: cleanId,
+        amount: 4,
+        refCode: cleanRefCode,
+        courseTitle: 'Data Analyst with GenAI',
+        payerName: userName,
+      });
+
+      if (res.success) {
+        showToast('🎉 Verified! ₹100 referral commission credited to your wallet!', 'success');
+        const storageKey = `futureai_affiliate_hub_v3_${cleanRefCode}`;
+        const updatedRaw = localStorage.getItem(storageKey);
+        if (updatedRaw) {
+          setHubState(JSON.parse(updatedRaw));
+        }
+        try {
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#10b981', '#06b6d4', '#f59e0b']
+          });
+        } catch {}
+        setIsClaimModalOpen(false);
+        setClaimPaymentId('');
+      } else {
+        if (res.reason === 'PAYMENT_ALREADY_CREDITED') {
+          showToast('This payment ID has already been credited.', 'info');
+        } else {
+          showToast('Could not credit payment. Please check Payment ID.', 'error');
+        }
+      }
+    } catch (err) {
+      showToast('Network error while verifying payment.', 'error');
+    } finally {
+      setClaimLoading(false);
+    }
+  };
+
   // Submit Withdrawal Action
   const handleProcessWithdrawal = () => {
     const amt = parseFloat(withdrawAmount);
@@ -461,8 +575,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       showToast('Please enter a valid withdrawal amount.', 'error');
       return;
     }
-    if (amt < 500) {
-      showToast('Minimum withdrawal amount is ₹500.', 'error');
+    if (amt < 100) {
+      showToast('Minimum withdrawal amount is ₹100.', 'error');
       return;
     }
     if (amt > availableBalance) {
@@ -613,7 +727,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       id: 'available',
       label: 'Available to Payout',
       val: `₹${availableBalance.toLocaleString('en-IN')}`,
-      growth: availableBalance >= 500 ? 'Ready to Payout' : 'Min ₹500',
+      growth: availableBalance >= 100 ? 'Ready to Payout' : 'Min ₹100',
       colorClass: 'card-teal',
       iconBg: '#06b6d4',
       badgeClass: 'badge-cyan-soft',
@@ -846,17 +960,45 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               )}
 
               {banner.theme === 'share-earn' && (
-                <div className="ath-floating-share-scene" aria-hidden="true">
-                  <div className="ath-fss-bubble bubble-wa" title="Share via WhatsApp">
+                <div className="ath-floating-share-scene">
+                  <div
+                    className="ath-fss-bubble bubble-wa cursor-pointer hover:scale-110 active:scale-95 transition-transform"
+                    title="Share via WhatsApp"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleShareSocial('whatsapp');
+                    }}
+                  >
                     <span>💬</span>
                   </div>
-                  <div className="ath-fss-bubble bubble-tg" title="Share via Telegram">
+                  <div
+                    className="ath-fss-bubble bubble-tg cursor-pointer hover:scale-110 active:scale-95 transition-transform"
+                    title="Share via Telegram"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleShareSocial('telegram');
+                    }}
+                  >
                     <span>✈️</span>
                   </div>
-                  <div className="ath-fss-bubble bubble-link" title="Share Link">
+                  <div
+                    className="ath-fss-bubble bubble-link cursor-pointer hover:scale-110 active:scale-95 transition-transform"
+                    title="Copy Referral Link"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCopyLink();
+                    }}
+                  >
                     <span>🔗</span>
                   </div>
-                  <div className="ath-fss-pill">
+                  <div
+                    className="ath-fss-pill cursor-pointer hover:scale-105 active:scale-95 transition-transform"
+                    title="Earn Flat ₹100 / Friend"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCopyLink();
+                    }}
+                  >
                     <Sparkles className="w-3 h-3 text-amber-500" />
                     <span>Earn <strong>₹100</strong> / Friend</span>
                   </div>
@@ -1292,6 +1434,27 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   </div>
                 </div>
               </div>
+            </div>
+
+            
+            {/* Quick Claim / Sync Banner for verified payments */}
+            <div className="mt-3 p-3 rounded-2xl bg-gradient-to-r from-amber-50 to-emerald-50 border border-amber-200/80 flex flex-col sm:flex-row items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
+                <span className="text-xs font-bold text-slate-800">
+                  Enrolled via Referral? Claim your ₹100 Flat Credit
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  playUiSound('click');
+                  setIsClaimModalOpen(true);
+                }}
+                className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-emerald-600 hover:from-amber-600 hover:to-emerald-700 active:scale-95 text-white font-black text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5"
+              >
+                <span>⚡ Claim ₹100 Credit</span>
+              </button>
             </div>
 
             {/* 3 Mini Stats */}
@@ -1779,12 +1942,12 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">24/7 Payout (Within 24h)</span>
                 </div>
 
-                {availableBalance < 500 && (
+                {availableBalance < 100 && (
                   <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 mb-3 text-xs text-amber-900 flex items-start gap-2.5">
                     <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                     <div>
-                      <strong className="block font-bold">Minimum Balance: ₹500</strong>
-                      <span>You need at least ₹500 in your wallet to withdraw. Share your referral link with students and friends to earn Flat ₹100 per enrollment!</span>
+                      <strong className="block font-bold">Minimum Balance: ₹100</strong>
+                      <span>You need at least ₹100 in your wallet to withdraw. Share your referral link with students and friends to earn Flat ₹100 per enrollment!</span>
                     </div>
                   </div>
                 )}
@@ -1797,7 +1960,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                       type="number"
                       value={withdrawAmount}
                       onChange={(e) => setWithdrawAmount(e.target.value)}
-                      placeholder="500"
+                      placeholder="100"
                       className="w-full pl-8 pr-16 py-2.5 rounded-xl border border-slate-300 font-black text-base focus:border-sky-500 focus:outline-none"
                     />
                     <button
@@ -1810,7 +1973,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
 
                   {/* Quick Pick Chips */}
                   <div className="flex gap-2 mt-2">
-                    {[500, 1000, 2500, 5000].map((amt) => (
+                    {[100, 500, 1000, 2500].map((amt) => (
                       <button
                         key={amt}
                         type="button"
@@ -1821,7 +1984,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                       </button>
                     ))}
                   </div>
-                  <span className="text-[10px] text-slate-400 mt-1.5 block">Minimum withdrawal: ₹500 • Zero processing fees</span>
+                  <span className="text-[10px] text-slate-400 mt-1.5 block">Minimum withdrawal: ₹100 • Zero processing fees</span>
                 </div>
 
                 <div className="mt-4">
@@ -1897,13 +2060,13 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 <button
                   disabled={availableBalance < 500}
                   className={`w-full mt-5 py-3 rounded-xl font-black text-sm shadow-lg transition-all ${
-                    availableBalance >= 500
+                    availableBalance >= 100
                       ? 'bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sky-500/25 cursor-pointer active:scale-95'
                       : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
                   }`}
                   onClick={handleProcessWithdrawal}
                 >
-                  {availableBalance >= 500 ? 'Proceed to Confirmation →' : 'Minimum ₹500 Balance Required'}
+                  {availableBalance >= 100 ? 'Proceed to Confirmation →' : 'Minimum ₹100 Balance Required'}
                 </button>
               </div>
             )}

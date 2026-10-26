@@ -21,35 +21,43 @@ export const PaymentResultModal: React.FC<PaymentResultModalProps> = ({ onGoHome
   const [amount, setAmount] = useState<string>('');
 
   useEffect(() => {
-    const hash = window.location.hash || '';
-    const searchStr = (hash.split('?')[1] || '') || (window.location.search ? window.location.search.replace(/^\?/, '') : '');
-    const params = new URLSearchParams(searchStr);
+    const handleHash = () => {
+      const hash = window.location.hash || '';
+      const searchStr = (hash.split('?')[1] || '') || (window.location.search ? window.location.search.replace(/^\?/, '') : '');
+      const params = new URLSearchParams(searchStr);
 
-    if (hash.includes('payment-success') || params.get('status') === 'TXN_SUCCESS' || params.get('status') === 'success') {
-      setStatus('success');
-      const resolvedTxn = params.get('txnid') || params.get('txnId') || params.get('TXNID') || params.get('mihpayid') || params.get('orderId') || params.get('ORDERID') || '';
-      const resolvedAmt = params.get('amount') || params.get('TXNAMOUNT') || '987';
-      const resolvedCourse = params.get('courseId') || params.get('course') || '';
-      setTxnId(resolvedTxn);
-      setAmount(resolvedAmt);
-      try {
-        if (resolvedCourse) {
-          unlockCourse(resolvedCourse);
+      if (hash.includes('payment-success') || params.get('status') === 'TXN_SUCCESS' || params.get('status') === 'success') {
+        setStatus('success');
+        const resolvedTxn = params.get('txnid') || params.get('txnId') || params.get('TXNID') || params.get('mihpayid') || params.get('orderId') || params.get('ORDERID') || '';
+        const resolvedAmt = params.get('amount') || params.get('TXNAMOUNT') || '987';
+        const resolvedCourse = params.get('courseId') || params.get('course') || '';
+        const resolvedRef = params.get('ref') || (typeof window !== 'undefined' ? localStorage.getItem('futureai_ref_attribution') : '') || '';
+        setTxnId(resolvedTxn);
+        setAmount(resolvedAmt);
+        try {
+          if (resolvedCourse) {
+            unlockCourse(resolvedCourse);
+          }
+        } catch (e) {}
+        if (resolvedTxn) {
+          recordReferralPayment({
+            paymentId: resolvedTxn,
+            amount: parseFloat(resolvedAmt) || 987,
+            courseTitle: resolvedCourse,
+            refCode: resolvedRef || undefined,
+          }).catch(() => {});
         }
-      } catch (e) {}
-      if (resolvedTxn) {
-        recordReferralPayment({
-          paymentId: resolvedTxn,
-          amount: parseFloat(resolvedAmt) || 987,
-          courseTitle: resolvedCourse,
-        }).catch(() => {});
+        setTimeout(() => { window.history.replaceState(null, '', window.location.pathname); }, 2500);
+      } else if (hash.includes('payment-failure') || hash.includes('payment-failed') || params.get('status') === 'TXN_FAILURE' || params.get('status') === 'failure') {
+        setStatus('failure');
+        const resolvedTxn = params.get('txnid') || params.get('txnId') || params.get('TXNID') || params.get('orderId') || params.get('ORDERID') || '';
+        setTxnId(resolvedTxn);
       }
-      setTimeout(() => { window.history.replaceState(null, '', window.location.pathname); }, 2500);
-    } else if (hash.includes('payment-failure') || hash.includes('payment-failed') || params.get('status') === 'TXN_FAILURE' || params.get('status') === 'failure') {
-      setStatus('failure');
-      const resolvedTxn = params.get('txnid') || params.get('txnId') || params.get('TXNID') || params.get('orderId') || params.get('ORDERID') || '';
-      setTxnId(resolvedTxn);
-    }
+    };
+
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
   if (!status) return null;

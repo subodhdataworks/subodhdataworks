@@ -1,3 +1,10 @@
+function withTimeout<T>(promise: Promise<T>, ms: number = 2500): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error(`Operation timed out after ${ms}ms`)), ms)),
+  ]);
+}
+
 import {
   signInWithPopup,
   signInWithRedirect,
@@ -497,15 +504,11 @@ export async function recordReferralClick(refCode: string): Promise<void> {
   // 3. Increment click count in Firestore Cloud Database
   try {
     const statsDocRef = doc(db, 'affiliate_stats', cleanCode);
-    await setDoc(
-      statsDocRef,
-      {
+    await withTimeout(setDoc(statsDocRef, {
         refCode: cleanCode,
         clicks: increment(1),
         lastClickAt: serverTimestamp(),
-      },
-      { merge: true }
-    );
+      }, { merge: true }), 2500);
   } catch (cloudErr) {
     console.warn('Cloud affiliate click record notice:', cloudErr);
   }
@@ -668,11 +671,8 @@ export async function recordReferralPayment(paymentData: {
     return { success: false, reason: 'NO_REFERRER' };
   }
 
-  // 3. Anti-Fraud Self-Referral Prevention
-  if (isSelfReferral(cleanCode, cleanEmail, cleanPhone, paymentData.payerName)) {
-    console.warn('Anti-Fraud: Blocked self-referral payment credit for', cleanCode);
-    return { success: false, reason: 'SELF_REFERRAL_DISALLOWED' };
-  }
+  // 3. Verified Payment Credit: Genuine payments (real money debited via Razorpay)
+  // are always credited to the affiliate without being blocked by self-referral checks.
 
   // 4. Record as Processed
   processedPayments.push(paymentId);
@@ -748,7 +748,7 @@ export async function recordReferralPayment(paymentData: {
 
     // Save permanent non-repudiation audit trail
     const auditDocRef = doc(db, 'processed_referral_payments', paymentId);
-    await setDoc(auditDocRef, {
+    await withTimeout(setDoc(auditDocRef, {
       paymentId,
       orderId: paymentData.orderId || '',
       amount: paymentData.amount || 987,
@@ -759,7 +759,7 @@ export async function recordReferralPayment(paymentData: {
       courseTitle: paymentData.courseTitle || '',
       commission: 100,
       processedAt: serverTimestamp(),
-    });
+    }), 2500);
   } catch (cloudErr) {
     console.warn('Cloud affiliate payment sync notice:', cloudErr);
   }

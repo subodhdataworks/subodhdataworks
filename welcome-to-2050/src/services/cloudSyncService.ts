@@ -24,6 +24,13 @@ export interface CloudStudentEntitlement {
 
 const LOCAL_CLOUD_CACHE_KEY = 'futureai_cloud_user_entitlements_v1';
 
+export function withTimeout<T>(promise: Promise<T>, ms: number = 2500): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error(`Operation timed out after ${ms}ms`)), ms)),
+  ]);
+}
+
 /**
  * Persist course enrollment to Firebase Firestore so it NEVER gets lost
  */
@@ -70,7 +77,7 @@ export async function recordCourseEnrollmentInCloud(params: {
     const userDocId = cleanEmail ? cleanEmail.replace(/[^a-zA-Z0-9]/g, '_') : cleanPhone ? `phone_${cleanPhone}` : `usr_${Date.now()}`;
     const userRef = doc(db, 'registered_users', userDocId);
     
-    await setDoc(userRef, {
+    await withTimeout(setDoc(userRef, {
       email: cleanEmail,
       phone: cleanPhone,
       name: cleanName,
@@ -79,17 +86,17 @@ export async function recordCourseEnrollmentInCloud(params: {
       lastPayment: paymentRecord,
       lastEnrolledAt: serverTimestamp(),
       status: 'active'
-    }, { merge: true });
+    }, { merge: true }), 2500);
 
     // Also write to global payments collection
     const paymentRef = doc(db, 'platform_payments', params.paymentId);
-    await setDoc(paymentRef, {
+    await withTimeout(setDoc(paymentRef, {
       ...paymentRecord,
       studentName: cleanName,
       email: cleanEmail,
       phone: cleanPhone,
       timestamp: serverTimestamp()
-    }, { merge: true });
+    }, { merge: true }), 2500);
 
   } catch (err) {
     console.warn('Firestore cloud enrollment save warning (offline fallback active):', err);

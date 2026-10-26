@@ -208,61 +208,73 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
         phone: user.phone || undefined,
       });
 
+      // 1. Instant local unlock
       unlockCourse(canonicalCourseId);
       try {
         localStorage.setItem('futureai_payment_order_id', result.orderId);
         localStorage.setItem('futureai_payment_txn_id', result.paymentId);
         localStorage.setItem('futureai_course_enrolled', 'true');
+        localStorage.setItem(`futureai_unlocked_${canonicalCourseId}`, 'true');
       } catch {}
 
-      // Permanent Firestore Cloud Persistence (Course will NEVER disappear on refresh/cache clear)
-      try {
-        await recordCourseEnrollmentInCloud({
-          email: user.email,
-          phone: user.phone || undefined,
-          name: user.name || 'Student',
-          courseId: canonicalCourseId,
-          courseTitle: displayTitle,
-          paymentId: result.paymentId,
-          orderId: result.orderId,
-          amount: result.amount,
-        });
-      } catch (cloudErr) {
-        console.warn('Cloud sync record notice:', cloudErr);
-      }
-
-      // Anti-Fraud Referral Credit: Flat ₹100 credited upon verified Razorpay payment
+      // 2. Extract attribution code
       const storedRefCode =
         (typeof window !== 'undefined'
           ? localStorage.getItem('futureai_ref_attribution') ||
-            sessionStorage.getItem('futureai_ref_attribution')
+            sessionStorage.getItem('futureai_ref_attribution') ||
+            new URLSearchParams(window.location.search).get('ref') ||
+            ''
           : '') || '';
 
-      try {
-        await recordReferralPayment({
-          paymentId: result.paymentId,
-          orderId: result.orderId,
-          amount: result.amount,
-          payerEmail: user.email,
-          payerPhone: user.phone || undefined,
-          payerName: user.name,
-          courseTitle: displayTitle,
-          refCode: storedRefCode,
-        });
-      } catch (refErr) {
-        console.warn('Referral payment record notice:', refErr);
+      // 3. Immediately close modal and stop loading so UI NEVER hangs
+      setIsLoading(false);
+      onClose();
+
+      // 4. Dispatch events for instant UI reactivity
+      window.dispatchEvent(new CustomEvent('futureai_course_unlocked', { detail: { courseId: canonicalCourseId } }));
+      if (storedRefCode) {
+        window.dispatchEvent(new CustomEvent('futureai_affiliate_updated', { detail: { refCode: storedRefCode, amount: 100 } }));
       }
 
-      onClose();
-      window.dispatchEvent(new CustomEvent('futureai_course_unlocked', { detail: { courseId: canonicalCourseId } }));
-      window.dispatchEvent(new CustomEvent('futureai_affiliate_updated', { detail: { refCode: storedRefCode, amount: 100 } }));
-
+      // 5. Navigate to Payment Success View
       const successHash = `#payment-success?txnid=${encodeURIComponent(result.paymentId)}&amount=${result.amount}&courseId=${encodeURIComponent(canonicalCourseId)}`;
       window.location.hash = successHash;
+
+      // 6. Background synchronization (Non-blocking, with safety timeouts)
+      (async () => {
+        try {
+          await recordReferralPayment({
+            paymentId: result.paymentId,
+            orderId: result.orderId,
+            amount: result.amount,
+            payerEmail: user.email,
+            payerPhone: user.phone || undefined,
+            payerName: user.name,
+            courseTitle: displayTitle,
+            refCode: storedRefCode,
+          });
+        } catch (refErr) {
+          console.warn('Referral payment record notice:', refErr);
+        }
+
+        try {
+          await recordCourseEnrollmentInCloud({
+            email: user.email,
+            phone: user.phone || undefined,
+            name: user.name || 'Student',
+            courseId: canonicalCourseId,
+            courseTitle: displayTitle,
+            paymentId: result.paymentId,
+            orderId: result.orderId,
+            amount: result.amount,
+          });
+        } catch (cloudErr) {
+          console.warn('Cloud sync record notice:', cloudErr);
+        }
+      })();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Payment failed. Please try again.';
       setError(msg);
-    } finally {
       setIsLoading(false);
     }
   };
