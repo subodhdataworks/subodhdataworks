@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   ArrowLeft,
+  Lock,
   Play,
   Pause,
   RotateCcw,
@@ -54,6 +55,7 @@ import type { WorkspaceStepId } from '../PythonTopicWorkspace';
 import { TOPICS } from '../PythonChapterView';
 import { LESSON_BUNNY_VIDEOS, BUNNY_STREAM_CONFIG } from '../../../services/bunnyVideoService';
 import { StableMouthLipSyncAvatar } from '../interview/StableMouthLipSyncAvatar';
+import { isTopicUnlocked } from '../../../services/courseUnlockService';
 import {
   getPreloadedInterviewQuestionsForTopic,
   evaluateInterviewAnswerDeterministically,
@@ -245,6 +247,27 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
   // Current Active Step: 'learn' (Video) | 'play' (Game) | 'interview' (Mock Interview)
   const [activeStep, setActiveStep] = useState<WorkspaceStepId>(normalizeStep(initialStep));
+  const urlTabId = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.hash.includes('?') ? window.location.hash.split('?')[1] : '');
+      const tabParam = p.get('tab');
+      if (tabParam) return parseInt(tabParam, 10);
+    }
+    return 1;
+  }, []);
+  const tabCourseMap: Record<number, string> = {
+    1: 'data_analyst',
+    2: 'data_science',
+    3: 'ml_engineering',
+    4: 'ai_engineering',
+    5: 'ai_tools_prompt',
+    6: 'ms_office_copilot',
+    7: 'full_stack_mern',
+  };
+  const activeCourseKey = tabCourseMap[urlTabId] || 'data_analyst';
+  const isCurrentTopicLocked = useMemo(() => {
+    return !isTopicUnlocked(activeCourseKey, 1, topicId);
+  }, [activeCourseKey, topicId]);
 
   useEffect(() => {
     if (initialStep) {
@@ -1375,7 +1398,27 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
           {/* Video Player Card (Bunny.net Stream Embed with HTML5 Fallback) */}
           <div className="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-200 shadow-sm aspect-video">
-            {bunnyEmbedUrl ? (
+            {isCurrentTopicLocked ? (
+              <div className="w-full h-full flex flex-col items-center justify-center bg-slate-950 text-white p-4 text-center">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-2">
+                  <Lock className="w-5 h-5" />
+                </div>
+                <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 mb-1">
+                  🔒 Locked Content
+                </span>
+                <p className="text-[11px] text-slate-300 mb-3 font-semibold">
+                  Enroll to unlock this lesson & video
+                </p>
+                <button
+                  type="button"
+                  onClick={() => onOpenUnlockModal?.('Course')}
+                  className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-[11px] shadow-sm flex items-center gap-1.5"
+                >
+                  <Lock className="w-3 h-3" />
+                  <span>Unlock Course</span>
+                </button>
+              </div>
+            ) : bunnyEmbedUrl ? (
               <iframe
                 src={bunnyEmbedUrl}
                 title={firstLesson.title}

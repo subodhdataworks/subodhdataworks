@@ -75,6 +75,7 @@ import { PythonIntroGameWorkspace } from './PythonIntroGameWorkspace';
 import { PythonPracticeArena4Games } from './PythonPracticeArena4Games';
 import { getTopicHierarchyInfo } from './PythonChapterView';
 import { HrSettingsService, HrSettingsConfig, DEFAULT_HR_SETTINGS } from '../../services/hrSettingsService';
+import { isTopicUnlocked } from '../../services/courseUnlockService';
 import { StableMouthLipSyncAvatar } from './interview/StableMouthLipSyncAvatar';
 import { ZeroCostMockInterviewRoom } from './interview/ZeroCostMockInterviewRoom';
 import { AdminHrSettingsModal } from '../admin/AdminHrSettingsModal';
@@ -170,7 +171,20 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
     return 1;
   });
 
+  const tabCourseMap: Record<number, string> = {
+    1: 'data_analyst',
+    2: 'data_science',
+    3: 'ml_engineering',
+    4: 'ai_engineering',
+    5: 'ai_tools_prompt',
+    6: 'ms_office_copilot',
+    7: 'full_stack_mern',
+  };
+  const activeCourseKey = tabCourseMap[urlTabId] || 'data_analyst';
   const [internalTopicId, setInternalTopicId] = useState<number>(urlTopicId ?? topicId ?? 1);
+  const isCurrentTopicLocked = useMemo(() => {
+    return !isTopicUnlocked(activeCourseKey, 1, internalTopicId);
+  }, [activeCourseKey, internalTopicId]);
   const effectiveTopicId = internalTopicId;
   const setEffectiveTopicId = (newId: number) => {
     setInternalTopicId(newId);
@@ -2185,7 +2199,30 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
             <div className="plw-col-left">
               {/* Video Player Card */}
               <div className="plw-video-player-card">
-                {true ? (
+                {isCurrentTopicLocked ? (
+                  <div className="plw-video-screen flex flex-col items-center justify-center bg-slate-950 text-white p-6 text-center rounded-2xl relative overflow-hidden min-h-[340px] border border-amber-500/30">
+                    <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-3 shadow-lg shadow-amber-500/10">
+                      <Lock className="w-7 h-7" />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 mb-2">
+                      🔒 Locked Course Content
+                    </span>
+                    <h2 className="text-base font-black text-white mb-1">
+                      {urlTabId > 1 ? `Course Tab ${urlTabId} is Locked` : `Topic ${effectiveTopicId} is Locked`}
+                    </h2>
+                    <p className="text-xs text-slate-400 max-w-sm mb-4">
+                      Only Tab 1 (Data Analyst with GenAI) Topic 1.1 is free to preview. Unlock this course to access all video lectures and interactive labs!
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => onOpenUnlockModal?.(urlTabId > 1 ? `Course Tab ${urlTabId}` : `Topic ${effectiveTopicId}`)}
+                      className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/25 active:scale-95 transition-all cursor-pointer flex items-center gap-2"
+                    >
+                      <Lock className="w-3.5 h-3.5 text-slate-950" />
+                      <span>Enroll to Unlock Full Access</span>
+                    </button>
+                  </div>
+                ) : (
                   <div className="plw-video-screen plw-video-screen-embedded" style={{ position: 'relative' }}>
                     {topic1VideoSource === 'drive' ? (
                       <iframe
@@ -2248,61 +2285,6 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                         <span style={{ color: '#94a3b8', fontSize: '10px' }}>
                           ({topic1VideoSource === 'drive' ? 'Switch to HD' : 'Switch to Drive'})
                         </span>
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div
-                    className="plw-video-screen"
-                    onClick={() => setIsVideoPlaying((p) => !p)}
-                  >
-                    <img
-                      src="/images/what_is_python_video_poster.jpg"
-                      alt="What is Python Lesson"
-                      className="plw-video-bg-img"
-                    />
-                    <div className="plw-video-screen-overlay" />
-
-                    {/* Big Glowing Play Button */}
-                    <div className={`plw-big-play-btn ${isVideoPlaying ? 'is-playing' : ''}`}>
-                      {isVideoPlaying ? (
-                        <Pause className="w-8 h-8 text-white fill-white" />
-                      ) : (
-                        <Play className="w-8 h-8 text-white fill-white ml-1" />
-                      )}
-                    </div>
-
-                    {/* Video Timeline Control Bar (02:15 / 08:00) */}
-                    <div className="plw-video-controls-bar" onClick={(e) => e.stopPropagation()}>
-                      <button
-                        className="plw-vc-btn"
-                        onClick={() => setIsVideoPlaying((p) => !p)}
-                        title={isVideoPlaying ? 'Pause' : 'Play'}
-                      >
-                        {isVideoPlaying ? (
-                          <Pause className="w-4 h-4 text-white" />
-                        ) : (
-                          <Play className="w-4 h-4 text-white fill-white" />
-                        )}
-                      </button>
-                      <button className="plw-vc-btn" title="Volume">
-                        <Volume2 className="w-4 h-4 text-white" />
-                      </button>
-                      <div className="plw-vc-track">
-                        <div className="plw-vc-progress" style={{ width: '28%' }} />
-                        <div className="plw-vc-scrubber" style={{ left: '28%' }} />
-                      </div>
-                      <span className="plw-vc-time">02:15 / 08:00</span>
-                      <span className="plw-vc-speed">1x</span>
-                      <span className="plw-vc-chip">cc</span>
-                      <button className="plw-vc-btn" title="Settings">
-                        <Settings className="w-4 h-4 text-white" />
-                      </button>
-                      <button className="plw-vc-btn" title="Miniplayer">
-                        <Layers className="w-4 h-4 text-white" />
-                      </button>
-                      <button className="plw-vc-btn" title="Fullscreen">
-                        <Maximize2 className="w-4 h-4 text-white" />
                       </button>
                     </div>
                   </div>

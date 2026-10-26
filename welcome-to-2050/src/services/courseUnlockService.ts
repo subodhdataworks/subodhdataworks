@@ -171,12 +171,22 @@ export function isTopicUnlocked(
   chapterNum: number = 1,
   topicNum: number = 1
 ): boolean {
-  if (isCourseUnlocked(courseKeyOrTitle)) {
+  const canonical = normalizeCourseId(courseKeyOrTitle);
+
+  // If the course is paid/unlocked, all its topics are unlocked
+  if (isCourseUnlocked(canonical)) {
     return true;
   }
 
-  // Saare course ka 1st module ka topic 1 free rahega, baaki sab lock rahega
-  return chapterNum === 1 && topicNum === 1;
+  // User strict rule: "saare course ka 1st tab ka 1 module ka 1st topic hi unlock rahega"
+  // ONLY Tab 1 (Data Analyst with GenAI), Module 1, Topic 1 is FREE.
+  if (canonical === 'data_analyst') {
+    return chapterNum === 1 && topicNum === 1;
+  }
+
+  // Tabs 2, 3, 4, 5, 6, 7, 8 (Data Science, ML, AI Engineering, AI Tools, MS Office, Full Stack, etc.)
+  // are 100% LOCKED until course fee is paid!
+  return false;
 }
 
 
