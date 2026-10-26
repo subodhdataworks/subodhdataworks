@@ -433,11 +433,6 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
             <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Back!</span>
             <span className="inline-block origin-[70%_70%]">👋</span>
           </h2>
-
-          {/* Subtitle */}
-          <p className="text-[11px] sm:text-xs text-slate-500 font-normal max-w-[310px] mx-auto mt-0.5 leading-snug">
-            Login to continue your learning journey and career opportunities.
-          </p>
         </div>
 
         {/* Notice Message Banner (if visitor was redirected from a protected route) */}
