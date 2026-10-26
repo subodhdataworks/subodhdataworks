@@ -1,0 +1,775 @@
+/* ============================================================================
+   FUTURE IT INDUSTRY — MOBILE PYTHON CODING ARENA STYLESHEET
+   Desktop (>= 768px) remains 100% untouched.
+   Mobile (< 768px) implements the Android App-Style UI matching media_1793051506742_e3b79c65.png
+   ============================================================================ */
+
+.pca-mobile-only {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .pca-desktop-only {
+    display: none !important;
+  }
+
+  .pca-mobile-only {
+    display: block !important;
+  }
+
+  /* Root container background & spacing */
+  .pca-arena-root {
+    background:
+      radial-gradient(circle at 90% 4%, rgba(147, 197, 253, 0.42) 0%, transparent 35%),
+      radial-gradient(circle at 10% 8%, rgba(191, 219, 254, 0.45) 0%, transparent 38%),
+      linear-gradient(180deg, #dbeafe 0%, #eff6ff 16%, #f1f5f9 42%, #f8fafc 100%) !important;
+    min-height: 100vh;
+    padding-bottom: 96px !important;
+    overflow-x: hidden;
+  }
+
+  /* ── 1. COMPACT TOP NAVIGATION BAR ── */
+  .pca-mobile-navbar {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 4px !important;
+    background: rgba(255, 255, 255, 0.96) !important;
+    backdrop-filter: blur(8px) !important;
+    border-radius: 17px !important;
+    border: 1.5px solid #dbeafe !important;
+    padding: 5px 7px !important;
+    margin: 8px 10px 10px 10px !important;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+  }
+
+  .pca-nav-left {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 5px !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    overflow: hidden !important;
+  }
+
+  .pca-nav-back-btn {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    border-radius: 50% !important;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 2px 5px rgba(15, 23, 42, 0.05) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #0f172a !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+    cursor: pointer !important;
+  }
+
+  .pca-nav-topic-info {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1px !important;
+    min-width: 0 !important;
+    text-align: left !important;
+    overflow: hidden !important;
+  }
+
+  .pca-nav-crumb-row {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 2.5px !important;
+    font-size: 9.5px !important;
+    color: #475569 !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    line-height: 1.15 !important;
+  }
+
+  .pca-nav-crumb-sep {
+    color: #94a3b8 !important;
+    font-size: 8.5px !important;
+  }
+
+  .pca-nav-topic-pill {
+    font-size: 8.5px !important;
+    font-weight: 800 !important;
+    color: #1d4ed8 !important;
+    background: #eff6ff !important;
+    border: 1px solid #bfdbfe !important;
+    padding: 0.5px 4.5px !important;
+    border-radius: 999px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .pca-nav-topic-title {
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.15 !important;
+    max-width: 125px !important;
+  }
+
+  .pca-nav-right {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 3.5px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .pca-nav-sound-btn {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 2.5px !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+    color: #1a73e8 !important;
+    background: #f0f7ff !important;
+    border: 1px solid #bfdbfe !important;
+    padding: 3.5px 5.5px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    line-height: 1.15 !important;
+  }
+
+  .pca-nav-sound-btn.is-muted {
+    color: #64748b !important;
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  .pca-nav-select-wrap {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 2px !important;
+    position: relative !important;
+  }
+
+  .pca-nav-select-label {
+    font-size: 9px !important;
+    font-weight: 700 !important;
+    color: #475569 !important;
+    white-space: nowrap !important;
+  }
+
+  .pca-nav-select {
+    appearance: none !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    padding: 3px 14px 3px 5px !important;
+    max-width: 105px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    cursor: pointer !important;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+  }
+
+  .pca-nav-select-arrow {
+    position: absolute !important;
+    right: 3px !important;
+    pointer-events: none !important;
+    color: #475569 !important;
+  }
+
+  /* ── 2. STACKED MOBILE CARDS WRAPPER ── */
+  .pca-mobile-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    padding: 0 10px !important;
+  }
+
+  /* Common Mobile Card Design */
+  .pca-mcard {
+    background: rgba(255, 255, 255, 0.98) !important;
+    border-radius: 17px !important;
+    border: 1.5px solid #e2e8f0 !important;
+    padding: 12px 12px !important;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04) !important;
+    text-align: left !important;
+  }
+
+  /* ── CARD 1: CHALLENGE INFO & PROBLEM STATEMENT ── */
+  .pca-mcard-header {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .pca-mcard-title-group {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 5px !important;
+    flex-wrap: nowrap !important;
+    min-width: 0 !important;
+  }
+
+  .pca-mcard-title {
+    font-size: 16px !important;
+    font-weight: 900 !important;
+    color: #0f172a !important;
+    letter-spacing: -0.02em !important;
+    margin: 0 !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .pca-diff-badge {
+    font-size: 9.5px !important;
+    font-weight: 800 !important;
+    padding: 1.5px 7px !important;
+    border-radius: 999px !important;
+    white-space: nowrap !important;
+    line-height: 1.2 !important;
+  }
+
+  .pca-diff-badge.easy {
+    background: #e6f4ea !important;
+    color: #137333 !important;
+    border: 1px solid #ceead6 !important;
+  }
+
+  .pca-diff-badge.medium {
+    background: #fef3c7 !important;
+    color: #b45309 !important;
+    border: 1px solid #fde68a !important;
+  }
+
+  .pca-diff-badge.hard {
+    background: #ffe4e6 !important;
+    color: #be123c !important;
+    border: 1px solid #fecdd3 !important;
+  }
+
+  .pca-star-btn {
+    background: transparent !important;
+    border: none !important;
+    padding: 2px !important;
+    color: #94a3b8 !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .pca-star-btn.is-active {
+    color: #f59e0b !important;
+  }
+
+  /* Metadata row: Points, Success Rate, Skill */
+  .pca-mcard-meta {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 9px !important;
+    font-size: 10.5px !important;
+    color: #475569 !important;
+    font-weight: 600 !important;
+    margin-bottom: 10px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .pca-mcard-meta-item {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 3.5px !important;
+    white-space: nowrap !important;
+  }
+
+  .pca-mcard-meta-item strong {
+    color: #0f172a !important;
+    font-weight: 800 !important;
+  }
+
+  /* Sub-tabs: Problem | Submissions | Discussion */
+  .pca-subtabs-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 16px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    padding-bottom: 6px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .pca-subtab-btn {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #64748b !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 0 5px 0 !important;
+    cursor: pointer !important;
+    position: relative !important;
+  }
+
+  .pca-subtab-btn.is-active {
+    color: #1a73e8 !important;
+    font-weight: 900 !important;
+  }
+
+  .pca-subtab-btn.is-active::after {
+    content: '' !important;
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: -7px !important;
+    height: 2.5px !important;
+    background: #1a73e8 !important;
+    border-radius: 999px !important;
+  }
+
+  /* Section Headings inside Problem Tab */
+  .pca-section-title {
+    font-size: 11.5px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    margin: 9px 0 2px 0 !important;
+    line-height: 1.2 !important;
+  }
+
+  .pca-section-desc {
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+    color: #475569 !important;
+    margin: 0 0 5px 0 !important;
+  }
+
+  /* Output / Sample Code Box with Copy Button */
+  .pca-code-box {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 11px !important;
+    padding: 7px 9px !important;
+    margin-top: 3px !important;
+  }
+
+  .pca-code-box code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+    font-size: 11px !important;
+    color: #0f172a !important;
+    font-weight: 700 !important;
+  }
+
+  .pca-copy-btn {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 3px !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    color: #475569 !important;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    padding: 2.5px 6px !important;
+    cursor: pointer !important;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+  }
+
+  /* ── CARD 2: MOBILE CODE EDITOR ── */
+  .pca-editor-card {
+    border-radius: 17px !important;
+    border: 1.5px solid #e2e8f0 !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04) !important;
+    background: #ffffff !important;
+    text-align: left !important;
+  }
+
+  .pca-editor-card.dark-theme {
+    background: #1e1e2e !important;
+    border-color: #313244 !important;
+  }
+
+  .pca-editor-topbar {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 7px 10px !important;
+    background: #ffffff !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
+
+  .pca-editor-card.dark-theme .pca-editor-topbar {
+    background: #181825 !important;
+    border-color: #313244 !important;
+  }
+
+  .pca-editor-lang-pill {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 4px !important;
+    background: #e8f0fe !important;
+    border: 1px solid #bfdbfe !important;
+    color: #1a73e8 !important;
+    font-size: 10.5px !important;
+    font-weight: 800 !important;
+    padding: 3.5px 8px !important;
+    border-radius: 9px !important;
+  }
+
+  .pca-editor-tools {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 5px !important;
+    color: #64748b !important;
+  }
+
+  .pca-editor-tool-btn {
+    background: transparent !important;
+    border: none !important;
+    padding: 3px !important;
+    color: #64748b !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 6px !important;
+  }
+
+  .pca-editor-body {
+    display: flex !important;
+    flex-direction: row !important;
+    min-height: 120px !important;
+    max-height: 220px !important;
+    overflow: hidden !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  }
+
+  .pca-line-numbers {
+    width: 32px !important;
+    min-width: 32px !important;
+    background: #ffffff !important;
+    border-right: 1px solid #e2e8f0 !important;
+    padding: 8px 4px !important;
+    font-size: 11px !important;
+    line-height: 20px !important;
+    color: #94a3b8 !important;
+    text-align: right !important;
+    user-select: none !important;
+  }
+
+  .pca-editor-card.dark-theme .pca-line-numbers {
+    background: #181825 !important;
+    border-color: #313244 !important;
+    color: #585b70 !important;
+  }
+
+  .pca-code-textarea {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    padding: 8px 8px !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+    font-size: 11.5px !important;
+    line-height: 20px !important;
+    color: #0f172a !important;
+    resize: none !important;
+    tab-size: 4 !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    white-space: pre !important;
+  }
+
+  .pca-editor-card.dark-theme .pca-code-textarea {
+    color: #cdd6f4 !important;
+    caret-color: #ffffff !important;
+  }
+
+  /* ── CARD 3: TEST CASES AND RESULTS ── */
+  .pca-tc-tabs-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 16px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    padding-bottom: 6px !important;
+    margin-bottom: 9px !important;
+  }
+
+  .pca-tc-tab-btn {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #64748b !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 0 5px 0 !important;
+    cursor: pointer !important;
+    position: relative !important;
+  }
+
+  .pca-tc-tab-btn.is-active {
+    color: #1a73e8 !important;
+    font-weight: 900 !important;
+  }
+
+  .pca-tc-tab-btn.is-active::after {
+    content: '' !important;
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: -7px !important;
+    height: 2.5px !important;
+    background: #1a73e8 !important;
+    border-radius: 999px !important;
+  }
+
+  .pca-tc-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .pca-tc-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    padding: 7px 9px !important;
+  }
+
+  .pca-tc-row-left {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+  }
+
+  .pca-tc-code-icon {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+    color: #1a73e8 !important;
+    font-weight: 800 !important;
+    font-size: 10.5px !important;
+  }
+
+  .pca-tc-row-right {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 5px !important;
+  }
+
+  .pca-tc-hidden-badge {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 3px !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+    background: #e6f4ea !important;
+    color: #137333 !important;
+    border: 1px solid #ceead6 !important;
+    padding: 1.5px 6px !important;
+    border-radius: 6px !important;
+  }
+
+  .pca-tc-eye-btn {
+    background: transparent !important;
+    border: none !important;
+    color: #94a3b8 !important;
+    cursor: pointer !important;
+    padding: 2px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Two Action Buttons: Run Code and Submit Code */
+  .pca-actions-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin-bottom: 7px !important;
+  }
+
+  .pca-btn-run {
+    background: #ffffff !important;
+    border: 2px solid #1a73e8 !important;
+    color: #1a73e8 !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    padding: 9px 10px !important;
+    border-radius: 12px !important;
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 6px rgba(26, 115, 232, 0.08) !important;
+  }
+
+  .pca-btn-submit {
+    background: linear-gradient(180deg, #1d4ed8 0%, #1a73e8 100%) !important;
+    border: 1px solid #1d4ed8 !important;
+    color: #ffffff !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    padding: 9px 10px !important;
+    border-radius: 12px !important;
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 12px rgba(26, 115, 232, 0.28) !important;
+  }
+
+  .pca-info-notice {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+    font-size: 9.5px !important;
+    line-height: 1.35 !important;
+    color: #64748b !important;
+    text-align: left !important;
+  }
+
+  /* ── CARD 4: CHALLENGE PROGRESS ── */
+  .pca-progress-card {
+    background: rgba(255, 255, 255, 0.98) !important;
+    border-radius: 17px !important;
+    border: 1.5px solid #e2e8f0 !important;
+    padding: 10px 12px !important;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04) !important;
+    text-align: left !important;
+  }
+
+  .pca-progress-title {
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    margin: 0 0 3px 0 !important;
+  }
+
+  .pca-progress-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 5px !important;
+  }
+
+  .pca-progress-numbers {
+    font-size: 18px !important;
+    font-weight: 900 !important;
+    color: #0f172a !important;
+    letter-spacing: -0.02em !important;
+  }
+
+  .pca-progress-percent {
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    color: #1a73e8 !important;
+    background: #eff6ff !important;
+    border: 1px solid #bfdbfe !important;
+    padding: 1.5px 6px !important;
+    border-radius: 6px !important;
+  }
+
+  .pca-progress-track {
+    width: 100% !important;
+    height: 7px !important;
+    background: #e2e8f0 !important;
+    border-radius: 999px !important;
+    overflow: hidden !important;
+  }
+
+  .pca-progress-fill {
+    height: 100% !important;
+    background: linear-gradient(90deg, #1d4ed8 0%, #1a73e8 100%) !important;
+    border-radius: 999px !important;
+    transition: width 0.3s ease !important;
+  }
+
+  /* ── ROW 5: PREVIOUS & NEXT CHALLENGE NAVIGATION ── */
+  .pca-nav-buttons-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin-top: 1px !important;
+  }
+
+  .pca-btn-prev {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #64748b !important;
+    font-size: 11.5px !important;
+    font-weight: 800 !important;
+    padding: 9px 10px !important;
+    border-radius: 12px !important;
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    cursor: pointer !important;
+  }
+
+  .pca-btn-prev.is-disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+  }
+
+  .pca-btn-next {
+    background: linear-gradient(180deg, #1d4ed8 0%, #1a73e8 100%) !important;
+    border: 1px solid #1d4ed8 !important;
+    color: #ffffff !important;
+    font-size: 11.5px !important;
+    font-weight: 800 !important;
+    padding: 9px 10px !important;
+    border-radius: 12px !important;
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 12px rgba(26, 115, 232, 0.28) !important;
+  }
+}

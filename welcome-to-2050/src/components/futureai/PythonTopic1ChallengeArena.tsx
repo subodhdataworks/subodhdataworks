@@ -2,6 +2,7 @@ import { IndianVoiceProblemStatement } from './IndianVoiceProblemStatement';
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { soundEffects } from '../../services/soundEffects';
+import './PythonTopic1ChallengeArena.css';
 import {
   ArrowLeft,
   Play,
@@ -11,6 +12,7 @@ import {
   Lightbulb,
   Terminal,
   ChevronRight,
+  ChevronDown,
   Code2,
   Award,
   Check,
@@ -32,7 +34,8 @@ import {
   Trophy,
   Info,
   Volume2,
-  VolumeX
+  VolumeX,
+  Star
 } from 'lucide-react';
 
 export interface Topic1Task {
@@ -543,6 +546,27 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
     3: false
   });
 
+  // Bookmarking state for current challenge/topic
+  const [bookmarkedIds, setBookmarkedIds] = useState<Set<number>>(() => {
+    const saved = getSyncedPythonChallengesProgress();
+    return new Set<number>(saved.bookmarkedTopicIds || []);
+  });
+
+  const isBookmarked = bookmarkedIds.has(topicId);
+
+  const toggleBookmark = () => {
+    soundEffects.playClick();
+    setBookmarkedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(topicId)) next.delete(topicId);
+      else next.add(topicId);
+      saveSyncedPythonChallengesProgress({
+        bookmarkedTopicIds: Array.from(next),
+      });
+      return next;
+    });
+  };
+
   // Sound and celebration states
   const [soundOn, setSoundOn] = useState<boolean>(() => soundEffects.getSoundEnabled());
   const [showCelebrationToast, setShowCelebrationToast] = useState<boolean>(false);
@@ -730,10 +754,77 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
   const progressPercent = Math.round(((currentTaskIndex + 1) / activeTasks.length) * 100);
 
   return (
-    <div className={`min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col ${isFullscreen ? 'fixed inset-0 z-50 overflow-y-auto' : ''}`}>
+    <div className={`pca-arena-root min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col ${isFullscreen ? 'fixed inset-0 z-50 overflow-y-auto' : ''}`}>
       
-      {/* ─── Top Navigation Bar with Back, Sound Toggle & Question Selector ─── */}
-      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-2.5 flex items-center justify-between sticky top-0 z-20 shadow-xs">
+      {/* ─── 1A. COMPACT MOBILE TOP NAVIGATION BAR (< 768px) ─── */}
+      <div className="pca-mobile-only pca-mobile-navbar">
+        <div className="pca-nav-left">
+          <button
+            type="button"
+            onClick={() => {
+              soundEffects.playClick();
+              onBack();
+            }}
+            aria-label="Back to Challenges"
+            className="pca-nav-back-btn"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </button>
+          <div className="pca-nav-topic-info">
+            <div className="pca-nav-crumb-row">
+              <span>Python Challenges</span>
+              <span className="pca-nav-crumb-sep">&gt;</span>
+              <span className="pca-nav-topic-pill">Topic {topicId}</span>
+            </div>
+            <div className="pca-nav-topic-title">
+              {topicTitle || (topicId === 1 ? 'Say Hello, World! With Python' : `Topic ${topicId} Challenge`)}
+            </div>
+          </div>
+        </div>
+
+        <div className="pca-nav-right">
+          <button
+            type="button"
+            onClick={() => {
+              const next = soundEffects.toggleSound();
+              setSoundOn(next);
+            }}
+            title={soundOn ? 'Sound Effects ON' : 'Muted'}
+            className={`pca-nav-sound-btn ${!soundOn ? 'is-muted' : ''}`}
+          >
+            {soundOn ? <Volume2 className="w-3.5 h-3.5 text-blue-600 animate-pulse" /> : <VolumeX className="w-3.5 h-3.5" />}
+            <span>{soundOn ? 'Sound ON' : 'Muted'}</span>
+          </button>
+
+          <div className="pca-nav-select-wrap">
+            <label htmlFor="pca-mobile-task-select" className="pca-nav-select-label">
+              Challenge:
+            </label>
+            <select
+              id="pca-mobile-task-select"
+              value={currentTaskIndex}
+              onChange={(e) => {
+                soundEffects.playColorChange();
+                setCurrentTaskIndex(Number(e.target.value));
+                setRightTab('testcases');
+                setTerminalOutput('');
+                setTestResult(null);
+              }}
+              className="pca-nav-select"
+            >
+              {activeTasks.map((t, idx) => (
+                <option key={t.id} value={idx}>
+                  {t.taskNumber}. {t.title}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="w-3 h-3 pca-nav-select-arrow" />
+          </div>
+        </div>
+      </div>
+
+      {/* ─── 1B. DESKTOP TOP NAVIGATION BAR (>= 768px) ─── */}
+      <div className="pca-desktop-only bg-white border-b border-slate-200 px-4 sm:px-6 py-2.5 flex items-center justify-between sticky top-0 z-20 shadow-xs">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -815,8 +906,398 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
         </div>
       )}
 
-      {/* ─── MAIN 3-COLUMN WORKSPACE (EXACT SCREENSHOT LAYOUT) ─── */}
-      <div className="flex-1 p-3 sm:p-5 max-w-[1720px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+      {/* ─── 2A. MOBILE STACKED WORKSPACE (< 768px) ─── */}
+      <div className="pca-mobile-only pca-mobile-content">
+        
+        {/* CARD 1: CHALLENGE INFO & PROBLEM STATEMENT */}
+        <div className="pca-mcard">
+          {/* Header Row: Title + Difficulty Badge + Star Bookmark */}
+          <div className="pca-mcard-header">
+            <div className="pca-mcard-title-group">
+              <h1 className="pca-mcard-title">{task.title}</h1>
+              <span className={`pca-diff-badge ${task.difficulty.toLowerCase()}`}>
+                {task.difficulty}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={toggleBookmark}
+              aria-label="Bookmark Challenge"
+              className={`pca-star-btn ${isBookmarked ? 'is-active' : ''}`}
+            >
+              <Star className={`w-5 h-5 transition-colors ${isBookmarked ? 'fill-amber-400 text-amber-400' : ''}`} />
+            </button>
+          </div>
+
+          {/* Metadata Row: Points, Success Rate, Skill */}
+          <div className="pca-mcard-meta">
+            <div className="pca-mcard-meta-item">
+              <Trophy className="w-3.5 h-3.5 text-amber-500" />
+              <span><strong>{task.points} Points</strong></span>
+            </div>
+            <div className="pca-mcard-meta-item">
+              <BarChart3 className="w-3.5 h-3.5 text-slate-400" />
+              <span>Success Rate: <strong>{task.successRate}</strong></span>
+            </div>
+            <div className="pca-mcard-meta-item">
+              <FileText className="w-3.5 h-3.5 text-slate-400" />
+              <span>{task.skill}</span>
+            </div>
+          </div>
+
+          {/* Sub-tabs: Problem | Submissions | Discussion */}
+          <div className="pca-subtabs-row">
+            <button
+              type="button"
+              onClick={() => {
+                soundEffects.playClick();
+                setLeftTab('problem');
+              }}
+              className={`pca-subtab-btn ${leftTab === 'problem' ? 'is-active' : ''}`}
+            >
+              Problem
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                soundEffects.playClick();
+                setLeftTab('submissions');
+              }}
+              className={`pca-subtab-btn ${leftTab === 'submissions' ? 'is-active' : ''}`}
+            >
+              Submissions
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                soundEffects.playClick();
+                setLeftTab('discussion');
+              }}
+              className={`pca-subtab-btn ${leftTab === 'discussion' ? 'is-active' : ''}`}
+            >
+              Discussion
+            </button>
+          </div>
+
+          {/* Problem Tab Content */}
+          {leftTab === 'problem' && (
+            <div>
+              {/* Problem Statement with Indian Voice */}
+              <IndianVoiceProblemStatement
+                title="Problem Statement"
+                problemStatement={task.problemStatement}
+                highlightedKeyword={task.highlightedKeyword}
+                suffix="to the output."
+                taskIndex={currentTaskIndex + 1}
+                theme="blue"
+              />
+
+              {/* Input Format */}
+              <h2 className="pca-section-title">Input Format</h2>
+              <p className="pca-section-desc">{task.inputFormat}</p>
+
+              {/* Output Format */}
+              <h2 className="pca-section-title">Output Format</h2>
+              <p className="pca-section-desc">{task.outputFormat}</p>
+              <div className="pca-code-box">
+                <code>{task.outputFormatSample}</code>
+                <button
+                  type="button"
+                  onClick={() => handleCopy(task.outputFormatSample, 'outputFormatMobile')}
+                  className="pca-copy-btn"
+                >
+                  {copiedSection === 'outputFormatMobile' ? (
+                    <Check className="w-3 h-3 text-emerald-600" />
+                  ) : (
+                    <Copy className="w-3 h-3" />
+                  )}
+                  <span>{copiedSection === 'outputFormatMobile' ? 'Copied' : 'Copy'}</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {leftTab === 'submissions' && (
+            <div className="space-y-2 py-2">
+              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Submissions</h3>
+              {submissionsList.length === 0 ? (
+                <div className="p-6 text-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                  <Code2 className="w-6 h-6 text-slate-300 mx-auto mb-1" />
+                  <p className="text-xs text-slate-500">No submissions yet for this challenge.</p>
+                </div>
+              ) : (
+                submissionsList.map((sub) => (
+                  <div key={sub.id} className="p-2.5 rounded-xl border border-slate-200 bg-white flex items-center justify-between text-xs">
+                    <span className={`font-bold ${sub.status === 'Accepted' ? 'text-emerald-700' : 'text-rose-700'}`}>
+                      {sub.status}
+                    </span>
+                    <span className="text-[11px] text-slate-400">{sub.runtime} • {sub.time}</span>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+
+          {leftTab === 'discussion' && (
+            <div className="py-2">
+              <div className="p-3.5 rounded-xl bg-blue-50/70 border border-blue-200 text-xs text-blue-900 leading-relaxed">
+                <div className="font-bold flex items-center gap-1.5 mb-1 text-blue-800">
+                  <Lightbulb className="w-4 h-4 text-amber-500" />
+                  <span>Learning Hint:</span>
+                </div>
+                <p>{task.hint}</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* CARD 2: MOBILE CODE EDITOR */}
+        <div className={`pca-editor-card ${isDarkMode ? 'dark-theme' : ''}`}>
+          {/* Top Bar: Language Dropdown + Tool Icons */}
+          <div className="pca-editor-topbar">
+            <div className="pca-editor-lang-pill">
+              {/* Python Vector Logo */}
+              <svg className="w-3.5 h-3.5" viewBox="0 0 128 128" fill="none">
+                <path
+                  d="M63.5 12C37.5 12 39.5 23 39.5 23L39.6 34.5H64.4V38H28.7S12 36.2 12 62.4C12 88.6 26.6 87.2 26.6 87.2H35.4V75.1S34.9 60.5 49.5 60.5H74.3V48.4S74.3 36.3 63.5 12ZM51.8 19.3C54.6 19.3 56.8 21.6 56.8 24.3C56.8 27.1 54.6 29.4 51.8 29.4C49 29.4 46.8 27.1 46.8 24.3C46.8 21.6 49 19.3 51.8 19.3Z"
+                  fill="#387EB8"
+                />
+                <path
+                  d="M64.5 116C90.5 116 88.5 105 88.5 105L88.4 93.5H63.6V90H99.3S116 91.8 116 65.6C116 39.4 101.4 40.8 101.4 40.8H92.6V52.9S93.1 67.5 78.5 67.5H53.7V79.6S53.7 91.7 64.5 116ZM76.2 108.7C73.4 108.7 71.2 106.4 71.2 103.7C71.2 100.9 73.4 98.6 76.2 98.6C79 98.6 81.2 100.9 81.2 103.7C81.2 106.4 79 108.7 76.2 108.7Z"
+                  fill="#FFE052"
+                />
+              </svg>
+              <span>Python 3 (3.10)</span>
+              <ChevronDown className="w-3 h-3 text-[#1a73e8]" />
+            </div>
+
+            <div className="pca-editor-tools">
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playColorChange();
+                  setIsDarkMode((prev) => !prev);
+                }}
+                title={isDarkMode ? 'Light mode' : 'Dark mode'}
+                className="pca-editor-tool-btn"
+              >
+                {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playClick();
+                  setIsFullscreen((prev) => !prev);
+                }}
+                title={isFullscreen ? 'Exit full screen' : 'Full screen'}
+                className="pca-editor-tool-btn"
+              >
+                {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+              </button>
+              <button
+                type="button"
+                title="Settings"
+                onClick={() => soundEffects.playClick()}
+                className="pca-editor-tool-btn"
+              >
+                <Settings className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Code Editor Body */}
+          <div className="pca-editor-body">
+            <div className="pca-line-numbers">
+              {Array.from({ length: Math.max(codeLines.length, 4) }).map((_, i) => (
+                <div key={i}>{i + 1}</div>
+              ))}
+            </div>
+            <textarea
+              value={currentCode}
+              onChange={(e) => handleCodeChange(e.target.value)}
+              placeholder="# Write your code here"
+              spellCheck={false}
+              className="pca-code-textarea"
+            />
+          </div>
+        </div>
+
+        {/* CARD 3: TEST CASES AND RESULTS */}
+        <div className="pca-mcard">
+          {/* Tabs: Test Cases (3) | Result */}
+          <div className="pca-tc-tabs-row">
+            <button
+              type="button"
+              onClick={() => {
+                soundEffects.playClick();
+                setRightTab('testcases');
+              }}
+              className={`pca-tc-tab-btn ${rightTab === 'testcases' ? 'is-active' : ''}`}
+            >
+              Test Cases (3)
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                soundEffects.playClick();
+                setRightTab('result');
+              }}
+              className={`pca-tc-tab-btn ${rightTab === 'result' ? 'is-active' : ''}`}
+            >
+              Result
+            </button>
+          </div>
+
+          {rightTab === 'testcases' && (
+            <div className="pca-tc-list">
+              {[1, 2, 3].map((caseNum) => {
+                const isVisible = testCaseVisibility[caseNum];
+                return (
+                  <div key={caseNum} className="pca-tc-row">
+                    <div className="pca-tc-row-left">
+                      <span className="pca-tc-code-icon">&lt;/&gt;</span>
+                      <span>Test Case {caseNum}</span>
+                    </div>
+
+                    <div className="pca-tc-row-right">
+                      <span className="pca-tc-hidden-badge">
+                        <span>Hidden</span>
+                        <Lock className="w-2.5 h-2.5" />
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => toggleEyeVisibility(caseNum)}
+                        title={isVisible ? 'Hide details' : 'Preview test case'}
+                        className="pca-tc-eye-btn"
+                      >
+                        {isVisible ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {rightTab === 'result' && (
+            <div className="space-y-3 mb-4">
+              {isRunning ? (
+                <div className="p-6 text-center text-slate-500">
+                  <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                  <span className="text-xs font-bold">Executing Python Code...</span>
+                </div>
+              ) : testResult ? (
+                <div className="space-y-2.5">
+                  <div className={`p-3 rounded-xl border flex items-center justify-between ${
+                    testResult.passed
+                      ? 'bg-emerald-50/80 border-emerald-200 text-emerald-800'
+                      : 'bg-rose-50/80 border-rose-200 text-rose-800'
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      {testResult.passed ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                      ) : (
+                        <AlertCircle className="w-4 h-4 text-rose-600" />
+                      )}
+                      <span className="text-xs font-bold">
+                        {testResult.passed ? '3/3 Test Cases Passed' : 'Test Cases Failed'}
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-mono text-slate-500 font-bold">{executionTime}</span>
+                  </div>
+
+                  <div>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                      Your Terminal Output:
+                    </span>
+                    <pre className="p-2.5 bg-slate-900 text-slate-100 rounded-xl text-xs font-mono overflow-x-auto whitespace-pre-wrap max-h-36">
+                      {terminalOutput}
+                    </pre>
+                  </div>
+
+                  <p className={`text-xs ${testResult.passed ? 'text-emerald-700 font-semibold' : 'text-rose-700'}`}>
+                    {testResult.message}
+                  </p>
+                </div>
+              ) : (
+                <div className="p-6 text-center text-slate-400 text-xs">
+                  Run or Submit code to view test case results.
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Action Buttons: Run Code and Submit Code */}
+          <div className="pca-actions-grid">
+            <button
+              type="button"
+              onClick={handleRunCode}
+              disabled={isRunning}
+              className="pca-btn-run"
+            >
+              <Play className={`w-3.5 h-3.5 fill-current ${isRunning ? 'animate-spin' : ''}`} />
+              <span>{isRunning ? 'Running...' : 'Run Code'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleSubmitCode}
+              disabled={isRunning}
+              className="pca-btn-submit"
+            >
+              <Send className={`w-3.5 h-3.5 ${isRunning ? 'translate-x-1 -translate-y-1 transition-transform' : ''}`} />
+              <span>{isRunning ? 'Checking...' : 'Submit Code'}</span>
+            </button>
+          </div>
+
+          {/* Info Notice */}
+          <div className="pca-info-notice">
+            <Info className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
+            <span>
+              Your code will be tested against multiple hidden test cases. Click on "Run Code" to check your output first.
+            </span>
+          </div>
+        </div>
+
+        {/* CARD 4: CHALLENGE PROGRESS */}
+        <div className="pca-progress-card">
+          <h3 className="pca-progress-title">Challenge Progress</h3>
+          <div className="pca-progress-row">
+            <span className="pca-progress-numbers">
+              {task.taskNumber} / {activeTasks.length}
+            </span>
+            <span className="pca-progress-percent">
+              {progressPercent}%
+            </span>
+          </div>
+          <div className="pca-progress-track">
+            <div className="pca-progress-fill" style={{ width: `${progressPercent}%` }} />
+          </div>
+        </div>
+
+        {/* ROW 5: PREVIOUS & NEXT CHALLENGE NAVIGATION */}
+        <div className="pca-nav-buttons-row">
+          <button
+            type="button"
+            disabled={currentTaskIndex === 0}
+            onClick={handlePrevTask}
+            className={`pca-btn-prev ${currentTaskIndex === 0 ? 'is-disabled' : ''}`}
+          >
+            <span>← Previous</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleNextTask}
+            className="pca-btn-next"
+          >
+            <span>{currentTaskIndex === activeTasks.length - 1 ? `Complete Topic ${topicId}` : 'Next Challenge →'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* ─── 2B. DESKTOP 3-COLUMN WORKSPACE (>= 768px - UNCHANGED) ─── */}
+      <div className="pca-desktop-only flex-1 p-3 sm:p-5 max-w-[1720px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
         
         {/* ═════════ COLUMN 1: PROBLEM DETAILS (35% on Desktop = 4.2 cols) ═════════ */}
         <div className="lg:col-span-4 bg-white border border-slate-200/90 rounded-2xl shadow-sm flex flex-col overflow-hidden text-left min-h-[680px]">
