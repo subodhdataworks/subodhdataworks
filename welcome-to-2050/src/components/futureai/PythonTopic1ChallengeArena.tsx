@@ -872,6 +872,7 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
                   problemStatement={task.problemStatement}
                   highlightedKeyword={task.highlightedKeyword}
                   suffix="to the output."
+                  taskIndex={currentTaskIndex + 1}
                   theme="blue"
                 />
 

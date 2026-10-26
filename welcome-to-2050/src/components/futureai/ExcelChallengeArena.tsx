@@ -443,6 +443,7 @@ export const ExcelChallengeArena: React.FC<ExcelChallengeArenaProps> = ({
                   <IndianVoiceProblemStatement
                     title="Problem Statement"
                     problemStatement={task.problemStatement}
+                    taskIndex={currentTaskIndex + 1}
                     theme="emerald"
                   />
 

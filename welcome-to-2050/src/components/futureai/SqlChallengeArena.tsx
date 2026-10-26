@@ -481,6 +481,7 @@ export const SqlChallengeArena: React.FC<SqlChallengeArenaProps> = ({
                   problemStatement={task.problemStatement}
                   highlightedKeyword={task.tableName || task.highlightedKeyword || 'employees'}
                   suffix="table."
+                  taskIndex={currentTaskIndex + 1}
                   theme="blue"
                 />
 
