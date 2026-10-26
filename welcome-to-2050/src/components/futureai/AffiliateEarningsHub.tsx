@@ -118,7 +118,10 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   }, [cleanRefCode]);
 
   const affiliateRefUrl = `https://futureitindustry.com/?ref=${cleanRefCode}100`;
-  const storageKey = `futureai_affiliate_hub_v3_${cleanRefCode}`;
+  const storageKey = `futureai_affiliate_hub_v4_${cleanRefCode}`;
+  if (typeof window !== 'undefined') {
+    try { localStorage.removeItem(`futureai_affiliate_hub_v3_${cleanRefCode}`); } catch {}
+  }
 
   // Live Financial State (User-Scoped & Defaults strictly to 0)
   const [hubState, setHubState] = useState<HubState>(() => {
@@ -537,7 +540,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
 
       if (res.success) {
         showToast('🎉 Verified! ₹100 referral commission credited to your wallet!', 'success');
-        const storageKey = `futureai_affiliate_hub_v3_${cleanRefCode}`;
+        const storageKey = `futureai_affiliate_hub_v4_${cleanRefCode}`;
         const updatedRaw = localStorage.getItem(storageKey);
         if (updatedRaw) {
           setHubState(JSON.parse(updatedRaw));
@@ -749,7 +752,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     {
       id: 'lifetime',
       label: 'Lifetime Earnings',
-      val: `₹${totalPaid.toLocaleString('en-IN')}`,
+      val: `₹${totalEarned.toLocaleString('en-IN')}`,
       growth: '100% Verified',
       colorClass: 'card-indigo',
       iconBg: '#6366f1',
@@ -1735,11 +1738,11 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   <circle cx="340" cy="32" r="3.5" fill="#f59e0b" stroke="#ffffff" strokeWidth="1.5" />
                 </svg>
 
-                {/* Floating Tooltip at Sep 24 */}
+                {/* Live Status Tooltip */}
                 <div className="aff-chart-active-tooltip" style={{ left: '52%', top: '15%' }}>
-                  <div className="text-[9.5px] font-semibold text-slate-400">Sep 24 2026</div>
-                  <div className="text-[11px] font-black text-amber-400 leading-tight">₹750 commission</div>
-                  <div className="text-[9.5px] font-bold text-purple-300 leading-tight">6 enrollments</div>
+                  <div className="text-[9.5px] font-semibold text-slate-400">Live Performance</div>
+                  <div className="text-[11px] font-black text-amber-400 leading-tight">₹{totalEarned.toLocaleString('en-IN')} commission</div>
+                  <div className="text-[9.5px] font-bold text-purple-300 leading-tight">{paidEnrollments} enrollments</div>
                   <div className="aff-tooltip-arrow" />
                 </div>
               </div>

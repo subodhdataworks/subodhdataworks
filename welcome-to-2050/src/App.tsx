@@ -24,7 +24,7 @@ import { restoreUserEntitlementsFromCloud } from './services/cloudSyncService';
 
 export const App: React.FC = () => {
   // ─── FACTORY PURGE: RESET ALL USERS, ALL WALLETS, ALL PURCHASES, ALL REFERRALS TO 0 ───
-  if (typeof window !== 'undefined' && localStorage.getItem('futureai_factory_reset_all_zero_v2') !== 'true') {
+  if (typeof window !== 'undefined' && localStorage.getItem('futureai_factory_reset_all_zero_v3') !== 'true') {
     try {
       const keysToRemove: string[] = [];
       for (let i = 0; i < localStorage.length; i++) {
@@ -35,7 +35,7 @@ export const App: React.FC = () => {
       }
       keysToRemove.forEach((k) => localStorage.removeItem(k));
       sessionStorage.clear();
-      localStorage.setItem('futureai_factory_reset_all_zero_v2', 'true');
+      localStorage.setItem('futureai_factory_reset_all_zero_v3', 'true');
     } catch {}
   }
 

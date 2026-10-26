@@ -529,7 +529,7 @@ export async function recordReferralClick(refCode: string): Promise<void> {
 
   // 4. Increment locally
   try {
-    const storageKey = `futureai_affiliate_hub_v3_${cleanCode}`;
+    const storageKey = `futureai_affiliate_hub_v4_${cleanCode}`;
     const raw = localStorage.getItem(storageKey);
     const data = raw ? JSON.parse(raw) : { clicks: 0, signups: 0, paidEnrollments: 0, availableBalance: 0, totalEarned: 0, referrals: [] };
     data.clicks = (data.clicks || 0) + 1;
@@ -580,7 +580,7 @@ export async function recordReferralSignup(
   };
 
   // 1. Check local storage for deduplication
-  const storageKey = `futureai_affiliate_hub_v3_${cleanCode}`;
+  const storageKey = `futureai_affiliate_hub_v4_${cleanCode}`;
   let data: any = { clicks: 0, signups: 0, paidEnrollments: 0, availableBalance: 0, totalEarned: 0, referrals: [] };
   try {
     const raw = localStorage.getItem(storageKey);
@@ -726,7 +726,7 @@ export async function recordReferralPayment(paymentData: {
     (myOwnUserCode && myOwnUserCode === cleanCode) ||
     (cleanCode === 'SUBODHKUMAR' && myEmail.includes('subodh'));
 
-  const storageKey = `futureai_affiliate_hub_v3_${cleanCode}`;
+  const storageKey = `futureai_affiliate_hub_v4_${cleanCode}`;
   let data: any = { clicks: 0, signups: 0, paidEnrollments: 0, availableBalance: 0, totalEarned: 0, referrals: [] };
   try {
     const raw = localStorage.getItem(storageKey);
@@ -851,25 +851,30 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
     const res = await withTimeout(fetch(`/api/affiliate?refCode=${encodeURIComponent(cleanCode)}`), 3500);
     if (res.ok) {
       const serverData = await res.json();
-      if (serverData && typeof serverData.paidEnrollments === 'number' && serverData.paidEnrollments > 0) {
+      if (serverData && typeof serverData.paidEnrollments === 'number') {
+        let localData: any = {};
         if (typeof window !== 'undefined') {
           try {
-            const storageKey = `futureai_affiliate_hub_v3_${cleanCode}`;
-            const existing = JSON.parse(localStorage.getItem(storageKey) || '{}');
-            localStorage.setItem(storageKey, JSON.stringify({
-              ...existing,
-              ...serverData,
-            }));
+            const storageKey = `futureai_affiliate_hub_v4_${cleanCode}`;
+            localData = JSON.parse(localStorage.getItem(storageKey) || '{}');
           } catch {}
         }
+        const paidEnrollments = Math.max(serverData.paidEnrollments || 0, localData.paidEnrollments || 0);
+        const totalEarned = paidEnrollments * 100;
+        const totalPaidOut = localData.totalPaid || 0;
+        const availableBalance = Math.max(0, totalEarned - totalPaidOut);
+        const referrals = Array.isArray(serverData.referrals) && serverData.referrals.length > 0
+          ? serverData.referrals
+          : (Array.isArray(localData.referrals) ? localData.referrals : []);
+
         return {
-          clicks: serverData.clicks || serverData.paidEnrollments,
-          signups: serverData.signups || serverData.paidEnrollments,
-          paidEnrollments: serverData.paidEnrollments,
-          availableBalance: serverData.availableBalance,
-          pendingBalance: serverData.pendingBalance || 0,
-          totalEarned: serverData.totalEarned,
-          referrals: Array.isArray(serverData.referrals) ? serverData.referrals : [],
+          clicks: Math.max(serverData.clicks || 0, localData.clicks || 0, paidEnrollments),
+          signups: Math.max(serverData.signups || 0, localData.signups || 0, paidEnrollments),
+          paidEnrollments,
+          availableBalance,
+          pendingBalance: 0,
+          totalEarned,
+          referrals,
         };
       }
     }
@@ -929,7 +934,7 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
   let localData: any = {};
   if (typeof window !== 'undefined') {
     try {
-      const storageKey = `futureai_affiliate_hub_v3_${cleanCode}`;
+      const storageKey = `futureai_affiliate_hub_v4_${cleanCode}`;
       const raw = localStorage.getItem(storageKey);
       if (raw) localData = JSON.parse(raw);
     } catch {}

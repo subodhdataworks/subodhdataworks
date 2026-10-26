@@ -98,7 +98,13 @@ export async function startRazorpayCheckout(params: {
         email: params.email || '',
         contact: params.phone || '',
       },
-      notes: { courseId: params.courseId || '' },
+      notes: {
+        courseId: params.courseId || '',
+        courseTitle: params.courseTitle || 'Data Analyst with GenAI',
+        name: params.name || '',
+        refCode: refCode || '',
+        affiliateEpoch: 'v3_clean',
+      },
       theme: { color: '#0284c7' },
       modal: {
         ondismiss: () => reject(new Error('Payment cancelled.')),

@@ -4,7 +4,8 @@
  * Server-Side Real-Time Cross-Device Affiliate Engine:
  * 1. Eliminates device isolation: Referrer receives ₹100 commission even when student pays on another phone.
  * 2. Connects directly to Razorpay API using RAZORPAY_KEY_ID & RAZORPAY_KEY_SECRET.
- * 3. In-memory / server cache fallback for instant cross-device delivery.
+ * 3. Strictly filters for new payments (affiliateEpoch === 'v3_clean') with an explicit refCode match.
+ *    Old historical test payments or payments without a referral code are NEVER counted.
  * 4. Enforces strict role separation:
  *    - Buyer gets: Course Unlocked (₹0 wallet commission)
  *    - Referrer (who shared link) gets: Flat ₹100 Commission per paid student
@@ -25,9 +26,9 @@ function normalizeRefCode(ref) {
   return String(ref).trim().toUpperCase().replace(/100$/, '').replace(/[^A-Z0-9]/g, '');
 }
 
-// In-process server memory storage for payments submitted via POST
-if (!globalThis.__affiliate_payments) {
-  globalThis.__affiliate_payments = [];
+// In-process server memory storage for new verified payments submitted via POST (v3_clean)
+if (!globalThis.__affiliate_payments_v3) {
+  globalThis.__affiliate_payments_v3 = [];
 }
 
 export async function onRequestGet(context) {
@@ -55,14 +56,11 @@ export async function onRequestGet(context) {
   const seenPaymentIds = new Set();
   let totalCommission = 0;
 
-  // 1. Check server memory store
-  const memList = Array.isArray(globalThis.__affiliate_payments) ? globalThis.__affiliate_payments : [];
+  // 1. Check server memory store (only v3_clean records with exact refCode match)
+  const memList = Array.isArray(globalThis.__affiliate_payments_v3) ? globalThis.__affiliate_payments_v3 : [];
   for (const item of memList) {
     const itemRef = normalizeRefCode(item.refCode || '');
-    const isMatch = itemRef === cleanCode ||
-      (cleanCode === 'SUBODHKUMAR' && (!itemRef || itemRef === 'SUBODHKUMAR' || itemRef === 'SUBODH'));
-
-    if (isMatch && !seenPaymentIds.has(item.paymentId)) {
+    if (itemRef && itemRef === cleanCode && !seenPaymentIds.has(item.paymentId)) {
       seenPaymentIds.add(item.paymentId);
       matched.push(item);
       totalCommission += item.commission || 100;
@@ -73,7 +71,7 @@ export async function onRequestGet(context) {
   if (keyId && keySecret) {
     try {
       const authHeader = 'Basic ' + btoa(`${keyId}:${keySecret}`);
-      const rzpRes = await fetch('https://api.razorpay.com/v1/payments?count=100', {
+      const rzpRes = await fetch('https://api.razorpay.com/v1/payments?count=50', {
         headers: {
           Authorization: authHeader,
           'Content-Type': 'application/json',
@@ -88,11 +86,12 @@ export async function onRequestGet(context) {
           if (p.status !== 'captured') continue;
           if (seenPaymentIds.has(p.id)) continue;
 
-          const pRef = normalizeRefCode(p.notes?.refCode || p.notes?.ref || '');
-          const isMatch = pRef === cleanCode ||
-            (cleanCode === 'SUBODHKUMAR' && (!pRef || pRef === 'SUBODHKUMAR' || pRef === 'SUBODH'));
+          // Strictly ignore all old historical test payments before v3_clean reset
+          if (p.notes?.affiliateEpoch !== 'v3_clean') continue;
 
-          if (isMatch) {
+          const pRef = normalizeRefCode(p.notes?.refCode || p.notes?.ref || '');
+          // Must have an explicit non-empty referral code matching this affiliate
+          if (pRef && pRef === cleanCode) {
             seenPaymentIds.add(p.id);
             matched.push({
               id: `ref_rzp_${p.id}`,
@@ -119,8 +118,8 @@ export async function onRequestGet(context) {
 
   if (matched.length > 0) {
     return json({
-      clicks: Math.max(matched.length, 1),
-      signups: Math.max(matched.length, 1),
+      clicks: matched.length,
+      signups: matched.length,
       paidEnrollments: matched.length,
       availableBalance: totalCommission,
       pendingBalance: 0,
@@ -129,7 +128,7 @@ export async function onRequestGet(context) {
     });
   }
 
-  // Clean Zero State for users with no referrals
+  // Clean Zero State for users with 0 referrals
   return json({
     clicks: 0,
     signups: 0,
@@ -145,8 +144,14 @@ export async function onRequestPost(context) {
   const { request } = context;
   try {
     const body = await request.json().catch(() => ({}));
-    const cleanRef = normalizeRefCode(body.refCode) || 'SUBODHKUMAR';
-    const paymentId = String(body.paymentId || `pay_${Date.now()}`);
+    const cleanRef = normalizeRefCode(body.refCode);
+    if (!cleanRef) {
+      return json({ success: false, error: 'Missing referral code' }, 400);
+    }
+    const paymentId = String(body.paymentId || '').trim();
+    if (!paymentId) {
+      return json({ success: false, error: 'Missing paymentId' }, 400);
+    }
 
     const newRecord = {
       id: `ref_post_${paymentId}`,
@@ -164,13 +169,13 @@ export async function onRequestPost(context) {
       approvedDate: new Date().toISOString(),
     };
 
-    if (!Array.isArray(globalThis.__affiliate_payments)) {
-      globalThis.__affiliate_payments = [];
+    if (!Array.isArray(globalThis.__affiliate_payments_v3)) {
+      globalThis.__affiliate_payments_v3 = [];
     }
 
     // Deduplicate by paymentId
-    if (!globalThis.__affiliate_payments.some((p) => p.paymentId === paymentId)) {
-      globalThis.__affiliate_payments.unshift(newRecord);
+    if (!globalThis.__affiliate_payments_v3.some((p) => p.paymentId === paymentId)) {
+      globalThis.__affiliate_payments_v3.unshift(newRecord);
     }
 
     return json({
