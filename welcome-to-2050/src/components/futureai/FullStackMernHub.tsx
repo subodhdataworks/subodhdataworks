@@ -149,31 +149,31 @@ export const FullStackMernHub: React.FC<FullStackMernHubProps> = ({
           <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 md:via-white/80 to-transparent pointer-events-none w-full md:w-[58%] lg:w-[52%]" />
           <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent pointer-events-none md:hidden" />
 
-          <div className="relative z-10 p-5 sm:p-6 lg:p-7 flex flex-col justify-between min-h-[220px] sm:min-h-[240px]">
+          <div className="relative z-10 p-4 sm:p-6 lg:p-7 flex flex-col justify-between min-h-[220px] sm:min-h-[240px]">
             
             {/* Left Content Zone */}
-            <div className="max-w-2xl space-y-2.5">
+            <div className="max-w-2xl space-y-2.5 min-w-0">
               {/* Back Arrow + Eyebrow Pill */}
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
                 {onBack && (
                   <button
                     type="button"
                     onClick={onBack}
                     title="Back to All Courses"
                     aria-label="Back"
-                    className="w-8 h-8 rounded-full bg-white hover:bg-slate-50 text-slate-800 flex items-center justify-center border border-slate-200 shadow-2xs hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                    className="w-8 h-8 shrink-0 rounded-full bg-white hover:bg-slate-50 text-slate-800 flex items-center justify-center border border-slate-200 shadow-2xs hover:scale-105 active:scale-95 transition-all cursor-pointer"
                   >
                     <ArrowLeft className="w-4 h-4 text-slate-800 stroke-[2.5]" />
                   </button>
                 )}
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[11px] font-black text-emerald-800 tracking-wide uppercase shadow-2xs">
-                  <Flame className="w-3.5 h-3.5 fill-emerald-500 text-emerald-500" />
-                  <span>FUTURE IT INDUSTRY • FULL-STACK MERN &amp; AI CODING</span>
+                <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[9.5px] sm:text-[11px] font-black text-emerald-800 tracking-wide uppercase shadow-2xs min-w-0">
+                  <Flame className="w-3.5 h-3.5 fill-emerald-500 text-emerald-500 shrink-0" />
+                  <span className="truncate">FUTURE IT INDUSTRY • FULL-STACK MERN &amp; AI CODING</span>
                 </div>
               </div>
 
               {/* Headline */}
-              <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-black tracking-tight text-slate-950 leading-tight">
+              <h1 className="text-xl min-[375px]:text-2xl sm:text-3xl lg:text-[34px] font-black tracking-tight text-slate-950 leading-tight">
                 Full-Stack MERN{' '}
                 <span className="bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-600 bg-clip-text text-transparent">
                   Development with AI
@@ -186,40 +186,40 @@ export const FullStackMernHub: React.FC<FullStackMernHubProps> = ({
               </p>
 
               {/* Feature Pills */}
-              <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-[10.5px] font-bold text-slate-700">
-                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
+              <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-[10px] sm:text-[10.5px] font-bold text-slate-700">
+                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-2.5 sm:px-3 py-1 rounded-full shadow-2xs">
                   🔰 Beginner to Advanced
                 </span>
-                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
+                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-2.5 sm:px-3 py-1 rounded-full shadow-2xs">
                   ⚛️ React 18 &amp; Hooks
                 </span>
-                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
+                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-2.5 sm:px-3 py-1 rounded-full shadow-2xs">
                   🟢 Node.js &amp; Express APIs
                 </span>
-                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
+                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-2.5 sm:px-3 py-1 rounded-full shadow-2xs">
                   🍃 MongoDB &amp; JWT Auth
                 </span>
-                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-3 py-1 rounded-full shadow-2xs">
+                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-2.5 sm:px-3 py-1 rounded-full shadow-2xs">
                   🤖 GitHub Copilot &amp; AI Tools
                 </span>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3 pt-1.5">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1.5">
                 <button
                   type="button"
                   onClick={() => onStartTopic && onStartTopic('fs-t-4', 'Full-stack development overview')}
-                  className="px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer"
+                  className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer"
                 >
-                  <Play className="w-3.5 h-3.5 fill-white" />
+                  <Play className="w-3.5 h-3.5 fill-white shrink-0" />
                   <span>Resume Learning</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleOpenSuccessPlan('Full-Stack MERN Development with AI')}
-                  className="px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-emerald-600/25 active:scale-95 transition-all cursor-pointer"
+                  className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-emerald-600/25 active:scale-95 transition-all cursor-pointer"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
                   <span>Enroll for ₹987</span>
                 </button>
                 <button
@@ -228,16 +228,16 @@ export const FullStackMernHub: React.FC<FullStackMernHubProps> = ({
                     const el = document.getElementById('mern-curriculum-tabs-map');
                     el?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="px-5 py-2.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-800 font-bold text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-2xs"
+                  className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-800 font-bold text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-2xs"
                 >
-                  <Search className="w-3.5 h-3.5 text-slate-500" />
+                  <Search className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                   <span>View Course Overview</span>
                 </button>
               </div>
             </div>
 
             {/* Bottom Stats Bar inside Hero */}
-            <div className="mt-5 pt-3 border-t border-slate-200/70 bg-white/75 backdrop-blur-sm -mx-5 sm:-mx-6 lg:-mx-7 -mb-5 sm:-mb-6 lg:-mb-7 px-5 sm:px-6 lg:px-7 py-3 flex flex-wrap items-center justify-between gap-3 text-xs font-black text-slate-800 rounded-b-3xl">
+            <div className="mt-5 pt-3 border-t border-slate-200/70 bg-white/75 backdrop-blur-sm -mx-4 sm:-mx-6 lg:-mx-7 -mb-4 sm:-mb-6 lg:-mb-7 px-4 sm:px-6 lg:px-7 py-3 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 text-[11px] sm:text-xs font-black text-slate-800 rounded-b-3xl">
               <div className="flex items-center gap-1.5">
                 <span className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-center font-black text-[11px]">40</span>
                 <span>Chapters</span>

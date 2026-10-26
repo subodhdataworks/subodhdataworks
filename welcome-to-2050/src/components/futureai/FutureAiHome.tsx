@@ -269,7 +269,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </div>
 
       {/* ─── 2. MAIN HERO SECTION (Color-Matched to Video Studio Background) ─── */}
-      <section className="relative w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8 overflow-hidden bg-gradient-to-r from-[#dce7f2] via-[#e5eef7] to-[#edf4fb]">
+      <section className="relative w-full px-3.5 sm:px-6 lg:px-8 py-4 sm:py-8 overflow-hidden bg-gradient-to-r from-[#dce7f2] via-[#e5eef7] to-[#edf4fb]">
         
         {/* Soft Ambient Aurora Lights */}
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-300/20 rounded-full blur-3xl pointer-events-none" />
@@ -280,10 +280,10 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center w-full">
             
             {/* LEFT COLUMN: Punchy Headline & CTAs (lg:col-span-6) */}
-            <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center text-center lg:text-left z-10 pl-0 lg:pl-3">
+            <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center text-center lg:text-left z-10 pl-0 lg:pl-3 min-w-0">
               
               {/* Main Headline */}
-              <h1 className="text-3xl sm:text-5xl lg:text-[42px] xl:text-[48px] font-black tracking-tight leading-[1.06] text-[#0f172a]">
+              <h1 className="text-[25px] min-[375px]:text-3xl sm:text-5xl lg:text-[42px] xl:text-[48px] font-black tracking-tight leading-[1.08] sm:leading-[1.06] text-[#0f172a]">
                 <span className="block">World&apos;s First</span>
                 <span className="block text-[#1a73e8]">Affordable Easy</span>
                 <span className="block">
@@ -296,51 +296,51 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               </h1>
 
               {/* Tagline */}
-              <div className="mt-2.5 text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-600 leading-snug max-w-lg mx-auto lg:mx-0">
+              <div className="mt-2 sm:mt-2.5 text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-600 leading-snug max-w-lg mx-auto lg:mx-0">
                 <p>Real Practical Courses. Real Projects. Industry Guidance.</p>
                 <p className="text-slate-900 font-bold mt-0.5">From Learning to Earning, We&apos;re With You.</p>
               </div>
 
               {/* Key Features Bullet points */}
-              <div className="mt-3 space-y-1 text-[11px] sm:text-xs text-slate-600 font-semibold max-w-md mx-auto lg:mx-0">
-                <div className="flex items-center gap-2 justify-center lg:justify-start">
+              <div className="mt-2.5 sm:mt-3 space-y-1 text-[11px] sm:text-xs text-slate-600 font-semibold max-w-md mx-auto lg:mx-0">
+                <div className="flex items-center gap-1.5 sm:gap-2 justify-center lg:justify-start">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>100% Hands-On Coding Challenges & Industry Datasets</span>
+                  <span className="text-left">100% Hands-On Coding Challenges &amp; Industry Datasets</span>
                 </div>
-                <div className="flex items-center gap-2 justify-center lg:justify-start">
+                <div className="flex items-center gap-1.5 sm:gap-2 justify-center lg:justify-start">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>AI Mock Interview Simulator with Live Scoring</span>
+                  <span className="text-left">AI Mock Interview Simulator with Live Scoring</span>
                 </div>
-                <div className="flex items-center gap-2 justify-center lg:justify-start">
+                <div className="flex items-center gap-1.5 sm:gap-2 justify-center lg:justify-start">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>700+ Hiring Partners • Pay Fee Only After Placement</span>
+                  <span className="text-left">700+ Hiring Partners • Pay Fee Only After Placement</span>
                 </div>
               </div>
 
               {/* CTAs Row */}
-              <div className="mt-3.5 flex flex-wrap items-center justify-center lg:justify-start gap-3">
+              <div className="mt-3.5 flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-3">
                 <button
                   type="button"
                   onClick={promptLogin}
-                  className="px-6 py-2.5 sm:py-3 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer flex items-center gap-2 group"
+                  className="px-4 min-[375px]:px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2 group"
                 >
                   <span>Start Learning Free</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform shrink-0" />
                 </button>
 
                 <button
                   type="button"
                   onClick={promptLogin}
-                  className="px-5 py-2.5 sm:py-3 rounded-xl bg-white hover:bg-slate-50 active:scale-95 text-slate-800 font-bold text-xs sm:text-sm border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all cursor-pointer flex items-center gap-2"
+                  className="px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-white hover:bg-slate-50 active:scale-95 text-slate-800 font-bold text-xs sm:text-sm border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2"
                 >
-                  <Code2 className="w-3.5 h-3.5 text-[#1a73e8]" />
+                  <Code2 className="w-3.5 h-3.5 text-[#1a73e8] shrink-0" />
                   <span>Explore Coding Practice</span>
                 </button>
               </div>
 
               {/* Rating */}
-              <div className="mt-2.5 flex items-center justify-center lg:justify-start gap-2 text-[11px] text-slate-500 font-medium">
-                <div className="flex items-center text-amber-400">
+              <div className="mt-2.5 flex flex-wrap items-center justify-center lg:justify-start gap-1.5 sm:gap-2 text-[11px] text-slate-500 font-medium">
+                <div className="flex items-center text-amber-400 shrink-0">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
                   ))}
@@ -364,7 +364,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                     loop
                     muted
                     playsInline
-                    className="w-full h-auto max-h-[380px] sm:max-h-[440px] lg:max-h-[480px] xl:max-h-[520px] object-contain pointer-events-none select-none drop-shadow-[0_20px_40px_rgba(26,115,232,0.22)]"
+                    className="w-full h-auto max-h-[250px] min-[390px]:max-h-[290px] sm:max-h-[440px] lg:max-h-[480px] xl:max-h-[520px] object-contain pointer-events-none select-none drop-shadow-[0_20px_40px_rgba(26,115,232,0.22)]"
                   >
                     <source src="/videos/header_hero_transparent.webm" type="video/webm" />
                     <source src="/videos/header_transparent_video.mp4" type="video/mp4" />
@@ -716,7 +716,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/15 pointer-events-none" />
 
             {/* Horizontal Progression Strip Indicator */}
-            <div className="relative sm:absolute sm:bottom-5 sm:left-5 sm:right-5 m-2.5 sm:m-0 flex flex-wrap items-center justify-between gap-2.5 bg-slate-900/90 backdrop-blur-md px-3.5 sm:px-6 py-2.5 sm:py-3.5 rounded-2xl border border-white/10 text-white shadow-xl">
+            <div className="absolute bottom-3 left-3 right-3 sm:bottom-5 sm:left-5 sm:right-5 flex flex-wrap items-center justify-between gap-2.5 bg-slate-900/85 backdrop-blur-md px-3.5 sm:px-6 py-2.5 sm:py-3.5 rounded-2xl border border-white/10 text-white shadow-xl">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-pink-500 shadow-sm shadow-pink-500/50 shrink-0" />
                 <span className="text-xs sm:text-sm font-black tracking-wide">01. Learn Skills</span>

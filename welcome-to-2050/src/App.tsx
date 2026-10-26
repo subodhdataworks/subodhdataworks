@@ -9,6 +9,7 @@ import { AdminLeadManagerModal } from './components/futureai/AdminLeadManagerMod
 import { recordReferralClick } from './services/realAuthService';
 import { StorageService } from './services/storage';
 import { ThemeAccentProvider } from './context/ThemeAccentContext';
+import { MobileAppInstallPrompt } from './components/futureai/mobile/MobileAppInstallPrompt';
 import { AdminControlCenter } from './components/admin/controlcenter/AdminControlCenter';
 import { ContactUsView } from './components/legal/ContactUsView';
 import { TermsAndConditionsView } from './components/legal/TermsAndConditionsView';
@@ -120,6 +121,55 @@ export const App: React.FC = () => {
     return typeof window !== 'undefined' ? window.location.hash : '';
   });
 
+  const checkIsMobileDevice = (): boolean => {
+    if (typeof window === 'undefined') return false;
+    const searchParams = new URLSearchParams(window.location.search);
+    if (
+      searchParams.get('mobile') === 'true' ||
+      searchParams.get('mode') === 'mobile' ||
+      window.location.hash.includes('mobile=true') ||
+      window.location.hash.includes('mode=mobile')
+    ) {
+      return true;
+    }
+    if (window.innerWidth < 768) return true;
+    if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) return true;
+    if (typeof navigator !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) return true;
+    return false;
+  };
+
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    return checkIsMobileDevice();
+  });
+
+  // Track viewport resize & screen orientation
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(checkIsMobileDevice());
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  }, []);
+
+  // On mobile devices, ensure default route is #dashboard only if logged in or navigating to course
+  useEffect(() => {
+    if (checkIsMobileDevice()) {
+      setIsMobile(true);
+      const baseH = window.location.hash.split('?')[0];
+      if (!baseH || baseH === '#home' || baseH === '') {
+        const isAuth = localStorage.getItem('futureai_logged_in') === 'true';
+        if (isAuth) {
+          window.location.hash = '#dashboard';
+        }
+      }
+    }
+  }, []);
+
   // Sync hash changes
   useEffect(() => {
     const handleHashChange = () => {
@@ -193,43 +243,43 @@ export const App: React.FC = () => {
         {['#admin', '#admin-portal', '#control-center', '#admin-panel'].includes(currentHash.split('?')[0].toLowerCase()) ? (
           <AdminControlCenter
             onClose={() => {
-              window.location.hash = isLoggedIn ? '#dashboard' : '#home';
+              window.location.hash = isMobile ? '#dashboard' : '#home';
             }}
           />
         ) : ['#contact-us', '#contactus', '#contact'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#ContactUs' ? (
           <ContactUsView
             onBack={() => {
-              window.location.hash = isLoggedIn ? '#dashboard' : '#home';
+              window.location.hash = isMobile ? '#dashboard' : '#home';
             }}
           />
         ) : ['#terms', '#terms-and-conditions', '#termsandconditions', '#terms-conditions'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#TermsAndConditions' ? (
           <TermsAndConditionsView
             onBack={() => {
-              window.location.hash = isLoggedIn ? '#dashboard' : '#home';
+              window.location.hash = isMobile ? '#dashboard' : '#home';
             }}
           />
         ) : ['#privacy', '#privacy-policy', '#privacypolicy'].includes(currentHash.split('?')[0].toLowerCase()) ? (
           <PrivacyPolicyView
             onBack={() => {
-              window.location.hash = isLoggedIn ? '#dashboard' : '#home';
+              window.location.hash = isMobile ? '#dashboard' : '#home';
             }}
           />
         ) : ['#refund', '#refund-policy', '#refundpolicy', '#cancellation', '#cancellation-policy'].includes(currentHash.split('?')[0].toLowerCase()) ? (
           <RefundPolicyView
             onBack={() => {
-              window.location.hash = isLoggedIn ? '#dashboard' : '#home';
+              window.location.hash = isMobile ? '#dashboard' : '#home';
             }}
           />
         ) : ['#about', '#about-us', '#aboutus', '#company'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#AboutUs' ? (
           <AboutUsView
             onBack={() => {
-              window.location.hash = isLoggedIn ? '#dashboard' : '#home';
+              window.location.hash = isMobile ? '#dashboard' : '#home';
             }}
           />
         ) : currentHash.split('?')[0] === '#ats-resume-checker' || currentHash.split('?')[0] === '#ats' ? (
           <AtsResumeChecker
             onBackToHome={() => {
-              window.location.hash = isLoggedIn ? '#dashboard' : '#home';
+              window.location.hash = isMobile ? '#dashboard' : '#home';
             }}
             onOpenLogin={(candidateName?: string) => {
               const nameToUse = candidateName || userName || 'Learner';
@@ -331,6 +381,9 @@ export const App: React.FC = () => {
             window.location.hash = isLoggedIn ? '#dashboard' : '#home';
           }}
         />
+
+        {/* Global PWA Android App Installation Banner / Modal for Mobile (< 768px) */}
+        <MobileAppInstallPrompt />
 
       </div>
     </ThemeAccentProvider>

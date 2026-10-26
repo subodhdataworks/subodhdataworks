@@ -813,23 +813,28 @@
   border-color: rgba(186, 230, 253, 0.9) !important;
 }
 
-
-/* ---------- Responsive SQL & Excel Chapter Views ---------- */
-@media (max-width: 1280px) {
-  .scv-lesson { grid-template-columns: 28px 26px minmax(120px, 1fr) auto auto; }
-  .scv-ltime, .scv-lstatus { display: none; }
-}
 @media (max-width: 1100px) {
-  .scv-root { grid-template-columns: 1fr; }
-  .scv-bubble { display: none; }
+  .scv-bubble {
+    display: none !important;
+  }
 }
+
 @media (max-width: 760px) {
-  .scv-chapter-head { grid-template-columns: 26px 26px minmax(0, 1fr) 24px; }
-  .scv-cprog { display: none; }
-  .scv-lesson { grid-template-columns: 26px 24px 1fr; }
-  .scv-actions { grid-column: 1 / -1; flex-wrap: wrap; }
-  .scv-continue, .scv-lgo { grid-column: 1 / -1; justify-self: start; }
-  .scv-hero { height: auto; min-height: 180px; }
-  .scv-hero-body { flex-direction: column; align-items: flex-start; padding: 14px; }
-  .scv-hero-logo { width: 56px; height: 56px; }
+  .scv-hero {
+    height: auto !important;
+    min-height: auto !important;
+    padding: 12px 14px !important;
+  }
+  .scv-hero-body {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .scv-hero-logo {
+    width: 64px;
+    height: 64px;
+  }
+  .scv-hero-text h1 {
+    font-size: 20px;
+  }
 }

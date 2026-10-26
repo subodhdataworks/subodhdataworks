@@ -614,23 +614,23 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
     <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 text-slate-800">
       
       {/* ─── 1. HERO BANNER (Original 3D AI Generated Art, No Crop) ─── */}
-      <section className="relative rounded-3xl bg-gradient-to-r from-[#eef6ff] via-[#f3f7fd] to-[#ebf3ff] border border-[#d6e6fe] shadow-[0_4px_24px_rgba(37,99,235,0.06)] p-6 sm:p-8 md:p-10 overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+      <section className="relative rounded-3xl bg-gradient-to-r from-[#eef6ff] via-[#f3f7fd] to-[#ebf3ff] border border-[#d6e6fe] shadow-[0_4px_24px_rgba(37,99,235,0.06)] p-4 min-[375px]:p-6 sm:p-8 md:p-10 overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
         {/* Soft Background Radial Light */}
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-10 w-72 h-72 bg-indigo-300/15 rounded-full blur-2xl pointer-events-none" />
 
         {/* Left Typography */}
-        <div className="relative z-10 text-left max-w-xl">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#0f172a] tracking-tight leading-tight">
+        <div className="relative z-10 text-left max-w-xl w-full md:w-auto">
+          <h1 className="text-2xl min-[375px]:text-3xl sm:text-4xl md:text-5xl font-black text-[#0f172a] tracking-tight leading-tight">
             Coding <span className="text-[#1a73e8]">Practice</span>
           </h1>
-          <p className="mt-3 text-slate-600 text-sm sm:text-base md:text-lg font-normal leading-relaxed">
+          <p className="mt-2 sm:mt-3 text-slate-600 text-xs min-[375px]:text-sm sm:text-base md:text-lg font-normal leading-relaxed">
             Practice course-wise code, complete challenges and level up your skills.
           </p>
         </div>
 
         {/* Right 3D Developer & Floating Badges (Original Uncropped Render) */}
-        <div className="relative z-10 shrink-0 flex items-center justify-center">
+        <div className="relative z-10 shrink-0 w-full md:w-auto flex items-center justify-center">
           <img
             src="/images/arena/coding_practice_hero_original.jpg"
             alt="Coding Practice 3D Character"

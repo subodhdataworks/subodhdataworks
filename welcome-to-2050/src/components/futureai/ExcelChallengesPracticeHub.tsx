@@ -276,8 +276,8 @@ export const ExcelChallengesPracticeHub: React.FC<ExcelChallengesPracticeHubProp
     <div className="w-full min-h-screen bg-[#f8fafc] text-slate-800 font-sans pb-16">
       {/* 1. TOP BREADCRUMB NAVIGATION */}
       <div className="w-full bg-white border-b border-slate-200 sticky top-0 z-20 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+        <div className="max-w-7xl mx-auto px-3.5 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs text-slate-500 font-medium">
             <button
               onClick={() => {
                 soundEffects.playClick();
@@ -304,29 +304,29 @@ export const ExcelChallengesPracticeHub: React.FC<ExcelChallengesPracticeHubProp
             <span className="text-[#107c41] font-bold">Excel Challenges</span>
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-200">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-              65 Topics • 650 Questions
+          <div className="flex items-center gap-2 sm:gap-3">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[11px] sm:text-xs font-bold border border-emerald-200">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+              <span>65 Topics • 650 Questions</span>
             </span>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-12">
+      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 pt-4 sm:pt-6 pb-12">
         {/* 2. HERO BANNER */}
-        <div className="bg-gradient-to-r from-[#107c41] via-[#0b5e28] to-[#04421b] rounded-3xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden mb-6">
+        <div className="bg-gradient-to-r from-[#107c41] via-[#0b5e28] to-[#04421b] rounded-3xl p-4 min-[375px]:p-5 sm:p-8 text-white shadow-lg relative overflow-hidden mb-6">
           <div className="absolute right-0 top-0 bottom-0 w-1/3 opacity-10 flex items-center justify-center pointer-events-none">
             <Excel3DIcon />
           </div>
 
-          <div className="relative z-10 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-sm text-emerald-100 text-xs font-bold mb-3 border border-white/20">
-              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-300" />
-              <span>Microsoft Excel & Modern Formulas Coding Practice</span>
+          <div className="relative z-10 max-w-2xl min-w-0">
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-white/15 backdrop-blur-sm text-emerald-100 text-[10.5px] sm:text-xs font-bold mb-3 border border-white/20 max-w-full">
+              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
+              <span className="truncate">Microsoft Excel &amp; Modern Formulas Coding Practice</span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight mb-2">
+            <h1 className="text-xl min-[375px]:text-2xl sm:text-3xl font-black tracking-tight mb-2 leading-tight">
               Excel Practice Hub — From Fundamentals to Dashboards
             </h1>
             <p className="text-emerald-100/90 text-xs sm:text-sm leading-relaxed mb-4">

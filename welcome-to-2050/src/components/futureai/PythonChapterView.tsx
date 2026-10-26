@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import type { WorkspaceStepId } from './PythonTopicWorkspace';
 import { getLearnerTelemetry } from '../../services/realAuthService';
+import { MobilePythonChapterView } from './mobile/MobilePythonChapterView';
 import './PythonChapterView.css';
 
 interface Props {
@@ -641,8 +642,22 @@ export const PythonChapterView: React.FC<Props> = ({
   const pct = Math.round((doneLessons / totalLessons) * 100);
 
   return (
-    <div className="pcv-root">
-      {/* ================= FULL-WIDTH TOP BANNER ================= */}
+    <>
+      {/* ── Native Android Mobile App View (< 768px) ── */}
+      <div className="md:hidden">
+        <MobilePythonChapterView
+          userName={userName}
+          onBack={onBack}
+          onOpenTopic={onOpenTopic}
+          onOpenUnlockModal={onOpenUnlockModal}
+          onOpenAdvisor={onOpenAdvisor}
+        />
+      </div>
+
+      {/* ── Desktop Experience (>= 768px) ── */}
+      <div className="hidden md:block">
+        <div className="pcv-root">
+          {/* ================= FULL-WIDTH TOP BANNER ================= */}
       <div className="pcv-top-full">
         {/* Breadcrumbs Navigation */}
         <nav className="pcv-crumbs pcv-crumbs-standalone">
@@ -838,7 +853,9 @@ export const PythonChapterView: React.FC<Props> = ({
           <Sparkles className="pcv-spark" />
         </div>
       </aside>
-    </div>
+        </div>
+      </div>
+    </>
   );
 };
 

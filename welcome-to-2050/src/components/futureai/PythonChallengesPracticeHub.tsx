@@ -265,7 +265,7 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
         </div>
 
         {/* Right Stats Card Widget */}
-        <div className="shrink-0 flex items-center gap-4 bg-white border border-slate-100/90 shadow-[0_2px_12px_rgba(0,0,0,0.04)] rounded-2xl px-5 py-3.5">
+        <div className="shrink-0 flex flex-wrap items-center justify-between sm:justify-start gap-3 sm:gap-4 bg-white border border-slate-100/90 shadow-[0_2px_12px_rgba(0,0,0,0.04)] rounded-2xl px-3.5 sm:px-5 py-3 sm:py-3.5">
           {/* Python Logo */}
           <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-1">
             <img

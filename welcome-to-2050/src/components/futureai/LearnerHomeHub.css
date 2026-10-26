@@ -6253,163 +6253,24 @@
 
 @media (max-width: 900px) {
   .scd-native-hero-banner {
+    min-height: auto !important;
     max-height: none !important;
+    margin-top: 0 !important;
   }
   .scd-nhb-content {
     max-width: 100% !important;
     padding: 14px 14px !important;
   }
   .scd-future-hero-hl {
-    font-size: 18px !important;
+    font-size: clamp(16px, 4.5vw, 20px) !important;
   }
-}
-
-
-/* =========================================================================
-   UNIFIED RESPONSIVE MOBILE & TABLET ADAPTATIONS (320px - 1080px)
-   Single Source of Truth: Desktop Components Adapt Cleanly to All Screens
-   ========================================================================= */
-@media (max-width: 768px) {
-  .lhh-wrapper {
-    padding: 8px 10px 48px !important;
-    overflow-x: hidden !important;
-  }
-
-  .lhh-section-header {
-    flex-wrap: wrap !important;
-    gap: 10px !important;
-  }
-
-  .lhh-controls-group {
-    width: 100% !important;
-    display: flex !important;
-    flex-wrap: wrap !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 8px !important;
-  }
-
-  .lhh-filter-pills {
-    display: flex !important;
-    overflow-x: auto !important;
-    max-width: 100% !important;
-    padding-bottom: 2px !important;
-  }
-
-  .scd-native-hero-banner {
-    min-height: auto !important;
-    max-height: none !important;
-    margin-top: 0 !important;
-    border-radius: 16px !important;
-  }
-
-  .scd-nhb-gradient-overlay {
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.94) 0%,
-      rgba(255, 255, 255, 0.90) 65%,
-      rgba(255, 255, 255, 0.78) 100%
-    ) !important;
-  }
-
-  .scd-nhb-content {
-    max-width: 100% !important;
-    padding: 16px 14px !important;
-  }
-
   .scd-future-cta-row {
     flex-wrap: wrap !important;
     gap: 8px !important;
   }
-
-  /* Promotional Offer Strip Responsive */
-  .scd-sos-top-card {
-    flex-direction: column !important;
-    align-items: center !important;
-    text-align: center !important;
-    padding: 16px 14px !important;
-    gap: 12px !important;
-  }
-
-  .scd-sos-title-col {
-    align-items: center !important;
-  }
-
-  .scd-sos-main-heading {
-    justify-content: center !important;
-    flex-wrap: wrap !important;
-  }
-
-  .scd-sos-headline-lead {
-    font-size: 18px !important;
-  }
-
-  .scd-sos-price-989 {
-    font-size: 30px !important;
-  }
-
-  .scd-sos-btn-col,
-  .scd-sos-unlock-btn {
-    width: 100% !important;
-    justify-content: center !important;
-  }
-
-  .scd-sos-unlock-btn {
-    font-size: 13px !important;
-    padding: 11px 16px !important;
+  .scd-future-cta-primary,
+  .scd-future-cta-secondary {
     white-space: normal !important;
     text-align: center !important;
-  }
-
-  .scd-sos-bottom-strip {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 10px !important;
-    padding: 12px 14px !important;
-  }
-
-  .scd-sos-feature-item {
-    justify-content: flex-start !important;
-  }
-
-  /* List View Cards Responsive */
-  .lhh-list-card {
-    flex-wrap: wrap !important;
-    gap: 12px !important;
-    padding: 12px !important;
-  }
-
-  .lhh-list-info {
-    min-width: calc(100% - 106px) !important;
-  }
-
-  .lhh-list-action-btn {
-    width: 100% !important;
-    justify-content: center !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .scd-pots-4grid {
-    grid-template-columns: 1fr !important;
-    gap: 20px !important;
-  }
-
-  .lhh-wyg-exact-grid {
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
-  }
-
-  .scd-sos-bottom-strip {
-    grid-template-columns: 1fr !important;
-  }
-
-  .lhh-list-thumb {
-    width: 100% !important;
-    height: 140px !important;
-  }
-
-  .lhh-list-info {
-    min-width: 100% !important;
   }
 }

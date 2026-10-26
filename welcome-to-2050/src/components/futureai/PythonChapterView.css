@@ -431,5 +431,11 @@
   .pcv-actions { grid-column: 1 / -1; flex-wrap: wrap; }
   .pcv-continue, .pcv-lgo { grid-column: 1 / -1; justify-self: start; }
   .pcv-hero { height: auto; }
+  .pcv-hero.pcv-cinema-hero {
+    height: auto !important;
+    min-height: 155px !important;
+    max-height: 220px !important;
+    aspect-ratio: 16 / 9;
+  }
   .pcv-hero-logo { width: 64px; height: 64px; }
 }
