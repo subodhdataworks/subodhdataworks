@@ -48,7 +48,7 @@ export const ML_ENGINEERING_CURRICULUM: TabItem[] = [
             "title": "What Is Machine Learning Engineering?",
             "duration": "Video • 15 min",
             "type": "video",
-            "status": "completed"
+            "status": "in-progress"
           },
           {
             "id": "ml-t-2",
@@ -56,7 +56,7 @@ export const ML_ENGINEERING_CURRICULUM: TabItem[] = [
             "title": "Data Science vs ML Engineering",
             "duration": "Video • 14 min",
             "type": "video",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "ml-t-3",
@@ -64,7 +64,7 @@ export const ML_ENGINEERING_CURRICULUM: TabItem[] = [
             "title": "ML Product Lifecycle",
             "duration": "Video • 18 min",
             "type": "video",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "ml-t-4",

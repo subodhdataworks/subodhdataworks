@@ -558,7 +558,7 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
         {/* Top Breadcrumb */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6 flex-wrap gap-3">
           <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 flex-wrap">
-            <span className="text-slate-400">Coding Practice</span>
+            <span className="text-slate-400">Hackathon/DSA Practice</span>
             <span>/</span>
             <span className="text-slate-900 font-bold">{activeBlankCourse.title}</span>
           </div>
@@ -633,7 +633,7 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
         <div className="relative z-10 shrink-0 w-full md:w-auto flex items-center justify-center">
           <img
             src="/images/arena/coding_practice_hero_original.jpg"
-            alt="Coding Practice 3D Character"
+            alt="Hackathon/DSA Practice 3D Character"
             className="w-full max-w-[340px] sm:max-w-[400px] md:max-w-[440px] rounded-2xl object-cover shadow-sm transition-transform hover:scale-[1.02] duration-300 select-none"
           />
         </div>

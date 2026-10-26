@@ -78,7 +78,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
       name: 'Python',
       icon: '🐍',
       badge: 'Python',
-      title: 'Python Coding Practice',
+      title: 'Python Hackathon/DSA Practice',
       image: '/images/arena/subjects/game_card_python.jpg',
       description: 'Master variables, loops, functions, OOP, and data structures through interactive puzzles and hands-on practice.',
       gamesCount: '29 Practice Levels',
@@ -1226,7 +1226,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
   // Learning flow steps in Advanced
   const learningFlowSteps = [
     { num: 1, title: 'Watch Lesson', sub: 'Short & Easy Videos', icon: <Video className="w-5 h-5 text-white" />, bg: '#8b5cf6' },
-    { num: 2, title: 'Coding Practice', sub: 'Solve Fun Challenges', icon: <Code2 className="w-5 h-5 text-white" />, bg: '#a855f7' },
+    { num: 2, title: 'Hackathon/DSA Practice', sub: 'Solve Fun Challenges', icon: <Code2 className="w-5 h-5 text-white" />, bg: '#a855f7' },
     { num: 3, title: 'Write Code', sub: 'In-Built Code Editor', icon: <Code2 className="w-5 h-5 text-white" />, bg: '#3b82f6' },
     { num: 4, title: 'Take Quiz', sub: 'Test Your Knowledge', icon: <FileCode2 className="w-5 h-5 text-white" />, bg: '#ec4899' },
     { num: 5, title: 'Earn Rewards', sub: 'XP, Coins & Badges', icon: <Trophy className="w-5 h-5 text-white" />, bg: '#f59e0b' },
@@ -1293,7 +1293,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
               <div className="py-cs-header-left">
                 <h2 className="py-cs-main-heading">
                   <Code2 className="w-4 h-4 text-cyan-500 inline mr-1.5" />
-                  Choose a Subject for Coding Practice
+                  Choose a Subject for Hackathon/DSA Practice
                   <span className="py-cs-sub-heading-inline"> — Select a topic for hands-on coding practice &amp; earn points</span>
                 </h2>
               </div>
@@ -1668,7 +1668,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                 <div className="py-slim-flow-banner">
                   <div className="py-sfb-label">
                     <span className="py-sfb-tag">4-STEP FLOW</span>
-                    <strong className="py-sfb-title">Coding Practice Path</strong>
+                    <strong className="py-sfb-title">Hackathon/DSA Practice Path</strong>
                   </div>
 
                   <div className="py-sfb-steps">
@@ -1761,7 +1761,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                             style={{ background: currentSubjectObj.gradient }}
                             onClick={() => handleOpenGameChallenge(game)}
                           >
-                            Coding Practice →
+                            Hackathon/DSA Practice →
                           </button>
                         </div>
                       </div>

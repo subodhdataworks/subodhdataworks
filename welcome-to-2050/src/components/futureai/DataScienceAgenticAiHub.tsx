@@ -211,7 +211,7 @@ export const DataScienceAgenticAiHub: React.FC<DataScienceAgenticAiHubProps> = (
               <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1.5">
                 <button
                   type="button"
-                  onClick={() => onStartTopic && onStartTopic('ds-t-4', 'Data vs Information vs Insights')}
+                  onClick={() => onStartTopic && onStartTopic('ds-t-1', 'What Is Data Science?')}
                   className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-blue-500/25 active:scale-95 transition-all cursor-pointer"
                 >
                   <Play className="w-3.5 h-3.5 fill-white shrink-0" />

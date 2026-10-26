@@ -210,7 +210,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               <span>My Learning</span>
             </button>
 
-            {/* 3. Coding Practice ⌵ (Dropdown with Python, SQL, Excel, Master) */}
+            {/* 3. Hackathon/DSA Practice ⌵ (Dropdown with Python, SQL, Excel, Master) */}
             <div className="relative" ref={practiceRef}>
               <div className="flex items-center">
                 <button
@@ -225,10 +225,10 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                       ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-xs'
                       : 'text-slate-700 hover:text-[#1a73e8] hover:bg-slate-50'
                   }`}
-                  title="Open Coding Practice Full Page (All 14 Tracks)"
+                  title="Open Hackathon/DSA Practice Full Page (All 14 Tracks)"
                 >
                   <Code2 className={`w-4 h-4 ${activeNavTab === 'practice' ? 'text-[#1a73e8]' : 'text-slate-500'}`} />
-                  <span>Coding Practice</span>
+                  <span>Hackathon/DSA Practice</span>
                 </button>
 
                 <button
@@ -249,7 +249,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 </button>
               </div>
 
-              {/* Coding Practice Floating Dropdown */}
+              {/* Hackathon/DSA Practice Floating Dropdown */}
               {practiceDropdownOpen && (
                 <div className="absolute left-0 top-full mt-2 w-72 bg-white/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-100 py-2 px-2 z-50 animate-fadeIn text-left">
                   <div className="px-3 py-1.5 mb-1 border-b border-slate-100 flex items-center justify-between">
@@ -668,10 +668,10 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               </button>
             </div>
 
-            {/* Coding Practice Links */}
+            {/* Hackathon/DSA Practice Links */}
             <div className="py-2 space-y-1.5">
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block px-1">
-                Coding Practice (Topic 1 Free)
+                Hackathon/DSA Practice (Topic 1 Free)
               </span>
 
               {/* Full Page Button on Mobile */}
@@ -686,7 +686,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               >
                 <div className="flex items-center gap-2">
                   <Code2 className="w-4 h-4 text-white" />
-                  <span>Full Coding Practice Page (All 14 Tracks)</span>
+                  <span>Full Hackathon/DSA Practice Page (All 14 Tracks)</span>
                 </div>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>

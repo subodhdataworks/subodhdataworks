@@ -2358,7 +2358,7 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
                 <Code2 className="w-5 h-5" />
               </div>
               <div className="scd-sos-ftext">
-                <strong>Coding Practice</strong>
+                <strong>Hackathon/DSA Practice</strong>
                 <span>&amp; Practice</span>
               </div>
             </div>

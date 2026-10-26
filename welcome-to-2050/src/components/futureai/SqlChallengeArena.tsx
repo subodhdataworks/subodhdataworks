@@ -370,7 +370,7 @@ export const SqlChallengeArena: React.FC<SqlChallengeArenaProps> = ({
             onClick={onBack}
             className="hover:text-blue-600 font-semibold text-slate-600 transition-colors cursor-pointer"
           >
-            Coding Practice
+            Hackathon/DSA Practice
           </button>
           <span>&gt;</span>
           <button

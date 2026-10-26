@@ -48,7 +48,7 @@ export const DATA_SCIENCE_CURRICULUM: TabItem[] = [
             "title": "What Is Data Science?",
             "duration": "Quiz • 12 min",
             "type": "quiz",
-            "status": "completed"
+            "status": "in-progress"
           },
           {
             "id": "ds-t-2",
@@ -56,7 +56,7 @@ export const DATA_SCIENCE_CURRICULUM: TabItem[] = [
             "title": "How Data Science Works in Real Life",
             "duration": "Video • 15 min",
             "type": "video",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "ds-t-3",
@@ -64,7 +64,7 @@ export const DATA_SCIENCE_CURRICULUM: TabItem[] = [
             "title": "Why Businesses Use Data Science",
             "duration": "Video • 18 min",
             "type": "video",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "ds-t-4",

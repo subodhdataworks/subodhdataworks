@@ -114,7 +114,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                 ? 'shadow-[0_8px_24px_rgba(37,99,235,0.45)]'
                 : 'shadow-[0_6px_20px_rgba(15,23,42,0.18)]'
             }`}
-            aria-label="Coding Practice"
+            aria-label="Hackathon/DSA Practice"
           >
             {/* Shimmer Outer Ring */}
             <span className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyan-400 via-blue-500 to-indigo-600 animate-pulse" />
@@ -132,7 +132,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               isTabActive('game') ? 'text-purple-600' : 'text-slate-700'
             }`}
           >
-            Coding Practice
+            Hackathon/DSA Practice
           </span>
         </div>
 

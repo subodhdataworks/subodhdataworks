@@ -48,7 +48,7 @@ export const FULL_STACK_MERN_CURRICULUM: TabItem[] = [
             "title": "What is web development?",
             "duration": "13 min",
             "type": "video",
-            "status": "locked"
+            "status": "in-progress"
           },
           {
             "id": "fs-t-2",

@@ -92,7 +92,7 @@ export const LiquidFloatingNavBar: React.FC<LiquidFloatingNavBarProps> = ({
     },
     {
       id: 'coding_game',
-      label: 'Coding Practice',
+      label: 'Hackathon/DSA Practice',
       shortLabel: 'Practice',
       color: '#0052cc',
     },
@@ -607,7 +607,7 @@ export const LiquidFloatingNavBar: React.FC<LiquidFloatingNavBarProps> = ({
             const gameDef = navItems.find((n) => n.id === 'coding_game');
             if (gameDef) handleTabClick(gameDef, e);
           }}
-          title="Coding Practice Arena"
+          title="Hackathon/DSA Practice Arena"
         >
           {/* Liquid Water / Milk Splash Ripple Container */}
           <div className="liquid-splash-container" aria-hidden="true">

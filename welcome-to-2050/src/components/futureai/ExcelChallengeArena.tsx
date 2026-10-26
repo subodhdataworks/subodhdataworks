@@ -339,7 +339,7 @@ export const ExcelChallengeArena: React.FC<ExcelChallengeArenaProps> = ({
           </div>
 
           <div className="hidden md:flex items-center gap-1.5 text-xs font-semibold text-slate-500 pl-3 border-l border-slate-200">
-            <span className="text-[#107c41] font-bold">Coding Practice</span>
+            <span className="text-[#107c41] font-bold">Hackathon/DSA Practice</span>
             <span>&gt;</span>
             <span>Excel</span>
             <span>&gt;</span>

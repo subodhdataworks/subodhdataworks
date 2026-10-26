@@ -48,7 +48,7 @@ export const AI_TOOLS_PROMPT_CURRICULUM: TabItem[] = [
             "title": "What Is Artificial Intelligence?",
             "duration": "Quiz • 10 min",
             "type": "quiz",
-            "status": "locked"
+            "status": "in-progress"
           },
           {
             "id": "pt-t-2",

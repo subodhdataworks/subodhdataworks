@@ -427,7 +427,7 @@ export const PythonModuleDetail: React.FC<PythonModuleDetailProps> = ({
                               <span className="pmd-chip c-blue cursor-pointer" onClick={(e) => { e.stopPropagation(); openTopic(topic, 'learn'); }}><MonitorPlay className="w-3 h-3" />Video</span>
                               <span className="pmd-chip c-purple cursor-pointer" onClick={(e) => { e.stopPropagation(); openTopic(topic, 'practice'); }}><FileText className="w-3 h-3" />MCQ</span>
                               <span className="pmd-chip c-orange cursor-pointer" onClick={(e) => { e.stopPropagation(); openTopic(topic, 'play'); }}><Gamepad2 className="w-3 h-3" />Game</span>
-                              <span className="pmd-chip c-green cursor-pointer" onClick={(e) => { e.stopPropagation(); openTopic(topic, 'code'); }}><Code className="w-3 h-3" />Coding Practice</span>
+                              <span className="pmd-chip c-green cursor-pointer" onClick={(e) => { e.stopPropagation(); openTopic(topic, 'code'); }}><Code className="w-3 h-3" />Hackathon/DSA Practice</span>
                               <span className="pmd-chip c-pink cursor-pointer" onClick={(e) => { e.stopPropagation(); openTopic(topic, 'interview'); }}><Mic className="w-3 h-3" />Mock Interview</span>
                             </div>
                           </div>

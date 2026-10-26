@@ -208,7 +208,7 @@ export const FullStackMernHub: React.FC<FullStackMernHubProps> = ({
               <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1.5">
                 <button
                   type="button"
-                  onClick={() => onStartTopic && onStartTopic('fs-t-4', 'Full-stack development overview')}
+                  onClick={() => onStartTopic && onStartTopic('fs-t-1', 'What is web development?')}
                   className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer"
                 >
                   <Play className="w-3.5 h-3.5 fill-white shrink-0" />

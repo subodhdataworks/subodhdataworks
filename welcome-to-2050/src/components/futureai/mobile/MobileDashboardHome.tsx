@@ -668,7 +668,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
             className="bg-white border border-slate-200 rounded-xl py-1.5 px-2 flex items-center justify-center gap-1 shadow-2xs cursor-pointer active:scale-95"
           >
             <Code2 className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-            <span className="text-[9px] font-bold text-slate-700 truncate">Coding Practice</span>
+            <span className="text-[9px] font-bold text-slate-700 truncate">Hackathon/DSA Practice</span>
           </div>
 
           <div
@@ -894,7 +894,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
                       </div>
                       <div className="fii-stage-feature-pill">
                         <Code2 className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                        <span>Coding Practice</span>
+                        <span>Hackathon/DSA Practice</span>
                       </div>
                     </div>
 

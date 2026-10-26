@@ -456,7 +456,7 @@ export const TopicMasteryScoreLab: React.FC<TopicMasteryScoreLabProps> = ({
                   <div className="fai-section-type-icon purple">
                     <Gamepad2 className="w-3.5 h-3.5 text-purple-600" />
                   </div>
-                  <span className="fai-section-name">Coding Practice</span>
+                  <span className="fai-section-name">Hackathon/DSA Practice</span>
                 </div>
 
                 <div className="fai-section-score">18/20</div>

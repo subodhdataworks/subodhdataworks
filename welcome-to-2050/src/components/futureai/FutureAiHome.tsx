@@ -285,10 +285,10 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               {/* Main Headline */}
               <h1 className="text-[25px] min-[375px]:text-3xl sm:text-5xl lg:text-[42px] xl:text-[48px] font-black tracking-tight leading-[1.08] sm:leading-[1.06] text-[#0f172a]">
                 <span className="block">World&apos;s First</span>
-                <span className="block text-[#1a73e8]">Affordable Easy</span>
+                <span className="block text-[#1a73e8]">Learn Coding</span>
                 <span className="block">
                   <TypewriterHeading
-                    words={['AI Learning Platform']}
+                    words={['with Playing Game']}
                     className="bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-500 bg-clip-text text-transparent"
                     cursorClassName="text-amber-500"
                   />
@@ -334,7 +334,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                   className="px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-white hover:bg-slate-50 active:scale-95 text-slate-800 font-bold text-xs sm:text-sm border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2"
                 >
                   <Code2 className="w-3.5 h-3.5 text-[#1a73e8] shrink-0" />
-                  <span>Explore Coding Practice</span>
+                  <span>Explore Hackathon/DSA Practice</span>
                 </button>
               </div>
 
@@ -899,7 +899,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               </h4>
               <ul className="space-y-2.5 text-xs font-extrabold text-slate-900 drop-shadow-2xs">
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Courses</button></li>
-                <li><button onClick={() => { window.location.hash = "#practice"; }} className="hover:text-blue-600 transition-colors cursor-pointer">Coding Practice</button></li>
+                <li><button onClick={() => { window.location.hash = "#practice"; }} className="hover:text-blue-600 transition-colors cursor-pointer">Hackathon/DSA Practice</button></li>
                 <li><button onClick={() => { window.location.hash = "#ats"; }} className="hover:text-blue-600 transition-colors cursor-pointer">ATS Resume Checker</button></li>
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Internship</button></li>
                 <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Success Stories</button></li>

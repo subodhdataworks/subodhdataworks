@@ -48,7 +48,7 @@ export const AI_ENGINEERING_CURRICULUM: TabItem[] = [
             "title": "What Is Artificial Intelligence?",
             "duration": "Quiz • 12 min",
             "type": "quiz",
-            "status": "completed"
+            "status": "in-progress"
           },
           {
             "id": "ai-t-2",
@@ -56,7 +56,7 @@ export const AI_ENGINEERING_CURRICULUM: TabItem[] = [
             "title": "What Is AI Engineering?",
             "duration": "Video • 15 min",
             "type": "video",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "ai-t-3",
@@ -64,7 +64,7 @@ export const AI_ENGINEERING_CURRICULUM: TabItem[] = [
             "title": "AI vs Machine Learning vs Deep Learning",
             "duration": "Video • 14 min",
             "type": "video",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "ai-t-4",

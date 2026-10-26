@@ -842,7 +842,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       title: 'Python for Data Analysis',
       tagline: 'Learn Python from basics to real-world data analysis projects.',
       coverImg: '/images/module_python_dome.jpg',
-      benefits: ['Video Lessons', 'Hands-on Coding Practice', 'Quizzes & Mini Projects', 'Real-world Datasets'],
+      benefits: ['Video Lessons', 'Hands-on Hackathon/DSA Practice', 'Quizzes & Mini Projects', 'Real-world Datasets'],
       ctaText: 'Continue Learning →'
     },
     'mod-2': {
@@ -1390,8 +1390,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setUnlockModalOpen(true);
               }}
               onOpenAdvisor={onOpenAdvisor}
-              onOpenProfile={() => setMobileProfileSheetOpen(true)}
-            />
+                  />
             <MobileProfileSheet
               isOpen={mobileProfileSheetOpen}
               onClose={() => setMobileProfileSheetOpen(false)}
@@ -1436,8 +1435,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               setUnlockModalOpen(true);
             }}
             onOpenAdvisor={onOpenAdvisor}
-            onOpenProfile={() => setMobileProfileSheetOpen(true)}
-          />
+              />
           <MobileProfileSheet
             isOpen={mobileProfileSheetOpen}
             onClose={() => setMobileProfileSheetOpen(false)}
@@ -1647,7 +1645,6 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             if (typeof window !== 'undefined') window.location.hash = '#placement';
           }
         }}
-        onOpenProfile={() => setMobileProfileSheetOpen(true)}
         onOpenWallet={() => setIsWithdrawModalOpen(true)}
         onLogout={onLogout}
       />

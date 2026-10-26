@@ -45,46 +45,38 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
           {
             "id": "t-1",
             "topicNum": 1,
-            "title": "What Is Data?",
-            "duration": "Video • 8 min",
+            "title": "What Is Data Analytics?",
+            "duration": "Video • 11 min",
             "type": "video",
-            "status": "completed"
+            "status": "in-progress"
           },
           {
             "id": "t-2",
             "topicNum": 2,
-            "title": "What Is Data Analytics?",
-            "duration": "Video • 11 min",
+            "title": "Why Businesses Need Data Analytics",
+            "duration": "Video • 7 min",
             "type": "video",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "t-3",
             "topicNum": 3,
-            "title": "Why Businesses Need Data Analytics",
-            "duration": "Video • 7 min",
-            "type": "video",
-            "status": "completed"
-          },
-          {
-            "id": "t-4",
-            "topicNum": 4,
             "title": "Real-Life Examples of Data Analytics",
             "duration": "Video • 10 min",
             "type": "video",
             "status": "locked"
           },
           {
-            "id": "t-5",
-            "topicNum": 5,
+            "id": "t-4",
+            "topicNum": 4,
             "title": "Data vs Information vs Insight",
             "duration": "Video • 6 min",
             "type": "video",
             "status": "locked"
           },
           {
-            "id": "t-6",
-            "topicNum": 6,
+            "id": "t-5",
+            "topicNum": 5,
             "title": "The Role of Data in Decision-Making",
             "duration": "Video • 9 min",
             "type": "video",

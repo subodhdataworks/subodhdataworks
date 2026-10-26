@@ -159,7 +159,7 @@ export const MobilePythonChapterView: React.FC<MobilePythonChapterViewProps> = (
                   Python Curriculum
                 </h2>
                 <p className="text-[10px] text-blue-200 font-semibold drop-shadow-sm">
-                  Video Lessons ➔ Interactive Coding Practice ➔ AI Mock Interview
+                  Video Lessons ➔ Interactive Hackathon/DSA Practice ➔ AI Mock Interview
                 </p>
               </div>
             </div>

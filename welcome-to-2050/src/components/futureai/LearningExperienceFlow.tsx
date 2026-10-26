@@ -49,7 +49,7 @@ export const LearningExperienceFlow: React.FC<LearningExperienceFlowProps> = ({
       description: 'Diagnostic multiple-choice questions that identify why you chose an option and explain the misconception.',
     },
     {
-      title: 'Coding Practice',
+      title: 'Hackathon/DSA Practice',
       icon: Gamepad2,
       color: 'from-emerald-500 to-green-600',
       description: 'Futuristic coding simulations where you fix real syntax bugs, optimize data models, and earn XP.',

@@ -14,205 +14,6 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
     moduleName: 'Understanding Data and Analytics',
     topicKey: '1.1',
     id: 1,
-    topicTitle: 'What Is Data?',
-    mode: 'Non-coding',
-    game1Quiz: [
-      {
-        id: 1,
-        question: 'What is data?',
-        options: [
-          { key: 'A', text: 'A collection of facts and values' },
-          { key: 'B', text: 'Only computer programs' },
-          { key: 'C', text: 'Only pictures' },
-          { key: 'D', text: 'Only business profits' }
-        ],
-        correct: 0,
-        explanation: 'Data is a collection of facts, numbers, text, images, and values that represent observations or measurements.',
-        hint: 'Think about whether data includes recorded facts and values.'
-      },
-      {
-        id: 2,
-        question: 'Which of these is an example of data?',
-        options: [
-          { key: 'A', text: 'A keyboard only' },
-          { key: 'B', text: "A student's age: 18" },
-          { key: 'C', text: 'A computer desk only' },
-          { key: 'D', text: 'A blank notebook' }
-        ],
-        correct: 1,
-        explanation: "A student's age: 18 is a recorded value representing an individual attribute, making it authentic data.",
-        hint: 'Look for the option that represents an actual recorded value or measurement.'
-      },
-      {
-        id: 3,
-        question: 'A shop records 20, 25, and 30 items sold each day. What are these values?',
-        options: [
-          { key: 'A', text: 'A computer virus' },
-          { key: 'B', text: 'A password' },
-          { key: 'C', text: 'Data' },
-          { key: 'D', text: 'A website' }
-        ],
-        correct: 2,
-        explanation: 'Daily recorded sales numbers are factual observations, which are data.',
-        hint: 'These recorded sales numbers represent factual observations.'
-      },
-      {
-        id: 4,
-        question: 'Which item can be data?',
-        options: [
-          { key: 'A', text: "A customer's name" },
-          { key: 'B', text: 'A temperature reading' },
-          { key: 'C', text: 'A product photo' },
-          { key: 'D', text: 'All of these' }
-        ],
-        correct: 3,
-        explanation: 'Data can exist as text (customer name), numbers (temperature), or multimedia (photos).',
-        hint: 'Remember that text, numbers, and photos can all represent data.'
-      },
-      {
-        id: 5,
-        question: "A teacher records students' marks. Why are the marks data?",
-        options: [
-          { key: 'A', text: 'They are always predictions' },
-          { key: 'B', text: 'They are recorded facts' },
-          { key: 'C', text: 'They are computer hardware' },
-          { key: 'D', text: 'They are advertisements' }
-        ],
-        correct: 1,
-        explanation: 'Marks represent observed, recorded facts about student exam performance.',
-        hint: 'Think about whether test scores are recorded facts.'
-      }
-    ],
-    game2Puzzles: [
-      {
-        id: 1,
-        title: 'Puzzle 1: Find the Data',
-        prompt: "A café records its daily customers: 45, 52, 38. Which option contains the data?",
-        tokens: [
-          'The recorded customer counts',
-          "The café's wall colour",
-          'A chair in the café'
-        ],
-        shuffled: [
-          "The café's wall colour",
-          'The recorded customer counts',
-          'A chair in the café'
-        ],
-        expected: [
-          'The recorded customer counts'
-        ],
-        hint: 'Data is recorded counts or measurements, not physical furniture or decorative paint.'
-      },
-      {
-        id: 2,
-        title: 'Puzzle 2: Spot the Data',
-        prompt: 'A weather app stores the temperature as 32°C. Is this data?',
-        tokens: [
-          'Yes, it is a recorded measurement',
-          'No, data must be text'
-        ],
-        shuffled: [
-          'No, data must be text',
-          'Yes, it is a recorded measurement'
-        ],
-        expected: [
-          'Yes, it is a recorded measurement'
-        ],
-        hint: 'Measurements like 32°C are numerical data.'
-      },
-      {
-        id: 3,
-        title: 'Puzzle 3: Complete the Idea',
-        prompt: 'Data can include numbers, text, images, and ______.',
-        tokens: [
-          'Measurements',
-          'Only chairs',
-          'Only keyboards'
-        ],
-        shuffled: [
-          'Only chairs',
-          'Measurements',
-          'Only keyboards'
-        ],
-        expected: [
-          'Measurements'
-        ],
-        hint: 'Measurements like speed, height, or temperature are all forms of data.'
-      }
-    ],
-    game3MatchPairs: [
-      {
-        id: 1,
-        snippet: 'Student name: Asha',
-        meaning: 'Text',
-        cls: 'c1'
-      },
-      {
-        id: 2,
-        snippet: 'Test score: 85',
-        meaning: 'Number',
-        cls: 'c2'
-      },
-      {
-        id: 3,
-        snippet: 'A product photograph',
-        meaning: 'Image',
-        cls: 'c3'
-      },
-      {
-        id: 4,
-        snippet: 'Temperature: 28°C',
-        meaning: 'Measurement',
-        cls: 'c4'
-      },
-      {
-        id: 5,
-        snippet: 'Customer feedback: “Good service”',
-        meaning: 'Text',
-        cls: 'c5'
-      }
-    ],
-    game4Missions: [
-      {
-        id: 1,
-        title: '🚀 Mission 1: School Data Collector',
-        scenario: "Imagine you're helping your school analyze student attendance.",
-        prompt: 'Task: Write three examples of data the school could record.',
-        expectedResponse: '1. Student Roll Number / ID (Unique identifier)\n2. Daily Attendance Status (Present / Absent)\n3. Check-in Timestamp (e.g. 08:30 AM)'
-      },
-      {
-        id: 2,
-        title: '🛍️ Mission 2: Shop Detective',
-        scenario: 'A shop owner wants to understand which products customers buy most.',
-        prompt: 'Task: What information should the shop owner collect?',
-        expectedResponse: '1. Product Barcode / Name (Item sold)\n2. Quantity Purchased (Units per bill)\n3. Date, Time of Sale & Billing Amount'
-      }
-    ],
-    mockInterview: [
-      {
-        id: 1,
-        question: 'What is data? Give one example.',
-        sampleAnswer: "Data is a collection of recorded facts or values. For example, a student's age or marks."
-      },
-      {
-        id: 2,
-        question: 'Can images and text be data, or only numbers?',
-        sampleAnswer: 'Images, text, numbers, and measurements can all be data.'
-      },
-      {
-        id: 3,
-        question: 'Why might a shop collect daily sales data?',
-        sampleAnswer: 'To understand which products sell most and help make better business decisions.'
-      }
-    ]
-  },
-  '1.2': {
-    tabId: 1,
-    tabName: 'Data Analytics Foundations',
-    moduleId: 1,
-    moduleName: 'Understanding Data and Analytics',
-    topicKey: '1.2',
-    id: 2,
     topicTitle: 'What Is Data Analytics?',
     mode: 'Non-coding',
     game1Quiz: [
@@ -407,13 +208,13 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       }
     ]
   },
-  '1.3': {
+  '1.2': {
     tabId: 1,
     tabName: 'Data Analytics Foundations',
     moduleId: 1,
     moduleName: 'Understanding Data and Analytics',
-    topicKey: '1.3',
-    id: 3,
+    topicKey: '1.2',
+    id: 2,
     topicTitle: 'Why Businesses Need Data Analytics',
     mode: 'Non-coding',
     game1Quiz: [
@@ -608,13 +409,13 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
       }
     ]
   },
-  '1.4': {
+  '1.3': {
   "tabId": 1,
   "tabName": "Data Analytics Foundations",
   "moduleId": 1,
   "moduleName": "Understanding Data and Analytics",
-  "topicKey": "1.4",
-  "id": 4,
+  "topicKey": "1.3",
+  "id": 3,
   "topicTitle": "Real-Life Examples of Data Analytics",
   "mode": "Non-coding",
   "game1Quiz": [
@@ -873,13 +674,13 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
     }
   ]
 },
-  '1.5': {
+  '1.4': {
   "tabId": 1,
   "tabName": "Data Analytics Foundations",
   "moduleId": 1,
   "moduleName": "Understanding Data and Analytics",
-  "topicKey": "1.5",
-  "id": 5,
+  "topicKey": "1.4",
+  "id": 4,
   "topicTitle": "Data vs Information vs Insight",
   "mode": "Non-coding",
   "game1Quiz": [
@@ -1138,13 +939,13 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
     }
   ]
 },
-  '1.6': {
+  '1.5': {
   "tabId": 1,
   "tabName": "Data Analytics Foundations",
   "moduleId": 1,
   "moduleName": "Understanding Data and Analytics",
-  "topicKey": "1.6",
-  "id": 6,
+  "topicKey": "1.5",
+  "id": 5,
   "topicTitle": "The Role of Data in Decision-Making",
   "mode": "Non-coding",
   "game1Quiz": [
@@ -6707,32 +6508,31 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
 },
 };
 
-// Also index by integer id (1..26) for easy numeric lookup
+// Also index by integer id (1..25) for easy numeric lookup
 export const TAB1_QUESTION_BANK_BY_ID: Record<number, TopicQuestionBank> = {
   1: TAB1_QUESTION_BANK['1.1'],
   2: TAB1_QUESTION_BANK['1.2'],
   3: TAB1_QUESTION_BANK['1.3'],
   4: TAB1_QUESTION_BANK['1.4'],
   5: TAB1_QUESTION_BANK['1.5'],
-  6: TAB1_QUESTION_BANK['1.6'],
-  7: TAB1_QUESTION_BANK['2.1'],
-  8: TAB1_QUESTION_BANK['2.2'],
-  9: TAB1_QUESTION_BANK['2.3'],
-  10: TAB1_QUESTION_BANK['2.4'],
-  11: TAB1_QUESTION_BANK['2.5'],
-  12: TAB1_QUESTION_BANK['2.6'],
-  13: TAB1_QUESTION_BANK['3.1'],
-  14: TAB1_QUESTION_BANK['3.2'],
-  15: TAB1_QUESTION_BANK['3.3'],
-  16: TAB1_QUESTION_BANK['3.4'],
-  17: TAB1_QUESTION_BANK['3.5'],
-  18: TAB1_QUESTION_BANK['3.6'],
-  19: TAB1_QUESTION_BANK['3.7'],
-  20: TAB1_QUESTION_BANK['4.1'],
-  21: TAB1_QUESTION_BANK['4.2'],
-  22: TAB1_QUESTION_BANK['4.3'],
-  23: TAB1_QUESTION_BANK['4.4'],
-  24: TAB1_QUESTION_BANK['4.5'],
-  25: TAB1_QUESTION_BANK['4.6'],
-  26: TAB1_QUESTION_BANK['4.7'],
+  6: TAB1_QUESTION_BANK['2.1'],
+  7: TAB1_QUESTION_BANK['2.2'],
+  8: TAB1_QUESTION_BANK['2.3'],
+  9: TAB1_QUESTION_BANK['2.4'],
+  10: TAB1_QUESTION_BANK['2.5'],
+  11: TAB1_QUESTION_BANK['2.6'],
+  12: TAB1_QUESTION_BANK['3.1'],
+  13: TAB1_QUESTION_BANK['3.2'],
+  14: TAB1_QUESTION_BANK['3.3'],
+  15: TAB1_QUESTION_BANK['3.4'],
+  16: TAB1_QUESTION_BANK['3.5'],
+  17: TAB1_QUESTION_BANK['3.6'],
+  18: TAB1_QUESTION_BANK['3.7'],
+  19: TAB1_QUESTION_BANK['4.1'],
+  20: TAB1_QUESTION_BANK['4.2'],
+  21: TAB1_QUESTION_BANK['4.3'],
+  22: TAB1_QUESTION_BANK['4.4'],
+  23: TAB1_QUESTION_BANK['4.5'],
+  24: TAB1_QUESTION_BANK['4.6'],
+  25: TAB1_QUESTION_BANK['4.7'],
 };

@@ -428,10 +428,10 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           ========================================================================= */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         
-        {/* Left: Coding Practice Stats (6 of 12 cols) */}
+        {/* Left: Hackathon/DSA Practice Stats (6 of 12 cols) */}
         <div className="lg:col-span-6 bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-base font-black text-slate-900">Coding Practice Stats</h3>
+            <h3 className="text-base font-black text-slate-900">Hackathon/DSA Practice Stats</h3>
             <span className="text-xs font-bold text-blue-600 hover:text-blue-700 cursor-pointer" onClick={() => onNavigateTab('practice')}>
               View Arena →
             </span>

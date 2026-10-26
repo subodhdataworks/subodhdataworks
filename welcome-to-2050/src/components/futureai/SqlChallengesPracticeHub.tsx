@@ -251,7 +251,7 @@ export const SqlChallengesPracticeHub: React.FC<SqlChallengesPracticeHubProps> =
               onClick={onBackToPractice}
               className="hover:text-blue-600 transition-colors cursor-pointer"
             >
-              Coding Practice
+              Hackathon/DSA Practice
             </button>
             <ChevronRight className="w-3 h-3 text-slate-400" />
             <span className="text-slate-800 font-semibold">SQL</span>

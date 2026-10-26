@@ -48,7 +48,7 @@ export const DEEP_LEARNING_CURRICULUM: TabItem[] = [
             "title": "What Is Artificial Intelligence?",
             "duration": "Quiz • 12 min",
             "type": "quiz",
-            "status": "completed"
+            "status": "in-progress"
           },
           {
             "id": "dl-t-2",
@@ -56,7 +56,7 @@ export const DEEP_LEARNING_CURRICULUM: TabItem[] = [
             "title": "What Is Machine Learning?",
             "duration": "Video • 15 min",
             "type": "video",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "dl-t-3",
@@ -64,7 +64,7 @@ export const DEEP_LEARNING_CURRICULUM: TabItem[] = [
             "title": "What Is Deep Learning?",
             "duration": "Video • 14 min",
             "type": "video",
-            "status": "completed"
+            "status": "locked"
           },
           {
             "id": "dl-t-4",

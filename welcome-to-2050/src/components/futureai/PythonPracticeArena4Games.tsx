@@ -152,29 +152,29 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
     return [
       {
         id: 1,
-        question: 'What is data?',
+        question: 'What is data analytics?',
         options: [
-          { key: 'A' as const, text: 'A collection of facts and values' },
-          { key: 'B' as const, text: 'Only computer programs' },
-          { key: 'C' as const, text: 'Only pictures' },
-          { key: 'D' as const, text: 'Only business profits' }
+          { key: 'A' as const, text: 'Collecting computer keyboards' },
+          { key: 'B' as const, text: 'Examining data to find useful insights' },
+          { key: 'C' as const, text: 'Creating passwords only' },
+          { key: 'D' as const, text: 'Drawing random pictures' }
         ],
-        correct: 0,
-        explanation: 'Data is a collection of facts, numbers, text, images, and values that represent observations or measurements.',
-        hint: 'Think about whether data includes recorded facts and values.'
+        correct: 1,
+        explanation: 'Data analytics is the process of examining data to uncover patterns, extract insights, and answer questions.',
+        hint: 'Think about examining data to find insights and make better decisions.'
       },
       {
         id: 2,
-        question: 'Which of these is an example of data?',
+        question: 'A shop checks its monthly sales to find its best-selling product. What is it doing?',
         options: [
-          { key: 'A' as const, text: 'A keyboard only' },
-          { key: 'B' as const, text: "A student's age: 18" },
-          { key: 'C' as const, text: 'A computer desk only' },
-          { key: 'D' as const, text: 'A blank notebook' }
+          { key: 'A' as const, text: 'Data analytics' },
+          { key: 'B' as const, text: 'Computer repair' },
+          { key: 'C' as const, text: 'Graphic design' },
+          { key: 'D' as const, text: 'Password recovery' }
         ],
-        correct: 1,
-        explanation: "A student's age: 18 is a recorded value representing an individual attribute, making it authentic data.",
-        hint: 'Look for the option that represents an actual recorded value or measurement.'
+        correct: 0,
+        explanation: 'Analyzing monthly sales records to discover product performance trends is data analytics in action.',
+        hint: 'The shop is studying recorded sales data to find patterns.'
       },
       {
         id: 3,
@@ -769,21 +769,6 @@ print(result)`
       const qText = currQ?.question || '';
 
       // Topic 1.1 Custom Question Matches
-      if (qText.includes('What is data?')) {
-        return {
-          hintEn: currQ?.hint || 'Think about whether data includes recorded facts, numbers, and values.',
-          hintHi: 'सोचिए कि क्या डेटा में रिकॉर्ड किए गए तथ्य (facts) और मान (values) शामिल होते हैं।',
-          exampleCode: '// Examples of Data:\nStudent Name = "Asha"       // Text\nMarks = 85                  // Number\nAttendance = "Present"       // Fact\nTemperature = 32°C          // Measurement',
-          exampleNote: 'Data can be words, numbers, measurements, or observations recorded from the real world.',
-          explainTitleEn: 'Concept: What Is Data?',
-          explainTitleHi: 'डेटा क्या है? (Understanding Data)',
-          explainTextEn: 'Data is a collection of facts, numbers, text, images, and values that represent observations or measurements. When analyzed, data becomes actionable information.',
-          explainTextHi: 'डेटा रिकॉर्ड किए गए तथ्यों, संख्याओं, शब्दों या मापों का संग्रह होता है। जैसे किसी छात्र के अंक (85), उम्र (18) या दैनिक बिक्री।',
-          realWorldEn: 'In companies like Google, Amazon, and Swiggy, data is collected from millions of clicks, orders, and GPS coordinates every second.',
-          realWorldHi: 'Swiggy, Amazon और Google जैसी कंपनियां हर सेकंड यूजर के ऑर्डर्स, नाम और पेमेंट्स को डेटा के रूप में रिकॉर्ड करती हैं।',
-        };
-      }
-
       if (qText.includes('Which of these is an example of data?')) {
         return {
           hintEn: 'Look for an option that represents an actual recorded value or measurement, rather than physical hardware or blank paper.',

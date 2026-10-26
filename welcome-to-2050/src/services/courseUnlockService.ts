@@ -636,7 +636,8 @@ export async function syncUserEnrollmentsFromServer(explicitUserId?: string): Pr
  * Checks whether a specific topic/lesson is unlocked for the given (or currently authenticated) user.
  * Rule:
  * - If the course is unlocked for this specific user -> ALL topics & tabs in that course are unlocked.
- * - Otherwise -> ONLY Chapter 1, Topic 1, 'video' tab is free preview; everything else is locked.
+ * - Otherwise -> ONLY Chapter 1, Topic 1 in the first course tab ('tab-1' / 'video' / 'learn' / 1) is free;
+ *   every subsequent topic, chapter, and tab is locked behind course enrollment/payment.
  */
 export function isTopicUnlocked(
   courseKeyOrTitle: string,
@@ -653,7 +654,16 @@ export function isTopicUnlocked(
   const ch = isOneIndexed ? chapterIndexOrNumber : chapterIndexOrNumber + 1;
   const tp = isOneIndexed ? topicIndexOrNumber : topicIndexOrNumber + 1;
 
-  if (ch === 1 && tp === 1 && (tabId === 'video' || tabId === 1)) {
+  const isFirstTab =
+    tabId === 'tab-1' ||
+    tabId === 'video' ||
+    tabId === 'learn' ||
+    tabId === 'play' ||
+    tabId === 'interview' ||
+    tabId === 1 ||
+    tabId === '1';
+
+  if (ch === 1 && tp === 1 && isFirstTab) {
     return true;
   }
 

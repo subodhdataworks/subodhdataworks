@@ -147,8 +147,8 @@ export const VideoLessonLab: React.FC<VideoLessonLabProps> = ({
   const steps = [
     { id: 'learn',     num: 1, label: 'Learn',     sub: 'Watch Video',      active: true,  locked: false },
     { id: 'practice',  num: 2, label: 'Practice',  sub: 'MCQ',              active: false, locked: true  },
-    { id: 'play',      num: 3, label: 'Practice',   sub: 'Coding Practice',  active: false, locked: true  },
-    { id: 'code',      num: 4, label: 'Code',       sub: 'Coding Practice',  active: false, locked: true  },
+    { id: 'play',      num: 3, label: 'Practice',   sub: 'Hackathon/DSA Practice',  active: false, locked: true  },
+    { id: 'code',      num: 4, label: 'Code',       sub: 'Hackathon/DSA Practice',  active: false, locked: true  },
     { id: 'interview', num: 5, label: 'Interview',  sub: 'AI Mock Interview', active: false, locked: true  },
     { id: 'score',     num: 6, label: 'Score',      sub: 'Get Report',       active: false, locked: true  },
   ];

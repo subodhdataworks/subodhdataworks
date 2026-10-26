@@ -48,7 +48,7 @@ export const MS_OFFICE_COPILOT_CURRICULUM: TabItem[] = [
             "title": "What Is Microsoft 365?",
             "duration": "Quiz • 10 min",
             "type": "quiz",
-            "status": "locked"
+            "status": "in-progress"
           },
           {
             "id": "ms-t-2",

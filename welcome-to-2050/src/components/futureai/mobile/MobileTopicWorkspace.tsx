@@ -1356,7 +1356,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             }`}>
               2
             </span>
-            <span>Coding Practice</span>
+            <span>Hackathon/DSA Practice</span>
           </button>
 
           <span className="text-slate-400 font-bold text-xs shrink-0">&gt;</span>
@@ -1497,7 +1497,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               onClick={handleCloseVideoAndPlayGame}
               className="px-3 py-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black border border-blue-600 flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-xs"
             >
-              <span>Start Coding Practice</span>
+              <span>Start Hackathon/DSA Practice</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -1603,7 +1603,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               className="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 via-sky-500 to-blue-600 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-blue-500/30 active:scale-98 transition-transform cursor-pointer"
             >
               <Gamepad2 className="w-4 h-4" />
-              <span>Video Finished ➔ Start Coding Practice</span>
+              <span>Video Finished ➔ Start Hackathon/DSA Practice</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -1658,7 +1658,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
               </div>
               <div>
                 <h3 className="text-xs font-black text-slate-900 leading-tight">
-                  Coding Practice {activeGameLevel} — {currentChallenge.tag}
+                  Hackathon/DSA Practice {activeGameLevel} — {currentChallenge.tag}
                 </h3>
                 <p className="text-[9px] text-slate-500 font-semibold leading-tight mt-0.5">
                   {currentChallenge.concept} • Challenge {activeGameLevel} of 5
@@ -1791,7 +1791,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                       onClick={handleNextGameLevel}
                       className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-blue-500/25 active:scale-98 transition-transform cursor-pointer"
                     >
-                      <span>Next Level: Coding Practice {activeGameLevel + 1} of 5 →</span>
+                      <span>Next Level: Hackathon/DSA Practice {activeGameLevel + 1} of 5 →</span>
                     </button>
                   ) : (
                     <button
@@ -1800,7 +1800,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
                       className="w-full py-3 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-emerald-500/30 active:scale-98 transition-transform cursor-pointer animate-pulse"
                     >
                       <Mic className="w-4 h-4" />
-                      <span>🎉 Complete Coding Practice ➔ Start Video Call Interview</span>
+                      <span>🎉 Complete Hackathon/DSA Practice ➔ Start Video Call Interview</span>
                     </button>
                   )}
 

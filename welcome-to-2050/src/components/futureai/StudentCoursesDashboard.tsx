@@ -260,7 +260,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             <span className="scd-future-pill">📜 <strong>Certificates &amp; LOR</strong></span>
             <span className="scd-future-pill">🏭 <strong>Industrial Training</strong></span>
             <span className="scd-future-pill">💻 <strong>28+ Live Projects</strong></span>
-            <span className="scd-future-pill">⌨️ <strong>Coding Practice</strong></span>
+            <span className="scd-future-pill">⌨️ <strong>Hackathon/DSA Practice</strong></span>
             <span className="scd-future-pill">🤖 <strong>AI Mock Interviews</strong></span>
             <span className="scd-future-pill">🚀 <strong>Placement Support</strong></span>
             <span className="scd-future-pill">🤝 <strong>700+ Partners</strong></span>
@@ -450,15 +450,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
           </div>
         )}
 
-        {/* =========================================================================
-            SLIM PROMOTIONAL OFFER BANNER STRIP (DIRECTLY UNDER 4 COURSES)
-            Matches media_1792140864467_fdb63c4c.png 1:1
-            ========================================================================= */}
-        <IndiasMostAffordableBanner onAction={() => {
-          playClick();
-          if (onOpenLogin) onOpenLogin();
-          else onOpenDataAnalystCourse();
-        }} />
+        
       </section>
 
       {/* ============================================================
