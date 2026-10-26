@@ -1,15 +1,20 @@
 /**
  * Cloudflare Pages Function — /api/affiliate
  *
- * Complete Affiliate System v5 (Reset + New Rules + Server-Side Verification):
+ * Complete Affiliate System v5 (Reset + New Rules + Atomic Withdrawal Lifecycle + Wallet Ledger):
  * - One-time versioned migration: 'affiliate_v5_complete_reset_2026'
  * - Rule 1: Unique Affiliate Link per user; server-side click & attribution tracking
  * - Rule 2: Free Signup = ₹0 commission; strict unique email deduplication
  * - Rule 3 & 4: Verified Paid Enrollment = Flat ₹100 commission (idempotent by paymentId)
  * - Rule 5: Failed / cancelled / unverified payments = ₹0 commission
- * - Rule 6 & 7: Separate Available to Payout, Pending Escrow, Total Paid, Reversed, Lifetime Earnings
+ * - Rule 6 & 7: Separate Available to Payout / Available to Withdraw, Pending Escrow, Total Paid, Reversed, Lifetime Earnings
  * - Rule 8: Refunds / chargebacks reverse ₹100 commission safely without negative balances
- * - Security: Self-referral prevention, duplicate paymentId prevention, duplicate email prevention
+ * - Atomic Withdrawal Lifecycle:
+ *   - Immediate balance deduction from both Available to Payout and Available to Withdraw on request creation
+ *   - Reserved funds held in Pending / Processing status
+ *   - Approval / Paid transitions reserved funds to Total Paid without deducting Available Balance a second time
+ *   - Rejection / Cancellation refunds reserved funds back to Available Balance exactly once (idempotent)
+ *   - Full immutable Wallet Ledger (WITHDRAWAL_REQUESTED, WITHDRAWAL_REFUNDED, WITHDRAWAL_PAID, COMMISSION_CREDITED)
  */
 
 const corsHeaders = {
@@ -24,6 +29,7 @@ const json = (data, status = 200) =>
 
 const MIGRATION_VERSION = 'affiliate_v5_complete_reset_2026';
 const AFFILIATE_EPOCH = 'v5_clean';
+const MIN_WITHDRAWAL_AMOUNT = 100;
 
 function normalizeRefCode(ref) {
   if (!ref) return '';
@@ -36,12 +42,47 @@ function getServerStore() {
       migrationVersion: MIGRATION_VERSION,
       migrationCompletedAt: new Date().toISOString(),
       legacyArchiveCount: 0,
-      affiliates: {}, // { [cleanCode]: { clicks: 0, signups: 0, paidEnrollments: 0, availableBalance: 0, pendingBalance: 0, totalPaid: 0, totalEarned: 0, reversedBalance: 0, referrals: [], withdrawals: [] } }
+      affiliates: {},
       processedPaymentIds: new Set(),
       registeredSignupEmails: new Set(),
+      processedWithdrawalRequests: new Map(), // requestKey -> withdrawal result
+      processedWithdrawalRefunds: new Set(), // withdrawalId -> prevents duplicate refund
+      activeWithdrawalLocks: new Set(), // cleanCode -> prevents concurrent race conditions
     };
   }
   return globalThis.__affiliate_v5_store;
+}
+
+/**
+ * Single Source of Truth Balance Recalculation:
+ * - totalEarned (Lifetime Earnings) is NEVER reduced by withdrawals.
+ * - pendingBalance = sum of active reserved withdrawals ('Pending', 'Processing', 'UNDER_REVIEW')
+ * - totalPaid = sum of completed/approved withdrawals ('Paid', 'Approved', 'PAID', 'APPROVED')
+ * - availableBalance = Math.max(0, totalEarned - totalPaid - pendingBalance)
+ * - availableToPayout & availableToWithdraw are both synchronized to availableBalance.
+ */
+function recalculateAffiliateBalances(record) {
+  const withdrawals = Array.isArray(record.withdrawals) ? record.withdrawals : [];
+  let reservedPending = 0;
+  let paidTotal = 0;
+
+  for (const w of withdrawals) {
+    const amt = Number(w.amount) || 0;
+    if (amt <= 0) continue;
+    const st = String(w.status || '').trim();
+    if (st === 'Pending' || st === 'Processing' || st === 'UNDER_REVIEW' || st === 'PENDING' || st === 'PROCESSING') {
+      reservedPending += amt;
+    } else if (st === 'Paid' || st === 'Approved' || st === 'PAID' || st === 'APPROVED') {
+      paidTotal += amt;
+    }
+  }
+
+  record.pendingBalance = reservedPending;
+  record.totalPaid = paidTotal;
+  record.availableBalance = Math.max(0, (record.totalEarned || 0) - paidTotal - reservedPending);
+  record.availableToPayout = record.availableBalance;
+  record.availableToWithdraw = record.availableBalance;
+  return record;
 }
 
 function getOrCreateAffiliateRecord(store, cleanCode) {
@@ -52,15 +93,24 @@ function getOrCreateAffiliateRecord(store, cleanCode) {
       signups: 0,
       paidEnrollments: 0,
       availableBalance: 0,
+      availableToPayout: 0,
+      availableToWithdraw: 0,
       pendingBalance: 0,
       totalPaid: 0,
       totalEarned: 0,
       reversedBalance: 0,
       referrals: [],
       withdrawals: [],
+      walletLedger: [],
     };
   }
-  return store.affiliates[cleanCode];
+  if (!Array.isArray(store.affiliates[cleanCode].walletLedger)) {
+    store.affiliates[cleanCode].walletLedger = [];
+  }
+  if (!Array.isArray(store.affiliates[cleanCode].withdrawals)) {
+    store.affiliates[cleanCode].withdrawals = [];
+  }
+  return recalculateAffiliateBalances(store.affiliates[cleanCode]);
 }
 
 export async function onRequestGet(context) {
@@ -87,6 +137,7 @@ export async function onRequestGet(context) {
         uniqueEmailEnforced: true,
         selfReferralBlocked: true,
         idempotencyProtected: true,
+        immediateWithdrawalDeduction: true,
       },
       paymentVerification: keyId && keySecret ? 'RAZORPAY_LIVE_API_AND_HMAC' : 'HMAC_SIGNATURE_VERIFIED',
       payoutIntegrationStatus: 'BANK_UPI_REVERIFICATION_REQUIRED',
@@ -118,12 +169,15 @@ export async function onRequestGet(context) {
       signups: 0,
       paidEnrollments: 0,
       availableBalance: 0,
+      availableToPayout: 0,
+      availableToWithdraw: 0,
       pendingBalance: 0,
       totalPaid: 0,
       totalEarned: 0,
       reversedBalance: 0,
       referrals: [],
       withdrawals: [],
+      walletLedger: [],
     });
   }
 
@@ -160,12 +214,25 @@ export async function onRequestGet(context) {
           if (p.status === 'refunded' || p.amount_refunded > 0) {
             const existingIdx = record.referrals.findIndex((r) => r.paymentId === p.id);
             if (existingIdx >= 0 && record.referrals[existingIdx].status !== 'Reversed') {
+              const balanceBefore = record.availableBalance;
               record.referrals[existingIdx].status = 'Reversed';
               record.referrals[existingIdx].commission = 0;
               record.paidEnrollments = Math.max(0, record.paidEnrollments - 1);
               record.totalEarned = Math.max(0, record.totalEarned - 100);
-              record.availableBalance = Math.max(0, record.availableBalance - 100);
               record.reversedBalance = (record.reversedBalance || 0) + 100;
+              recalculateAffiliateBalances(record);
+              record.walletLedger.unshift({
+                id: `led_rev_${p.id}`,
+                paymentId: p.id,
+                userId: cleanCode,
+                type: 'COMMISSION_REVERSED',
+                amount: -100,
+                balanceBefore,
+                balanceAfter: record.availableBalance,
+                status: 'Reversed',
+                timestamp: new Date().toISOString(),
+                description: `Commission reversed due to payment refund (${p.id})`,
+              });
             }
             continue;
           }
@@ -176,9 +243,10 @@ export async function onRequestGet(context) {
           // Rule 4 & 6: Idempotent ₹100 credit for verified captured payment
           if (!store.processedPaymentIds.has(p.id)) {
             store.processedPaymentIds.add(p.id);
+            const balanceBefore = record.availableBalance;
             record.paidEnrollments += 1;
             record.totalEarned += 100;
-            record.availableBalance = Math.max(0, record.totalEarned - record.totalPaid);
+            recalculateAffiliateBalances(record);
             record.referrals.unshift({
               id: `ref_rzp_${p.id}`,
               name: p.notes?.name || (payerEmail ? payerEmail.split('@')[0] : 'Enrolled Student'),
@@ -193,6 +261,18 @@ export async function onRequestGet(context) {
               referralId: `RF-${p.id.slice(-4).toUpperCase()}`,
               approvedDate: new Date(p.created_at * 1000).toISOString(),
             });
+            record.walletLedger.unshift({
+              id: `led_comm_${p.id}`,
+              paymentId: p.id,
+              userId: cleanCode,
+              type: 'COMMISSION_CREDITED',
+              amount: 100,
+              balanceBefore,
+              balanceAfter: record.availableBalance,
+              status: 'Credited',
+              timestamp: new Date().toISOString(),
+              description: `Verified paid course enrollment commission (${p.id})`,
+            });
           }
         }
       }
@@ -201,18 +281,23 @@ export async function onRequestGet(context) {
     }
   }
 
+  recalculateAffiliateBalances(record);
+
   return json({
     migrationVersion: MIGRATION_VERSION,
     clicks: record.clicks,
     signups: record.signups,
     paidEnrollments: record.paidEnrollments,
-    availableBalance: Math.max(0, record.availableBalance),
-    pendingBalance: record.pendingBalance || 0,
-    totalPaid: record.totalPaid || 0,
-    totalEarned: record.totalEarned || 0,
+    availableBalance: record.availableBalance,
+    availableToPayout: record.availableToPayout,
+    availableToWithdraw: record.availableToWithdraw,
+    pendingBalance: record.pendingBalance,
+    totalPaid: record.totalPaid,
+    totalEarned: record.totalEarned,
     reversedBalance: record.reversedBalance || 0,
     referrals: record.referrals,
     withdrawals: record.withdrawals,
+    walletLedger: record.walletLedger,
   });
 }
 
@@ -224,10 +309,10 @@ export async function onRequestPost(context) {
   try {
     const body = await request.json().catch(() => ({}));
     const eventType = String(body.eventType || 'paid_enrollment');
-    const cleanRef = normalizeRefCode(body.refCode);
+    const cleanRef = normalizeRefCode(body.refCode || body.userId || '');
 
     if (!cleanRef) {
-      return json({ success: false, error: 'Missing referral code' }, 400);
+      return json({ success: false, error: 'Missing authenticated user referral code' }, 400);
     }
 
     const store = getServerStore();
@@ -293,30 +378,448 @@ export async function onRequestPost(context) {
       const paymentId = String(body.paymentId || '').trim();
       const idx = record.referrals.findIndex((r) => r.paymentId === paymentId);
       if (idx >= 0 && record.referrals[idx].status !== 'Reversed') {
+        const balanceBefore = record.availableBalance;
         record.referrals[idx].status = 'Reversed';
         record.referrals[idx].commission = 0;
         record.paidEnrollments = Math.max(0, record.paidEnrollments - 1);
         record.totalEarned = Math.max(0, record.totalEarned - 100);
-        record.availableBalance = Math.max(0, record.availableBalance - 100);
         record.reversedBalance = (record.reversedBalance || 0) + 100;
+        recalculateAffiliateBalances(record);
+        record.walletLedger.unshift({
+          id: `led_rev_${paymentId}`,
+          paymentId,
+          userId: cleanRef,
+          type: 'COMMISSION_REVERSED',
+          amount: -100,
+          balanceBefore,
+          balanceAfter: record.availableBalance,
+          status: 'Reversed',
+          timestamp: new Date().toISOString(),
+          description: `Commission reversed for refunded payment ${paymentId}`,
+        });
       }
       return json({
         success: true,
         eventType: 'reversal',
         availableBalance: record.availableBalance,
+        availableToPayout: record.availableToPayout,
+        availableToWithdraw: record.availableToWithdraw,
+        pendingBalance: record.pendingBalance,
+        totalPaid: record.totalPaid,
         totalEarned: record.totalEarned,
         reversedBalance: record.reversedBalance,
       });
     }
 
-    // Event 4: Paid Course Enrollment (Rule 3, 4, 5, 6, 7)
+    // Event 4: Atomic Withdrawal Request (Immediate Deduction + Reservation + Idempotency)
+    if (eventType === 'withdrawal_request') {
+      const requestKey = body.requestId || body.idempotencyKey
+        ? `${cleanRef}:${String(body.requestId || body.idempotencyKey).trim()}`
+        : '';
+
+      // 1. Idempotency check: prevent duplicate deductions on retries or double-clicks
+      if (requestKey && store.processedWithdrawalRequests.has(requestKey)) {
+        const cachedWithdrawal = store.processedWithdrawalRequests.get(requestKey);
+        recalculateAffiliateBalances(record);
+        return json({
+          success: true,
+          idempotent: true,
+          eventType: 'withdrawal_request',
+          withdrawal: cachedWithdrawal,
+          availableBalance: record.availableBalance,
+          availableToPayout: record.availableToPayout,
+          availableToWithdraw: record.availableToWithdraw,
+          pendingBalance: record.pendingBalance,
+          totalPaid: record.totalPaid,
+          totalEarned: record.totalEarned,
+          withdrawals: record.withdrawals,
+          walletLedger: record.walletLedger,
+        });
+      }
+
+      // 2. Concurrency lock per user
+      if (store.activeWithdrawalLocks.has(cleanRef)) {
+        return json({
+          success: false,
+          reason: 'CONCURRENT_WITHDRAWAL_IN_PROGRESS',
+          error: 'Another withdrawal request is currently being processed.',
+        }, 409);
+      }
+
+      store.activeWithdrawalLocks.add(cleanRef);
+      try {
+        recalculateAffiliateBalances(record);
+
+        const rawAmount = Number(body.amount);
+        if (!Number.isFinite(rawAmount) || rawAmount <= 0) {
+          return json({
+            success: false,
+            reason: 'INVALID_WITHDRAWAL_AMOUNT',
+            error: 'Withdrawal amount must be greater than zero.',
+          }, 400);
+        }
+
+        const requestedAmount = Math.round(rawAmount * 100) / 100;
+        if (requestedAmount < MIN_WITHDRAWAL_AMOUNT) {
+          return json({
+            success: false,
+            reason: 'BELOW_MINIMUM_WITHDRAWAL',
+            error: `Minimum withdrawal amount is ₹${MIN_WITHDRAWAL_AMOUNT}.`,
+          }, 400);
+        }
+
+        // Validate payout method and verified status
+        const methodRaw = String(body.method || body.payoutMethod || 'UPI').trim().toUpperCase();
+        const isBank = methodRaw === 'BANK' || methodRaw === 'BANK_TRANSFER';
+        const methodLabel = isBank ? 'Bank' : 'UPI';
+        const upiId = String(body.upiId || '').trim();
+        const bankAccNumber = String(body.bankAccNumber || body.accountNumber || '').trim();
+        const bankIfsc = String(body.bankIfsc || body.ifsc || '').trim().toUpperCase();
+        const bankName = String(body.bankName || 'Bank').trim();
+        const isPayoutVerified = body.isVerified !== false;
+
+        if (!isPayoutVerified) {
+          return json({
+            success: false,
+            reason: 'PAYOUT_METHOD_NOT_VERIFIED',
+            error: 'Payout bank account or UPI details must be verified before withdrawal.',
+          }, 400);
+        }
+
+        if (isBank) {
+          if (bankAccNumber.length < 8 || bankIfsc.length < 5) {
+            return json({
+              success: false,
+              reason: 'INVALID_BANK_DETAILS',
+              error: 'Valid verified bank account number and IFSC code are required.',
+            }, 400);
+          }
+        } else {
+          const fallbackDest = String(body.destination || '').trim();
+          const effectiveUpi = upiId || fallbackDest;
+          if (!effectiveUpi || !effectiveUpi.includes('@') || effectiveUpi.length < 4) {
+            return json({
+              success: false,
+              reason: 'INVALID_UPI_DETAILS',
+              error: 'Valid verified UPI ID is required.',
+            }, 400);
+          }
+        }
+
+        // Validate sufficient available balance on the server (never trust client balance)
+        if (requestedAmount > record.availableBalance) {
+          return json({
+            success: false,
+            reason: 'INSUFFICIENT_AVAILABLE_BALANCE',
+            error: `Insufficient available balance. Available: ₹${record.availableBalance}, Requested: ₹${requestedAmount}.`,
+            availableBalance: record.availableBalance,
+            availableToPayout: record.availableToPayout,
+            availableToWithdraw: record.availableToWithdraw,
+            pendingBalance: record.pendingBalance,
+            totalEarned: record.totalEarned,
+          }, 400);
+        }
+
+        const nowIso = new Date().toISOString();
+        const uniqueSuffix = `${Date.now()}_${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+        const withdrawalId = body.withdrawalId ? String(body.withdrawalId).trim() : `w_${uniqueSuffix}`;
+        const txId = body.txId ? String(body.txId).trim() : `WTH-${Math.floor(100000 + Math.random() * 900000)}`;
+        const destination = body.destination
+          ? String(body.destination).trim()
+          : (isBank ? `${bankName} ••••${bankAccNumber.slice(-4)}` : upiId);
+
+        const balanceBefore = record.availableBalance;
+
+        const withdrawalRecord = {
+          id: withdrawalId,
+          txId,
+          requestId: requestKey || withdrawalId,
+          userId: cleanRef,
+          refCode: cleanRef,
+          date: nowIso.slice(0, 10),
+          createdAt: nowIso,
+          updatedAt: nowIso,
+          amount: requestedAmount,
+          method: methodLabel,
+          destination,
+          status: 'Pending',
+        };
+
+        // Atomic insert + balance recalculation
+        record.withdrawals.unshift(withdrawalRecord);
+        recalculateAffiliateBalances(record);
+
+        // Record negative available-balance entry in Wallet Ledger
+        const ledgerEntry = {
+          id: `led_wreq_${uniqueSuffix}`,
+          txId,
+          withdrawalId,
+          userId: cleanRef,
+          type: 'WITHDRAWAL_REQUESTED',
+          amount: -requestedAmount,
+          balanceBefore,
+          balanceAfter: record.availableBalance,
+          status: 'Pending',
+          timestamp: nowIso,
+          description: `Withdrawal request reserved (${methodLabel}: ${destination})`,
+        };
+        record.walletLedger.unshift(ledgerEntry);
+
+        if (requestKey) {
+          store.processedWithdrawalRequests.set(requestKey, withdrawalRecord);
+        }
+
+        return json({
+          success: true,
+          eventType: 'withdrawal_request',
+          withdrawal: withdrawalRecord,
+          ledgerEntry,
+          availableBalance: record.availableBalance,
+          availableToPayout: record.availableToPayout,
+          availableToWithdraw: record.availableToWithdraw,
+          pendingBalance: record.pendingBalance,
+          totalPaid: record.totalPaid,
+          totalEarned: record.totalEarned,
+          withdrawals: record.withdrawals,
+          walletLedger: record.walletLedger,
+        });
+      } finally {
+        store.activeWithdrawalLocks.delete(cleanRef);
+      }
+    }
+
+    // Event 5: Withdrawal Status Update (Pending -> Processing / Approved / Paid / Rejected / Cancelled)
+    if (eventType === 'withdrawal_status_update') {
+      const targetId = String(body.withdrawalId || body.requestId || body.txId || '').trim();
+      const rawStatus = String(body.newStatus || body.status || '').trim();
+      const reason = String(body.reason || body.adminNotes || 'Updated by administrator').trim();
+
+      if (!targetId || !rawStatus) {
+        return json({
+          success: false,
+          reason: 'MISSING_PARAMETERS',
+          error: 'withdrawalId and newStatus are required.',
+        }, 400);
+      }
+
+      const wIdx = record.withdrawals.findIndex(
+        (w) => w.id === targetId || w.txId === targetId || w.requestId === targetId
+      );
+      if (wIdx < 0) {
+        return json({
+          success: false,
+          reason: 'WITHDRAWAL_NOT_FOUND',
+          error: `Withdrawal request ${targetId} not found.`,
+        }, 404);
+      }
+
+      const withdrawal = record.withdrawals[wIdx];
+      const currentStatus = String(withdrawal.status || '').trim();
+      const upperNew = rawStatus.toUpperCase();
+      const nowIso = new Date().toISOString();
+
+      // Case A: Mark as Processing (keeps funds reserved)
+      if (upperNew === 'PROCESSING' || upperNew === 'UNDER_REVIEW') {
+        if (currentStatus === 'Paid' || currentStatus === 'Rejected' || currentStatus === 'Cancelled') {
+          return json({
+            success: false,
+            reason: 'INVALID_STATUS_TRANSITION',
+            error: `Cannot move withdrawal from ${currentStatus} to Processing.`,
+          }, 400);
+        }
+        withdrawal.status = 'Processing';
+        withdrawal.updatedAt = nowIso;
+        recalculateAffiliateBalances(record);
+        return json({
+          success: true,
+          eventType: 'withdrawal_status_update',
+          withdrawal,
+          availableBalance: record.availableBalance,
+          availableToPayout: record.availableToPayout,
+          availableToWithdraw: record.availableToWithdraw,
+          pendingBalance: record.pendingBalance,
+          totalPaid: record.totalPaid,
+          totalEarned: record.totalEarned,
+          withdrawals: record.withdrawals,
+          walletLedger: record.walletLedger,
+        });
+      }
+
+      // Case B: Approve or Pay (Keep already-deducted amount deducted; do NOT subtract a second time!)
+      if (upperNew === 'APPROVED' || upperNew === 'PAID') {
+        const normalizedTargetStatus = upperNew === 'APPROVED' ? 'Approved' : 'Paid';
+        if (currentStatus === 'Paid' || (currentStatus === 'Approved' && normalizedTargetStatus === 'Approved')) {
+          recalculateAffiliateBalances(record);
+          return json({
+            success: true,
+            idempotent: true,
+            alreadyProcessed: true,
+            eventType: 'withdrawal_status_update',
+            withdrawal,
+            availableBalance: record.availableBalance,
+            availableToPayout: record.availableToPayout,
+            availableToWithdraw: record.availableToWithdraw,
+            pendingBalance: record.pendingBalance,
+            totalPaid: record.totalPaid,
+            totalEarned: record.totalEarned,
+            withdrawals: record.withdrawals,
+            walletLedger: record.walletLedger,
+          });
+        }
+
+        if (currentStatus === 'Rejected' || currentStatus === 'Cancelled') {
+          return json({
+            success: false,
+            reason: 'CANNOT_APPROVE_REJECTED_WITHDRAWAL',
+            error: 'Cannot approve or pay a withdrawal that was already rejected or cancelled.',
+          }, 400);
+        }
+
+        const balanceBefore = record.availableBalance;
+        withdrawal.status = normalizedTargetStatus;
+        withdrawal.updatedAt = nowIso;
+        withdrawal.paidAt = nowIso;
+        if (body.payoutRef) {
+          withdrawal.payoutRef = String(body.payoutRef).trim();
+        }
+
+        // Recalculate: pendingBalance decreases by withdrawal.amount, totalPaid increases by withdrawal.amount.
+        // availableBalance remains unchanged (never deducted a second time!).
+        recalculateAffiliateBalances(record);
+
+        const ledgerEntry = {
+          id: `led_wpaid_${withdrawal.id}_${normalizedTargetStatus.toLowerCase()}`,
+          txId: withdrawal.txId,
+          withdrawalId: withdrawal.id,
+          userId: cleanRef,
+          type: 'WITHDRAWAL_PAID',
+          amount: 0, // 0 change to availableBalance since it was deducted on request creation
+          payoutAmount: withdrawal.amount,
+          balanceBefore,
+          balanceAfter: record.availableBalance,
+          status: normalizedTargetStatus,
+          payoutRef: withdrawal.payoutRef || withdrawal.txId,
+          timestamp: nowIso,
+          description: `Withdrawal marked ${normalizedTargetStatus} (₹${withdrawal.amount})`,
+        };
+        record.walletLedger.unshift(ledgerEntry);
+
+        return json({
+          success: true,
+          eventType: 'withdrawal_status_update',
+          withdrawal,
+          ledgerEntry,
+          availableBalance: record.availableBalance,
+          availableToPayout: record.availableToPayout,
+          availableToWithdraw: record.availableToWithdraw,
+          pendingBalance: record.pendingBalance,
+          totalPaid: record.totalPaid,
+          totalEarned: record.totalEarned,
+          withdrawals: record.withdrawals,
+          walletLedger: record.walletLedger,
+        });
+      }
+
+      // Case C: Reject or Cancel (Refund reserved amount back to available balance exactly once!)
+      if (upperNew === 'REJECTED' || upperNew === 'CANCELLED' || upperNew === 'FAILED') {
+        const normalizedTargetStatus = upperNew === 'CANCELLED' ? 'Cancelled' : 'Rejected';
+
+        // Idempotency protection: prevent duplicate refunds if rejection API or webhook runs multiple times
+        if (
+          currentStatus === 'Rejected' ||
+          currentStatus === 'Cancelled' ||
+          store.processedWithdrawalRefunds.has(withdrawal.id)
+        ) {
+          recalculateAffiliateBalances(record);
+          return json({
+            success: true,
+            idempotent: true,
+            alreadyRefunded: true,
+            eventType: 'withdrawal_status_update',
+            withdrawal,
+            availableBalance: record.availableBalance,
+            availableToPayout: record.availableToPayout,
+            availableToWithdraw: record.availableToWithdraw,
+            pendingBalance: record.pendingBalance,
+            totalPaid: record.totalPaid,
+            totalEarned: record.totalEarned,
+            withdrawals: record.withdrawals,
+            walletLedger: record.walletLedger,
+          });
+        }
+
+        if (currentStatus === 'Paid' || currentStatus === 'Approved') {
+          return json({
+            success: false,
+            reason: 'CANNOT_REJECT_PAID_WITHDRAWAL',
+            error: 'Cannot reject or cancel a withdrawal that has already been approved or paid.',
+          }, 400);
+        }
+
+        store.processedWithdrawalRefunds.add(withdrawal.id);
+        const balanceBefore = record.availableBalance;
+
+        withdrawal.status = normalizedTargetStatus;
+        withdrawal.updatedAt = nowIso;
+        withdrawal.rejectedAt = nowIso;
+        withdrawal.rejectionReason = reason;
+
+        // Recalculate: pendingBalance decreases by withdrawal.amount, restoring availableBalance by +withdrawal.amount
+        recalculateAffiliateBalances(record);
+
+        const ledgerEntry = {
+          id: `led_wref_${withdrawal.id}`,
+          txId: withdrawal.txId,
+          withdrawalId: withdrawal.id,
+          userId: cleanRef,
+          type: 'WITHDRAWAL_REFUNDED',
+          amount: withdrawal.amount,
+          balanceBefore,
+          balanceAfter: record.availableBalance,
+          status: normalizedTargetStatus,
+          reason,
+          timestamp: nowIso,
+          description: `Withdrawal ${normalizedTargetStatus.toLowerCase()}: +₹${withdrawal.amount} refunded to available balance (${reason})`,
+        };
+        record.walletLedger.unshift(ledgerEntry);
+
+        return json({
+          success: true,
+          eventType: 'withdrawal_status_update',
+          withdrawal,
+          ledgerEntry,
+          availableBalance: record.availableBalance,
+          availableToPayout: record.availableToPayout,
+          availableToWithdraw: record.availableToWithdraw,
+          pendingBalance: record.pendingBalance,
+          totalPaid: record.totalPaid,
+          totalEarned: record.totalEarned,
+          withdrawals: record.withdrawals,
+          walletLedger: record.walletLedger,
+        });
+      }
+
+      return json({
+        success: false,
+        reason: 'UNSUPPORTED_WITHDRAWAL_STATUS',
+        error: `Unsupported status: ${rawStatus}`,
+      }, 400);
+    }
+
+    // Event 6: Paid Course Enrollment (Rule 3, 4, 5, 6, 7)
     // Rule 5: Failed or cancelled payment produces ₹0 commission
-    if (body.paymentStatus && String(body.paymentStatus).toUpperCase() !== 'SUCCESS' && String(body.paymentStatus).toUpperCase() !== 'CAPTURED') {
+    if (
+      body.paymentStatus &&
+      String(body.paymentStatus).toUpperCase() !== 'SUCCESS' &&
+      String(body.paymentStatus).toUpperCase() !== 'CAPTURED'
+    ) {
       return json({
         success: false,
         reason: 'PAYMENT_NOT_SUCCESSFUL',
         commission: 0,
         availableBalance: record.availableBalance,
+        availableToPayout: record.availableToPayout,
+        availableToWithdraw: record.availableToWithdraw,
         totalEarned: record.totalEarned,
       });
     }
@@ -344,6 +847,8 @@ export async function onRequestPost(context) {
         idempotent: true,
         commission: 0,
         availableBalance: record.availableBalance,
+        availableToPayout: record.availableToPayout,
+        availableToWithdraw: record.availableToWithdraw,
         totalEarned: record.totalEarned,
       });
     }
@@ -365,6 +870,7 @@ export async function onRequestPost(context) {
     }
 
     store.processedPaymentIds.add(paymentId);
+    const balanceBefore = record.availableBalance;
 
     const newRecord = {
       id: `ref_paid_${paymentId}`,
@@ -398,7 +904,20 @@ export async function onRequestPost(context) {
 
     record.paidEnrollments += 1;
     record.totalEarned = record.paidEnrollments * 100;
-    record.availableBalance = Math.max(0, record.totalEarned - record.totalPaid);
+    recalculateAffiliateBalances(record);
+
+    record.walletLedger.unshift({
+      id: `led_comm_${paymentId}`,
+      paymentId,
+      userId: cleanRef,
+      type: 'COMMISSION_CREDITED',
+      amount: 100,
+      balanceBefore,
+      balanceAfter: record.availableBalance,
+      status: 'Credited',
+      timestamp: new Date().toISOString(),
+      description: `Verified paid enrollment commission (${paymentId})`,
+    });
 
     return json({
       success: true,
@@ -407,6 +926,10 @@ export async function onRequestPost(context) {
       commission: 100,
       paidEnrollments: record.paidEnrollments,
       availableBalance: record.availableBalance,
+      availableToPayout: record.availableToPayout,
+      availableToWithdraw: record.availableToWithdraw,
+      pendingBalance: record.pendingBalance,
+      totalPaid: record.totalPaid,
       totalEarned: record.totalEarned,
       record: newRecord,
     });

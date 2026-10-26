@@ -36,7 +36,15 @@ import {
   Share2
 } from 'lucide-react';
 import './AffiliateEarningsHub.css';
-import { fetchAffiliateRealData, getUserReferralCode, normalizeRefCode, recordReferralPayment } from '../../services/realAuthService';
+import {
+  fetchAffiliateRealData,
+  getUserReferralCode,
+  normalizeRefCode,
+  recordReferralPayment,
+  submitAffiliateWithdrawalRequest,
+  computeAffiliateBalancesFromWithdrawals,
+  WalletLedgerEntry,
+} from '../../services/realAuthService';
 import { isAnyCourseUnlocked } from '../../services/courseUnlockService';
 import { MobileAffiliateEarningsHub } from './mobile/MobileAffiliateEarningsHub';
 
@@ -63,8 +71,10 @@ interface WithdrawalItem {
   amount: number;
   method: 'UPI' | 'Bank';
   destination: string;
-  status: 'Paid' | 'Processing' | 'Failed';
+  status: 'Pending' | 'Processing' | 'Approved' | 'Paid' | 'Rejected' | 'Cancelled' | 'Failed';
   txId: string;
+  rejectionReason?: string;
+  payoutRef?: string;
 }
 
 interface HubState {
@@ -77,6 +87,7 @@ interface HubState {
   paidEnrollments: number;
   referrals: ReferralItem[];
   withdrawals: WithdrawalItem[];
+  walletLedger?: WalletLedgerEntry[];
 }
 
 export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
@@ -130,16 +141,24 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
         const saved = localStorage.getItem(storageKey);
         if (saved) {
           const parsed = JSON.parse(saved);
+          const paidEnrollments = typeof parsed.paidEnrollments === 'number' ? parsed.paidEnrollments : 0;
+          const totalEarned = Math.max(
+            typeof parsed.totalEarned === 'number' ? parsed.totalEarned : 0,
+            paidEnrollments * 100
+          );
+          const withdrawals = Array.isArray(parsed.withdrawals) ? (parsed.withdrawals as WithdrawalItem[]) : [];
+          const recomputed = computeAffiliateBalancesFromWithdrawals(totalEarned, withdrawals);
           return {
-            availableBalance: typeof parsed.availableBalance === 'number' ? parsed.availableBalance : 0,
-            pendingBalance: typeof parsed.pendingBalance === 'number' ? parsed.pendingBalance : 0,
-            totalPaid: typeof parsed.totalPaid === 'number' ? parsed.totalPaid : 0,
-            totalEarned: typeof parsed.totalEarned === 'number' ? parsed.totalEarned : 0,
+            availableBalance: recomputed.availableBalance,
+            pendingBalance: recomputed.pendingBalance,
+            totalPaid: recomputed.totalPaid,
+            totalEarned: recomputed.totalEarned,
             clicks: typeof parsed.clicks === 'number' ? parsed.clicks : 0,
             signups: typeof parsed.signups === 'number' ? parsed.signups : 0,
-            paidEnrollments: typeof parsed.paidEnrollments === 'number' ? parsed.paidEnrollments : 0,
+            paidEnrollments,
             referrals: Array.isArray(parsed.referrals) ? (parsed.referrals as ReferralItem[]) : [],
-            withdrawals: Array.isArray(parsed.withdrawals) ? (parsed.withdrawals as WithdrawalItem[]) : [],
+            withdrawals,
+            walletLedger: Array.isArray(parsed.walletLedger) ? parsed.walletLedger : [],
           };
         }
       }
@@ -156,6 +175,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       paidEnrollments: 0,
       referrals: [] as ReferralItem[],
       withdrawals: [] as WithdrawalItem[],
+      walletLedger: [] as WalletLedgerEntry[],
     };
   });
 
@@ -164,13 +184,14 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     try {
       if (typeof window !== 'undefined') {
         localStorage.setItem(storageKey, JSON.stringify(hubState));
+        localStorage.setItem('futureai_user_wallet', hubState.availableBalance.toString());
       }
     } catch {
       // ignore
     }
   }, [hubState, storageKey]);
 
-  // Live real-time sync with Cloud Database & Master Registry for 100% accurate referral signups
+  // Live real-time sync with Cloud Database & Master Registry for 100% accurate referral signups & withdrawals
   useEffect(() => {
     let isMounted = true;
     const syncRealCloudData = async () => {
@@ -182,18 +203,38 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
             const nextSignups = Math.max(prev.signups, real.signups || 0);
             const nextPaidEnrollments = Math.max(prev.paidEnrollments, real.paidEnrollments || 0);
             const nextEarned = Math.max(prev.totalEarned, real.totalEarned || 0, nextPaidEnrollments * 100);
-            const nextAvailable = Math.max(0, real.availableBalance || 0, nextEarned - prev.totalPaid);
-            const nextPending = typeof real.pendingBalance === 'number' ? real.pendingBalance : 0;
             const nextReferrals = real.referrals && real.referrals.length > 0 ? real.referrals : prev.referrals;
+
+            // Merge withdrawals preferring latest status from server/real data
+            const wMap = new Map<string, WithdrawalItem>();
+            for (const w of prev.withdrawals) {
+              wMap.set(w.id || w.txId, w);
+            }
+            if (Array.isArray(real.withdrawals)) {
+              for (const rw of real.withdrawals) {
+                const key = rw.id || rw.txId;
+                if (key) {
+                  wMap.set(key, { ...(wMap.get(key) || {}), ...rw });
+                }
+              }
+            }
+            const nextWithdrawals = Array.from(wMap.values());
+            const nextBalances = computeAffiliateBalancesFromWithdrawals(nextEarned, nextWithdrawals);
+            const nextLedger =
+              Array.isArray(real.walletLedger) && real.walletLedger.length > 0
+                ? real.walletLedger
+                : prev.walletLedger || [];
 
             if (
               nextClicks === prev.clicks &&
               nextSignups === prev.signups &&
               nextPaidEnrollments === prev.paidEnrollments &&
-              nextAvailable === prev.availableBalance &&
-              nextPending === prev.pendingBalance &&
-              nextEarned === prev.totalEarned &&
-              nextReferrals.length === prev.referrals.length
+              nextBalances.availableBalance === prev.availableBalance &&
+              nextBalances.pendingBalance === prev.pendingBalance &&
+              nextBalances.totalPaid === prev.totalPaid &&
+              nextBalances.totalEarned === prev.totalEarned &&
+              nextReferrals.length === prev.referrals.length &&
+              nextWithdrawals.length === prev.withdrawals.length
             ) {
               return prev;
             }
@@ -203,10 +244,13 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               clicks: nextClicks,
               signups: nextSignups,
               paidEnrollments: nextPaidEnrollments,
-              availableBalance: Math.max(0, nextAvailable),
-              pendingBalance: nextPending,
-              totalEarned: nextEarned,
+              availableBalance: nextBalances.availableBalance,
+              pendingBalance: nextBalances.pendingBalance,
+              totalPaid: nextBalances.totalPaid,
+              totalEarned: nextBalances.totalEarned,
               referrals: nextReferrals,
+              withdrawals: nextWithdrawals,
+              walletLedger: nextLedger,
             };
           });
         }
@@ -235,7 +279,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     signups,
     paidEnrollments,
     referrals: referralsList,
-    withdrawals: withdrawalHistory
+    withdrawals: withdrawalHistory,
+    walletLedger = [],
   } = hubState;
 
   // Notification Toast
@@ -608,8 +653,14 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     }
   };
 
-  // Submit Withdrawal Action
-  const handleProcessWithdrawal = () => {
+  const [isSubmittingWithdrawal, setIsSubmittingWithdrawal] = useState(false);
+  const [withdrawRequestId, setWithdrawRequestId] = useState<string>('');
+  const [lastSubmittedTxId, setLastSubmittedTxId] = useState<string>('');
+
+  // Submit Withdrawal Action (Atomic Server + Database + Wallet Ledger)
+  const handleProcessWithdrawal = async () => {
+    if (isSubmittingWithdrawal) return;
+
     const amt = parseFloat(withdrawAmount);
     if (isNaN(amt) || amt <= 0) {
       showToast('Please enter a valid withdrawal amount.', 'error');
@@ -629,41 +680,63 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     }
 
     if (withdrawStep === 'form') {
+      setWithdrawRequestId(`req_${cleanRefCode}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`);
       setWithdrawStep('confirm');
       return;
     }
 
-    // Step confirm -> execute
-    const newTx: WithdrawalItem = {
-      id: `w-${Date.now()}`,
-      date: 'Just Now',
-      amount: amt,
-      method: payoutMethod === 'upi' ? 'UPI' : 'Bank',
-      destination: payoutMethod === 'upi' ? upiId : `${bankName} ••••${bankAccNumber.slice(-4)}`,
-      status: 'Processing',
-      txId: `WTH-${Math.floor(100000 + Math.random() * 900000)}`,
-    };
-
-    setHubState((prev) => ({
-      ...prev,
-      availableBalance: prev.availableBalance - amt,
-      pendingBalance: prev.pendingBalance + amt,
-      withdrawals: [newTx, ...prev.withdrawals],
-    }));
-    setWithdrawStep('success');
-
+    setIsSubmittingWithdrawal(true);
     try {
-      confetti({
-        particleCount: 100,
-        spread: 80,
-        origin: { y: 0.55 },
-        colors: ['#10b981', '#06b6d4', '#3b82f6', '#fbbf24']
+      const destinationLabel = payoutMethod === 'upi' ? upiId : `${bankName} ••••${bankAccNumber.slice(-4)}`;
+      const result = await submitAffiliateWithdrawalRequest({
+        refCode: cleanRefCode,
+        amount: amt,
+        method: payoutMethod === 'upi' ? 'UPI' : 'Bank',
+        destination: destinationLabel,
+        upiId,
+        bankAccNumber,
+        bankIfsc,
+        bankName,
+        bankHolder,
+        isVerified: isPayoutMethodLinked,
+        requestId: withdrawRequestId || `req_${cleanRefCode}_${Date.now()}`,
       });
-    } catch {
-      // ignore
-    }
 
-    showToast(`₹${amt.toLocaleString('en-IN')} withdrawal requested! Amount will be credited to your account within 24 hours.`, 'success');
+      if (!result.success) {
+        showToast(result.error || 'Could not process withdrawal request.', 'error');
+        return;
+      }
+
+      setLastSubmittedTxId(result.withdrawal?.txId || 'WTH-PENDING');
+      setHubState((prev) => ({
+        ...prev,
+        availableBalance: result.availableBalance,
+        pendingBalance: result.pendingBalance,
+        totalPaid: result.totalPaid,
+        totalEarned: result.totalEarned,
+        withdrawals: result.withdrawals as WithdrawalItem[],
+        walletLedger: result.walletLedger,
+      }));
+      setWithdrawStep('success');
+
+      try {
+        confetti({
+          particleCount: 100,
+          spread: 80,
+          origin: { y: 0.55 },
+          colors: ['#10b981', '#06b6d4', '#3b82f6', '#fbbf24'],
+        });
+      } catch {
+        // ignore
+      }
+
+      showToast(
+        `₹${amt.toLocaleString('en-IN')} reserved for withdrawal! Available balance updated to ₹${result.availableBalance.toLocaleString('en-IN')}.`,
+        'success'
+      );
+    } finally {
+      setIsSubmittingWithdrawal(false);
+    }
   };
 
   // Metric cards definitions with 1:1 graphics from screenshot
@@ -827,23 +900,30 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
           cleanRefCode={cleanRefCode}
           onCopyLink={handleCopyLink}
           copiedLink={copiedLink}
-          onWithdrawRequest={(amount, destination) => {
-            const newTx: WithdrawalItem = {
-              id: `w-${Date.now()}`,
-              date: 'Just Now',
+          onWithdrawRequest={async (amount, destination) => {
+            const result = await submitAffiliateWithdrawalRequest({
+              refCode: cleanRefCode,
               amount,
               method: 'UPI',
               destination,
-              status: 'Processing',
-              txId: `WTH-${Math.floor(100000 + Math.random() * 900000)}`,
-            };
+              upiId: destination,
+              isVerified: true,
+              requestId: `mob_${cleanRefCode}_${Date.now()}`,
+            });
+            if (!result.success) {
+              showToast(result.error || 'Could not submit withdrawal request.', 'error');
+              return;
+            }
             setHubState((prev) => ({
               ...prev,
-              availableBalance: prev.availableBalance - amount,
-              pendingBalance: prev.pendingBalance + amount,
-              withdrawals: [newTx, ...prev.withdrawals],
+              availableBalance: result.availableBalance,
+              pendingBalance: result.pendingBalance,
+              totalPaid: result.totalPaid,
+              totalEarned: result.totalEarned,
+              withdrawals: result.withdrawals as WithdrawalItem[],
+              walletLedger: result.walletLedger,
             }));
-            showToast(`₹${amount.toLocaleString('en-IN')} withdrawal requested!`, 'success');
+            showToast(`₹${amount.toLocaleString('en-IN')} withdrawal requested! Available: ₹${result.availableBalance.toLocaleString('en-IN')}`, 'success');
           }}
           onNavigateBack={() => {
             if (onNavigateTab) onNavigateTab('home');
@@ -2189,10 +2269,11 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                     Back to Edit
                   </button>
                   <button
-                    className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-md shadow-emerald-500/20 cursor-pointer active:scale-95"
+                    disabled={isSubmittingWithdrawal}
+                    className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 text-white font-black text-xs shadow-md shadow-emerald-500/20 cursor-pointer active:scale-95"
                     onClick={handleProcessWithdrawal}
                   >
-                    Confirm &amp; Transfer Now
+                    {isSubmittingWithdrawal ? 'Reserving Funds...' : 'Confirm & Transfer Now'}
                   </button>
                 </div>
               </div>
@@ -2203,13 +2284,16 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3 animate-bounce">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
-                <h4 className="text-lg font-black text-slate-900">Withdrawal Initiated!</h4>
+                <h4 className="text-lg font-black text-slate-900">Withdrawal Request Reserved!</h4>
                 <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-                  ₹{parseFloat(withdrawAmount).toLocaleString('en-IN')} is being transferred to{' '}
+                  ₹{parseFloat(withdrawAmount).toLocaleString('en-IN')} has been deducted from your available balance and reserved for payout to{' '}
                   <span className="font-mono font-bold text-slate-800">{payoutMethod === 'upi' ? upiId : bankName}</span>.
                 </p>
-                <div className="mt-4 p-3 rounded-xl bg-emerald-50 border border-emerald-100 text-xs text-emerald-800 font-semibold">
-                  Transaction ID: WTH-{Math.floor(100000 + Math.random() * 900000)} • Status: Processing 🟡
+                <div className="mt-4 p-3 rounded-xl bg-emerald-50 border border-emerald-100 text-xs text-emerald-800 font-semibold space-y-1">
+                  <div>Transaction ID: {lastSubmittedTxId || 'WTH-PENDING'} • Status: Pending 🟡</div>
+                  <div className="text-[11px] text-emerald-700">
+                    Remaining Available Balance: ₹{availableBalance.toLocaleString('en-IN')}
+                  </div>
                 </div>
                 <button
                   className="w-full mt-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-black text-xs cursor-pointer"
@@ -2218,7 +2302,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                     setIsWithdrawHistoryOpen(true);
                   }}
                 >
-                  View Payout History →
+                  View Payout History &amp; Ledger →
                 </button>
               </div>
             )}
@@ -2227,7 +2311,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       )}
 
       {/* =========================================================================
-          MODAL 2: WITHDRAWAL HISTORY
+          MODAL 2: WITHDRAWAL HISTORY & WALLET LEDGER
           ========================================================================= */}
       {isWithdrawHistoryOpen && (
         <div className="affiliate-modal-backdrop" onClick={() => setIsWithdrawHistoryOpen(false)}>
@@ -2235,7 +2319,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
             <div className="modal-header-row">
               <div className="flex items-center gap-2">
                 <Clock className="w-5 h-5 text-sky-600" />
-                <h3 className="modal-title">Withdrawal &amp; Payout History</h3>
+                <h3 className="modal-title">Withdrawal &amp; Wallet Ledger History</h3>
               </div>
               <button className="modal-close-btn" onClick={() => setIsWithdrawHistoryOpen(false)}>
                 <X className="w-5 h-5" />
@@ -2251,12 +2335,12 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 <span className="col-hash">Ref ID</span>
               </div>
 
-              <div className="ref-table-body max-h-72 overflow-y-auto">
+              <div className="ref-table-body max-h-56 overflow-y-auto">
                 {withdrawalHistory.length === 0 ? (
                   <div className="py-10 text-center text-slate-400">
                     <Clock className="w-8 h-8 text-slate-300 mx-auto mb-2" />
                     <p className="text-xs font-semibold text-slate-700">No withdrawal requests yet</p>
-                    <p className="text-[11px] text-slate-400 mt-1">Once you earn ₹500 or more, request an instant payout here.</p>
+                    <p className="text-[11px] text-slate-400 mt-1">Once you earn ₹100 or more, request an instant payout here.</p>
                   </div>
                 ) : (
                   withdrawalHistory.map((item: WithdrawalItem) => (
@@ -2269,16 +2353,16 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                       <span className="col-status">
                         <span
                           className={`status-pill ${
-                            item.status === 'Paid'
+                            item.status === 'Paid' || item.status === 'Approved'
                               ? 'pill-approved'
-                              : item.status === 'Processing'
+                              : item.status === 'Pending' || item.status === 'Processing'
                               ? 'pill-trial-started'
                               : 'pill-reversed'
                           }`}
                         >
-                          {item.status === 'Paid' && '🟢 Paid'}
-                          {item.status === 'Processing' && '🟡 Processing'}
-                          {item.status === 'Failed' && '🔴 Failed'}
+                          {(item.status === 'Paid' || item.status === 'Approved') && `🟢 ${item.status}`}
+                          {(item.status === 'Pending' || item.status === 'Processing') && `🟡 ${item.status}`}
+                          {(item.status === 'Rejected' || item.status === 'Cancelled' || item.status === 'Failed') && `🔴 ${item.status}`}
                         </span>
                       </span>
                       <span className="col-hash font-mono text-[11px] text-slate-400">{item.txId}</span>
@@ -2286,6 +2370,45 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   ))
                 )}
               </div>
+
+              {walletLedger.length > 0 && (
+                <div className="mt-4 pt-3 border-t border-slate-200">
+                  <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider mb-2">
+                    Wallet Transaction Ledger (Available Balance Audit)
+                  </h4>
+                  <div className="max-h-40 overflow-y-auto space-y-1.5">
+                    {walletLedger.map((entry) => (
+                      <div
+                        key={entry.id}
+                        className="flex items-center justify-between px-3 py-2 rounded-lg bg-slate-50 border border-slate-200/80 text-[11px]"
+                      >
+                        <div>
+                          <strong className="font-bold text-slate-800 block">{entry.description}</strong>
+                          <span className="text-[10px] text-slate-400 font-mono">
+                            {entry.timestamp?.slice(0, 19).replace('T', ' ')} • {entry.type}
+                          </span>
+                        </div>
+                        <div className="text-right">
+                          <span
+                            className={`font-black block ${
+                              entry.amount > 0
+                                ? 'text-emerald-600'
+                                : entry.amount < 0
+                                ? 'text-rose-600'
+                                : 'text-sky-600'
+                            }`}
+                          >
+                            {entry.amount > 0 ? `+₹${entry.amount}` : entry.amount < 0 ? `-₹${Math.abs(entry.amount)}` : `₹0 (Payout Settled)`}
+                          </span>
+                          <span className="text-[10px] text-slate-500 font-semibold">
+                            Avail After: ₹{entry.balanceAfter.toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                 <span>Total payouts recorded: {withdrawalHistory.length}</span>

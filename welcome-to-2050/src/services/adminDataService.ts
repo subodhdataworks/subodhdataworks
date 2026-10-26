@@ -1,6 +1,11 @@
 import { doc, getDoc, setDoc, collection, getDocs, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from './firebase';
-import { getAllRegisteredUsers, RegisteredUserRecord, getLearnerTelemetry } from './realAuthService';
+import {
+  getAllRegisteredUsers,
+  RegisteredUserRecord,
+  getLearnerTelemetry,
+  updateAffiliateWithdrawalStatus,
+} from './realAuthService';
 import { ReferralEngine, WithdrawalRequest, ReferralRecord } from './referralEngine';
 import { COURSES_CATALOG } from '../data/coursesCatalog';
 import { TOPICS } from '../components/futureai/PythonChapterView';
@@ -310,6 +315,23 @@ export class AdminDataService {
         reason: params.adminNotes,
       });
     }
+
+    // Also synchronize v5 Affiliate Hub & Server API (/api/affiliate) withdrawal lifecycle
+    const mappedV5Status =
+      params.newStatus === 'PAID'
+        ? 'Paid'
+        : params.newStatus === 'APPROVED'
+        ? 'Approved'
+        : params.newStatus === 'REJECTED'
+        ? 'Rejected'
+        : 'Processing';
+    await updateAffiliateWithdrawalStatus({
+      refCode: req.referrerId,
+      withdrawalId: req.id,
+      newStatus: mappedV5Status,
+      reason: params.adminNotes,
+      payoutRef: params.payoutRef,
+    });
 
     await AdminAuthService.logAudit({
       action: `WITHDRAWAL_${params.newStatus}`,

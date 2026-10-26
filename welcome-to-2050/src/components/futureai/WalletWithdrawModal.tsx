@@ -18,6 +18,12 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { ReferralEngine } from '../../services/referralEngine';
+import {
+  submitAffiliateWithdrawalRequest,
+  normalizeRefCode,
+  getUserReferralCode,
+  computeAffiliateBalancesFromWithdrawals,
+} from '../../services/realAuthService';
 
 interface WalletWithdrawModalProps {
   isOpen: boolean;
@@ -82,14 +88,37 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
       setAmount('');
 
       if (typeof window !== 'undefined') {
-        // Read real balance from wallet (defaults to 0 for fresh student!)
-        const customWallet = localStorage.getItem('futureai_user_wallet');
-        if (customWallet !== null && !isNaN(parseFloat(customWallet))) {
-          const parsed = parseFloat(customWallet);
-          setBalance(parsed >= 0 ? parsed : 0);
-        } else {
-          setBalance(0);
+        const myEmail = localStorage.getItem('futureai_user_email') || '';
+        const myName = localStorage.getItem('futureai_user_name') || '';
+        const myRef =
+          localStorage.getItem('futureai_user_ref_code') ||
+          (myEmail ? normalizeRefCode(getUserReferralCode(myEmail)) : normalizeRefCode(getUserReferralCode(myName)));
+        let resolvedBalance = 0;
+        if (myRef) {
+          try {
+            const rawHub = localStorage.getItem(`futureai_affiliate_hub_v5_${normalizeRefCode(myRef)}`);
+            if (rawHub) {
+              const parsedHub = JSON.parse(rawHub);
+              const earned = Math.max(
+                Number(parsedHub.totalEarned) || 0,
+                (Number(parsedHub.paidEnrollments) || 0) * 100
+              );
+              const computed = computeAffiliateBalancesFromWithdrawals(
+                earned,
+                Array.isArray(parsedHub.withdrawals) ? parsedHub.withdrawals : []
+              );
+              resolvedBalance = computed.availableBalance;
+            }
+          } catch {}
         }
+        if (resolvedBalance === 0) {
+          const customWallet = localStorage.getItem('futureai_user_wallet');
+          if (customWallet !== null && !isNaN(parseFloat(customWallet))) {
+            const parsed = parseFloat(customWallet);
+            resolvedBalance = parsed >= 0 ? parsed : 0;
+          }
+        }
+        setBalance(resolvedBalance);
 
         // Read stored payout details - NO HARDCODED DEFAULTS!
         const savedAcc = localStorage.getItem('futureai_bank_acc');
@@ -243,16 +272,42 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
       return;
     }
 
+    if (numAmt < 100) {
+      setError('Minimum withdrawal amount is ₹100.');
+      return;
+    }
+
     if (numAmt > balance) {
       setError(`Amount exceeds your available balance of ₹${balance.toFixed(2)}.`);
       return;
     }
 
+    if (isSubmitting) return;
     setIsSubmitting(true);
 
-    setTimeout(() => {
+    setTimeout(async () => {
       const now = new Date();
-      const txnId = generateTxnId();
+      const effectiveMethod = payoutType === 'UPI' && hasUpi ? 'UPI' : 'BANK';
+
+      const apiRes = await submitAffiliateWithdrawalRequest({
+        amount: numAmt,
+        method: effectiveMethod,
+        upiId: upiId,
+        bankAccNumber: accountNumber,
+        bankIfsc: ifscCode,
+        bankName: bankName || 'Bank Account',
+        bankHolder: accountHolder || 'Student',
+        isVerified: true,
+        requestId: `modal_${Date.now()}`,
+      });
+
+      if (!apiRes.success) {
+        setIsSubmitting(false);
+        setError(apiRes.error || 'Could not process withdrawal request.');
+        return;
+      }
+
+      const txnId = apiRes.withdrawal?.txId || generateTxnId();
       const dateStr = now.toLocaleDateString('en-IN', {
         day: '2-digit',
         month: 'short',
@@ -260,8 +315,6 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
         hour: '2-digit',
         minute: '2-digit',
       });
-
-      const effectiveMethod = payoutType === 'UPI' && hasUpi ? 'UPI' : 'BANK';
 
       const record: WithdrawalRecord = {
         id: txnId,
@@ -274,15 +327,14 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
         accountHolder: accountHolder || 'Student',
         date: dateStr,
         timestamp: now.getTime(),
-        status: 'Processing',
+        status: 'Pending',
       };
 
-      // Deduct balance
-      const newBal = Math.max(0, balance - numAmt);
-      setBalance(newBal);
+      // Update balance from atomic source of truth
+      setBalance(apiRes.availableBalance);
 
       if (typeof window !== 'undefined') {
-        localStorage.setItem('futureai_user_wallet', newBal.toString());
+        localStorage.setItem('futureai_user_wallet', apiRes.availableBalance.toString());
 
         // Save submitted history
         const savedHist = localStorage.getItem('futureai_withdrawals_history');

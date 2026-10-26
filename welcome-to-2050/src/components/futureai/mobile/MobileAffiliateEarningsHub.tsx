@@ -46,7 +46,7 @@ export interface MobileWithdrawalItem {
   amount: number;
   method: 'UPI' | 'Bank';
   destination: string;
-  status: 'Paid' | 'Processing' | 'Failed';
+  status: 'Pending' | 'Processing' | 'Approved' | 'Paid' | 'Rejected' | 'Cancelled' | 'Failed';
   txId: string;
 }
 

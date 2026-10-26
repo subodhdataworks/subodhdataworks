@@ -770,9 +770,36 @@ export async function recordReferralPayment(paymentData: {
     if (raw) data = JSON.parse(raw);
   } catch {}
 
+  const balanceBefore = computeAffiliateBalancesFromWithdrawals(
+    data.totalEarned || 0,
+    Array.isArray(data.withdrawals) ? data.withdrawals : []
+  ).availableBalance;
+
   data.paidEnrollments = (data.paidEnrollments || 0) + 1;
-  data.availableBalance = (data.availableBalance || 0) + 100;
-  data.totalEarned = (data.totalEarned || 0) + 100;
+  data.totalEarned = Math.max((data.totalEarned || 0) + 100, data.paidEnrollments * 100);
+  const recomputed = computeAffiliateBalancesFromWithdrawals(
+    data.totalEarned,
+    Array.isArray(data.withdrawals) ? data.withdrawals : []
+  );
+  data.availableBalance = recomputed.availableBalance;
+  data.availableToPayout = recomputed.availableToPayout;
+  data.availableToWithdraw = recomputed.availableToWithdraw;
+  data.pendingBalance = recomputed.pendingBalance;
+  data.totalPaid = recomputed.totalPaid;
+  const ledgerList = Array.isArray(data.walletLedger) ? data.walletLedger : [];
+  ledgerList.unshift({
+    id: `led_comm_${paymentId}`,
+    paymentId,
+    userId: cleanCode,
+    type: 'COMMISSION_CREDITED',
+    amount: 100,
+    balanceBefore,
+    balanceAfter: recomputed.availableBalance,
+    status: 'Credited',
+    timestamp: new Date().toISOString(),
+    description: `Verified paid course enrollment commission (${paymentId})`,
+  });
+  data.walletLedger = ledgerList;
 
   const referrals: any[] = Array.isArray(data.referrals) ? data.referrals : [];
   const existingIdx = referrals.findIndex((r: any) =>
@@ -861,26 +888,719 @@ export async function recordReferralPayment(paymentData: {
   return { success: true };
 }
 
+export interface WalletLedgerEntry {
+  id: string;
+  txId?: string;
+  withdrawalId?: string;
+  paymentId?: string;
+  userId: string;
+  type: 'WITHDRAWAL_REQUESTED' | 'WITHDRAWAL_REFUNDED' | 'WITHDRAWAL_PAID' | 'COMMISSION_CREDITED' | 'COMMISSION_REVERSED';
+  amount: number;
+  payoutAmount?: number;
+  balanceBefore: number;
+  balanceAfter: number;
+  status: string;
+  reason?: string;
+  payoutRef?: string;
+  timestamp: string;
+  description: string;
+}
+
+/**
+ * Single Source of Truth Balance Calculator from Total Earned & Withdrawals List:
+ * - Lifetime Earnings (totalEarned) is NEVER reduced by withdrawals.
+ * - pendingBalance = sum of active reserved withdrawals ('Pending', 'Processing', 'UNDER_REVIEW')
+ * - totalPaid = sum of completed/approved withdrawals ('Paid', 'Approved')
+ * - availableBalance = Math.max(0, totalEarned - totalPaid - pendingBalance)
+ * - Both Available to Payout and Available to Withdraw equal availableBalance.
+ */
+export function computeAffiliateBalancesFromWithdrawals(totalEarned: number, withdrawals: any[] = []) {
+  const safeEarned = Math.max(0, Number(totalEarned) || 0);
+  let pendingBalance = 0;
+  let totalPaid = 0;
+
+  for (const w of Array.isArray(withdrawals) ? withdrawals : []) {
+    const amt = Number(w?.amount) || 0;
+    if (amt <= 0) continue;
+    const st = String(w?.status || '').trim();
+    if (st === 'Pending' || st === 'Processing' || st === 'UNDER_REVIEW' || st === 'PENDING' || st === 'PROCESSING') {
+      pendingBalance += amt;
+    } else if (st === 'Paid' || st === 'Approved' || st === 'PAID' || st === 'APPROVED') {
+      totalPaid += amt;
+    }
+  }
+
+  const availableBalance = Math.max(0, safeEarned - totalPaid - pendingBalance);
+  return {
+    totalEarned: safeEarned,
+    pendingBalance,
+    totalPaid,
+    availableBalance,
+    availableToPayout: availableBalance,
+    availableToWithdraw: availableBalance,
+  };
+}
+
+function mergeWithdrawalsList(serverList: any[] = [], localList: any[] = []): any[] {
+  const map = new Map<string, any>();
+  for (const w of Array.isArray(localList) ? localList : []) {
+    if (!w) continue;
+    const key = String(w.id || w.txId || w.requestId || '');
+    if (key) map.set(key, { ...w });
+  }
+  for (const w of Array.isArray(serverList) ? serverList : []) {
+    if (!w) continue;
+    const key = String(w.id || w.txId || w.requestId || '');
+    if (key) {
+      const existing = map.get(key);
+      map.set(key, existing ? { ...existing, ...w } : { ...w });
+    }
+  }
+  return Array.from(map.values());
+}
+
+const activeClientWithdrawalLocks = new Set<string>();
+const processedClientWithdrawalKeys = new Map<string, any>();
+const processedClientRefundIds = new Set<string>();
+
+/**
+ * Atomic Withdrawal Submission (Server API + Local v5 Storage + Wallet Ledger + Idempotency + Concurrency Lock)
+ */
+export async function submitAffiliateWithdrawalRequest(params: {
+  refCode?: string;
+  amount: number;
+  method: 'UPI' | 'Bank' | 'BANK';
+  destination?: string;
+  upiId?: string;
+  bankAccNumber?: string;
+  bankIfsc?: string;
+  bankName?: string;
+  bankHolder?: string;
+  isVerified?: boolean;
+  requestId?: string;
+}): Promise<{
+  success: boolean;
+  idempotent?: boolean;
+  error?: string;
+  reason?: string;
+  withdrawal?: any;
+  availableBalance: number;
+  availableToPayout: number;
+  availableToWithdraw: number;
+  pendingBalance: number;
+  totalPaid: number;
+  totalEarned: number;
+  withdrawals: any[];
+  walletLedger: WalletLedgerEntry[];
+}> {
+  const cleanCode = normalizeRefCode(
+    params.refCode ||
+      (typeof window !== 'undefined'
+        ? localStorage.getItem('futureai_user_ref_code') ||
+          localStorage.getItem('futureai_user_email') ||
+          localStorage.getItem('futureai_user_name') ||
+          ''
+        : '')
+  );
+
+  const emptyFail = (error: string, reason: string, currentBal = 0, pending = 0, paid = 0, earned = 0) => ({
+    success: false,
+    error,
+    reason,
+    availableBalance: currentBal,
+    availableToPayout: currentBal,
+    availableToWithdraw: currentBal,
+    pendingBalance: pending,
+    totalPaid: paid,
+    totalEarned: earned,
+    withdrawals: [],
+    walletLedger: [],
+  });
+
+  if (!cleanCode) {
+    return emptyFail('Authenticated user referral identity is required.', 'MISSING_USER_IDENTITY');
+  }
+
+  const requestKey = params.requestId ? `${cleanCode}:${params.requestId.trim()}` : '';
+  const storageKey = `futureai_affiliate_hub_v5_${cleanCode}`;
+
+  const readLocalState = () => {
+    let parsed: any = {};
+    if (typeof window !== 'undefined') {
+      try {
+        parsed = JSON.parse(localStorage.getItem(storageKey) || '{}');
+      } catch {}
+    }
+    const withdrawals = Array.isArray(parsed.withdrawals) ? parsed.withdrawals : [];
+    const walletLedger: WalletLedgerEntry[] = Array.isArray(parsed.walletLedger) ? parsed.walletLedger : [];
+    const paidEnrollments = Number(parsed.paidEnrollments) || 0;
+    const totalEarned = Math.max(Number(parsed.totalEarned) || 0, paidEnrollments * 100);
+    const balances = computeAffiliateBalancesFromWithdrawals(totalEarned, withdrawals);
+    return {
+      ...parsed,
+      paidEnrollments,
+      ...balances,
+      withdrawals,
+      walletLedger,
+    };
+  };
+
+  // 1. Idempotency check
+  if (requestKey && processedClientWithdrawalKeys.has(requestKey)) {
+    const cached = processedClientWithdrawalKeys.get(requestKey);
+    const state = readLocalState();
+    return {
+      success: true,
+      idempotent: true,
+      withdrawal: cached,
+      availableBalance: state.availableBalance,
+      availableToPayout: state.availableToPayout,
+      availableToWithdraw: state.availableToWithdraw,
+      pendingBalance: state.pendingBalance,
+      totalPaid: state.totalPaid,
+      totalEarned: state.totalEarned,
+      withdrawals: state.withdrawals,
+      walletLedger: state.walletLedger,
+    };
+  }
+
+  // 2. Concurrency lock per user to prevent simultaneous requests spending the same balance
+  if (activeClientWithdrawalLocks.has(cleanCode)) {
+    const state = readLocalState();
+    return emptyFail(
+      'Another withdrawal request is currently in progress.',
+      'CONCURRENT_WITHDRAWAL_IN_PROGRESS',
+      state.availableBalance,
+      state.pendingBalance,
+      state.totalPaid,
+      state.totalEarned
+    );
+  }
+
+  activeClientWithdrawalLocks.add(cleanCode);
+  try {
+    const state = readLocalState();
+    const rawAmount = Number(params.amount);
+    if (!Number.isFinite(rawAmount) || rawAmount <= 0) {
+      return emptyFail(
+        'Withdrawal amount must be greater than zero.',
+        'INVALID_WITHDRAWAL_AMOUNT',
+        state.availableBalance,
+        state.pendingBalance,
+        state.totalPaid,
+        state.totalEarned
+      );
+    }
+
+    const requestedAmount = Math.round(rawAmount * 100) / 100;
+    if (requestedAmount < 100) {
+      return emptyFail(
+        'Minimum withdrawal amount is ₹100.',
+        'BELOW_MINIMUM_WITHDRAWAL',
+        state.availableBalance,
+        state.pendingBalance,
+        state.totalPaid,
+        state.totalEarned
+      );
+    }
+
+    const isBank = String(params.method).toUpperCase() === 'BANK';
+    const methodLabel: 'UPI' | 'Bank' = isBank ? 'Bank' : 'UPI';
+    const upiId = (params.upiId || (!isBank ? params.destination : '') || '').trim();
+    const bankAcc = (params.bankAccNumber || '').trim();
+    const bankIfsc = (params.bankIfsc || '').trim().toUpperCase();
+    const bankName = (params.bankName || 'Bank').trim();
+
+    if (params.isVerified === false) {
+      return emptyFail(
+        'Please verify your Bank Account or UPI details before requesting a withdrawal.',
+        'PAYOUT_METHOD_NOT_VERIFIED',
+        state.availableBalance,
+        state.pendingBalance,
+        state.totalPaid,
+        state.totalEarned
+      );
+    }
+
+    if (isBank) {
+      if (bankAcc.length < 8 || bankIfsc.length < 5) {
+        return emptyFail(
+          'Please enter a valid verified Bank Account Number and IFSC Code.',
+          'INVALID_BANK_DETAILS',
+          state.availableBalance,
+          state.pendingBalance,
+          state.totalPaid,
+          state.totalEarned
+        );
+      }
+    } else {
+      if (!upiId || !upiId.includes('@') || upiId.length < 4) {
+        return emptyFail(
+          'Please enter a valid verified UPI ID (e.g. yourname@upi).',
+          'INVALID_UPI_DETAILS',
+          state.availableBalance,
+          state.pendingBalance,
+          state.totalPaid,
+          state.totalEarned
+        );
+      }
+    }
+
+    if (requestedAmount > state.availableBalance) {
+      return emptyFail(
+        `Insufficient available balance! Available: ₹${state.availableBalance.toLocaleString('en-IN')}`,
+        'INSUFFICIENT_AVAILABLE_BALANCE',
+        state.availableBalance,
+        state.pendingBalance,
+        state.totalPaid,
+        state.totalEarned
+      );
+    }
+
+    const nowIso = new Date().toISOString();
+    const uniqueSuffix = `${Date.now()}_${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+    const withdrawalId = `w_${uniqueSuffix}`;
+    const txId = `WTH-${Math.floor(100000 + Math.random() * 900000)}`;
+    const destination =
+      params.destination?.trim() || (isBank ? `${bankName} ••••${bankAcc.slice(-4)}` : upiId);
+
+    // 3. Call server API (/api/affiliate) atomically if reachable
+    let serverResponse: any = null;
+    try {
+      const apiRes = await withTimeout(
+        fetch('/api/affiliate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            eventType: 'withdrawal_request',
+            refCode: cleanCode,
+            requestId: params.requestId || withdrawalId,
+            withdrawalId,
+            txId,
+            amount: requestedAmount,
+            method: methodLabel,
+            destination,
+            upiId,
+            bankAccNumber: bankAcc,
+            bankIfsc,
+            bankName,
+            isVerified: true,
+          }),
+        }),
+        3500
+      );
+      const data = await apiRes.json().catch(() => null);
+      if (!apiRes.ok && data && data.reason === 'INSUFFICIENT_AVAILABLE_BALANCE') {
+        return emptyFail(
+          data.error || 'Insufficient available balance on server.',
+          data.reason,
+          data.availableBalance ?? state.availableBalance,
+          data.pendingBalance ?? state.pendingBalance,
+          data.totalPaid ?? state.totalPaid,
+          data.totalEarned ?? state.totalEarned
+        );
+      }
+      if (apiRes.ok && data?.success) {
+        serverResponse = data;
+      }
+    } catch {
+      // Offline / local fallback handled atomically below
+    }
+
+    const balanceBefore = state.availableBalance;
+    const newWithdrawal = serverResponse?.withdrawal || {
+      id: withdrawalId,
+      txId,
+      requestId: requestKey || withdrawalId,
+      userId: cleanCode,
+      refCode: cleanCode,
+      date: nowIso.slice(0, 10),
+      createdAt: nowIso,
+      updatedAt: nowIso,
+      amount: requestedAmount,
+      method: methodLabel,
+      destination,
+      status: 'Pending' as const,
+    };
+
+    const nextWithdrawals = [
+      newWithdrawal,
+      ...state.withdrawals.filter((w: any) => w.id !== newWithdrawal.id && w.txId !== newWithdrawal.txId),
+    ];
+    const nextBalances = computeAffiliateBalancesFromWithdrawals(state.totalEarned, nextWithdrawals);
+
+    const ledgerEntry: WalletLedgerEntry = serverResponse?.ledgerEntry || {
+      id: `led_wreq_${uniqueSuffix}`,
+      txId: newWithdrawal.txId,
+      withdrawalId: newWithdrawal.id,
+      userId: cleanCode,
+      type: 'WITHDRAWAL_REQUESTED',
+      amount: -requestedAmount,
+      balanceBefore,
+      balanceAfter: nextBalances.availableBalance,
+      status: 'Pending',
+      timestamp: nowIso,
+      description: `Withdrawal request reserved (${methodLabel}: ${destination})`,
+    };
+
+    const nextLedger = [
+      ledgerEntry,
+      ...state.walletLedger.filter((l: WalletLedgerEntry) => l.id !== ledgerEntry.id),
+    ];
+
+    const updatedHubState = {
+      ...state,
+      ...nextBalances,
+      withdrawals: nextWithdrawals,
+      walletLedger: nextLedger,
+    };
+
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(updatedHubState));
+        localStorage.setItem('futureai_user_wallet', nextBalances.availableBalance.toString());
+        window.dispatchEvent(
+          new CustomEvent('futureai_affiliate_updated', {
+            detail: { refCode: cleanCode, availableBalance: nextBalances.availableBalance },
+          })
+        );
+        window.dispatchEvent(new Event('futureai_wallet_updated'));
+      } catch {}
+    }
+
+    if (requestKey) {
+      processedClientWithdrawalKeys.set(requestKey, newWithdrawal);
+    }
+
+    return {
+      success: true,
+      withdrawal: newWithdrawal,
+      availableBalance: nextBalances.availableBalance,
+      availableToPayout: nextBalances.availableToPayout,
+      availableToWithdraw: nextBalances.availableToWithdraw,
+      pendingBalance: nextBalances.pendingBalance,
+      totalPaid: nextBalances.totalPaid,
+      totalEarned: nextBalances.totalEarned,
+      withdrawals: nextWithdrawals,
+      walletLedger: nextLedger,
+    };
+  } finally {
+    activeClientWithdrawalLocks.delete(cleanCode);
+  }
+}
+
+/**
+ * Atomic Withdrawal Status Update (Pending -> Processing / Approved / Paid / Rejected / Cancelled)
+ * - Approve / Paid: keeps already-deducted amount deducted; moves from pendingBalance to totalPaid; NEVER deducts a second time.
+ * - Reject / Cancel: refunds reserved amount back to availableBalance exactly once (idempotent).
+ */
+export async function updateAffiliateWithdrawalStatus(params: {
+  refCode: string;
+  withdrawalId: string;
+  newStatus: 'Processing' | 'Approved' | 'Paid' | 'Rejected' | 'Cancelled';
+  reason?: string;
+  payoutRef?: string;
+}): Promise<{
+  success: boolean;
+  idempotent?: boolean;
+  alreadyRefunded?: boolean;
+  error?: string;
+  reason?: string;
+  withdrawal?: any;
+  availableBalance: number;
+  availableToPayout: number;
+  availableToWithdraw: number;
+  pendingBalance: number;
+  totalPaid: number;
+  totalEarned: number;
+  withdrawals: any[];
+  walletLedger: WalletLedgerEntry[];
+}> {
+  const cleanCode = normalizeRefCode(params.refCode);
+  const storageKey = `futureai_affiliate_hub_v5_${cleanCode}`;
+
+  let parsed: any = {};
+  if (typeof window !== 'undefined') {
+    try {
+      parsed = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    } catch {}
+  }
+
+  // Also call server API (/api/affiliate) to update status on server
+  try {
+    await withTimeout(
+      fetch('/api/affiliate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          eventType: 'withdrawal_status_update',
+          refCode: cleanCode,
+          withdrawalId: params.withdrawalId,
+          newStatus: params.newStatus,
+          reason: params.reason,
+          payoutRef: params.payoutRef,
+        }),
+      }),
+      3500
+    );
+  } catch {}
+
+  const withdrawals: any[] = Array.isArray(parsed.withdrawals) ? [...parsed.withdrawals] : [];
+  const walletLedger: WalletLedgerEntry[] = Array.isArray(parsed.walletLedger) ? [...parsed.walletLedger] : [];
+  const paidEnrollments = Number(parsed.paidEnrollments) || 0;
+  const totalEarned = Math.max(Number(parsed.totalEarned) || 0, paidEnrollments * 100);
+
+  const wIdx = withdrawals.findIndex(
+    (w) => w.id === params.withdrawalId || w.txId === params.withdrawalId || w.requestId === params.withdrawalId
+  );
+
+  const currentBalances = computeAffiliateBalancesFromWithdrawals(totalEarned, withdrawals);
+
+  if (wIdx < 0) {
+    return {
+      success: false,
+      error: `Withdrawal ${params.withdrawalId} not found.`,
+      reason: 'WITHDRAWAL_NOT_FOUND',
+      ...currentBalances,
+      withdrawals,
+      walletLedger,
+    };
+  }
+
+  const target = { ...withdrawals[wIdx] };
+  const currentStatus = String(target.status || '').trim();
+  const upperNew = params.newStatus.toUpperCase();
+  const nowIso = new Date().toISOString();
+
+  // 1. Processing
+  if (upperNew === 'PROCESSING') {
+    if (currentStatus === 'Paid' || currentStatus === 'Rejected' || currentStatus === 'Cancelled') {
+      return {
+        success: false,
+        error: `Cannot move withdrawal from ${currentStatus} to Processing.`,
+        reason: 'INVALID_STATUS_TRANSITION',
+        ...currentBalances,
+        withdrawals,
+        walletLedger,
+      };
+    }
+    target.status = 'Processing';
+    target.updatedAt = nowIso;
+    withdrawals[wIdx] = target;
+    const nextBalances = computeAffiliateBalancesFromWithdrawals(totalEarned, withdrawals);
+    const updated = { ...parsed, ...nextBalances, withdrawals, walletLedger };
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(updated));
+      } catch {}
+    }
+    return {
+      success: true,
+      withdrawal: target,
+      ...nextBalances,
+      withdrawals,
+      walletLedger,
+    };
+  }
+
+  // 2. Approved / Paid (Keep already-deducted amount deducted; do NOT subtract a second time!)
+  if (upperNew === 'APPROVED' || upperNew === 'PAID') {
+    const normalizedTarget = upperNew === 'APPROVED' ? 'Approved' : 'Paid';
+    if (currentStatus === 'Paid' || (currentStatus === 'Approved' && normalizedTarget === 'Approved')) {
+      return {
+        success: true,
+        idempotent: true,
+        withdrawal: target,
+        ...currentBalances,
+        withdrawals,
+        walletLedger,
+      };
+    }
+    if (currentStatus === 'Rejected' || currentStatus === 'Cancelled') {
+      return {
+        success: false,
+        error: 'Cannot approve or pay a rejected/cancelled withdrawal.',
+        reason: 'CANNOT_APPROVE_REJECTED_WITHDRAWAL',
+        ...currentBalances,
+        withdrawals,
+        walletLedger,
+      };
+    }
+
+    const balanceBefore = currentBalances.availableBalance;
+    target.status = normalizedTarget;
+    target.updatedAt = nowIso;
+    target.paidAt = nowIso;
+    if (params.payoutRef) target.payoutRef = params.payoutRef;
+    withdrawals[wIdx] = target;
+
+    const nextBalances = computeAffiliateBalancesFromWithdrawals(totalEarned, withdrawals);
+    const ledgerEntry: WalletLedgerEntry = {
+      id: `led_wpaid_${target.id}_${normalizedTarget.toLowerCase()}`,
+      txId: target.txId,
+      withdrawalId: target.id,
+      userId: cleanCode,
+      type: 'WITHDRAWAL_PAID',
+      amount: 0,
+      payoutAmount: target.amount,
+      balanceBefore,
+      balanceAfter: nextBalances.availableBalance,
+      status: normalizedTarget,
+      payoutRef: params.payoutRef || target.txId,
+      timestamp: nowIso,
+      description: `Withdrawal marked ${normalizedTarget} (₹${target.amount})`,
+    };
+    walletLedger.unshift(ledgerEntry);
+
+    const updated = { ...parsed, ...nextBalances, withdrawals, walletLedger };
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(updated));
+        localStorage.setItem('futureai_user_wallet', nextBalances.availableBalance.toString());
+        window.dispatchEvent(new CustomEvent('futureai_affiliate_updated', { detail: { refCode: cleanCode } }));
+      } catch {}
+    }
+
+    return {
+      success: true,
+      withdrawal: target,
+      ...nextBalances,
+      withdrawals,
+      walletLedger,
+    };
+  }
+
+  // 3. Rejected / Cancelled (Refund reserved amount back to available balance exactly once!)
+  if (upperNew === 'REJECTED' || upperNew === 'CANCELLED') {
+    const normalizedTarget = upperNew === 'CANCELLED' ? 'Cancelled' : 'Rejected';
+    if (
+      currentStatus === 'Rejected' ||
+      currentStatus === 'Cancelled' ||
+      processedClientRefundIds.has(target.id)
+    ) {
+      return {
+        success: true,
+        idempotent: true,
+        alreadyRefunded: true,
+        withdrawal: target,
+        ...currentBalances,
+        withdrawals,
+        walletLedger,
+      };
+    }
+
+    if (currentStatus === 'Paid' || currentStatus === 'Approved') {
+      return {
+        success: false,
+        error: 'Cannot reject or cancel an already approved/paid withdrawal.',
+        reason: 'CANNOT_REJECT_PAID_WITHDRAWAL',
+        ...currentBalances,
+        withdrawals,
+        walletLedger,
+      };
+    }
+
+    processedClientRefundIds.add(target.id);
+    const balanceBefore = currentBalances.availableBalance;
+    const reasonText = params.reason || 'Rejected before payout';
+    target.status = normalizedTarget;
+    target.updatedAt = nowIso;
+    target.rejectedAt = nowIso;
+    target.rejectionReason = reasonText;
+    withdrawals[wIdx] = target;
+
+    const nextBalances = computeAffiliateBalancesFromWithdrawals(totalEarned, withdrawals);
+    const ledgerEntry: WalletLedgerEntry = {
+      id: `led_wref_${target.id}`,
+      txId: target.txId,
+      withdrawalId: target.id,
+      userId: cleanCode,
+      type: 'WITHDRAWAL_REFUNDED',
+      amount: target.amount,
+      balanceBefore,
+      balanceAfter: nextBalances.availableBalance,
+      status: normalizedTarget,
+      reason: reasonText,
+      timestamp: nowIso,
+      description: `Withdrawal ${normalizedTarget.toLowerCase()}: +₹${target.amount} refunded (${reasonText})`,
+    };
+    walletLedger.unshift(ledgerEntry);
+
+    const updated = { ...parsed, ...nextBalances, withdrawals, walletLedger };
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(updated));
+        localStorage.setItem('futureai_user_wallet', nextBalances.availableBalance.toString());
+        window.dispatchEvent(new CustomEvent('futureai_affiliate_updated', { detail: { refCode: cleanCode } }));
+      } catch {}
+    }
+
+    return {
+      success: true,
+      withdrawal: target,
+      ...nextBalances,
+      withdrawals,
+      walletLedger,
+    };
+  }
+
+  return {
+    success: false,
+    error: `Unsupported status ${params.newStatus}`,
+    reason: 'UNSUPPORTED_WITHDRAWAL_STATUS',
+    ...currentBalances,
+    withdrawals,
+    walletLedger,
+  };
+}
+
 /**
  * Real-time Affiliate Hub Data Fetcher
- * Aggregates Firestore cloud stats + registered users matching referredBy + local storage
+ * Aggregates Server API (/api/affiliate) + Firestore cloud stats + local v5 storage
  * Enforces:
- * - Available to Payout = paidEnrollments * 100 - withdrawals
+ * - Single Source of Truth: availableBalance = Math.max(0, totalEarned - totalPaid - pendingBalance)
  * - Free signups give ₹0
  * - Verified paid enrollment gives ₹100
+ * - Pending withdrawals remain reserved and are NEVER overwritten by background sync
  */
 export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
   clicks: number;
   signups: number;
   paidEnrollments: number;
   availableBalance: number;
+  availableToPayout: number;
+  availableToWithdraw: number;
   pendingBalance: number;
+  totalPaid: number;
   totalEarned: number;
   referrals: any[];
+  withdrawals: any[];
+  walletLedger: WalletLedgerEntry[];
 }> {
   const cleanCode = normalizeRefCode(refCodeOrName);
   if (!cleanCode) {
-    return { clicks: 0, signups: 0, paidEnrollments: 0, availableBalance: 0, pendingBalance: 0, totalEarned: 0, referrals: [] };
+    return {
+      clicks: 0,
+      signups: 0,
+      paidEnrollments: 0,
+      availableBalance: 0,
+      availableToPayout: 0,
+      availableToWithdraw: 0,
+      pendingBalance: 0,
+      totalPaid: 0,
+      totalEarned: 0,
+      referrals: [],
+      withdrawals: [],
+      walletLedger: [],
+    };
+  }
+
+  let localData: any = {};
+  if (typeof window !== 'undefined') {
+    try {
+      const storageKey = `futureai_affiliate_hub_v5_${cleanCode}`;
+      localData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    } catch {}
   }
 
   // 1. Fetch live server-verified cross-device data from Cloudflare Pages API (/api/affiliate)
@@ -889,29 +1609,38 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
     if (res.ok) {
       const serverData = await res.json();
       if (serverData && typeof serverData.paidEnrollments === 'number') {
-        let localData: any = {};
-        if (typeof window !== 'undefined') {
-          try {
-            const storageKey = `futureai_affiliate_hub_v5_${cleanCode}`;
-            localData = JSON.parse(localStorage.getItem(storageKey) || '{}');
-          } catch {}
-        }
         const paidEnrollments = Math.max(serverData.paidEnrollments || 0, localData.paidEnrollments || 0);
-        const totalEarned = paidEnrollments * 100;
-        const totalPaidOut = localData.totalPaid || 0;
-        const availableBalance = Math.max(0, totalEarned - totalPaidOut);
-        const referrals = Array.isArray(serverData.referrals) && serverData.referrals.length > 0
-          ? serverData.referrals
-          : (Array.isArray(localData.referrals) ? localData.referrals : []);
+        const totalEarned = Math.max(serverData.totalEarned || 0, localData.totalEarned || 0, paidEnrollments * 100);
+        const mergedWithdrawals = mergeWithdrawalsList(serverData.withdrawals, localData.withdrawals);
+        const balances = computeAffiliateBalancesFromWithdrawals(totalEarned, mergedWithdrawals);
+
+        const referrals =
+          Array.isArray(serverData.referrals) && serverData.referrals.length > 0
+            ? serverData.referrals
+            : Array.isArray(localData.referrals)
+            ? localData.referrals
+            : [];
+
+        const walletLedger: WalletLedgerEntry[] =
+          Array.isArray(serverData.walletLedger) && serverData.walletLedger.length > 0
+            ? serverData.walletLedger
+            : Array.isArray(localData.walletLedger)
+            ? localData.walletLedger
+            : [];
 
         return {
           clicks: Math.max(serverData.clicks || 0, localData.clicks || 0, paidEnrollments),
           signups: Math.max(serverData.signups || 0, localData.signups || 0, paidEnrollments),
           paidEnrollments,
-          availableBalance,
-          pendingBalance: 0,
-          totalEarned,
+          availableBalance: balances.availableBalance,
+          availableToPayout: balances.availableToPayout,
+          availableToWithdraw: balances.availableToWithdraw,
+          pendingBalance: balances.pendingBalance,
+          totalPaid: balances.totalPaid,
+          totalEarned: balances.totalEarned,
           referrals,
+          withdrawals: mergedWithdrawals,
+          walletLedger,
         };
       }
     }
@@ -922,10 +1651,9 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
   let cloudClicks = 0;
   let cloudSignups = 0;
   let cloudPaidEnrollments = 0;
-  let cloudAvailable = 0;
   let cloudTotalEarned = 0;
 
-  // 1. Fetch from Firestore affiliate_stats doc
+  // 2. Fetch from Firestore affiliate_stats doc
   try {
     const statsDoc = await getDoc(doc(db, 'affiliate_stats', cleanCode));
     if (statsDoc.exists()) {
@@ -933,14 +1661,13 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
       cloudClicks = d.clicks || 0;
       cloudSignups = d.signups || 0;
       cloudPaidEnrollments = d.paidEnrollments || 0;
-      cloudAvailable = d.availableBalance || 0;
       cloudTotalEarned = d.totalEarned || 0;
     }
   } catch (e) {
     console.warn('Fetch affiliate_stats cloud notice:', e);
   }
 
-  // 2. Fetch all registered users who were referred by this code
+  // 3. Fetch all registered users who were referred by this code
   const matchedReferrals: any[] = [];
   try {
     const allUsers = await getAllRegisteredUsers();
@@ -967,46 +1694,42 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
     console.warn('Fetch registered user referrals notice:', e);
   }
 
-  // 3. Read local storage cache for this affiliate
-  let localData: any = {};
-  if (typeof window !== 'undefined') {
-    try {
-      const storageKey = `futureai_affiliate_hub_v5_${cleanCode}`;
-      const raw = localStorage.getItem(storageKey);
-      if (raw) localData = JSON.parse(raw);
-    } catch {}
-  }
-
   // Merge referrals list
   const existingLocalRefs: any[] = Array.isArray(localData.referrals) ? localData.referrals : [];
   const mergedRefs = [...existingLocalRefs];
   for (const mr of matchedReferrals) {
-    if (!mergedRefs.some((r) => r.name === mr.name || (r.email && mr.email && r.email.toLowerCase() === mr.email.toLowerCase()))) {
+    if (
+      !mergedRefs.some(
+        (r) => r.name === mr.name || (r.email && mr.email && r.email.toLowerCase() === mr.email.toLowerCase())
+      )
+    ) {
       mergedRefs.push(mr);
     }
   }
 
-  // 4. Calculate definitive numbers based strictly on user rules:
-  // - Clicks: from unique visits
-  // - Free Signups: from registered students
-  // - Paid Enrollments: from verified Razorpay payments
-  // - Available to Payout: paidEnrollments * 100 minus withdrawals
   const paidCount = mergedRefs.filter((r) => r.status === 'Paid' || r.status === 'Approved').length;
   const finalPaidEnrollments = Math.max(cloudPaidEnrollments, paidCount, localData.paidEnrollments || 0);
   const finalClicks = Math.max(cloudClicks, localData.clicks || 0);
   const finalSignups = Math.max(cloudSignups, mergedRefs.length, localData.signups || 0);
   const finalEarned = Math.max(cloudTotalEarned, finalPaidEnrollments * 100, localData.totalEarned || 0);
-  const totalPaidOut = localData.totalPaid || 0;
-  const finalAvailable = Math.max(0, localData.availableBalance || 0, (cloudAvailable > 0 ? cloudAvailable : (finalPaidEnrollments * 100)) - totalPaidOut);
+
+  const localWithdrawals = Array.isArray(localData.withdrawals) ? localData.withdrawals : [];
+  const balances = computeAffiliateBalancesFromWithdrawals(finalEarned, localWithdrawals);
+  const walletLedger: WalletLedgerEntry[] = Array.isArray(localData.walletLedger) ? localData.walletLedger : [];
 
   return {
     clicks: finalClicks,
     signups: finalSignups,
     paidEnrollments: finalPaidEnrollments,
-    availableBalance: finalAvailable,
-    pendingBalance: 0,
-    totalEarned: finalEarned,
+    availableBalance: balances.availableBalance,
+    availableToPayout: balances.availableToPayout,
+    availableToWithdraw: balances.availableToWithdraw,
+    pendingBalance: balances.pendingBalance,
+    totalPaid: balances.totalPaid,
+    totalEarned: balances.totalEarned,
     referrals: mergedRefs,
+    withdrawals: localWithdrawals,
+    walletLedger,
   };
 }
 
