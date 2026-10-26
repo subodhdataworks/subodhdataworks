@@ -1,3 +1,4 @@
+import { IndianVoiceProblemStatement } from './IndianVoiceProblemStatement';
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { soundEffects } from '../../services/soundEffects';
@@ -438,15 +439,12 @@ export const ExcelChallengeArena: React.FC<ExcelChallengeArenaProps> = ({
             <div className="p-4 sm:p-5 flex-1 overflow-y-auto max-h-[calc(100vh-320px)] space-y-4 text-xs sm:text-sm text-slate-700">
               {leftTab === 'Problem' && (
                 <>
-                  <div>
-                    <h3 className="font-bold text-slate-900 mb-1.5 flex items-center gap-1.5 text-sm">
-                      <FileText className="w-4 h-4 text-[#107c41]" />
-                      Problem Statement
-                    </h3>
-                    <p className="leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-100 text-slate-800 font-medium">
-                      {task.problemStatement}
-                    </p>
-                  </div>
+                  {/* 1. Problem Statement with Typewriter & Indian Boy/Girl Voice */}
+                  <IndianVoiceProblemStatement
+                    title="Problem Statement"
+                    problemStatement={task.problemStatement}
+                    theme="emerald"
+                  />
 
                   {/* Worksheet & Table Schema */}
                   {task.schemaColumns && task.schemaColumns.length > 0 && (

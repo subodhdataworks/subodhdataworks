@@ -1,3 +1,4 @@
+import { IndianVoiceProblemStatement } from './IndianVoiceProblemStatement';
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { soundEffects } from '../../services/soundEffects';
@@ -474,19 +475,14 @@ export const SqlChallengeArena: React.FC<SqlChallengeArenaProps> = ({
           <div className="p-5 space-y-5 text-xs text-slate-700 leading-relaxed max-h-[calc(100vh-17rem)] overflow-y-auto">
             {leftTab === 'Problem' && (
               <>
-                {/* 1. Problem Statement */}
-                <div>
-                  <h2 className="text-sm font-bold text-slate-900 mb-1.5">
-                    Problem Statement
-                  </h2>
-                  <p className="text-slate-600 text-xs sm:text-[13px] leading-relaxed">
-                    {task.problemStatement}{' '}
-                    <code className="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 font-mono text-xs font-semibold">
-                      {task.tableName || task.highlightedKeyword || 'employees'}
-                    </code>{' '}
-                    table.
-                  </p>
-                </div>
+                {/* 1. Problem Statement with Typewriter & Indian Boy/Girl Voice */}
+                <IndianVoiceProblemStatement
+                  title="Problem Statement"
+                  problemStatement={task.problemStatement}
+                  highlightedKeyword={task.tableName || task.highlightedKeyword || 'employees'}
+                  suffix="table."
+                  theme="blue"
+                />
 
                 {/* 2. Table Schema */}
                 <div>

@@ -1,3 +1,4 @@
+import { IndianVoiceProblemStatement } from './IndianVoiceProblemStatement';
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { soundEffects } from '../../services/soundEffects';
@@ -865,17 +866,14 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
           <div className="p-5 space-y-5 overflow-y-auto max-h-[720px]">
             {leftTab === 'problem' && (
               <>
-                {/* 1. Problem Statement */}
-                <div>
-                  <h2 className="text-sm font-bold text-slate-900 mb-2">Problem Statement</h2>
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    {task.problemStatement}{' '}
-                    <span className="px-1.5 py-0.5 bg-blue-100/70 text-blue-700 font-mono text-xs rounded font-medium inline-block">
-                      {task.highlightedKeyword}
-                    </span>{' '}
-                    to the output.
-                  </p>
-                </div>
+                {/* 1. Problem Statement with Typewriter & Indian Boy/Girl Voice */}
+                <IndianVoiceProblemStatement
+                  title="Problem Statement"
+                  problemStatement={task.problemStatement}
+                  highlightedKeyword={task.highlightedKeyword}
+                  suffix="to the output."
+                  theme="blue"
+                />
 
                 {/* 2. Input Format */}
                 <div>
