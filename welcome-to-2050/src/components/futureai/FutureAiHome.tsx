@@ -121,6 +121,62 @@ export const TypewriterHeading: React.FC<TypewriterHeadingProps> = ({
   );
 };
 
+// ─── Dual-Gradient Typewriter for "Playing Games" in Hero Line 3 ───────────────
+const HeroPlayingGamesTypewriter: React.FC = () => {
+  const fullText = 'Playing Games';
+  const [displayText, setDisplayText] = useState(fullText);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!isDeleting) {
+      if (displayText.length < fullText.length) {
+        timeout = setTimeout(() => {
+          setDisplayText(fullText.slice(0, displayText.length + 1));
+        }, 95);
+      } else {
+        timeout = setTimeout(() => {
+          setIsDeleting(true);
+        }, 2600);
+      }
+    } else {
+      if (displayText.length > 0) {
+        timeout = setTimeout(() => {
+          setDisplayText(fullText.slice(0, displayText.length - 1));
+        }, 45);
+      } else {
+        timeout = setTimeout(() => {
+          setIsDeleting(false);
+        }, 450);
+      }
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayText, isDeleting]);
+
+  const playingPart = displayText.slice(0, 7);
+  const gamesPart = displayText.slice(7);
+
+  return (
+    <span className="inline-flex items-baseline">
+      {playingPart && (
+        <span className="bg-gradient-to-r from-[#0866FF] to-[#A100E8] bg-clip-text text-transparent">
+          {playingPart}
+        </span>
+      )}
+      {gamesPart && (
+        <span className="bg-gradient-to-r from-[#F02C62] to-[#FF8A00] bg-clip-text text-transparent">
+          {gamesPart}
+        </span>
+      )}
+      <span className="inline-block ml-0.5 text-[#F02C62] font-light animate-pulse select-none">
+        |
+      </span>
+    </span>
+  );
+};
+
 interface FutureAiHomeProps {
   profile?: any;
   theme?: 'dark' | 'light';
@@ -388,15 +444,10 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                   Learn Coding
                 </span>
 
-                {/* Line 3: by Playing Games (Desktop: 48px, Laptop: 42px, Mobile: 30px | Line Height: 1.08 | Letter Spacing: -1.5px) */}
-                <span className="text-[30px] sm:text-[34px] md:text-[38px] lg:text-[42px] xl:text-[48px] font-black leading-[1.08] tracking-[-1.5px] block mt-1 text-left select-text whitespace-normal lg:whitespace-nowrap">
+                {/* Line 3: by Playing Games (Desktop: 48px, Laptop: 42px, Mobile: 30px | Line Height: 1.08 | Letter Spacing: -1.5px | Animated Typewriter) */}
+                <span className="text-[30px] sm:text-[34px] md:text-[38px] lg:text-[42px] xl:text-[48px] font-black leading-[1.08] tracking-[-1.5px] block mt-1 text-left select-text whitespace-normal lg:whitespace-nowrap min-h-[1.15em]">
                   <span className="text-[#08152F]">by</span>{' '}
-                  <span className="bg-gradient-to-r from-[#0866FF] to-[#A100E8] bg-clip-text text-transparent">
-                    Playing
-                  </span>{' '}
-                  <span className="bg-gradient-to-r from-[#F02C62] to-[#FF8A00] bg-clip-text text-transparent">
-                    Games
-                  </span>
+                  <HeroPlayingGamesTypewriter />
                 </span>
               </h1>   {/* Tagline */}
               <div className="mt-2 sm:mt-2.5 text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-600 leading-snug max-w-lg mx-auto lg:mx-0">
