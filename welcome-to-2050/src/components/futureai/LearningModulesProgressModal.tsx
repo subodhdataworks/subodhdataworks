@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { X, ArrowRight, Briefcase, FileText, Award, TrendingUp, Check, ChevronDown, Sparkles } from 'lucide-react';
+import { X, ArrowRight, Briefcase, FileText, Award, TrendingUp, Check, ChevronDown } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundEffects } from '../../services/soundEffects';
 import { getUnlockedCourses, CanonicalCourseId } from '../../services/courseUnlockService';
@@ -101,7 +101,6 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
   const [selectedCourseId, setSelectedCourseId] = useState<CanonicalCourseId>('data_analyst');
   const [telemetry, setTelemetry] = useState(() => getLearnerTelemetry());
 
-  // Check login state and unlocked courses dynamically
   const isLoggedIn = useMemo(() => {
     if (typeof window === 'undefined') return false;
     try {
@@ -120,14 +119,12 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
     }
   }, [isOpen]);
 
-  // Set default selected course based on actual enrollment
   useEffect(() => {
     if (isOpen) {
       setTelemetry(getLearnerTelemetry());
       setCourseSelectorOpen(false);
 
       if (enrolledCourseIds.length > 0) {
-        // If current selection is in enrolled list, keep it; otherwise pick first enrolled course
         if (!enrolledCourseIds.includes(selectedCourseId)) {
           setSelectedCourseId(enrolledCourseIds[0]);
         }
@@ -135,7 +132,6 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
         setSelectedCourseId('data_analyst');
       }
 
-      // Play soft celebration sound and confetti burst
       try {
         soundEffects.playDiscovery();
       } catch {
@@ -144,9 +140,9 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
 
       try {
         confetti({
-          particleCount: 25,
-          spread: 55,
-          origin: { y: 0.32 },
+          particleCount: 22,
+          spread: 50,
+          origin: { y: 0.35 },
           colors: ['#145BFF', '#0866FF', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'],
           disableForReducedMotion: true,
         });
@@ -161,7 +157,6 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
   const hasEnrolledCourses = isLoggedIn && enrolledCourseIds.length > 0;
   const activeCourse = COURSES_CATALOG[selectedCourseId] || COURSES_CATALOG.data_analyst;
 
-  // Calculate real course progress based on completed topics
   const completedTopicsCount = Array.isArray(telemetry?.completedTopics)
     ? telemetry.completedTopics.length
     : 0;
@@ -175,7 +170,6 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
     soundEffects.playClick();
     onClose();
 
-    // If visitor is unauthenticated, prompt login
     if (!isLoggedIn) {
       if (onOpenLogin) {
         onOpenLogin();
@@ -185,7 +179,6 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
       return;
     }
 
-    // Authenticated student goes directly to active course learning modules
     if (onGoToModules) {
       onGoToModules();
     } else if (typeof window !== 'undefined') {
@@ -203,43 +196,43 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 select-none animate-fadeIn transition-opacity duration-250"
+      className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 select-none animate-fadeIn transition-opacity duration-250"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
     >
       <div
-        className="relative w-full max-w-[620px] max-h-[90vh] bg-white rounded-[24px] shadow-[0_25px_60px_-15px_rgba(8,21,47,0.35)] border border-blue-100/80 overflow-hidden flex flex-col transform transition-all duration-250 scale-100"
+        className="relative w-full max-w-[460px] max-h-[92vh] bg-white rounded-[20px] shadow-[0_20px_50px_-12px_rgba(8,21,47,0.4)] border border-blue-100/90 overflow-hidden flex flex-col transform transition-all duration-250 scale-100"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* ── Top Photo: Female Student with Placement Offer Letter (Stamped PLACED) ── */}
-        <div className="relative w-full h-[160px] sm:h-[195px] overflow-hidden bg-slate-900 shrink-0">
+        {/* ── Top Photo: Full Uncropped Female Student with Offer Letter ── */}
+        <div className="relative w-full bg-[#e8f1fc] shrink-0 overflow-hidden">
           <img
             src="/images/placement/placement_offer_letter_hero.jpg"
             alt="Placed Student Holding Offer Letter"
-            className="w-full h-full object-cover object-center select-none pointer-events-none"
+            className="w-full h-auto max-h-[195px] sm:max-h-[210px] object-cover object-top block select-none pointer-events-none"
           />
 
-          {/* Floating Close (X) Button */}
+          {/* Compact Close (X) Button */}
           <button
             type="button"
             onClick={() => {
               soundEffects.playClick();
               onClose();
             }}
-            className="absolute top-3.5 right-3.5 w-9 h-9 rounded-full bg-white/95 hover:bg-white text-slate-800 flex items-center justify-center shadow-md active:scale-90 transition-all cursor-pointer z-30"
+            className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-white/95 hover:bg-white text-slate-800 flex items-center justify-center shadow-md active:scale-90 transition-all cursor-pointer z-30"
             aria-label="Close modal"
           >
-            <X className="w-5 h-5 text-slate-800 stroke-[2.5]" />
+            <X className="w-4 h-4 text-slate-800 stroke-[2.5]" />
           </button>
         </div>
 
-        {/* ── Scrollable Body Content ── */}
-        <div className="overflow-y-auto px-4 sm:px-6 pb-5 pt-0 space-y-4">
-          {/* ── Main Heading in Light-Blue Rounded Panel ── */}
-          <div className="-mt-7 sm:-mt-8 relative z-10 bg-white/95 border border-[#cfe4fc] rounded-[20px] py-3 px-4 text-center shadow-[0_8px_20px_-6px_rgba(8,21,47,0.12)] backdrop-blur-sm">
+        {/* ── Compact Body Content ── */}
+        <div className="overflow-y-auto px-3.5 sm:px-4 pb-3.5 pt-0 space-y-2.5">
+          {/* ── Compact Main Heading Pill ── */}
+          <div className="-mt-3.5 relative z-10 bg-[#f4f9ff] border border-[#cfe4fc] rounded-[14px] py-2 px-3 text-center shadow-xs">
             <h2
-              className="text-[20px] sm:text-[25px] font-black tracking-tight leading-snug"
+              className="text-[15px] sm:text-[17px] font-black tracking-tight leading-tight"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               <span>🏆 </span>
@@ -248,18 +241,18 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
               <span> 🚀</span>
             </h2>
             <p
-              className="text-[12.5px] sm:text-[13px] font-medium text-[#4b6082] mt-0.5 leading-snug"
+              className="text-[10.5px] sm:text-[11px] font-medium text-[#4b6082] mt-0.5 leading-tight"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               Unlock Your Internship, Certificate &amp; Placement
             </p>
           </div>
 
-          {/* ── Dynamic Enrolled Course Section ── */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between px-1">
+          {/* ── Compact Dynamic Enrolled Course Section ── */}
+          <div className="space-y-1">
+            <div className="flex items-center justify-between px-0.5">
               <span
-                className="text-[11px] sm:text-[12px] font-extrabold uppercase tracking-wider text-slate-500"
+                className="text-[9.5px] sm:text-[10px] font-extrabold uppercase tracking-wider text-slate-500"
                 style={{ fontFamily: "'Poppins', sans-serif" }}
               >
                 YOUR ENROLLED COURSE
@@ -269,17 +262,17 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
                 <button
                   type="button"
                   onClick={() => setCourseSelectorOpen(!courseSelectorOpen)}
-                  className="inline-flex items-center gap-1 text-[12px] sm:text-[13px] font-bold text-[#145BFF] hover:underline cursor-pointer"
+                  className="inline-flex items-center gap-0.5 text-[10px] sm:text-[11px] font-bold text-[#145BFF] hover:underline cursor-pointer"
                   style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                   <span>Change Course</span>
-                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${courseSelectorOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${courseSelectorOpen ? 'rotate-180' : ''}`} />
                 </button>
               ) : !hasEnrolledCourses ? (
                 <button
                   type="button"
                   onClick={handleChooseCourseCatalog}
-                  className="text-[12px] sm:text-[13px] font-bold text-[#145BFF] hover:underline cursor-pointer"
+                  className="text-[10px] sm:text-[11px] font-bold text-[#145BFF] hover:underline cursor-pointer"
                   style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                   Choose Your Course →
@@ -287,10 +280,10 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
               ) : null}
             </div>
 
-            {/* Course Selector Dropdown (when student has multiple enrolled courses) */}
+            {/* Course Selector Dropdown */}
             {courseSelectorOpen && enrolledCourseIds.length > 1 && (
-              <div className="p-2 bg-white rounded-2xl border border-blue-200 shadow-lg space-y-1 animate-fadeIn">
-                <p className="text-[11px] font-bold text-slate-400 px-2 py-1 uppercase tracking-wide">
+              <div className="p-1.5 bg-white rounded-xl border border-blue-200 shadow-md space-y-1 animate-fadeIn">
+                <p className="text-[9.5px] font-bold text-slate-400 px-1.5 py-0.5 uppercase tracking-wide">
                   Select Active Course:
                 </p>
                 {enrolledCourseIds.map((cid) => {
@@ -305,46 +298,46 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
                         setSelectedCourseId(cid);
                         setCourseSelectorOpen(false);
                       }}
-                      className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left transition-colors cursor-pointer ${
+                      className={`w-full flex items-center justify-between p-1.5 rounded-lg text-left transition-colors cursor-pointer ${
                         isSelected ? 'bg-blue-50/80 border border-blue-200' : 'hover:bg-slate-50 border border-transparent'
                       }`}
                     >
-                      <div className="flex items-center gap-2.5">
-                        <img src={c.icon} alt="" className="w-6 h-6 object-contain" />
-                        <span className="text-xs sm:text-sm font-bold text-[#08152F]">{c.title}</span>
+                      <div className="flex items-center gap-2">
+                        <img src={c.icon} alt="" className="w-5 h-5 object-contain" />
+                        <span className="text-[11px] font-bold text-[#08152F]">{c.title}</span>
                       </div>
-                      {isSelected && <Check className="w-4 h-4 text-[#145BFF] stroke-[2.5]" />}
+                      {isSelected && <Check className="w-3.5 h-3.5 text-[#145BFF] stroke-[2.5]" />}
                     </button>
                   );
                 })}
               </div>
             )}
 
-            {/* Active Course Card */}
-            <div className="bg-[#f0f6ff] border border-blue-100/90 rounded-2xl p-3 sm:p-3.5 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
-                <div className="w-12 h-12 rounded-xl bg-white border border-blue-100 flex items-center justify-center shrink-0 shadow-xs p-1">
+            {/* Compact Course Card */}
+            <div className="bg-[#f0f6ff] border border-blue-100/90 rounded-xl p-2 sm:p-2.5 flex items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-lg bg-white border border-blue-100 flex items-center justify-center shrink-0 shadow-2xs p-1">
                   <img
                     src={activeCourse.icon}
                     alt={activeCourse.title}
-                    className="w-9 h-9 object-contain"
+                    className="w-6 h-6 object-contain"
                   />
                 </div>
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
                     <h3
-                      className="text-sm sm:text-[15px] font-black text-[#08152F] truncate leading-tight"
+                      className="text-[12px] sm:text-[13px] font-black text-[#08152F] truncate leading-tight"
                       style={{ fontFamily: "'Poppins', sans-serif" }}
                     >
                       {activeCourse.title}
                     </h3>
                     {hasEnrolledCourses && (
-                      <span className="shrink-0 bg-emerald-100/80 text-emerald-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                      <span className="shrink-0 bg-emerald-100/80 text-emerald-700 text-[9px] font-bold px-1.5 py-0.2 rounded-full">
                         Enrolled
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-600 truncate mt-0.5">
+                  <p className="text-[10px] sm:text-[10.5px] text-slate-600 truncate">
                     {activeCourse.subtitle}
                   </p>
                 </div>
@@ -354,17 +347,17 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
                 <button
                   type="button"
                   onClick={handleChooseCourseCatalog}
-                  className="shrink-0 text-xs font-bold bg-white hover:bg-blue-50 text-[#145BFF] border border-blue-200 px-3 py-1.5 rounded-xl shadow-2xs active:scale-95 transition-all cursor-pointer"
+                  className="shrink-0 text-[10px] font-bold bg-white hover:bg-blue-50 text-[#145BFF] border border-blue-200 px-2.5 py-1 rounded-lg shadow-2xs active:scale-95 transition-all cursor-pointer"
                 >
-                  Choose Course
+                  Choose
                 </button>
               )}
             </div>
           </div>
 
-          {/* ── Dynamic Course Progress Bar ── */}
-          <div className="space-y-1.5 pt-0.5">
-            <div className="flex items-center justify-between text-xs sm:text-[13px]">
+          {/* ── Compact Course Progress Bar ── */}
+          <div className="space-y-1">
+            <div className="flex items-center justify-between text-[10.5px] sm:text-[11px]">
               <span
                 className="font-bold text-slate-700"
                 style={{ fontFamily: "'Poppins', sans-serif" }}
@@ -379,7 +372,7 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
               </span>
             </div>
 
-            <div className="w-full h-[7px] bg-blue-100/60 rounded-full overflow-hidden">
+            <div className="w-full h-[5px] bg-blue-100/70 rounded-full overflow-hidden">
               <div
                 className="h-full bg-[#145BFF] rounded-full transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
@@ -387,54 +380,54 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
             </div>
           </div>
 
-          {/* ── 4 Career Benefits (Desktop 1 Row, Mobile 2 Columns) ── */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
-            {/* Benefit 1: Get Internship Opportunities */}
-            <div className="bg-slate-50/90 border border-slate-100 rounded-xl p-2.5 flex flex-col items-center text-center justify-center transition-all hover:bg-blue-50/50 hover:border-blue-100">
-              <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#145BFF] mb-2 shadow-2xs">
-                <Briefcase className="w-4 h-4 stroke-[2.2]" />
+          {/* ── 4 Compact Career Benefits Tabs ── */}
+          <div className="grid grid-cols-4 gap-1.5 pt-0.5">
+            {/* Benefit 1 */}
+            <div className="bg-slate-50/90 border border-slate-100 rounded-xl p-1.5 flex flex-col items-center text-center justify-start transition-all hover:bg-blue-50/50 hover:border-blue-100">
+              <div className="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-[#145BFF] mb-1 shadow-2xs">
+                <Briefcase className="w-3.5 h-3.5 stroke-[2.2]" />
               </div>
               <span
-                className="text-[11px] sm:text-[11.5px] font-bold text-[#08152F] leading-snug"
+                className="text-[9px] sm:text-[9.5px] font-bold text-[#08152F] leading-tight"
                 style={{ fontFamily: "'Poppins', sans-serif" }}
               >
                 Get Internship<br />Opportunities
               </span>
             </div>
 
-            {/* Benefit 2: Receive Recommendation Letter */}
-            <div className="bg-slate-50/90 border border-slate-100 rounded-xl p-2.5 flex flex-col items-center text-center justify-center transition-all hover:bg-purple-50/50 hover:border-purple-100">
-              <div className="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-[#8B5CF6] mb-2 shadow-2xs">
-                <FileText className="w-4 h-4 stroke-[2.2]" />
+            {/* Benefit 2 */}
+            <div className="bg-slate-50/90 border border-slate-100 rounded-xl p-1.5 flex flex-col items-center text-center justify-start transition-all hover:bg-purple-50/50 hover:border-purple-100">
+              <div className="w-7 h-7 rounded-lg bg-purple-50 border border-purple-100 flex items-center justify-center text-[#8B5CF6] mb-1 shadow-2xs">
+                <FileText className="w-3.5 h-3.5 stroke-[2.2]" />
               </div>
               <span
-                className="text-[11px] sm:text-[11.5px] font-bold text-[#08152F] leading-snug"
+                className="text-[9px] sm:text-[9.5px] font-bold text-[#08152F] leading-tight"
                 style={{ fontFamily: "'Poppins', sans-serif" }}
               >
-                Receive Recommendation<br />Letter
+                Recommendation<br />Letter
               </span>
             </div>
 
-            {/* Benefit 3: Earn Verified Certificate */}
-            <div className="bg-slate-50/90 border border-slate-100 rounded-xl p-2.5 flex flex-col items-center text-center justify-center transition-all hover:bg-pink-50/50 hover:border-pink-100">
-              <div className="w-9 h-9 rounded-xl bg-pink-50 border border-pink-100 flex items-center justify-center text-[#EC4899] mb-2 shadow-2xs">
-                <Award className="w-4 h-4 stroke-[2.2]" />
+            {/* Benefit 3 */}
+            <div className="bg-slate-50/90 border border-slate-100 rounded-xl p-1.5 flex flex-col items-center text-center justify-start transition-all hover:bg-pink-50/50 hover:border-pink-100">
+              <div className="w-7 h-7 rounded-lg bg-pink-50 border border-pink-100 flex items-center justify-center text-[#EC4899] mb-1 shadow-2xs">
+                <Award className="w-3.5 h-3.5 stroke-[2.2]" />
               </div>
               <span
-                className="text-[11px] sm:text-[11.5px] font-bold text-[#08152F] leading-snug"
+                className="text-[9px] sm:text-[9.5px] font-bold text-[#08152F] leading-tight"
                 style={{ fontFamily: "'Poppins', sans-serif" }}
               >
                 Earn Verified<br />Certificate
               </span>
             </div>
 
-            {/* Benefit 4: Access Job Opportunities */}
-            <div className="bg-slate-50/90 border border-slate-100 rounded-xl p-2.5 flex flex-col items-center text-center justify-center transition-all hover:bg-emerald-50/50 hover:border-emerald-100">
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-[#10B981] mb-2 shadow-2xs">
-                <TrendingUp className="w-4 h-4 stroke-[2.2]" />
+            {/* Benefit 4 */}
+            <div className="bg-slate-50/90 border border-slate-100 rounded-xl p-1.5 flex flex-col items-center text-center justify-start transition-all hover:bg-emerald-50/50 hover:border-emerald-100">
+              <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center text-[#10B981] mb-1 shadow-2xs">
+                <TrendingUp className="w-3.5 h-3.5 stroke-[2.2]" />
               </div>
               <span
-                className="text-[11px] sm:text-[11.5px] font-bold text-[#08152F] leading-snug"
+                className="text-[9px] sm:text-[9.5px] font-bold text-[#08152F] leading-tight"
                 style={{ fontFamily: "'Poppins', sans-serif" }}
               >
                 Access Job<br />Opportunities
@@ -442,16 +435,16 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
             </div>
           </div>
 
-          {/* ── Primary CTA Button ── */}
-          <div className="pt-2">
+          {/* ── Compact Primary CTA Button ── */}
+          <div className="pt-1">
             <button
               type="button"
               onClick={handleCtaClick}
-              className="w-full h-[52px] rounded-[14px] bg-gradient-to-r from-[#075BFF] to-[#079CFF] hover:from-[#0051e8] hover:to-[#008fe6] text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-[0_10px_24px_rgba(7,91,255,0.35)] active:scale-[0.98] transition-all cursor-pointer"
+              className="w-full h-[38px] sm:h-[40px] rounded-[11px] bg-gradient-to-r from-[#075BFF] to-[#079CFF] hover:from-[#0051e8] hover:to-[#008fe6] text-white font-bold text-[12px] sm:text-[13px] flex items-center justify-center gap-1.5 shadow-[0_8px_18px_rgba(7,91,255,0.3)] active:scale-[0.98] transition-all cursor-pointer"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               <span>Continue to Your Learning Modules</span>
-              <ArrowRight className="w-5 h-5 text-white stroke-[2.5]" />
+              <ArrowRight className="w-4 h-4 text-white stroke-[2.5]" />
             </button>
           </div>
         </div>
