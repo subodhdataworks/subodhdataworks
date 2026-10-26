@@ -2116,7 +2116,7 @@ export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> =
 
       {/* ─────────────────────────────────────────────────────────────
           7. MODULES LOCKED PROGRESS MODAL (1:1 with media_1791557550984.jpg)
-          "Complete All 6 Learning Modules to Unlock Internship & Certificate"
+          "Complete Any 1 Course to Unlock Your Future! 🚀"
           ───────────────────────────────────────────────────────────── */}
       <LearningModulesProgressModal
         isOpen={Boolean(modulesLockTarget)}

@@ -83,12 +83,11 @@ export const LearningModulesProgressModal: React.FC<LearningModulesProgressModal
           </button>
         </div>
 
-        {/* ── Middle Banner Pill: "Complete All 6 Learning Modules" ── */}
+        {/* ── Middle Banner Pill: "Complete Any 1 Course to Unlock Your Future! 🚀" ── */}
         <div className="mx-4 sm:mx-5 -mt-3.5 relative z-10 bg-[#ebf4ff] border border-[#cfe4fc] rounded-[22px] py-3.5 px-4 text-center shadow-2xs">
           <div className="flex items-center justify-center gap-2">
-            <span className="text-xl shrink-0">🚀</span>
             <h3 className="text-[17px] sm:text-[18px] font-black text-[#0f214d] tracking-tight leading-snug">
-              Complete All 6 Learning Modules
+              Complete Any 1 Course to Unlock Your Future! 🚀
             </h3>
           </div>
           <p className="text-[12px] sm:text-[13px] font-bold text-[#1d52d8] mt-1 leading-snug">
