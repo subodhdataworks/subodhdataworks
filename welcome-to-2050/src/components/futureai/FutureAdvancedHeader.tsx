@@ -61,7 +61,7 @@ export interface FutureAdvancedHeaderProps {
 }
 
 export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
-  userName = 'Rahul',
+  userName = '',
   userPhone = '',
   userAvatar = '',
   activeNavTab = 'home',
@@ -81,11 +81,10 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
   onOpenNotifications,
   onOpenSearch,
   onLogout,
-  isLoggedIn = true,
+  isLoggedIn = false,
   onOpenLogin,
   onOpenSignUp,
 }) => {
-  const [practiceDropdownOpen, setPracticeDropdownOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [hamburgerDrawerOpen, setHamburgerDrawerOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -93,16 +92,19 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [editProfileModalOpen, setEditProfileModalOpen] = useState(false);
 
-  const practiceRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
 
   // Dynamic student info state from localStorage & props
   const [studentName, setStudentName] = useState<string>(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('futureai_user_name') || userName || 'Rahul Sharma';
+      const stored = localStorage.getItem('futureai_user_name');
+      if (stored && stored !== 'Learner' && stored !== 'Rahul' && stored !== 'Rahul Sharma' && stored !== 'Student') {
+        return stored;
+      }
+      return userName && userName !== 'Learner' && userName !== 'Rahul' && userName !== 'Rahul Sharma' && userName !== 'Student' ? userName : '';
     }
-    return userName || 'Rahul Sharma';
+    return userName && userName !== 'Learner' && userName !== 'Rahul' && userName !== 'Rahul Sharma' && userName !== 'Student' ? userName : '';
   });
 
   const [studentPhone, setStudentPhone] = useState<string>(() => {
@@ -125,7 +127,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
   // Sync state if props or localStorage change
   useEffect(() => {
-    if (userName && userName !== 'Rahul') {
+    if (userName && userName !== 'Rahul' && userName !== 'Learner' && userName !== 'Student') {
       setStudentName(userName);
     }
   }, [userName]);
@@ -160,9 +162,6 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
   // Close dropdowns on outside click
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
-      if (practiceRef.current && !practiceRef.current.contains(e.target as Node)) {
-        setPracticeDropdownOpen(false);
-      }
       if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
         setProfileDropdownOpen(false);
       }
@@ -182,7 +181,6 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
         setSearchModalOpen((prev) => !prev);
       } else if (e.key === 'Escape') {
         setSearchModalOpen(false);
-        setPracticeDropdownOpen(false);
         setProfileDropdownOpen(false);
         setNotificationsOpen(false);
         setHamburgerDrawerOpen(false);
@@ -206,6 +204,28 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
     soundEffects.playClick();
     setHamburgerDrawerOpen(false);
     scrollToTop();
+
+    if (!isLoggedIn) {
+      if (['dashboard', 'learning', 'practice', 'earn', 'certificate', 'internship', 'recommendation', 'placement'].includes(target)) {
+        const redirectMap: Record<string, string> = {
+          dashboard: '#dashboard',
+          learning: '#data-analyst',
+          practice: '#practice',
+          earn: '#income',
+          certificate: '#certificates',
+          internship: '#internship',
+          recommendation: '#recommendation',
+          placement: '#placement',
+        };
+        const targetHash = redirectMap[target] || '#dashboard';
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('futureai_auth_redirect', targetHash);
+          localStorage.setItem('futureai_auth_redirect', targetHash);
+        }
+        if (onOpenLogin) onOpenLogin();
+        return;
+      }
+    }
 
     switch (target) {
       case 'dashboard':
@@ -397,141 +417,23 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               <span>My Learning</span>
             </button>
 
-            {/* 3. Hackathon / DSA Practice ⌵ */}
-            <div className="relative" ref={practiceRef}>
-              <div className="flex items-center">
-                <button
-                  type="button"
-                  onClick={() => {
-                    soundEffects.playClick();
-                    setPracticeDropdownOpen(false);
-                    scrollToTop();
-                    onNavigatePractice('master');
-                  }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-l-xl transition-all duration-200 cursor-pointer ${
-                    activeNavTab === 'practice'
-                      ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-xs'
-                      : 'text-slate-700 hover:text-[#1a73e8] hover:bg-slate-50'
-                  }`}
-                  title="Open Hackathon / DSA Practice Full Page (All 14 Tracks)"
-                >
-                  <Code2 className={`w-4 h-4 ${activeNavTab === 'practice' ? 'text-[#1a73e8]' : 'text-slate-500'}`} />
-                  <span>Hackathon / DSA Practice</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    soundEffects.playClick();
-                    setPracticeDropdownOpen((prev) => !prev);
-                  }}
-                  className={`px-1.5 py-1.5 rounded-r-xl transition-all duration-200 cursor-pointer ${
-                    activeNavTab === 'practice' || practiceDropdownOpen
-                      ? 'bg-[#eef5fe] text-[#1a73e8]'
-                      : 'text-slate-400 hover:text-[#1a73e8] hover:bg-slate-50'
-                  }`}
-                  title="Quick coding tracks dropdown"
-                >
-                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${practiceDropdownOpen ? 'rotate-180 text-[#1a73e8]' : ''}`} />
-                </button>
-              </div>
-
-              {/* Hackathon / DSA Practice Floating Dropdown */}
-              {practiceDropdownOpen && (
-                <div className="absolute left-0 top-full mt-2 w-72 bg-white/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-100 py-2 px-2 z-50 animate-fadeIn text-left">
-                  <div className="px-3 py-1.5 mb-1 border-b border-slate-100 flex items-center justify-between">
-                    <span className="text-[11px] font-bold tracking-wider text-slate-400 uppercase">Coding Tracks</span>
-                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">1st Topic Free</span>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      soundEffects.playClick();
-                      setPracticeDropdownOpen(false);
-                      scrollToTop();
-                      onNavigatePractice('master');
-                    }}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-xl bg-blue-50/70 hover:bg-blue-100/70 text-blue-700 transition group text-left cursor-pointer mb-1 border border-blue-200/50"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-xs">
-                      🚀
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <span className="text-xs font-black text-blue-900 block">Full Practice Page (14 Tracks)</span>
-                      <p className="text-[11px] text-blue-700/80 truncate">Python, SQL, Excel, AI, ML, React...</p>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      soundEffects.playClick();
-                      setPracticeDropdownOpen(false);
-                      scrollToTop();
-                      onNavigatePractice('python');
-                    }}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-sky-50 text-slate-800 hover:text-[#1a73e8] transition group text-left cursor-pointer"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-sky-100/70 text-sky-600 flex items-center justify-center font-bold text-sm shrink-0 group-hover:scale-105 transition-transform">
-                      🐍
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-900 group-hover:text-[#1a73e8]">Python Challenges</span>
-                        <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded">Free T1</span>
-                      </div>
-                      <p className="text-[11px] text-slate-500 truncate">25 Topics • 250 Questions</p>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      soundEffects.playClick();
-                      setPracticeDropdownOpen(false);
-                      scrollToTop();
-                      onNavigatePractice('sql');
-                    }}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-sky-50 text-slate-800 hover:text-[#1a73e8] transition group text-left cursor-pointer"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-blue-100/70 text-blue-600 flex items-center justify-center font-bold text-sm shrink-0 group-hover:scale-105 transition-transform">
-                      🗄️
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-900 group-hover:text-[#1a73e8]">SQL Query Arena</span>
-                        <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded">Free T1</span>
-                      </div>
-                      <p className="text-[11px] text-slate-500 truncate">SELECT to Optimization • 250 Queries</p>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      soundEffects.playClick();
-                      setPracticeDropdownOpen(false);
-                      scrollToTop();
-                      onNavigatePractice('excel');
-                    }}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-emerald-50 text-slate-800 hover:text-emerald-700 transition group text-left cursor-pointer"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-emerald-100/70 text-emerald-600 flex items-center justify-center font-bold text-sm shrink-0 group-hover:scale-105 transition-transform">
-                      📊
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-900 group-hover:text-emerald-700">Excel Formula Simulator</span>
-                        <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded">Free T1</span>
-                      </div>
-                      <p className="text-[11px] text-slate-500 truncate">VLOOKUP, XLOOKUP, Arrays • 250 Tasks</p>
-                    </div>
-                  </button>
-                </div>
-              )}
-            </div>
+            {/* 3. Hackathon / DSA Practice (Single Direct Link - NO dropdown, NO arrow) */}
+            <button
+              type="button"
+              onClick={() => {
+                soundEffects.playClick();
+                scrollToTop();
+                onNavigatePractice('master');
+              }}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all duration-200 cursor-pointer ${
+                activeNavTab === 'practice'
+                  ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-xs'
+                  : 'text-slate-700 hover:text-[#1a73e8] hover:bg-slate-50'
+              }`}
+            >
+              <Code2 className={`w-4 h-4 ${activeNavTab === 'practice' ? 'text-[#1a73e8]' : 'text-slate-500'}`} />
+              <span>Hackathon / DSA Practice</span>
+            </button>
 
             {/* 4. ATS Resume Checker */}
             <button
@@ -701,7 +603,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     <img src={studentAvatar} alt={studentName} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-[#EEF4FF] text-[#1a73e8] font-bold text-xs sm:text-sm">
-                      {studentName.charAt(0).toUpperCase() || 'S'}
+                      {studentName ? studentName.charAt(0).toUpperCase() : 'S'}
                     </div>
                   )}
                 </button>
@@ -720,7 +622,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                           <img src={studentAvatar} alt={studentName} className="w-full h-full object-cover" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-[#EEF4FF] text-[#1a73e8] font-black text-3xl">
-                            {studentName.charAt(0).toUpperCase() || 'S'}
+                            {studentName ? studentName.charAt(0).toUpperCase() : 'S'}
                           </div>
                         )}
                       </div>

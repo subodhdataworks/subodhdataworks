@@ -65,8 +65,8 @@ export const App: React.FC = () => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         const storedName = localStorage.getItem('futureai_user_name');
-        const fallbackName = user.displayName || user.email?.split('@')[0] || 'Learner';
-        const finalName = (storedName && storedName !== 'Learner') ? storedName : fallbackName;
+        const fallbackName = user.displayName || user.email?.split('@')[0] || '';
+        const finalName = (storedName && storedName !== 'Learner' && storedName !== 'Rahul' && storedName !== 'Student') ? storedName : fallbackName;
         
         setUserName(finalName);
         setIsLoggedIn(true);
@@ -86,19 +86,41 @@ export const App: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  // Initialize login state strictly from localStorage
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('futureai_logged_in') === 'true';
+  // Validate existing authentication sessions correctly:
+  // Must have 'futureai_logged_in' === 'true' AND at least one real user identifier
+  const checkIsAuthenticated = (): boolean => {
+    if (typeof window === 'undefined') return false;
+    const isLoggedFlag = localStorage.getItem('futureai_logged_in') === 'true';
+    if (!isLoggedFlag) return false;
+    const email = localStorage.getItem('futureai_user_email');
+    const phone = localStorage.getItem('futureai_user_phone');
+    const uid = localStorage.getItem('futureai_user_uid');
+    const name = localStorage.getItem('futureai_user_name');
+
+    // Check if there is valid student credential / identifier
+    const hasIdentifier = !!(email || phone || uid || (name && name !== 'Learner' && name !== 'Rahul' && name !== 'Student'));
+    if (!hasIdentifier) {
+      // Stale fake or unverified session — clean it up so unauthenticated visitors never get treated as logged in!
+      localStorage.removeItem('futureai_logged_in');
+      localStorage.removeItem('futureai_user_name');
+      return false;
     }
-    return false;
+    return true;
+  };
+
+  // Initialize login state strictly using authentication check
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
+    return checkIsAuthenticated();
   });
 
   const [userName, setUserName] = useState<string>(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('futureai_user_name') || 'Learner';
+      const stored = localStorage.getItem('futureai_user_name');
+      if (stored && stored !== 'Learner' && stored !== 'Rahul' && stored !== 'Student') {
+        return stored;
+      }
     }
-    return 'Learner';
+    return '';
   });
 
   const [advisorModalOpen, setAdvisorModalOpen] = useState(false);
@@ -138,11 +160,11 @@ export const App: React.FC = () => {
   }, []);
 
   const handleLogin = (name: string, email?: string, avatar?: string, role?: 'student' | 'influencer') => {
-    const finalName = name && name.trim().length > 0 ? name.trim() : 'Learner';
-    setUserName(finalName);
+    const finalName = name && name.trim().length > 0 && name !== 'Learner' && name !== 'Student' ? name.trim() : '';
+    if (finalName) setUserName(finalName);
     setIsLoggedIn(true);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('futureai_user_name', finalName);
+      if (finalName) localStorage.setItem('futureai_user_name', finalName);
       if (email) localStorage.setItem('futureai_user_email', email);
       if (avatar) localStorage.setItem('futureai_user_avatar', avatar);
       if (role) localStorage.setItem('futureai_user_role', role);
@@ -150,7 +172,14 @@ export const App: React.FC = () => {
       try {
         restoreUserEntitlementsFromCloud({ email: email || undefined });
       } catch {}
-      if (role === 'influencer') {
+
+      // Automatic redirection to the originally requested destination
+      const targetHash = sessionStorage.getItem('futureai_auth_redirect') || localStorage.getItem('futureai_auth_redirect');
+      if (targetHash && targetHash !== '#home' && targetHash !== '#welcome') {
+        sessionStorage.removeItem('futureai_auth_redirect');
+        localStorage.removeItem('futureai_auth_redirect');
+        window.location.hash = targetHash;
+      } else if (role === 'influencer') {
         window.location.hash = '#income';
       } else {
         window.location.hash = '#dashboard';
@@ -165,7 +194,7 @@ export const App: React.FC = () => {
       console.warn('Firebase signout error:', e);
     }
     setIsLoggedIn(false);
-    setUserName('Learner');
+    setUserName('');
     if (typeof window !== 'undefined') {
       localStorage.removeItem('futureai_logged_in');
       localStorage.removeItem('futureai_user_name');
@@ -179,6 +208,8 @@ export const App: React.FC = () => {
       localStorage.removeItem('futureai_user_gems');
       localStorage.removeItem('futureai_payment_order_id');
       localStorage.removeItem('futureai_payment_txn_id');
+      sessionStorage.removeItem('futureai_auth_redirect');
+      localStorage.removeItem('futureai_auth_redirect');
       clearActiveCourseSessionCacheOnLogout();
       window.location.hash = '#home';
       window.location.reload();
@@ -227,49 +258,55 @@ export const App: React.FC = () => {
             }}
           />
         ) : currentHash.split('?')[0] === '#ats-resume-checker' || currentHash.split('?')[0] === '#ats' ? (
-          <AtsResumeChecker
-            onBackToHome={() => {
-              window.location.hash = '#home';
-            }}
-            onOpenLogin={(candidateName?: string) => {
-              const nameToUse = candidateName || userName || 'Learner';
-              setUserName(nameToUse);
-              setIsLoggedIn(true);
-              if (typeof window !== 'undefined') {
-                localStorage.setItem('futureai_user_name', nameToUse);
-                localStorage.setItem('futureai_logged_in', 'true');
-              }
-            }}
-            onEnrollNow={() => {
-              setPayModalOpen(true);
-            }}
-            isLoggedIn={isLoggedIn}
-            userName={userName}
-          />
+          isLoggedIn ? (
+            <AtsResumeChecker
+              onBackToHome={() => {
+                window.location.hash = '#home';
+              }}
+              onOpenLogin={(candidateName?: string) => {
+                const nameToUse = candidateName || userName;
+                if (nameToUse) setUserName(nameToUse);
+                setIsLoggedIn(true);
+                if (typeof window !== 'undefined') {
+                  if (nameToUse) localStorage.setItem('futureai_user_name', nameToUse);
+                  localStorage.setItem('futureai_logged_in', 'true');
+                }
+              }}
+              onEnrollNow={() => {
+                setPayModalOpen(true);
+              }}
+              isLoggedIn={isLoggedIn}
+              userName={userName}
+            />
+          ) : (
+            <FutureAiHome
+              profile={profile}
+              theme="light"
+              isLoggedIn={false}
+              userName=""
+              initialAuthOpen={true}
+              initialAuthMessage="Please login to continue."
+              initialAuthRedirect="#ats"
+              onLoginSuccess={handleLogin}
+              onLogout={handleLogout}
+              onOpenDashboard={() => {
+                setIsLoggedIn(true);
+                window.location.hash = '#dashboard';
+              }}
+            />
+          )
         ) : (() => {
             const baseH = (typeof window !== 'undefined' ? window.location.hash : currentHash).split('?')[0].toLowerCase();
-            const directPublicRoutes = [
-              '#practice', '#codingpractice', '#coding-practice',
-              '#python-challenges', '#pythonchallenges',
-              '#sql-challenges', '#sqlchallenges',
-              '#excel-challenges', '#excelchallenges',
-              '#game', '#games', '#arena', '#gamezone', '#coding_game',
-              '#data-analyst', '#data-analytics', '#data-science', '#data-science-agentic-ai', '#datascience',
-              '#ml-engineering', '#mlengineering', '#ml-eng', '#ml',
-              '#ai-engineering', '#aiengineering', '#ai-eng', '#ai',
-              '#full-stack', '#fullstack', '#fullstack-mern',
-              '#intro-game', '#pyintro', '#earnings', '#wallet', '#withdraw',
-              '#placement', '#income', '#referral'
-            ];
-            // If logged in, show LearnerDashboard (unless user specifically visits pre-login #home)
+            // If logged in, show LearnerDashboard (unless user specifically visits pre-login #home or #welcome)
             if (isLoggedIn) {
               return baseH !== '#home' && baseH !== '#welcome';
             }
-            // Pre-login: only show LearnerDashboard if directly accessing public challenge routes; otherwise show new pre-login FutureAiHome
-            return directPublicRoutes.includes(baseH);
+            // Pre-login: NEVER show LearnerDashboard! All protected routes require authentication.
+            return false;
           })() ? (
           <LearnerDashboard
             userName={userName}
+            isLoggedIn={isLoggedIn}
             onLogout={handleLogout}
             onOpenAdvisor={() => setAdvisorModalOpen(true)}
             onLoginSuccess={handleLogin}
@@ -280,6 +317,28 @@ export const App: React.FC = () => {
             theme="light"
             isLoggedIn={isLoggedIn}
             userName={userName}
+            initialAuthOpen={(() => {
+              if (isLoggedIn) return false;
+              const baseH = (typeof window !== 'undefined' ? window.location.hash : currentHash).split('?')[0].toLowerCase();
+              const protectedRoutes = [
+                '#practice', '#codingpractice', '#coding-practice',
+                '#python-challenges', '#pythonchallenges',
+                '#sql-challenges', '#sqlchallenges',
+                '#excel-challenges', '#excelchallenges',
+                '#game', '#games', '#arena', '#gamezone', '#coding_game',
+                '#data-analyst', '#data-analytics', '#data-science', '#data-science-agentic-ai', '#datascience',
+                '#ml-engineering', '#mlengineering', '#ml-eng', '#ml',
+                '#ai-engineering', '#aiengineering', '#ai-eng', '#ai',
+                '#full-stack', '#fullstack', '#fullstack-mern',
+                '#intro-game', '#pyintro', '#earnings', '#wallet', '#withdraw',
+                '#placement', '#income', '#referral', '#dashboard',
+                '#certificate', '#certificates', '#internship', '#internships',
+                '#recommendation', '#recommendation-letter'
+              ];
+              return protectedRoutes.includes(baseH);
+            })()}
+            initialAuthMessage="Please login to continue."
+            initialAuthRedirect={typeof window !== 'undefined' ? window.location.hash : currentHash}
             onLoginSuccess={handleLogin}
             onLogout={handleLogout}
             onOpenDashboard={() => {

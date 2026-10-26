@@ -352,7 +352,7 @@ interface LearnerDashboardProps {
 }
 
 export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
-  userName = 'Subodh Kumar',
+  userName = '',
   isLoggedIn = false,
   onOpenLogin,
   onLogout,
@@ -377,9 +377,13 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [currentUserName, setCurrentUserName] = useState<string>(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('futureai_user_name') || userName || 'Learner';
+      const stored = localStorage.getItem('futureai_user_name');
+      if (stored && stored !== 'Learner' && stored !== 'Subodh Kumar' && stored !== 'Student') {
+        return stored;
+      }
+      return userName && userName !== 'Learner' && userName !== 'Subodh Kumar' && userName !== 'Student' ? userName : '';
     }
-    return userName || 'Learner';
+    return userName && userName !== 'Learner' && userName !== 'Subodh Kumar' && userName !== 'Student' ? userName : '';
   });
 
   useEffect(() => {
@@ -1345,7 +1349,10 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       
 {/* ─── ULTRA-ADVANCED NEW HEADER (Exact 1:1 Reference media_1792902949292_fb98d943.png) ─── */}
       <FutureAdvancedHeader
-        userName={currentUserName}
+        isLoggedIn={isLoggedIn}
+        userName={currentUserName || userName}
+        onOpenLogin={onOpenLogin}
+        onOpenSignUp={onOpenLogin}
         activeNavTab={
           isAtsResumeModalOpen
             ? 'ats'

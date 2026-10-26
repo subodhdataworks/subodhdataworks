@@ -128,6 +128,9 @@ interface FutureAiHomeProps {
   onStartLearning?: () => void;
   isLoggedIn?: boolean;
   userName?: string;
+  initialAuthOpen?: boolean;
+  initialAuthMessage?: string;
+  initialAuthRedirect?: string;
   onLoginSuccess?: (name: string, email?: string, avatar?: string, role?: 'student' | 'influencer') => void;
   onOpenDashboard?: () => void;
   onLogout?: () => void;
@@ -230,15 +233,39 @@ const HIRING_PARTNERS = [
 
 export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
   isLoggedIn = false,
-  userName = 'Learner',
+  userName = '',
+  initialAuthOpen = false,
+  initialAuthMessage = '',
+  initialAuthRedirect = '',
   onLoginSuccess,
 }) => {
   // Full Auth Modal
-  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(initialAuthOpen);
+  const [authMessage, setAuthMessage] = useState<string>(initialAuthMessage || 'Please login to continue.');
+  const [authRedirect, setAuthRedirect] = useState<string>(initialAuthRedirect || '');
+
+  useEffect(() => {
+    if (initialAuthOpen) {
+      setAuthModalOpen(true);
+      if (initialAuthMessage) setAuthMessage(initialAuthMessage);
+      if (initialAuthRedirect) setAuthRedirect(initialAuthRedirect);
+    }
+  }, [initialAuthOpen, initialAuthMessage, initialAuthRedirect]);
 
   // Prompt Login helper for any unauthenticated action
-  const promptLogin = () => {
+  const promptLogin = (customMessage?: string | React.MouseEvent, redirectHash?: string) => {
     soundEffects.playClick();
+    const msg = typeof customMessage === 'string' && customMessage.trim().length > 0
+      ? customMessage
+      : 'Please login to continue.';
+    setAuthMessage(msg);
+    if (typeof redirectHash === 'string' && redirectHash.trim().length > 0) {
+      setAuthRedirect(redirectHash);
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('futureai_auth_redirect', redirectHash);
+        localStorage.setItem('futureai_auth_redirect', redirectHash);
+      }
+    }
     setAuthModalOpen(true);
   };
 
@@ -254,17 +281,17 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           onNavigateHome={() => {
             if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
-          onNavigateLearning={promptLogin}
+          onNavigateLearning={() => promptLogin('Please login to continue.', '#data-analyst')}
           onNavigatePractice={(track) => {
             const hash = track === 'python' ? '#python-challenges' : track === 'sql' ? '#sql-challenges' : track === 'excel' ? '#excel-challenges' : '#practice';
-            window.location.hash = hash;
+            promptLogin('Please login to continue.', hash);
           }}
-          onOpenAtsResume={() => { window.location.hash = '#ats'; }}
-          onNavigateEarn={promptLogin}
-          onNavigateInternship={promptLogin}
-          onNavigatePlacement={promptLogin}
-          onNavigateCertificate={promptLogin}
-          onNavigateRecommendation={promptLogin}
+          onOpenAtsResume={() => promptLogin('Please login to continue.', '#ats')}
+          onNavigateEarn={() => promptLogin('Please login to continue.', '#income')}
+          onNavigateInternship={() => promptLogin('Please login to continue.', '#internship')}
+          onNavigatePlacement={() => promptLogin('Please login to continue.', '#placement')}
+          onNavigateCertificate={() => promptLogin('Please login to continue.', '#certificates')}
+          onNavigateRecommendation={() => promptLogin('Please login to continue.', '#recommendation')}
           onOpenHelp={() => { window.location.hash = '#contact-us'; }}
           onOpenContact={() => { window.location.hash = '#contact-us'; }}
           onOpenLogin={promptLogin}
@@ -973,6 +1000,8 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       {/* Clean Auth Modal for Sign Up / Full Login Options */}
       <FutureAuthModal
         isOpen={authModalOpen}
+        message={authMessage}
+        redirectUrl={authRedirect}
         onClose={() => setAuthModalOpen(false)}
         onSuccess={(name, email, avatar, role) => {
           setAuthModalOpen(false);

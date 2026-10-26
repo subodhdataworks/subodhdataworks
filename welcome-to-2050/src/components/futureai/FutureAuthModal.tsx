@@ -25,16 +25,20 @@ import {
 } from '../../services/realAuthService';
 import { sendOtpToPhone, verifyOtpAndLogin } from '../../services/firebasePhoneAuth';
 
-interface FutureAuthModalProps {
+export interface FutureAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (name: string, email?: string, avatar?: string, role?: 'student' | 'influencer') => void;
+  message?: string;
+  redirectUrl?: string;
 }
 
 export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
   isOpen,
   onClose,
   onSuccess,
+  message,
+  redirectUrl,
 }) => {
   const [activeTab, setActiveTab] = useState<'mobile' | 'email'>('mobile');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -121,7 +125,12 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
       if (!localStorage.getItem('futureai_user_wallet')) {
         localStorage.setItem('futureai_user_wallet', '0');
       }
-      if (userRole === 'influencer') {
+      const targetHash = redirectUrl || sessionStorage.getItem('futureai_auth_redirect') || localStorage.getItem('futureai_auth_redirect');
+      if (targetHash) {
+        sessionStorage.removeItem('futureai_auth_redirect');
+        localStorage.removeItem('futureai_auth_redirect');
+        window.location.hash = targetHash;
+      } else if (userRole === 'influencer') {
         window.location.hash = '#income';
       } else {
         window.location.hash = '#dashboard';
@@ -297,6 +306,19 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
             className="w-full h-full object-cover object-center select-none pointer-events-none"
           />
         </div>
+
+        {/* Notice Message Banner */}
+        {message && (
+          <div className="mb-3.5 p-3 rounded-2xl bg-amber-50 border border-amber-200/90 text-amber-950 text-xs font-bold flex items-center gap-2.5 text-left shadow-2xs animate-fadeIn">
+            <div className="w-7 h-7 rounded-lg bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <Lock className="w-3.5 h-3.5" />
+            </div>
+            <div className="min-w-0 flex-1 leading-snug">
+              <span className="text-amber-950 block font-black text-xs sm:text-[13px]">{message}</span>
+              <span className="text-[10px] text-amber-700/90 font-medium">Please sign in to access this feature</span>
+            </div>
+          </div>
+        )}
 
         {/* ── Error Banner (if any) ── */}
         {validationError && (
