@@ -313,19 +313,19 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             {/* LEFT COLUMN: Punchy Headline & CTAs (lg:col-span-6) */}
             <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center text-left z-10 pl-0 lg:pl-3 min-w-0">
               
-              {/* Main Headli{/* Main Headline — Exact 3-Line Poppins Black Hierarchy */}
+              {/* Main Headline — Exact Responsive Poppins Black (900) */}
               <h1 className="flex flex-col items-start text-left font-poppins">
                 
-                {/* Line 1: World's First (54px Desktop, Medium-Large, #0866FF → #5727E8 Gradient) */}
-                <div className="relative inline-block mt-3 sm:mt-4 lg:mt-4 mb-0.5">
+                {/* Line 1: World's First (Desktop: 42px, Laptop: 38px, Mobile: 28px | Line Height: 1.08 | Letter Spacing: -1.5px) */}
+                <div className="relative inline-block mt-2 sm:mt-3 mb-0.5">
                   
-                  {/* Small premium golden crown above the left side of "World's" */}
+                  {/* Golden Crown */}
                   <span
-                    className="absolute -top-4 sm:-top-5 lg:-top-6 left-0.5 sm:left-1 -rotate-12 z-20 pointer-events-none select-none"
+                    className="absolute -top-3.5 sm:-top-4 left-0.5 -rotate-12 z-20 pointer-events-none select-none"
                     aria-hidden="true"
                   >
                     <svg
-                      className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-[#FFB800] drop-shadow-[0_2px_6px_rgba(255,184,0,0.45)]"
+                      className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFB800] drop-shadow-[0_2px_4px_rgba(255,184,0,0.45)]"
                       viewBox="0 0 24 24"
                       fill="currentColor"
                     >
@@ -336,13 +336,13 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                     </svg>
                   </span>
 
-                  {/* Three small cyan accent strokes beside "First" */}
+                  {/* Three small cyan accent strokes */}
                   <span
-                    className="absolute -top-1 sm:-top-1.5 lg:-top-2 -right-5 sm:-right-6 lg:-right-7 pointer-events-none select-none"
+                    className="absolute -top-1 sm:-top-1.5 -right-4 sm:-right-5 pointer-events-none select-none"
                     aria-hidden="true"
                   >
                     <svg
-                      className="w-4 h-4 sm:w-5 sm:h-5 lg:w-5 lg:h-5 text-[#00D2FF]"
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#00D2FF]"
                       viewBox="0 0 20 20"
                       fill="none"
                       stroke="currentColor"
@@ -355,14 +355,14 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                     </svg>
                   </span>
 
-                  {/* Line 1 Text: World's First (Large Desktop: 54px, Laptop: 46px, Tablet: 38px, Mobile: 30px) */}
-                  <span className="text-[30px] sm:text-[38px] lg:text-[46px] xl:text-[54px] font-black tracking-[-1.5px] leading-[1.05] bg-gradient-to-r from-[#0866FF] to-[#5727E8] bg-clip-text text-transparent block select-text">
+                  {/* Line 1 Text */}
+                  <span className="text-[28px] sm:text-[32px] md:text-[36px] lg:text-[38px] xl:text-[42px] font-black tracking-[-1.5px] leading-[1.08] bg-gradient-to-r from-[#0866FF] to-[#5727E8] bg-clip-text text-transparent block select-text">
                     World&apos;s First
                   </span>
 
-                  {/* Thin curved blue-purple underline below the text */}
+                  {/* Thin curved blue-purple underline */}
                   <svg
-                    className="absolute -bottom-1 sm:-bottom-1.5 lg:-bottom-2 left-0 w-full h-2.5 sm:h-3 lg:h-3.5 overflow-visible pointer-events-none select-none"
+                    className="absolute -bottom-1 sm:-bottom-1.5 left-0 w-full h-2 sm:h-2.5 overflow-visible pointer-events-none select-none"
                     viewBox="0 0 300 16"
                     fill="none"
                     preserveAspectRatio="none"
@@ -377,19 +377,19 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                     <path
                       d="M 4,12 Q 150,2 296,10"
                       stroke="url(#heroCurvedUnderline)"
-                      strokeWidth="2.5"
+                      strokeWidth="2.2"
                       strokeLinecap="round"
                     />
                   </svg>
                 </div>
 
-                {/* Line 2: Learn Coding (Largest and Most Prominent: Large Desktop: 70px, Laptop: 60px, Tablet: 48px, Mobile: 38px, Deep Navy #08152F) */}
-                <span className="text-[38px] sm:text-[48px] lg:text-[60px] xl:text-[70px] font-black text-[#08152F] leading-[1.05] tracking-[-2px] block mt-2 text-left select-text">
+                {/* Line 2: Learn Coding (Desktop: 52px, Laptop: 46px, Mobile: 34px | Line Height: 1.08 | Letter Spacing: -1.5px) */}
+                <span className="text-[34px] sm:text-[38px] md:text-[42px] lg:text-[46px] xl:text-[52px] font-black text-[#08152F] leading-[1.08] tracking-[-1.5px] block mt-1.5 text-left select-text">
                   Learn Coding
                 </span>
 
-                {/* Line 3: by Playing Games (Large Desktop: 64px, Laptop: 54px, Tablet: 42px, Mobile: 32px) */}
-                <span className="text-[32px] sm:text-[42px] lg:text-[54px] xl:text-[64px] font-black leading-[1.08] tracking-[-1.5px] block mt-1 text-left select-text whitespace-normal lg:whitespace-nowrap">
+                {/* Line 3: by Playing Games (Desktop: 48px, Laptop: 42px, Mobile: 30px | Line Height: 1.08 | Letter Spacing: -1.5px) */}
+                <span className="text-[30px] sm:text-[34px] md:text-[38px] lg:text-[42px] xl:text-[48px] font-black leading-[1.08] tracking-[-1.5px] block mt-1 text-left select-text whitespace-normal lg:whitespace-nowrap">
                   <span className="text-[#08152F]">by</span>{' '}
                   <span className="bg-gradient-to-r from-[#0866FF] to-[#A100E8] bg-clip-text text-transparent">
                     Playing
