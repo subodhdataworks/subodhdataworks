@@ -444,8 +444,22 @@ export function normalizeRefCode(ref?: string): string {
  * Standardize user referral code (slice up to 8 chars + 100)
  */
 export function getUserReferralCode(nameOrEmail: string): string {
-  const clean = (nameOrEmail || '').split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 8) || 'PARTNER';
-  return `${clean}100`;
+  const clean = (nameOrEmail || '').trim().toLowerCase();
+  if (clean.includes('subodh') || clean.includes('subodhdataworks')) {
+    return 'SUBODHKUMAR100';
+  }
+  if (!clean || clean === 'learner' || clean === 'student' || clean === 'partner') {
+    return 'PARTNER100';
+  }
+
+  // Derive from email: prefix + deterministic 3-character hash so every unique email ID has its own unique referral code
+  const prefix = clean.split('@')[0].replace(/[^a-z0-9]/g, '').toUpperCase().slice(0, 6) || 'USER';
+  let hash = 0;
+  for (let i = 0; i < clean.length; i++) {
+    hash = (hash * 31 + clean.charCodeAt(i)) & 0xfffff;
+  }
+  const hashSuffix = hash.toString(36).toUpperCase().padStart(3, '0').slice(0, 3);
+  return `${prefix}${hashSuffix}100`;
 }
 
 /**

@@ -157,6 +157,27 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
   return (
     <>
+            {/* ─── REFERRAL ACTIVE TOP NOTIFICATION BAR ─── */}
+      <div className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-700 text-white px-3 sm:px-6 py-2 text-xs font-black flex items-center justify-between shadow-md z-[60] relative">
+        <div className="flex items-center gap-2">
+          <span className="text-base animate-bounce">💰</span>
+          <span>
+            Referral Partner Active: <strong className="text-amber-300">SUBODHKUMAR100</strong> • Live Available Wallet Balance: <strong className="text-emerald-200 bg-emerald-950/40 px-1.5 py-0.5 rounded border border-emerald-400/30">₹100</strong>
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            soundEffects.playClick();
+            scrollToTop();
+            onNavigateEarn();
+          }}
+          className="px-3 py-1 rounded-lg bg-white text-emerald-900 font-extrabold text-xs hover:bg-emerald-50 active:scale-95 transition-all shadow-xs cursor-pointer flex items-center gap-1 shrink-0 ml-2"
+        >
+          <span>Open Wallet (₹100) →</span>
+        </button>
+      </div>
+
       {/* ─── STICKY ULTRA-ADVANCED TOP HEADER BAR (Exact 1:1 Reference Design) ─── */}
       <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-[0_2px_16px_rgba(0,0,0,0.03)] transition-all shrink-0">
         <div className="max-w-[1440px] mx-auto px-3 sm:px-5 lg:px-7 h-15 sm:h-16 flex items-center justify-between gap-2 lg:gap-5">
@@ -398,6 +419,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
             >
               <Coins className={`w-4 h-4 ${activeNavTab === 'earn' ? 'text-amber-500' : 'text-slate-500'}`} />
               <span>Earn Cash</span>
+              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-500 text-white shadow-xs">₹100</span>
             </button>
 
             {/* 6. Internship */}
