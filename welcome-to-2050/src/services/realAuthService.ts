@@ -103,19 +103,22 @@ export async function recordUserInDatabase(userData: {
     console.warn('Local master registry write error:', e);
   }
 
-  // 2. Save in Firestore Cloud Database
+  // 2. Save in Firestore Cloud Database (with 2000ms safety timeout)
   try {
     const userDocRef = doc(db, 'registered_users', uid);
-    await setDoc(
-      userDocRef,
-      {
-        ...record,
-        updatedAt: serverTimestamp(),
-      },
-      { merge: true }
+    await withTimeout(
+      setDoc(
+        userDocRef,
+        {
+          ...record,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      ),
+      2000
     );
   } catch (cloudErr) {
-    // Graceful fallback if demo keys or network issue
+    // Graceful fallback if network latency or rules
     console.info('Firestore cloud write logged. Local registry preserved.', cloudErr);
   }
 
@@ -140,29 +143,22 @@ export async function loginWithGooglePopup(): Promise<{
 }> {
   try {
     let user: User;
-
-    // Returning from an earlier redirect?
-    const redirectResult = await getRedirectResult(auth).catch(() => null);
-    if (redirectResult?.user) {
-      user = redirectResult.user;
-    } else {
-      try {
-        // Popup works on desktop + Android Chrome + iOS Safari (opens new tab)
-        const result = await signInWithPopup(auth, googleProvider);
-        user = result.user;
-      } catch (popupErr: any) {
-        const code = popupErr?.code || '';
-        const popupUnusable =
-          code === 'auth/popup-blocked' ||
-          code === 'auth/operation-not-supported-in-this-environment' ||
-          code === 'auth/web-storage-unsupported';
-        // Android in-app WebViews (Instagram/WhatsApp/FB browser) or blocked popups → redirect fallback
-        if (popupUnusable && isAndroidOrMobile()) {
-          await signInWithRedirect(auth, googleProvider);
-          throw new Error('REDIRECT_INITIATED');
-        }
-        throw popupErr;
+    try {
+      // Direct fast Google Popup
+      const result = await signInWithPopup(auth, googleProvider);
+      user = result.user;
+    } catch (popupErr: any) {
+      const code = popupErr?.code || '';
+      const popupUnusable =
+        code === 'auth/popup-blocked' ||
+        code === 'auth/operation-not-supported-in-this-environment' ||
+        code === 'auth/web-storage-unsupported';
+      // Android in-app WebViews (Instagram/WhatsApp/FB browser) or blocked popups → redirect fallback
+      if (popupUnusable && isAndroidOrMobile()) {
+        await signInWithRedirect(auth, googleProvider);
+        throw new Error('REDIRECT_INITIATED');
       }
+      throw popupErr;
     }
 
     const name = user.displayName || user.email?.split('@')[0] || 'Learner';
@@ -170,14 +166,14 @@ export async function loginWithGooglePopup(): Promise<{
     const avatar = user.photoURL || '';
     const uid = user.uid;
 
-    // Record in database immediately
-    await recordUserInDatabase({
+    // Record in database asynchronously without holding login response
+    recordUserInDatabase({
       uid,
       name,
       email,
       avatar,
       source: 'Google',
-    });
+    }).catch((e) => console.warn('Background recordUser error:', e));
 
     return { name, email, avatar, uid };
   } catch (error: any) {
@@ -198,39 +194,56 @@ export async function loginWithEmailFirebase(
 ): Promise<{ name: string; email: string; avatar: string; uid: string }> {
   const cleanEmail = email.trim().toLowerCase();
   const pwd = password?.trim() || 'FutureAI@2050';
-  let uid = `usr_${cleanEmail.replace(/[^a-zA-Z0-9]/g, '_')}`;
-  let finalName = (fullName || cleanEmail.split('@')[0] || 'Learner').trim();
+  let finalName = (fullName || cleanEmail.split('@')[0] || '').trim();
 
+  // Try signing in with existing credentials
   try {
     const userCred = await signInWithEmailAndPassword(auth, cleanEmail, pwd);
-    uid = userCred.user.uid;
-    if (userCred.user.displayName) finalName = userCred.user.displayName;
+    const user = userCred.user;
+    const uid = user.uid;
+    if (user.displayName) finalName = user.displayName;
+    if (!finalName) finalName = cleanEmail.split('@')[0];
+
+    recordUserInDatabase({ uid, name: finalName, email: cleanEmail, source: 'Email' }).catch(() => {});
+
+    return { name: finalName, email: cleanEmail, avatar: user.photoURL || '', uid };
   } catch (err: any) {
-    if (
-      err.code === 'auth/user-not-found' ||
-      err.code === 'auth/invalid-credential' ||
-      err.code === 'auth/wrong-password'
-    ) {
+    const code = err?.code || '';
+    if (code === 'auth/user-not-found') {
       try {
         const newCred = await createUserWithEmailAndPassword(auth, cleanEmail, pwd);
-        uid = newCred.user.uid;
-      } catch (createErr) {
-        console.warn('Firebase create email user notice:', createErr);
+        const user = newCred.user;
+        const uid = user.uid;
+        if (!finalName) finalName = cleanEmail.split('@')[0];
+        recordUserInDatabase({ uid, name: finalName, email: cleanEmail, source: 'Email' }).catch(() => {});
+        return { name: finalName, email: cleanEmail, avatar: '', uid };
+      } catch (createErr: any) {
+        throw new Error(createErr.message || 'Unable to create account. Please try again.');
       }
+    } else if (code === 'auth/wrong-password') {
+      throw new Error('Incorrect password. Please verify your password or use Google Login.');
+    } else if (code === 'auth/invalid-credential') {
+      try {
+        const newCred = await createUserWithEmailAndPassword(auth, cleanEmail, pwd);
+        const user = newCred.user;
+        const uid = user.uid;
+        if (!finalName) finalName = cleanEmail.split('@')[0];
+        recordUserInDatabase({ uid, name: finalName, email: cleanEmail, source: 'Email' }).catch(() => {});
+        return { name: finalName, email: cleanEmail, avatar: '', uid };
+      } catch (createErr: any) {
+        if (createErr.code === 'auth/email-already-in-use') {
+          throw new Error('Incorrect password for this email. Please verify your password or use Google Login.');
+        }
+        throw new Error(createErr.message || 'Authentication failed. Please check your credentials.');
+      }
+    } else if (code === 'auth/invalid-email') {
+      throw new Error('Please enter a valid email address.');
+    } else if (code === 'auth/too-many-requests') {
+      throw new Error('Too many failed attempts. Please wait a moment or use Google Login.');
     } else {
-      console.warn('Firebase email auth notice:', err);
+      throw new Error(err.message || 'Email authentication failed. Please try again.');
     }
   }
-
-  // Record in Firestore database & local registry
-  await recordUserInDatabase({
-    uid,
-    name: finalName,
-    email: cleanEmail,
-    source: 'Email',
-  });
-
-  return { name: finalName, email: cleanEmail, avatar: '', uid };
 }
 
 /**
