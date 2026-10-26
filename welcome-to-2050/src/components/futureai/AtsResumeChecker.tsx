@@ -2161,106 +2161,11 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
         </div>
 
         {/* ─────────────────────────────────────────────────────────────
-            3A. MOBILE SPECIAL PROMOTIONAL BANNER: GET ALL PREMIUM COURSES ₹987
-            (block md:hidden) - Ultra-sleek, compact, high-converting
-            ───────────────────────────────────────────────────────────── */}
-        <div
-          className="block md:hidden mt-5 mb-8 rounded-2xl overflow-hidden border-2 border-sky-400 shadow-[0_10px_32px_rgba(56,189,248,0.28)] bg-gradient-to-b from-[#dbeafe] via-white to-[#f3e8ff] cursor-pointer"
-          onClick={() => {
-            if (onEnrollNow) onEnrollNow();
-            else window.location.hash = '#data-analyst';
-          }}
-          title="Unlock All Premium Courses for Just ₹987"
-        >
-          {/* Top Card Body */}
-          <div className="p-4 relative">
-            {/* Top Row: Limited Offer Pill + ₹987 Pill */}
-            <div className="flex items-center justify-between gap-2 mb-2">
-              <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-pink-500 to-fuchsia-500 text-white px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wide shadow-xs">
-                <span>⏰</span>
-                <span>LIMITED-TIME OFFER</span>
-              </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-[11px] font-bold text-slate-500">Only</span>
-                <span className="text-2xl font-black bg-gradient-to-r from-sky-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  ₹987
-                </span>
-              </div>
-            </div>
-
-            {/* Gift Box & Headline */}
-            <div className="flex items-center gap-3 my-2.5">
-              <div className="relative shrink-0">
-                <img
-                  src="/images/luxury_purple_gift_box.png"
-                  alt="3D Gift Box"
-                  className="w-16 h-16 object-contain drop-shadow-[0_4px_14px_rgba(147,51,234,0.4)] animate-bounce"
-                  style={{ animationDuration: '3s' }}
-                />
-              </div>
-              <div>
-                <h3 className="text-base font-black text-slate-900 leading-tight">
-                  Get All Premium Courses for Just <span className="text-blue-600 font-black">₹987</span>
-                </h3>
-                <p className="text-[11px] font-medium text-slate-600 mt-1 leading-snug">
-                  Data Analyst, Data Science, Python, Full Stack &amp; AI Tracks
-                </p>
-              </div>
-            </div>
-
-            {/* Pay After Placement Bar */}
-            <div className="flex items-center justify-between p-2.5 rounded-xl bg-blue-50/90 border border-blue-200/90 my-2.5">
-              <div className="flex items-center gap-2">
-                <span className="text-base">💼</span>
-                <div className="text-[11px] leading-tight font-bold text-slate-800">
-                  <div>Pay After Job Offer</div>
-                  <span className="text-[10px] text-slate-500 font-semibold">700+ Hiring Partners</span>
-                </div>
-              </div>
-              <span className="text-[11px] font-black text-rose-600 bg-rose-50 px-2.5 py-0.5 rounded-lg border border-rose-200 shadow-2xs">
-                Pay ₹0 Now
-              </span>
-            </div>
-
-            {/* Golden Unlock Button */}
-            <button
-              type="button"
-              className="w-full py-3 px-4 rounded-full bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 text-slate-950 font-black text-xs sm:text-sm tracking-wide shadow-[0_0_22px_rgba(250,204,21,0.7)] active:scale-95 transition-transform flex items-center justify-center gap-2 border-2 border-white cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onEnrollNow) onEnrollNow();
-                else window.location.hash = '#data-analyst';
-              }}
-            >
-              <Lock className="w-4 h-4 fill-slate-950 stroke-slate-950" />
-              <span>UNLOCK ALL COURSES FOR ₹987</span>
-              <ArrowRight className="w-4 h-4 stroke-[3]" />
-            </button>
-          </div>
-
-          {/* Bottom Features Strip (Dark Navy Blue) */}
-          <div className="bg-gradient-to-r from-[#020b22] via-[#061539] to-[#030d2a] border-t border-sky-500/80 p-2.5 grid grid-cols-3 gap-1.5 text-center text-white">
-            <div className="flex flex-col items-center justify-center p-1 rounded bg-white/5">
-              <GraduationCap className="w-4 h-4 text-sky-400 mb-0.5" />
-              <span className="text-[9px] font-bold">All Tracks</span>
-            </div>
-            <div className="flex flex-col items-center justify-center p-1 rounded bg-white/5">
-              <FileText className="w-4 h-4 text-pink-400 mb-0.5" />
-              <span className="text-[9px] font-bold">15+ Projects</span>
-            </div>
-            <div className="flex flex-col items-center justify-center p-1 rounded bg-white/5">
-              <TrendingUp className="w-4 h-4 text-emerald-400 mb-0.5" />
-              <span className="text-[9px] font-bold">Placement</span>
-            </div>
-          </div>
-        </div>
-
-        {/* ─────────────────────────────────────────────────────────────
             3B. DESKTOP SPECIAL PROMOTIONAL OFFER BANNER (All 4 Courses for ₹987)
             Matches course bottom banner 1:1
             ───────────────────────────────────────────────────────────── */}
         <div
-          className="hidden md:block scd-slim-offer-strip"
+          className="scd-slim-offer-strip"
           onClick={() => {
             if (onEnrollNow) onEnrollNow();
             else window.location.hash = '#data-analyst';

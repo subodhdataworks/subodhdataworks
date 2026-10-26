@@ -92,14 +92,6 @@ import { StudentCoursesDashboard } from './StudentCoursesDashboard';
 import { PythonIntroGameWorkspace } from './PythonIntroGameWorkspace';
 import { LearningModulesProgressModal } from './LearningModulesProgressModal';
 import { getLearnerTelemetry } from '../../services/realAuthService';
-import { MobileProfileSheet } from './mobile/MobileProfileSheet';
-import { MobileDashboardHome } from './mobile/MobileDashboardHome';
-import { MobilePlacementHub } from './mobile/MobilePlacementHub';
-import { MobilePythonChapterView } from './mobile/MobilePythonChapterView';
-import { MobileTopicWorkspace } from './mobile/MobileTopicWorkspace';
-import { MobileSqlChapterView } from './mobile/MobileSqlChapterView';
-import { MobileGameArenaHub } from './mobile/MobileGameArenaHub';
-import { MobileDataAnalystHub } from './mobile/MobileDataAnalystHub';
 import { FutureAuthModal } from './FutureAuthModal';
 import { WalletWithdrawModal } from './WalletWithdrawModal';
 import { CurriculumModal } from './CurriculumModal';
@@ -404,56 +396,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     onLoginSuccess?.(name, email, avatar, role);
   };
 
-  // Check if user specifically requested mobile size testing link (?mobile=true, #mobile=true, etc.)
-  const isMobileSizeTesting = (): boolean => {
-    if (typeof window === 'undefined') return false;
-    const searchStr = (window.location.search || '').toLowerCase();
-    const hashStr = (window.location.hash || '').toLowerCase();
-    return (
-      searchStr.includes('mobile=true') ||
-      searchStr.includes('mode=mobile') ||
-      searchStr.includes('mobile=1') ||
-      hashStr.includes('mobile=true') ||
-      hashStr.includes('mode=mobile') ||
-      hashStr.includes('mobile=1')
-    );
-  };
-  const [mobileTestingFrame, setMobileTestingFrame] = useState<boolean>(() => isMobileSizeTesting());
 
-  const isMobileViewport = (): boolean => {
-    if (typeof window === 'undefined') return false;
-    return (
-      window.innerWidth < 768 ||
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-    );
-  };
-  const [isMobileScreen, setIsMobileScreen] = useState<boolean>(() => isMobileViewport());
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobileScreen(isMobileViewport());
-    };
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('orientationchange', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('orientationchange', handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
-    const handleCheckMobileParam = () => {
-      if (isMobileSizeTesting()) {
-        setMobileTestingFrame(true);
-      }
-    };
-    window.addEventListener('hashchange', handleCheckMobileParam);
-    window.addEventListener('popstate', handleCheckMobileParam);
-    return () => {
-      window.removeEventListener('hashchange', handleCheckMobileParam);
-      window.removeEventListener('popstate', handleCheckMobileParam);
-    };
-  }, []);
 
 
   const [dockTab, setDockTab] = useState<'home' | 'game' | 'income' | 'referral' | 'wallet' | 'withdraw' | 'placement'>(() => {
@@ -472,7 +415,6 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   const [withdrawAmount, setWithdrawAmount] = useState('1000');
   const [withdrawSuccess, setWithdrawSuccess] = useState<string | null>(null);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const [mobileProfileSheetOpen, setMobileProfileSheetOpen] = useState(false);
   const [isAtsResumeModalOpen, setIsAtsResumeModalOpen] = useState(false);
 
   // Live Learner Telemetry (Coins, Gems, Completed Topics) starting at 0
@@ -1245,235 +1187,78 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   // Render Python Introduction & Setup 8-Game Learning Workspace (media_1791550568170.jpg)
   if (selectedModuleView === 'python_intro_game') {
     return (
-      <>
-        {/* Mobile (< 768px): Native Android Mobile Game Arena Hub */}
-        <div className="md:hidden min-h-screen bg-slate-50">
-          <MobileGameArenaHub
-            userName={userName}
-            onPlayPython={() => {}}
-            onLockedGame={(gameName: string) => {
-              setSelectedLockedModule(gameName);
-              setUnlockModalOpen(true);
-            }}
-            onNavigateBack={() => {
-              setSelectedModuleView(null);
-              setDockTab('game');
-            }}
-            onOpenAdvisor={onOpenAdvisor}
-          />
-
-        </div>
-
-        {/* Desktop (>= 768px): Full 2050 Game Workspace */}
-        <div className="hidden md:block py-intro-game-view-container">
-          <PythonIntroGameWorkspace
-            userName={userName}
-            levelId={introGameLevelId}
-            initialGameId={introGameInitialId}
-            onBackToArena={() => {
-              setSelectedModuleView(null);
+      <div className="py-intro-game-view-container">
+        <PythonIntroGameWorkspace
+          userName={userName}
+          levelId={introGameLevelId}
+          initialGameId={introGameInitialId}
+          onBackToArena={() => {
+            setSelectedModuleView(null);
+            setDockTab('game');
+            if (typeof window !== 'undefined') window.location.hash = '#game';
+          }}
+          onNavigateDock={(tab) => {
+            if (tab === 'coding_game' || tab === 'game_intro') {
+              return;
+            }
+            setSelectedModuleView(null);
+            if (tab === 'home' || tab === 'dashboard') {
+              setDockTab('home');
+              if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+            } else if (tab === 'game') {
               setDockTab('game');
               if (typeof window !== 'undefined') window.location.hash = '#game';
-            }}
-            onNavigateDock={(tab) => {
-              if (tab === 'coding_game' || tab === 'game_intro') {
-                return;
-              }
-              setSelectedModuleView(null);
-              if (tab === 'home' || tab === 'dashboard') {
-                setDockTab('home');
-                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-              } else if (tab === 'game') {
-                setDockTab('game');
-                if (typeof window !== 'undefined') window.location.hash = '#game';
-              } else if (tab === 'earning' || tab === 'income') {
-                setDockTab('income');
-                if (typeof window !== 'undefined') window.location.hash = '#earnings';
-              } else if (tab === 'learn' || tab === 'learning') {
-                setSelectedModuleView('python');
-                if (typeof window !== 'undefined') window.location.hash = '#python';
-              } else if (tab === 'internship') {
-                setLockedSectionTarget('Internship');
-                setPlacementLockOpen(true);
-              } else if (tab === 'certificate' || tab === 'certificates') {
-                setLockedSectionTarget('Certificate');
-                setPlacementLockOpen(true);
-              } else if (tab === 'placement') {
-                setLockedSectionTarget('Placement');
-                setPlacementLockOpen(true);
-              } else {
-                setDockTab(tab as any);
-                if (typeof window !== 'undefined') window.location.hash = '#' + tab;
-              }
-            }}
-            onOpenAdvisor={onOpenAdvisor}
-            onOpenUnlockModal={(mod) => {
-              setSelectedLockedModule(mod || 'Guaranteed Virtual Internship');
-              setUnlockModalOpen(true);
-            }}
-          />
-          <PayToUnlockModal
-            isOpen={unlockModalOpen}
-            onClose={() => setUnlockModalOpen(false)}
-            targetModuleName={selectedLockedModule}
-            courseId={selectedLockedModule.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}
-            courseTitle={selectedLockedModule}
-            price={9}
-            onSimulateUnlock={() => {
-              setIsNewStudentMode(false);
-              setUnlockModalOpen(false);
-            }}
-          />
-          <MobileProfileSheet
-            isOpen={mobileProfileSheetOpen}
-            onClose={() => setMobileProfileSheetOpen(false)}
-            userName={currentUserName}
-            telemetry={telemetry}
-            onLogout={onLogout}
-            onOpenEarn={() => {
-              setSelectedModuleView(null);
-              setActiveTopicWs(null);
+            } else if (tab === 'earning' || tab === 'income') {
               setDockTab('income');
               if (typeof window !== 'undefined') window.location.hash = '#earnings';
-            }}
-            onOpenLogin={() => setAuthModalOpen(true)}
-          />
-          <FutureAuthModal
-            isOpen={authModalOpen}
-            onClose={() => setAuthModalOpen(false)}
-            onSuccess={handleAuthSuccess}
-          />
-        </div>
-      </>
+            } else if (tab === 'learn' || tab === 'learning') {
+              setSelectedModuleView('python');
+              if (typeof window !== 'undefined') window.location.hash = '#python';
+            } else if (tab === 'internship') {
+              setLockedSectionTarget('Internship');
+              setPlacementLockOpen(true);
+            } else if (tab === 'certificate' || tab === 'certificates') {
+              setLockedSectionTarget('Certificate');
+              setPlacementLockOpen(true);
+            } else if (tab === 'placement') {
+              setLockedSectionTarget('Placement');
+              setPlacementLockOpen(true);
+            } else {
+              setDockTab(tab as any);
+              if (typeof window !== 'undefined') window.location.hash = '#' + tab;
+            }
+          }}
+          onOpenAdvisor={onOpenAdvisor}
+          onOpenUnlockModal={(mod) => {
+            setSelectedLockedModule(mod || 'Guaranteed Virtual Internship');
+            setUnlockModalOpen(true);
+          }}
+        />
+        <PayToUnlockModal
+          isOpen={unlockModalOpen}
+          onClose={() => setUnlockModalOpen(false)}
+          targetModuleName={selectedLockedModule}
+          courseId={selectedLockedModule.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}
+          courseTitle={selectedLockedModule}
+          price={9}
+          onSimulateUnlock={() => {
+            setIsNewStudentMode(false);
+            setUnlockModalOpen(false);
+          }}
+        />
+        <FutureAuthModal
+          isOpen={authModalOpen}
+          onClose={() => setAuthModalOpen(false)}
+          onSuccess={handleAuthSuccess}
+        />
+      </div>
     );
   }
 
   // Render Hands-on Python Lab Workspace when an interactive step is active
   if (selectedModuleView === 'python') {
-    if (mobileTestingFrame) {
-      return (
-        <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-start py-4 px-2 sm:px-4">
-          {/* Top Control Bar for Mobile Testing */}
-          <div className="w-full max-w-[420px] mb-3 bg-slate-900 border border-slate-700/80 rounded-2xl px-4 py-2.5 shadow-xl flex items-center justify-between text-xs backdrop-blur-md">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400/50" />
-              <span className="font-bold text-slate-100 flex items-center gap-1.5">
-                <Smartphone className="w-3.5 h-3.5 text-cyan-400" />
-                Mobile Testing Size (390px)
-              </span>
-            </div>
-            <button
-              onClick={() => setMobileTestingFrame(false)}
-              className="px-2.5 py-1 rounded-lg bg-indigo-600/80 hover:bg-indigo-600 text-white font-medium text-[11px] flex items-center gap-1 transition-all cursor-pointer"
-              title="Switch to full desktop IDE view"
-            >
-              <Monitor className="w-3 h-3" />
-              Desktop IDE
-            </button>
-          </div>
-
-          {/* Centered Realistic Mobile Phone Frame (Scrollable on Desktop) */}
-          <div className="w-full max-w-[420px] max-h-[90vh] overflow-y-auto rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] border-4 border-slate-700 bg-white relative">
-            <MobileTopicWorkspace
-              userName={currentUserName}
-              topicId={activeTopicWs || 1}
-              initialStep={targetStep}
-              onBack={() => {
-                setSelectedModuleView('data_analyst');
-                setActiveTopicWs(null);
-                if (typeof window !== 'undefined') {
-                  window.location.hash = '#data-analyst';
-                }
-              }}
-              onOpenUnlockModal={(mod?: string) => {
-                setSelectedLockedModule(mod || 'Python Advanced Track');
-                setUnlockModalOpen(true);
-              }}
-              onOpenAdvisor={onOpenAdvisor}
-              onOpenProfile={() => setMobileProfileSheetOpen(true)}
-            />
-            <MobileProfileSheet
-              isOpen={mobileProfileSheetOpen}
-              onClose={() => setMobileProfileSheetOpen(false)}
-              userName={currentUserName}
-              telemetry={telemetry}
-              onLogout={onLogout}
-              onOpenEarn={() => {
-                setSelectedModuleView(null);
-                setActiveTopicWs(null);
-                setDockTab('income');
-                if (typeof window !== 'undefined') window.location.hash = '#earnings';
-              }}
-              onOpenPlacement={() => {
-                setSelectedModuleView(null);
-                setActiveTopicWs(null);
-                setDockTab('placement');
-                if (typeof window !== 'undefined') window.location.hash = '#placement';
-              }}
-              onOpenLogin={() => setAuthModalOpen(true)}
-              onOpenAdvisor={onOpenAdvisor}
-            />
-          </div>
-        </div>
-      );
-    }
-
-    if (isMobileScreen || mobileTestingFrame) {
-      return (
-        <div className="min-h-screen bg-slate-50">
-          <MobileTopicWorkspace
-            userName={currentUserName}
-            topicId={activeTopicWs || 1}
-            initialStep={targetStep}
-            onBack={() => {
-              setActiveTopicWs(null);
-              if (typeof window !== 'undefined') {
-                window.location.hash = '#python';
-              }
-            }}
-            onOpenUnlockModal={(mod?: string) => {
-              setSelectedLockedModule(mod || 'Python Advanced Track');
-              setUnlockModalOpen(true);
-            }}
-            onOpenAdvisor={onOpenAdvisor}
-            onOpenProfile={() => setMobileProfileSheetOpen(true)}
-          />
-          <MobileProfileSheet
-            isOpen={mobileProfileSheetOpen}
-            onClose={() => setMobileProfileSheetOpen(false)}
-            userName={currentUserName}
-            telemetry={telemetry}
-            onLogout={onLogout}
-            onOpenEarn={() => {
-              setSelectedModuleView(null);
-              setActiveTopicWs(null);
-              setDockTab('income');
-              if (typeof window !== 'undefined') window.location.hash = '#earnings';
-            }}
-            onOpenPlacement={() => {
-              setSelectedModuleView(null);
-              setActiveTopicWs(null);
-              setDockTab('placement');
-              if (typeof window !== 'undefined') window.location.hash = '#placement';
-            }}
-            onOpenLogin={() => setAuthModalOpen(true)}
-            onOpenAdvisor={onOpenAdvisor}
-          />
-        </div>
-      );
-    }
-
     return (
       <div className="relative dock-dashboard-page">
-        <button
-          onClick={() => setMobileTestingFrame(true)}
-          className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 text-white px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 text-xs font-bold border-2 border-white/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"
-          title="Open in Mobile Size Phone Container"
-        >
-          <Smartphone className="w-4 h-4 text-emerald-300 animate-pulse" />
-          <span>📱 Test in Mobile View (390px)</span>
-        </button>
-
         <PythonTopicWorkspace
           userName={userName}
           topicId={activeTopicWs || 1}
@@ -1539,27 +1324,6 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             setIsNewStudentMode(false);
             setUnlockModalOpen(false);
           }}
-        />
-        <MobileProfileSheet
-          isOpen={mobileProfileSheetOpen}
-          onClose={() => setMobileProfileSheetOpen(false)}
-          userName={currentUserName}
-          telemetry={telemetry}
-          onLogout={onLogout}
-          onOpenEarn={() => {
-            setSelectedModuleView(null);
-            setActiveTopicWs(null);
-            setDockTab('income');
-            if (typeof window !== 'undefined') window.location.hash = '#earnings';
-          }}
-          onOpenPlacement={() => {
-            setSelectedModuleView(null);
-            setActiveTopicWs(null);
-            setDockTab('placement');
-            if (typeof window !== 'undefined') window.location.hash = '#placement';
-          }}
-          onOpenLogin={() => setAuthModalOpen(true)}
-          onOpenAdvisor={onOpenAdvisor}
         />
         <FutureAuthModal
           isOpen={authModalOpen}
@@ -1647,7 +1411,6 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             if (typeof window !== 'undefined') window.location.hash = '#placement';
           }
         }}
-        onOpenProfile={() => setMobileProfileSheetOpen(true)}
         onOpenWallet={() => setIsWithdrawModalOpen(true)}
         onLogout={onLogout}
       />
@@ -1662,37 +1425,18 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         {/* ─── TAB: SQL COURSE CHAPTER VIEW ─── */}
         {dockTab === 'home' && selectedModuleView === 'sql' && (
           <div className="col-span-full">
-            {/* Mobile View (< 768px) */}
-            <div className="md:hidden min-h-screen bg-slate-50">
-              <MobileSqlChapterView
-                userName={currentUserName}
-                onBack={() => {
-                  setSelectedModuleView(null);
-                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-                }}
-                onOpenUnlockModal={(mod) => {
-                  setSelectedLockedModule(mod || 'SQL & Databases');
-                  setUnlockModalOpen(true);
-                }}
-                onOpenAdvisor={onOpenAdvisor}
-              />
-            </div>
-
-            {/* Desktop View (>= 768px) */}
-            <div className="hidden md:block">
-              <SqlChapterView
-                userName={userName}
-                onBack={() => {
-                  setSelectedModuleView('data_analyst');
-                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-                }}
-                onOpenUnlockModal={(mod) => {
-                  setSelectedLockedModule(mod || 'SQL & Databases');
-                  setUnlockModalOpen(true);
-                }}
-                onOpenAdvisor={onOpenAdvisor}
-              />
-            </div>
+            <SqlChapterView
+              userName={userName}
+              onBack={() => {
+                setSelectedModuleView('data_analyst');
+                if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+              }}
+              onOpenUnlockModal={(mod) => {
+                setSelectedLockedModule(mod || 'SQL & Databases');
+                setUnlockModalOpen(true);
+              }}
+              onOpenAdvisor={onOpenAdvisor}
+            />
           </div>
         )}
 
@@ -1755,135 +1499,38 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         {/* ─── COURSE 01 SUB-HUB: DATA ANALYST WITH GENAI (6 MODULES) (#data-analyst) ─── */}
         {dockTab === 'home' && selectedModuleView === 'data_analyst' && (
           <div className="col-span-full">
-            {/* Native Android Mobile Feed (< 768px): Data Analyst with GenAI 9-Module Hub */}
-            <div className="md:hidden">
-              <MobileDataAnalystHub
-                userName={currentUserName}
-                onOpenPython={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('python');
-                  if (typeof window !== 'undefined') window.location.hash = '#python';
-                }}
-                onOpenSql={() => {
-                  playClick();
+            <DataAnalystGenAiHub
+              userName={currentUserName || userName}
+              onBack={() => {
+                playClick();
+                setSelectedModuleView(null);
+                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+              }}
+              onStartTopic={(topicId, title, step = 'learn') => {
+                playClick();
+                const numericTopicId = parseInt(topicId.replace(/\D/g, ''), 10) || 1;
+
+                if (topicId.startsWith('t-7') || topicId.startsWith('t-8') || topicId.startsWith('t-9')) {
                   playCinema();
                   setSelectedModuleView('sql');
                   if (typeof window !== 'undefined') window.location.hash = '#sql';
-                }}
-                onOpenExcel={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('python');
-                  if (typeof window !== 'undefined') window.location.hash = '#python';
-                }}
-                onOpenPowerBi={() => {
-                  playClick();
+                } else if (topicId.startsWith('t-13') || topicId.startsWith('t-14') || topicId.startsWith('t-15')) {
                   playCinema();
                   setSelectedModuleView('powerbi');
                   if (typeof window !== 'undefined') window.location.hash = '#powerbi';
-                }}
-                onOpenStats={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('stats');
-                  if (typeof window !== 'undefined') window.location.hash = '#stats';
-                }}
-                onOpenGenAi={() => {
-                  playClick();
+                } else if (topicId.startsWith('t-16') || topicId.startsWith('t-17') || topicId.startsWith('t-18')) {
                   playCinema();
                   setSelectedModuleView('genai');
                   if (typeof window !== 'undefined') window.location.hash = '#genai';
-                }}
-                onOpenMockInterview={() => {
-                  playClick();
-                  if (typeof window !== 'undefined') window.location.hash = '#interview?topic=1';
-                }}
-                onOpenLockedModule={(title) => {
-                  playClick();
+                } else {
                   playCinema();
-                  const t = (title || '').toLowerCase();
-                  if (t.includes('sql')) {
-                    setSelectedModuleView('sql');
-                    if (typeof window !== 'undefined') window.location.hash = '#sql';
-                  } else if (t.includes('excel') || t.includes('copilot')) {
-                    setSelectedModuleView('python');
-                    if (typeof window !== 'undefined') window.location.hash = '#python';
-                  } else if (t.includes('power') || t.includes('bi')) {
-                    setSelectedModuleView('powerbi');
-                    if (typeof window !== 'undefined') window.location.hash = '#powerbi';
-                  } else if (t.includes('stat')) {
-                    setSelectedModuleView('stats');
-                    if (typeof window !== 'undefined') window.location.hash = '#stats';
-                  } else if (t.includes('genai')) {
-                    setSelectedModuleView('genai');
-                    if (typeof window !== 'undefined') window.location.hash = '#genai';
-                  } else {
-                    setSelectedModuleView('python');
-                    if (typeof window !== 'undefined') window.location.hash = '#python';
-                  }
-                }}
-                onNavigateHome={() => {
-                  playClick();
-                  setSelectedModuleView(null);
-                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-                }}
-                onOpenArena={() => {
-                  playClick();
-                  setSelectedModuleView(null);
-                  setActiveTopicWs(null);
-                  setDockTab('game');
-                  if (typeof window !== 'undefined') window.location.hash = '#game';
-                }}
-                onOpenEarn={() => {
-                  playClick();
-                  setSelectedModuleView(null);
-                  setActiveTopicWs(null);
-                  setDockTab('income');
-                  if (typeof window !== 'undefined') window.location.hash = '#earnings';
-                }}
-                onOpenPlacement={() => {
-                  playClick();
-                  setPlacementLockOpen(true);
-                }}
-              />
-            </div>
-
-            {/* Desktop Experience (>= 768px) - 1:1 Reference Match Hub */}
-            <div className="hidden md:block">
-              <DataAnalystGenAiHub
-                userName={currentUserName || userName}
-                onBack={() => {
-                  playClick();
-                  setSelectedModuleView(null);
-                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-                }}
-                onStartTopic={(topicId, title, step = 'learn') => {
-                  playClick();
-                  const numericTopicId = parseInt(topicId.replace(/\D/g, ''), 10) || 1;
-
-                  if (topicId.startsWith('t-7') || topicId.startsWith('t-8') || topicId.startsWith('t-9')) {
-                    playCinema();
-                    setSelectedModuleView('sql');
-                    if (typeof window !== 'undefined') window.location.hash = '#sql';
-                  } else if (topicId.startsWith('t-13') || topicId.startsWith('t-14') || topicId.startsWith('t-15')) {
-                    playCinema();
-                    setSelectedModuleView('powerbi');
-                    if (typeof window !== 'undefined') window.location.hash = '#powerbi';
-                  } else if (topicId.startsWith('t-16') || topicId.startsWith('t-17') || topicId.startsWith('t-18')) {
-                    playCinema();
-                    setSelectedModuleView('genai');
-                    if (typeof window !== 'undefined') window.location.hash = '#genai';
-                  } else {
-                    playCinema();
-                    setSelectedModuleView('python');
-                    setActiveTopicWs(numericTopicId);
-                    setTargetStep(step as any);
-                    if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}`;
-                  }
-                }}
-              />
-            </div>
+                  setSelectedModuleView('python');
+                  setActiveTopicWs(numericTopicId);
+                  setTargetStep(step as any);
+                  if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}`;
+                }
+              }}
+            />
           </div>
         )}
 
@@ -2030,186 +1677,79 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           </div>
         )}
 
-        {/* ─── TAB 1: TOP-LEVEL 4-COURSE STUDENT DASHBOARD (#dashboard) ─── */}
+        {/* ─── TAB 1: TOP-LEVEL STUDENT COURSES DASHBOARD (#dashboard) ─── */}
         {dockTab === 'home' && selectedModuleView === null && (
           <div className="col-span-full">
-            {/* Native Android Mobile Dashboard Feed (< 768px) */}
-            <div className="md:hidden">
-              <MobileDashboardHome
-                userName={currentUserName}
-                telemetry={telemetry}
-                onStartPython={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('data_analyst');
-                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-                }}
-                onOpenDataAnalyst={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('data_analyst');
-                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-                }}
-                onOpenDataScience={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('data_science');
-                  if (typeof window !== 'undefined') window.location.hash = '#data-science';
-                }}
-                onOpenMlEngineering={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('ml_engineering');
-                  if (typeof window !== 'undefined') window.location.hash = '#ml-engineering';
-                }}
-                onOpenAiEngineering={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('ai_engineering');
-                  if (typeof window !== 'undefined') window.location.hash = '#ai-engineering';
-                }}
-                onOpenAiToolsPrompt={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('ai_tools_prompt');
-                  if (typeof window !== 'undefined') window.location.hash = '#ai-tools-prompt';
-                }}
-                onOpenMsOfficeCopilot={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('ms_office_copilot');
-                  if (typeof window !== 'undefined') window.location.hash = '#ms-office-copilot';
-                }}
-                onOpenFullStackMern={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('full_stack_mern');
-                  if (typeof window !== 'undefined') window.location.hash = '#full-stack-web-dev';
-                }}
-                onOpenSql={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('sql');
-                  if (typeof window !== 'undefined') window.location.hash = '#sql';
-                }}
-                onOpenExcel={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('python');
-                  if (typeof window !== 'undefined') window.location.hash = '#python';
-                }}
-                onOpenPowerBi={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('powerbi');
-                  if (typeof window !== 'undefined') window.location.hash = '#powerbi';
-                }}
-                onOpenGenAi={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('genai');
-                  if (typeof window !== 'undefined') window.location.hash = '#genai';
-                }}
-                onOpenPlacement={() => {
-                  playClick();
-                  setSelectedModuleView(null);
-                  setDockTab('placement');
-                  if (typeof window !== 'undefined') window.location.hash = '#placement';
-                }}
-                onOpenArena={() => {
-                  playClick();
-                  setSelectedModuleView(null);
-                  setActiveTopicWs(null);
-                  setDockTab('game');
-                  if (typeof window !== 'undefined') window.location.hash = '#game';
-                }}
-                onOpenEarn={() => {
-                  playClick();
-                  setSelectedModuleView(null);
-                  setActiveTopicWs(null);
-                  setDockTab('income');
-                  if (typeof window !== 'undefined') window.location.hash = '#earnings';
-                }}
-                onOpenAdvisor={onOpenAdvisor}
-                                onOpenLockedModule={(courseTitle) => {
-                  handleOpenCourseDetail(courseTitle);
-                }}
-              />
-            </div>
-
-            {/* Desktop Courses Dashboard (>= 768px) */}
-            <div className="hidden md:block">
-              <StudentCoursesDashboard
-                userName={userName}
-                isNewStudentMode={isNewStudentMode}
-                onOpenDataAnalystCourse={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('data_analyst');
-                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-                }}
-                onOpenDataScienceCourse={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('data_science');
-                  if (typeof window !== 'undefined') window.location.hash = '#data-science';
-                }}
-                onOpenMlEngineeringCourse={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('ml_engineering');
-                  if (typeof window !== 'undefined') window.location.hash = '#ml-engineering';
-                }}
-                onOpenAiEngineeringCourse={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('ai_engineering');
-                  if (typeof window !== 'undefined') window.location.hash = '#ai-engineering';
-                }}
-                onOpenAiToolsPromptCourse={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('ai_tools_prompt');
-                  if (typeof window !== 'undefined') window.location.hash = '#ai-tools-prompt';
-                }}
-                onOpenMsOfficeCopilotCourse={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('ms_office_copilot');
-                  if (typeof window !== 'undefined') window.location.hash = '#ms-office-copilot';
-                }}
-                onOpenFullStackMernCourse={() => {
-                  playClick();
-                  playCinema();
-                  setSelectedModuleView('full_stack_mern');
-                  if (typeof window !== 'undefined') window.location.hash = '#full-stack-web-dev';
-                }}
-                onOpenLockedCourse={(courseTitle) => {
-                  playClick();
-                  handleOpenCourseDetail(courseTitle);
-                }}
-                onOpenPythonDirect={() => {
-                  playClick();
-                  setSelectedModuleView('python');
-                  setActiveTopicWs(1);
-                  setTargetStep('code');
-                  if (typeof window !== 'undefined') window.location.hash = '#code?topic=1';
-                }}
-                onOpenMockInterview={() => {
-                  playClick();
-                  setSelectedModuleView('python');
-                  setActiveTopicWs(1);
-                  setTargetStep('interview');
-                  if (typeof window !== 'undefined') window.location.hash = '#interview?topic=1';
-                }}
-                onOpenAdvisor={onOpenAdvisor}
-                onOpenGameArena={() => {
-                  playClick();
-                  setSelectedModuleView('python_intro_game');
-                  if (typeof window !== 'undefined') window.location.hash = '#coding_game';
-                }}
-              />
-            </div>
+            <StudentCoursesDashboard
+              userName={userName}
+              isNewStudentMode={isNewStudentMode}
+              onOpenDataAnalystCourse={() => {
+                playClick();
+                playCinema();
+                setSelectedModuleView('data_analyst');
+                if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+              }}
+              onOpenDataScienceCourse={() => {
+                playClick();
+                playCinema();
+                setSelectedModuleView('data_science');
+                if (typeof window !== 'undefined') window.location.hash = '#data-science';
+              }}
+              onOpenMlEngineeringCourse={() => {
+                playClick();
+                playCinema();
+                setSelectedModuleView('ml_engineering');
+                if (typeof window !== 'undefined') window.location.hash = '#ml-engineering';
+              }}
+              onOpenAiEngineeringCourse={() => {
+                playClick();
+                playCinema();
+                setSelectedModuleView('ai_engineering');
+                if (typeof window !== 'undefined') window.location.hash = '#ai-engineering';
+              }}
+              onOpenAiToolsPromptCourse={() => {
+                playClick();
+                playCinema();
+                setSelectedModuleView('ai_tools_prompt');
+                if (typeof window !== 'undefined') window.location.hash = '#ai-tools-prompt';
+              }}
+              onOpenMsOfficeCopilotCourse={() => {
+                playClick();
+                playCinema();
+                setSelectedModuleView('ms_office_copilot');
+                if (typeof window !== 'undefined') window.location.hash = '#ms-office-copilot';
+              }}
+              onOpenFullStackMernCourse={() => {
+                playClick();
+                playCinema();
+                setSelectedModuleView('full_stack_mern');
+                if (typeof window !== 'undefined') window.location.hash = '#full-stack-web-dev';
+              }}
+              onOpenLockedCourse={(courseTitle) => {
+                playClick();
+                handleOpenCourseDetail(courseTitle);
+              }}
+              onOpenPythonDirect={() => {
+                playClick();
+                setSelectedModuleView('python');
+                setActiveTopicWs(1);
+                setTargetStep('code');
+                if (typeof window !== 'undefined') window.location.hash = '#code?topic=1';
+              }}
+              onOpenMockInterview={() => {
+                playClick();
+                setSelectedModuleView('python');
+                setActiveTopicWs(1);
+                setTargetStep('interview');
+                if (typeof window !== 'undefined') window.location.hash = '#interview?topic=1';
+              }}
+              onOpenAdvisor={onOpenAdvisor}
+              onOpenGameArena={() => {
+                playClick();
+                setSelectedModuleView('python_intro_game');
+                if (typeof window !== 'undefined') window.location.hash = '#coding_game';
+              }}
+            />
           </div>
         )}
 
@@ -2437,28 +1977,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         userName={currentUserName}
       />
 
-            {/* Android Mobile Profile Bottom Sheet Dialog */}
-      <MobileProfileSheet
-        isOpen={mobileProfileSheetOpen}
-        onClose={() => setMobileProfileSheetOpen(false)}
-        userName={currentUserName}
-        telemetry={telemetry}
-        onLogout={onLogout}
-        onOpenEarn={() => {
-          setSelectedModuleView(null);
-          setActiveTopicWs(null);
-          setDockTab('income');
-          if (typeof window !== 'undefined') window.location.hash = '#earnings';
-        }}
-        onOpenPlacement={() => {
-          setSelectedModuleView(null);
-          setActiveTopicWs(null);
-          setDockTab('placement');
-          if (typeof window !== 'undefined') window.location.hash = '#placement';
-        }}
-        onOpenLogin={() => setAuthModalOpen(true)}
-        onOpenAdvisor={onOpenAdvisor}
-      />
+
 
       {/* ─── REACT FRONT END & FULL CURRICULUM MODAL ─── */}
       <CurriculumModal

@@ -17,9 +17,17 @@
   color: #0f172a;
 }
 
-@media (max-width: 767px) {
+/* Responsive Mobile Adjustments (< 768px) */
+@media (max-width: 768px) {
   .affiliate-hub-container {
-    display: none !important;
+    padding: 10px 10px 80px;
+    gap: 14px;
+    overflow-x: hidden;
+  }
+  .affiliate-hero-slider-wrap {
+    height: auto;
+    min-height: 180px;
+    max-height: none;
   }
 }
 

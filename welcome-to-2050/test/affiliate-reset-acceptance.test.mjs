@@ -285,7 +285,6 @@ await test('11 & Rule 8. Refund/chargeback reverses ₹100 safely without creati
 // 12. Source code verification: Bank/UPI reset to Not Linked, no hardcoded dummy bank/UPI or chart data
 await test('3 & 13 & 14 & 15. Frontend & Migration source verification (Not Linked Bank/UPI, Zero-State Charts, One-Time Migration, Admin Status)', async () => {
   const hubCode = fs.readFileSync('welcome-to-2050/src/components/futureai/AffiliateEarningsHub.tsx', 'utf8');
-  const mobileHubCode = fs.readFileSync('welcome-to-2050/src/components/futureai/mobile/MobileAffiliateEarningsHub.tsx', 'utf8');
   const authCode = fs.readFileSync('welcome-to-2050/src/services/realAuthService.ts', 'utf8');
   const adminCode = fs.readFileSync('welcome-to-2050/src/components/admin/controlcenter/DashboardOverview.tsx', 'utf8');
 
@@ -295,9 +294,8 @@ await test('3 & 13 & 14 & 15. Frontend & Migration source verification (Not Link
   assert.equal(hubCode.includes('Bank / UPI Status: Not Linked'), true, 'Must show Not Linked initially');
 
   // Verify old hardcoded chart tooltip & fake leaderboard are gone
-  assert.equal(hubCode.includes('₹750 commission'), false, 'Hardcoded ₹750 commission tooltip must be removed from desktop');
-  assert.equal(mobileHubCode.includes('₹750 commission'), false, 'Hardcoded ₹750 commission tooltip must be removed from mobile');
-  assert.equal(mobileHubCode.includes('Aditi Sharma'), false, 'Hardcoded legacy leaderboard must be removed from mobile');
+  assert.equal(hubCode.includes('₹750 commission'), false, 'Hardcoded ₹750 commission tooltip must be removed');
+  assert.equal(hubCode.includes('Aditi Sharma'), false, 'Hardcoded legacy leaderboard must be removed');
 
   // Verify one-time versioned migration preserves login and course unlocks
   assert.equal(authCode.includes('affiliate_v5_complete_reset_2026'), true, 'Versioned v5 migration ID must exist');

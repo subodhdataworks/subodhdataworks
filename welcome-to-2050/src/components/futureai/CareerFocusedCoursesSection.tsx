@@ -198,171 +198,111 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
         </div>
 
         {/* =========================================================================
-            DESKTOP VIEW: 4 HIGH-PAYING INDUSTRY COURSES (CYLINDRICAL NEON POTS)
+            UNIFIED RESPONSIVE VIEW: HIGH-PAYING INDUSTRY COURSES (SINGLE SOURCE OF TRUTH)
             ========================================================================= */}
-        <div className="hidden md:block">
-          <div className="lhh-modules-section scd-transparent-pots-section" style={{ padding: 0, margin: 0, background: 'transparent' }}>
-            <div className="lhh-section-header" style={{ marginBottom: '1.5rem' }}>
-              <div className="lhh-section-left">
-                <div className="lhh-layer-icon-box">
-                  <Layers className="w-5 h-5 text-blue-600" />
-                </div>
-                <div className="lhh-section-title-wrap">
-                  <h2 className="lhh-section-title">High-Paying Industry Career Tracks</h2>
-                </div>
+        <div className="lhh-modules-section scd-transparent-pots-section" style={{ padding: 0, margin: 0, background: 'transparent' }}>
+          <div className="lhh-section-header" style={{ marginBottom: '1.5rem' }}>
+            <div className="lhh-section-left">
+              <div className="lhh-layer-icon-box">
+                <Layers className="w-5 h-5 text-blue-600" />
               </div>
-
-              <div className="lhh-controls-group">
-                <div className="lhh-view-toggle-capsule">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      playClick();
-                      setViewMode('grid');
-                    }}
-                    className={`lhh-view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
-                    aria-label="Grid view"
-                  >
-                    <LayoutGrid className="w-3.5 h-3.5" />
-                    <span>Grid</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      playClick();
-                      setViewMode('list');
-                    }}
-                    className={`lhh-view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
-                    aria-label="List view"
-                  >
-                    <List className="w-3.5 h-3.5" />
-                    <span>List</span>
-                  </button>
-                </div>
+              <div className="lhh-section-title-wrap">
+                <h2 className="lhh-section-title">High-Paying Industry Career Tracks</h2>
               </div>
             </div>
 
-            {viewMode === 'grid' ? (
-              <div className="scd-pots-4grid home-compact-pots">
-                {CAREER_COURSES_12.map((c) => (
-                  <CareerCourseCard
-                    key={c.id}
-                    {...c}
-                    onClick={() => handleCourseClick(c.id)}
-                  />
-                ))}
+            <div className="lhh-controls-group">
+              <div className="lhh-view-toggle-capsule">
+                <button
+                  type="button"
+                  onClick={() => {
+                    playClick();
+                    setViewMode('grid');
+                  }}
+                  className={`lhh-view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                  aria-label="Grid view"
+                >
+                  <LayoutGrid className="w-3.5 h-3.5" />
+                  <span>Grid</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    playClick();
+                    setViewMode('list');
+                  }}
+                  className={`lhh-view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+                  aria-label="List view"
+                >
+                  <List className="w-3.5 h-3.5" />
+                  <span>List</span>
+                </button>
               </div>
-            ) : (
-              <div className="lhh-modules-list">
-                {courses.map((c) => (
-                  <div
-                    key={c.id}
-                    className="lhh-list-card cursor-pointer"
-                    onClick={() => handleCourseClick(c.id)}
-                  >
-                    {c.video ? (
-                      <video
-                        src={c.video}
-                        poster={c.image}
-                        loop
-                        muted
-                        playsInline
-                        preload="none"
-                        className="lhh-list-thumb"
-                      />
-                    ) : (
-                      <img
-                        src={c.image}
-                        alt={c.title}
-                        className="lhh-list-thumb"
-                      />
-                    )}
-                    <div className="lhh-list-info">
-                      <h3 className="lhh-list-title">{c.title} {c.subtitle}</h3>
-                      <p className="lhh-list-desc">
-                        {c.descLine1} • {c.descLine2}
-                      </p>
-                      <div className="lhh-list-meta-row flex flex-wrap items-center gap-2">
-                        <span className="line-through text-slate-400 font-semibold text-xs">Market: {c.marketPrice || 'Rs 6,000'}</span>
-                        <span className="text-emerald-600 font-black text-xs sm:text-sm bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200">Fee: {c.courseFee}</span>
-                        <span className="lhh-meta-pill ctc">{c.salaryRange}</span>
-                        <span className="lhh-meta-pill tag">{c.statusTag}</span>
-                      </div>
+            </div>
+          </div>
+
+          {viewMode === 'grid' ? (
+            <div className="scd-pots-4grid home-compact-pots">
+              {CAREER_COURSES_12.map((c) => (
+                <CareerCourseCard
+                  key={c.id}
+                  {...c}
+                  onClick={() => handleCourseClick(c.id)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="lhh-modules-list">
+              {courses.map((c) => (
+                <div
+                  key={c.id}
+                  className="lhh-list-card cursor-pointer"
+                  onClick={() => handleCourseClick(c.id)}
+                >
+                  {c.video ? (
+                    <video
+                      src={c.video}
+                      poster={c.image}
+                      loop
+                      muted
+                      playsInline
+                      preload="none"
+                      className="lhh-list-thumb"
+                    />
+                  ) : (
+                    <img
+                      src={c.image}
+                      alt={c.title}
+                      className="lhh-list-thumb"
+                    />
+                  )}
+                  <div className="lhh-list-info">
+                    <h3 className="lhh-list-title">{c.title} {c.subtitle}</h3>
+                    <p className="lhh-list-desc">
+                      {c.descLine1} • {c.descLine2}
+                    </p>
+                    <div className="lhh-list-meta-row flex flex-wrap items-center gap-2">
+                      <span className="line-through text-slate-400 font-semibold text-xs">Market: {c.marketPrice || 'Rs 6,000'}</span>
+                      <span className="text-emerald-600 font-black text-xs sm:text-sm bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200">Fee: {c.courseFee}</span>
+                      <span className="lhh-meta-pill ctc">{c.salaryRange}</span>
+                      <span className="lhh-meta-pill tag">{c.statusTag}</span>
                     </div>
-                    <button
-                      type="button"
-                      className="lhh-list-action-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCourseClick(c.id);
-                      }}
-                    >
-                      <span>Start Learning</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* =========================================================================
-            MOBILE VIEW: COMPLETE 12 COURSES SHOWCASE IN ULTRA-PREMIUM STYLE
-            ========================================================================= */}
-        <div className="block md:hidden mt-2 mb-8">
-          
-          {/* Header Title with Layers icon */}
-          <div className="flex items-center justify-between mb-3 px-1">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
-                <Layers className="w-4 h-4" />
-              </div>
-              <h3 className="text-base font-black text-slate-900 tracking-tight">
-                All Courses ({courses.length})
-              </h3>
+                  <button
+                    type="button"
+                    className="lhh-list-action-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCourseClick(c.id);
+                    }}
+                  >
+                    <span>Start Learning</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
             </div>
-            <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-              Industry Ready
-            </span>
-          </div>
-
-          {/* Category Tabs Scrollbar */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-2.5 mb-4 scrollbar-none px-1">
-            {[
-              { id: 'all', label: `All (${courses.length})` },
-              { id: 'flagship', label: 'Flagship Tracks (' + courses.filter(c => c.category === 'flagship').length + ')' },
-              { id: 'core', label: 'Core Analytics (' + courses.filter(c => c.category === 'core').length + ')' },
-              { id: 'ai', label: 'AI & Next-Gen (' + courses.filter(c => c.category === 'ai').length + ')' },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => {
-                  playClick();
-                  setMobileCategory(tab.id as MobileCourseCategoryType);
-                }}
-                className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-2xs cursor-pointer ${
-                  mobileCategory === tab.id
-                    ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white shadow-sm shadow-blue-500/25 scale-[1.02]'
-                    : 'bg-white text-slate-700 border border-slate-200 hover:border-slate-300'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* 12 Courses Premium Cards */}
-          <div className="space-y-4 px-1">
-            {CAREER_COURSES_12.map((c) => (
-              <CareerCourseCard
-                key={c.id}
-                {...c}
-                onClick={() => handleCourseClick(c.id)}
-              />
-            ))}
-          </div>
+          )}
         </div>
       </div>
 

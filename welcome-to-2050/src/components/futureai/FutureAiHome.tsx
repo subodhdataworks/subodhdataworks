@@ -302,7 +302,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               </div>
 
               {/* Key Features Bullet points */}
-              <div className="mt-3 space-y-1 text-[11px] sm:text-xs text-slate-600 font-semibold max-w-md mx-auto lg:mx-0 hidden sm:block">
+              <div className="mt-3 space-y-1 text-[11px] sm:text-xs text-slate-600 font-semibold max-w-md mx-auto lg:mx-0">
                 <div className="flex items-center gap-2 justify-center lg:justify-start">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                   <span>100% Hands-On Coding Challenges & Industry Datasets</span>
@@ -716,7 +716,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/15 pointer-events-none" />
 
             {/* Horizontal Progression Strip Indicator */}
-            <div className="absolute bottom-3 left-3 right-3 sm:bottom-5 sm:left-5 sm:right-5 flex flex-wrap items-center justify-between gap-2.5 bg-slate-900/85 backdrop-blur-md px-3.5 sm:px-6 py-2.5 sm:py-3.5 rounded-2xl border border-white/10 text-white shadow-xl">
+            <div className="relative sm:absolute sm:bottom-5 sm:left-5 sm:right-5 m-2.5 sm:m-0 flex flex-wrap items-center justify-between gap-2.5 bg-slate-900/90 backdrop-blur-md px-3.5 sm:px-6 py-2.5 sm:py-3.5 rounded-2xl border border-white/10 text-white shadow-xl">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-pink-500 shadow-sm shadow-pink-500/50 shrink-0" />
                 <span className="text-xs sm:text-sm font-black tracking-wide">01. Learn Skills</span>
