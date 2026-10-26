@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   ArrowRight,
   Briefcase,
@@ -14,6 +14,125 @@ import {
 } from 'lucide-react';
 import { CAREER_COURSES_12, CareerCourseItem } from '../../../data/careerCourses12';
 import { isCourseUnlocked } from '../../../services/courseUnlockService';
+
+/**
+ * Viewport-aware inline looping course video with poster thumbnail fallback.
+ * - Plays automatically when card is visible in viewport.
+ * - Pauses when scrolled out of view to save battery/CPU on mobile.
+ * - Resumes automatically when scrolled back into view.
+ * - Keeps original thumbnail underneath so there is never a black screen or layout shift.
+ */
+const MobileCourseThumbnailVideo: React.FC<{
+  video?: string;
+  poster: string;
+  alt: string;
+}> = ({ video, poster, alt }) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [videoReady, setVideoReady] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
+
+  useEffect(() => {
+    const vid = videoRef.current;
+    const container = containerRef.current;
+    if (!vid || !container || !video || videoFailed) return;
+
+    // Force muted + inline attributes for Android Chrome & iOS Safari autoplay compliance
+    vid.muted = true;
+    vid.defaultMuted = true;
+    vid.playsInline = true;
+    vid.setAttribute('muted', '');
+    vid.setAttribute('playsinline', '');
+    vid.setAttribute('webkit-playsinline', 'true');
+
+    let isVisible = false;
+
+    const tryPlay = () => {
+      if (!vid || videoFailed) return;
+      vid.muted = true;
+      const playPromise = vid.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {
+          // If browser blocks autoplay until first touch, keep poster visible
+        });
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          isVisible = entry.isIntersecting && entry.intersectionRatio >= 0.15;
+          if (isVisible) {
+            tryPlay();
+          } else {
+            try {
+              vid.pause();
+            } catch {
+              // ignore
+            }
+          }
+        }
+      },
+      { threshold: [0, 0.15, 0.5] }
+    );
+
+    observer.observe(container);
+
+    // Retry playback on page visibility restore or first user touch if visible
+    const handleVisibilityOrTouch = () => {
+      if (document.visibilityState === 'visible' && isVisible && vid.paused) {
+        tryPlay();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityOrTouch);
+    window.addEventListener('touchstart', handleVisibilityOrTouch, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityOrTouch);
+      window.removeEventListener('touchstart', handleVisibilityOrTouch);
+    };
+  }, [video, videoFailed]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-[102px] min-[400px]:w-[114px] h-[86px] shrink-0 rounded-xl overflow-hidden bg-slate-100 select-none"
+    >
+      {/* Static course thumbnail always rendered underneath to prevent black frames or layout shift */}
+      <img
+        src={poster}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        className="w-full h-full object-cover"
+        draggable={false}
+      />
+
+      {video && !videoFailed && (
+        <video
+          ref={videoRef}
+          src={video}
+          poster={poster}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          controls={false}
+          disablePictureInPicture
+          onLoadedData={() => setVideoReady(true)}
+          onPlaying={() => setVideoReady(true)}
+          onError={() => setVideoFailed(true)}
+          className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-300 ${
+            videoReady ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      )}
+    </div>
+  );
+};
 
 /**
  * Mobile-only (below md) compact app-style dashboard content.
@@ -137,7 +256,7 @@ export const MobileCompactDashboard: React.FC<MobileCompactDashboardProps> = ({
         </div>
       </section>
 
-      {/* ─── 3. COURSES (LIVE COUNT + HORIZONTAL CARDS) ─── */}
+      {/* ─── 3. COURSES (LIVE COUNT + HORIZONTAL CARDS WITH AUTOPLAY LOOPING VIDEOS) ─── */}
       <section id="mobile-courses-list" className="mt-4 scroll-mt-20">
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2 min-w-0">
@@ -177,11 +296,10 @@ export const MobileCompactDashboard: React.FC<MobileCompactDashboardProps> = ({
                 onClick={() => onCourseClick(c)}
                 className="w-full flex items-stretch gap-2.5 p-2 rounded-2xl bg-white border border-[#e3ecfb] shadow-[0_3px_14px_rgba(30,80,180,0.06)] text-left active:scale-[0.99] transition-transform"
               >
-                <img
-                  src={c.image}
+                <MobileCourseThumbnailVideo
+                  video={c.video}
+                  poster={c.holoImage || c.image}
                   alt={c.title}
-                  loading="lazy"
-                  className="w-[102px] min-[400px]:w-[114px] h-[86px] shrink-0 rounded-xl object-cover bg-slate-100"
                 />
                 <div className="flex-1 min-w-0 flex flex-col justify-center py-0.5">
                   <h3 className="text-[13.5px] font-extrabold text-[#1a5fe0] leading-tight line-clamp-1">{c.title}</h3>
