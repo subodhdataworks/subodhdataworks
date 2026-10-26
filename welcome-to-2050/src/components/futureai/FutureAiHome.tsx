@@ -969,124 +969,152 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 8: Comprehensive Modern Footer (Campus Background with Soft White Tint)
+          SECTION 8: Premium Compact 3-Column Footer (Campus Background with Dark Navy Overlay)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <footer className="relative w-full border-t border-slate-200/90 overflow-hidden">
-        
-        {/* Full-Cover Campus Background Image */}
-        <img
-          src="/images/future_ai_campus_footer.png"
-          alt="Future AI Innovation Headquarters & Tech Campus"
-          className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
+      <footer
+        className="relative w-full border-t border-slate-700/60 overflow-hidden text-white"
+        style={{
+          backgroundImage: "url('/images/future_ai_campus_footer.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 55%',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        {/* Dark Navy Transparent Overlay: rgba(5, 22, 48, 0.65) */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ backgroundColor: 'rgba(5, 22, 48, 0.65)' }}
         />
 
-        {/* Soft White Frost Glass Tint Overlay ("halka white") */}
-        <div className="absolute inset-0 bg-white/50 sm:bg-white/45 backdrop-blur-[0.5px] pointer-events-none" />
+        {/* Top Electric-Blue Subtle Gradient Accent Line */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 via-[#00D2FF] to-indigo-500 pointer-events-none" />
 
-        {/* Top Accent Gradient Line */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 pointer-events-none" />
-
-        {/* Footer Content Container directly on top of the campus background */}
-        <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-8">
-          
-          {/* Main Footer Links Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-10 border-b border-slate-300/80">
+        {/* Footer Main Content — Max Height 260–300px including copyright bar */}
+        <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-7 sm:pt-8 pb-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-12 items-start pb-5">
             
-            {/* Column 1: Brand & Logo */}
-            <div className="lg:col-span-2">
-              <div className="flex items-center gap-2.5 text-slate-950 font-black text-xl tracking-tight">
-                <span className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-500 text-white flex items-center justify-center font-mono text-base shadow-md shadow-blue-500/30">
-                  F
-                </span>
-                <span>FUTURE IT</span>
-                <span className="text-blue-600 font-bold text-xs tracking-widest">— INDUSTRIES —</span>
-              </div>
-              <p className="text-xs text-slate-900 mt-3 font-bold leading-relaxed max-w-sm drop-shadow-2xs">
-                India&apos;s #1 AI &amp; Data Science Career Accelerator. Hands-on projects, real interview prep, and 100% placement support.
+            {/* 1. LEFT — BRAND */}
+            <div className="flex flex-col items-center md:items-start text-center md:text-left">
+              <img
+                src="/images/brand/future_it_logo_white.png"
+                alt="FUTURE IT INDUSTRIES"
+                className="h-8 sm:h-9 w-auto object-contain select-none cursor-pointer transition-transform hover:scale-[1.02]"
+                onClick={() => {
+                  window.location.hash = '#home';
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              />
+              <p className="text-[15px] text-slate-200 font-medium mt-2.5 tracking-wide leading-snug">
+                Learn Today, Earn Tomorrow.
               </p>
-              <div className="text-xs text-blue-700 font-black mt-2 flex items-center gap-1.5 drop-shadow-2xs">
-                <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-                <span>Learn Today, Earn Tomorrow.</span>
-              </div>
-              
-              {/* Verified Campus Badge */}
-              <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/90 border border-slate-200/90 shadow-2xs text-[11px] font-bold text-slate-700">
-                <Building2 className="w-3.5 h-3.5 text-blue-600" />
-                <span>Headquarters &amp; Physical Tech Campus • Noida, India</span>
-              </div>
             </div>
 
-            {/* Column 2: Quick Links */}
-            <div>
-              <h4 className="text-xs font-black text-slate-900 tracking-wider uppercase mb-3.5">
-                Quick Links
-              </h4>
-              <ul className="space-y-2.5 text-xs font-extrabold text-slate-900 drop-shadow-2xs">
-                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Courses</button></li>
-                <li><button onClick={() => { window.location.hash = "#practice"; }} className="hover:text-blue-600 transition-colors cursor-pointer">Hackathon/DSA Practice</button></li>
-                <li><button onClick={() => { window.location.hash = "#ats"; }} className="hover:text-blue-600 transition-colors cursor-pointer">ATS Resume Checker</button></li>
-                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Internship</button></li>
-                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Success Stories</button></li>
-              </ul>
-            </div>
-
-            {/* Column 3: Company */}
-            <div>
-              <h4 className="text-xs font-black text-slate-900 tracking-wider uppercase mb-3.5">
+            {/* 2. CENTER — COMPANY */}
+            <div className="flex flex-col items-center md:items-start text-center md:text-left">
+              <h4 className="text-[18px] font-bold text-white tracking-wide">
                 Company
               </h4>
-              <ul className="space-y-2.5 text-xs font-extrabold text-slate-900 drop-shadow-2xs">
-                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">About Us</button></li>
-                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Contact Us</button></li>
-                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Privacy Policy</button></li>
-                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Terms &amp; Conditions</button></li>
+              <div className="w-8 h-[2.5px] bg-[#00D2FF] rounded-full mt-1.5 mb-3" />
+              <ul className="space-y-2 text-[14px] font-medium text-slate-200">
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => { window.location.hash = '#about-us'; }}
+                    className="hover:text-[#00D2FF] transition-colors cursor-pointer"
+                  >
+                    About Us
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => { window.location.hash = '#contact-us'; }}
+                    className="hover:text-[#00D2FF] transition-colors cursor-pointer"
+                  >
+                    Contact Us
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => { window.location.hash = '#privacy-policy'; }}
+                    className="hover:text-[#00D2FF] transition-colors cursor-pointer"
+                  >
+                    Privacy Policy
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => { window.location.hash = '#terms-and-conditions'; }}
+                    className="hover:text-[#00D2FF] transition-colors cursor-pointer"
+                  >
+                    Terms &amp; Conditions
+                  </button>
+                </li>
               </ul>
             </div>
 
-            {/* Column 4: Support & Follow Us */}
-            <div>
-              <h4 className="text-xs font-black text-slate-900 tracking-wider uppercase mb-3.5">
+            {/* 3. RIGHT — SUPPORT */}
+            <div className="flex flex-col items-center md:items-start text-center md:text-left">
+              <h4 className="text-[18px] font-bold text-white tracking-wide">
                 Support
               </h4>
-              <ul className="space-y-2.5 text-xs font-extrabold text-slate-900 drop-shadow-2xs">
-                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Help Center</button></li>
-                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">FAQs</button></li>
-                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Refund Policy</button></li>
-                <li><button onClick={promptLogin} className="hover:text-blue-600 transition-colors">Career</button></li>
+              <div className="w-8 h-[2.5px] bg-[#00D2FF] rounded-full mt-1.5 mb-3" />
+              <ul className="space-y-2 text-[14px] font-medium text-slate-200">
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const msg = 'Hello Future IT Industry Support Team, I need help regarding my course or student account. Please assist me.';
+                      window.open(`https://wa.me/917632099528?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+                    }}
+                    className="hover:text-[#00D2FF] transition-colors cursor-pointer"
+                  >
+                    Help Center
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => { window.location.hash = '#contact-us'; }}
+                    className="hover:text-[#00D2FF] transition-colors cursor-pointer"
+                  >
+                    FAQs
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => { window.location.hash = '#refund-policy'; }}
+                    className="hover:text-[#00D2FF] transition-colors cursor-pointer"
+                  >
+                    Refund Policy
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => { window.location.hash = '#contact-us'; }}
+                    className="hover:text-[#00D2FF] transition-colors cursor-pointer"
+                  >
+                    Career
+                  </button>
+                </li>
               </ul>
-
-              {/* Social Media */}
-              <div className="mt-5">
-                <h5 className="text-[11px] font-bold text-slate-900 mb-2.5">Follow Us</h5>
-                <div className="flex items-center gap-2">
-                  <a href="#" onClick={(e) => { e.preventDefault(); promptLogin(); }} className="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-xs">
-                    <YoutubeIcon />
-                  </a>
-                  <a href="#" onClick={(e) => { e.preventDefault(); promptLogin(); }} className="w-8 h-8 rounded-xl bg-blue-700 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-xs">
-                    <LinkedinIcon />
-                  </a>
-                  <a href="#" onClick={(e) => { e.preventDefault(); promptLogin(); }} className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-xs">
-                    <InstagramIcon />
-                  </a>
-                  <a href="#" onClick={(e) => { e.preventDefault(); promptLogin(); }} className="w-8 h-8 rounded-xl bg-sky-500 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-xs">
-                    <TwitterIcon />
-                  </a>
-                  <a href="#" onClick={(e) => { e.preventDefault(); promptLogin(); }} className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-xs">
-                    <FacebookIcon />
-                  </a>
-                </div>
-              </div>
-
             </div>
 
           </div>
+        </div>
 
-          {/* Bottom Copyright */}
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-900 font-bold drop-shadow-2xs">
+        {/* 7. Slim Copyright Bottom Bar (~40px height, dark navy translucent background, thin top border) */}
+        <div className="relative z-10 w-full min-h-[40px] py-2.5 px-4 sm:px-6 lg:px-8 bg-[#030e20]/80 border-t border-white/10 flex items-center">
+          <div className="max-w-[1440px] w-full mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 text-center sm:text-left text-[12px] sm:text-[13px] text-slate-300">
             <p>© 2026 Future IT Industry. All rights reserved.</p>
-            <p className="text-[11px] text-slate-800 font-semibold">Empowering learners across India to learn, practice, and get placed.</p>
+            <p className="text-slate-400 font-normal">
+              Empowering learners across India to learn, practice, and get placed.
+            </p>
           </div>
-
         </div>
       </footer>
 
