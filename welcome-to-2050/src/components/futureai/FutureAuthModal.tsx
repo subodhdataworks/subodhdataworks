@@ -29,7 +29,7 @@ export interface FutureAuthModalProps {
 export type AuthLoadingStage = 'idle' | 'connecting' | 'verifying' | 'preparing' | 'success';
 
 /**
- * ─── PREMIUM ANIMATED CIRCULAR LOGIN LOADER ───
+ * ─── COMPACT PREMIUM ANIMATED CIRCULAR LOGIN LOADER ───
  * Blue-to-cyan gradient rotating ring with glowing halo,
  * subtle pulsing Future IT Industry logo in the center,
  * and dynamic stage message progression.
@@ -58,15 +58,15 @@ const LoginProcessingLoader: React.FC<{
 
   return (
     <div
-      className="absolute inset-0 z-50 bg-white/95 backdrop-blur-md rounded-[24px] flex flex-col items-center justify-center p-6 sm:p-8 text-center animate-fadeIn select-none"
+      className="absolute inset-0 z-50 bg-white/95 backdrop-blur-md rounded-[20px] flex flex-col items-center justify-center p-5 text-center animate-fadeIn select-none"
       role="status"
       aria-live="polite"
       aria-busy={!isSuccess}
     >
       {/* ── Circular Spinning Ring with Future IT Logo in Center ── */}
-      <div className="relative w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center mb-5">
+      <div className="relative w-22 h-22 sm:w-24 sm:h-24 flex items-center justify-center mb-4">
         {/* Soft glowing ambient halo */}
-        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-500/25 via-cyan-400/25 to-indigo-500/25 blur-xl animate-pulse motion-reduce:animate-none" />
+        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-500/25 via-cyan-400/25 to-indigo-500/25 blur-lg animate-pulse motion-reduce:animate-none" />
 
         {/* Outer Circular Ring */}
         {!isSuccess ? (
@@ -75,13 +75,12 @@ const LoginProcessingLoader: React.FC<{
             viewBox="0 0 100 100"
           >
             <defs>
-              <linearGradient id="loginRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <linearGradient id="loginRingGradCompact" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#1a73e8" />
                 <stop offset="50%" stopColor="#00d2ff" />
                 <stop offset="100%" stopColor="#4f46e5" />
               </linearGradient>
             </defs>
-            {/* Background track circle */}
             <circle
               cx="50"
               cy="50"
@@ -90,12 +89,11 @@ const LoginProcessingLoader: React.FC<{
               strokeWidth="5"
               fill="none"
             />
-            {/* Animated Gradient Progress Arc */}
             <circle
               cx="50"
               cy="50"
               r="44"
-              stroke="url(#loginRingGrad)"
+              stroke="url(#loginRingGradCompact)"
               strokeWidth="5.5"
               strokeDasharray="276"
               strokeDashoffset="75"
@@ -105,16 +103,15 @@ const LoginProcessingLoader: React.FC<{
             />
           </svg>
         ) : (
-          /* Success Ring Checkmark */
-          <div className="w-full h-full rounded-full border-4 border-emerald-500 bg-emerald-50 flex items-center justify-center shadow-[0_0_25px_rgba(16,185,129,0.4)] animate-scaleUp">
-            <Check className="w-12 h-12 text-emerald-600 stroke-[3.5]" />
+          <div className="w-full h-full rounded-full border-3 border-emerald-500 bg-emerald-50 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.35)] animate-scaleUp">
+            <Check className="w-9 h-9 text-emerald-600 stroke-[3.5]" />
           </div>
         )}
 
         {/* Center Logo with Subtle Pulsing Animation */}
         {!isSuccess && (
-          <div className="absolute inset-0 flex items-center justify-center p-6">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white shadow-md border border-slate-100 flex items-center justify-center p-2.5 animate-pulse motion-reduce:animate-none">
+          <div className="absolute inset-0 flex items-center justify-center p-4">
+            <div className="w-11 h-11 rounded-full bg-white shadow-xs border border-slate-100 flex items-center justify-center p-2 animate-pulse motion-reduce:animate-none">
               <img
                 src={BRAND.emblem || '/images/brand/future_it_emblem.png'}
                 alt="Future IT Industry"
@@ -126,22 +123,22 @@ const LoginProcessingLoader: React.FC<{
       </div>
 
       {/* Main Title */}
-      <h3 className="text-xl sm:text-2xl font-black text-[#10234A] tracking-tight">
+      <h3 className="text-lg font-black text-[#10234A] tracking-tight">
         {isSuccess ? 'Login Successful! 🎉' : 'Signing You In...'}
       </h3>
 
       {/* Dynamic Stage Message */}
-      <div className="mt-2.5 flex items-center justify-center gap-2">
+      <div className="mt-1.5 flex items-center justify-center gap-1.5">
         {!isSuccess && (
-          <span className="w-2 h-2 rounded-full bg-cyan-500 animate-ping motion-reduce:animate-none" />
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-ping motion-reduce:animate-none" />
         )}
-        <span className="text-sm font-bold text-[#1a73e8]">
+        <span className="text-xs font-bold text-[#1a73e8]">
           {getStageTitle()}
         </span>
       </div>
 
       {/* Subtitle */}
-      <p className="mt-1.5 text-xs text-slate-500 max-w-[280px] leading-relaxed">
+      <p className="mt-1 text-[11px] text-slate-500 max-w-[240px] leading-tight">
         {isSuccess
           ? 'Preparing your learning environment...'
           : 'Please wait while we securely connect your account.'}
@@ -282,7 +279,6 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
     setLoadingStage('connecting');
     setCustomStageText('Connecting securely...');
 
-    // Safety timeout: abort if popup is hung or abandoned
     clearAuthTimeout();
     timeoutRef.current = setTimeout(() => {
       setLoadingStage('idle');
@@ -291,26 +287,22 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
     }, 45000);
 
     try {
-      // Direct Firebase native Google popup (fastest and reliable)
       const fbUser = await loginWithGooglePopup();
 
       clearAuthTimeout();
       setLoadingStage('verifying');
       setCustomStageText('Verifying your account...');
 
-      // Transition to preparing dashboard
       setTimeout(() => {
         setLoadingStage('preparing');
         setCustomStageText('Preparing your dashboard...');
       }, 250);
 
-      // Transition to success state
       setTimeout(() => {
         setLoadingStage('success');
         setCustomStageText('Login successful!');
       }, 550);
 
-      // Final complete & redirect
       setTimeout(() => {
         completeLogin(fbUser.name, fbUser.email, fbUser.avatar, 'student');
       }, 950);
@@ -397,9 +389,9 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3.5 sm:p-4 bg-slate-950/70 backdrop-blur-md animate-fadeIn overflow-y-auto">
-      {/* ── CARD: Premium Modern Single-Column Modal (440–480px) ── */}
-      <div className="relative w-full max-w-[440px] sm:max-w-[460px] bg-gradient-to-b from-[#FAFBFD] via-white to-white rounded-[24px] shadow-[0_25px_60px_-15px_rgba(16,35,74,0.2),0_0_0_1px_rgba(220,232,252,0.85)] p-6 sm:p-7 text-center border border-[#DCE8FC] my-auto animate-scaleUp overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-md animate-fadeIn overflow-y-auto">
+      {/* ── CARD: Compact, Sleek Single-Column Modal (380–395px) ── */}
+      <div className="relative w-full max-w-[385px] bg-gradient-to-b from-[#FAFBFD] via-white to-white rounded-[20px] shadow-[0_20px_50px_-12px_rgba(16,35,74,0.22),0_0_0_1px_rgba(220,232,252,0.85)] p-4 sm:p-5 text-center border border-[#DCE8FC] my-auto animate-scaleUp overflow-hidden">
 
         {/* ── Dynamic Animated Circular Login Loader Overlay ── */}
         {loadingStage !== 'idle' && (
@@ -409,9 +401,9 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
           />
         )}
 
-        {/* Subtle Pastel-Blue Ambient Glow Gradients */}
-        <div className="absolute -top-16 -left-16 w-44 h-44 bg-sky-100/60 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute -top-12 -right-12 w-44 h-44 bg-blue-100/50 rounded-full blur-2xl pointer-events-none" />
+        {/* Subtle Pastel-Blue Ambient Glow */}
+        <div className="absolute -top-12 -left-12 w-36 h-36 bg-sky-100/60 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -top-10 -right-10 w-36 h-36 bg-blue-100/50 rounded-full blur-2xl pointer-events-none" />
 
         {/* Close (X) Button at Top-Right */}
         <button
@@ -419,43 +411,43 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
           onClick={onClose}
           disabled={isSubmitting}
           aria-label="Close"
-          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100/90 hover:bg-slate-200 active:scale-95 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-all cursor-pointer z-30 shadow-xs border border-slate-200/50 disabled:opacity-40"
+          className="absolute top-3 right-3 w-7 h-7 rounded-full bg-slate-100/90 hover:bg-slate-200 active:scale-95 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-all cursor-pointer z-30 shadow-2xs border border-slate-200/50 disabled:opacity-40"
         >
-          <X className="w-4 h-4 stroke-[2.5]" />
+          <X className="w-3.5 h-3.5 stroke-[2.5]" />
         </button>
 
         {/* ── POPUP HEADER ── */}
         <div className="relative z-10 flex flex-col items-center">
           {/* Official Future IT Logo from project assets */}
-          <div className="h-10 sm:h-11 flex items-center justify-center">
+          <div className="h-8 sm:h-9 flex items-center justify-center">
             <img
               src={BRAND.logo || '/images/brand/future_it_logo.png'}
               alt="FUTURE IT INDUSTRY"
-              className="h-9 sm:h-10 w-auto object-contain select-none"
+              className="h-7 sm:h-8 w-auto object-contain select-none"
             />
           </div>
 
           {/* Welcome Back! 👋 */}
-          <h2 className="text-2xl sm:text-[25px] font-black text-[#10234A] tracking-tight mt-3 flex items-center justify-center gap-1.5">
+          <h2 className="text-xl sm:text-[22px] font-black text-[#10234A] tracking-tight mt-1.5 flex items-center justify-center gap-1">
             <span>Welcome</span>
             <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Back!</span>
             <span className="inline-block origin-[70%_70%]">👋</span>
           </h2>
 
           {/* Subtitle */}
-          <p className="text-xs sm:text-[13px] text-slate-500 font-normal max-w-[350px] mx-auto mt-1.5 leading-relaxed">
-            Login to continue your learning journey and unlock your internship, certificate and career opportunities.
+          <p className="text-[11px] sm:text-xs text-slate-500 font-normal max-w-[310px] mx-auto mt-0.5 leading-snug">
+            Login to continue your learning journey and career opportunities.
           </p>
         </div>
 
         {/* Notice Message Banner (if visitor was redirected from a protected route) */}
         {message && (
-          <div className="relative z-10 mt-3.5 p-3 rounded-2xl bg-blue-50/90 border border-blue-200/80 text-blue-950 text-xs font-semibold flex items-center gap-2.5 text-left shadow-2xs animate-fadeIn">
-            <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-              <Lock className="w-3.5 h-3.5" />
+          <div className="relative z-10 mt-2.5 p-2 rounded-xl bg-blue-50/90 border border-blue-200/80 text-blue-950 text-xs font-semibold flex items-center gap-2 text-left shadow-2xs animate-fadeIn">
+            <div className="w-6 h-6 rounded-md bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <Lock className="w-3 h-3" />
             </div>
-            <div className="min-w-0 flex-1 leading-snug">
-              <span className="text-blue-950 block font-bold text-xs sm:text-[13px]">{message}</span>
+            <div className="min-w-0 flex-1 leading-tight">
+              <span className="text-blue-950 block font-bold text-xs">{message}</span>
               <span className="text-[10px] text-blue-700/80 font-medium">Please sign in to access this feature</span>
             </div>
           </div>
@@ -463,23 +455,23 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
 
         {/* Error Banner */}
         {validationError && (
-          <div className="relative z-10 mt-3 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2 text-left shadow-2xs animate-fadeIn">
-            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-            <span className="font-semibold leading-snug">{validationError}</span>
+          <div className="relative z-10 mt-2.5 p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-1.5 text-left shadow-2xs animate-fadeIn">
+            <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
+            <span className="font-semibold leading-tight text-[11px]">{validationError}</span>
           </div>
         )}
 
-        {/* ── 1. CONTINUE WITH GOOGLE (Prominent 54px White Button) ── */}
-        <div className="relative z-10 mt-5">
+        {/* ── 1. CONTINUE WITH GOOGLE (Prominent 46px White Button) ── */}
+        <div className="relative z-10 mt-3.5">
           <button
             type="button"
             onClick={handleGoogleSignInClick}
             disabled={isSubmitting}
-            className="w-full h-[54px] px-5 rounded-[14px] bg-white hover:bg-slate-50/90 active:scale-[0.99] border border-slate-200/90 hover:border-slate-300 shadow-xs hover:shadow-md transition-all duration-200 flex items-center justify-between cursor-pointer disabled:opacity-60 group"
+            className="w-full h-[46px] px-4 rounded-xl bg-white hover:bg-slate-50/90 active:scale-[0.99] border border-slate-200/90 hover:border-slate-300 shadow-2xs hover:shadow-xs transition-all duration-200 flex items-center justify-between cursor-pointer disabled:opacity-60 group"
           >
-            <div className="flex items-center gap-3.5">
-              <div className="w-6 h-6 flex items-center justify-center shrink-0">
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                <svg className="w-4.5 h-4.5" viewBox="0 0 24 24">
                   <path
                     fill="#4285F4"
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -498,69 +490,69 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                   />
                 </svg>
               </div>
-              <span className="font-bold text-[14px] sm:text-[15px] text-[#10234A]">
+              <span className="font-bold text-xs sm:text-[13px] text-[#10234A]">
                 Continue with Google
               </span>
             </div>
 
-            <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-[#10234A] group-hover:translate-x-0.5 transition-all stroke-[2.5]" />
+            <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-[#10234A] group-hover:translate-x-0.5 transition-all stroke-[2.5]" />
           </button>
         </div>
 
         {/* ── OR DIVIDER ── */}
-        <div className="relative my-4 z-10">
+        <div className="relative my-2.5 z-10">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-slate-200" />
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-white px-3 text-[11px] font-bold text-slate-400 tracking-wider">
+            <span className="bg-white px-2.5 text-[10px] font-bold text-slate-400 tracking-wider">
               OR
             </span>
           </div>
         </div>
 
         {/* ── 2. LOGIN WITH EMAIL (SaaS EdTech Card) ── */}
-        <div className="relative z-10 bg-[#F4F8FC]/90 border border-[#E3EDFA] rounded-[18px] p-4 text-left shadow-2xs">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs">
-              <Mail className="w-3.5 h-3.5" />
+        <div className="relative z-10 bg-[#F4F8FC]/90 border border-[#E3EDFA] rounded-[14px] p-3 text-left shadow-2xs">
+          <div className="flex items-center gap-1.5 mb-2">
+            <div className="w-5 h-5 rounded-md bg-blue-600 text-white flex items-center justify-center shadow-xs">
+              <Mail className="w-3 h-3" />
             </div>
-            <span className="text-sm font-bold text-[#10234A]">Login with Email</span>
+            <span className="text-xs font-bold text-[#10234A]">Login with Email</span>
           </div>
 
-          <form onSubmit={handleEmailSubmit} className="space-y-2.5">
+          <form onSubmit={handleEmailSubmit} className="space-y-2">
             {/* Email Input with Mail Icon */}
-            <div className="flex items-center border border-slate-200 focus-within:border-blue-500 rounded-xl bg-white px-3.5 h-[48px] transition-all shadow-2xs">
-              <Mail className="w-4 h-4 text-slate-400 mr-2.5 shrink-0" />
+            <div className="flex items-center border border-slate-200 focus-within:border-blue-500 rounded-lg bg-white px-3 h-[40px] transition-all shadow-2xs">
+              <Mail className="w-3.5 h-3.5 text-slate-400 mr-2 shrink-0" />
               <input
                 type="email"
                 placeholder="Enter your email address"
                 value={emailInput}
                 onChange={(e) => setEmailInput(e.target.value)}
                 disabled={isSubmitting}
-                className="w-full text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent disabled:opacity-60"
+                className="w-full text-xs font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent disabled:opacity-60"
                 required
                 autoFocus
               />
             </div>
 
             {/* Password Input with Lock Icon & Show/Hide */}
-            <div className="flex items-center border border-slate-200 focus-within:border-blue-500 rounded-xl bg-white px-3.5 h-[48px] transition-all shadow-2xs">
-              <Lock className="w-4 h-4 text-slate-400 mr-2.5 shrink-0" />
+            <div className="flex items-center border border-slate-200 focus-within:border-blue-500 rounded-lg bg-white px-3 h-[40px] transition-all shadow-2xs">
+              <Lock className="w-3.5 h-3.5 text-slate-400 mr-2 shrink-0" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Enter your password"
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
                 disabled={isSubmitting}
-                className="w-full text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent disabled:opacity-60"
+                className="w-full text-xs font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal outline-none bg-transparent disabled:opacity-60"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((p) => !p)}
                 tabIndex={-1}
-                className="text-xs text-slate-400 hover:text-slate-600 font-medium ml-1.5 shrink-0 cursor-pointer select-none"
+                className="text-[11px] text-slate-400 hover:text-slate-600 font-medium ml-1 shrink-0 cursor-pointer select-none"
               >
                 {showPassword ? 'Hide' : 'Show'}
               </button>
@@ -570,43 +562,43 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting || !emailInput || passwordInput.length < 6}
-              className="w-full h-[50px] px-4 rounded-xl text-white font-bold text-sm shadow-md shadow-blue-500/25 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full h-[42px] px-3.5 rounded-lg text-white font-bold text-xs shadow-sm shadow-blue-500/25 active:scale-[0.99] transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
               style={{
                 background: 'linear-gradient(135deg, #0080FF 0%, #0055FF 100%)',
               }}
             >
               <span>Continue with Email</span>
-              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+              <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
             </button>
           </form>
         </div>
 
         {/* ── 3 TRUST BADGES ── */}
-        <div className="relative z-10 grid grid-cols-3 gap-2 mt-5 pt-4 border-t border-slate-100">
+        <div className="relative z-10 grid grid-cols-3 gap-1.5 mt-3 pt-2.5 border-t border-slate-100">
           <div className="flex flex-col items-center text-center">
-            <div className="w-7 h-7 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mb-1 text-blue-600 shadow-2xs">
-              <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
+            <div className="w-6 h-6 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mb-0.5 text-blue-600 shadow-2xs">
+              <ShieldCheck className="w-3.5 h-3.5 stroke-[2.5]" />
             </div>
-            <span className="text-[11px] font-bold text-[#10234A] leading-tight">Secure &amp; Safe</span>
+            <span className="text-[10px] font-bold text-[#10234A] leading-tight">Secure &amp; Safe</span>
           </div>
 
           <div className="flex flex-col items-center text-center">
-            <div className="w-7 h-7 rounded-full bg-purple-50 border border-purple-100 flex items-center justify-center mb-1 text-purple-600 shadow-2xs">
-              <Zap className="w-4 h-4 fill-purple-600 stroke-[1.5]" />
+            <div className="w-6 h-6 rounded-full bg-purple-50 border border-purple-100 flex items-center justify-center mb-0.5 text-purple-600 shadow-2xs">
+              <Zap className="w-3.5 h-3.5 fill-purple-600 stroke-[1.5]" />
             </div>
-            <span className="text-[11px] font-bold text-[#10234A] leading-tight">Quick Access</span>
+            <span className="text-[10px] font-bold text-[#10234A] leading-tight">Quick Access</span>
           </div>
 
           <div className="flex flex-col items-center text-center">
-            <div className="w-7 h-7 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-1 text-emerald-600 shadow-2xs">
-              <Lock className="w-4 h-4 stroke-[2.5]" />
+            <div className="w-6 h-6 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-0.5 text-emerald-600 shadow-2xs">
+              <Lock className="w-3.5 h-3.5 stroke-[2.5]" />
             </div>
-            <span className="text-[11px] font-bold text-[#10234A] leading-tight">Your Data is Safe</span>
+            <span className="text-[10px] font-bold text-[#10234A] leading-tight">Your Data is Safe</span>
           </div>
         </div>
 
         {/* ── FOOTER TERMS & PRIVACY NOTICE ── */}
-        <p className="relative z-10 mt-4 text-[11px] text-slate-400 font-medium text-center leading-relaxed">
+        <p className="relative z-10 mt-2.5 text-[10px] text-slate-400 font-medium text-center leading-tight">
           By continuing, you agree to our{' '}
           <a
             href="#terms"
