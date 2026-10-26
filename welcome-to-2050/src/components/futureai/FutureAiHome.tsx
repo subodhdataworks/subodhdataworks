@@ -263,6 +263,10 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           onNavigateEarn={promptLogin}
           onNavigateInternship={promptLogin}
           onNavigatePlacement={promptLogin}
+          onNavigateCertificate={promptLogin}
+          onNavigateRecommendation={promptLogin}
+          onOpenHelp={() => { window.location.hash = '#contact-us'; }}
+          onOpenContact={() => { window.location.hash = '#contact-us'; }}
           onOpenLogin={promptLogin}
           onOpenSignUp={promptLogin}
         />

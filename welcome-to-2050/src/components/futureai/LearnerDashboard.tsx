@@ -690,6 +690,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         setActiveTopicWs(null);
         setLockedSectionTarget('Certificate');
         setPlacementLockOpen(true);
+      } else if (baseH === '#recommendation' || baseH === '#recommendations' || baseH === '#lor') {
+        setSelectedModuleView(null);
+        setActiveTopicWs(null);
+        setLockedSectionTarget('Recommendation Letter');
+        setPlacementLockOpen(true);
       } else if (baseH === '#referral') {
         setSelectedModuleView(null);
         setActiveTopicWs(null);
@@ -1409,6 +1414,25 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             setDockTab('placement');
             if (typeof window !== 'undefined') window.location.hash = '#placement';
           }
+        }}
+        onNavigateCertificate={() => {
+          setSelectedModuleView(null);
+          setActiveTopicWs(null);
+          setLockedSectionTarget('Certificate');
+          setPlacementLockOpen(true);
+        }}
+        onNavigateRecommendation={() => {
+          setSelectedModuleView(null);
+          setActiveTopicWs(null);
+          setLockedSectionTarget('Recommendation Letter');
+          setPlacementLockOpen(true);
+        }}
+        onOpenHelp={() => {
+          if (onOpenAdvisor) onOpenAdvisor();
+          else window.location.hash = '#contact-us';
+        }}
+        onOpenContact={() => {
+          window.location.hash = '#contact-us';
         }}
         onOpenWallet={() => setIsWithdrawModalOpen(true)}
         onLogout={onLogout}
