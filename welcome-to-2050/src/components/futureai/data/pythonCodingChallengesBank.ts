@@ -1,4 +1,8 @@
 // Complete Python Coding Practice Question Bank (Topics 1 - 25, Intermediate, Advanced & Popular)
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../../../services/firebase';
+import { awardLearnerTelemetry } from '../../../services/realAuthService';
+
 export interface ChallengeTask {
   id: number;
   taskNumber: number;
@@ -18,6 +22,8 @@ export interface ChallengeTask {
   starterCode: string;
   hint: string;
   solution: string;
+  published?: boolean;
+  deleted?: boolean;
   validate: (code: string, output: string) => { passed: boolean; message: string };
 }
 
@@ -31,6 +37,8 @@ export interface PythonTopicDefinition {
   tabs: ('all' | 'basic' | 'intermediate' | 'advanced' | 'popular')[];
   solved?: boolean;
   bookmarked?: boolean;
+  published?: boolean;
+  deleted?: boolean;
   questions: ChallengeTask[];
 }
 
@@ -965,3 +973,297 @@ export const TOPIC_QUESTIONS_MAP: Record<number, ChallengeTask[]> = {};
 ALL_PYTHON_TOPICS.forEach((t) => {
   TOPIC_QUESTIONS_MAP[t.id] = t.questions;
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LIVE DESKTOP & ANDROID MOBILE PWA SYNCHRONIZATION ENGINE
+// Synchronizes challenges, questions, descriptions, difficulties, scores,
+// bookmarks, submissions, solved/unsolved status, student rank & points
+// ─────────────────────────────────────────────────────────────────────────────
+export const PYTHON_CHALLENGES_OVERRIDES_KEY = 'futureai_python_challenges_overrides_v1';
+const PYTHON_PROGRESS_PREFIX = 'futureai_python_challenges_progress_v1_';
+
+export interface PythonChallengesProgressState {
+  solvedTopicIds: number[];
+  solvedTaskIds: number[];
+  submittedCodeByTaskId: Record<number, string>;
+  bookmarkedTopicIds: number[];
+  earnedPoints: number;
+  updatedAt: string;
+}
+
+function getActivePythonUserId(): string {
+  if (typeof window === 'undefined') return 'guest';
+  const email = (localStorage.getItem('futureai_user_email') || '').trim().toLowerCase();
+  const uid = (localStorage.getItem('futureai_user_uid') || '').trim();
+  const name = (localStorage.getItem('futureai_user_name') || '').trim().toLowerCase();
+  return email || uid || name || 'guest';
+}
+
+function getPythonProgressStorageKey(userId?: string): string {
+  const resolved = (userId || getActivePythonUserId()).replace(/[^a-z0-9@._-]/gi, '_');
+  return `${PYTHON_PROGRESS_PREFIX}${resolved}`;
+}
+
+export function getSyncedPythonChallengesProgress(userId?: string): PythonChallengesProgressState {
+  const fallback: PythonChallengesProgressState = {
+    solvedTopicIds: [],
+    solvedTaskIds: [],
+    submittedCodeByTaskId: {},
+    bookmarkedTopicIds: [],
+    earnedPoints: 0,
+    updatedAt: new Date(0).toISOString(),
+  };
+  if (typeof window === 'undefined') return fallback;
+  try {
+    const raw = localStorage.getItem(getPythonProgressStorageKey(userId));
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    return {
+      solvedTopicIds: Array.isArray(parsed.solvedTopicIds) ? parsed.solvedTopicIds : [],
+      solvedTaskIds: Array.isArray(parsed.solvedTaskIds) ? parsed.solvedTaskIds : [],
+      submittedCodeByTaskId:
+        parsed.submittedCodeByTaskId && typeof parsed.submittedCodeByTaskId === 'object'
+          ? parsed.submittedCodeByTaskId
+          : {},
+      bookmarkedTopicIds: Array.isArray(parsed.bookmarkedTopicIds) ? parsed.bookmarkedTopicIds : [],
+      earnedPoints: typeof parsed.earnedPoints === 'number' ? parsed.earnedPoints : 0,
+      updatedAt: parsed.updatedAt || fallback.updatedAt,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
+export function saveSyncedPythonChallengesProgress(
+  patch: Partial<PythonChallengesProgressState> & { pointsDelta?: number },
+  userId?: string
+): PythonChallengesProgressState {
+  const current = getSyncedPythonChallengesProgress(userId);
+  const nextPoints =
+    typeof patch.earnedPoints === 'number'
+      ? patch.earnedPoints
+      : current.earnedPoints + (typeof patch.pointsDelta === 'number' ? patch.pointsDelta : 0);
+
+  const next: PythonChallengesProgressState = {
+    solvedTopicIds: patch.solvedTopicIds
+      ? Array.from(new Set(patch.solvedTopicIds))
+      : current.solvedTopicIds,
+    solvedTaskIds: patch.solvedTaskIds
+      ? Array.from(new Set(patch.solvedTaskIds))
+      : current.solvedTaskIds,
+    submittedCodeByTaskId: patch.submittedCodeByTaskId
+      ? { ...current.submittedCodeByTaskId, ...patch.submittedCodeByTaskId }
+      : current.submittedCodeByTaskId,
+    bookmarkedTopicIds: patch.bookmarkedTopicIds
+      ? Array.from(new Set(patch.bookmarkedTopicIds))
+      : current.bookmarkedTopicIds,
+    earnedPoints: Math.max(0, nextPoints),
+    updatedAt: new Date().toISOString(),
+  };
+
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(getPythonProgressStorageKey(userId), JSON.stringify(next));
+      if (patch.pointsDelta && patch.pointsDelta > 0) {
+        awardLearnerTelemetry(patch.pointsDelta, 1);
+      }
+      window.dispatchEvent(
+        new CustomEvent('futureai_python_challenges_progress_updated', { detail: next })
+      );
+    } catch {
+      // ignore storage quota errors
+    }
+
+    const activeUser = userId || getActivePythonUserId();
+    if (activeUser && activeUser !== 'guest') {
+      const docId = `${activeUser.replace(/[^a-z0-9@._-]/gi, '_')}_python_challenges`;
+      setDoc(
+        doc(db, 'futureai_learning_progress', docId),
+        {
+          ...next,
+          userId: activeUser,
+          syncedAt: serverTimestamp(),
+        },
+        { merge: true }
+      ).catch(() => {
+        // offline fallback preserved in localStorage
+      });
+    }
+  }
+
+  return next;
+}
+
+export async function pullSyncedPythonChallengesProgressFromCloud(
+  userId?: string
+): Promise<PythonChallengesProgressState | null> {
+  if (typeof window === 'undefined') return null;
+  const activeUser = userId || getActivePythonUserId();
+  if (!activeUser || activeUser === 'guest') return null;
+  try {
+    const docId = `${activeUser.replace(/[^a-z0-9@._-]/gi, '_')}_python_challenges`;
+    const snap = await Promise.race([
+      getDoc(doc(db, 'futureai_learning_progress', docId)),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 2200)),
+    ]);
+    if (snap && snap.exists()) {
+      const cloud = snap.data() as Partial<PythonChallengesProgressState>;
+      const local = getSyncedPythonChallengesProgress(activeUser);
+      const merged: PythonChallengesProgressState = {
+        solvedTopicIds: Array.from(
+          new Set([...local.solvedTopicIds, ...(cloud.solvedTopicIds || [])])
+        ),
+        solvedTaskIds: Array.from(
+          new Set([...local.solvedTaskIds, ...(cloud.solvedTaskIds || [])])
+        ),
+        submittedCodeByTaskId: {
+          ...(cloud.submittedCodeByTaskId || {}),
+          ...local.submittedCodeByTaskId,
+        },
+        bookmarkedTopicIds: Array.from(
+          new Set([...local.bookmarkedTopicIds, ...(cloud.bookmarkedTopicIds || [])])
+        ),
+        earnedPoints: Math.max(local.earnedPoints || 0, cloud.earnedPoints || 0),
+        updatedAt: cloud.updatedAt || local.updatedAt || new Date().toISOString(),
+      };
+      localStorage.setItem(getPythonProgressStorageKey(activeUser), JSON.stringify(merged));
+      window.dispatchEvent(
+        new CustomEvent('futureai_python_challenges_progress_updated', { detail: merged })
+      );
+      return merged;
+    }
+  } catch {
+    // offline fallback
+  }
+  return null;
+}
+
+function hydrateTaskValidation(task: ChallengeTask, topicId: number): ChallengeTask {
+  if (typeof task.validate === 'function') return task;
+  const expected = (task.sampleOutput || '').trim();
+  return makeTask(
+    topicId,
+    task.taskNumber || 1,
+    task.title || 'Python Challenge',
+    task.difficulty || 'Easy',
+    task.skill || 'Python Basics',
+    task.points || 5,
+    task.successRate || '92.0%',
+    task.problemStatement || task.title || '',
+    task.highlightedKeyword || '',
+    expected,
+    task.hint || '',
+    task.solution || ''
+  );
+}
+
+export function getSyncedPythonChallengesTopics(): PythonTopicDefinition[] {
+  const progress = getSyncedPythonChallengesProgress();
+  const solvedTopicSet = new Set<number>(progress.solvedTopicIds);
+  const solvedTaskSet = new Set<number>(progress.solvedTaskIds);
+  const bookmarkedSet = new Set<number>(progress.bookmarkedTopicIds);
+
+  let topics: PythonTopicDefinition[] = ALL_PYTHON_TOPICS.map((t) => ({
+    ...t,
+    questions: [...t.questions],
+  }));
+
+  if (typeof window !== 'undefined') {
+    try {
+      const rawOverrides = localStorage.getItem(PYTHON_CHALLENGES_OVERRIDES_KEY);
+      if (rawOverrides) {
+        const parsed = JSON.parse(rawOverrides);
+        if (Array.isArray(parsed)) {
+          const overrideMap = new Map<number, Partial<PythonTopicDefinition>>();
+          parsed.forEach((item: any) => {
+            if (item && typeof item.id === 'number') {
+              overrideMap.set(item.id, item);
+            }
+          });
+
+          // Merge overrides into existing topics
+          topics = topics.map((baseTopic) => {
+            const ov = overrideMap.get(baseTopic.id);
+            if (!ov) return baseTopic;
+            overrideMap.delete(baseTopic.id);
+            const mergedQuestions = Array.isArray(ov.questions)
+              ? ov.questions
+                  .filter((q) => !q.deleted && q.published !== false)
+                  .map((q) => hydrateTaskValidation(q as ChallengeTask, baseTopic.id))
+              : baseTopic.questions.filter((q) => !q.deleted && q.published !== false);
+            return {
+              ...baseTopic,
+              ...ov,
+              questions: mergedQuestions,
+            };
+          });
+
+          // Append any newly added admin topics
+          overrideMap.forEach((newTopic) => {
+            if (newTopic && !newTopic.deleted && newTopic.published !== false && newTopic.title) {
+              const tId = Number(newTopic.id);
+              const qs = Array.isArray(newTopic.questions)
+                ? newTopic.questions
+                    .filter((q) => !q.deleted && q.published !== false)
+                    .map((q) => hydrateTaskValidation(q as ChallengeTask, tId))
+                : [];
+              topics.push({
+                id: tId,
+                title: newTopic.title,
+                difficulty: newTopic.difficulty || 'Easy',
+                maxScore: typeof newTopic.maxScore === 'number' ? newTopic.maxScore : 5,
+                skill: newTopic.skill || 'Python Basics',
+                description: newTopic.description || 'Solve hands-on Python coding challenges.',
+                tabs: Array.isArray(newTopic.tabs) && newTopic.tabs.length > 0 ? newTopic.tabs : ['all', 'basic'],
+                published: newTopic.published ?? true,
+                deleted: false,
+                questions: qs,
+              });
+            }
+          });
+        }
+      }
+    } catch {
+      // ignore malformed override json
+    }
+  }
+
+  return topics
+    .filter((t) => !t.deleted && t.published !== false)
+    .map((t) => {
+      const validQuestions = (t.questions || []).filter((q) => !q.deleted && q.published !== false);
+      TOPIC_QUESTIONS_MAP[t.id] = validQuestions;
+      const hasAnySolvedTask = validQuestions.some((q) => solvedTaskSet.has(q.id));
+      return {
+        ...t,
+        questions: validQuestions,
+        solved: Boolean(t.solved || solvedTopicSet.has(t.id) || hasAnySolvedTask),
+        bookmarked: Boolean(t.bookmarked || bookmarkedSet.has(t.id)),
+      };
+    });
+}
+
+export async function revalidatePythonChallengesFromBackend(): Promise<PythonTopicDefinition[]> {
+  if (typeof window === 'undefined') return ALL_PYTHON_TOPICS;
+  try {
+    const snap = await Promise.race([
+      getDoc(doc(db, 'futureai_config', 'python_challenges_bank')),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 2200)),
+    ]);
+    if (snap && snap.exists()) {
+      const data = snap.data();
+      if (data && Array.isArray(data.topics)) {
+        const serialized = JSON.stringify(data.topics);
+        const current = localStorage.getItem(PYTHON_CHALLENGES_OVERRIDES_KEY);
+        if (serialized !== current) {
+          localStorage.setItem(PYTHON_CHALLENGES_OVERRIDES_KEY, serialized);
+          window.dispatchEvent(new CustomEvent('futureai_python_challenges_updated'));
+        }
+      }
+    }
+  } catch {
+    // offline or no remote override doc yet
+  }
+  return getSyncedPythonChallengesTopics();
+}
+

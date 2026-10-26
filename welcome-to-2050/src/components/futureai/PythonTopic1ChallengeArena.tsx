@@ -467,7 +467,13 @@ function executePythonSimulation(code: string): { output: string; error?: string
   }
 }
 
-import { TOPIC_QUESTIONS_MAP, ChallengeTask } from './data/pythonCodingChallengesBank';
+import {
+  TOPIC_QUESTIONS_MAP,
+  ChallengeTask,
+  getSyncedPythonChallengesProgress,
+  saveSyncedPythonChallengesProgress,
+  pullSyncedPythonChallengesProgressFromCloud,
+} from './data/pythonCodingChallengesBank';
 
 export interface PythonTopic1ChallengeArenaProps {
   userName?: string;
@@ -512,11 +518,12 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
 
   const task = activeTasks[currentTaskIndex] || activeTasks[0];
 
-  // Codes dictionary per task
+  // Codes dictionary per task (hydrated from synced student progress)
   const [codes, setCodes] = useState<Record<number, string>>(() => {
+    const savedProgress = getSyncedPythonChallengesProgress();
     const init: Record<number, string> = {};
     activeTasks.forEach((t) => {
-      init[t.id] = t.starterCode;
+      init[t.id] = savedProgress.submittedCodeByTaskId[t.id] ?? t.starterCode;
     });
     return init;
   });
@@ -545,26 +552,40 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
 
-  // Execution states
+  // Execution states (hydrated from synced student progress)
   const [terminalOutput, setTerminalOutput] = useState<string>('');
   const [testResult, setTestResult] = useState<{ passed: boolean; message: string } | null>(null);
-  const [solvedTaskIds, setSolvedTaskIds] = useState<Set<number>>(new Set());
+  const [solvedTaskIds, setSolvedTaskIds] = useState<Set<number>>(() => {
+    const saved = getSyncedPythonChallengesProgress();
+    return new Set<number>(saved.solvedTaskIds);
+  });
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [executionTime, setExecutionTime] = useState<string>('0.04s');
   const [submissionsList, setSubmissionsList] = useState<
     Array<{ id: string; status: 'Accepted' | 'Wrong Answer'; time: string; runtime: string }>
   >([]);
 
-  // Update task index when initialTaskId prop changes
+  // Pull latest cloud progress across Desktop & Mobile
   useEffect(() => {
-    const idx = TOPIC_1_TASKS.findIndex((t) => t.taskNumber === initialTaskId);
+    pullSyncedPythonChallengesProgressFromCloud().then((cloud) => {
+      if (!cloud) return;
+      setSolvedTaskIds(new Set(cloud.solvedTaskIds));
+      if (cloud.submittedCodeByTaskId && Object.keys(cloud.submittedCodeByTaskId).length > 0) {
+        setCodes((prev) => ({ ...prev, ...cloud.submittedCodeByTaskId }));
+      }
+    });
+  }, []);
+
+  // Update task index when initialTaskId or activeTasks changes
+  useEffect(() => {
+    const idx = activeTasks.findIndex((t) => t.taskNumber === initialTaskId);
     if (idx >= 0) {
       setCurrentTaskIndex(idx);
       setRightTab('testcases');
       setTerminalOutput('');
       setTestResult(null);
     }
-  }, [initialTaskId]);
+  }, [initialTaskId, activeTasks]);
 
   const handleCodeChange = (newCode: string) => {
     setCodes((prev) => ({ ...prev, [task.id]: newCode }));
@@ -659,8 +680,19 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
         setTimeout(() => setShowCelebrationToast(false), 3500);
 
         setSolvedTaskIds((prev) => {
+          const alreadySolved = prev.has(task.id);
           const next = new Set(prev);
           next.add(task.id);
+
+          const currentProg = getSyncedPythonChallengesProgress();
+          const nextTopicIds = Array.from(new Set([...currentProg.solvedTopicIds, topicId]));
+          saveSyncedPythonChallengesProgress({
+            solvedTaskIds: Array.from(next),
+            solvedTopicIds: nextTopicIds,
+            submittedCodeByTaskId: { [task.id]: currentCode },
+            pointsDelta: alreadySolved ? 0 : task.points || 5,
+          });
+
           return next;
         });
       } else {
@@ -681,7 +713,7 @@ export const PythonTopic1ChallengeArena: React.FC<PythonTopic1ChallengeArenaProp
 
   const handleNextTask = () => {
     soundEffects.playColorChange();
-    if (currentTaskIndex < TOPIC_1_TASKS.length - 1) {
+    if (currentTaskIndex < activeTasks.length - 1) {
       setCurrentTaskIndex((prev) => prev + 1);
       setRightTab('testcases');
       setTerminalOutput('');

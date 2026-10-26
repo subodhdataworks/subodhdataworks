@@ -1,0 +1,565 @@
+/* ============================================================================
+   FUTURE IT INDUSTRY — PYTHON CHALLENGES PRACTICE HUB (MOBILE REDESIGN)
+   Desktop (>= 768px) remains 100% unchanged.
+   Mobile (< 768px) implements the Android App-Style UI matching reference image.
+   ============================================================================ */
+
+.pch-mobile-only {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .pch-desktop-only {
+    display: none !important;
+  }
+
+  .pch-mobile-only {
+    display: block !important;
+  }
+
+  .pch-root-container {
+    padding: 10px 10px 20px 10px !important;
+    background:
+      radial-gradient(circle at 90% 4%, rgba(147, 197, 253, 0.45) 0%, transparent 38%),
+      radial-gradient(circle at 10% 8%, rgba(191, 219, 254, 0.5) 0%, transparent 40%),
+      linear-gradient(180deg, #dbeafe 0%, #eff6ff 18%, #f1f5f9 45%, #f8fafc 100%) !important;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── 1. MOBILE BREADCRUMB ROW ── */
+  .pch-mobile-breadcrumb-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .pch-mobile-back-btn {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.94) !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #0f172a !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+    cursor: pointer;
+  }
+
+  .pch-mobile-breadcrumb-text {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 5px !important;
+    font-size: 11.5px !important;
+    color: #475569 !important;
+    font-weight: 600 !important;
+    min-width: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .pch-mobile-breadcrumb-text button {
+    display: inline !important;
+    width: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    color: #475569 !important;
+    background: transparent !important;
+    border: none !important;
+    white-space: nowrap !important;
+  }
+
+  .pch-mobile-breadcrumb-text strong {
+    color: #0f172a !important;
+    font-weight: 800 !important;
+    font-size: 11.5px !important;
+  }
+
+  /* ── 2. MOBILE HERO ROW (Left Heading + Right Rank/Points Card) ── */
+  .pch-mobile-hero-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .pch-mobile-hero-left {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    text-align: left !important;
+  }
+
+  .pch-mobile-hero-title {
+    margin: 0 !important;
+    font-size: 23px !important;
+    line-height: 1.12 !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.025em !important;
+    color: #0f172a !important;
+    white-space: nowrap !important;
+  }
+
+  .pch-mobile-hero-title span {
+    color: #1a73e8 !important;
+  }
+
+  .pch-mobile-hero-desc {
+    margin: 4px 0 0 0 !important;
+    font-size: 10.5px !important;
+    line-height: 1.32 !important;
+    color: #334155 !important;
+    font-weight: 500 !important;
+  }
+
+  .pch-mobile-rank-card {
+    flex-shrink: 0 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 8px 10px !important;
+    border-radius: 15px !important;
+    background: rgba(255, 255, 255, 0.96) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.98) !important;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07) !important;
+  }
+
+  .pch-mobile-rank-logo {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 5px !important;
+    flex-shrink: 0 !important;
+    box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+  }
+
+  .pch-mobile-rank-stats {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    text-align: left !important;
+  }
+
+  .pch-mobile-rank-line,
+  .pch-mobile-points-line {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 3px !important;
+    font-size: 10.5px !important;
+    color: #475569 !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    line-height: 1.2 !important;
+  }
+
+  .pch-mobile-rank-line strong,
+  .pch-mobile-points-line strong {
+    color: #0f172a !important;
+    font-weight: 900 !important;
+    font-size: 11.5px !important;
+  }
+
+  /* ── 3. HORIZONTALLY SCROLLABLE 2-LINE CATEGORY TABS ── */
+  .pch-tabs-scroll {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    gap: 4px !important;
+    overflow-x: auto !important;
+    padding-bottom: 2px !important;
+    margin-bottom: 10px !important;
+    border-bottom: none !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+
+  .pch-tabs-scroll::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  .pch-tab-pill {
+    flex: 1 0 auto !important;
+    padding: 6px 6px !important;
+    border-radius: 13px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1.15 !important;
+    text-align: center !important;
+    min-width: 0 !important;
+  }
+
+  .pch-tab-pill .pch-mobile-only {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .pch-tab-pill .pch-tab-title {
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    display: block !important;
+    line-height: 1.15 !important;
+  }
+
+  .pch-tab-pill .pch-tab-sub {
+    font-size: 8.5px !important;
+    font-weight: 600 !important;
+    opacity: 0.92 !important;
+    display: block !important;
+    margin-top: 1px !important;
+    line-height: 1.1 !important;
+  }
+
+  .pch-tab-pill.is-active {
+    background: linear-gradient(180deg, #1d4ed8 0%, #1a73e8 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #1d4ed8 !important;
+    box-shadow: 0 4px 12px rgba(26, 115, 232, 0.28) !important;
+  }
+
+  .pch-tab-pill:not(.is-active) {
+    background: rgba(255, 255, 255, 0.96) !important;
+    color: #0f172a !important;
+    border: 1px solid #dbeafe !important;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03) !important;
+  }
+
+  .pch-tab-pill:not(.is-active) .pch-tab-sub {
+    color: #475569 !important;
+  }
+
+  /* ── 4. PREMIUM MOBILE CHALLENGE CARDS ── */
+  .pch-cards-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 9px !important;
+    max-height: 555px !important;
+    overflow-y: auto !important;
+    padding-right: 1px !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+
+  .pch-cards-list::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+  }
+
+  .pch-challenge-card {
+    border-radius: 17px !important;
+    padding: 10px 10px !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    border: 1.5px solid #e2e8f0 !important;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04) !important;
+    margin: 0 !important;
+  }
+
+  .pch-card-inner {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+  }
+
+  .pch-card-left {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  .pch-card-py-icon {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    border-radius: 50% !important;
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    padding: 5px !important;
+    flex-shrink: 0 !important;
+    margin-top: 2px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .pch-card-body {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    text-align: left !important;
+  }
+
+  .pch-card-title-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 4px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .pch-card-title {
+    font-size: 11.8px !important;
+    line-height: 1.2 !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.015em !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .pch-card-count-badge {
+    font-size: 8.5px !important;
+    font-weight: 800 !important;
+    padding: 1.5px 5.5px !important;
+    border-radius: 999px !important;
+    background: #faf5ff !important;
+    color: #7e22ce !important;
+    border: 1px solid #e9d5ff !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  .pch-card-badges-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 3.5px !important;
+    margin-top: 4px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .pch-badge {
+    font-size: 9px !important;
+    font-weight: 700 !important;
+    padding: 1.5px 5.5px !important;
+    border-radius: 999px !important;
+    white-space: nowrap !important;
+    line-height: 1.2 !important;
+  }
+
+  .pch-card-desc {
+    font-size: 10.5px !important;
+    line-height: 1.3 !important;
+    color: #334155 !important;
+    margin-top: 4px !important;
+  }
+
+  .pch-card-select-wrap {
+    margin-top: 6px !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .pch-card-select {
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    padding: 5px 22px 5px 8px !important;
+    border-radius: 9px !important;
+    background: #f0f7ff !important;
+    border: 1px solid #bfdbfe !important;
+    color: #0f172a !important;
+    min-height: 28px !important;
+  }
+
+  /* Right Column inside Mobile Card: Star on top + Solve Challenge button below */
+  .pch-card-right {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 5px !important;
+    width: 78px !important;
+    min-width: 78px !important;
+    flex-shrink: 0 !important;
+    align-self: stretch !important;
+    padding-top: 2px !important;
+  }
+
+  .pch-star-btn {
+    padding: 3px !important;
+    min-height: 26px !important;
+    min-width: 26px !important;
+    border-radius: 999px !important;
+    background: transparent !important;
+    border: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .pch-solve-btn {
+    width: 100% !important;
+    padding: 6px 5px !important;
+    border-radius: 11px !important;
+    background: linear-gradient(180deg, #1d4ed8 0%, #1a73e8 100%) !important;
+    color: #ffffff !important;
+    font-size: 10px !important;
+    line-height: 1.15 !important;
+    font-weight: 800 !important;
+    border: none !important;
+    box-shadow: 0 4px 10px rgba(26, 115, 232, 0.25) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    cursor: pointer !important;
+  }
+
+  .pch-solve-line1 {
+    display: block !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 10px !important;
+    line-height: 1.15 !important;
+  }
+
+  .pch-solve-line2 {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 2px !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 10px !important;
+    line-height: 1.15 !important;
+  }
+
+  /* ── 5. MOBILE COLLAPSIBLE FILTERS & STATUS CARD ── */
+  .pch-mobile-filters-card {
+    margin-top: 8px !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    border-radius: 17px !important;
+    border: 1.5px solid #dbeafe !important;
+    padding: 9px 10px !important;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06) !important;
+  }
+
+  .pch-mobile-filters-header {
+    width: 100% !important;
+    min-height: 26px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    cursor: pointer !important;
+  }
+
+  .pch-mobile-filters-title {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 11.5px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+  }
+
+  .pch-mobile-filters-grid {
+    display: grid !important;
+    grid-template-columns: 0.8fr 1.48fr 0.84fr !important;
+    gap: 5px !important;
+    margin-top: 7px !important;
+  }
+
+  .pch-mobile-filter-col {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 11px !important;
+    padding: 6px 6px !important;
+    text-align: left !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3.5px !important;
+  }
+
+  .pch-mobile-filter-col h4 {
+    margin: 0 0 2px 0 !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    line-height: 1.2 !important;
+  }
+
+  .pch-mobile-filter-item {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 3px !important;
+    font-size: 9px !important;
+    color: #334155 !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    line-height: 1.2 !important;
+  }
+
+  .pch-mobile-filter-label {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 3.5px !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .pch-mobile-filter-label input[type='checkbox'] {
+    width: 11px !important;
+    height: 11px !important;
+    min-width: 11px !important;
+    min-height: 11px !important;
+    border-radius: 3px !important;
+    border: 1px solid #94a3b8 !important;
+    accent-color: #1a73e8 !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+  }
+
+  .pch-mobile-filter-label span {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .pch-mobile-filter-count {
+    font-size: 9px !important;
+    font-weight: 700 !important;
+    color: #64748b !important;
+    flex-shrink: 0 !important;
+  }
+}
