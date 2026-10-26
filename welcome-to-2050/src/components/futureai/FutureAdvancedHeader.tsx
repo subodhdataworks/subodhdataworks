@@ -272,11 +272,12 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
     scrollToTop();
 
     if (!isLoggedIn) {
-      if (['dashboard', 'learning', 'practice', 'earn', 'certificate', 'internship', 'recommendation', 'placement'].includes(target)) {
+      if (['dashboard', 'learning', 'practice', 'mock-interview', 'earn', 'certificate', 'internship', 'recommendation', 'placement'].includes(target)) {
         const redirectMap: Record<string, string> = {
           dashboard: '#dashboard',
           learning: '#data-analyst',
           practice: '#practice',
+          'mock-interview': '#mockinterview',
           earn: '#income',
           certificate: '#certificates',
           internship: '#internship',
@@ -305,6 +306,9 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
       case 'practice':
         onNavigatePractice('master');
         if (typeof window !== 'undefined') window.location.hash = '#practice';
+        break;
+      case 'mock-interview':
+        if (typeof window !== 'undefined') window.location.hash = '#mockinterview';
         break;
       case 'earn':
         onNavigateEarn();
@@ -342,6 +346,8 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
         return activeNavTab === 'learning' || h.includes('#data') || h.includes('#learn') || h.includes('#course');
       case 'practice':
         return activeNavTab === 'practice' || h.includes('#practice') || h.includes('#challenge') || h.includes('#game') || h.includes('#arena');
+      case 'mock-interview':
+        return h.includes('#interview') || h.includes('#mockinterview');
       case 'earn':
         return activeNavTab === 'earn' || h.includes('#income') || h.includes('#wallet') || h.includes('#earn') || h.includes('#referral') || h.includes('#earnings') || h.includes('#earncash');
       case 'certificate':
@@ -861,7 +867,24 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
               </button>
 
-              {/* 4. Earning & Wallet — Earn Cash */}
+              {/* 4. Unlimited Mock Interview — Sparkles */}
+              <button
+                type="button"
+                onClick={() => handleDrawerNavigate('mock-interview')}
+                className={`w-full h-[50px] px-3.5 rounded-[12px] flex items-center justify-between transition-all duration-200 cursor-pointer group ${
+                  isItemActive('mock-interview')
+                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold border-l-4 border-[#1a73e8] shadow-xs'
+                    : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Sparkles className={`w-5 h-5 shrink-0 ${isItemActive('mock-interview') ? 'text-[#1a73e8]' : 'text-slate-500 group-hover:text-[#1a73e8]'}`} />
+                  <span className="text-sm">Unlimited Mock Interview</span>
+                </div>
+                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
+              </button>
+
+              {/* 5. Earning & Wallet — Earn Cash */}
               <button
                 type="button"
                 onClick={() => handleDrawerNavigate('earn')}
@@ -883,7 +906,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 </div>
               </button>
 
-              {/* 5. Certificate — Award */}
+              {/* 6. Certificate — Award */}
               <button
                 type="button"
                 onClick={() => handleDrawerNavigate('certificate')}
@@ -900,7 +923,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
               </button>
 
-              {/* 6. Internship — GraduationCap */}
+              {/* 7. Internship — GraduationCap */}
               <button
                 type="button"
                 onClick={() => handleDrawerNavigate('internship')}
@@ -917,7 +940,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
               </button>
 
-              {/* 7. Recommendation Letter — FileBadge */}
+              {/* 8. Recommendation Letter — FileBadge */}
               <button
                 type="button"
                 onClick={() => handleDrawerNavigate('recommendation')}
@@ -930,23 +953,6 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 <div className="flex items-center gap-3">
                   <FileBadge className={`w-5 h-5 shrink-0 ${isItemActive('recommendation') ? 'text-[#1a73e8]' : 'text-slate-500 group-hover:text-[#1a73e8]'}`} />
                   <span className="text-sm">Recommendation Letter</span>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
-              </button>
-
-              {/* 8. Placement — BriefcaseBusiness */}
-              <button
-                type="button"
-                onClick={() => handleDrawerNavigate('placement')}
-                className={`w-full h-[50px] px-3.5 rounded-[12px] flex items-center justify-between transition-all duration-200 cursor-pointer group ${
-                  isItemActive('placement')
-                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold border-l-4 border-[#1a73e8] shadow-xs'
-                    : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <BriefcaseBusiness className={`w-5 h-5 shrink-0 ${isItemActive('placement') ? 'text-[#1a73e8]' : 'text-slate-500 group-hover:text-[#1a73e8]'}`} />
-                  <span className="text-sm">Placement</span>
                 </div>
                 <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
               </button>

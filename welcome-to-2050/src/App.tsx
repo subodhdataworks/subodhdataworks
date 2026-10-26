@@ -333,7 +333,7 @@ export const App: React.FC = () => {
                 '#intro-game', '#pyintro', '#earnings', '#wallet', '#withdraw', '#earn', '#earncash', '#earn-cash',
                 '#placement', '#income', '#referral', '#dashboard',
                 '#certificate', '#certificates', '#internship', '#internships',
-                '#recommendation', '#recommendation-letter'
+                '#recommendation', '#recommendation-letter', '#interview', '#mockinterview'
               ];
               return protectedRoutes.includes(baseH);
             })()}
