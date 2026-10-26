@@ -1869,7 +1869,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
       ],
       suggestions: [
         'Practice more coding problems and improve interview answers',
-        'Replay the Hackathon/DSA Practice module to strengthen code structure',
+        'Replay the Coding Game module to strengthen code structure',
         'Focus on interview answers and real-world explanations',
         'Review quiz questions to reinforce tricky syntax',
         'Spend 15 mins daily on hands-on terminal practice',
@@ -1946,7 +1946,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
       suggestions: [
         'Rewatch the video carefully with notes open',
         'Practice more MCQ and write code slowly',
-        'Replay the Hackathon/DSA Practice module to see how syntax fits together',
+        'Replay the Coding Game module to see how syntax fits together',
         'Prepare bullet points for interview questions',
         'Use the Ask AI Mentor button for friendly 1-on-1 tutoring',
       ],
@@ -1982,7 +1982,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
       { key: 'interview', score: scores.interview, text: 'Practice a few more interview questions and improve your explanation skills' },
       { key: 'code', score: scores.code, text: 'Practice more real-world coding examples' },
       { key: 'mcq', score: scores.mcq, text: 'Improve speed in MCQ questions' },
-      { key: 'game', score: scores.game, text: 'Replay the Hackathon/DSA Practice module to strengthen code structure' },
+      { key: 'game', score: scores.game, text: 'Replay the Coding Game module to strengthen code structure' },
       { key: 'video', score: scores.video, text: 'Rewatch the video lessons attentively to solidify foundations' },
     ];
     items.sort((a, b) => a.score - b.score);
@@ -2166,14 +2166,14 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
             <span className="pill-label">Video</span>
           </button>
 
-          {/* Step 2: Hackathon/DSA Practice */}
+          {/* Step 2: Coding Game */}
           <button
             type="button"
             className={`plw-inline-step-pill ${activeStep === 'play' ? 'active' : ''} ${['interview', 'score'].includes(activeStep) ? 'completed' : ''}`}
             onClick={() => handleSelectTab('play')}
           >
             <span className="pill-num">{['interview', 'score'].includes(activeStep) ? '✓' : '2'}</span>
-            <span className="pill-label">Hackathon/DSA Practice</span>
+            <span className="pill-label">Coding Game</span>
           </button>
 
           {/* Step 3: Mock Interview */}
@@ -3167,7 +3167,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                         handleSelectTab('play');
                       }}
                     >
-                      <span>Proceed to Step 3: Hackathon/DSA Practice →</span>
+                      <span>Proceed to Step 2: Coding Game →</span>
                     </button>
                   </div>
                 </div>
@@ -4090,7 +4090,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                                     setActiveStep('code');
                                   }}
                                 >
-                                  <span>Proceed to Hackathon/DSA Practice →</span>
+                                  <span>Proceed to Coding Game →</span>
                                 </button>
                               </div>
                             </div>
@@ -4226,7 +4226,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                       onClick={() => setActiveStep(isTopicWithoutCoding ? 'interview' : 'code')}
                     >
                       <span>
-                        {isTopicWithoutCoding ? 'Jump to Mock Interview' : 'Jump to Tab 4: Hackathon/DSA Practice'}
+                        {isTopicWithoutCoding ? 'Jump to Mock Interview' : 'Jump to Coding Game'}
                       </span>
                       <ChevronRight className="w-3 h-3" />
                     </button>

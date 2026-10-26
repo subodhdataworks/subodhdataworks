@@ -131,7 +131,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courses, onR
         {/* ── Python Topics & Lessons List ── */}
         <div className="mt-6 space-y-3">
           <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider mb-2">
-            Curriculum Structure: Topics, Interactive Hackathon/DSA Practice &amp; Mock Interview Questions
+            Curriculum Structure: Topics, Interactive Coding Game &amp; Mock Interview Questions
           </h4>
 
           {TOPICS.map((topic) => {
@@ -174,7 +174,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courses, onR
 
                   <div className="flex items-center gap-3">
                     <span className="text-[11px] text-slate-400 font-semibold hidden sm:inline">
-                      {topic.lessons.length} Video Lessons • Hackathon/DSA Practice • Mock Interview
+                      {topic.lessons.length} Video Lessons • Coding Game • Mock Interview
                     </span>
                     {isExpanded ? (
                       <ChevronDown className="w-4 h-4 text-slate-400" />
@@ -240,7 +240,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courses, onR
                       <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center gap-2.5">
                         <Gamepad2 className="w-4 h-4 text-purple-400" />
                         <div>
-                          <div className="font-bold text-white text-[11px]">Hackathon/DSA Practice Level</div>
+                          <div className="font-bold text-white text-[11px]">Coding Game Level</div>
                           <div className="text-[10px] text-slate-400">Interactive Concept Challenge</div>
                         </div>
                       </div>
