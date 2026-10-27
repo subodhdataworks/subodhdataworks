@@ -516,3 +516,10 @@
     height: 68px;
   }
 }
+
+/* Delete Real People Real Success Stories Hero Banner on Mobile */
+@media (max-width: 767px) {
+  .rss-top-hero-card {
+    display: none !important;
+  }
+}

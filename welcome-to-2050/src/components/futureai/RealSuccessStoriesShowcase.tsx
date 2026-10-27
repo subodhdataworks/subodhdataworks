@@ -363,7 +363,7 @@ export const RealSuccessStoriesShowcase: React.FC<RealSuccessStoriesShowcaseProp
       {/* =========================================================================
           1. TOP HERO BANNER: "Real People. Real Success Stories."
           ========================================================================= */}
-      <section className="rss-top-hero-card">
+      <section className="rss-top-hero-card hidden md:block">
         <img
           src="/images/dashboard/real_success_hero_banner.png"
           alt="Real People. Real Success Stories. Future.AI Placed Students"
