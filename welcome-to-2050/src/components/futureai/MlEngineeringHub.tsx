@@ -16,6 +16,8 @@ import {
 import { ML_ENGINEERING_CURRICULUM, TabItem } from '../../data/mlEngineeringCurriculum';
 import { SuccessPlanModal } from './SuccessPlanModal';
 import { isCourseUnlocked, isTopicUnlocked } from '../../services/courseUnlockService';
+import { UniversalMobileCourseView } from './UniversalMobileCourseView';
+import './UniversalMobileCourseView.css';
 
 interface MlEngineeringHubProps {
   userName?: string;
@@ -132,7 +134,41 @@ export const MlEngineeringHub: React.FC<MlEngineeringHubProps> = ({
       {/* =========================================================================
           MAIN CONTAINER: STREAMLINED COMPACT TOP SPACING
           ========================================================================= */}
-      <main className="max-w-[1520px] mx-auto px-4 sm:px-6 pt-2 sm:pt-3 space-y-3">
+            {/* MOBILE APP-STYLE VIEW (<768px) */}
+      <div className="course-mobile-only">
+        <UniversalMobileCourseView
+          courseId="ml_engineering"
+          courseTitle="Machine Learning"
+          courseTitleHighlight="Engineering"
+          courseDescription="A custom curriculum covering ML fundamentals, production deployment, CI/CD for ML, feature stores and scalable architectures."
+          courseBannerImage="/images/ml_engineering_poster.jpg"
+          courseBannerFallback="/images/data_analyst_light_banner.jpg"
+          badgeText="ML & MLOps"
+          featurePills={[
+            '📊 Beginner to Advanced',
+            '🛠️ Hands-on Projects',
+            '👥 Interview Preparation',
+            '📜 Industry Certificate',
+            '✨ AI-Powered Learning',
+          ]}
+          enrollPriceText="Enroll for ₹9"
+          isCoursePaid={isCoursePaid}
+          onBack={onBack}
+          onEnroll={() => handleOpenSuccessPlan('Machine Learning Engineering')}
+          onResumeLearning={() => onStartTopic && onStartTopic('ml-t-1', 'Introduction to Machine Learning')}
+          tabs={ML_ENGINEERING_CURRICULUM}
+          activeTabId={activeTabId}
+          onSelectTab={handleSelectTab}
+          expandedChapters={expandedChapters}
+          onToggleChapter={toggleChapter}
+          onSelectTopic={handleTopicClick}
+          customStats={{"modulesCount":40,"topicsCount":310,"projectsCount":8,"certificatesCount":1,"jobReadySkillsCount":"Job Ready Skills"}}
+        />
+      </div>
+
+      {/* DESKTOP VIEW (>=768px) - 100% UNCHANGED */}
+      <div className="course-desktop-only">
+        <main className="max-w-[1520px] mx-auto px-4 sm:px-6 pt-2 sm:pt-3 space-y-3">
 
         {/* =========================================================================
             1. TOP HERO BANNER: LIGHT EXECUTIVE THEME (HIGH-CONTRAST TECH BACKDROP)
@@ -730,6 +766,7 @@ export const MlEngineeringHub: React.FC<MlEngineeringHubProps> = ({
 
         </div>
       </main>
+      </div>
 
       {/* Choose Your Success Plan Modal Popup */}
       <SuccessPlanModal

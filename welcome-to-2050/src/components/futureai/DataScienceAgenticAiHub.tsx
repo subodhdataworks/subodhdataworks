@@ -17,6 +17,8 @@ import {
 import { DATA_SCIENCE_CURRICULUM, TabItem } from '../../data/dataScienceAgenticAiCurriculum';
 import { SuccessPlanModal } from './SuccessPlanModal';
 import { isCourseUnlocked, isTopicUnlocked } from '../../services/courseUnlockService';
+import { UniversalMobileCourseView } from './UniversalMobileCourseView';
+import './UniversalMobileCourseView.css';
 
 interface DataScienceAgenticAiHubProps {
   userName?: string;
@@ -133,7 +135,41 @@ export const DataScienceAgenticAiHub: React.FC<DataScienceAgenticAiHubProps> = (
       {/* =========================================================================
           MAIN CONTAINER: STREAMLINED COMPACT TOP SPACING
           ========================================================================= */}
-      <main className="max-w-[1520px] mx-auto px-4 sm:px-6 pt-2 sm:pt-3 space-y-3">
+            {/* MOBILE APP-STYLE VIEW (<768px) */}
+      <div className="course-mobile-only">
+        <UniversalMobileCourseView
+          courseId="data_science"
+          courseTitle="Data Science &"
+          courseTitleHighlight="Agentic AI"
+          courseDescription="Master Python, Machine Learning, Deep Learning, Generative AI & Autonomous AI Agents to launch your high-paying Data Science career."
+          courseBannerImage="/images/datascience_agentic_ai_poster.jpg"
+          courseBannerFallback="/images/data_analyst_light_banner.jpg"
+          badgeText="MOST ADVANCED"
+          featurePills={[
+            '📊 Beginner to Advanced',
+            '🛠️ Hands-on Projects',
+            '👥 Interview Preparation',
+            '📜 Industry Certificate',
+            '✨ AI-Powered Learning',
+          ]}
+          enrollPriceText="Enroll for ₹9"
+          isCoursePaid={isCoursePaid}
+          onBack={onBack}
+          onEnroll={() => handleOpenSuccessPlan('Data Science & Agentic AI')}
+          onResumeLearning={() => onStartTopic && onStartTopic('ds-t-1', 'What Is Data Science?')}
+          tabs={DATA_SCIENCE_CURRICULUM}
+          activeTabId={activeTabId}
+          onSelectTab={handleSelectTab}
+          expandedChapters={expandedChapters}
+          onToggleChapter={toggleChapter}
+          onSelectTopic={handleTopicClick}
+          customStats={{"modulesCount":48,"topicsCount":380,"projectsCount":10,"certificatesCount":1,"jobReadySkillsCount":"Job Ready Skills"}}
+        />
+      </div>
+
+      {/* DESKTOP VIEW (>=768px) - 100% UNCHANGED */}
+      <div className="course-desktop-only">
+        <main className="max-w-[1520px] mx-auto px-4 sm:px-6 pt-2 sm:pt-3 space-y-3">
 
         {/* =========================================================================
             1. TOP HERO BANNER: LIGHT EXECUTIVE THEME (HIGH-CONTRAST TECH BACKDROP)
@@ -731,6 +767,7 @@ export const DataScienceAgenticAiHub: React.FC<DataScienceAgenticAiHubProps> = (
 
         </div>
       </main>
+      </div>
 
       {/* Choose Your Success Plan Modal Popup */}
       <SuccessPlanModal

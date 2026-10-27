@@ -16,6 +16,8 @@ import {
 import { MS_OFFICE_COPILOT_CURRICULUM, TabItem } from '../../data/msOfficeCopilotCurriculum';
 import { SuccessPlanModal } from './SuccessPlanModal';
 import { isCourseUnlocked, isTopicUnlocked } from '../../services/courseUnlockService';
+import { UniversalMobileCourseView } from './UniversalMobileCourseView';
+import './UniversalMobileCourseView.css';
 
 interface MsOfficeCopilotHubProps {
   userName?: string;
@@ -132,7 +134,42 @@ export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
       {/* =========================================================================
           MAIN CONTAINER: STREAMLINED COMPACT TOP SPACING
           ========================================================================= */}
-      <main className="max-w-[1520px] mx-auto px-4 sm:px-6 pt-2 sm:pt-3 space-y-3">
+            {/* MOBILE APP-STYLE VIEW (<768px) */}
+      <div className="course-mobile-only">
+        <UniversalMobileCourseView
+          courseId="ms_office_copilot"
+          courseTitle="Microsoft 365"
+          courseTitlePrefix="with "
+          courseTitleHighlight="Copilot AI"
+          courseDescription="Automate executive reports, financial models in Excel, PowerPoint presentations, Word documentation and corporate productivity."
+          courseBannerImage="/images/msoffice_365_copilot_poster.jpg"
+          courseBannerFallback="/images/data_analyst_light_banner.jpg"
+          badgeText="ENTERPRISE READY"
+          featurePills={[
+            '📊 Beginner to Advanced',
+            '🛠️ Hands-on Projects',
+            '👥 Interview Preparation',
+            '📜 Industry Certificate',
+            '✨ AI-Powered Learning',
+          ]}
+          enrollPriceText="Enroll for ₹9"
+          isCoursePaid={isCoursePaid}
+          onBack={onBack}
+          onEnroll={() => handleOpenSuccessPlan('Microsoft 365 with Copilot AI')}
+          onResumeLearning={() => onStartTopic && onStartTopic('mso-t-1', 'Introduction to Microsoft 365 Copilot')}
+          tabs={MS_OFFICE_COPILOT_CURRICULUM}
+          activeTabId={activeTabId}
+          onSelectTab={handleSelectTab}
+          expandedChapters={expandedChapters}
+          onToggleChapter={toggleChapter}
+          onSelectTopic={handleTopicClick}
+          customStats={{"modulesCount":38,"topicsCount":295,"projectsCount":6,"certificatesCount":1,"jobReadySkillsCount":"Job Ready Skills"}}
+        />
+      </div>
+
+      {/* DESKTOP VIEW (>=768px) - 100% UNCHANGED */}
+      <div className="course-desktop-only">
+        <main className="max-w-[1520px] mx-auto px-4 sm:px-6 pt-2 sm:pt-3 space-y-3">
 
         {/* =========================================================================
             1. TOP HERO BANNER: LIGHT EXECUTIVE THEME (HIGH-CONTRAST TECH BACKDROP)
@@ -730,6 +767,7 @@ export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
 
         </div>
       </main>
+      </div>
 
       {/* Choose Your Success Plan Modal Popup */}
       <SuccessPlanModal

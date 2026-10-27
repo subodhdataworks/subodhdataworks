@@ -23,6 +23,8 @@ import { DATA_ANALYST_CURRICULUM, TabItem } from '../../data/dataAnalystCurricul
 import { ToolIcon } from './CourseToolIcons';
 import { SuccessPlanModal } from './SuccessPlanModal';
 import { isCourseUnlocked, isTopicUnlocked } from '../../services/courseUnlockService';
+import { UniversalMobileCourseView } from './UniversalMobileCourseView';
+import './UniversalMobileCourseView.css';
 
 interface DataAnalystGenAiHubProps {
   userName?: string;
@@ -163,7 +165,49 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
       {/* =========================================================================
           MAIN CONTAINER: STREAMLINED COMPACT TOP SPACING
           ========================================================================= */}
-      <main className="max-w-[1520px] mx-auto px-4 sm:px-6 pt-2 sm:pt-3 space-y-3">
+            {/* MOBILE APP-STYLE VIEW (<768px) */}
+      <div className="course-mobile-only">
+        <UniversalMobileCourseView
+          courseId="data_analyst"
+          courseTitle="Data Analyst"
+          courseTitlePrefix="with "
+          courseTitleHighlight="GenAI"
+          courseDescription="Learn Excel, SQL, Python, Power BI and Generative AI to become a job-ready Data Analyst with real-world projects."
+          courseBannerImage="/images/data_analyst_light_banner.jpg"
+          courseBannerFallback="/images/future_it_industries_campus_banner.png"
+          badgeText="Most Popular"
+          featurePills={[
+            '🔰 Beginner to Advanced',
+            '🛠️ Hands-on Projects',
+            '💬 Interview Preparation',
+            '📜 Industry Certificate',
+            '🤖 AI-Powered Learning',
+          ]}
+          enrollPriceText="Enroll for ₹4"
+          isCoursePaid={isCoursePaid}
+          onBack={onBack}
+          onEnroll={() => handleOpenSuccessPlan('Data Analyst with GenAI')}
+          onResumeLearning={() => onStartTopic && onStartTopic('t-1', 'What Is Data Analytics?')}
+          tabs={DATA_ANALYST_CURRICULUM}
+          activeTabId={activeTabId}
+          onSelectTab={handleSelectTab}
+          expandedChapters={expandedChapters}
+          onToggleChapter={toggleChapter}
+          onSelectTopic={handleTopicClick}
+          getTabRealIcon={getTabRealIcon}
+          customStats={{
+            modulesCount: 43,
+            topicsCount: 345,
+            projectsCount: 8,
+            certificatesCount: 1,
+            jobReadySkillsCount: 'Job Ready Skills'
+          }}
+        />
+      </div>
+
+      {/* DESKTOP VIEW (>=768px) - 100% UNCHANGED */}
+      <div className="course-desktop-only">
+        <main className="max-w-[1520px] mx-auto px-4 sm:px-6 pt-2 sm:pt-3 space-y-3">
 
         {/* =========================================================================
             1. TOP HERO BANNER: LIGHT EXECUTIVE THEME (HIGH-CONTRAST DAYLIGHT TECH CAMPUS)
@@ -764,6 +808,7 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
 
         </div>
       </main>
+      </div>
 
       {/* Choose Your Success Plan Modal Popup */}
       <SuccessPlanModal
