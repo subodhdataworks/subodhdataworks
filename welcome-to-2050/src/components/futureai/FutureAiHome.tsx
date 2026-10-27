@@ -65,6 +65,7 @@ import { soundEffects } from '../../services/soundEffects';
 import { FutureAdvancedHeader } from './FutureAdvancedHeader';
 import { FutureAuthModal } from './FutureAuthModal';
 import { RealSuccessStoriesShowcase } from './RealSuccessStoriesShowcase';
+import { MobileCareerProgramsSection } from './MobileCareerProgramsSection';
 
 // ─── Reusable Smooth Typewriter Heading Component ─────────────────────────────
 interface TypewriterHeadingProps {
@@ -639,6 +640,17 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       ═══════════════════════════════════════════════════════════════════════════ */}
       <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-1 pb-6 sm:pt-2 sm:pb-8">
         
+        {/* MOBILE VIEW (< 768px): 7-Course Stacked Cards with Autoplay (Exact 1:1 Reference Design) */}
+        <div className="block md:hidden">
+          <MobileCareerProgramsSection
+            onUnlockCourse={(course) =>
+              promptLogin('Please login to unlock ' + course.titlePrefix + course.titleHighlight, course.route)
+            }
+          />
+        </div>
+
+        {/* DESKTOP VIEW (>= 768px): Existing Panoramic 3D Banner + 4 Video Cards (100% Unchanged) */}
+        <div className="hidden md:block">
         {/* Panoramic 3D Showcase Banner (Matching Reference Visual Style) */}
         <div className="relative mb-6 rounded-3xl overflow-hidden bg-gradient-to-r from-[#eaf2fb] via-[#f1f6fd] to-[#e4eef9] border border-blue-200/80 shadow-xs">
           
@@ -829,6 +841,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             </div>
           </div>
 
+        </div>
         </div>
       </section>
 

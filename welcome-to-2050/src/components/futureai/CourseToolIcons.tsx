@@ -237,6 +237,17 @@ export const ToolIcon: React.FC<{ name: string; className?: string }> = ({ name,
     );
   }
 
+  // Microsoft Copilot
+  if (norm.includes('copilot') || norm.includes('coptgpt')) {
+    return (
+      <svg viewBox="0 0 36 36" className={className}>
+        <rect width="36" height="36" rx="8" fill="#0D9488" />
+        <path d="M12 18 C12 14.7 14.7 12 18 12 C21.3 12 24 14.7 24 18 C24 21.3 21.3 24 18 24 C14.7 24 12 21.3 12 18 Z" fill="none" stroke="#FFFFFF" strokeWidth="2.5" />
+        <circle cx="18" cy="18" r="3" fill="#FFFFFF" />
+      </svg>
+    );
+  }
+
   // Default fallback icon
   return (
     <svg viewBox="0 0 36 36" className={className}>
