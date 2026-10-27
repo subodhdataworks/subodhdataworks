@@ -283,6 +283,21 @@
     line-height: 1.2 !important;
   }
 
+  .aff-mob-card-arrow {
+    width: 17px !important;
+    height: 17px !important;
+    border-radius: 50% !important;
+    background: #f1f5f9 !important;
+    border: 1px solid #e2e8f0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    color: #64748b !important;
+    margin-left: 2px !important;
+    transition: all 0.15s ease !important;
+  }
+
   .aff-mob-card-bottom {
     display: flex !important;
     align-items: flex-end !important;
@@ -471,6 +486,10 @@
 
   .aff-mob-soc-li {
     background: #0A66C2 !important;
+  }
+
+  .aff-mob-soc-fb {
+    background: #1877F2 !important;
   }
 
   .aff-mob-soc-more {
@@ -776,6 +795,6 @@
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
-    min-height: 180px !important;
+    min-height: 195px !important;
     text-align: left !important;
   }

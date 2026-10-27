@@ -618,7 +618,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   }, [analyticsRangeFilter, clicks, signups, paidEnrollments, totalEarned]);
 
   // Social Sharing Handlers
-  const handleShareSocial = (platform: 'whatsapp' | 'instagram' | 'telegram' | 'linkedin' | 'more') => {
+  const handleShareSocial = (platform: 'whatsapp' | 'instagram' | 'telegram' | 'linkedin' | 'facebook' | 'more') => {
     playUiSound('click');
     const text = encodeURIComponent(
       `🚀 Join FUTURE IT INDUSTRY with my invite! Master Python, GenAI & Data Science (6-15 LPA Track). Use my referral link to get instant access: ${affiliateRefUrl}`
@@ -629,6 +629,9 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     } else if (platform === 'telegram') {
       window.open(`https://t.me/share/url?url=${encodeURIComponent(affiliateRefUrl)}&text=${text}`, '_blank');
       showToast('Opening Telegram share...', 'info');
+    } else if (platform === 'facebook') {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(affiliateRefUrl)}`, '_blank');
+      showToast('Opening Facebook share dialog...', 'info');
     } else if (platform === 'linkedin') {
       window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(affiliateRefUrl)}`, '_blank');
       showToast('Opening LinkedIn share dialog...', 'info');
@@ -1012,7 +1015,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   <div className="aff-mob-hero-chips-grid">
                     {banner.featurePills.map((pill, pIdx) => (
                       <div key={pIdx} className="aff-mob-hero-chip">
-                        <span>{pill.icon}</span>
+                        <span className="text-[10px] leading-none shrink-0">{pill.icon}</span>
                         <span className="truncate">{pill.label}</span>
                       </div>
                     ))}
@@ -1033,8 +1036,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                       }}
                       className="aff-mob-hero-withdraw-btn"
                     >
-                      <span>{banner.ctaType === 'withdraw' ? '💳 Instant Withdraw' : '🔗 Copy Link'}</span>
-                      <span>→</span>
+                      <span>{banner.ctaType === 'withdraw' ? `⚡ Instant Withdraw ₹${availableBalance.toLocaleString('en-IN')}` : '🔗 Copy Link'}</span>
+                      <span className="text-xs">➔</span>
                     </button>
 
                     {banner.theme === 'withdraw' ? (
@@ -1044,20 +1047,23 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                           setWithdrawStep('form');
                           setIsWithdrawModalOpen(true);
                         }}
-                        className="aff-mob-hero-avail-badge"
+                        className="aff-mob-hero-avail-badge cursor-pointer"
                       >
-                        <div className="aff-mob-avail-check">✓</div>
+                        <div className="aff-mob-avail-check">⚡</div>
                         <div className="aff-mob-avail-texts">
                           <span className="aff-mob-avail-sub">INSTANT PAYOUTS</span>
-                          <span className="aff-mob-avail-val">Direct to Bank</span>
+                          <span className="aff-mob-avail-val">₹{availableBalance.toLocaleString('en-IN')} Available ➔</span>
                         </div>
                       </div>
                     ) : (
-                      <div className="aff-mob-hero-avail-badge">
+                      <div
+                        onClick={handleCopyLink}
+                        className="aff-mob-hero-avail-badge cursor-pointer"
+                      >
                         <span className="text-xs">🔥</span>
                         <div className="aff-mob-avail-texts">
                           <span className="aff-mob-avail-sub">ACTIVE COMMUNITY</span>
-                          <span className="aff-mob-avail-val">12,500+ Partners</span>
+                          <span className="aff-mob-avail-val">12,500+ Partners ➔</span>
                         </div>
                       </div>
                     )}
@@ -1068,42 +1074,49 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
           </div>
 
           {/* Previous & Next Navigation Arrows */}
-          {affiliateBanners.length > 1 && (
-            <>
-              <button
-                type="button"
-                onClick={handlePrevBanner}
-                aria-label="Previous Slide"
-                className="aff-mob-slider-arrow aff-mob-arrow-left"
-              >
-                <ChevronLeft className="w-3.5 h-3.5 stroke-[2.5]" />
-              </button>
-              <button
-                type="button"
-                onClick={handleNextBanner}
-                aria-label="Next Slide"
-                className="aff-mob-slider-arrow aff-mob-arrow-right"
-              >
-                <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
-              </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              playUiSound('tab');
+              setCurrentBannerIndex((prev) => (prev - 1 + affiliateBanners.length) % affiliateBanners.length);
+            }}
+            className="aff-mob-hero-arrow aff-mob-arrow-left"
+            aria-label="Previous Slide"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              playUiSound('tab');
+              setCurrentBannerIndex((prev) => (prev + 1) % affiliateBanners.length);
+            }}
+            className="aff-mob-hero-arrow aff-mob-arrow-right"
+            aria-label="Next Slide"
+          >
+            ›
+          </button>
 
-              {/* Pagination Dots */}
-              <div className="aff-mob-hero-dots">
-                {affiliateBanners.map((b, i) => (
-                  <button
-                    key={b.id}
-                    type="button"
-                    onClick={() => setCurrentBannerIndex(i)}
-                    aria-label={`Slide ${i + 1}`}
-                    className={`aff-mob-hero-dot ${i === currentBannerIndex ? 'active' : ''}`}
-                  />
-                ))}
-              </div>
-            </>
-          )}
+          {/* Pagination Dots */}
+          <div className="aff-mob-hero-dots">
+            {affiliateBanners.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => {
+                  playUiSound('tab');
+                  setCurrentBannerIndex(i);
+                }}
+                className={`aff-mob-hero-dot ${i === currentBannerIndex ? 'active' : ''}`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
         </section>
 
-        {/* 2. 6 EARNINGS STATISTICS CARDS (3-Column Grid Matching Reference Image) */}
+        {/* 2. 6 EARNINGS STATISTICS CARDS (3-Column x 2-Row Grid Matching Reference Image) */}
         <section className="aff-mob-metrics-grid">
           {/* Card 1: Total Clicks */}
           <div
@@ -1115,7 +1128,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 <Send className="w-3 h-3 text-white" />
               </div>
               <span className="aff-mob-card-badge bg-[#dcfce7] text-[#059669]">
-                + Active
+                ● Active
               </span>
             </div>
             <div>
@@ -1131,6 +1144,9 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   <rect x="40" y="6" width="6" height="22" rx="1.5" fill="#0ea5e9" />
                   <rect x="52" y="2" width="6" height="26" rx="1.5" fill="#0066ff" />
                 </svg>
+              </div>
+              <div className="aff-mob-card-arrow">
+                <ChevronRight className="w-2.5 h-2.5 text-slate-500" />
               </div>
             </div>
           </div>
@@ -1163,6 +1179,9 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   <rect x="36" y="16" width="4" height="12" rx="1" fill="#6ee7b7" />
                   <rect x="48" y="12" width="4" height="16" rx="1" fill="#34d399" />
                 </svg>
+              </div>
+              <div className="aff-mob-card-arrow">
+                <ChevronRight className="w-2.5 h-2.5 text-slate-500" />
               </div>
             </div>
           </div>
@@ -1197,6 +1216,9 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   <rect x="52" y="2" width="6" height="26" rx="1.5" fill="#8b5cf6" />
                 </svg>
               </div>
+              <div className="aff-mob-card-arrow">
+                <ChevronRight className="w-2.5 h-2.5 text-slate-500" />
+              </div>
             </div>
           </div>
 
@@ -1228,6 +1250,9 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   <rect x="44" y="9" width="5" height="19" rx="1.5" fill="#fcd34d" />
                   <rect x="54" y="4" width="5" height="24" rx="1.5" fill="#f59e0b" />
                 </svg>
+              </div>
+              <div className="aff-mob-card-arrow">
+                <ChevronRight className="w-2.5 h-2.5 text-slate-500" />
               </div>
             </div>
           </div>
@@ -1262,6 +1287,9 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   <rect x="56" y="2" width="6" height="26" rx="1.5" fill="#06b6d4" />
                 </svg>
               </div>
+              <div className="aff-mob-card-arrow">
+                <ChevronRight className="w-2.5 h-2.5 text-slate-500" />
+              </div>
             </div>
           </div>
 
@@ -1292,6 +1320,9 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   <rect x="52" y="2" width="6" height="26" rx="1.5" fill="#6366f1" />
                 </svg>
               </div>
+              <div className="aff-mob-card-arrow">
+                <ChevronRight className="w-2.5 h-2.5 text-slate-500" />
+              </div>
             </div>
           </div>
         </section>
@@ -1310,7 +1341,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
             </div>
             <span className="aff-mob-active-pill">
               <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] animate-pulse" />
-              Active • 24/7 Tracking
+              ● Active • 24/7 Tracking
             </span>
           </div>
 
@@ -1371,14 +1402,14 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
             </button>
             <button
               type="button"
-              onClick={() => handleShareSocial('linkedin')}
-              className="aff-mob-social-btn aff-mob-soc-li"
-              title="Share on LinkedIn"
+              onClick={() => handleShareSocial('facebook')}
+              className="aff-mob-social-btn aff-mob-soc-fb"
+              title="Share on Facebook"
             >
-              <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
-                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.53 1.53 0 1 0-.01-3.06 1.53 1.53 0 0 0 .01 3.06m1.4 9.74v-8.37H5.06v8.37h2.8z" />
+              <svg className="w-3.5 h-3.5 fill-white" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
-              <span className="text-[9px] font-bold text-white ml-1">LinkedIn</span>
+              <span className="text-[9px] font-bold text-white ml-1">Facebook</span>
             </button>
             <button
               type="button"
@@ -1392,17 +1423,22 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
           </div>
 
           {/* Action Row: Templates & QR / Flyer Buttons */}
-          <div className="grid grid-cols-2 gap-2 mt-3 pt-2 border-t border-slate-100">
+          <div className="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-slate-100">
             <button
               type="button"
               onClick={() => {
                 playUiSound('click');
                 setIsMarketingKitOpen(true);
               }}
-              className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 font-bold text-xs transition-all active:scale-95 cursor-pointer shadow-2xs"
+              className="flex items-center gap-2 py-2 px-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 font-bold transition-all active:scale-95 cursor-pointer shadow-2xs"
             >
-              <FileText className="w-3.5 h-3.5 text-purple-600" />
-              <span>Templates</span>
+              <div className="w-7 h-7 rounded-lg bg-purple-200/60 text-purple-700 flex items-center justify-center shrink-0">
+                <FileText className="w-3.5 h-3.5" />
+              </div>
+              <div className="flex flex-col text-left min-w-0">
+                <span className="text-[11px] font-black text-slate-900 leading-tight">Templates</span>
+                <span className="text-[8.5px] font-semibold text-slate-500 leading-tight">Ready-to-use content</span>
+              </div>
             </button>
             <button
               type="button"
@@ -1410,16 +1446,361 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 playUiSound('click');
                 setIsQrModalOpen(true);
               }}
-              className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 font-bold text-xs transition-all active:scale-95 cursor-pointer shadow-2xs"
+              className="flex items-center gap-2 py-2 px-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 font-bold transition-all active:scale-95 cursor-pointer shadow-2xs"
             >
-              <QrCode className="w-3.5 h-3.5 text-rose-600" />
-              <span>QR / Flyer</span>
+              <div className="w-7 h-7 rounded-lg bg-rose-200/60 text-rose-700 flex items-center justify-center shrink-0">
+                <QrCode className="w-3.5 h-3.5" />
+              </div>
+              <div className="flex flex-col text-left min-w-0">
+                <span className="text-[11px] font-black text-slate-900 leading-tight">QR / Flyer</span>
+                <span className="text-[8.5px] font-semibold text-slate-500 leading-tight">Download &amp; Share</span>
+              </div>
             </button>
           </div>
         </section>
 
-        {/* 4. INSTANT PAYOUT WALLET CARD */}
-        <section className="aff-mob-section-card">
+        {/* 4. DUO GRID ROW 1: PORTFOLIO BREAKDOWN & EARNINGS ANALYTICS */}
+        <section className="aff-mob-duo-grid">
+          {/* CARD A: Portfolio Breakdown */}
+          <div className="aff-mob-duo-card">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-1.5">
+                <span className="text-base text-[#0066ff]">📊</span>
+                <div>
+                  <h4 className="text-xs font-black text-slate-900 leading-tight">
+                    Portfolio <span className="text-[#0066ff]">Breakdown</span>
+                  </h4>
+                  <p className="text-[8.5px] text-slate-500 font-medium">₹{totalEarned.toLocaleString('en-IN')} Total Earned</p>
+                </div>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            </div>
+
+            {/* Donut Chart & Legend */}
+            <div className="relative my-auto flex items-center justify-center">
+              {/* Donut SVG */}
+              <div className="relative w-24 h-24 flex items-center justify-center">
+                <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                  {/* Background Circle */}
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="38"
+                    fill="transparent"
+                    stroke="#f1f5f9"
+                    strokeWidth="11"
+                  />
+                  {/* Available Segment: emerald-500 */}
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="38"
+                    fill="transparent"
+                    stroke="#10b981"
+                    strokeWidth="11"
+                    strokeDasharray="238.76"
+                    strokeDashoffset={238.76 - (238.76 * (availableBalance / (totalEarned || 1)))}
+                    strokeLinecap="round"
+                    className="transition-all duration-700 ease-out"
+                  />
+                  {/* Pending Segment: amber-500 (if any) */}
+                  {pendingBalance > 0 && (
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="38"
+                      fill="transparent"
+                      stroke="#f59e0b"
+                      strokeWidth="11"
+                      strokeDasharray="238.76"
+                      strokeDashoffset={238.76 - (238.76 * (pendingBalance / (totalEarned || 1)))}
+                      strokeLinecap="round"
+                    />
+                  )}
+                </svg>
+                {/* Center Badge */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <span className="text-[12px] font-black text-slate-900">100%</span>
+                  <span className="text-[7.5px] font-bold text-emerald-600 uppercase">Available</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Legend List */}
+            <div className="space-y-1 pt-1 border-t border-slate-100">
+              <div className="flex items-center justify-between text-[9px]">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                  <span className="text-slate-600 font-medium">Available</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-bold text-slate-900">₹{availableBalance.toLocaleString('en-IN')}</span>
+                  <span className="text-[8px] font-bold text-emerald-600">100%</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between text-[9px]">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+                  <span className="text-slate-600 font-medium">Pending</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-bold text-slate-500">₹{pendingBalance.toLocaleString('en-IN')}</span>
+                  <span className="text-[8px] font-bold text-slate-400">0%</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between text-[9px]">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-slate-300 shrink-0" />
+                  <span className="text-slate-600 font-medium">Withdrawn</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-bold text-slate-500">₹0</span>
+                  <span className="text-[8px] font-bold text-slate-400">0%</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between text-[9px]">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-rose-400 shrink-0" />
+                  <span className="text-slate-600 font-medium">Reversed</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-bold text-slate-500">₹0</span>
+                  <span className="text-[8px] font-bold text-slate-400">0%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* CARD B: Earnings Analytics & Growth */}
+          <div className="aff-mob-duo-card">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-1.5">
+                <span className="text-base text-[#0066ff]">📈</span>
+                <div>
+                  <h4 className="text-xs font-black text-slate-900 leading-tight">
+                    Earnings <span className="text-[#0066ff]">Analytics</span>
+                  </h4>
+                  <p className="text-[8.5px] text-slate-500 font-medium">Traffic &amp; Conversion</p>
+                </div>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            </div>
+
+            {/* Range Tabs */}
+            <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg mb-2">
+              {(['7D', '30D', '3M', 'ALL'] as const).map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => {
+                    playUiSound('tab');
+                    setAnalyticsRangeFilter(tab);
+                  }}
+                  className={`flex-1 py-0.5 rounded-md text-[8.5px] font-bold text-center cursor-pointer transition-all ${
+                    analyticsRangeFilter === tab
+                      ? 'bg-white text-[#0066ff] shadow-xs'
+                      : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+
+            {/* Legend */}
+            <div className="flex items-center justify-around text-[8px] text-slate-500 font-medium mb-2">
+              <span className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0066ff]" /> Clicks
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Signups
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-500" /> Enrollments
+              </span>
+            </div>
+
+            {/* Mini Chart */}
+            <div className="my-auto h-20 flex items-end justify-between gap-1 px-1 pt-2">
+              {[
+                { day: 'M', h: 22, bg: '#bae6fd' },
+                { day: 'T', h: 35, bg: '#7dd3fc' },
+                { day: 'W', h: 48, bg: '#38bdf8' },
+                { day: 'T', h: 62, bg: '#0ea5e9' },
+                { day: 'F', h: 74, bg: '#0284c7' },
+                { day: 'S', h: 88, bg: '#0369a1' },
+                { day: 'S', h: 100, bg: '#0066ff' },
+              ].map((b, idx) => (
+                <div key={idx} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                  <div
+                    className="w-full rounded-t-sm transition-all duration-500 hover:brightness-110"
+                    style={{
+                      height: `${b.h}%`,
+                      background: b.bg,
+                    }}
+                  />
+                  <span className="text-[7.5px] font-bold text-slate-400">{b.day}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Summary Row */}
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[9px]">
+              <span className="text-slate-500">Conv. Rate</span>
+              <span className="font-black text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md border border-emerald-200">
+                +6.25%
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {/* 5. DUO GRID ROW 2: LIVE REFERRALS STREAM & NEW COMMISSION RULES (Matching Reference 1:1) */}
+        <section className="aff-mob-duo-grid">
+          {/* CARD C: Live Referrals Stream */}
+          <div className="aff-mob-duo-card">
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <Users className="w-4 h-4 text-[#8b5cf6] shrink-0" />
+                <div className="min-w-0">
+                  <h4 className="text-xs font-black text-slate-900 leading-tight truncate">
+                    Live Referrals <span className="text-[#8b5cf6]">Stream</span>
+                  </h4>
+                  <p className="text-[8px] text-slate-500 font-medium truncate">Real-time enrollment tracking</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  playUiSound('click');
+                  setReferralStatusFilter('All');
+                  setIsReferralsModalOpen(true);
+                }}
+                className="text-[8.5px] font-bold text-[#8b5cf6] hover:underline shrink-0"
+              >
+                View All →
+              </button>
+            </div>
+
+            {/* Filter Pills */}
+            <div className="flex items-center gap-1 overflow-x-auto scrollbar-none py-1 mb-1.5">
+              <button
+                type="button"
+                onClick={() => { playUiSound('tab'); setReferralStatusFilter('All'); }}
+                className={`px-2 py-0.5 rounded-full text-[8px] font-black whitespace-nowrap cursor-pointer ${
+                  referralStatusFilter === 'All' ? 'bg-[#8b5cf6] text-white' : 'bg-slate-100 text-slate-600'
+                }`}
+              >
+                All ({referralsList.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => { playUiSound('tab'); setReferralStatusFilter('Paid'); }}
+                className={`px-2 py-0.5 rounded-full text-[8px] font-black whitespace-nowrap cursor-pointer ${
+                  referralStatusFilter === 'Paid' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                }`}
+              >
+                ✓ Paid ({referralsList.filter((r) => r.status === 'Paid').length})
+              </button>
+              <button
+                type="button"
+                onClick={() => { playUiSound('tab'); setReferralStatusFilter('Approved'); }}
+                className={`px-2 py-0.5 rounded-full text-[8px] font-black whitespace-nowrap cursor-pointer ${
+                  referralStatusFilter === 'Approved' ? 'bg-sky-600 text-white' : 'bg-sky-50 text-sky-700 border border-sky-200'
+                }`}
+              >
+                ⚡ Approved (0)
+              </button>
+              <button
+                type="button"
+                onClick={() => { playUiSound('tab'); setReferralStatusFilter('Trial Started'); }}
+                className={`px-2 py-0.5 rounded-full text-[8px] font-black whitespace-nowrap cursor-pointer ${
+                  referralStatusFilter === 'Trial Started' ? 'bg-purple-600 text-white' : 'bg-purple-50 text-purple-700 border border-purple-200'
+                }`}
+              >
+                ⏱️ Trial (0)
+              </button>
+            </div>
+
+            {/* Referrals List */}
+            <div className="space-y-1.5 flex-1 flex flex-col justify-center">
+              {filteredReferrals.slice(0, 2).map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between p-1.5 rounded-xl bg-slate-50 border border-slate-200/80"
+                >
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <div className="w-5 h-5 rounded-full bg-purple-100 text-[#8b5cf6] font-black text-[9px] flex items-center justify-center shrink-0">
+                      {item.name ? item.name[0].toUpperCase() : 'P'}
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-[9.5px] font-black text-slate-900 truncate">{item.name}</span>
+                      <span className="text-[7.5px] text-slate-500 truncate">{item.course}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <span className="px-1.5 py-0.5 rounded-md text-[8px] font-black bg-emerald-100 text-emerald-800">
+                      ✓ Paid
+                    </span>
+                    <span className="text-[9px] font-black text-emerald-600">+₹{item.commission}</span>
+                    <ChevronRight className="w-3 h-3 text-slate-400" />
+                  </div>
+                </div>
+              ))}
+              {filteredReferrals.length === 0 && (
+                <div className="py-3 text-center text-slate-400 text-[9px] font-medium">
+                  No referrals in this filter yet.
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* CARD D: NEW COMMISSION RULES (Side-by-Side in Duo Grid) */}
+          <div className="aff-mob-duo-card">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                <h4 className="text-[10px] font-black text-slate-900 leading-tight uppercase tracking-tight truncate">
+                  COMMISSION RULES
+                </h4>
+              </div>
+              <span className="text-[8.5px] font-bold text-emerald-700 bg-emerald-100 border border-emerald-200 px-2 py-0.5 rounded-full shrink-0">
+                Active
+              </span>
+            </div>
+
+            {/* 4 Rules List */}
+            <div className="space-y-1.5 flex-1 flex flex-col justify-center text-[9px]">
+              <div className="flex items-center justify-between p-1.5 rounded-lg bg-slate-50 border border-slate-100">
+                <span className="text-slate-600 font-medium">👤 Free Signup</span>
+                <span className="font-bold text-slate-900">₹0</span>
+              </div>
+              <div className="flex items-center justify-between p-1.5 rounded-lg bg-emerald-50 border border-emerald-200">
+                <span className="text-emerald-800 font-bold">₹ Paid Enrollment</span>
+                <span className="font-black text-emerald-600">+₹100</span>
+              </div>
+              <div className="flex items-center justify-between p-1.5 rounded-lg bg-slate-50 border border-slate-100">
+                <span className="text-slate-600 font-medium">❌ Failed Payment</span>
+                <span className="font-bold text-rose-600">₹0</span>
+              </div>
+              <div className="flex items-center gap-1 px-1 text-[8px] text-slate-500 font-medium">
+                <span className="text-emerald-600">✓</span>
+                <span>Unique Email &amp; Verified Only</span>
+              </div>
+            </div>
+
+            {/* Bottom Status Tag */}
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[8px]">
+              <span className="text-slate-400">Escrow Security</span>
+              <span className="font-bold text-emerald-600">Instant Release</span>
+            </div>
+          </div>
+        </section>
+
+        {/* 6. INSTANT PAYOUT WALLET CARD (Preserved Full Functionality) */}
+        <section className="aff-mob-section-card mb-3">
           <div className="aff-mob-wallet-dark-box">
             {/* Left Box */}
             <div className="aff-mob-wallet-left">
@@ -1493,418 +1874,72 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
           </div>
         </section>
 
-        {/* 5. NEW AFFILIATE COMMISSION RULES CARD */}
+        {/* 7. AFFILIATE LEADERBOARD CARD (Preserved Full Functionality) */}
         <section className="bg-white rounded-2xl p-3 border border-slate-200/90 shadow-2xs mb-3">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-black text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>NEW AFFILIATE COMMISSION RULES</span>
-            </span>
-            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 border border-emerald-200 px-2.5 py-0.5 rounded-full">
-              Active
-            </span>
-          </div>
-          <div className="grid grid-cols-2 gap-2 text-[10px] font-semibold text-slate-600 pt-0.5">
-            <div>• Free Signup: <strong className="text-slate-900 font-bold">₹0</strong></div>
-            <div>• Paid Enrollment: <strong className="text-emerald-600 font-bold">₹100</strong></div>
-            <div>• Failed Payment: <strong className="text-rose-600 font-bold">₹0</strong></div>
-            <div>• Unique Email &amp; Verified Only</div>
-          </div>
-        </section>
-
-        {/* 6. DUO GRID ROW 1: PORTFOLIO BREAKDOWN & EARNINGS ANALYTICS */}
-        <section className="aff-mob-duo-grid">
-          {/* CARD A: Portfolio Breakdown */}
-          <div className="aff-mob-duo-card">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-1.5">
-                <span className="text-base text-[#0066ff]">📊</span>
-                <div>
-                  <h4 className="text-xs font-black text-slate-900 leading-tight">
-                    Portfolio <span className="text-[#0066ff]">Breakdown</span>
-                  </h4>
-                  <p className="text-[8.5px] text-slate-500 font-medium">Status distribution</p>
-                </div>
-              </div>
+            <div className="flex items-center gap-1.5">
+              <Crown className="w-4 h-4 text-amber-500" />
+              <h4 className="text-xs font-black text-slate-900 leading-tight">
+                Affiliate <span className="text-[#0066ff]">Leaderboard</span>
+              </h4>
             </div>
-
-            {/* Donut Chart & Legend */}
-            <div className="flex items-center gap-2">
-              {/* Donut SVG */}
-              <div className="relative w-20 h-20 shrink-0">
-                <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-xs">
-                  {totalEarned === 0 ? (
-                    <circle cx="100" cy="100" r="72" fill="transparent" stroke="#e2e8f0" strokeWidth="26" strokeDasharray="6 6" />
-                  ) : (
-                    <g transform="rotate(-90 100 100)">
-                      <circle
-                        cx="100"
-                        cy="100"
-                        r="72"
-                        fill="transparent"
-                        stroke="#0066ff"
-                        strokeWidth="26"
-                        strokeDasharray={`${(availableBalance / (totalEarned || 1)) * 453} 453`}
-                        strokeDashoffset="0"
-                      />
-                      <circle
-                        cx="100"
-                        cy="100"
-                        r="72"
-                        fill="transparent"
-                        stroke="#f59e0b"
-                        strokeWidth="26"
-                        strokeDasharray={`${(pendingBalance / (totalEarned || 1)) * 453} 453`}
-                        strokeDashoffset={`-${(availableBalance / (totalEarned || 1)) * 453}`}
-                      />
-                      <circle
-                        cx="100"
-                        cy="100"
-                        r="72"
-                        fill="transparent"
-                        stroke="#10b981"
-                        strokeWidth="26"
-                        strokeDasharray={`${(totalPaid / (totalEarned || 1)) * 453} 453`}
-                        strokeDashoffset={`-${((availableBalance + pendingBalance) / (totalEarned || 1)) * 453}`}
-                      />
-                    </g>
-                  )}
-                </svg>
-                {/* 100% Top Pill */}
-                <div className="absolute -top-1 right-0 text-[9px] font-black text-blue-600 bg-blue-50 px-1 rounded">
-                  100%
-                </div>
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center leading-none">
-                  <strong className="text-xs font-black text-slate-900">₹{totalEarned.toLocaleString('en-IN')}</strong>
-                  <span className="text-[7px] font-bold text-slate-500 mt-0.5">Total Earned</span>
-                </div>
-              </div>
-
-              {/* Legend List */}
-              <div className="flex flex-col gap-1 flex-1 min-w-0 text-[8.5px] font-semibold">
-                <div
-                  onClick={() => { playUiSound('tab'); setReferralStatusFilter('Approved'); setIsReferralsModalOpen(true); }}
-                  className="flex items-center justify-between cursor-pointer hover:bg-slate-50 p-0.5 rounded"
-                >
-                  <span className="flex items-center gap-1 text-slate-700">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#0066ff]" />
-                    <span>Available</span>
-                  </span>
-                  <span>
-                    <strong className="text-[#0066ff]">₹{availableBalance}</strong> <span className="text-slate-400">({totalEarned > 0 ? Math.round((availableBalance / totalEarned) * 100) : 0}%)</span>
-                  </span>
-                </div>
-                <div
-                  onClick={() => { playUiSound('tab'); setReferralStatusFilter('All'); setIsReferralsModalOpen(true); }}
-                  className="flex items-center justify-between cursor-pointer hover:bg-slate-50 p-0.5 rounded"
-                >
-                  <span className="flex items-center gap-1 text-slate-700">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#f59e0b]" />
-                    <span>Pending</span>
-                  </span>
-                  <span>
-                    <strong className="text-amber-600">₹{pendingBalance}</strong> <span className="text-slate-400">({totalEarned > 0 ? Math.round((pendingBalance / totalEarned) * 100) : 0}%)</span>
-                  </span>
-                </div>
-                <div
-                  onClick={() => { playUiSound('tab'); setReferralStatusFilter('Paid'); setIsReferralsModalOpen(true); }}
-                  className="flex items-center justify-between cursor-pointer hover:bg-slate-50 p-0.5 rounded"
-                >
-                  <span className="flex items-center gap-1 text-slate-700">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#10b981]" />
-                    <span>Withdrawn</span>
-                  </span>
-                  <span>
-                    <strong className="text-emerald-600">₹{totalPaid}</strong> <span className="text-slate-400">({totalEarned > 0 ? Math.round((totalPaid / totalEarned) * 100) : 0}%)</span>
-                  </span>
-                </div>
-                <div
-                  onClick={() => { playUiSound('tab'); setReferralStatusFilter('Reversed'); setIsReferralsModalOpen(true); }}
-                  className="flex items-center justify-between cursor-pointer hover:bg-slate-50 p-0.5 rounded"
-                >
-                  <span className="flex items-center gap-1 text-slate-700">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#f43f5e]" />
-                    <span>Reversed</span>
-                  </span>
-                  <span>
-                    <strong className="text-rose-600">₹0</strong> <span className="text-slate-400">(0%)</span>
-                  </span>
-                </div>
-              </div>
-            </div>
+            <button
+              type="button"
+              onClick={() => {
+                playUiSound('click');
+                setIsTopPartnersModalOpen(true);
+              }}
+              className="text-[9px] font-bold text-[#0066ff] hover:underline"
+            >
+              View Full Rankings →
+            </button>
           </div>
 
-          {/* CARD B: Earnings Analytics & Growth */}
-          <div className="aff-mob-duo-card">
-            <div className="flex items-center justify-between mb-1.5">
-              <div className="flex items-center gap-1 min-w-0">
-                <span className="text-base text-[#0066ff]">📊</span>
-                <div className="min-w-0">
-                  <h4 className="text-xs font-black text-slate-900 leading-tight truncate">
-                    Earnings <span className="text-[#0066ff]">Analytics</span>
-                  </h4>
-                  <p className="text-[8px] text-slate-500 font-medium truncate">Daily conversion</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  playUiSound('click');
-                  showToast('Daily analytics & conversion data updated in real-time.', 'info');
-                }}
-                className="text-[8.5px] font-bold text-[#0066ff] hover:underline shrink-0"
-              >
-                View All →
-              </button>
-            </div>
-
-            {/* Range Tabs */}
-            <div className="flex items-center justify-between gap-1 mb-1">
-              <div className="inline-flex items-center gap-0.5 bg-slate-100 p-0.5 rounded-full">
-                {(['7D', '30D', '3M', 'ALL'] as const).map((rng) => (
-                  <button
-                    key={rng}
-                    type="button"
-                    onClick={() => {
-                      playUiSound('tab');
-                      setAnalyticsRangeFilter(rng);
-                    }}
-                    className={`px-1.5 py-0.5 rounded-full text-[7.5px] font-black cursor-pointer transition-all ${
-                      analyticsRangeFilter === rng
-                        ? 'bg-[#0066ff] text-white shadow-2xs'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    {rng}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Legend */}
-            <div className="flex items-center gap-1.5 text-[7px] font-bold text-slate-500 mb-1 flex-wrap leading-none">
-              <span className="flex items-center gap-0.5"><span className="w-1 h-1 rounded-full bg-[#0066ff]" />Clicks</span>
-              <span className="flex items-center gap-0.5"><span className="w-1 h-1 rounded-full bg-[#10b981]" />Signups</span>
-              <span className="flex items-center gap-0.5"><span className="w-1 h-1 rounded-full bg-[#8b5cf6]" />Enrollments</span>
-              <span className="flex items-center gap-0.5"><span className="w-1 h-1 rounded-full bg-[#f59e0b]" />Comm</span>
-            </div>
-
-            {/* Mini Chart */}
-            <div className="relative w-full h-[72px] bg-slate-50/70 rounded-lg border border-slate-100 p-1 flex items-center justify-between">
-              <div className="flex flex-col justify-between h-full text-[6.5px] text-slate-400 font-semibold leading-none">
-                <span>500</span>
-                <span>300</span>
-                <span>100</span>
-                <span>0</span>
-              </div>
-              <div className="flex-1 h-full mx-1 relative">
-                <svg viewBox="0 0 180 70" className="w-full h-full" preserveAspectRatio="none">
-                  <line x1="0" y1="15" x2="180" y2="15" stroke="#f1f5f9" strokeWidth="1" />
-                  <line x1="0" y1="35" x2="180" y2="35" stroke="#f1f5f9" strokeWidth="1" />
-                  <line x1="0" y1="55" x2="180" y2="55" stroke="#f1f5f9" strokeWidth="1" />
-                  <line x1="0" y1="65" x2="180" y2="65" stroke="#e2e8f0" strokeWidth="1" />
-                  {/* Bars */}
-                  <rect x="145" y={clicks > 0 ? 25 : 60} width="4" height={clicks > 0 ? 40 : 5} rx="1" fill="#0066ff" />
-                  <rect x="151" y={signups > 0 ? 20 : 60} width="4" height={signups > 0 ? 45 : 5} rx="1" fill="#10b981" />
-                  <rect x="157" y={paidEnrollments > 0 ? 15 : 60} width="4" height={paidEnrollments > 0 ? 50 : 5} rx="1" fill="#8b5cf6" />
-                  {/* Line */}
-                  <polyline
-                    fill="none"
-                    stroke="#f59e0b"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    points="10,65 40,65 70,65 100,65 130,65 160,20"
-                  />
-                  <circle cx="160" cy="20" r="2.5" fill="#f59e0b" stroke="#ffffff" strokeWidth="1" />
-                </svg>
-              </div>
-              <div className="flex flex-col justify-between h-full text-[6px] text-slate-400 font-semibold text-right leading-none">
-                <span>4K</span>
-                <span>2K</span>
-                <span>1K</span>
-                <span>0</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-between text-[6.5px] text-slate-400 font-medium px-0.5 mt-0.5">
-              <span>Day 1</span>
-              <span>Day 3</span>
-              <span>Day 5</span>
-              <span>Today</span>
-            </div>
-          </div>
-        </section>
-
-        {/* 7. DUO GRID ROW 2: LIVE REFERRALS STREAM & AFFILIATE LEADERBOARD */}
-        <section className="aff-mob-duo-grid">
-          {/* CARD C: Live Referrals Stream */}
-          <div className="aff-mob-duo-card">
-            <div className="flex items-center justify-between mb-1.5">
-              <div className="flex items-center gap-1.5 min-w-0">
-                <Users className="w-4 h-4 text-[#0066ff] shrink-0" />
-                <div className="min-w-0">
-                  <h4 className="text-xs font-black text-slate-900 leading-tight truncate">
-                    Live Referrals <span className="text-[#0066ff]">Stream</span>
-                  </h4>
-                  <p className="text-[8px] text-slate-500 font-medium truncate">Real-time enrollment tracking</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  playUiSound('click');
-                  setReferralStatusFilter('All');
-                  setIsReferralsModalOpen(true);
-                }}
-                className="text-[8.5px] font-bold text-[#0066ff] hover:underline shrink-0"
-              >
-                View All →
-              </button>
-            </div>
-
-            {/* Filter Pills */}
-            <div className="flex items-center gap-1 overflow-x-auto scrollbar-none py-1 mb-1.5">
-              <button
-                type="button"
-                onClick={() => { playUiSound('tab'); setReferralStatusFilter('All'); }}
-                className={`px-2 py-0.5 rounded-full text-[8px] font-black whitespace-nowrap cursor-pointer ${
-                  referralStatusFilter === 'All' ? 'bg-[#0066ff] text-white' : 'bg-slate-100 text-slate-600'
-                }`}
-              >
-                All ({referralsList.length})
-              </button>
-              <button
-                type="button"
-                onClick={() => { playUiSound('tab'); setReferralStatusFilter('Paid'); }}
-                className={`px-2 py-0.5 rounded-full text-[8px] font-black whitespace-nowrap cursor-pointer ${
-                  referralStatusFilter === 'Paid' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                }`}
-              >
-                ✓ Paid ({referralsList.filter((r) => r.status === 'Paid').length})
-              </button>
-              <button
-                type="button"
-                onClick={() => { playUiSound('tab'); setReferralStatusFilter('Approved'); }}
-                className={`px-2 py-0.5 rounded-full text-[8px] font-black whitespace-nowrap cursor-pointer ${
-                  referralStatusFilter === 'Approved' ? 'bg-sky-600 text-white' : 'bg-sky-50 text-sky-700 border border-sky-200'
-                }`}
-              >
-                ⚡ Approved ({referralsList.filter((r) => r.status === 'Approved').length})
-              </button>
-              <button
-                type="button"
-                onClick={() => { playUiSound('tab'); setReferralStatusFilter('Trial Started'); }}
-                className={`px-2 py-0.5 rounded-full text-[8px] font-black whitespace-nowrap cursor-pointer ${
-                  referralStatusFilter === 'Trial Started' ? 'bg-purple-600 text-white' : 'bg-purple-50 text-purple-700 border border-purple-200'
-                }`}
-              >
-                ⏱️ Trial Started ({referralsList.filter((r) => r.status === 'Trial Started').length})
-              </button>
-            </div>
-
-            {/* Referrals List */}
-            <div className="space-y-1.5 flex-1 flex flex-col justify-center">
-              {filteredReferrals.slice(0, 2).map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between p-1.5 rounded-xl bg-slate-50 border border-slate-200/80"
+          {/* Time Tabs */}
+          <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg mb-2">
+            {(['week', 'month', 'all'] as const).map((tabKey) => {
+              const label = tabKey === 'week' ? 'This Week' : tabKey === 'month' ? 'This Month' : 'All Time';
+              const isActive = partnerLeaderboardTab === tabKey;
+              return (
+                <button
+                  key={tabKey}
+                  type="button"
+                  onClick={() => {
+                    playUiSound('tab');
+                    setPartnerLeaderboardTab(tabKey);
+                  }}
+                  className={`flex-1 py-1 rounded-md text-[8.5px] font-bold text-center cursor-pointer transition-all ${
+                    isActive ? 'bg-[#0066ff] text-white shadow-2xs' : 'text-slate-600'
+                  }`}
                 >
-                  <div className="flex items-center gap-1.5 min-w-0">
-                    <div className="w-5 h-5 rounded-full bg-blue-100 text-[#0066ff] font-black text-[9px] flex items-center justify-center shrink-0">
-                      {item.name ? item.name[0].toUpperCase() : 'U'}
-                    </div>
-                    <div className="flex flex-col min-w-0">
-                      <span className="text-[9.5px] font-black text-slate-900 truncate">{item.name}</span>
-                      <span className="text-[7.5px] text-slate-500 font-medium truncate">{item.course}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <span className="px-1.5 py-0.5 rounded-md text-[7.5px] font-bold bg-emerald-100 text-emerald-800">
-                      ✓ {item.status}
-                    </span>
-                    <span className="text-[9px] font-black text-emerald-600">+₹{item.commission}</span>
-                  </div>
-                </div>
-              ))}
-              {filteredReferrals.length === 0 && (
-                <div className="py-3 text-center text-slate-400 text-[9px] font-medium">
-                  No referrals in this filter yet.
-                </div>
-              )}
-            </div>
+                  {label}
+                </button>
+              );
+            })}
           </div>
 
-          {/* CARD D: Affiliate Leaderboard */}
-          <div className="aff-mob-duo-card">
-            <div className="flex items-center justify-between mb-1.5">
-              <div className="flex items-center gap-1.5 min-w-0">
-                <Crown className="w-4 h-4 text-amber-500 shrink-0" />
-                <div className="min-w-0">
-                  <h4 className="text-xs font-black text-slate-900 leading-tight truncate">
-                    Affiliate <span className="text-[#0066ff]">Leaderboard</span>
-                  </h4>
-                  <p className="text-[8px] text-slate-500 font-medium truncate">Top earners in India</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  playUiSound('click');
-                  setIsTopPartnersModalOpen(true);
-                }}
-                className="text-[8.5px] font-bold text-[#0066ff] hover:underline shrink-0"
-              >
-                View All →
-              </button>
+          {/* Season Leaderboard Open message */}
+          <div className="p-3 text-center bg-slate-50/80 rounded-xl border border-slate-100 flex flex-col justify-center items-center">
+            <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto mb-1.5 text-base shadow-xs">
+              👑
             </div>
-
-            {/* Time Tabs */}
-            <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-full mb-1.5">
-              {(['week', 'month', 'all'] as const).map((tabKey) => {
-                const label = tabKey === 'week' ? 'This Week' : tabKey === 'month' ? 'This Month' : 'All Time';
-                const isActive = partnerLeaderboardTab === tabKey;
-                return (
-                  <button
-                    key={tabKey}
-                    type="button"
-                    onClick={() => {
-                      playUiSound('tab');
-                      setPartnerLeaderboardTab(tabKey);
-                    }}
-                    className={`flex-1 py-0.5 rounded-full text-[8px] font-black text-center cursor-pointer transition-all ${
-                      isActive ? 'bg-[#0066ff] text-white shadow-2xs' : 'text-slate-600'
-                    }`}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Season Leaderboard Open message */}
-            <div className="py-2.5 px-1.5 text-center bg-slate-50/80 rounded-xl border border-slate-100 flex-1 flex flex-col justify-center">
-              <div className="w-6 h-6 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center mx-auto mb-1 text-sm shadow-xs">
-                👑
-              </div>
-              <strong className="text-[10px] font-bold text-slate-900 block leading-tight">
-                Season Leaderboard Open
-              </strong>
-              <p className="text-[8px] text-slate-500 mt-0.5 max-w-[170px] mx-auto leading-relaxed">
-                Be the first to claim Rank #1! Share your referral link and earn Flat ₹100 per student enrollment.
-              </p>
-              <button
-                type="button"
-                onClick={handleCopyLink}
-                className="mt-1.5 inline-flex items-center justify-center gap-1 px-2 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-black text-[8.5px] cursor-pointer shadow-xs active:scale-95 transition-all w-fit mx-auto"
-              >
-                <Copy className="w-2.5 h-2.5" />
-                <span>{copiedLink ? 'Copied Link!' : 'Copy Link to Rank #1'}</span>
-              </button>
-            </div>
+            <strong className="text-[11px] font-bold text-slate-900 block leading-tight">
+              Season Leaderboard Open
+            </strong>
+            <p className="text-[9px] text-slate-500 mt-1 max-w-[280px] mx-auto leading-relaxed">
+              Be the first to claim Rank #1! Share your referral link and earn Flat ₹100 per student enrollment.
+            </p>
+            <button
+              type="button"
+              onClick={handleCopyLink}
+              className="mt-2.5 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-black text-[9.5px] cursor-pointer shadow-xs active:scale-95 transition-all"
+            >
+              <Copy className="w-3 h-3" />
+              <span>{copiedLink ? 'Copied Link!' : 'Copy Link to Rank #1'}</span>
+            </button>
           </div>
         </section>
       </div>
-      {/* ══════════════════════════════════════════════════════════════════════ */}
       {/* DESKTOP INTERFACE (>= 768px) - 100% UNTOUCHED ORIGINAL LAYOUT        */}
       {/* ══════════════════════════════════════════════════════════════════════ */}
       <div className="aff-desktop-only">
