@@ -156,13 +156,19 @@ const HeroPlayingGamesTypewriter: React.FC = () => {
   }, [displayText, isDeleting]);
 
   const playingPart = displayText.slice(0, 7);
-  const gamesPart = displayText.slice(7);
+  const hasSpace = displayText.length > 7;
+  const gamesPart = displayText.slice(8);
 
   return (
     <span className="inline-flex items-baseline">
       {playingPart && (
         <span className="bg-gradient-to-r from-[#0866FF] to-[#A100E8] bg-clip-text text-transparent">
           {playingPart}
+        </span>
+      )}
+      {hasSpace && (
+        <span className="inline-block select-none whitespace-pre">
+          {'\u00A0'}
         </span>
       )}
       {gamesPart && (
