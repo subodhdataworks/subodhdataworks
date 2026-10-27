@@ -380,7 +380,7 @@ export const AiInterviewSimulatorModal: React.FC<AiInterviewSimulatorModalProps>
                     SoundEffects.playDiscovery();
                   }}
                   className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-solar-gold/20 hover:bg-solar-gold/30 text-solar-gold border border-solar-gold/40 text-xs font-mono font-bold transition-all"
-                  title="Listen to Founder Subodh Intro Voice"
+                  title="Listen to Founder Intro Voice"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>Founder Voice Note</span>

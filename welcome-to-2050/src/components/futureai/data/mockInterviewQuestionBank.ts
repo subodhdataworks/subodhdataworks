@@ -593,7 +593,7 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
     idealAnswerHi:
       'वेरिएबल मेमोरी में डेटा स्टोर करने का एक नामित कंटेनर होता है (जैसे x = 10)। Python को Dynamically Typed इसलिए कहते हैं क्योंकि हमें वेरिएबल का डेटा टाइप (int, str आदि) पहले से लिखना नहीं पड़ता; Python वैल्यू के आधार पर रनटाइम पर खुद टाइप पहचान लेता है।',
     exampleAnswerEn:
-      'A variable is a container that stores data values in memory, like name = "Subodh". Python is dynamically typed because it automatically detects the data type at runtime without manual declaration.',
+      'A variable is a container that stores data values in memory, like name = "Rahul". Python is dynamically typed because it automatically detects the data type at runtime without manual declaration.',
     exampleAnswerHi:
       'वेरिएबल डेटा को मेमोरी में स्टोर करने का एक कंटेनर है। Python को डायनेमिकली टाइप्ड इसलिए कहते हैं क्योंकि यह वैल्यू देखकर खुद डेटा टाइप समझ लेता है।',
     requiredKeywords: [

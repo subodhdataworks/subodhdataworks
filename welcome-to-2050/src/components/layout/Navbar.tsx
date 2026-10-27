@@ -122,7 +122,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Minimal Controls */}
         <div className="flex items-center gap-2">
-          {/* Founder Subodh Voice Note */}
+          {/* Founder Voice Note */}
           <button
             onClick={() => {
               if (Voice.isPlayingCustomVoice()) {
@@ -133,7 +133,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               }
             }}
             className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-solar-gold/20 hover:bg-solar-gold/30 text-deep-space border border-solar-gold/50 transition-all shadow-subtle"
-            title="Listen to Founder Subodh Intro Voice"
+            title="Listen to Founder Intro Voice"
           >
             <Sparkles className="w-3.5 h-3.5 text-solar-gold" />
             <span className="hidden sm:inline">Founder Voice</span>

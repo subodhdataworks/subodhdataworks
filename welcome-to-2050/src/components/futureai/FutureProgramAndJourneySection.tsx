@@ -35,7 +35,7 @@ export const FutureProgramAndJourneySection: React.FC<FutureProgramAndJourneyPro
   const { playHover, playClick, playCinema } = useThemeAccent();
 
   return (
-    <section className="fpj-section-wrapper" id="pay-after-placement">
+    <section className="fpj-section-wrapper" id="career-programs-section">
       <div className="fpj-container">
         
         {/* =========================================================================
@@ -43,7 +43,7 @@ export const FutureProgramAndJourneySection: React.FC<FutureProgramAndJourneyPro
             ========================================================================= */}
         <div className="fpj-cards-grid">
           
-          {/* ---------------- CARD A (LEFT): PAY AFTER PLACEMENT ---------------- */}
+          {/* ---------------- CARD A (LEFT): CAREER ACCELERATION PROGRAM ---------------- */}
           <div className="fpj-card fpj-card-pap">
             
             {/* Background Photographic Plate */}
@@ -55,7 +55,7 @@ export const FutureProgramAndJourneySection: React.FC<FutureProgramAndJourneyPro
               {/* Eyebrow Badge */}
               <div className="card-pap-badge" onMouseEnter={playHover}>
                 <ShieldCheck className="w-3.5 h-3.5 text-sky-600" />
-                <span>PAY AFTER PLACEMENT</span>
+                <span>CAREER ACCELERATION PROGRAM</span>
               </div>
 
               {/* Main Headline */}
@@ -445,7 +445,7 @@ export const FutureProgramAndJourneySection: React.FC<FutureProgramAndJourneyPro
                 <span>›</span>
               </div>
 
-              {/* Step 6: Pay After Placement */}
+              {/* Step 6: Career Acceleration Program */}
               <div className="journey-step-col">
                 <div className="step-icon-row">
                   <span className="step-num-circle num-emerald">6</span>

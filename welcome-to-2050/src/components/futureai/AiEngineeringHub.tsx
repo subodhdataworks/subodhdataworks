@@ -26,7 +26,7 @@ interface AiEngineeringHubProps {
 }
 
 export const AiEngineeringHub: React.FC<AiEngineeringHubProps> = ({
-  userName = 'SUBODH KUMAR',
+  userName = 'RAHUL SHARMA',
   onBack,
   onStartTopic,
 }) => {

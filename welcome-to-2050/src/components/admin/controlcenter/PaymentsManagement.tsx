@@ -368,7 +368,7 @@ export const PaymentsManagement: React.FC<PaymentsManagementProps> = ({ payments
                   required
                   value={newPayName}
                   onChange={(e) => setNewPayName(e.target.value)}
-                  placeholder="e.g. Subodh Kumar"
+                  placeholder="e.g. Rahul Sharma"
                   className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white placeholder:text-slate-500 focus:outline-none"
                 />
               </div>
@@ -471,7 +471,7 @@ export const PaymentsManagement: React.FC<PaymentsManagementProps> = ({ payments
                   autoFocus
                   value={creditReferralModal.code}
                   onChange={(e) => setCreditReferralModal((prev) => ({ ...prev, code: e.target.value }))}
-                  placeholder="e.g. SUBODH100 or SUBODH"
+                  placeholder="e.g. RAHUL100 or DISCOUNT100"
                   className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 font-mono text-sm uppercase"
                 />
                 <span className="text-[10px] text-slate-500 mt-1 block">

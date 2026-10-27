@@ -302,7 +302,7 @@ interface AiMockInterviewLabProps {
 }
 
 export const AiMockInterviewLab: React.FC<AiMockInterviewLabProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   onBack,
   onUnlockNextStage,
   onFinishAll

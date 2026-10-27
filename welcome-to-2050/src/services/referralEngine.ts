@@ -274,7 +274,7 @@ export class ReferralEngine {
       referralCode: state.profile.referralCode,
       referredUserId: `usr_${Date.now()}`,
       referredUserName: friendName,
-      referredUserAvatar: '/images/avatar-subodh-kumar.jpg',
+      referredUserAvatar: '/images/avatar-rahul-sharma.jpg',
       campaignName: `${source} Invite`,
       source,
       clickId: `clk_${Date.now()}`,
@@ -430,8 +430,8 @@ export class ReferralEngine {
       },
       {
         rank: 3,
-        name: 'You (Subodh Kumar)',
-        avatar: '/images/avatar-subodh-kumar.jpg',
+        name: 'You (Rahul Sharma)',
+        avatar: '/images/avatar-rahul-sharma.jpg',
         enrollments: state.successfulEnrollmentsCount,
         earnings: state.availableCommission,
         isCurrentUser: true

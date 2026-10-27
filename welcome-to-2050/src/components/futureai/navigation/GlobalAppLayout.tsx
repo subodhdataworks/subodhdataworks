@@ -21,7 +21,7 @@ export interface GlobalAppLayoutProps {
 export const GlobalAppLayout: React.FC<GlobalAppLayoutProps> = ({
   children,
   currentActive,
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   searchQuery = '',
   onSearchChange,
   onNavigate,

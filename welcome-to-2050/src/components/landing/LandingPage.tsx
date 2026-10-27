@@ -83,10 +83,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <button
           onClick={handleVoiceIntro}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-solar-gold/40 text-xs font-mono text-deep-space hover:text-solar-gold hover:border-solar-gold shadow-subtle mb-8 transition-all active:scale-95"
-          title="Play Founder Subodh Welcome Note"
+          title="Play Founder Welcome Note"
         >
           <span className="w-2.5 h-2.5 rounded-full bg-solar-gold animate-pulse-subtle" />
-          <span className="font-bold">🎙️ LISTEN: FOUNDER SUBODH VOICE NOTE (WELCOME TO 2050)</span>
+          <span className="font-bold">🎙️ LISTEN: FOUNDER VOICE NOTE (WELCOME TO 2050)</span>
           <Volume2 className="w-3.5 h-3.5 text-solar-gold" />
         </button>
 

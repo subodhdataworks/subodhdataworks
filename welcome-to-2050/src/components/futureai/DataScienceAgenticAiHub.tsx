@@ -27,7 +27,7 @@ interface DataScienceAgenticAiHubProps {
 }
 
 export const DataScienceAgenticAiHub: React.FC<DataScienceAgenticAiHubProps> = ({
-  userName = 'SUBODH KUMAR',
+  userName = 'RAHUL SHARMA',
   onBack,
   onStartTopic,
 }) => {

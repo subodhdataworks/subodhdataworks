@@ -53,7 +53,7 @@ export type FilterType = 'all' | 'beginner' | 'intermediate' | 'advanced' | 'cor
 export type SubjectId = 'all' | 'python' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai';
 
 export const GameArenaHub: React.FC<GameArenaHubProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   isNewStudentMode = true,
   onPlayPython,
   onLockedGame,
@@ -2150,7 +2150,7 @@ export const GameArenaHub: React.FC<GameArenaHubProps> = ({
                 { rank: 2, name: 'Rahul Verma', xp: '2,320 XP', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces', badge: '🥈' },
                 { rank: 3, name: 'Neha Gupta', xp: '2,100 XP', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=faces', badge: '🥉' },
                 { rank: 4, name: 'Aman Kumar', xp: '1,980 XP', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces' },
-                { rank: 5, name: 'Subodh Kumar', xp: '1,750 XP', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces' },
+                { rank: 5, name: 'Rahul Sharma', xp: '1,750 XP', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces' },
               ].map((user) => (
                 <div key={user.rank} className="py-lb-row">
                   <div className="py-lb-rank-num">

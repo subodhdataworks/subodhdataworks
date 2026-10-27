@@ -563,7 +563,7 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
                 </p>
               </div>
 
-              {/* Pay After Placement Plan Card (Luxury Glowing Card) */}
+              {/* Career Accelerator Plan Card (Luxury Glowing Card) */}
               <div className="p-4 sm:p-5 rounded-2xl border-2 border-blue-500 bg-gradient-to-br from-blue-50/70 via-indigo-50/30 to-white shadow-lg shadow-blue-500/10 relative space-y-3 transition-all duration-300">
                 
                 {/* Plan Header & Radio */}
@@ -573,7 +573,7 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
                       <div className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse" />
                     </div>
                     <span className="text-sm font-black text-slate-900">
-                      Pay After Placement Plan
+                      Career Accelerator Plan
                     </span>
                   </div>
                   <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-xs flex items-center gap-1">
@@ -591,8 +591,8 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
                     </span>
                   </div>
                   <p className="text-[11.5px] font-semibold text-slate-700 leading-tight">
-                    Pay <strong className="text-slate-900 font-extrabold">₹{effectivePrice} now</strong> and pay the remaining{' '}
-                    <strong className="text-slate-900 font-extrabold">₹18,000</strong> only after getting placed ({info.salary})
+                    Enroll today for <strong className="text-slate-900 font-extrabold">₹{effectivePrice}</strong> with full lifetime platform access and
+                    dedicated 1-on-1 career assistance ({info.salary})
                   </p>
                 </div>
 
@@ -751,7 +751,7 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
               <img className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="/images/avatar-rohit.jpg" alt="Student" onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }} />
               <img className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="/images/avatar-sneha.jpg" alt="Student" onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }} />
               <img className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="/images/avatar-neha.jpg" alt="Student" onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }} />
-              <img className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="/images/avatar-subodh-kumar.jpg" alt="Student" onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }} />
+              <img className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" src="/images/avatar-rahul-sharma.jpg" alt="Student" onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }} />
             </div>
             <div>
               <span className="text-xs font-black text-slate-900 block leading-tight">Trusted by 10,000+ Learners</span>

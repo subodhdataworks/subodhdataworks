@@ -79,7 +79,7 @@ interface CoreModuleItem {
 }
 
 export const LearnerHomeHub: React.FC<LearnerHomeHubProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   isNewStudentMode = true,
   onOpenPython,
   onOpenLockedModule,

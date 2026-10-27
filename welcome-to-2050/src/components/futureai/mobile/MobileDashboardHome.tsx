@@ -507,7 +507,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       
 
       {/* =========================================================================
-          2. HERO BANNER: "Learn AI & Data Skills. Get Job-Ready. Pay After Placement."
+          2. HERO BANNER: "Learn AI & Data Skills. Get Job-Ready. Build Real Skills."
           ========================================================================= */}
       <div className="relative w-full rounded-3xl overflow-hidden shadow-md border border-sky-200/90 bg-gradient-to-br from-sky-100 via-blue-50 to-indigo-100">
         {/* Background Building Image */}
@@ -528,7 +528,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
               Data Skills.<br />
               <span className="text-slate-900">Get Job-Ready.</span><br />
               <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 bg-clip-text text-transparent">
-                Pay After Placement.
+                Build Real Skills.
               </span>
             </h1>
 

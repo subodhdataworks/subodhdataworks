@@ -118,16 +118,16 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
       if (stored && stored !== 'Learner' && stored !== 'Rahul' && stored !== 'Rahul Sharma' && stored !== 'Student') {
         return stored;
       }
-      return userName && userName !== 'Learner' && userName !== 'Rahul' && userName !== 'Rahul Sharma' && userName !== 'Student' ? userName : 'Subodh Kumar';
+      return userName && userName !== 'Learner' && userName !== 'Rahul' && userName !== 'Rahul Sharma' && userName !== 'Subodh Kumar' && userName !== 'Student' ? userName : 'Rahul Sharma';
     }
-    return userName && userName !== 'Learner' && userName !== 'Rahul' && userName !== 'Rahul Sharma' && userName !== 'Student' ? userName : '';
+    return userName && userName !== 'Learner' && userName !== 'Rahul' && userName !== 'Rahul Sharma' && userName !== 'Subodh Kumar' && userName !== 'Student' ? userName : '';
   });
 
   const [studentEmail, setStudentEmail] = useState<string>(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('futureai_user_email') || 'subodhkumar@gmail.com';
+      return localStorage.getItem('futureai_user_email') || 'rahul.sharma@example.com';
     }
-    return 'subodhkumar@gmail.com';
+    return 'rahul.sharma@example.com';
   });
   const [editEmailInput, setEditEmailInput] = useState<string>(studentEmail);
 
@@ -140,7 +140,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
   const [studentAvatar, setStudentAvatar] = useState<string>(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('futureai_user_avatar') || userAvatar || '/images/avatar-subodh-kumar.jpg';
+      return localStorage.getItem('futureai_user_avatar') || userAvatar || '/images/avatar-rahul-sharma.jpg';
     }
     return userAvatar || '';
   });

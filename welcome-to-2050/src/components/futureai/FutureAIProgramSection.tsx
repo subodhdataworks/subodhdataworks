@@ -203,7 +203,7 @@ const journey = [
   {
     number: "4",
     icon: <JourneyPayIcon />,
-    title: "Pay After",
+    title: "Career Track",
     highlight: "Placement",
     text: "₹28,000",
     subtext: "(Easy installments)",
@@ -259,24 +259,24 @@ export default function FutureAIProgramSection({
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
 
   return (
-    <section id="pay-after-placement" className="future-program scroll-mt-20">
+    <section id="career-programs-section" className="future-program scroll-mt-20">
 
       <div className="future-program-container">
 
         {/* ================= LEFT COLUMN ================= */}
         <div className="placement-column">
 
-          {/* 1. Top Card: PAY AFTER PLACEMENT Hero Card (Pure Code + AI Generated Photo) */}
+          {/* 1. Top Card: CAREER PROGRAM TRACK Hero Card (Pure Code + AI Generated Photo) */}
           <article 
             className="placement-card"
             onClick={onKnowMorePAP}
             role="region"
-            aria-label="Pay After Placement Program Details"
+            aria-label="Career Acceleration Program Program Details"
           >
             <div className="placement-image">
               <img
                 src="/images/placed-student-celebration.jpg"
-                alt="Pay After Placement Learner"
+                alt="Career Acceleration Program Learner"
                 className="placement-bg-photo"
                 loading="eager"
               />
@@ -284,7 +284,7 @@ export default function FutureAIProgramSection({
               
               {/* Badge */}
               <div className="placement-label">
-                PAY AFTER PLACEMENT
+                CAREER PROGRAM TRACK
               </div>
 
               {/* Offer Card Badge */}
@@ -333,7 +333,7 @@ export default function FutureAIProgramSection({
                     e.stopPropagation();
                     onKnowMorePAP?.();
                   }}
-                  title="Click to view ₹28,000 PAP details"
+                  title="Click to view ₹28,000 Program details"
                 >
                   <div className="price-icon purple-icon">💼</div>
                   <div>

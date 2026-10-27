@@ -48,7 +48,7 @@ const QUICK_TAKEAWAYS = [
 ];
 
 export const VideoLessonLab: React.FC<VideoLessonLabProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   onBack,
   onUnlockNextStage
 }) => {

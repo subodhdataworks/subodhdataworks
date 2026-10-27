@@ -64,7 +64,7 @@ export interface ZeroCostMockInterviewRoomProps {
 }
 
 export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   tabId = 1,
   topicId = 1,
   language,
@@ -454,7 +454,7 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
   // Build exact spoken text for the current question
   const getQuestionSpeechText = useCallback(
     (q: PreloadedInterviewQuestion, lang: 'en' | 'hi', includeGreeting: boolean) => {
-      const firstName = userName.split(' ')[0] || 'Subodh';
+      const firstName = userName.split(' ')[0] || 'Rahul';
       if (lang === 'hi') {
         if (includeGreeting && q.id === 1) {
           return `नमस्ते ${firstName}, आपके मॉक इंटरव्यू में स्वागत है। चलिए पहले प्रश्न से शुरू करते हैं: ${q.questionHi}`;
@@ -696,7 +696,7 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
       };
 
       // Primary: Play 100% Natural Indian Human Neural Voice via /api/human-tts
-      // (en-IN-PrabhatNeural for Subodh Kumar HR, hi-IN-SwaraNeural for Aditi Sharma HR)
+      // (en-IN-PrabhatNeural for Rohan Verma HR, hi-IN-SwaraNeural for Aditi Sharma HR)
       if (typeof window !== 'undefined' && typeof Audio !== 'undefined') {
         try {
           if (isSpeechSynthesisSupported) {
@@ -706,7 +706,7 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
           setActiveVoiceLabel(
             language === 'hi'
               ? 'Aditi Sharma (Human Neural Hindi Voice)'
-              : 'Subodh Kumar (Human Neural Indian English Voice)'
+              : 'Rohan Verma (Human Neural Indian English Voice)'
           );
           setSpeechState('speaking');
 
@@ -806,7 +806,7 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
     if (currentEvaluation) return;
     if (confirmedAnswer.trim().length > 0 || interimAnswer.trim().length > 0) return;
 
-    const firstName = userName.split(' ')[0] || 'Subodh';
+    const firstName = userName.split(' ')[0] || 'Rahul';
     const silenceTimer = setTimeout(() => {
       if (confirmedAnswerRef.current.trim().length > 0) return;
       const followUpText =
@@ -1410,7 +1410,7 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
                   </div>
                   <div className="zmi-interviewer-meta">
                     <strong className="zmi-interviewer-title">
-                      {language === 'hi' ? 'Aditi Sharma (HR)' : 'Subodh Kumar (HR)'}
+                      {language === 'hi' ? 'Aditi Sharma (HR)' : 'Rohan Verma (HR)'}
                     </strong>
                     <span className="zmi-interviewer-sub">
                       {language === 'hi'

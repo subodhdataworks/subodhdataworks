@@ -65,7 +65,7 @@ interface StoredProgress {
 }
 
 export const PythonIntroGameWorkspace: React.FC<PythonIntroGameWorkspaceProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   levelId = 1,
   initialGameId = 1,
   isEmbedded = false,

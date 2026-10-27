@@ -91,8 +91,8 @@ export const ThemeAccentProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const videoList = [
     {
       id: 1,
-      title: 'Scene 01: 2050 Pay After Placement Studio',
-      subtitle: 'Zero Upfront & Guaranteed Placement',
+      title: 'Scene 01: 2050 Career Acceleration Studio',
+      subtitle: 'Industry Mentorship & Guaranteed Placement',
       src: '/assets/videos/pap_new_video.mp4',
       poster: '/assets/videos/pap_snap_mid.jpg',
     },
@@ -106,7 +106,7 @@ export const ThemeAccentProvider: React.FC<{ children: React.ReactNode }> = ({ c
     {
       id: 3,
       title: 'Scene 03: Career Velocity Loop',
-      subtitle: 'Zero Upfront & Guaranteed Placement',
+      subtitle: 'Industry Mentorship & Guaranteed Placement',
       src: '/assets/videos/cinematic_3.mp4',
       poster: '/assets/videos/frame_3.jpg',
     },

@@ -77,7 +77,7 @@ export const CodeQuestGame: React.FC<CodeQuestGameProps> = ({
   topicId = 'variables',
   onBackToTopic,
   onUnlockNextStage,
-  userName = 'Subodh Kumar'
+  userName = 'Rahul Sharma'
 }) => {
   const [soundOn, setSoundOn] = useState<boolean>(() => soundEffects.getSoundEnabled());
   const [showConfetti, setShowConfetti] = useState(false);

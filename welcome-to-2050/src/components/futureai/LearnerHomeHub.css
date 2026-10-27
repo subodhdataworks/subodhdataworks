@@ -3017,7 +3017,7 @@
   font-weight: 800;
 }
 
-/* 3 KPI Badges (Salary Package, Pay After Placement, Hiring Partners) */
+/* 3 KPI Badges (Salary Package, Career Acceleration, Hiring Partners) */
 .scd-hero-kpi-strip {
   display: flex;
   flex-wrap: wrap;
@@ -5367,7 +5367,7 @@
   flex-shrink: 0;
 }
 
-/* Pay After Job Offer Column */
+/* Career Placement Column */
 .scd-sos-pap-col {
   display: flex;
   flex-direction: column;

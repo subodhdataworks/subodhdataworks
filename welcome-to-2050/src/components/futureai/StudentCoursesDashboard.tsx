@@ -85,7 +85,7 @@ interface FlagshipCourseItem {
 }
 
 export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   onOpenDataAnalystCourse,
   onOpenDataScienceCourse,
   onOpenMlEngineeringCourse,

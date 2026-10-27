@@ -213,7 +213,7 @@ interface PracticeMcqLabProps {
 }
 
 export const PracticeMcqLab: React.FC<PracticeMcqLabProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   onBack,
   onUnlockNextStage,
   onSelectStep,
@@ -408,7 +408,7 @@ export const PracticeMcqLab: React.FC<PracticeMcqLabProps> = ({
           {/* User Profile */}
           <div className="pml-user-profile">
             <img
-              src="/images/avatar-subodh-kumar.jpg"
+              src="/images/avatar-rahul-sharma.jpg"
               alt={userName}
               className="pml-user-avatar"
             />

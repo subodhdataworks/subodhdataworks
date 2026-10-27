@@ -101,7 +101,7 @@ interface PythonTopicWorkspaceProps {
 }
 
 export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   topicId = 1,
   initialStep = 'learn',
   onBack,
@@ -1444,8 +1444,8 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
     if (!textToSpeak) {
       if (interviewQuestionIdx === 0 && !isRepeat) {
         textToSpeak = activityLang === 'hi'
-          ? `नमस्ते सुबोध, आपके गूगल और माइक्रोसॉफ्ट टेक्निकल इंटरव्यू राउंड में आपका स्वागत है। मैं ${hrSettings.hrName} हूँ। चलिए पहले प्रश्न से शुरू करते हैं: ${exactQuestion}`
-          : `Hi Subodh, welcome to your Google and Microsoft technical interview round. I'm ${hrSettings.hrName}, your hiring lead today. Let's start with Question 1: ${exactQuestion}`;
+          ? `नमस्ते राहुल, आपके गूगल और माइक्रोसॉफ्ट टेक्निकल इंटरव्यू राउंड में आपका स्वागत है। मैं ${hrSettings.hrName} हूँ। चलिए पहले प्रश्न से शुरू करते हैं: ${exactQuestion}`
+          : `Hi Rahul, welcome to your Google and Microsoft technical interview round. I'm ${hrSettings.hrName}, your hiring lead today. Let's start with Question 1: ${exactQuestion}`;
       } else {
         textToSpeak = exactQuestion;
       }
@@ -1678,8 +1678,8 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
       soundEffects.playCelebration();
       const feedbackMsg =
         activityLang === 'hi'
-          ? `${hrSettings.hrName} मूल्यांकन: बहुत बढ़िया उत्तर सुबोध! आपने स्पष्टता और व्यावहारिक उदाहरण के साथ मुख्य सिद्धांत को समझाया। स्कोर: 9.6 / 10 • चयनित (Strong Fit)`
-          : `${hrSettings.hrName} Evaluation: Outstanding response Subodh! You articulated the core concept with clarity, precision, and strong technical poise. Score: 9.6 / 10 • Strong Hire.`;
+          ? `${hrSettings.hrName} मूल्यांकन: बहुत बढ़िया उत्तर राहुल! आपने स्पष्टता और व्यावहारिक उदाहरण के साथ मुख्य सिद्धांत को समझाया। स्कोर: 9.6 / 10 • चयनित (Strong Fit)`
+          : `${hrSettings.hrName} Evaluation: Outstanding response Rahul! You articulated the core concept with clarity, precision, and strong technical poise. Score: 9.6 / 10 • Strong Hire.`;
       setInterviewFeedback(feedbackMsg);
       if (hrVoiceEnabled) {
         speakHrQuestion(feedbackMsg, true, false);

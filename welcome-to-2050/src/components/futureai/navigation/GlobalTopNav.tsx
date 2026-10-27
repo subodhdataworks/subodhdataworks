@@ -29,7 +29,7 @@ export interface GlobalTopNavProps {
 }
 
 export const GlobalTopNav: React.FC<GlobalTopNavProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   searchQuery = '',
   onSearchChange,
   onOpenAdvisor,
@@ -132,7 +132,7 @@ export const GlobalTopNav: React.FC<GlobalTopNavProps> = ({
             onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
           >
             <img
-              src="/images/avatar-subodh-kumar.jpg"
+              src="/images/avatar-rahul-sharma.jpg"
               alt={userName}
               className="global-avatar-img"
               onError={(e) => {

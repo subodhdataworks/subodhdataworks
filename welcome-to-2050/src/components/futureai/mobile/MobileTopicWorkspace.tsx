@@ -562,7 +562,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     male: {
       name: "English Mentor (Indian English Voice)",
       shortName: "English",
-      avatar: "/images/hr_subodh_kumar.jpg",
+      avatar: "/images/hr_interviewer_indian_male.jpg",
       role: "English AI Mentor",
       badge: "English",
       accent: "Indian English (Male)",

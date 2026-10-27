@@ -134,7 +134,7 @@ const CODING_QUESTIONS: QuestionData[] = [
 ];
 
 export const CodePracticeLab: React.FC<CodePracticeLabProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   onBack,
   onUnlockNextStage,
   onFinishAll

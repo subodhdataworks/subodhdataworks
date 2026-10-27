@@ -24,13 +24,13 @@ export const PayAfterPlacementAndProgramSection: React.FC<PayAfterPlacementAndPr
   const [isPapVideoMuted, setIsPapVideoMuted] = useState(true);
 
   return (
-    <section id="pay-after-placement" className="py-16 bg-[#F8FAFD] relative overflow-hidden">
+    <section id="career-programs-section" className="py-16 bg-[#F8FAFD] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
           {/* ========================================================
-              BLOCK A: PAY AFTER PLACEMENT (Left Column, lg:col-span-5)
+              BLOCK A: CAREER ACCELERATION PROGRAM (Left Column, lg:col-span-5)
              ======================================================== */}
           <div className="lg:col-span-5 rounded-3xl bg-white border border-slate-200/90 shadow-xl shadow-slate-900/5 p-5 sm:p-6 flex flex-col justify-between relative overflow-hidden group">
             
@@ -41,8 +41,8 @@ export const PayAfterPlacementAndProgramSection: React.FC<PayAfterPlacementAndPr
               {/* Graphic Banner (Replaces all the old text as requested by user) */}
               <div className="relative rounded-2xl overflow-hidden shadow-md border border-slate-200/90 group/img bg-slate-900">
                 <img
-                  src="/assets/reference/pay_after_placement_banner.jpg"
-                  alt="Pay After Placement - Because Your Success Matters"
+                  src="/images/why_choose_advance_banner.png"
+                  alt="Career Acceleration Program - Because Your Success Matters"
                   className="w-full h-auto object-cover group-hover/img:scale-[1.01] transition-transform duration-500"
                 />
               </div>

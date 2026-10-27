@@ -26,7 +26,7 @@ interface MlEngineeringHubProps {
 }
 
 export const MlEngineeringHub: React.FC<MlEngineeringHubProps> = ({
-  userName = 'SUBODH KUMAR',
+  userName = 'RAHUL SHARMA',
   onBack,
   onStartTopic,
 }) => {

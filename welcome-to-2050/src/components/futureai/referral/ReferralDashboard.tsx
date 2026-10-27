@@ -62,7 +62,7 @@ interface ReferralDashboardProps {
 }
 
 export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   onBackToDashboard,
   onOpenAdvisor,
   onUnlockCourse
@@ -102,7 +102,7 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
   // Withdrawal form
   const [withdrawMethod, setWithdrawMethod] = useState<'UPI' | 'BANK_TRANSFER'>('UPI');
   const [withdrawAmount, setWithdrawAmount] = useState<string>('500');
-  const [upiId, setUpiId] = useState<string>('subodh.kumar@okhdfcbank');
+  const [upiId, setUpiId] = useState<string>('rahul.sharma@okhdfcbank');
   const [bankAccNumber, setBankAccNumber] = useState<string>('');
   const [bankIfsc, setBankIfsc] = useState<string>('');
   const [bankHolder, setBankHolder] = useState<string>(userName);
@@ -407,7 +407,7 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
           </div>
 
           <div className="ref-user-profile">
-            <img src="/images/avatar-subodh-kumar.jpg" alt={userName} className="ref-avatar-img" />
+            <img src="/images/avatar-rahul-sharma.jpg" alt={userName} className="ref-avatar-img" />
             <div className="ref-user-info">
               <span className="ref-user-name">{userName}</span>
               <span className="ref-user-role">{isStudent ? 'Student' : 'Influencer'}</span>
@@ -508,7 +508,7 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
             />
           </div>
 
-          {/* Top Right Floating Pill: "Your Referral ID: SUBODH101" */}
+          {/* Top Right Floating Pill: "Your Referral ID: RAHUL101" */}
           <div className="ref-referral-id-pill">
             <div className="ref-refid-text">
               <span className="ref-refid-label">Your Referral ID</span>
@@ -952,7 +952,7 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
                       <td>
                         <div className="ref-td-user">
                           <img
-                            src={ref.referredUserAvatar || '/images/avatar-subodh-kumar.jpg'}
+                            src={ref.referredUserAvatar || '/images/avatar-rahul-sharma.jpg'}
                             alt={ref.referredUserName}
                             className="ref-td-avatar"
                           />
@@ -1394,7 +1394,7 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
               {/* User Overview */}
               <div className="ref-detail-user-card">
                 <img
-                  src={detailModalRef.referredUserAvatar || '/images/avatar-subodh-kumar.jpg'}
+                  src={detailModalRef.referredUserAvatar || '/images/avatar-rahul-sharma.jpg'}
                   alt={detailModalRef.referredUserName}
                   className="w-12 h-12 rounded-full border border-slate-200"
                 />

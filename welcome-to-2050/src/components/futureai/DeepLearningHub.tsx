@@ -24,7 +24,7 @@ interface DeepLearningHubProps {
 }
 
 export const DeepLearningHub: React.FC<DeepLearningHubProps> = ({
-  userName = 'SUBODH KUMAR',
+  userName = 'RAHUL SHARMA',
   onBack,
   onStartTopic,
 }) => {

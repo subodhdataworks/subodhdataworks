@@ -37,7 +37,7 @@ export interface TopicMasteryScoreLabProps {
 }
 
 export const TopicMasteryScoreLab: React.FC<TopicMasteryScoreLabProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   onBack,
   onNavigateNextTopic,
   onReviewStep

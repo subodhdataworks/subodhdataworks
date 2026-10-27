@@ -379,12 +379,12 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   const [currentUserName, setCurrentUserName] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('futureai_user_name');
-      if (stored && stored !== 'Learner' && stored !== 'Subodh Kumar' && stored !== 'Student') {
+      if (stored && stored !== 'Learner' && stored !== 'Rahul Sharma' && stored !== 'Subodh Kumar' && stored !== 'Student') {
         return stored;
       }
-      return userName && userName !== 'Learner' && userName !== 'Subodh Kumar' && userName !== 'Student' ? userName : '';
+      return userName && userName !== 'Learner' && userName !== 'Rahul Sharma' && userName !== 'Subodh Kumar' && userName !== 'Student' ? userName : '';
     }
-    return userName && userName !== 'Learner' && userName !== 'Subodh Kumar' && userName !== 'Student' ? userName : '';
+    return userName && userName !== 'Learner' && userName !== 'Rahul Sharma' && userName !== 'Subodh Kumar' && userName !== 'Student' ? userName : '';
   });
 
   useEffect(() => {

@@ -26,7 +26,7 @@ interface AiToolsPromptHubProps {
 }
 
 export const AiToolsPromptHub: React.FC<AiToolsPromptHubProps> = ({
-  userName = 'SUBODH KUMAR',
+  userName = 'RAHUL SHARMA',
   onBack,
   onStartTopic,
 }) => {

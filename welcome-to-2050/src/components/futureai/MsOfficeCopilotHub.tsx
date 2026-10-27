@@ -26,7 +26,7 @@ interface MsOfficeCopilotHubProps {
 }
 
 export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
-  userName = 'SUBODH KUMAR',
+  userName = 'RAHUL SHARMA',
   onBack,
   onStartTopic,
 }) => {

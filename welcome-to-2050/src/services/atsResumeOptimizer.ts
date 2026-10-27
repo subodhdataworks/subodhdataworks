@@ -113,7 +113,7 @@ export interface AtsFixedResume {
 /**
  * Clean and parse raw resume text into structured components
  */
-export const parseResumeText = (rawText: string, fallbackName = 'Subodh Kumar'): ParsedResume => {
+export const parseResumeText = (rawText: string, fallbackName = 'Rahul Sharma'): ParsedResume => {
   const lines = rawText
     .split(/\r?\n/)
     .map((l) => l.trim())

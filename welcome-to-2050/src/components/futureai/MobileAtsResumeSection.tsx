@@ -92,11 +92,11 @@ export const MobileAtsResumeSection: React.FC<MobileAtsResumeSectionProps> = ({ 
             <div className="border-b border-slate-200 pb-2 pr-20">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-xs shadow-xs shrink-0">
-                  SK
+                  RS
                 </div>
                 <div>
                   <h3 className="text-xs sm:text-sm font-black text-slate-900 tracking-tight leading-none">
-                    SUBODH KUMAR
+                    RAHUL SHARMA
                   </h3>
                   <p className="text-[10px] font-bold text-blue-600 mt-0.5 leading-none">
                     Data Analyst &amp; AI Specialist
@@ -107,7 +107,7 @@ export const MobileAtsResumeSection: React.FC<MobileAtsResumeSectionProps> = ({ 
               <div className="flex items-center gap-2.5 mt-1.5 text-[8.5px] font-medium text-slate-500 flex-wrap">
                 <span className="flex items-center gap-0.5">
                   <Mail className="w-2.5 h-2.5 text-slate-400" />
-                  subodh@example.com
+                  rahul.sharma@example.com
                 </span>
                 <span className="flex items-center gap-0.5">
                   <Phone className="w-2.5 h-2.5 text-slate-400" />

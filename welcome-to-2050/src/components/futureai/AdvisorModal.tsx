@@ -54,7 +54,7 @@ export const AdvisorModal: React.FC<AdvisorModalProps> = ({ isOpen, onClose }) =
             </h3>
 
             <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
-              Get personalized guidance on the Pay After Placement model, curriculum prerequisites, and hiring partner pipelines.
+              Get personalized guidance on our career curriculum, industry prerequisites, and hiring partner pipelines.
             </p>
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -101,7 +101,7 @@ export const AdvisorModal: React.FC<AdvisorModalProps> = ({ isOpen, onClose }) =
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none bg-white font-medium text-slate-700"
                 >
                   <option>Data Analyst with GenAI</option>
-                  <option>Pay After Placement Track</option>
+                  <option>Industry-Ready Career Track</option>
                   <option>Python & SQL Foundational</option>
                   <option>Executive Power BI & Analytics</option>
                 </select>

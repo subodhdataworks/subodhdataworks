@@ -259,7 +259,7 @@ export const SystemSettings: React.FC<SystemSettingsProps> = ({
                   required
                   value={newAdminName}
                   onChange={(e) => setNewAdminName(e.target.value)}
-                  placeholder="e.g. Subodh Kumar"
+                  placeholder="e.g. Rahul Sharma"
                   className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white placeholder:text-slate-500 focus:outline-none"
                 />
               </div>

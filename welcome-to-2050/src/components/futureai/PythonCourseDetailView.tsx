@@ -34,7 +34,7 @@ interface PythonCourseDetailViewProps {
 }
 
 export const PythonCourseDetailView: React.FC<PythonCourseDetailViewProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   onBack,
   onOpenTopic,
   onOpenUnlockModal,

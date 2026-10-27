@@ -191,7 +191,7 @@ export const MobileCompactDashboard: React.FC<MobileCompactDashboardProps> = ({
             Get Job-Ready.
           </p>
           <p className="mt-0.5 text-[13px] min-[400px]:text-sm font-extrabold text-[#0b1a3a] leading-tight">
-            Pay After Placement.
+            Build Real Skills.
           </p>
           <button
             type="button"

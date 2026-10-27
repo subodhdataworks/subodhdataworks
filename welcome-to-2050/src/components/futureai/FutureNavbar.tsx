@@ -27,7 +27,7 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
   onTalkToAdvisor,
   onExploreCurriculum,
   isLoggedIn = false,
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   onOpenDashboard,
 }) => {
   const { accentConfig, playHover, playClick } = useThemeAccent();
@@ -53,7 +53,7 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
 
   const navItems: NavItem[] = [
     { name: 'Home', id: 'hero', dropdown: null },
-    { name: 'Courses', id: 'pay-after-placement', dropdown: null },
+    { name: 'Courses', id: 'courses-hub', dropdown: null },
     { name: 'Training', id: 'real-projects', dropdown: null },
     { name: 'ATS Resume Checker', id: 'ats-resume-checker', dropdown: null },
     { name: 'Career', id: 'placement-support', dropdown: null },
@@ -62,7 +62,7 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
 
   const searchableItems = [
     { title: 'Data Analyst with GenAI Program', tag: 'Flagship Track', section: 'program-highlights' },
-    { title: 'Pay After Placement - Zero Upfront Fees', tag: 'Placement', section: 'pay-after-placement' },
+    { title: 'Career Programs - Industry-Ready Skills', tag: 'Placement', section: 'courses-hub' },
     { title: 'Python Data Analysis & Automation', tag: 'Curriculum', section: 'program-highlights' },
     { title: 'SQL for Data Insights', tag: 'Curriculum', section: 'program-highlights' },
     { title: 'Customer Churn Prediction Project', tag: 'Real Project', section: 'real-projects' },
@@ -173,7 +173,7 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
                 title="Go to Learner Dashboard"
               >
                 <img 
-                  src="/images/avatar-subodh-kumar.jpg" 
+                  src="/images/avatar-rahul-sharma.jpg" 
                   alt={userName} 
                   className="w-4 h-4 sm:w-5 sm:h-5 rounded-full object-cover border border-sky-400"
                 />
@@ -238,7 +238,7 @@ export const FutureNavbar: React.FC<FutureNavbarProps> = ({
                   }}
                   className="w-full py-2.5 rounded-xl text-sm font-bold text-sky-950 bg-sky-100 hover:bg-sky-200 transition-colors flex items-center justify-center gap-2"
                 >
-                  <img src="/images/avatar-subodh-kumar.jpg" alt={userName} className="w-5 h-5 rounded-full object-cover" />
+                  <img src="/images/avatar-rahul-sharma.jpg" alt={userName} className="w-5 h-5 rounded-full object-cover" />
                   <span>Go to Learner Dashboard ➔</span>
                 </button>
               ) : (

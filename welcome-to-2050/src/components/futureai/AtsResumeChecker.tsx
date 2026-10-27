@@ -45,6 +45,7 @@ import {
 } from 'lucide-react';
 import { FutureLogo } from './FutureLogo';
 import { FutureAdvancedHeader } from './FutureAdvancedHeader';
+import { AtsCareerReadyBanner } from './AtsCareerReadyBanner';
 import './LearnerHomeHub.css';
 import './AtsResumeChecker.css';
 import { SupportedLanguage } from '../../services/powerGreenAIService';
@@ -71,7 +72,7 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
   onOpenLogin,
   onEnrollNow,
   isLoggedIn = false,
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
 }) => {
   // Candidate Verification & Login Modal State
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
@@ -95,7 +96,7 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
       const saved = localStorage.getItem('futureai_user_name');
       if (saved && saved !== 'Learner') return saved;
     }
-    return userName && userName !== 'Learner' ? userName : 'Subodh Kumar';
+    return userName && userName !== 'Learner' ? userName : 'Rahul Sharma';
   });
 
   // Verification check: Is candidate logged in?
@@ -681,7 +682,7 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
 
   const handleAuthSubmit = (e?: React.FormEvent, customName?: string) => {
     if (e) e.preventDefault();
-    const nameToUse = (customName || candidateNameInput).trim() || 'Subodh Kumar';
+    const nameToUse = (customName || candidateNameInput).trim() || 'Rahul Sharma';
     setActiveCandidateName(nameToUse);
     if (typeof window !== 'undefined') {
       localStorage.setItem('futureai_user_name', nameToUse);
@@ -777,7 +778,7 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
     TARGET_JOB_ROLES.find((r) => r.id === selectedRole) || TARGET_JOB_ROLES[0];
 
   const candidateFirstName =
-    (activeCandidateName || extractCandidateInfo(extractedText, uploadedFile).name || userName || 'Subodh').split(' ')[0] || 'Subodh';
+    (activeCandidateName || extractCandidateInfo(extractedText, uploadedFile).name || userName || 'Rahul').split(' ')[0] || 'Rahul';
 
   const filteredRoles = TARGET_JOB_ROLES.filter((r) =>
     r.name.toLowerCase().includes(roleSearchFilter.toLowerCase())
@@ -798,7 +799,7 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
     if (sectionId && sectionId !== 'hero') {
       const resolvedId =
         sectionId === 'courses' || sectionId === 'program-highlights'
-          ? 'pay-after-placement'
+          ? 'courses-hub'
           : sectionId;
       setTimeout(() => {
         const el = document.getElementById(resolvedId) || document.getElementById(sectionId);
@@ -2161,233 +2162,10 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
         </div>
 
         {/* ─────────────────────────────────────────────────────────────
-            3A. MOBILE SPECIAL PROMOTIONAL BANNER: GET ALL PREMIUM COURSES ₹987
-            (block md:hidden) - Ultra-sleek, compact, high-converting
+            3. NEW ATS CAREER-READY BANNER (1:1 with Approved Reference)
+            Both Desktop & Mobile
             ───────────────────────────────────────────────────────────── */}
-        <div
-          className="block md:hidden mt-5 mb-8 rounded-2xl overflow-hidden border-2 border-sky-400 shadow-[0_10px_32px_rgba(56,189,248,0.28)] bg-gradient-to-b from-[#dbeafe] via-white to-[#f3e8ff] cursor-pointer"
-          onClick={() => {
-            if (onEnrollNow) onEnrollNow();
-            else window.location.hash = '#data-analyst';
-          }}
-          title="Unlock All Premium Courses for Just ₹987"
-        >
-          {/* Top Card Body */}
-          <div className="p-4 relative">
-            {/* Top Row: Limited Offer Pill + ₹987 Pill */}
-            <div className="flex items-center justify-between gap-2 mb-2">
-              <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-pink-500 to-fuchsia-500 text-white px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wide shadow-xs">
-                <span>⏰</span>
-                <span>LIMITED-TIME OFFER</span>
-              </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-[11px] font-bold text-slate-500">Only</span>
-                <span className="text-2xl font-black bg-gradient-to-r from-sky-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  ₹987
-                </span>
-              </div>
-            </div>
-
-            {/* Gift Box & Headline */}
-            <div className="flex items-center gap-3 my-2.5">
-              <div className="relative shrink-0">
-                <img
-                  src="/images/luxury_purple_gift_box.png"
-                  alt="3D Gift Box"
-                  className="w-16 h-16 object-contain drop-shadow-[0_4px_14px_rgba(147,51,234,0.4)] animate-bounce"
-                  style={{ animationDuration: '3s' }}
-                />
-              </div>
-              <div>
-                <h3 className="text-base font-black text-slate-900 leading-tight">
-                  Get All Premium Courses for Just <span className="text-blue-600 font-black">₹987</span>
-                </h3>
-                <p className="text-[11px] font-medium text-slate-600 mt-1 leading-snug">
-                  Data Analyst, Data Science, Python, Full Stack &amp; AI Tracks
-                </p>
-              </div>
-            </div>
-
-            {/* Pay After Placement Bar */}
-            <div className="flex items-center justify-between p-2.5 rounded-xl bg-blue-50/90 border border-blue-200/90 my-2.5">
-              <div className="flex items-center gap-2">
-                <span className="text-base">💼</span>
-                <div className="text-[11px] leading-tight font-bold text-slate-800">
-                  <div>Pay After Job Offer</div>
-                  <span className="text-[10px] text-slate-500 font-semibold">700+ Hiring Partners</span>
-                </div>
-              </div>
-              <span className="text-[11px] font-black text-rose-600 bg-rose-50 px-2.5 py-0.5 rounded-lg border border-rose-200 shadow-2xs">
-                Pay ₹0 Now
-              </span>
-            </div>
-
-            {/* Golden Unlock Button */}
-            <button
-              type="button"
-              className="w-full py-3 px-4 rounded-full bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 text-slate-950 font-black text-xs sm:text-sm tracking-wide shadow-[0_0_22px_rgba(250,204,21,0.7)] active:scale-95 transition-transform flex items-center justify-center gap-2 border-2 border-white cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onEnrollNow) onEnrollNow();
-                else window.location.hash = '#data-analyst';
-              }}
-            >
-              <Lock className="w-4 h-4 fill-slate-950 stroke-slate-950" />
-              <span>UNLOCK ALL COURSES FOR ₹987</span>
-              <ArrowRight className="w-4 h-4 stroke-[3]" />
-            </button>
-          </div>
-
-          {/* Bottom Features Strip (Dark Navy Blue) */}
-          <div className="bg-gradient-to-r from-[#020b22] via-[#061539] to-[#030d2a] border-t border-sky-500/80 p-2.5 grid grid-cols-3 gap-1.5 text-center text-white">
-            <div className="flex flex-col items-center justify-center p-1 rounded bg-white/5">
-              <GraduationCap className="w-4 h-4 text-sky-400 mb-0.5" />
-              <span className="text-[9px] font-bold">All Tracks</span>
-            </div>
-            <div className="flex flex-col items-center justify-center p-1 rounded bg-white/5">
-              <FileText className="w-4 h-4 text-pink-400 mb-0.5" />
-              <span className="text-[9px] font-bold">15+ Projects</span>
-            </div>
-            <div className="flex flex-col items-center justify-center p-1 rounded bg-white/5">
-              <TrendingUp className="w-4 h-4 text-emerald-400 mb-0.5" />
-              <span className="text-[9px] font-bold">Placement</span>
-            </div>
-          </div>
-        </div>
-
-        {/* ─────────────────────────────────────────────────────────────
-            3B. DESKTOP SPECIAL PROMOTIONAL OFFER BANNER (All 4 Courses for ₹987)
-            Matches course bottom banner 1:1
-            ───────────────────────────────────────────────────────────── */}
-        <div
-          className="hidden md:block scd-slim-offer-strip"
-          onClick={() => {
-            if (onEnrollNow) onEnrollNow();
-            else window.location.hash = '#data-analyst';
-          }}
-          title="Unlock All 4 Courses for Just ₹987"
-        >
-          {/* TOP TIER: Glossy Cyan/White/Purple Gradient Card */}
-          <div className="scd-sos-top-card">
-            {/* Left: 3D Luxury Purple Gift Box with Golden Bow and Sparks */}
-            <div className="scd-sos-gift-col">
-              <img
-                src="/images/luxury_purple_gift_box.png"
-                alt="3D Luxury Gift Box"
-                className="scd-sos-gift-img"
-              />
-            </div>
-
-            {/* Left-Center: Limited-Time Offer Pill + Headline + Subtitle */}
-            <div className="scd-sos-title-col">
-              <div className="scd-sos-limited-pill">
-                <span className="scd-sos-pill-clock">⏰</span>
-                <span className="scd-sos-pill-text">LIMITED-TIME OFFER</span>
-              </div>
-              <div className="scd-sos-main-heading">
-                <span className="scd-sos-headline-lead">Get All 4 Courses for Just</span>{' '}
-                <span className="scd-sos-price-989">₹987</span>
-              </div>
-              <p className="scd-sos-subtitle">
-                Access Data Analyst, Data Science, ML Engineering &amp; AI Engineering
-              </p>
-            </div>
-
-            {/* Center Divider */}
-            <div className="scd-sos-vdivider" />
-
-            {/* Center-Right: Pay After Job Offer */}
-            <div className="scd-sos-pap-col">
-              <div className="scd-sos-pap-header">
-                <span className="scd-sos-briefcase-icon">💼</span>
-                <div className="scd-sos-pap-title">
-                  <span>Pay After</span>
-                  <span>Job Offer</span>
-                </div>
-              </div>
-              <div className="scd-sos-pap-price">700+</div>
-              <div className="scd-sos-pap-sub">Hiring Companies</div>
-            </div>
-
-            {/* Right: Golden Unlock Capsule Button */}
-            <div className="scd-sos-btn-col">
-              <button
-                type="button"
-                className="scd-sos-unlock-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (onEnrollNow) onEnrollNow();
-                  else window.location.hash = '#data-analyst';
-                }}
-              >
-                <Lock className="w-5 h-5 fill-slate-900 stroke-slate-900" />
-                <span>UNLOCK ALL 4 COURSES ₹987</span>
-                <ArrowRight className="w-5 h-5 stroke-[3]" />
-              </button>
-            </div>
-          </div>
-
-          {/* BOTTOM TIER: Docked Dark Navy Blue Strip with 5 Feature Icons */}
-          <div className="scd-sos-bottom-strip">
-            <div className="scd-sos-feature-item">
-              <div className="scd-sos-ficon-box scd-ficon-blue">
-                <GraduationCap className="w-5 h-5" />
-              </div>
-              <div className="scd-sos-ftext">
-                <strong>Full Access</strong>
-                <span>to All 4 Courses</span>
-              </div>
-            </div>
-
-            <div className="scd-sos-strip-sep" />
-
-            <div className="scd-sos-feature-item">
-              <div className="scd-sos-ficon-box scd-ficon-pink">
-                <FileText className="w-5 h-5" />
-              </div>
-              <div className="scd-sos-ftext">
-                <strong>Real-World</strong>
-                <span>Projects</span>
-              </div>
-            </div>
-
-            <div className="scd-sos-strip-sep" />
-
-            <div className="scd-sos-feature-item">
-              <div className="scd-sos-ficon-box scd-ficon-green">
-                <Code2 className="w-5 h-5" />
-              </div>
-              <div className="scd-sos-ftext">
-                <strong>Hackathon/DSA Practice</strong>
-                <span>&amp; Practice</span>
-              </div>
-            </div>
-
-            <div className="scd-sos-strip-sep" />
-
-            <div className="scd-sos-feature-item">
-              <div className="scd-sos-ficon-box scd-ficon-yellow">
-                <Users className="w-5 h-5" />
-              </div>
-              <div className="scd-sos-ftext">
-                <strong>AI Mock</strong>
-                <span>Interviews</span>
-              </div>
-            </div>
-
-            <div className="scd-sos-strip-sep" />
-
-            <div className="scd-sos-feature-item">
-              <div className="scd-sos-ficon-box scd-ficon-cyan">
-                <TrendingUp className="w-5 h-5" />
-              </div>
-              <div className="scd-sos-ftext">
-                <strong>Placement</strong>
-                <span>Support</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <AtsCareerReadyBanner onExploreCourses={onEnrollNow || (() => { window.location.hash = '#home'; window.scrollTo({ top: 0, behavior: 'smooth' }); })} />
 
       </main>
 
@@ -2445,7 +2223,7 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
                     required
                     value={candidateNameInput}
                     onChange={(e) => setCandidateNameInput(e.target.value)}
-                    placeholder="e.g. Subodh Kumar"
+                    placeholder="e.g. Rahul Sharma"
                     className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 focus:bg-white text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all"
                   />
                 </div>
@@ -2463,7 +2241,7 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
                     required
                     value={candidateEmailInput}
                     onChange={(e) => setCandidateEmailInput(e.target.value)}
-                    placeholder="e.g. subodh@example.com"
+                    placeholder="e.g. rahul.sharma@example.com"
                     className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 focus:bg-white text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all"
                   />
                 </div>
@@ -2487,10 +2265,10 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
               {/* Quick 1-Click Guest Option */}
               <button
                 type="button"
-                onClick={() => handleAuthSubmit(undefined, candidateNameInput || 'Subodh Kumar')}
+                onClick={() => handleAuthSubmit(undefined, candidateNameInput || 'Rahul Sharma')}
                 className="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5"
               >
-                <span>Quick Continue as {candidateNameInput.trim() || 'Subodh Kumar'}</span>
+                <span>Quick Continue as {candidateNameInput.trim() || 'Rahul Sharma'}</span>
               </button>
             </form>
 

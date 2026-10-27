@@ -47,7 +47,7 @@ const TopicThumbIcon: React.FC<{ iconType: string }> = ({ iconType }) => {
 };
 
 export const PythonModuleDetail: React.FC<PythonModuleDetailProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   onBack,
   onOpenUnlockModal,
   onOpenAdvisor,
@@ -231,7 +231,7 @@ export const PythonModuleDetail: React.FC<PythonModuleDetailProps> = ({
             </div>
 
             <div className="pmd-avatar">
-              <img src="/images/avatar-subodh-kumar.jpg" alt={userName} className="pmd-avatar-img" onError={e => { (e.target as HTMLImageElement).style.display='none'; }} />
+              <img src="/images/avatar-rahul-sharma.jpg" alt={userName} className="pmd-avatar-img" onError={e => { (e.target as HTMLImageElement).style.display='none'; }} />
               <span className="pmd-avatar-fallback">{userName.split(' ').map(n=>n[0]).join('').slice(0,2)}</span>
             </div>
 

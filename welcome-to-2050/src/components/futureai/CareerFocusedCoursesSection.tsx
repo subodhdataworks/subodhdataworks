@@ -66,7 +66,7 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
     'Career-Focused Courses',
     'High-Paying Industry Roles',
     'GenAI & Data Analytics',
-    'Pay After Placement Tracks',
+    'Industry-Ready Career Tracks',
   ];
   const [typedText, setTypedText] = useState('Career-Focused Courses');
   const [phraseIdx, setPhraseIdx] = useState(0);
@@ -136,7 +136,7 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
 
 
   return (
-    <section className="relative pt-8 sm:pt-12 pb-0 bg-gradient-to-b from-[#f8fbff] via-white to-[#f8fbff] overflow-hidden" id="pay-after-placement">
+    <section className="relative pt-8 sm:pt-12 pb-0 bg-gradient-to-b from-[#f8fbff] via-white to-[#f8fbff] overflow-hidden" id="courses-hub">
       
       {/* Background Soft Glows */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />

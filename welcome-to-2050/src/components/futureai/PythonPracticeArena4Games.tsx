@@ -62,7 +62,7 @@ export interface PythonPracticeArena4GamesProps {
 }
 
 export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   tabId = 1,
   topicId = 1,
   onSelectTopic,
@@ -943,7 +943,7 @@ print(result)`
         return {
           hintEn: 'Remember that data is not limited to numbers—text, measurements, and images can all be data.',
           hintHi: 'याद रखें कि डेटा केवल नंबर नहीं होता—नाम (टेक्स्ट), तापमान (माप) और फोटो (इमेज) सभी डेटा हो सकते हैं।',
-          exampleCode: '// Variety of Data Types:\nCustomer Name:  "Subodh Kumar"  (Text / String)\nTemperature:    32.5°C          (Numerical Measurement)\nProduct Photo:  camera.jpg      (Image / Multimedia Data)',
+          exampleCode: '// Variety of Data Types:\nCustomer Name:  "Rahul Sharma"  (Text / String)\nTemperature:    32.5°C          (Numerical Measurement)\nProduct Photo:  camera.jpg      (Image / Multimedia Data)',
           exampleNote: 'All of these forms can be stored and analyzed in modern databases.',
           explainTitleEn: 'Multimodal Nature of Data',
           explainTitleHi: 'डेटा के विभिन्न रूप',

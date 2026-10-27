@@ -33,7 +33,7 @@ interface DataAnalystGenAiHubProps {
 }
 
 export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
-  userName = 'SUBODH KUMAR',
+  userName = 'RAHUL SHARMA',
   onBack,
   onStartTopic,
 }) => {

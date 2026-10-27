@@ -95,7 +95,7 @@ export const StableMouthLipSyncAvatar: React.FC<StableMouthLipSyncAvatarProps> =
         rightEye: { x: 0.526, y: 0.311, rx: 14, ry: 6.5 },
       };
     }
-    // 2. Subodh Kumar - Indian Male HR (hr_interviewer_indian_male.jpg, 1024x576)
+    // 2. Rohan Verma - Indian Male HR (hr_interviewer_indian_male.jpg, 1024x576)
     return {
       centerX: 0.486,
       centerY: 0.4375,

@@ -20,7 +20,7 @@ export interface MobileTopBarProps {
 }
 
 export const MobileTopBar: React.FC<MobileTopBarProps> = ({
-  userName = 'Subodh Kumar',
+  userName = 'Rahul Sharma',
   telemetry,
   showBack = false,
   onBack,

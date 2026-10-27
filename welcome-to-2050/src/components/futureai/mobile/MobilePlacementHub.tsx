@@ -232,12 +232,12 @@ export const MobilePlacementHub: React.FC<MobilePlacementHubProps> = ({
                 <span className="text-[10px] font-extrabold tracking-wider uppercase text-slate-400">
                   Guaranteed Placement Track
                 </span>
-                <h2 className="text-sm font-black text-white">Pay After Placement (PAP)</h2>
+                <h2 className="text-sm font-black text-white">Career Placement Acceleration</h2>
               </div>
             </div>
 
             <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 text-[10px] font-black">
-              Zero Upfront Fee
+              100% Placement Support
             </span>
           </div>
 
@@ -250,7 +250,7 @@ export const MobilePlacementHub: React.FC<MobilePlacementHubProps> = ({
               </span>
             </div>
             <p className="text-[11px] text-emerald-400 font-bold mt-1">
-              ✓ Pay nominal platform fee only after receiving your offer letter!
+              ✓ Complete placement support until you receive your verified offer letter!
             </p>
           </div>
 
@@ -423,7 +423,7 @@ export const MobilePlacementHub: React.FC<MobilePlacementHubProps> = ({
               {
                 step: '4',
                 title: 'Direct Partner Hiring & Offer Letter',
-                desc: 'Get placed with ₹6 – 15 LPA salary and pay only after joining',
+                desc: 'Get placed with ₹6 – 15 LPA salary with end-to-end recruitment drives',
                 status: 'Final Goal',
                 color: 'bg-slate-700',
               },

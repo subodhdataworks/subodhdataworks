@@ -30,7 +30,7 @@ export interface HrSettingsConfig {
 export const PRESET_HR_AVATARS: HrAvatarOption[] = [
   {
     id: 'avatar_rohan_male',
-    name: 'Subodh Kumar (HR)',
+    name: 'Rohan Verma (HR)',
     role: 'Senior Technical Recruiter (Indian English)',
     gender: 'male',
     imageUrl: '/images/hr_interviewer_indian_male.jpg',

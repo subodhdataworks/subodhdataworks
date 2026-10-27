@@ -24,7 +24,7 @@ interface FullStackMernHubProps {
 }
 
 export const FullStackMernHub: React.FC<FullStackMernHubProps> = ({
-  userName = 'SUBODH KUMAR',
+  userName = 'RAHUL SHARMA',
   onBack,
   onStartTopic,
 }) => {
