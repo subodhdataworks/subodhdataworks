@@ -263,11 +263,26 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     syncRealCloudData();
     const interval = setInterval(syncRealCloudData, 2500);
     const onAffiliateUpdated = () => syncRealCloudData();
+    const onVisibilityChange = () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        syncRealCloudData();
+      }
+    };
     window.addEventListener('futureai_affiliate_updated', onAffiliateUpdated);
+    window.addEventListener('focus', syncRealCloudData);
+    window.addEventListener('online', syncRealCloudData);
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', onVisibilityChange);
+    }
     return () => {
       isMounted = false;
       clearInterval(interval);
       window.removeEventListener('futureai_affiliate_updated', onAffiliateUpdated);
+      window.removeEventListener('focus', syncRealCloudData);
+      window.removeEventListener('online', syncRealCloudData);
+      if (typeof document !== 'undefined') {
+        document.removeEventListener('visibilitychange', onVisibilityChange);
+      }
     };
   }, [cleanRefCode]);
 
@@ -464,20 +479,47 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     } catch {}
   }, [payoutStorageKey, hasAnyVerifiedPayout, upiId, isUpiVerified, bankAccNumber, bankIfsc, bankHolder, bankName, isBankVerified]);
 
-  // Auto-Sliding Dual HD Hero Banners
+  // Auto-Sliding Dual HD Hero Banners with Mobile Touch Swipe & Live Sync
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [isBannerHovered, setIsBannerHovered] = useState(false);
+  const [isTouchInteracting, setIsTouchInteracting] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+  const touchCurrentX = useRef<number | null>(null);
+
+  const prefersReducedMotion = typeof window !== 'undefined'
+    && typeof window.matchMedia === 'function'
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const affiliateBanners = useMemo(() => [
+    {
+      id: 'banner-withdraw',
+      theme: 'withdraw',
+      bgImage: '/images/affiliate/bg_withdraw_light_real_boy.jpg',
+      badgeTag: '⚡ 24/7 WITHDRAWALS • PROCESSED IN 24 HOURS',
+      badgeClass: 'badge-cyan',
+      titleLine1: 'Withdraw Earnings',
+      titleLine2: 'Anytime, Hassle-Free.',
+      subtitle: 'Your verified earnings are processed within 24 hours directly to your Bank or UPI.',
+      featurePills: [
+        { icon: '⚡', label: '24/7 Withdrawal Request' },
+        { icon: '✓', label: '100% Genuine Escrow' },
+        { icon: '🏛', label: 'Direct to Bank / UPI' },
+        { icon: '✓', label: 'Secure • No Hidden Fee' },
+      ],
+      ctaText: 'Instant Withdraw',
+      ctaType: 'withdraw',
+      socialProof: '₹24.5 Lakhs+ Verified Payouts',
+      alt: 'Withdraw Earnings Anytime Hassle-Free - Real Student'
+    },
     {
       id: 'banner-share-earn',
       theme: 'share-earn',
       bgImage: '/images/affiliate/bg_share_earn_light_real_girl.jpg',
       badgeTag: '🔥 EARN CASH • CREATOR & STUDENT PARTNER PROGRAM',
       badgeClass: 'badge-emerald',
-      titleLine1: 'Earn Cash & Share',
-      titleLine2: 'Real Money 🚀',
-      subtitle: 'Invite students to join Future IT and earn flat ₹100 commission for every enrollment.',
+      titleLine1: 'Share & Earn',
+      titleLine2: '₹100 Per Student.',
+      subtitle: 'Invite friends & classmates. When they enroll in any course, you get flat ₹100 instant payout.',
       steps: [
         { num: '1', icon: '👤+', label: 'Share Link' },
         { num: '2', icon: '👥', label: 'Students Join' },
@@ -490,39 +532,43 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
         { icon: '🎁', label: 'Real-Time Tracking' },
         { icon: '⚡', label: 'Unlimited Earnings' },
       ],
-      ctaText: 'Copy Referral Link 🔗',
+      ctaText: 'Copy Referral Link',
       ctaType: 'copy',
       socialProof: '12,500+ Active Student Partners',
       alt: 'Earn Cash & Share Real Money'
-    },
-    {
-      id: 'banner-withdraw',
-      theme: 'withdraw',
-      bgImage: '/images/affiliate/bg_withdraw_light_real_boy.jpg',
-      badgeTag: '⚡ 24/7 WITHDRAWALS • PROCESSED IN 24 HOURS',
-      badgeClass: 'badge-cyan',
-      titleLine1: 'Withdraw Earnings',
-      titleLine2: 'Anytime, Hassle-Free.',
-      subtitle: 'Your verified earnings are processed within 24 hours directly to your Bank or UPI.',
-      featurePills: [
-        { icon: '⚡', label: '24/7 Withdrawal Request' },
-        { icon: '🛡️', label: '100% Genuine Escrow' },
-        { icon: '🏛️', label: 'Direct to Bank / UPI' },
-        { icon: '✅', label: 'Secure • No Hidden Fee' },
-      ],
-      ctaText: availableBalance >= 100 ? `Instant Withdraw ₹${availableBalance.toLocaleString('en-IN')} ⚡` : 'Start Earning ₹100 / Student 🚀',
-      ctaType: availableBalance >= 100 ? 'withdraw' : 'copy',
-      socialProof: '₹24.5 Lakhs+ Verified Payouts',
-      alt: 'Withdraw Earnings Anytime Hassle-Free - Real Student'
     }
   ], [availableBalance]);
   useEffect(() => {
-    if (isBannerHovered) return;
+    if (isBannerHovered || isTouchInteracting || prefersReducedMotion || affiliateBanners.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentBannerIndex((prev) => (prev + 1) % affiliateBanners.length);
-    }, 4500);
+    }, 5000);
     return () => clearInterval(interval);
-  }, [isBannerHovered, affiliateBanners.length]);
+  }, [isBannerHovered, isTouchInteracting, prefersReducedMotion, affiliateBanners.length]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsTouchInteracting(true);
+    touchStartX.current = e.touches[0].clientX;
+    touchCurrentX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchCurrentX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    setIsTouchInteracting(false);
+    if (touchStartX.current !== null && touchCurrentX.current !== null) {
+      const diff = touchStartX.current - touchCurrentX.current;
+      if (diff > 35) {
+        handleNextBanner();
+      } else if (diff < -35) {
+        handlePrevBanner();
+      }
+    }
+    touchStartX.current = null;
+    touchCurrentX.current = null;
+  };
 
   const handlePrevBanner = (e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -918,87 +964,146 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       {/* MOBILE INTERFACE (< 768px) - 1:1 WITH REFERENCE DESIGN               */}
       {/* ══════════════════════════════════════════════════════════════════════ */}
       <div className="aff-mobile-only aff-mobile-root">
-        {/* 1. Compact Mobile Withdrawal Hero Banner */}
-        <section className="aff-mob-hero-card">
-          {/* Cheerful Indian Student Artwork Background on the right */}
-          <img
-            src="/images/affiliate/bg_withdraw_light_real_boy.jpg"
-            alt="Withdraw Earnings Anytime"
-            className="aff-mob-hero-bg-art"
-          />
+        {/* 1. TOP PROMOTIONAL BANNER SLIDER (Auto-Sliding Dual Banners with Touch & Navigation) */}
+        <section
+          className="aff-mob-hero-carousel-wrap relative overflow-hidden rounded-2xl mb-3 shadow-md border border-slate-200/90 bg-white"
+          onMouseEnter={() => setIsBannerHovered(true)}
+          onMouseLeave={() => setIsBannerHovered(false)}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          aria-label="Promotional Banners"
+        >
+          {/* Sliding Track */}
+          <div
+            className="aff-mob-slider-track flex"
+            style={{
+              transform: `translateX(-${currentBannerIndex * 100}%)`,
+              transition: prefersReducedMotion ? 'none' : 'transform 0.45s cubic-bezier(0.25, 1, 0.5, 1)',
+              width: `${affiliateBanners.length * 100}%`,
+            }}
+          >
+            {affiliateBanners.map((banner) => (
+              <div
+                key={banner.id}
+                className="aff-mob-slider-slide w-full flex-shrink-0 relative overflow-hidden min-h-[195px] p-3.5 flex flex-col justify-between"
+              >
+                {/* Background image on the right */}
+                <img
+                  src={banner.bgImage}
+                  alt={banner.alt}
+                  className="absolute right-0 bottom-0 top-0 w-[52%] h-full object-cover object-right pointer-events-none z-0"
+                />
+                {/* Soft gradient overlay for text readability */}
+                <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/40 pointer-events-none z-1" />
 
-          <div className="aff-mob-hero-left">
-            <div>
-              <h2 className="aff-mob-hero-heading">
-                Withdraw Earnings
-                <span>Anytime, Hassle-Free.</span>
-              </h2>
-              <p className="aff-mob-hero-desc">
-                Your verified earnings are processed within 24 hours directly to your Bank or UPI.
-              </p>
-            </div>
+                {/* Content */}
+                <div className="relative z-10 max-w-[68%] space-y-2">
+                  <h2 className="aff-mob-hero-heading text-xl font-black text-slate-950 leading-tight">
+                    {banner.titleLine1}
+                    <span className="text-[#1a73e8] block font-black">{banner.titleLine2}</span>
+                  </h2>
 
-            {/* 4 Feature Chips (2x2 Grid) */}
-            <div className="aff-mob-hero-chips-grid">
-              <div className="aff-mob-hero-chip">
-                <span>⚡</span>
-                <span>24/7 Withdrawal Request</span>
-              </div>
-              <div className="aff-mob-hero-chip">
-                <span>🛡️</span>
-                <span>100% Genuine Escrow</span>
-              </div>
-              <div className="aff-mob-hero-chip">
-                <span>🏛️</span>
-                <span>Direct to Bank / UPI</span>
-              </div>
-              <div className="aff-mob-hero-chip">
-                <span>✅</span>
-                <span>Secure • No Hidden Fee</span>
-              </div>
-            </div>
+                  <p className="aff-mob-hero-desc text-[9.5px] text-slate-600 font-semibold leading-relaxed">
+                    {banner.subtitle}
+                  </p>
 
-            {/* Action Row */}
-            <div className="aff-mob-hero-actions-row">
+                  {/* 4 Feature Chips in 2x2 Grid */}
+                  <div className="aff-mob-hero-chips-grid">
+                    {banner.featurePills.map((pill, pIdx) => (
+                      <div key={pIdx} className="aff-mob-hero-chip">
+                        <span>{pill.icon}</span>
+                        <span className="truncate">{pill.label}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Action Row */}
+                  <div className="aff-mob-hero-actions-row">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playUiSound('click');
+                        if (banner.ctaType === 'withdraw') {
+                          setWithdrawStep('form');
+                          setIsWithdrawModalOpen(true);
+                        } else {
+                          handleCopyLink();
+                        }
+                      }}
+                      className="aff-mob-hero-withdraw-btn"
+                    >
+                      <span>{banner.ctaType === 'withdraw' ? '💳 Instant Withdraw' : '🔗 Copy Link'}</span>
+                      <span>→</span>
+                    </button>
+
+                    {banner.theme === 'withdraw' ? (
+                      <div
+                        onClick={() => {
+                          playUiSound('click');
+                          setWithdrawStep('form');
+                          setIsWithdrawModalOpen(true);
+                        }}
+                        className="aff-mob-hero-avail-badge"
+                      >
+                        <div className="aff-mob-avail-check">✓</div>
+                        <div className="aff-mob-avail-texts">
+                          <span className="aff-mob-avail-sub">INSTANT PAYOUTS</span>
+                          <span className="aff-mob-avail-val">Direct to Bank</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="aff-mob-hero-avail-badge">
+                        <span className="text-xs">🔥</span>
+                        <div className="aff-mob-avail-texts">
+                          <span className="aff-mob-avail-sub">ACTIVE COMMUNITY</span>
+                          <span className="aff-mob-avail-val">12,500+ Partners</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Previous & Next Navigation Arrows */}
+          {affiliateBanners.length > 1 && (
+            <>
               <button
                 type="button"
-                onClick={() => {
-                  playUiSound('click');
-                  setWithdrawStep('form');
-                  setIsWithdrawModalOpen(true);
-                }}
-                className="aff-mob-hero-withdraw-btn"
+                onClick={handlePrevBanner}
+                aria-label="Previous Slide"
+                className="aff-mob-slider-arrow aff-mob-arrow-left"
               >
-                <span>💳</span>
-                <span>Instant Withdraw ₹{availableBalance.toLocaleString('en-IN')} ⚡</span>
+                <ChevronLeft className="w-3.5 h-3.5 stroke-[2.5]" />
+              </button>
+              <button
+                type="button"
+                onClick={handleNextBanner}
+                aria-label="Next Slide"
+                className="aff-mob-slider-arrow aff-mob-arrow-right"
+              >
+                <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
               </button>
 
-              <div
-                onClick={() => {
-                  playUiSound('click');
-                  setWithdrawStep('form');
-                  setIsWithdrawModalOpen(true);
-                }}
-                className="aff-mob-hero-avail-badge"
-              >
-                <div className="aff-mob-avail-check">✓</div>
-                <div className="aff-mob-avail-texts">
-                  <span className="aff-mob-avail-sub">INSTANT PAYOUTS</span>
-                  <span className="aff-mob-avail-val">₹{availableBalance.toLocaleString('en-IN')} Available</span>
-                </div>
-                <span className="text-[8px] text-slate-400 font-bold ml-1">Direct to Bank &gt;</span>
+              {/* Pagination Dots */}
+              <div className="aff-mob-hero-dots">
+                {affiliateBanners.map((b, i) => (
+                  <button
+                    key={b.id}
+                    type="button"
+                    onClick={() => setCurrentBannerIndex(i)}
+                    aria-label={`Slide ${i + 1}`}
+                    className={`aff-mob-hero-dot ${i === currentBannerIndex ? 'active' : ''}`}
+                  />
+                ))}
               </div>
-            </div>
-
-            {/* Carousel Dots */}
-            <div className="aff-mob-hero-dots">
-              <div className="aff-mob-hero-dot active" />
-              <div className="aff-mob-hero-dot" />
-            </div>
-          </div>
+            </>
+          )}
         </section>
 
-        {/* 2. 6 Performance Metrics Cards (2-Column Grid) */}
+        {/* 2. 6 EARNINGS STATISTICS CARDS (3-Column Grid Matching Reference Image) */}
         <section className="aff-mob-metrics-grid">
           {/* Card 1: Total Clicks */}
           <div
@@ -1018,9 +1123,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               <div className="aff-mob-card-label">Total Clicks</div>
             </div>
             <div className="aff-mob-card-bottom">
-              <span className="aff-mob-card-subtext">Across all shared channels</span>
               <div className="aff-mob-card-chart">
-                <svg className="w-12 h-6" viewBox="0 0 64 28" fill="none">
+                <svg className="w-10 h-5" viewBox="0 0 64 28" fill="none">
                   <rect x="4" y="18" width="6" height="10" rx="1.5" fill="#bae6fd" />
                   <rect x="16" y="14" width="6" height="14" rx="1.5" fill="#7dd3fc" />
                   <rect x="28" y="10" width="6" height="18" rx="1.5" fill="#38bdf8" />
@@ -1044,7 +1148,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 <Users className="w-3 h-3 text-white" />
               </div>
               <span className="aff-mob-card-badge bg-[#dcfce7] text-[#059669]">
-                {signups > 0 ? `+ ${signups}` : '+ 1'}
+                +1
               </span>
             </div>
             <div>
@@ -1052,11 +1156,9 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               <div className="aff-mob-card-label">Free Signups</div>
             </div>
             <div className="aff-mob-card-bottom">
-              <span className="aff-mob-card-subtext">Registered learner leads</span>
               <div className="aff-mob-card-chart">
-                <svg className="w-12 h-6" viewBox="0 0 64 28" fill="none">
+                <svg className="w-10 h-5" viewBox="0 0 64 28" fill="none">
                   <path d="M4 22 L16 16 L28 19 L42 10 L58 4" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M52 4 H58 V10" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                   <rect x="24" y="20" width="4" height="8" rx="1" fill="#a7f3d0" />
                   <rect x="36" y="16" width="4" height="12" rx="1" fill="#6ee7b7" />
                   <rect x="48" y="12" width="4" height="16" rx="1" fill="#34d399" />
@@ -1078,7 +1180,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 <GraduationCap className="w-3 h-3 text-white" />
               </div>
               <span className="aff-mob-card-badge bg-[#f3e8ff] text-[#7c3aed]">
-                {paidEnrollments > 0 ? `+ ${paidEnrollments}` : '+ 1'}
+                +1
               </span>
             </div>
             <div>
@@ -1086,9 +1188,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               <div className="aff-mob-card-label">Paid Enrollments</div>
             </div>
             <div className="aff-mob-card-bottom">
-              <span className="aff-mob-card-subtext">₹999 verified learners</span>
               <div className="aff-mob-card-chart">
-                <svg className="w-12 h-6" viewBox="0 0 64 28" fill="none">
+                <svg className="w-10 h-5" viewBox="0 0 64 28" fill="none">
                   <rect x="4" y="20" width="6" height="8" rx="1.5" fill="#f3e8ff" />
                   <rect x="16" y="16" width="6" height="12" rx="1.5" fill="#e9d5ff" />
                   <rect x="28" y="12" width="6" height="16" rx="1.5" fill="#d8b4fe" />
@@ -1112,7 +1213,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 <Clock className="w-3 h-3 text-white" />
               </div>
               <span className="aff-mob-card-badge bg-[#fef3c7] text-[#d97706]">
-                ₹{pendingBalance} pending
+                ₹0 pending
               </span>
             </div>
             <div>
@@ -1120,11 +1221,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               <div className="aff-mob-card-label">Pending Escrow</div>
             </div>
             <div className="aff-mob-card-bottom">
-              <span className="aff-mob-card-subtext">Unlocking on course start</span>
               <div className="aff-mob-card-chart">
-                <svg className="w-12 h-6" viewBox="0 0 64 28" fill="none">
-                  <circle cx="10" cy="18" r="6" stroke="#f59e0b" strokeWidth="1.8" />
-                  <path d="M10 15 V18 H13" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" />
+                <svg className="w-10 h-5" viewBox="0 0 64 28" fill="none">
                   <rect x="24" y="18" width="5" height="10" rx="1.5" fill="#fef3c7" />
                   <rect x="34" y="14" width="5" height="14" rx="1.5" fill="#fde68a" />
                   <rect x="44" y="9" width="5" height="19" rx="1.5" fill="#fcd34d" />
@@ -1147,7 +1245,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 <Zap className="w-3 h-3 text-white" />
               </div>
               <span className="aff-mob-card-badge bg-[#ecfeff] text-[#0891b2]">
-                {availableBalance >= 100 ? 'Ready to Payout' : 'Min ₹100'}
+                Ready to Payout
               </span>
             </div>
             <div>
@@ -1155,9 +1253,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               <div className="aff-mob-card-label">Available to Payout</div>
             </div>
             <div className="aff-mob-card-bottom">
-              <span className="aff-mob-card-subtext">Payout credited in 24 hours</span>
               <div className="aff-mob-card-chart">
-                <svg className="w-12 h-6" viewBox="0 0 64 28" fill="none">
+                <svg className="w-10 h-5" viewBox="0 0 64 28" fill="none">
                   <rect x="8" y="18" width="6" height="10" rx="1.5" fill="#cffafe" />
                   <rect x="20" y="14" width="6" height="14" rx="1.5" fill="#a5f3fc" />
                   <rect x="32" y="10" width="6" height="18" rx="1.5" fill="#67e8f9" />
@@ -1186,9 +1283,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               <div className="aff-mob-card-label">Lifetime Earnings</div>
             </div>
             <div className="aff-mob-card-bottom">
-              <span className="aff-mob-card-subtext">Total commissions credited</span>
               <div className="aff-mob-card-chart">
-                <svg className="w-12 h-6" viewBox="0 0 64 28" fill="none">
+                <svg className="w-10 h-5" viewBox="0 0 64 28" fill="none">
                   <rect x="4" y="20" width="6" height="8" rx="1.5" fill="#e0e7ff" />
                   <rect x="16" y="16" width="6" height="12" rx="1.5" fill="#c7d2fe" />
                   <rect x="28" y="12" width="6" height="16" rx="1.5" fill="#a5b4fc" />
@@ -1200,7 +1296,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
           </div>
         </section>
 
-        {/* 3. My Affiliate Link Card */}
+        {/* 3. MY AFFILIATE LINK CARD (With Copy, Social Share, Templates & QR / Flyer) */}
         <section className="aff-mob-section-card">
           <div className="aff-mob-section-header">
             <div className="aff-mob-section-hdr-left">
@@ -1249,6 +1345,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
                 <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z" />
               </svg>
+              <span className="text-[9px] font-bold text-white ml-1">WhatsApp</span>
             </button>
             <button
               type="button"
@@ -1259,6 +1356,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
               </svg>
+              <span className="text-[9px] font-bold text-white ml-1">Telegram</span>
             </button>
             <button
               type="button"
@@ -1269,6 +1367,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
               </svg>
+              <span className="text-[9px] font-bold text-white ml-1">Instagram</span>
             </button>
             <button
               type="button"
@@ -1279,6 +1378,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
                 <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.53 1.53 0 1 0-.01-3.06 1.53 1.53 0 0 0 .01 3.06m1.4 9.74v-8.37H5.06v8.37h2.8z" />
               </svg>
+              <span className="text-[9px] font-bold text-white ml-1">LinkedIn</span>
             </button>
             <button
               type="button"
@@ -1287,35 +1387,39 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               title="More Options"
             >
               <span className="font-black text-sm tracking-widest leading-none">•••</span>
+              <span className="text-[9px] font-bold ml-1">More</span>
             </button>
           </div>
-        </section>
 
-        {/* 4. Instant Payout Wallet Card */}
-        <section className="aff-mob-section-card">
-          <div className="aff-mob-section-header">
-            <div className="aff-mob-section-hdr-left">
-              <span className="text-xl">👛</span>
-              <div>
-                <h3 className="aff-mob-section-title">
-                  Instant <span>Payout Wallet</span>
-                </h3>
-                <p className="aff-mob-section-sub">24/7 Request • Payout within 24 Hours</p>
-              </div>
-            </div>
+          {/* Action Row: Templates & QR / Flyer Buttons */}
+          <div className="grid grid-cols-2 gap-2 mt-3 pt-2 border-t border-slate-100">
             <button
               type="button"
               onClick={() => {
                 playUiSound('click');
-                setIsWithdrawHistoryOpen(true);
+                setIsMarketingKitOpen(true);
               }}
-              className="px-2.5 py-1 rounded-full bg-blue-50 text-[#0066ff] border border-blue-200 text-[10px] font-bold cursor-pointer"
+              className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 font-bold text-xs transition-all active:scale-95 cursor-pointer shadow-2xs"
             >
-              History →
+              <FileText className="w-3.5 h-3.5 text-purple-600" />
+              <span>Templates</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                playUiSound('click');
+                setIsQrModalOpen(true);
+              }}
+              className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 font-bold text-xs transition-all active:scale-95 cursor-pointer shadow-2xs"
+            >
+              <QrCode className="w-3.5 h-3.5 text-rose-600" />
+              <span>QR / Flyer</span>
             </button>
           </div>
+        </section>
 
-          {/* Dark Navy Hero Box */}
+        {/* 4. INSTANT PAYOUT WALLET CARD */}
+        <section className="aff-mob-section-card">
           <div className="aff-mob-wallet-dark-box">
             {/* Left Box */}
             <div className="aff-mob-wallet-left">
@@ -1328,9 +1432,6 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                       <ellipse cx="28" cy="34" rx="14" ry="6" fill="#ca8a04" />
                       <ellipse cx="28" cy="32" rx="14" ry="6" fill="#eab308" />
                       <ellipse cx="28" cy="30" rx="14" ry="6" fill="#facc15" />
-                      <ellipse cx="28" cy="24" rx="13" ry="5.5" fill="#ca8a04" />
-                      <ellipse cx="28" cy="22" rx="13" ry="5.5" fill="#eab308" />
-                      <ellipse cx="28" cy="20" rx="13" ry="5.5" fill="#facc15" />
                       <circle cx="16" cy="26" r="11" fill="url(#mobGoldCoinGrad)" stroke="#fde047" strokeWidth="1.5" />
                       <text x="16" y="30" fontSize="11" fontWeight="900" fill="#78350f" textAnchor="middle">₹</text>
                       <defs>
@@ -1364,164 +1465,445 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
             <div className="aff-mob-partner-card">
               <div className="aff-mob-partner-hdr">
                 <span className="aff-mob-partner-logo">FUTURE.AI <span>PARTNER</span></span>
-                <span className="text-amber-400 text-xs">⭐</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    playUiSound('click');
+                    setIsWithdrawHistoryOpen(true);
+                  }}
+                  className="px-2 py-0.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[8.5px] font-bold cursor-pointer"
+                >
+                  History →
+                </button>
               </div>
               <div className="aff-mob-card-chip" />
-              <div>
-                <div className="aff-mob-partner-name">{userName}</div>
-                <div className="aff-mob-partner-valid">
-                  <span>♾️</span>
-                  <span>VALID: LIFETIME</span>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="aff-mob-partner-name">{userName}</div>
+                  <div className="aff-mob-partner-valid">
+                    <span>🔗</span>
+                    <span>VALID: LIFETIME</span>
+                  </div>
+                </div>
+                <div className="w-5 h-5 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center font-black text-xs shadow-xs">
+                  ★
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 5. Earnings Analytics & Growth Card */}
-        <section className="aff-mob-section-card">
-          <div className="aff-mob-section-header">
-            <div className="aff-mob-section-hdr-left">
-              <span className="text-xl text-[#0066ff]">📊</span>
-              <div>
-                <h3 className="aff-mob-section-title">
-                  Earnings Analytics <span>&amp; Growth</span>
-                </h3>
-                <p className="aff-mob-section-sub">Daily commission and student conversion</p>
+        {/* 5. NEW AFFILIATE COMMISSION RULES CARD */}
+        <section className="bg-white rounded-2xl p-3 border border-slate-200/90 shadow-2xs mb-3">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-black text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <span>NEW AFFILIATE COMMISSION RULES</span>
+            </span>
+            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+              Active
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-[10px] font-semibold text-slate-600 pt-0.5">
+            <div>• Free Signup: <strong className="text-slate-900 font-bold">₹0</strong></div>
+            <div>• Paid Enrollment: <strong className="text-emerald-600 font-bold">₹100</strong></div>
+            <div>• Failed Payment: <strong className="text-rose-600 font-bold">₹0</strong></div>
+            <div>• Unique Email &amp; Verified Only</div>
+          </div>
+        </section>
+
+        {/* 6. DUO GRID ROW 1: PORTFOLIO BREAKDOWN & EARNINGS ANALYTICS */}
+        <section className="aff-mob-duo-grid">
+          {/* CARD A: Portfolio Breakdown */}
+          <div className="aff-mob-duo-card">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-1.5">
+                <span className="text-base text-[#0066ff]">📊</span>
+                <div>
+                  <h4 className="text-xs font-black text-slate-900 leading-tight">
+                    Portfolio <span className="text-[#0066ff]">Breakdown</span>
+                  </h4>
+                  <p className="text-[8.5px] text-slate-500 font-medium">Status distribution</p>
+                </div>
               </div>
             </div>
-            {/* Filter Tabs */}
-            <div className="aff-mob-chart-range-capsule">
-              {(['7D', '30D', '3M', 'ALL'] as const).map((rng) => (
-                <button
-                  key={rng}
-                  type="button"
-                  className={`aff-mob-range-pill ${analyticsRangeFilter === rng ? 'active' : ''}`}
-                  onClick={() => {
-                    playUiSound('tab');
-                    setAnalyticsRangeFilter(rng);
-                  }}
+
+            {/* Donut Chart & Legend */}
+            <div className="flex items-center gap-2">
+              {/* Donut SVG */}
+              <div className="relative w-20 h-20 shrink-0">
+                <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-xs">
+                  {totalEarned === 0 ? (
+                    <circle cx="100" cy="100" r="72" fill="transparent" stroke="#e2e8f0" strokeWidth="26" strokeDasharray="6 6" />
+                  ) : (
+                    <g transform="rotate(-90 100 100)">
+                      <circle
+                        cx="100"
+                        cy="100"
+                        r="72"
+                        fill="transparent"
+                        stroke="#0066ff"
+                        strokeWidth="26"
+                        strokeDasharray={`${(availableBalance / (totalEarned || 1)) * 453} 453`}
+                        strokeDashoffset="0"
+                      />
+                      <circle
+                        cx="100"
+                        cy="100"
+                        r="72"
+                        fill="transparent"
+                        stroke="#f59e0b"
+                        strokeWidth="26"
+                        strokeDasharray={`${(pendingBalance / (totalEarned || 1)) * 453} 453`}
+                        strokeDashoffset={`-${(availableBalance / (totalEarned || 1)) * 453}`}
+                      />
+                      <circle
+                        cx="100"
+                        cy="100"
+                        r="72"
+                        fill="transparent"
+                        stroke="#10b981"
+                        strokeWidth="26"
+                        strokeDasharray={`${(totalPaid / (totalEarned || 1)) * 453} 453`}
+                        strokeDashoffset={`-${((availableBalance + pendingBalance) / (totalEarned || 1)) * 453}`}
+                      />
+                    </g>
+                  )}
+                </svg>
+                {/* 100% Top Pill */}
+                <div className="absolute -top-1 right-0 text-[9px] font-black text-blue-600 bg-blue-50 px-1 rounded">
+                  100%
+                </div>
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center leading-none">
+                  <strong className="text-xs font-black text-slate-900">₹{totalEarned.toLocaleString('en-IN')}</strong>
+                  <span className="text-[7px] font-bold text-slate-500 mt-0.5">Total Earned</span>
+                </div>
+              </div>
+
+              {/* Legend List */}
+              <div className="flex flex-col gap-1 flex-1 min-w-0 text-[8.5px] font-semibold">
+                <div
+                  onClick={() => { playUiSound('tab'); setReferralStatusFilter('Approved'); setIsReferralsModalOpen(true); }}
+                  className="flex items-center justify-between cursor-pointer hover:bg-slate-50 p-0.5 rounded"
                 >
-                  {rng}
-                </button>
-              ))}
+                  <span className="flex items-center gap-1 text-slate-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#0066ff]" />
+                    <span>Available</span>
+                  </span>
+                  <span>
+                    <strong className="text-[#0066ff]">₹{availableBalance}</strong> <span className="text-slate-400">({totalEarned > 0 ? Math.round((availableBalance / totalEarned) * 100) : 0}%)</span>
+                  </span>
+                </div>
+                <div
+                  onClick={() => { playUiSound('tab'); setReferralStatusFilter('All'); setIsReferralsModalOpen(true); }}
+                  className="flex items-center justify-between cursor-pointer hover:bg-slate-50 p-0.5 rounded"
+                >
+                  <span className="flex items-center gap-1 text-slate-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#f59e0b]" />
+                    <span>Pending</span>
+                  </span>
+                  <span>
+                    <strong className="text-amber-600">₹{pendingBalance}</strong> <span className="text-slate-400">({totalEarned > 0 ? Math.round((pendingBalance / totalEarned) * 100) : 0}%)</span>
+                  </span>
+                </div>
+                <div
+                  onClick={() => { playUiSound('tab'); setReferralStatusFilter('Paid'); setIsReferralsModalOpen(true); }}
+                  className="flex items-center justify-between cursor-pointer hover:bg-slate-50 p-0.5 rounded"
+                >
+                  <span className="flex items-center gap-1 text-slate-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#10b981]" />
+                    <span>Withdrawn</span>
+                  </span>
+                  <span>
+                    <strong className="text-emerald-600">₹{totalPaid}</strong> <span className="text-slate-400">({totalEarned > 0 ? Math.round((totalPaid / totalEarned) * 100) : 0}%)</span>
+                  </span>
+                </div>
+                <div
+                  onClick={() => { playUiSound('tab'); setReferralStatusFilter('Reversed'); setIsReferralsModalOpen(true); }}
+                  className="flex items-center justify-between cursor-pointer hover:bg-slate-50 p-0.5 rounded"
+                >
+                  <span className="flex items-center gap-1 text-slate-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#f43f5e]" />
+                    <span>Reversed</span>
+                  </span>
+                  <span>
+                    <strong className="text-rose-600">₹0</strong> <span className="text-slate-400">(0%)</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Legend Row */}
-          <div className="aff-mob-legend-row">
-            <span className="aff-mob-leg-item">
-              <span className="aff-mob-leg-dot bg-[#0066ff]" />
-              <span>Clicks</span>
-            </span>
-            <span className="aff-mob-leg-item">
-              <span className="aff-mob-leg-dot bg-[#10b981]" />
-              <span>Signups</span>
-            </span>
-            <span className="aff-mob-leg-item">
-              <span className="aff-mob-leg-dot bg-[#8b5cf6]" />
-              <span>Enrollments</span>
-            </span>
-            <span className="aff-mob-leg-item">
-              <span className="aff-mob-leg-dot bg-[#f59e0b]" />
-              <span>Commission (₹)</span>
-            </span>
-          </div>
+          {/* CARD B: Earnings Analytics & Growth */}
+          <div className="aff-mob-duo-card">
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-1 min-w-0">
+                <span className="text-base text-[#0066ff]">📊</span>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-black text-slate-900 leading-tight truncate">
+                    Earnings <span className="text-[#0066ff]">Analytics</span>
+                  </h4>
+                  <p className="text-[8px] text-slate-500 font-medium truncate">Daily conversion</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  playUiSound('click');
+                  showToast('Daily analytics & conversion data updated in real-time.', 'info');
+                }}
+                className="text-[8.5px] font-bold text-[#0066ff] hover:underline shrink-0"
+              >
+                View All →
+              </button>
+            </div>
 
-          {/* Chart Container */}
-          <div className="aff-analytics-chart-container !my-1">
-            {/* Y Axis Left (Count) */}
-            <div className="aff-y-axis-left !w-6">
-              <span className="aff-axis-title !text-[8px]">COUNT</span>
-              <div className="aff-y-ticks !text-[8px]">
+            {/* Range Tabs */}
+            <div className="flex items-center justify-between gap-1 mb-1">
+              <div className="inline-flex items-center gap-0.5 bg-slate-100 p-0.5 rounded-full">
+                {(['7D', '30D', '3M', 'ALL'] as const).map((rng) => (
+                  <button
+                    key={rng}
+                    type="button"
+                    onClick={() => {
+                      playUiSound('tab');
+                      setAnalyticsRangeFilter(rng);
+                    }}
+                    className={`px-1.5 py-0.5 rounded-full text-[7.5px] font-black cursor-pointer transition-all ${
+                      analyticsRangeFilter === rng
+                        ? 'bg-[#0066ff] text-white shadow-2xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {rng}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Legend */}
+            <div className="flex items-center gap-1.5 text-[7px] font-bold text-slate-500 mb-1 flex-wrap leading-none">
+              <span className="flex items-center gap-0.5"><span className="w-1 h-1 rounded-full bg-[#0066ff]" />Clicks</span>
+              <span className="flex items-center gap-0.5"><span className="w-1 h-1 rounded-full bg-[#10b981]" />Signups</span>
+              <span className="flex items-center gap-0.5"><span className="w-1 h-1 rounded-full bg-[#8b5cf6]" />Enrollments</span>
+              <span className="flex items-center gap-0.5"><span className="w-1 h-1 rounded-full bg-[#f59e0b]" />Comm</span>
+            </div>
+
+            {/* Mini Chart */}
+            <div className="relative w-full h-[72px] bg-slate-50/70 rounded-lg border border-slate-100 p-1 flex items-center justify-between">
+              <div className="flex flex-col justify-between h-full text-[6.5px] text-slate-400 font-semibold leading-none">
                 <span>500</span>
-                <span>400</span>
                 <span>300</span>
-                <span>200</span>
                 <span>100</span>
                 <span>0</span>
               </div>
-            </div>
-
-            {/* Center Chart */}
-            <div className="aff-chart-svg-area">
-              <svg viewBox="0 0 380 180" className="w-full h-[155px]" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="mobBarBlue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#0066ff" />
-                    <stop offset="100%" stopColor="#38bdf8" />
-                  </linearGradient>
-                  <linearGradient id="mobBarGreen" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#10b981" />
-                    <stop offset="100%" stopColor="#6ee7b7" />
-                  </linearGradient>
-                  <linearGradient id="mobBarPurple" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#8b5cf6" />
-                    <stop offset="100%" stopColor="#c084fc" />
-                  </linearGradient>
-                </defs>
-
-                {/* Horizontal Gridlines */}
-                <line x1="0" y1="20" x2="380" y2="20" stroke="#f1f5f9" strokeWidth="1" />
-                <line x1="0" y1="52" x2="380" y2="52" stroke="#f1f5f9" strokeWidth="1" />
-                <line x1="0" y1="84" x2="380" y2="84" stroke="#f1f5f9" strokeWidth="1" />
-                <line x1="0" y1="116" x2="380" y2="116" stroke="#f1f5f9" strokeWidth="1" />
-                <line x1="0" y1="148" x2="380" y2="148" stroke="#f1f5f9" strokeWidth="1" />
-                <line x1="0" y1="170" x2="380" y2="170" stroke="#e2e8f0" strokeWidth="1" />
-
-                {/* Bars */}
-                {clicks > 0 && (
-                  <rect x="320" y={Math.max(30, 170 - Math.min(130, clicks * 8))} width="8" height={Math.min(130, clicks * 8)} rx="1.5" fill="url(#mobBarBlue)" />
-                )}
-                {signups > 0 && (
-                  <rect x="332" y={Math.max(30, 170 - Math.min(130, signups * 10))} width="8" height={Math.min(130, signups * 10)} rx="1.5" fill="url(#mobBarGreen)" />
-                )}
-                {paidEnrollments > 0 && (
-                  <rect x="344" y={Math.max(30, 170 - Math.min(130, paidEnrollments * 15))} width="8" height={Math.min(130, paidEnrollments * 15)} rx="1.5" fill="url(#mobBarPurple)" />
-                )}
-
-                {/* Commission Line */}
-                <polyline
-                  fill="none"
-                  stroke="#f59e0b"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  points={totalEarned > 0 ? `30,170 92,170 154,170 216,170 278,170 340,${Math.max(30, 170 - Math.min(135, (totalEarned / 100) * 14))}` : "30,170 92,170 154,170 216,170 278,170 340,170"}
-                />
-                <circle cx="340" cy={totalEarned > 0 ? Math.max(30, 170 - Math.min(135, (totalEarned / 100) * 14)) : 170} r="4" fill="#f59e0b" stroke="#ffffff" strokeWidth="2" />
-              </svg>
-
-              {/* Tooltip */}
-              <div className="aff-chart-active-tooltip !left-[44%] !top-[15%]">
-                <div className="text-[9px] font-semibold text-slate-400">Live Activity ({analyticsRangeFilter})</div>
-                <div className="text-[10.5px] font-black text-amber-400 leading-tight">₹{totalEarned.toLocaleString('en-IN')} commission</div>
-                <div className="text-[9px] font-bold text-purple-300 leading-tight">{paidEnrollments} enrollments</div>
+              <div className="flex-1 h-full mx-1 relative">
+                <svg viewBox="0 0 180 70" className="w-full h-full" preserveAspectRatio="none">
+                  <line x1="0" y1="15" x2="180" y2="15" stroke="#f1f5f9" strokeWidth="1" />
+                  <line x1="0" y1="35" x2="180" y2="35" stroke="#f1f5f9" strokeWidth="1" />
+                  <line x1="0" y1="55" x2="180" y2="55" stroke="#f1f5f9" strokeWidth="1" />
+                  <line x1="0" y1="65" x2="180" y2="65" stroke="#e2e8f0" strokeWidth="1" />
+                  {/* Bars */}
+                  <rect x="145" y={clicks > 0 ? 25 : 60} width="4" height={clicks > 0 ? 40 : 5} rx="1" fill="#0066ff" />
+                  <rect x="151" y={signups > 0 ? 20 : 60} width="4" height={signups > 0 ? 45 : 5} rx="1" fill="#10b981" />
+                  <rect x="157" y={paidEnrollments > 0 ? 15 : 60} width="4" height={paidEnrollments > 0 ? 50 : 5} rx="1" fill="#8b5cf6" />
+                  {/* Line */}
+                  <polyline
+                    fill="none"
+                    stroke="#f59e0b"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    points="10,65 40,65 70,65 100,65 130,65 160,20"
+                  />
+                  <circle cx="160" cy="20" r="2.5" fill="#f59e0b" stroke="#ffffff" strokeWidth="1" />
+                </svg>
               </div>
-            </div>
-
-            {/* Y Axis Right (Commission) */}
-            <div className="aff-y-axis-right !w-14">
-              <span className="aff-axis-title !text-[7px]">COMMISSION (₹)</span>
-              <div className="aff-y-ticks !text-[8px]">
-                <span>4,000</span>
-                <span>3,000</span>
-                <span>2,000</span>
-                <span>1,000</span>
+              <div className="flex flex-col justify-between h-full text-[6px] text-slate-400 font-semibold text-right leading-none">
+                <span>4K</span>
+                <span>2K</span>
+                <span>1K</span>
                 <span>0</span>
               </div>
             </div>
+            <div className="flex items-center justify-between text-[6.5px] text-slate-400 font-medium px-0.5 mt-0.5">
+              <span>Day 1</span>
+              <span>Day 3</span>
+              <span>Day 5</span>
+              <span>Today</span>
+            </div>
+          </div>
+        </section>
+
+        {/* 7. DUO GRID ROW 2: LIVE REFERRALS STREAM & AFFILIATE LEADERBOARD */}
+        <section className="aff-mob-duo-grid">
+          {/* CARD C: Live Referrals Stream */}
+          <div className="aff-mob-duo-card">
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <Users className="w-4 h-4 text-[#0066ff] shrink-0" />
+                <div className="min-w-0">
+                  <h4 className="text-xs font-black text-slate-900 leading-tight truncate">
+                    Live Referrals <span className="text-[#0066ff]">Stream</span>
+                  </h4>
+                  <p className="text-[8px] text-slate-500 font-medium truncate">Real-time enrollment tracking</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  playUiSound('click');
+                  setReferralStatusFilter('All');
+                  setIsReferralsModalOpen(true);
+                }}
+                className="text-[8.5px] font-bold text-[#0066ff] hover:underline shrink-0"
+              >
+                View All →
+              </button>
+            </div>
+
+            {/* Filter Pills */}
+            <div className="flex items-center gap-1 overflow-x-auto scrollbar-none py-1 mb-1.5">
+              <button
+                type="button"
+                onClick={() => { playUiSound('tab'); setReferralStatusFilter('All'); }}
+                className={`px-2 py-0.5 rounded-full text-[8px] font-black whitespace-nowrap cursor-pointer ${
+                  referralStatusFilter === 'All' ? 'bg-[#0066ff] text-white' : 'bg-slate-100 text-slate-600'
+                }`}
+              >
+                All ({referralsList.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => { playUiSound('tab'); setReferralStatusFilter('Paid'); }}
+                className={`px-2 py-0.5 rounded-full text-[8px] font-black whitespace-nowrap cursor-pointer ${
+                  referralStatusFilter === 'Paid' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                }`}
+              >
+                ✓ Paid ({referralsList.filter((r) => r.status === 'Paid').length})
+              </button>
+              <button
+                type="button"
+                onClick={() => { playUiSound('tab'); setReferralStatusFilter('Approved'); }}
+                className={`px-2 py-0.5 rounded-full text-[8px] font-black whitespace-nowrap cursor-pointer ${
+                  referralStatusFilter === 'Approved' ? 'bg-sky-600 text-white' : 'bg-sky-50 text-sky-700 border border-sky-200'
+                }`}
+              >
+                ⚡ Approved ({referralsList.filter((r) => r.status === 'Approved').length})
+              </button>
+              <button
+                type="button"
+                onClick={() => { playUiSound('tab'); setReferralStatusFilter('Trial Started'); }}
+                className={`px-2 py-0.5 rounded-full text-[8px] font-black whitespace-nowrap cursor-pointer ${
+                  referralStatusFilter === 'Trial Started' ? 'bg-purple-600 text-white' : 'bg-purple-50 text-purple-700 border border-purple-200'
+                }`}
+              >
+                ⏱️ Trial Started ({referralsList.filter((r) => r.status === 'Trial Started').length})
+              </button>
+            </div>
+
+            {/* Referrals List */}
+            <div className="space-y-1.5 flex-1 flex flex-col justify-center">
+              {filteredReferrals.slice(0, 2).map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between p-1.5 rounded-xl bg-slate-50 border border-slate-200/80"
+                >
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <div className="w-5 h-5 rounded-full bg-blue-100 text-[#0066ff] font-black text-[9px] flex items-center justify-center shrink-0">
+                      {item.name ? item.name[0].toUpperCase() : 'U'}
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-[9.5px] font-black text-slate-900 truncate">{item.name}</span>
+                      <span className="text-[7.5px] text-slate-500 font-medium truncate">{item.course}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <span className="px-1.5 py-0.5 rounded-md text-[7.5px] font-bold bg-emerald-100 text-emerald-800">
+                      ✓ {item.status}
+                    </span>
+                    <span className="text-[9px] font-black text-emerald-600">+₹{item.commission}</span>
+                  </div>
+                </div>
+              ))}
+              {filteredReferrals.length === 0 && (
+                <div className="py-3 text-center text-slate-400 text-[9px] font-medium">
+                  No referrals in this filter yet.
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* X Axis */}
-          <div className="aff-x-axis-row !text-[8px]">
-            {chartDays.map((d) => (
-              <span key={d.date}>{d.date}</span>
-            ))}
+          {/* CARD D: Affiliate Leaderboard */}
+          <div className="aff-mob-duo-card">
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <Crown className="w-4 h-4 text-amber-500 shrink-0" />
+                <div className="min-w-0">
+                  <h4 className="text-xs font-black text-slate-900 leading-tight truncate">
+                    Affiliate <span className="text-[#0066ff]">Leaderboard</span>
+                  </h4>
+                  <p className="text-[8px] text-slate-500 font-medium truncate">Top earners in India</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  playUiSound('click');
+                  setIsTopPartnersModalOpen(true);
+                }}
+                className="text-[8.5px] font-bold text-[#0066ff] hover:underline shrink-0"
+              >
+                View All →
+              </button>
+            </div>
+
+            {/* Time Tabs */}
+            <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-full mb-1.5">
+              {(['week', 'month', 'all'] as const).map((tabKey) => {
+                const label = tabKey === 'week' ? 'This Week' : tabKey === 'month' ? 'This Month' : 'All Time';
+                const isActive = partnerLeaderboardTab === tabKey;
+                return (
+                  <button
+                    key={tabKey}
+                    type="button"
+                    onClick={() => {
+                      playUiSound('tab');
+                      setPartnerLeaderboardTab(tabKey);
+                    }}
+                    className={`flex-1 py-0.5 rounded-full text-[8px] font-black text-center cursor-pointer transition-all ${
+                      isActive ? 'bg-[#0066ff] text-white shadow-2xs' : 'text-slate-600'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Season Leaderboard Open message */}
+            <div className="py-2.5 px-1.5 text-center bg-slate-50/80 rounded-xl border border-slate-100 flex-1 flex flex-col justify-center">
+              <div className="w-6 h-6 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center mx-auto mb-1 text-sm shadow-xs">
+                👑
+              </div>
+              <strong className="text-[10px] font-bold text-slate-900 block leading-tight">
+                Season Leaderboard Open
+              </strong>
+              <p className="text-[8px] text-slate-500 mt-0.5 max-w-[170px] mx-auto leading-relaxed">
+                Be the first to claim Rank #1! Share your referral link and earn Flat ₹100 per student enrollment.
+              </p>
+              <button
+                type="button"
+                onClick={handleCopyLink}
+                className="mt-1.5 inline-flex items-center justify-center gap-1 px-2 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-black text-[8.5px] cursor-pointer shadow-xs active:scale-95 transition-all w-fit mx-auto"
+              >
+                <Copy className="w-2.5 h-2.5" />
+                <span>{copiedLink ? 'Copied Link!' : 'Copy Link to Rank #1'}</span>
+              </button>
+            </div>
           </div>
         </section>
       </div>
-
       {/* ══════════════════════════════════════════════════════════════════════ */}
       {/* DESKTOP INTERFACE (>= 768px) - 100% UNTOUCHED ORIGINAL LAYOUT        */}
       {/* ══════════════════════════════════════════════════════════════════════ */}

@@ -704,3 +704,78 @@
     font-size: 18px !important;
   }
 }
+
+  /* 3-Column Metrics Grid Matching Reference Image */
+  .aff-mob-metrics-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .aff-mob-metric-card {
+    min-height: 98px !important;
+    padding: 8px 7px 6px 7px !important;
+    border-radius: 14px !important;
+  }
+
+  .aff-mob-card-val {
+    font-size: 16px !important;
+  }
+
+  .aff-mob-card-label {
+    font-size: 9.5px !important;
+  }
+
+  /* Slider Carousel & Arrows */
+  .aff-mob-hero-carousel-wrap {
+    position: relative !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+  }
+
+  .aff-mob-slider-arrow {
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15) !important;
+    border: 1px solid #e2e8f0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 20 !important;
+    cursor: pointer !important;
+  }
+
+  .aff-mob-arrow-left {
+    left: 6px !important;
+  }
+
+  .aff-mob-arrow-right {
+    right: 6px !important;
+  }
+
+  /* Duo Grid (2 Cards per Row) */
+  .aff-mob-duo-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .aff-mob-duo-card {
+    background: #ffffff !important;
+    border-radius: 18px !important;
+    border: 1.5px solid #e2e8f0 !important;
+    padding: 10px !important;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    min-height: 180px !important;
+    text-align: left !important;
+  }
