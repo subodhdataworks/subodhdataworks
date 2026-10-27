@@ -5,10 +5,6 @@ import {
   Code2,
   UserCheck,
   Briefcase,
-  GraduationCap,
-  FolderGit2,
-  Users,
-  Trophy,
   ArrowRight,
   Sparkles,
   TrendingUp,
@@ -216,49 +212,6 @@ export const MobileCareerJourneySection: React.FC<MobileCareerJourneySectionProp
                 </div>
               );
             })}
-          </div>
-        </div>
-
-        {/* ─── 3. STATISTICS BAR (Light Theme Grid) ─── */}
-        <div className="relative z-10 mt-5 pt-3.5 border-t border-slate-200/80 grid grid-cols-2 gap-2">
-          <div className="flex items-center gap-2 p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
-            <div className="w-7.5 h-7.5 rounded-lg bg-blue-50 border border-blue-200/80 flex items-center justify-center text-blue-600 shrink-0">
-              <GraduationCap className="w-3.5 h-3.5" />
-            </div>
-            <div className="min-w-0">
-              <span className="block text-xs font-black text-slate-900 leading-tight">7</span>
-              <span className="block text-[9.5px] text-slate-500 font-medium truncate">Career Programs</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
-            <div className="w-7.5 h-7.5 rounded-lg bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-600 shrink-0">
-              <FolderGit2 className="w-3.5 h-3.5" />
-            </div>
-            <div className="min-w-0">
-              <span className="block text-xs font-black text-slate-900 leading-tight">100+</span>
-              <span className="block text-[9.5px] text-slate-500 font-medium truncate">Real-World Projects</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
-            <div className="w-7.5 h-7.5 rounded-lg bg-purple-50 border border-purple-200/80 flex items-center justify-center text-purple-600 shrink-0">
-              <Users className="w-3.5 h-3.5" />
-            </div>
-            <div className="min-w-0">
-              <span className="block text-xs font-black text-slate-900 leading-tight">700+</span>
-              <span className="block text-[9.5px] text-slate-500 font-medium truncate">Hiring Partners</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
-            <div className="w-7.5 h-7.5 rounded-lg bg-pink-50 border border-pink-200/80 flex items-center justify-center text-pink-600 shrink-0">
-              <Trophy className="w-3.5 h-3.5" />
-            </div>
-            <div className="min-w-0">
-              <span className="block text-xs font-black text-slate-900 leading-tight">High-Growth</span>
-              <span className="block text-[9.5px] text-slate-500 font-medium truncate">Career Opportunities</span>
-            </div>
           </div>
         </div>
       </div>

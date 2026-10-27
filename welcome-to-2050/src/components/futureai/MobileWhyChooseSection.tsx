@@ -3,15 +3,13 @@ import {
   ArrowRight,
   Coins,
   Laptop,
-  Cpu,
-  Video,
+  Briefcase,
+  Trophy,
   ShieldCheck,
   FolderGit2,
-  Users,
+  UserCheck,
   Clock,
   Frown,
-  BookX,
-  Hourglass,
   UserX,
   Settings2,
   Unlink2,
@@ -28,7 +26,7 @@ interface MobileWhyChooseSectionProps {
 export const MobileWhyChooseSection: React.FC<MobileWhyChooseSectionProps> = ({
   onExploreCourses,
 }) => {
-  // Only two clean views: 'future' (Our Approach) or 'others' (Other Institutes). Side-by-side deleted.
+  // Only two clean views: 'future' (Our Approach) or 'others' (Other Institutes).
   const [activeTab, setActiveTab] = useState<'future' | 'others'>('future');
 
   const handleScrollToCourses = () => {
@@ -57,20 +55,20 @@ export const MobileWhyChooseSection: React.FC<MobileWhyChooseSectionProps> = ({
     },
     {
       id: 3,
-      title: 'Latest Tools & Modern Curriculum',
-      desc: 'Always updated with industry-relevant GenAI & cloud tech trends',
-      icon: Cpu,
+      title: 'Industry Internship',
+      desc: 'Hands-on company internship experience & verified completion certificate',
+      icon: Briefcase,
     },
     {
       id: 4,
-      title: 'Short & Focused Videos',
-      desc: 'Clear, structured explanations so you learn faster without fluff',
-      icon: Video,
+      title: 'Unlimited Hackathons & DSA Practice',
+      desc: 'Compete in live coding hackathons & master DSA problems daily',
+      icon: Trophy,
     },
     {
       id: 5,
       title: 'Placement Support',
-      desc: 'Resume reviews, mock technical interviews & hiring partners',
+      desc: 'Resume reviews, employer referrals & direct hiring partner access',
       icon: ShieldCheck,
     },
     {
@@ -81,9 +79,9 @@ export const MobileWhyChooseSection: React.FC<MobileWhyChooseSectionProps> = ({
     },
     {
       id: 7,
-      title: 'Industry Expert Guidance',
-      desc: 'Learn directly from active working professionals and mentors',
-      icon: Users,
+      title: 'Unlimited Mock Interviews',
+      desc: '1-on-1 technical & HR mock interview sessions until you get placed',
+      icon: UserCheck,
     },
     {
       id: 8,
@@ -108,15 +106,15 @@ export const MobileWhyChooseSection: React.FC<MobileWhyChooseSectionProps> = ({
     },
     {
       id: 3,
-      title: 'Old Teaching Methods',
-      desc: 'Outdated legacy content and tools not used in modern jobs',
-      icon: BookX,
+      title: 'No Internship Experience',
+      desc: 'Only academic theory, zero company internship or verified work certificates',
+      icon: UserX,
     },
     {
       id: 4,
-      title: 'Long & Sleepy Videos',
-      desc: 'Hours of unfocused lectures that waste precious learning time',
-      icon: Hourglass,
+      title: 'No Hackathons or DSA Practice',
+      desc: 'Zero competitive coding events or structured problem-solving practice',
+      icon: Settings2,
     },
     {
       id: 5,
@@ -132,8 +130,8 @@ export const MobileWhyChooseSection: React.FC<MobileWhyChooseSectionProps> = ({
     },
     {
       id: 7,
-      title: 'Weak Industry Connections',
-      desc: 'Hard to access real employers or get genuine career referrals',
+      title: 'Zero Mock Interview Practice',
+      desc: 'No 1-on-1 interview practice, students face real interviews unprepared',
       icon: Unlink2,
     },
     {
@@ -185,7 +183,7 @@ export const MobileWhyChooseSection: React.FC<MobileWhyChooseSectionProps> = ({
           </div>
         </div>
 
-        {/* ─── 3. CLEAN 2-TAB TOGGLE (Side-by-Side Removed) ─── */}
+        {/* ─── 3. CLEAN 2-TAB TOGGLE ─── */}
         <div className="relative z-10 mt-4">
           <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-100/90 rounded-2xl border border-slate-200 shadow-2xs">
             <button
