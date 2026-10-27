@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import {
-  XCircle,
-  CheckCircle2,
   ArrowRight,
-  Sparkles,
   Coins,
   Laptop,
   Cpu,
@@ -19,10 +16,9 @@ import {
   Settings2,
   Unlink2,
   Split,
-  Layers,
-  Flame,
   Check,
   X,
+  Sparkles,
 } from 'lucide-react';
 
 interface MobileWhyChooseSectionProps {
@@ -32,7 +28,8 @@ interface MobileWhyChooseSectionProps {
 export const MobileWhyChooseSection: React.FC<MobileWhyChooseSectionProps> = ({
   onExploreCourses,
 }) => {
-  const [activeTab, setActiveTab] = useState<'both' | 'future' | 'others'>('both');
+  // Only two clean views: 'future' (Our Approach) or 'others' (Other Institutes). Side-by-side deleted.
+  const [activeTab, setActiveTab] = useState<'future' | 'others'>('future');
 
   const handleScrollToCourses = () => {
     if (onExploreCourses) {
@@ -45,243 +42,211 @@ export const MobileWhyChooseSection: React.FC<MobileWhyChooseSectionProps> = ({
     }
   };
 
-  const comparisonPoints = [
+  const futurePoints = [
     {
       id: 1,
-      topic: 'Course Fees',
-      otherTitle: 'High Fees',
-      otherDesc: '₹1,00,000 to ₹2,00,000 fees & heavy EMI pressure',
-      otherIcon: Coins,
-      futureTitle: 'Affordable Programs',
-      futureDesc: 'Budget-friendly learning with zero fee pressure',
-      futureIcon: Coins,
+      title: 'Affordable Programs',
+      desc: 'Budget-friendly learning with zero fee pressure or heavy EMIs',
+      icon: Coins,
     },
     {
       id: 2,
-      topic: 'Learning Style',
-      otherTitle: 'Boring Lectures',
-      otherDesc: 'Too much theory, little practical learning',
-      otherIcon: Frown,
-      futureTitle: 'Practical & Engaging Learning',
-      futureDesc: 'Hands-on projects with live building',
-      futureIcon: Laptop,
+      title: 'Practical & Engaging Learning',
+      desc: 'Hands-on projects with live building, no dry boring lectures',
+      icon: Laptop,
     },
     {
       id: 3,
-      topic: 'Curriculum & Tools',
-      otherTitle: 'Old Teaching Methods',
-      otherDesc: 'Outdated content and legacy tools',
-      otherIcon: BookX,
-      futureTitle: 'Latest Tools & Modern Curriculum',
-      futureDesc: 'Industry-relevant technologies & GenAI',
-      futureIcon: Cpu,
+      title: 'Latest Tools & Modern Curriculum',
+      desc: 'Always updated with industry-relevant GenAI & cloud tech trends',
+      icon: Cpu,
     },
     {
       id: 4,
-      topic: 'Lesson Format',
-      otherTitle: 'Long & Sleepy Videos',
-      otherDesc: 'Hours of unfocused lessons and fluff',
-      otherIcon: Hourglass,
-      futureTitle: 'Short & Focused Videos',
-      futureDesc: 'Clear, structured explanations & fast learning',
-      futureIcon: Video,
+      title: 'Short & Focused Videos',
+      desc: 'Clear, structured explanations so you learn faster without fluff',
+      icon: Video,
     },
     {
       id: 5,
-      topic: 'Career Support',
-      otherTitle: 'Limited Job Support',
-      otherDesc: 'Admission-focused experience, no guidance',
-      otherIcon: UserX,
-      futureTitle: 'Placement Support',
-      futureDesc: 'Resume & mock interview preparation',
-      futureIcon: ShieldCheck,
+      title: 'Placement Support',
+      desc: 'Resume reviews, mock technical interviews & hiring partners',
+      icon: ShieldCheck,
     },
     {
       id: 6,
-      topic: 'Project Exposure',
-      otherTitle: 'Limited Projects',
-      otherDesc: 'Less real-world exposure and toy demos',
-      otherIcon: Settings2,
-      futureTitle: '100+ Real-World Projects',
-      futureDesc: 'Build a practical portfolio for top jobs',
-      futureIcon: FolderGit2,
+      title: '100+ Real-World Projects',
+      desc: 'Build a practical production portfolio to showcase to recruiters',
+      icon: FolderGit2,
     },
     {
       id: 7,
-      topic: 'Industry Network',
-      otherTitle: 'Weak Industry Connections',
-      otherDesc: 'Limited employer access & referrals',
-      otherIcon: Unlink2,
-      futureTitle: 'Industry Expert Guidance',
-      futureDesc: 'Learn directly from working professionals',
-      futureIcon: Users,
+      title: 'Industry Expert Guidance',
+      desc: 'Learn directly from active working professionals and mentors',
+      icon: Users,
     },
     {
       id: 8,
-      topic: 'Learning Pace',
-      otherTitle: 'One-Size-Fits-All',
-      otherDesc: 'Same rigid approach for every learner',
-      otherIcon: Split,
-      futureTitle: 'Flexible Learning',
-      futureDesc: 'Study at your own pace anytime, anywhere',
-      futureIcon: Clock,
+      title: 'Flexible Learning',
+      desc: 'Study at your own schedule, anytime, anywhere on any device',
+      icon: Clock,
+    },
+  ];
+
+  const otherPoints = [
+    {
+      id: 1,
+      title: 'High Fees',
+      desc: '₹1,00,000 to ₹2,00,000 course fees & heavy monthly EMI pressure',
+      icon: Coins,
+    },
+    {
+      id: 2,
+      title: 'Boring Lectures',
+      desc: 'Same old dry theory with little to no practical learning',
+      icon: Frown,
+    },
+    {
+      id: 3,
+      title: 'Old Teaching Methods',
+      desc: 'Outdated legacy content and tools not used in modern jobs',
+      icon: BookX,
+    },
+    {
+      id: 4,
+      title: 'Long & Sleepy Videos',
+      desc: 'Hours of unfocused lectures that waste precious learning time',
+      icon: Hourglass,
+    },
+    {
+      id: 5,
+      title: 'Limited Job Support',
+      desc: 'Admission-focused experience with little guidance after payment',
+      icon: UserX,
+    },
+    {
+      id: 6,
+      title: 'Limited Projects',
+      desc: 'Toy demos with no real-world deployment or portfolio exposure',
+      icon: Settings2,
+    },
+    {
+      id: 7,
+      title: 'Weak Industry Connections',
+      desc: 'Hard to access real employers or get genuine career referrals',
+      icon: Unlink2,
+    },
+    {
+      id: 8,
+      title: 'One-Size-Fits-All',
+      desc: 'Same rigid batch schedule for everyone regardless of pace',
+      icon: Split,
     },
   ];
 
   return (
-    <section className="w-full px-3.5 py-4 select-none">
-      {/* ─── Luminous Light-Theme Container (Matching Reference) ─── */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#EEF4FF] via-white to-[#F0F5FF] border border-blue-200/80 p-4 sm:p-5 shadow-sm">
-        {/* Ambient Top Glow */}
-        <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-80 h-32 bg-blue-400/15 blur-2xl pointer-events-none rounded-full" />
+    <section className="w-full px-2.5 sm:px-3.5 py-3.5 select-none box-border overflow-hidden">
+      {/* ─── Luminous Light-Theme Container ─── */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#EEF4FF] via-white to-[#F0F5FF] border border-blue-200/80 p-3.5 sm:p-4 shadow-sm">
+        {/* Soft Ambient Glow */}
+        <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-80 h-32 bg-blue-400/10 blur-2xl pointer-events-none rounded-full" />
 
         {/* ─── 1. SECTION HEADER ─── */}
         <div className="text-center relative z-10">
-          <h2 className="text-[24px] sm:text-[27px] font-black text-slate-900 tracking-tight leading-tight">
+          <h2 className="text-[22px] sm:text-[25px] font-black text-slate-900 tracking-tight leading-tight">
             Why Choose{' '}
-            <span className="block mt-0.5 bg-gradient-to-r from-[#0066FF] via-[#4F46E5] to-[#7C3AED] bg-clip-text text-transparent">
+            <span className="block mt-0.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
               FUTURE IT INDUSTRY?
             </span>
           </h2>
-          <p className="text-[12px] sm:text-[13px] text-slate-600 font-semibold mt-1">
+          <p className="text-[11px] sm:text-[12px] text-slate-600 font-semibold mt-1">
             Real Skills. Real Projects. Real Support. Real Careers.
           </p>
         </div>
 
-        {/* ─── 2. CENTER CHARACTER VISUAL (10X Better Future) ─── */}
-        <div className="relative z-10 mt-4 w-full rounded-2xl overflow-hidden bg-gradient-to-b from-blue-50/70 to-indigo-50/50 border border-blue-200/60 p-3 shadow-sm">
+        {/* ─── 2. CENTER REAL HUMAN VISUAL (Same Course 10X Better Future) ─── */}
+        <div className="relative z-10 mt-3.5 w-full rounded-2xl overflow-hidden bg-gradient-to-b from-blue-50/70 to-indigo-50/50 border border-blue-200/60 p-2.5 shadow-2xs">
           <div className="relative flex flex-col items-center">
-            {/* 3D Student Artwork */}
-            <div className="relative w-full max-w-[280px] h-[190px] rounded-xl overflow-hidden shadow-inner">
+            {/* Real Human Student Photograph */}
+            <div className="relative w-full max-w-[280px] h-[180px] sm:h-[200px] rounded-xl overflow-hidden shadow-sm bg-slate-900">
               <img
-                src="/images/why_choose/why_choose_center_student.png"
-                alt="Student 10X Better Future"
-                className="w-full h-full object-cover object-center select-none"
+                src="/images/why_choose/why_choose_real_student.png"
+                alt="Real Indian Student at Future IT Industry"
+                className="w-full h-full object-cover object-[center_20%] select-none"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-blue-950/40 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent pointer-events-none" />
             </div>
 
-            {/* Glowing 10X Better Future Circular/Pill Badge */}
-            <div className="absolute -top-1 right-2 sm:right-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1.5 rounded-2xl shadow-lg shadow-blue-500/35 border border-white/30 text-center transform rotate-2">
-              <span className="block text-[10px] font-black tracking-wide uppercase text-cyan-200">Same Course</span>
-              <span className="block text-[12px] font-black leading-none">10X Better Future!</span>
+            {/* Glowing 10X Better Future Floating Badge */}
+            <div className="absolute -top-1 right-2 sm:right-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1.5 rounded-2xl shadow-md shadow-blue-500/25 border border-white/40 text-center transform rotate-1">
+              <span className="block text-[9.5px] font-black tracking-wide uppercase text-cyan-200">Same Course</span>
+              <span className="block text-[11.5px] font-black leading-none">10X Better Future!</span>
             </div>
           </div>
         </div>
 
-        {/* ─── 3. INTERACTIVE VIEW TOGGLE TABS ─── */}
-        <div className="relative z-10 mt-5">
-          <div className="grid grid-cols-3 gap-1 p-1 bg-slate-100/90 rounded-2xl border border-slate-200 shadow-2xs">
-            <button
-              type="button"
-              onClick={() => setActiveTab('both')}
-              className={`py-1.5 px-2 rounded-xl text-xs font-black transition-all cursor-pointer truncate ${
-                activeTab === 'both'
-                  ? 'bg-white text-blue-600 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Side-by-Side (8)
-            </button>
+        {/* ─── 3. CLEAN 2-TAB TOGGLE (Side-by-Side Removed) ─── */}
+        <div className="relative z-10 mt-4">
+          <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-100/90 rounded-2xl border border-slate-200 shadow-2xs">
             <button
               type="button"
               onClick={() => setActiveTab('future')}
-              className={`py-1.5 px-2 rounded-xl text-xs font-black transition-all cursor-pointer truncate ${
+              className={`py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 truncate ${
                 activeTab === 'future'
                   ? 'bg-emerald-600 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Our Approach (8)
+              <Check className="w-3.5 h-3.5 stroke-[3]" />
+              <span>Future IT Industry (8)</span>
             </button>
             <button
               type="button"
               onClick={() => setActiveTab('others')}
-              className={`py-1.5 px-2 rounded-xl text-xs font-black transition-all cursor-pointer truncate ${
+              className={`py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 truncate ${
                 activeTab === 'others'
                   ? 'bg-red-600 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Other Institutes (8)
+              <X className="w-3.5 h-3.5 stroke-[3]" />
+              <span>Other Institutes (8)</span>
             </button>
           </div>
         </div>
 
-        {/* ─── 4. COMPARISON CONTENT ─── */}
-        <div className="relative z-10 mt-4 space-y-3">
-          {/* A. SIDE-BY-SIDE PAIRED CARDS (Default View) */}
-          {activeTab === 'both' && (
-            <div className="space-y-3">
-              {comparisonPoints.map((item) => (
-                <div
-                  key={item.id}
-                  className="rounded-2xl border border-slate-200/90 bg-white p-3 shadow-2xs space-y-2.5"
-                >
-                  {/* Item Topic Header */}
-                  <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
-                      Comparison #{item.id} • {item.topic}
-                    </span>
-                  </div>
-
-                  {/* Other Institutes (Red Theme) */}
-                  <div className="flex items-start gap-2.5 p-2 rounded-xl bg-red-50/60 border border-red-200/70">
-                    <div className="w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
-                      <X className="w-3.5 h-3.5 stroke-[3]" />
-                    </div>
-                    <div className="min-w-0">
-                      <span className="block text-xs font-bold text-red-900 leading-snug">
-                        {item.otherTitle}
-                      </span>
-                      <span className="block text-[11px] text-red-700/80 font-medium leading-snug mt-0.5">
-                        {item.otherDesc}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Future IT Industry (Green Theme) */}
-                  <div className="flex items-start gap-2.5 p-2 rounded-xl bg-emerald-50/70 border border-emerald-300/80 shadow-2xs">
-                    <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
-                      <Check className="w-3.5 h-3.5 stroke-[3]" />
-                    </div>
-                    <div className="min-w-0">
-                      <span className="block text-xs font-black text-emerald-950 leading-snug">
-                        {item.futureTitle}
-                      </span>
-                      <span className="block text-[11px] text-emerald-800 font-medium leading-snug mt-0.5">
-                        {item.futureDesc}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* B. FUTURE IT INDUSTRY ONLY (Green/Blue Theme - 8 items) */}
+        {/* ─── 4. COMPARISON CONTENT (Clear List) ─── */}
+        <div className="relative z-10 mt-3.5">
+          {/* TAB 1: FUTURE IT INDUSTRY (8 Proven Advantages) */}
           {activeTab === 'future' && (
-            <div className="rounded-2xl border border-emerald-200 bg-white p-3.5 shadow-sm space-y-2.5">
-              <div className="flex items-center gap-2 pb-2 border-b border-emerald-100">
-                <span className="px-2.5 py-1 rounded-full bg-blue-600 text-white text-[11px] font-black tracking-wide uppercase">
-                  FUTURE IT INDUSTRY
+            <div className="rounded-2xl border border-emerald-200 bg-white p-3 sm:p-3.5 shadow-2xs space-y-2">
+              <div className="flex items-center justify-between pb-2 border-b border-emerald-100">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-xs font-black text-emerald-950 uppercase tracking-wide">
+                    Future IT Industry
+                  </span>
+                </div>
+                <span className="text-[10.5px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                  8 Proven Advantages
                 </span>
-                <span className="text-xs font-bold text-emerald-700">8 Proven Advantages</span>
               </div>
 
-              <div className="space-y-2">
-                {comparisonPoints.map((item) => (
+              <div className="space-y-2 pt-0.5">
+                {futurePoints.map((item) => (
                   <div
                     key={item.id}
                     className="flex items-start gap-2.5 p-2 rounded-xl bg-emerald-50/50 border border-emerald-200/70"
                   >
-                    <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
                       <Check className="w-3.5 h-3.5 stroke-[3]" />
                     </div>
-                    <div>
-                      <h4 className="text-xs font-black text-emerald-950">{item.futureTitle}</h4>
-                      <p className="text-[11px] text-emerald-800 font-medium mt-0.5 leading-snug">
-                        {item.futureDesc}
+                    <div className="min-w-0">
+                      <h4 className="text-[12px] sm:text-xs font-black text-emerald-950 leading-snug">
+                        {item.title}
+                      </h4>
+                      <p className="text-[10px] sm:text-[10.5px] text-emerald-800 font-medium mt-0.5 leading-snug">
+                        {item.desc}
                       </p>
                     </div>
                   </div>
@@ -290,29 +255,36 @@ export const MobileWhyChooseSection: React.FC<MobileWhyChooseSectionProps> = ({
             </div>
           )}
 
-          {/* C. OTHER INSTITUTES ONLY (Red/Dark Grey Theme - 8 items) */}
+          {/* TAB 2: OTHER INSTITUTES (8 Common Student Frustrations) */}
           {activeTab === 'others' && (
-            <div className="rounded-2xl border border-red-200 bg-white p-3.5 shadow-sm space-y-2.5">
-              <div className="flex items-center gap-2 pb-2 border-b border-red-100">
-                <span className="px-2.5 py-1 rounded-full bg-slate-800 text-white text-[11px] font-black tracking-wide uppercase">
-                  Other Institutes
+            <div className="rounded-2xl border border-red-200 bg-white p-3 sm:p-3.5 shadow-2xs space-y-2">
+              <div className="flex items-center justify-between pb-2 border-b border-red-100">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-red-500" />
+                  <span className="text-xs font-black text-red-950 uppercase tracking-wide">
+                    Other Institutes
+                  </span>
+                </div>
+                <span className="text-[10.5px] font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded-full border border-red-200">
+                  8 Common Frustrations
                 </span>
-                <span className="text-xs font-bold text-red-700">8 Common Student Frustrations</span>
               </div>
 
-              <div className="space-y-2">
-                {comparisonPoints.map((item) => (
+              <div className="space-y-2 pt-0.5">
+                {otherPoints.map((item) => (
                   <div
                     key={item.id}
                     className="flex items-start gap-2.5 p-2 rounded-xl bg-red-50/50 border border-red-200/70"
                   >
-                    <div className="w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
                       <X className="w-3.5 h-3.5 stroke-[3]" />
                     </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-red-950">{item.otherTitle}</h4>
-                      <p className="text-[11px] text-red-700/80 font-medium mt-0.5 leading-snug">
-                        {item.otherDesc}
+                    <div className="min-w-0">
+                      <h4 className="text-[12px] sm:text-xs font-bold text-red-950 leading-snug">
+                        {item.title}
+                      </h4>
+                      <p className="text-[10px] sm:text-[10.5px] text-red-700/80 font-medium mt-0.5 leading-snug">
+                        {item.desc}
                       </p>
                     </div>
                   </div>
@@ -322,12 +294,12 @@ export const MobileWhyChooseSection: React.FC<MobileWhyChooseSectionProps> = ({
           )}
         </div>
 
-        {/* ─── 5. BOTTOM CTA (Matching Reference) ─── */}
-        <div className="relative z-10 mt-5 pt-3 text-center">
+        {/* ─── 5. BOTTOM CTA ─── */}
+        <div className="relative z-10 mt-4 pt-2 text-center">
           <button
             type="button"
             onClick={handleScrollToCourses}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#0066FF] to-[#4F46E5] text-white font-black text-xs sm:text-[13px] shadow-lg shadow-blue-500/35 hover:brightness-110 active:scale-95 transition-all cursor-pointer border border-white/20"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#0066FF] to-[#4F46E5] text-white font-black text-xs shadow-md shadow-blue-500/25 hover:brightness-110 active:scale-95 transition-all cursor-pointer border border-white/20"
           >
             <span>Explore Our Career Programs</span>
             <ArrowRight className="w-4 h-4 stroke-[2.5]" />

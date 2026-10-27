@@ -660,7 +660,8 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                   }}
                   className="inline-flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-95 text-white font-normal text-xs sm:text-sm whitespace-nowrap shadow-xs hover:shadow-md transition-all duration-200"
                 >
-                  <span>Free Login / Sign Up</span>
+                  <span className="hidden sm:inline">Free </span>
+                  <span>Login / Sign Up</span>
                   <ArrowRight className="w-3.5 h-3.5 shrink-0" />
                 </button>
               </div>

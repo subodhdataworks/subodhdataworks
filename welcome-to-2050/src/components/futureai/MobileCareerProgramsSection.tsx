@@ -310,8 +310,8 @@ export const MobileCareerProgramsSection: React.FC<MobileCareerProgramsSectionPr
               className="w-full max-w-full box-border bg-white rounded-2xl border border-blue-200/90 shadow-2xs hover:shadow-xs p-2 sm:p-2.5 relative overflow-hidden transition-all min-w-0"
             >
               <div className="flex gap-2 sm:gap-2.5 items-stretch w-full min-w-0">
-                {/* ═══ LEFT SIDE: Smaller Course Video (32–35% width, clean inline autoplay, no overlays) ═══ */}
-                <div className="w-[33%] max-w-[120px] min-w-[80px] shrink-0 flex flex-col justify-start">
+                {/* ═══ LEFT SIDE: Smaller Course Video + Salary Badge Underneath ═══ */}
+                <div className="w-[33%] max-w-[120px] min-w-[80px] shrink-0 flex flex-col justify-between">
                   <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-950 border border-slate-200 shadow-2xs">
                     <video
                       ref={(el) => {
@@ -327,26 +327,28 @@ export const MobileCareerProgramsSection: React.FC<MobileCareerProgramsSectionPr
                       className="w-full h-full object-cover select-none pointer-events-none"
                     />
                   </div>
+
+                  {/* LPA Salary Badge Under Video */}
+                  <div className="mt-1.5 w-full text-center">
+                    <span className="inline-block w-full py-0.5 px-1 rounded-md bg-emerald-50 border border-emerald-200/90 text-emerald-700 text-[8.5px] sm:text-[9.5px] font-black tracking-tight truncate shadow-2xs">
+                      {course.salary}
+                    </span>
+                  </div>
                 </div>
 
-                {/* ═══ RIGHT SIDE: Title, Salary, Description, Tech Icons, Price & Unlock ═══ */}
+                {/* ═══ RIGHT SIDE: Title, Description, Tech Icons, Price & Unlock ═══ */}
                 <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-                  {/* Top Header: Title & Salary Badge */}
+                  {/* Top Header: Title */}
                   <div>
-                    <div className="flex items-start justify-between gap-1 min-w-0">
-                      <h3 className="text-[12px] sm:text-[13.5px] font-black text-slate-900 leading-tight min-w-0 flex-1">
-                        {course.titlePrefix}
-                        <span className="text-[#A100E8] font-black">
-                          {course.titleHighlight}
-                        </span>
-                      </h3>
-                      <span className="shrink-0 px-1.5 py-0.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700 text-[8px] sm:text-[9px] font-black whitespace-nowrap">
-                        {course.salary}
+                    <h3 className="text-[12.5px] sm:text-[14px] font-black text-slate-900 leading-snug">
+                      {course.titlePrefix}
+                      <span className="text-[#A100E8] font-black">
+                        {course.titleHighlight}
                       </span>
-                    </div>
+                    </h3>
 
                     {/* Subtitle / Short Description */}
-                    <p className="text-[9px] sm:text-[10px] text-slate-500 font-medium leading-snug line-clamp-2 mt-0.5">
+                    <p className="text-[9.5px] sm:text-[10px] text-slate-500 font-medium leading-snug line-clamp-2 mt-0.5">
                       {course.desc}
                     </p>
                   </div>

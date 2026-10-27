@@ -38,13 +38,10 @@ export const MobileCareerJourneySection: React.FC<MobileCareerJourneySectionProp
       title: 'Choose a Program',
       desc: 'Pick the course that matches your career goal.',
       numBg: 'bg-gradient-to-br from-blue-500 to-blue-700',
-      numShadow: 'shadow-blue-500/50',
-      badgeBorder: 'border-blue-400/40',
-      glowColor: 'rgba(0, 102, 255, 0.15)',
-      activeBorder: 'border-blue-500/30',
-      iconBg: 'bg-blue-500/20 text-blue-400 border-blue-400/30',
-      pedestal: 'from-blue-600/40 via-blue-500/20 to-transparent',
-      pedestalGlow: 'bg-blue-500/30',
+      numShadow: 'shadow-blue-500/25',
+      badgeBorder: 'border-blue-400',
+      iconBg: 'bg-blue-50 text-blue-600 border-blue-200/90',
+      pedestal: 'from-blue-500/30 via-blue-500/10 to-transparent',
       Icon: Laptop,
     },
     {
@@ -52,13 +49,10 @@ export const MobileCareerJourneySection: React.FC<MobileCareerJourneySectionProp
       title: 'Learn In-Demand Skills',
       desc: 'Expert-led, structured learning.',
       numBg: 'bg-gradient-to-br from-purple-500 to-purple-700',
-      numShadow: 'shadow-purple-500/50',
-      badgeBorder: 'border-purple-400/40',
-      glowColor: 'rgba(168, 85, 247, 0.15)',
-      activeBorder: 'border-purple-500/30',
-      iconBg: 'bg-purple-500/20 text-purple-400 border-purple-400/30',
-      pedestal: 'from-purple-600/40 via-purple-500/20 to-transparent',
-      pedestalGlow: 'bg-purple-500/30',
+      numShadow: 'shadow-purple-500/25',
+      badgeBorder: 'border-purple-400',
+      iconBg: 'bg-purple-50 text-purple-600 border-purple-200/90',
+      pedestal: 'from-purple-500/30 via-purple-500/10 to-transparent',
       Icon: BookOpen,
     },
     {
@@ -66,13 +60,10 @@ export const MobileCareerJourneySection: React.FC<MobileCareerJourneySectionProp
       title: 'Build Real Projects',
       desc: 'Work on industry-relevant projects.',
       numBg: 'bg-gradient-to-br from-emerald-500 to-teal-700',
-      numShadow: 'shadow-emerald-500/50',
-      badgeBorder: 'border-emerald-400/40',
-      glowColor: 'rgba(16, 185, 129, 0.15)',
-      activeBorder: 'border-emerald-500/30',
-      iconBg: 'bg-emerald-500/20 text-emerald-400 border-emerald-400/30',
-      pedestal: 'from-emerald-600/40 via-emerald-500/20 to-transparent',
-      pedestalGlow: 'bg-emerald-500/30',
+      numShadow: 'shadow-emerald-500/25',
+      badgeBorder: 'border-emerald-400',
+      iconBg: 'bg-emerald-50 text-emerald-600 border-emerald-200/90',
+      pedestal: 'from-emerald-500/30 via-emerald-500/10 to-transparent',
       Icon: Code2,
     },
     {
@@ -80,13 +71,10 @@ export const MobileCareerJourneySection: React.FC<MobileCareerJourneySectionProp
       title: 'Get Job Ready',
       desc: 'Resume, mock interviews & placement support.',
       numBg: 'bg-gradient-to-br from-amber-500 to-orange-600',
-      numShadow: 'shadow-amber-500/50',
-      badgeBorder: 'border-amber-400/40',
-      glowColor: 'rgba(245, 158, 11, 0.15)',
-      activeBorder: 'border-amber-500/30',
-      iconBg: 'bg-amber-500/20 text-amber-400 border-amber-400/30',
-      pedestal: 'from-amber-600/40 via-amber-500/20 to-transparent',
-      pedestalGlow: 'bg-amber-500/30',
+      numShadow: 'shadow-amber-500/25',
+      badgeBorder: 'border-amber-400',
+      iconBg: 'bg-amber-50 text-amber-600 border-amber-200/90',
+      pedestal: 'from-amber-500/30 via-amber-500/10 to-transparent',
       Icon: UserCheck,
     },
     {
@@ -94,47 +82,44 @@ export const MobileCareerJourneySection: React.FC<MobileCareerJourneySectionProp
       title: 'Start Earning',
       desc: 'Land your dream job and grow your career.',
       numBg: 'bg-gradient-to-br from-pink-500 to-rose-600',
-      numShadow: 'shadow-pink-500/50',
-      badgeBorder: 'border-pink-400/40',
-      glowColor: 'rgba(236, 72, 153, 0.15)',
-      activeBorder: 'border-pink-500/30',
-      iconBg: 'bg-pink-500/20 text-pink-400 border-pink-400/30',
-      pedestal: 'from-pink-600/40 via-pink-500/20 to-transparent',
-      pedestalGlow: 'bg-pink-500/30',
+      numShadow: 'shadow-pink-500/25',
+      badgeBorder: 'border-pink-400',
+      iconBg: 'bg-pink-50 text-pink-600 border-pink-200/90',
+      pedestal: 'from-pink-500/30 via-pink-500/10 to-transparent',
       Icon: Briefcase,
       isFinal: true,
     },
   ];
 
   return (
-    <section className="w-full px-3.5 py-4 select-none">
-      {/* ─── Premium Dark Navy Container (Matching Reference) ─── */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#060B1E] via-[#0A1333] to-[#05091A] border border-blue-500/25 p-4 sm:p-5 shadow-2xl">
-        {/* Ambient Glows */}
-        <div className="absolute -top-16 -left-16 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none" />
-        <div className="absolute top-1/4 -right-16 w-64 h-64 rounded-full bg-purple-600/25 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-16 left-1/4 w-72 h-72 rounded-full bg-pink-500/20 blur-3xl pointer-events-none" />
+    <section className="w-full px-2.5 sm:px-3.5 py-3.5 select-none box-border overflow-hidden">
+      {/* ─── Premium Light Container (Light Color Theme) ─── */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#EEF4FF] via-white to-[#F0F5FF] border border-blue-200/80 p-3.5 sm:p-4 shadow-sm">
+        {/* Soft Ambient Glows */}
+        <div className="absolute -top-16 -left-16 w-60 h-60 rounded-full bg-blue-400/10 blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 -right-16 w-64 h-64 rounded-full bg-purple-400/10 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-16 left-1/4 w-72 h-72 rounded-full bg-cyan-400/10 blur-3xl pointer-events-none" />
 
         {/* ─── 1. HERO HEADER AREA ─── */}
         <div className="relative z-10">
           {/* Main Headings */}
-          <h2 className="text-[25px] sm:text-[28px] font-black text-white tracking-tight leading-tight">
+          <h2 className="text-[23px] sm:text-[26px] font-black text-slate-900 tracking-tight leading-tight">
             Your Journey From{' '}
-            <span className="block mt-0.5 bg-gradient-to-r from-[#00F2FE] via-[#A855F7] to-[#EC4899] bg-clip-text text-transparent drop-shadow-sm">
+            <span className="block mt-0.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
               Learning to Earning
             </span>
           </h2>
 
-          <p className="text-[12px] sm:text-[13px] text-slate-300/90 font-normal mt-2 leading-relaxed max-w-[340px]">
+          <p className="text-[11.5px] sm:text-[12.5px] text-slate-600 font-medium mt-1.5 leading-relaxed max-w-[340px]">
             Learn in-demand skills, build real projects, get industry ready and start your dream career — all in one place.
           </p>
 
-          {/* CTA & Hero Visual Row */}
-          <div className="mt-3.5 flex items-center justify-between gap-3">
+          {/* CTA Row */}
+          <div className="mt-3 flex items-center justify-between gap-3">
             <button
               type="button"
               onClick={handleScrollToCourses}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#0066FF] to-[#4F46E5] text-white font-extrabold text-xs sm:text-[13px] shadow-lg shadow-blue-500/35 hover:brightness-110 active:scale-95 transition-all cursor-pointer shrink-0 border border-white/20"
+              className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-full bg-gradient-to-r from-[#0066FF] to-[#4F46E5] text-white font-extrabold text-xs shadow-md shadow-blue-500/25 hover:brightness-110 active:scale-95 transition-all cursor-pointer shrink-0 border border-white/20"
             >
               <span>Explore Our Career Programs</span>
               <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -142,45 +127,45 @@ export const MobileCareerJourneySection: React.FC<MobileCareerJourneySectionProp
           </div>
 
           {/* Student Banner Artwork Card */}
-          <div className="relative mt-4 w-full rounded-2xl overflow-hidden border border-white/10 shadow-xl bg-slate-950/70">
+          <div className="relative mt-3.5 w-full rounded-2xl overflow-hidden border border-blue-100 shadow-sm bg-slate-950">
             <img
               src="/images/home_sections/journey_student_hero.png"
               alt="Indian Student Career Growth"
-              className="w-full h-[180px] sm:h-[220px] object-cover object-[center_20%] select-none"
+              className="w-full h-[175px] sm:h-[210px] object-cover object-[center_20%] select-none"
             />
-            {/* Ambient Vignette Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#060B1E] via-transparent to-black/20 pointer-events-none" />
+            {/* Ambient Vignette */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/10 pointer-events-none" />
 
-            {/* Floating Dream Job Badge (Exact Match to Reference) */}
-            <div className="absolute top-3 right-3 bg-blue-950/85 backdrop-blur-md border border-cyan-400/40 rounded-xl px-3 py-2 text-right shadow-lg shadow-cyan-950/50 flex items-center gap-2">
+            {/* Floating Dream Job Badge */}
+            <div className="absolute top-2.5 right-2.5 bg-white/95 backdrop-blur-md border border-blue-200/90 rounded-xl px-2.5 py-1.5 text-right shadow-md flex items-center gap-2">
               <div className="leading-tight">
-                <span className="block text-[10px] font-black tracking-wide text-cyan-300 uppercase">Dream Job</span>
-                <span className="block text-[11px] font-black text-white">Higher Salary</span>
-                <span className="block text-[9px] font-bold text-pink-400">Better Future</span>
+                <span className="block text-[9.5px] font-black tracking-wide text-blue-600 uppercase">Dream Job</span>
+                <span className="block text-[11px] font-black text-slate-900">Higher Salary</span>
+                <span className="block text-[9px] font-bold text-indigo-600">Better Future</span>
               </div>
-              <div className="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-400/60 flex items-center justify-center text-emerald-400 shadow-sm shrink-0">
-                <TrendingUp className="w-4 h-4 stroke-[2.5]" />
+              <div className="w-6.5 h-6.5 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shadow-2xs shrink-0">
+                <TrendingUp className="w-3.5 h-3.5 stroke-[2.5]" />
               </div>
             </div>
           </div>
         </div>
 
-        {/* ─── 2. FIVE-STEP CAREER JOURNEY (Mobile Responsive Vertical Timeline) ─── */}
-        <div className="relative z-10 mt-6">
-          <div className="flex items-center justify-between mb-3 px-1">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-cyan-400" />
-              <span className="text-xs font-black tracking-wider uppercase text-cyan-300">
+        {/* ─── 2. FIVE-STEP CAREER JOURNEY (Light Vertical Roadmap) ─── */}
+        <div className="relative z-10 mt-5">
+          <div className="flex items-center justify-between mb-2.5 px-0.5">
+            <div className="flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-blue-600" />
+              <span className="text-xs font-black tracking-wider uppercase text-blue-700">
                 5-Step Progressive Roadmap
               </span>
             </div>
-            <span className="text-[10px] font-bold text-slate-400">Goal-Oriented</span>
+            <span className="text-[10px] font-bold text-slate-500">Goal-Oriented</span>
           </div>
 
           {/* Step Cards Stack connected by Glowing Timeline Path */}
-          <div className="relative space-y-3">
+          <div className="relative space-y-2.5">
             {/* Glowing Connector Line running behind numbers */}
-            <div className="absolute left-[26px] top-6 bottom-6 w-[2px] bg-gradient-to-b from-blue-500 via-purple-500 via-emerald-400 via-amber-400 to-pink-500 opacity-60 pointer-events-none" />
+            <div className="absolute left-[23px] top-5 bottom-5 w-[2px] bg-gradient-to-b from-blue-500 via-purple-500 via-emerald-500 via-amber-500 to-pink-500 opacity-30 pointer-events-none" />
 
             {steps.map((item) => {
               const StepIcon = item.Icon;
@@ -188,46 +173,43 @@ export const MobileCareerJourneySection: React.FC<MobileCareerJourneySectionProp
               return (
                 <div
                   key={item.step}
-                  className="relative flex items-start gap-3 p-3 rounded-2xl bg-white/[0.04] backdrop-blur-md border border-white/10 hover:border-white/20 transition-all shadow-sm"
-                  style={{
-                    boxShadow: `0 4px 20px -6px ${item.glowColor}`,
-                  }}
+                  className="relative flex items-start gap-2.5 p-2.5 sm:p-3 rounded-2xl bg-white border border-slate-200/80 hover:border-blue-200 transition-all shadow-2xs"
                 >
                   {/* Step Number Circle Badge */}
                   <div
-                    className={`relative z-10 w-8 h-8 rounded-full ${item.numBg} ${item.numShadow} border ${item.badgeBorder} flex items-center justify-center text-white font-black text-xs shrink-0 shadow-md`}
+                    className={`relative z-10 w-7.5 h-7.5 rounded-full ${item.numBg} ${item.numShadow} border border-white flex items-center justify-center text-white font-black text-xs shrink-0 shadow-xs`}
                   >
                     {item.step}
                   </div>
 
-                  {/* Step Details & 3D Pedestal Icon */}
-                  <div className="flex-1 min-w-0 flex items-center justify-between gap-2.5">
+                  {/* Step Details & Icon */}
+                  <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
                     <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-sm font-black text-white tracking-tight leading-snug">
+                      <div className="flex items-center gap-1.5">
+                        <h4 className="text-[13px] sm:text-sm font-black text-slate-900 tracking-tight leading-snug">
                           {item.title}
                         </h4>
                         {item.isFinal && (
-                          <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-400/40">
+                          <span className="text-[8.5px] font-black px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                             Goal
                           </span>
                         )}
                       </div>
-                      <p className="text-[11px] text-slate-300/80 font-medium mt-0.5 leading-snug">
+                      <p className="text-[10.5px] sm:text-[11px] text-slate-500 font-medium mt-0.5 leading-snug">
                         {item.desc}
                       </p>
                     </div>
 
-                    {/* 3D Platform Styled Icon Box */}
+                    {/* Pedestal Icon Box */}
                     <div className="relative flex flex-col items-center shrink-0">
                       <div
-                        className={`w-9 h-9 rounded-xl ${item.iconBg} border flex items-center justify-center shadow-inner relative z-10`}
+                        className={`w-8.5 h-8.5 rounded-xl ${item.iconBg} border flex items-center justify-center shadow-2xs relative z-10`}
                       >
                         <StepIcon className="w-4 h-4 stroke-[2.2]" />
                       </div>
-                      {/* 3D Pedestal Platform Glow */}
+                      {/* Pedestal Platform Glow */}
                       <div
-                        className={`-mt-1.5 w-10 h-2.5 rounded-full bg-gradient-to-b ${item.pedestal} blur-[1px]`}
+                        className={`-mt-1 w-9 h-2 rounded-full bg-gradient-to-b ${item.pedestal} blur-[1px]`}
                       />
                     </div>
                   </div>
@@ -237,45 +219,45 @@ export const MobileCareerJourneySection: React.FC<MobileCareerJourneySectionProp
           </div>
         </div>
 
-        {/* ─── 3. STATISTICS BAR (Matching Reference) ─── */}
-        <div className="relative z-10 mt-6 pt-4 border-t border-white/10 grid grid-cols-2 gap-2.5">
-          <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/[0.03] border border-white/5">
-            <div className="w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400 shrink-0">
-              <GraduationCap className="w-4 h-4" />
+        {/* ─── 3. STATISTICS BAR (Light Theme Grid) ─── */}
+        <div className="relative z-10 mt-5 pt-3.5 border-t border-slate-200/80 grid grid-cols-2 gap-2">
+          <div className="flex items-center gap-2 p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
+            <div className="w-7.5 h-7.5 rounded-lg bg-blue-50 border border-blue-200/80 flex items-center justify-center text-blue-600 shrink-0">
+              <GraduationCap className="w-3.5 h-3.5" />
             </div>
             <div className="min-w-0">
-              <span className="block text-xs font-black text-white leading-tight">7</span>
-              <span className="block text-[10px] text-slate-400 font-medium truncate">Career Programs</span>
+              <span className="block text-xs font-black text-slate-900 leading-tight">7</span>
+              <span className="block text-[9.5px] text-slate-500 font-medium truncate">Career Programs</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/[0.03] border border-white/5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-400 shrink-0">
-              <FolderGit2 className="w-4 h-4" />
+          <div className="flex items-center gap-2 p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
+            <div className="w-7.5 h-7.5 rounded-lg bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-600 shrink-0">
+              <FolderGit2 className="w-3.5 h-3.5" />
             </div>
             <div className="min-w-0">
-              <span className="block text-xs font-black text-white leading-tight">100+</span>
-              <span className="block text-[10px] text-slate-400 font-medium truncate">Real-World Projects</span>
+              <span className="block text-xs font-black text-slate-900 leading-tight">100+</span>
+              <span className="block text-[9.5px] text-slate-500 font-medium truncate">Real-World Projects</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/[0.03] border border-white/5">
-            <div className="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-purple-400 shrink-0">
-              <Users className="w-4 h-4" />
+          <div className="flex items-center gap-2 p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
+            <div className="w-7.5 h-7.5 rounded-lg bg-purple-50 border border-purple-200/80 flex items-center justify-center text-purple-600 shrink-0">
+              <Users className="w-3.5 h-3.5" />
             </div>
             <div className="min-w-0">
-              <span className="block text-xs font-black text-white leading-tight">700+</span>
-              <span className="block text-[10px] text-slate-400 font-medium truncate">Hiring Partners</span>
+              <span className="block text-xs font-black text-slate-900 leading-tight">700+</span>
+              <span className="block text-[9.5px] text-slate-500 font-medium truncate">Hiring Partners</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/[0.03] border border-white/5">
-            <div className="w-8 h-8 rounded-lg bg-pink-500/20 border border-pink-400/30 flex items-center justify-center text-pink-400 shrink-0">
-              <Trophy className="w-4 h-4" />
+          <div className="flex items-center gap-2 p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
+            <div className="w-7.5 h-7.5 rounded-lg bg-pink-50 border border-pink-200/80 flex items-center justify-center text-pink-600 shrink-0">
+              <Trophy className="w-3.5 h-3.5" />
             </div>
             <div className="min-w-0">
-              <span className="block text-xs font-black text-white leading-tight">High-Growth</span>
-              <span className="block text-[10px] text-slate-400 font-medium truncate">Career Opportunities</span>
+              <span className="block text-xs font-black text-slate-900 leading-tight">High-Growth</span>
+              <span className="block text-[9.5px] text-slate-500 font-medium truncate">Career Opportunities</span>
             </div>
           </div>
         </div>
