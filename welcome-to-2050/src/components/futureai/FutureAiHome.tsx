@@ -66,6 +66,8 @@ import { FutureAdvancedHeader } from './FutureAdvancedHeader';
 import { FutureAuthModal } from './FutureAuthModal';
 import { RealSuccessStoriesShowcase } from './RealSuccessStoriesShowcase';
 import { MobileCareerProgramsSection } from './MobileCareerProgramsSection';
+import { MobileCareerJourneySection } from './MobileCareerJourneySection';
+import { MobileWhyChooseSection } from './MobileWhyChooseSection';
 
 // ─── Reusable Smooth Typewriter Heading Component ─────────────────────────────
 interface TypewriterHeadingProps {
@@ -846,9 +848,16 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </section>
 
 {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 3: Your Journey From Learning to Earning (Real Panoramic Banner)
+          SECTION 3: Your Journey From Learning to Earning
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7">
+      {/* Mobile-Only Career Journey (< 768px) matching reference */}
+      <div className="block md:hidden">
+        <MobileCareerJourneySection onExploreCourses={promptLogin} />
+      </div>
+
+      {/* Desktop-Only Career Journey (>= 768px, 100% Untouched) */}
+      <div className="hidden md:block">
+        <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7">
         <div className="bg-gradient-to-b from-white via-blue-50/25 to-white rounded-3xl p-5 sm:p-8 border border-slate-200/90 shadow-sm relative overflow-hidden">
           
           {/* Header */}
@@ -912,11 +921,19 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
 
         </div>
       </section>
+      </div>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 4: Why Choose Future IT Industry? (Ultra-Advanced Interactive Showcase)
+          SECTION 4: Why Choose Future IT Industry?
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+      {/* Mobile-Only Why Choose (< 768px) matching reference */}
+      <div className="block md:hidden">
+        <MobileWhyChooseSection onExploreCourses={promptLogin} />
+      </div>
+
+      {/* Desktop-Only Why Choose (>= 768px, 100% Untouched) */}
+      <div className="hidden md:block">
+        <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         
 
         {/* Compact Real Comparison Showcase Banner */}
@@ -1005,6 +1022,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           </div>
         </div>
       </section>
+      </div>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
           SECTION 5 & 6: Real Success Stories Showcase (Exact Post-Login Experience)
