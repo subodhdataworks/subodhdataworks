@@ -997,11 +997,11 @@
   .aff-mob-slider-card-viewport {
     position: relative;
     width: 100%;
-    border-radius: 14px;
+    border-radius: 18px;
     overflow: hidden;
     background: #ffffff;
-    box-shadow: 0 3px 12px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
-    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.1), 0 1px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(226, 232, 240, 0.85);
   }
 
   .aff-mob-slider-track {
@@ -1029,8 +1029,56 @@
     width: 100%;
     height: auto;
     object-fit: cover;
-    aspect-ratio: 1004 / 238;
+    aspect-ratio: 996 / 330;
     pointer-events: none;
+  }
+
+  .aff-mob-cta-hotspot {
+    position: absolute;
+    right: 3%;
+    bottom: 7%;
+    width: 24%;
+    height: 26%;
+    border-radius: 9999px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 5;
+    outline: none;
+  }
+
+  .aff-mob-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    color: #ffffff;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  }
+
+  .aff-mob-nav-btn.prev-btn {
+    left: 8px;
+  }
+
+  .aff-mob-nav-btn.next-btn {
+    right: 8px;
+  }
+
+  .aff-mob-nav-btn:active {
+    transform: translateY(-50%) scale(0.92);
+    background: rgba(15, 23, 42, 0.85);
   }
 
   .aff-mob-slider-dots {

@@ -589,19 +589,19 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     {
       id: 'mob-banner-1',
       image: '/images/affiliate/mobile_banner_refer_friends_blue.png',
-      alt: 'Refer Friends. Earn Cash. - Invite friends and earn referral commissions.',
-      title: 'Refer Friends. Earn Cash.',
-      subtitle: 'Invite friends and earn referral commissions.',
-      ctaText: 'Invite Friends',
+      alt: 'Earn ₹100 Per Referral - Share your link with students & friends. Earn ₹100 on every verified enrollment.',
+      title: 'Earn ₹100 Per Referral',
+      subtitle: 'Share your link with students & friends. Earn ₹100 on every verified enrollment.',
+      ctaText: 'Share Link',
       ctaType: 'invite' as const,
       theme: 'blue',
     },
     {
       id: 'mob-banner-2',
       image: '/images/affiliate/mobile_banner_friends_learn_green.png',
-      alt: 'Your Friends Learn. You Earn. - Earn commissions when friends enroll.',
-      title: 'Your Friends Learn. You Earn.',
-      subtitle: 'Earn commissions when friends enroll.',
+      alt: 'Your Friends Learn. You Earn ₹100. - When they enroll in any course, you get ₹100 commission instantly.',
+      title: 'Your Friends Learn. You Earn ₹100.',
+      subtitle: 'When they enroll in any course, you get ₹100 commission instantly.',
       ctaText: 'Start Earning',
       ctaType: 'earn' as const,
       theme: 'green',
@@ -609,9 +609,9 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     {
       id: 'mob-banner-3',
       image: '/images/affiliate/mobile_banner_withdraw_earnings_purple.png',
-      alt: 'Withdraw Your Earnings. Direct to Bank / UPI. - Safe and secure payouts to bank or UPI.',
-      title: 'Withdraw Your Earnings. Direct to Bank / UPI.',
-      subtitle: 'Safe and secure payouts to bank or UPI.',
+      alt: 'Get Paid Directly to Bank / UPI. - Transfer your eligible earnings to your Bank Account or UPI anytime.',
+      title: 'Get Paid Directly to Bank / UPI.',
+      subtitle: 'Transfer your eligible earnings to your Bank Account or UPI anytime.',
       ctaText: 'Withdraw Now',
       ctaType: 'withdraw' as const,
       theme: 'purple',
@@ -650,17 +650,35 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     mobTouchCurrentX.current = null;
   };
 
+  const handlePrevMobSlide = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setCurrentMobSlide((prev) => (prev - 1 + mobilePromoBanners.length) % mobilePromoBanners.length);
+  };
+
+  const handleNextMobSlide = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setCurrentMobSlide((prev) => (prev + 1) % mobilePromoBanners.length);
+  };
+
   const handleMobBannerClick = (ctaType: 'invite' | 'earn' | 'withdraw') => {
     if (ctaType === 'invite') {
+      const shareSection = document.getElementById('affiliate-main-dashboard') || document.querySelector('.aff-link-box') || document.querySelector('.affiliate-share-tool-card');
+      if (shareSection) {
+        shareSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
       handleCopyLink();
     } else if (ctaType === 'earn') {
-      const el = document.getElementById('affiliate-main-dashboard') || document.querySelector('.affiliate-share-tool-card');
+      const el = document.getElementById('affiliate-main-dashboard') || document.querySelector('.aff-link-box') || document.querySelector('.affiliate-share-tool-card');
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } else {
         handleCopyLink();
       }
     } else if (ctaType === 'withdraw') {
+      const walletEl = document.querySelector('.aff-wallet-box') || document.querySelector('.affiliate-wallet-card');
+      if (walletEl) {
+        walletEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       setWithdrawStep('form');
       setIsWithdrawModalOpen(true);
     }
@@ -1301,9 +1319,38 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   className="aff-mob-banner-img"
                   loading={idx === 0 ? 'eager' : 'lazy'}
                 />
+
+                {/* Accessible clickable hotspot over embedded CTA button */}
+                <button
+                  type="button"
+                  className="aff-mob-cta-hotspot"
+                  aria-label={`${banner.ctaText} - ${banner.title}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleMobBannerClick(banner.ctaType);
+                  }}
+                />
               </div>
             ))}
           </div>
+
+          {/* Left/Right Carousel Navigation Controls (matches mobile reference) */}
+          <button
+            type="button"
+            className="aff-mob-nav-btn prev-btn"
+            aria-label="Previous Slide"
+            onClick={handlePrevMobSlide}
+          >
+            <ChevronLeft className="w-3.5 h-3.5 text-white" />
+          </button>
+          <button
+            type="button"
+            className="aff-mob-nav-btn next-btn"
+            aria-label="Next Slide"
+            onClick={handleNextMobSlide}
+          >
+            <ChevronRight className="w-3.5 h-3.5 text-white" />
+          </button>
         </div>
 
         {/* Compact pagination dots */}
