@@ -4,13 +4,16 @@ import {
   Flame,
   Play,
   Sparkles,
-  Search,
   BookOpen,
   ChevronDown,
+  ChevronUp,
   Check,
   Lock,
-  BarChart3,
-  Cpu,
+  ListChecks,
+  Box,
+  Award,
+  Briefcase,
+  FileText,
   ArrowRight
 } from 'lucide-react';
 import { isTopicUnlocked } from '../../services/courseUnlockService';
@@ -79,6 +82,10 @@ export interface UniversalMobileCourseViewProps {
     jobReadySkillsCount?: string;
   };
 
+  // Optional course-specific tags & highlight banner
+  techStackTags?: string[];
+  courseHighlightTag?: string;
+
   // Icon getter for tabs
   getTabRealIcon?: (tabNum: number, iconName?: string) => string;
 }
@@ -95,11 +102,11 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
   featurePills = [
     '📊 Beginner to Advanced',
     '🛠️ Hands-on Projects',
-    '👥 Interview Preparation',
+    '💬 Interview Preparation',
     '📜 Industry Certificate',
-    '✨ AI-Powered Learning',
+    '🤖 AI-Powered Learning',
   ],
-  enrollPriceText = 'Enroll for ₹4',
+  enrollPriceText = 'Enroll for ₹499',
   isCoursePaid,
   onBack,
   onEnroll,
@@ -113,6 +120,8 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
   onSelectTopic,
   onStartTopicAction,
   customStats,
+  techStackTags,
+  courseHighlightTag,
   getTabRealIcon,
 }) => {
   const tabButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -129,47 +138,99 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
   const totalProjects = customStats?.projectsCount ?? 8;
   const certificateLabel = customStats?.certificatesCount ?? '1';
 
-  // Default 3D icon resolver if not provided
+  // Course-specific tech pills displayed on the right of hero banner
+  const resolvedTechTags: string[] = React.useMemo(() => {
+    if (techStackTags && techStackTags.length > 0) return techStackTags;
+    // Derive from track titles
+    const derived = tabs.map((t) => t.shortTitle || t.title.split(' ')[0]).filter(Boolean);
+    if (derived.length > 0) return derived.slice(0, 5);
+
+    switch (courseId) {
+      case 'data_analyst':
+      case 'data_analytics':
+        return ['Excel', 'SQL', 'Python', 'Power BI', 'GenAI'];
+      case 'data_science':
+      case 'datascience':
+        return ['Python', 'Agents', 'ML', 'PyTorch', 'GenAI'];
+      case 'ml_engineering':
+      case 'mlengineering':
+        return ['PyTorch', 'MLOps', 'Neural Nets', 'Docker', 'FastAPI'];
+      case 'ai_engineering':
+      case 'aiengineering':
+        return ['LLMs', 'LangChain', 'RAG', 'Vector DB', 'Agents'];
+      case 'fullstack_mern':
+      case 'full_stack':
+        return ['React', 'Node.js', 'Express', 'MongoDB', 'Next.js'];
+      case 'msoffice_copilot':
+      case 'copilot':
+        return ['Excel AI', 'PowerPoint', 'Word AI', 'Outlook', 'Copilot'];
+      default:
+        return ['Hands-on', 'Live Code', 'AI Assisted', 'Real Projects', 'Certificate'];
+    }
+  }, [courseId, techStackTags, tabs]);
+
+  // Resolves course-specific banner image ensuring zero broken/unrelated images
+  const resolvedBannerImage = React.useMemo(() => {
+    if (courseBannerImage && courseBannerImage !== '/images/future_it_industries_campus_banner.png') {
+      return courseBannerImage;
+    }
+    switch (courseId) {
+      case 'data_analyst':
+      case 'data_analytics':
+        return '/images/data_analyst_light_banner.jpg';
+      case 'data_science':
+      case 'datascience':
+        return '/images/course_data_science_art.png';
+      case 'ml_engineering':
+      case 'mlengineering':
+        return '/images/course_ml_eng_art.png';
+      case 'ai_engineering':
+      case 'aiengineering':
+        return '/images/course_ai_eng_art.png';
+      case 'fullstack_mern':
+      case 'full_stack':
+        return '/images/courses_hero_banner_bg.png';
+      case 'msoffice_copilot':
+      case 'copilot':
+        return '/images/msoffice_365_copilot_poster.jpg';
+      default:
+        return courseBannerImage || '/images/data_analyst_light_banner.jpg';
+    }
+  }, [courseId, courseBannerImage]);
+
+  // Default 3D icon resolver
   const resolveTabIcon = (tabNum: number, iconName?: string) => {
     if (getTabRealIcon) {
       return getTabRealIcon(tabNum, iconName);
     }
-    switch (iconName) {
-      case 'excel':
-        return '/images/icons3d/icon_03_excel.png';
-      case 'sql':
-        return '/images/icons3d/icon_02_sql.png';
-      case 'python':
-        return '/images/icons3d/icon_01_python.png';
-      case 'powerbi':
-        return '/images/icons3d/icon_04_powerbi.png';
-      case 'genai':
-        return '/images/icons3d/icon_06_genai.png';
-      case 'target':
+    const cleanName = (iconName || '').toLowerCase();
+    if (cleanName.includes('excel')) return '/images/icons3d/icon_03_excel.png';
+    if (cleanName.includes('sql')) return '/images/icons3d/icon_02_sql.png';
+    if (cleanName.includes('python')) return '/images/icons3d/icon_01_python.png';
+    if (cleanName.includes('powerbi') || cleanName.includes('power bi')) return '/images/icons3d/icon_04_powerbi.png';
+    if (cleanName.includes('genai') || cleanName.includes('ai')) return '/images/icons3d/icon_06_genai.png';
+    if (cleanName.includes('target') || cleanName.includes('foundations')) return '/images/icons3d/icon_goal_target.png';
+    if (cleanName.includes('project') || cleanName.includes('capstone')) return '/images/icons3d/icon_10_capstone.png';
+
+    switch (tabNum) {
+      case 1:
         return '/images/icons3d/icon_goal_target.png';
-      case 'project':
+      case 2:
+        return '/images/icons3d/icon_03_excel.png';
+      case 3:
+        return '/images/icons3d/icon_02_sql.png';
+      case 4:
+        return '/images/icons3d/icon_01_python.png';
+      case 5:
+        return '/images/icons3d/icon_04_powerbi.png';
+      case 6:
+        return '/images/icons3d/icon_06_genai.png';
+      case 7:
+        return '/images/icons3d/icon_08_bizanalytics.png';
+      case 8:
         return '/images/icons3d/icon_10_capstone.png';
       default:
-        switch (tabNum) {
-          case 1:
-            return '/images/icons3d/icon_08_bizanalytics.png';
-          case 2:
-            return '/images/icons3d/icon_03_excel.png';
-          case 3:
-            return '/images/icons3d/icon_02_sql.png';
-          case 4:
-            return '/images/icons3d/icon_01_python.png';
-          case 5:
-            return '/images/icons3d/icon_04_powerbi.png';
-          case 6:
-            return '/images/icons3d/icon_06_genai.png';
-          case 7:
-            return '/images/icons3d/icon_goal_target.png';
-          case 8:
-            return '/images/icons3d/icon_10_capstone.png';
-          default:
-            return '/images/icons3d/icon_08_bizanalytics.png';
-        }
+        return '/images/icons3d/icon_goal_target.png';
     }
   };
 
@@ -190,14 +251,14 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
   return (
     <div className="umc-container">
       {/* ─────────────────────────────────────────────────────────────────────
-          1. UNIVERSAL MOBILE COURSE HERO
+          1. UNIVERSAL MOBILE COURSE HERO (1:1 with Reference Design)
           ───────────────────────────────────────────────────────────────────── */}
       <section className="umc-hero-card">
-        {/* Background photo */}
+        {/* Background photo positioned on right */}
         <img
-          src={courseBannerImage}
+          src={resolvedBannerImage}
           alt={courseTitle}
-          className="absolute inset-0 w-full h-full object-cover object-right pointer-events-none"
+          className="absolute right-0 bottom-0 top-0 w-[55%] h-full object-cover object-right pointer-events-none z-0"
           onError={(e) => {
             if (courseBannerFallback) {
               (e.target as HTMLImageElement).src = courseBannerFallback;
@@ -205,25 +266,27 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
           }}
         />
 
-        {/* Soft pearl / daylight white overlay fading gracefully toward the right */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/60 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-transparent to-transparent pointer-events-none" />
+        {/* Soft pearl / daylight white gradient overlay fading toward the right */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/30 pointer-events-none z-1" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent pointer-events-none z-1" />
 
-        {/* Floating tech badges on top right */}
-        <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 pointer-events-none">
-          <div className="w-9 h-9 rounded-xl bg-blue-600/90 backdrop-blur-md shadow-md border border-white/40 flex flex-col items-center justify-center text-white">
-            <Cpu className="w-3.5 h-3.5 text-blue-100" />
-            <span className="text-[8px] font-black tracking-wider leading-none mt-0.5">AI</span>
-          </div>
-          <div className="w-9 h-9 rounded-xl bg-emerald-600/90 backdrop-blur-md shadow-md border border-white/40 flex items-center justify-center text-white">
-            <BarChart3 className="w-4 h-4 text-emerald-100" />
+        {/* Floating tech badges on top right (Matching reference) */}
+        <div className="absolute top-3 right-3 z-10 flex flex-col items-end gap-1.5 pointer-events-none">
+          <span className="px-2.5 py-1 rounded-full bg-blue-50/95 backdrop-blur-md border border-blue-200 text-[8.5px] font-black text-[#0066ff] shadow-xs uppercase tracking-wider">
+            {courseHighlightTag || 'GLOBAL OPPORTUNITIES'}
+          </span>
+          {/* Floating Vertical Tech Stack Badge */}
+          <div className="hidden min-[360px]:flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl bg-white/85 backdrop-blur-md border border-blue-200/60 shadow-xs text-[8.5px] font-black text-[#0066ff] leading-tight">
+            {resolvedTechTags.map((tag, idx) => (
+              <span key={idx}>{tag}</span>
+            ))}
           </div>
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 p-4 flex flex-col justify-between">
-          <div className="space-y-2.5 max-w-[85%] min-[412px]:max-w-[88%]">
-            {/* Top row: Back arrow + Badge */}
+        <div className="relative z-10 p-3.5 min-[390px]:p-4 flex flex-col justify-between">
+          <div className="space-y-2 max-w-[82%] min-[412px]:max-w-[85%]">
+            {/* Top row: Back arrow + Most Popular Badge */}
             <div className="flex items-center gap-2">
               {onBack && (
                 <button
@@ -231,13 +294,13 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
                   onClick={onBack}
                   title="Back to All Courses"
                   aria-label="Back"
-                  className="w-8 h-8 shrink-0 rounded-full bg-white hover:bg-slate-50 text-slate-800 flex items-center justify-center border border-slate-200/90 shadow-2xs active:scale-95 transition-all cursor-pointer"
+                  className="w-7 h-7 shrink-0 rounded-full bg-white hover:bg-slate-50 text-slate-800 flex items-center justify-center border border-slate-200/90 shadow-2xs active:scale-95 transition-all cursor-pointer"
                 >
-                  <ArrowLeft className="w-4 h-4 text-slate-800 stroke-[2.5]" />
+                  <ArrowLeft className="w-3.5 h-3.5 text-slate-800 stroke-[2.5]" />
                 </button>
               )}
               {badgeText && (
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 border border-orange-200 text-[10.5px] font-black text-orange-700 tracking-wide uppercase shadow-2xs">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 border border-orange-200 text-[10px] font-black text-orange-600 tracking-wide uppercase shadow-2xs">
                   <Flame className="w-3.5 h-3.5 fill-orange-500 text-orange-500 shrink-0" />
                   <span>{badgeText}</span>
                 </div>
@@ -245,39 +308,33 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
             </div>
 
             {/* Course Title (2 lines style matching reference image) */}
-            <h1 className="text-2xl min-[375px]:text-[26px] font-black tracking-tight text-slate-950 leading-[1.15]">
+            <h1 className="text-[21px] min-[390px]:text-[24px] font-black tracking-tight text-slate-950 leading-[1.15]">
               {courseTitle}
               {courseTitleHighlight && (
-                <>
-                  <br />
-                  {courseTitlePrefix && (
-                    <span className="text-slate-900 font-black">{courseTitlePrefix}</span>
-                  )}
-                  <span className="text-[#1a73e8] font-black">
-                    {courseTitleHighlight}
-                  </span>
-                </>
+                <span className="text-[#0066ff] font-black block">
+                  {courseTitlePrefix}{courseTitleHighlight}
+                </span>
               )}
             </h1>
 
             {/* Course Description */}
-            <p className="text-xs text-slate-700 font-semibold leading-relaxed">
+            <p className="text-[11px] text-slate-600 font-semibold leading-relaxed">
               {courseDescription}
             </p>
 
             {/* Feature Pills */}
-            <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-[10px] font-bold text-slate-700">
+            <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-[9.5px] font-bold text-slate-700">
               {featurePills.map((pill, idx) => (
                 <span
                   key={idx}
-                  className="flex items-center gap-1 bg-white/95 border border-slate-200/90 px-2.5 py-1 rounded-full shadow-2xs"
+                  className="flex items-center gap-1 bg-white/95 border border-slate-200/90 px-2 py-0.5 rounded-full shadow-2xs"
                 >
                   {pill}
                 </span>
               ))}
             </div>
 
-            {/* 3 Action Buttons */}
+            {/* 3 Action Buttons Matching Reference */}
             <div className="flex flex-wrap items-center gap-2 pt-2">
               <button
                 type="button"
@@ -287,10 +344,11 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
                     onSelectTopic(activeTab.chapters[0].topics[0], activeTab.chapters[0].chapterNum);
                   }
                 }}
-                className="px-4 py-2.5 rounded-full bg-[#1a73e8] hover:bg-blue-700 text-white font-black text-xs flex items-center gap-2 shadow-sm shadow-blue-500/25 active:scale-95 transition-all cursor-pointer"
+                className="px-3.5 py-2 rounded-full bg-[#0066ff] hover:bg-blue-700 text-white font-black text-xs flex items-center gap-1.5 shadow-sm shadow-blue-500/25 active:scale-95 transition-all cursor-pointer"
               >
-                <Play className="w-3.5 h-3.5 fill-white shrink-0" />
+                <Play className="w-3 h-3 fill-white shrink-0" />
                 <span>Resume Learning</span>
+                <span className="text-xs">›</span>
               </button>
 
               <button
@@ -298,14 +356,15 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
                 onClick={() => {
                   if (onEnroll) onEnroll();
                 }}
-                className={`px-4 py-2.5 rounded-full font-black text-xs flex items-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer ${
+                className={`px-3.5 py-2 rounded-full font-black text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer ${
                   isCoursePaid
                     ? 'bg-slate-900 text-white shadow-slate-900/20'
-                    : 'bg-[#0f9d58] hover:bg-emerald-700 text-white shadow-emerald-600/25'
+                    : 'bg-[#10b981] hover:bg-emerald-600 text-white shadow-emerald-500/25'
                 }`}
               >
-                <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+                <Sparkles className="w-3 h-3 text-amber-200 shrink-0" />
                 <span>{isCoursePaid ? 'Enrolled ✓' : enrollPriceText}</span>
+                <span className="text-xs">›</span>
               </button>
 
               <button
@@ -318,9 +377,9 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
                     el?.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
-                className="px-4 py-2.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-800 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+                className="px-3.5 py-2 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-800 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
               >
-                <Search className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                <FileText className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                 <span>View Course Overview</span>
               </button>
             </div>
@@ -329,64 +388,78 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
       </section>
 
       {/* ─────────────────────────────────────────────────────────────────────
-          2. COURSE STATISTICS (5 SEPARATE COMPACT WHITE CARDS)
+          2. COURSE STATISTICS (5 SEPARATE COMPACT WHITE CARDS MATCHING REFERENCE)
           ───────────────────────────────────────────────────────────────────── */}
       <section className="mt-3">
         <div className="grid grid-cols-5 gap-1.5">
           {/* 1. Modules */}
-          <div className="bg-white rounded-2xl p-2 border border-slate-200/90 shadow-2xs flex flex-col items-center justify-center text-center">
-            <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-xs font-black">
+          <div className="bg-white rounded-2xl p-2 border border-slate-200/90 shadow-2xs flex flex-col items-center justify-between text-center min-h-[76px]">
+            <div className="w-6 h-6 rounded-lg bg-blue-50 text-[#0066ff] flex items-center justify-center">
+              <BookOpen className="w-3.5 h-3.5" />
+            </div>
+            <span className="text-[17px] font-black text-slate-900 leading-none">
               {totalModules}
             </span>
-            <span className="text-[10px] font-bold text-slate-700 mt-1 leading-tight">
+            <span className="text-[9.5px] font-bold text-slate-500 leading-tight">
               Modules
             </span>
           </div>
 
           {/* 2. Topics */}
-          <div className="bg-white rounded-2xl p-2 border border-slate-200/90 shadow-2xs flex flex-col items-center justify-center text-center">
-            <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 text-xs font-black">
+          <div className="bg-white rounded-2xl p-2 border border-slate-200/90 shadow-2xs flex flex-col items-center justify-between text-center min-h-[76px]">
+            <div className="w-6 h-6 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+              <ListChecks className="w-3.5 h-3.5" />
+            </div>
+            <span className="text-[17px] font-black text-slate-900 leading-none">
               {totalTopics}
             </span>
-            <span className="text-[10px] font-bold text-slate-700 mt-1 leading-tight">
+            <span className="text-[9.5px] font-bold text-slate-500 leading-tight">
               Topics
             </span>
           </div>
 
           {/* 3. Projects */}
-          <div className="bg-white rounded-2xl p-2 border border-slate-200/90 shadow-2xs flex flex-col items-center justify-center text-center">
-            <span className="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 text-xs font-black">
+          <div className="bg-white rounded-2xl p-2 border border-slate-200/90 shadow-2xs flex flex-col items-center justify-between text-center min-h-[76px]">
+            <div className="w-6 h-6 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+              <Box className="w-3.5 h-3.5" />
+            </div>
+            <span className="text-[17px] font-black text-slate-900 leading-none">
               {totalProjects}
             </span>
-            <span className="text-[10px] font-bold text-slate-700 mt-1 leading-tight">
+            <span className="text-[9.5px] font-bold text-slate-500 leading-tight">
               Projects
             </span>
           </div>
 
           {/* 4. Certificate */}
-          <div className="bg-white rounded-2xl p-2 border border-slate-200/90 shadow-2xs flex flex-col items-center justify-center text-center">
-            <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-xs font-black">
+          <div className="bg-white rounded-2xl p-2 border border-slate-200/90 shadow-2xs flex flex-col items-center justify-between text-center min-h-[76px]">
+            <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <Award className="w-3.5 h-3.5" />
+            </div>
+            <span className="text-[17px] font-black text-slate-900 leading-none">
               {certificateLabel}
             </span>
-            <span className="text-[10px] font-bold text-slate-700 mt-1 leading-tight">
+            <span className="text-[9.5px] font-bold text-slate-500 leading-tight">
               Certificate
             </span>
           </div>
 
           {/* 5. Job Ready Skills */}
-          <div className="bg-white rounded-2xl p-2 border border-slate-200/90 shadow-2xs flex flex-col items-center justify-center text-center">
-            <span className="w-6 h-6 rounded-md bg-amber-100/70 text-amber-800 flex items-center justify-center text-xs">
-              💼
-            </span>
-            <span className="text-[9.5px] font-bold text-slate-700 mt-1 leading-tight">
-              Job Ready Skills
-            </span>
+          <div className="bg-white rounded-2xl p-2 border border-slate-200/90 shadow-2xs flex flex-col items-center justify-between text-center min-h-[76px]">
+            <div className="w-6 h-6 rounded-lg bg-amber-100/70 text-amber-800 flex items-center justify-center">
+              <Briefcase className="w-3.5 h-3.5" />
+            </div>
+            <div className="flex flex-col items-center justify-center leading-none">
+              <span className="text-[10px] font-black text-slate-900 leading-tight">Job</span>
+              <span className="text-[10px] font-black text-slate-900 leading-tight">Ready Skills</span>
+            </div>
+            <span className="text-[7.5px] font-bold text-emerald-600 uppercase tracking-tight">Verified</span>
           </div>
         </div>
       </section>
 
       {/* ─────────────────────────────────────────────────────────────────────
-          3. HORIZONTAL LEARNING TRACK NAVIGATION
+          3. HORIZONTAL LEARNING TRACK NAVIGATION (Matching Reference Image)
           ───────────────────────────────────────────────────────────────────── */}
       <section id="mobile-curriculum-tracks" className="mt-3">
         <div className="umc-horizontal-tracks">
@@ -403,19 +476,19 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
                   tabButtonRefs.current[tab.id] = el;
                 }}
                 onClick={() => handleTabClick(tab.id)}
-                className={`umc-track-card border flex items-center gap-3 text-left ${
+                className={`umc-track-card border flex items-center gap-2.5 text-left transition-all ${
                   isActive
-                    ? 'bg-[#1a73e8] text-white border-blue-600 shadow-md shadow-blue-500/25'
+                    ? 'bg-[#0066ff] text-white border-[#0066ff] shadow-md shadow-blue-500/25'
                     : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200/90 shadow-2xs'
                 }`}
               >
-                {/* 3D Icon container with number badge in corner */}
+                {/* 3D Icon Container */}
                 <div className="relative shrink-0">
                   <div
                     className={`w-11 h-11 rounded-xl flex items-center justify-center p-1.5 ${
                       isActive
                         ? 'bg-white shadow-xs'
-                        : 'bg-white border border-slate-200/80 shadow-2xs'
+                        : 'bg-slate-50 border border-slate-200/80 shadow-2xs'
                     }`}
                   >
                     <img
@@ -428,23 +501,23 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
                     />
                   </div>
 
-                  {/* Corner Number Badge */}
-                  <span
-                    className={`absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full text-[9px] font-black flex items-center justify-center shadow-xs border ${
-                      isActive
-                        ? 'bg-red-500 text-white border-white'
-                        : 'bg-blue-50 text-blue-700 border-blue-200'
-                    }`}
-                  >
-                    {tab.tabNum}
-                  </span>
+                  {/* Red Notification dot badge on active icon */}
+                  {isActive ? (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white font-black text-[9px] flex items-center justify-center border-2 border-white shadow-xs">
+                      !
+                    </span>
+                  ) : (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-slate-100 text-slate-600 font-bold text-[8.5px] flex items-center justify-center border border-slate-200">
+                      {tab.tabNum}
+                    </span>
+                  )}
                 </div>
 
                 {/* Track Details */}
                 <div className="flex flex-col min-w-0 pr-1">
                   <span
                     className={`text-xs font-bold leading-tight tracking-tight line-clamp-2 ${
-                      isActive ? 'text-white' : 'text-slate-900'
+                      isActive ? 'text-white font-black' : 'text-slate-900 font-bold'
                     }`}
                   >
                     {tab.shortTitle || tab.title}
@@ -456,8 +529,12 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
                     }`}
                   >
                     <span>{moduleCount} Modules</span>
-                    <span className="opacity-40">•</span>
-                    <span>{topicCount} Topics</span>
+                    {isActive && topicCount > 0 && (
+                      <>
+                        <span className="opacity-60">•</span>
+                        <span>{topicCount} Topics</span>
+                      </>
+                    )}
                   </span>
                 </div>
               </button>
@@ -469,7 +546,7 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
         <div className="w-full px-1 pt-1.5 pb-0.5">
           <div className="w-full h-1 rounded-full bg-slate-200/80 overflow-hidden relative">
             <div
-              className="h-full bg-[#1a73e8] rounded-full transition-all duration-300"
+              className="h-full bg-[#0066ff] rounded-full transition-all duration-300"
               style={{
                 width: `${Math.max(16, 100 / Math.max(tabs.length, 1))}%`,
                 transform: `translateX(${activeTabIndex * 100}%)`,
@@ -480,13 +557,13 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
       </section>
 
       {/* ─────────────────────────────────────────────────────────────────────
-          4. ACTIVE TRACK HEADER & MODULE ACCORDION
+          4. ACTIVE TRACK HEADER & MODULE ACCORDION (1:1 with Reference Design)
           ───────────────────────────────────────────────────────────────────── */}
-      <section className="mt-3 space-y-3">
+      <section className="mt-3 space-y-2.5">
         {/* Track Title banner matching reference image */}
-        <div className="px-1 pt-1 pb-1 flex items-center justify-between">
+        <div className="px-1 pt-2 pb-1 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#1a73e8]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#0066ff]" />
             <h2 className="text-xs font-black text-slate-900 uppercase tracking-wider">
               {activeTab?.title || 'Data Analytics Foundations'}
             </h2>
@@ -509,11 +586,11 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
               <button
                 type="button"
                 onClick={() => onToggleChapter(chapter.id)}
-                className="w-full p-3.5 flex items-center justify-between gap-3 text-left transition-all cursor-pointer"
+                className="w-full p-3 flex items-center justify-between gap-2.5 text-left transition-all cursor-pointer"
               >
-                <div className="flex items-center gap-2.5 min-w-0">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   {/* Circle Number */}
-                  <div className="w-8 h-8 rounded-full bg-[#1a73e8] text-white font-black text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                  <div className="w-8 h-8 rounded-full bg-[#0066ff] text-white font-black text-xs flex items-center justify-center shrink-0 shadow-2xs">
                     {chapter.chapterNum}
                   </div>
 
@@ -523,51 +600,58 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
                   </div>
 
                   {/* Title & Subtitle */}
-                  <div className="flex flex-col min-w-0">
+                  <div className="flex flex-col min-w-0 pr-1">
                     <h3 className="text-xs font-black text-slate-900 truncate">
                       {chapter.title}
                     </h3>
                     <p className="text-[10px] text-slate-500 font-medium truncate mt-0.5">
-                      {chapter.subtitle}
+                      {chapter.subtitle || 'Core industry concepts and practical examples'}
                     </p>
                   </div>
                 </div>
 
-                {/* Animated Chevron */}
-                <div
-                  className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
-                    isExpanded
-                      ? 'bg-blue-50 text-blue-600 rotate-180 shadow-2xs'
-                      : 'bg-slate-100 text-slate-400'
-                  }`}
-                >
-                  <ChevronDown className="w-3.5 h-3.5 transition-transform duration-300" />
+                {/* Right side: If collapsed, show metadata + chevron; If expanded, show chevronUp */}
+                <div className="flex items-center gap-2 shrink-0">
+                  {!isExpanded && (
+                    <div className="hidden min-[360px]:flex flex-col items-end text-right leading-none">
+                      <span className="text-[10px] font-bold text-slate-700">{totalCount} Topics</span>
+                      <span className="text-[9px] font-semibold text-slate-500 mt-0.5">
+                        {completedCount} / {totalCount} completed <strong className="text-emerald-600 font-bold">{percent}%</strong>
+                      </span>
+                    </div>
+                  )}
+                  <div className="w-6 h-6 rounded-full bg-blue-50 text-[#0066ff] flex items-center justify-center border border-blue-100 shadow-2xs">
+                    {isExpanded ? (
+                      <ChevronUp className="w-3.5 h-3.5" />
+                    ) : (
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    )}
+                  </div>
                 </div>
               </button>
 
-              {/* Subheader Progress Bar inside Module Card */}
-              <div className="px-3.5 pb-2.5 flex items-center justify-between gap-3 text-[10px] font-bold text-slate-500 border-b border-slate-100">
-                <span className="shrink-0">{totalCount} Topics</span>
-                <div className="flex-1 h-1.5 rounded-full bg-blue-100/70 overflow-hidden mx-1">
-                  <div
-                    className="h-full bg-emerald-500 rounded-full transition-all duration-300"
-                    style={{ width: `${percent}%` }}
-                  />
+              {/* Subheader Progress Bar inside Expanded Module Card */}
+              {isExpanded && (
+                <div className="px-3.5 pb-2.5 flex items-center justify-between gap-3 text-[10px] font-bold text-slate-500 border-b border-slate-100">
+                  <span className="shrink-0">{totalCount} Topics</span>
+                  <div className="flex-1 h-1.5 rounded-full bg-blue-100/70 overflow-hidden mx-1">
+                    <div
+                      className="h-full bg-emerald-500 rounded-full transition-all duration-300"
+                      style={{ width: `${percent}%` }}
+                    />
+                  </div>
+                  <span className="shrink-0 text-slate-700 font-semibold">
+                    {completedCount} / {totalCount} completed
+                  </span>
+                  <span className="shrink-0 text-emerald-600 font-black">
+                    {percent}%
+                  </span>
                 </div>
-                <span className="shrink-0 text-slate-700 font-semibold">
-                  {completedCount} / {totalCount} completed
-                </span>
-                <span className="shrink-0 text-emerald-600 font-black">
-                  {percent}%
-                </span>
-              </div>
+              )}
 
               {/* Module Topics / Lessons List */}
               {isExpanded && (
                 <div className="relative divide-y divide-slate-100 bg-white">
-                  {/* Subtle vertical timeline connecting play icons */}
-                  <div className="absolute left-[38px] top-4 bottom-4 w-[1.5px] bg-blue-100 pointer-events-none -z-0" />
-
                   {chapter.topics.map((topic, tIdx) => {
                     const isTopicFree = isTopicUnlocked(
                       courseId as any,
@@ -577,11 +661,11 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
                     );
                     const isLocked = !isTopicFree;
                     const isDone = false;
-                    const isCurrent = isTopicFree && !isDone && tIdx < 2;
+                    const isCurrent = isTopicFree && !isDone && tIdx === 0;
 
                     const cleanDuration = topic.duration
                       ? topic.duration.replace(/^Video\s*•\s*/i, '')
-                      : '10 min';
+                      : '11 min';
 
                     return (
                       <div
@@ -602,21 +686,21 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
                           {topic.topicNum || tIdx + 1}.
                         </span>
 
-                        {/* Play / Lock / Check Icon */}
+                        {/* Play / Lock / Check Icon Matching Reference */}
                         <div className="relative z-10 shrink-0">
                           {isDone && (
-                            <div className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-2xs">
-                              <Check className="w-3 h-3 stroke-[3]" />
+                            <div className="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-2xs">
+                              <Check className="w-3.5 h-3.5 stroke-[3]" />
                             </div>
                           )}
                           {!isDone && !isLocked && (
-                            <div className="w-6 h-6 rounded-full bg-[#1a73e8] text-white flex items-center justify-center shadow-2xs">
-                              <Play className="w-2.5 h-2.5 fill-white ml-0.5" />
+                            <div className="w-7 h-7 rounded-full bg-[#0066ff] text-white flex items-center justify-center shadow-2xs">
+                              <Play className="w-3 h-3 fill-white ml-0.5" />
                             </div>
                           )}
                           {isLocked && (
-                            <div className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shadow-2xs">
-                              <Lock className="w-2.5 h-2.5" />
+                            <div className="w-7 h-7 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center shadow-2xs">
+                              <Lock className="w-3 h-3 text-amber-800" />
                             </div>
                           )}
                         </div>
@@ -639,21 +723,21 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
                           </span>
                         </div>
 
-                        {/* Right: Status Pill + Action Button */}
+                        {/* Right: Status Pill + Action Button Matching Reference */}
                         <div className="flex items-center gap-1.5 shrink-0 ml-1">
                           {/* Status Pill */}
                           {isCurrent && (
-                            <span className="px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-blue-50 text-[#1a73e8] border border-blue-200">
+                            <span className="px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-blue-50 text-[#0066ff] border border-blue-200">
                               In Progress
                             </span>
                           )}
                           {!isDone && !isCurrent && !isLocked && (
-                            <span className="px-2 py-0.5 rounded-full text-[9.5px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                            <span className="px-2.5 py-0.5 rounded-full text-[9px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
                               Not Started
                             </span>
                           )}
                           {isLocked && (
-                            <span className="px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                            <span className="px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
                               Enroll to Unlock
                             </span>
                           )}
@@ -666,10 +750,10 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
                                 e.stopPropagation();
                                 onSelectTopic(topic, chapter.chapterNum);
                               }}
-                              className="px-2.5 py-1 rounded-lg text-xs font-bold text-white bg-[#1a73e8] hover:bg-blue-700 shadow-2xs active:scale-95 transition-all flex items-center gap-1"
+                              className="px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-[#0066ff] hover:bg-blue-700 shadow-2xs active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
                             >
                               <span>Continue</span>
-                              <ArrowRight className="w-2.5 h-2.5" />
+                              <span>→</span>
                             </button>
                           )}
 
@@ -680,10 +764,10 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
                                 e.stopPropagation();
                                 onSelectTopic(topic, chapter.chapterNum);
                               }}
-                              className="px-2.5 py-1 rounded-lg text-xs font-bold text-white bg-[#1a73e8] hover:bg-blue-700 shadow-2xs active:scale-95 transition-all flex items-center gap-1"
+                              className="px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-[#0066ff] hover:bg-blue-700 shadow-2xs active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
                             >
                               <span>Start</span>
-                              <ArrowRight className="w-2.5 h-2.5" />
+                              <span>→</span>
                             </button>
                           )}
 
@@ -694,9 +778,9 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
                                 e.stopPropagation();
                                 if (onEnroll) onEnroll();
                               }}
-                              className="px-2.5 py-1 rounded-lg text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 shadow-2xs active:scale-95 transition-all flex items-center gap-1"
+                              className="px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-[#d97706] hover:bg-amber-700 shadow-2xs active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
                             >
-                              <Lock className="w-2.5 h-2.5" />
+                              <Lock className="w-3 h-3" />
                               <span>Unlock</span>
                             </button>
                           )}

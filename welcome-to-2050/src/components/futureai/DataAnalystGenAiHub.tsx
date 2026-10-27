@@ -202,6 +202,8 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
             certificatesCount: 1,
             jobReadySkillsCount: 'Job Ready Skills'
           }}
+          techStackTags={['Excel', 'SQL', 'Python', 'Power BI', 'GenAI']}
+          courseHighlightTag="GLOBAL OPPORTUNITIES"
         />
       </div>
 
