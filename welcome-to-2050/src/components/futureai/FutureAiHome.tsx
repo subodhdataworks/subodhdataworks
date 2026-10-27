@@ -333,7 +333,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         <FutureAdvancedHeader
           userName={userName}
           activeNavTab="home"
-          isLoggedIn={false}
+          isLoggedIn={isLoggedIn}
           onNavigateHome={() => {
             if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
           }}

@@ -570,24 +570,26 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               <Search className="w-5 h-5 text-slate-700" />
             </button>
 
-            {/* 2. Wallet Icon with Dynamic Balance Amount (Next to Notification) */}
-            <button
-              type="button"
-              onClick={() => {
-                soundEffects.playClick();
-                if (onOpenWallet) {
-                  onOpenWallet();
-                } else {
-                  setHeaderWithdrawModalOpen(true);
-                }
-              }}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100/90 border border-emerald-200/80 text-emerald-700 font-bold text-xs sm:text-[13px] transition-all active:scale-95 cursor-pointer shadow-2xs"
-              title="Withdraw Earnings"
-              aria-label="Wallet Balance - Withdraw Earnings"
-            >
-              <Wallet className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>₹{walletBalance.toLocaleString('en-IN')}</span>
-            </button>
+            {/* 2. Wallet Icon with Dynamic Balance Amount (Only Shown When Logged In) */}
+            {isLoggedIn && (
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playClick();
+                  if (onOpenWallet) {
+                    onOpenWallet();
+                  } else {
+                    setHeaderWithdrawModalOpen(true);
+                  }
+                }}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100/90 border border-emerald-200/80 text-emerald-700 font-bold text-xs sm:text-[13px] transition-all active:scale-95 cursor-pointer shadow-2xs"
+                title="Withdraw Earnings"
+                aria-label="Wallet Balance - Withdraw Earnings"
+              >
+                <Wallet className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>₹{walletBalance.toLocaleString('en-IN')}</span>
+              </button>
+            )}
 
             {/* 3. Notification Bell with Red Badge Dot */}
             <div className="relative" ref={notificationsRef}>
