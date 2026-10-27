@@ -36,6 +36,7 @@ import {
   Share2
 } from 'lucide-react';
 import './AffiliateEarningsHub.css';
+import './AffiliateEarningsHubMobile.css';
 import {
   fetchAffiliateRealData,
   getUserReferralCode,
@@ -184,6 +185,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       if (typeof window !== 'undefined') {
         localStorage.setItem(storageKey, JSON.stringify(hubState));
         localStorage.setItem('futureai_user_wallet', hubState.availableBalance.toString());
+        window.dispatchEvent(new Event('futureai_wallet_updated'));
       }
     } catch {
       // ignore
@@ -912,6 +914,618 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      {/* MOBILE INTERFACE (< 768px) - 1:1 WITH REFERENCE DESIGN               */}
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      <div className="aff-mobile-only aff-mobile-root">
+        {/* 1. Compact Mobile Withdrawal Hero Banner */}
+        <section className="aff-mob-hero-card">
+          {/* Cheerful Indian Student Artwork Background on the right */}
+          <img
+            src="/images/affiliate/bg_withdraw_light_real_boy.jpg"
+            alt="Withdraw Earnings Anytime"
+            className="aff-mob-hero-bg-art"
+          />
+
+          <div className="aff-mob-hero-left">
+            <div>
+              <h2 className="aff-mob-hero-heading">
+                Withdraw Earnings
+                <span>Anytime, Hassle-Free.</span>
+              </h2>
+              <p className="aff-mob-hero-desc">
+                Your verified earnings are processed within 24 hours directly to your Bank or UPI.
+              </p>
+            </div>
+
+            {/* 4 Feature Chips (2x2 Grid) */}
+            <div className="aff-mob-hero-chips-grid">
+              <div className="aff-mob-hero-chip">
+                <span>⚡</span>
+                <span>24/7 Withdrawal Request</span>
+              </div>
+              <div className="aff-mob-hero-chip">
+                <span>🛡️</span>
+                <span>100% Genuine Escrow</span>
+              </div>
+              <div className="aff-mob-hero-chip">
+                <span>🏛️</span>
+                <span>Direct to Bank / UPI</span>
+              </div>
+              <div className="aff-mob-hero-chip">
+                <span>✅</span>
+                <span>Secure • No Hidden Fee</span>
+              </div>
+            </div>
+
+            {/* Action Row */}
+            <div className="aff-mob-hero-actions-row">
+              <button
+                type="button"
+                onClick={() => {
+                  playUiSound('click');
+                  setWithdrawStep('form');
+                  setIsWithdrawModalOpen(true);
+                }}
+                className="aff-mob-hero-withdraw-btn"
+              >
+                <span>💳</span>
+                <span>Instant Withdraw ₹{availableBalance.toLocaleString('en-IN')} ⚡</span>
+              </button>
+
+              <div
+                onClick={() => {
+                  playUiSound('click');
+                  setWithdrawStep('form');
+                  setIsWithdrawModalOpen(true);
+                }}
+                className="aff-mob-hero-avail-badge"
+              >
+                <div className="aff-mob-avail-check">✓</div>
+                <div className="aff-mob-avail-texts">
+                  <span className="aff-mob-avail-sub">INSTANT PAYOUTS</span>
+                  <span className="aff-mob-avail-val">₹{availableBalance.toLocaleString('en-IN')} Available</span>
+                </div>
+                <span className="text-[8px] text-slate-400 font-bold ml-1">Direct to Bank &gt;</span>
+              </div>
+            </div>
+
+            {/* Carousel Dots */}
+            <div className="aff-mob-hero-dots">
+              <div className="aff-mob-hero-dot active" />
+              <div className="aff-mob-hero-dot" />
+            </div>
+          </div>
+        </section>
+
+        {/* 2. 6 Performance Metrics Cards (2-Column Grid) */}
+        <section className="aff-mob-metrics-grid">
+          {/* Card 1: Total Clicks */}
+          <div
+            className="aff-mob-metric-card"
+            onClick={() => showToast(`${clicks} total clicks tracked across all shared channels.`, 'info')}
+          >
+            <div className="aff-mob-card-top">
+              <div className="aff-mob-card-icon-circle bg-[#0066ff]">
+                <Send className="w-3 h-3 text-white" />
+              </div>
+              <span className="aff-mob-card-badge bg-[#dcfce7] text-[#059669]">
+                + Active
+              </span>
+            </div>
+            <div>
+              <div className="aff-mob-card-val">{clicks}</div>
+              <div className="aff-mob-card-label">Total Clicks</div>
+            </div>
+            <div className="aff-mob-card-bottom">
+              <span className="aff-mob-card-subtext">Across all shared channels</span>
+              <div className="aff-mob-card-chart">
+                <svg className="w-12 h-6" viewBox="0 0 64 28" fill="none">
+                  <rect x="4" y="18" width="6" height="10" rx="1.5" fill="#bae6fd" />
+                  <rect x="16" y="14" width="6" height="14" rx="1.5" fill="#7dd3fc" />
+                  <rect x="28" y="10" width="6" height="18" rx="1.5" fill="#38bdf8" />
+                  <rect x="40" y="6" width="6" height="22" rx="1.5" fill="#0ea5e9" />
+                  <rect x="52" y="2" width="6" height="26" rx="1.5" fill="#0066ff" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2: Free Signups */}
+          <div
+            className="aff-mob-metric-card"
+            onClick={() => {
+              setReferralStatusFilter('Registered');
+              setIsReferralsModalOpen(true);
+            }}
+          >
+            <div className="aff-mob-card-top">
+              <div className="aff-mob-card-icon-circle bg-[#10b981]">
+                <Users className="w-3 h-3 text-white" />
+              </div>
+              <span className="aff-mob-card-badge bg-[#dcfce7] text-[#059669]">
+                {signups > 0 ? `+ ${signups}` : '+ 1'}
+              </span>
+            </div>
+            <div>
+              <div className="aff-mob-card-val">{signups}</div>
+              <div className="aff-mob-card-label">Free Signups</div>
+            </div>
+            <div className="aff-mob-card-bottom">
+              <span className="aff-mob-card-subtext">Registered learner leads</span>
+              <div className="aff-mob-card-chart">
+                <svg className="w-12 h-6" viewBox="0 0 64 28" fill="none">
+                  <path d="M4 22 L16 16 L28 19 L42 10 L58 4" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M52 4 H58 V10" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <rect x="24" y="20" width="4" height="8" rx="1" fill="#a7f3d0" />
+                  <rect x="36" y="16" width="4" height="12" rx="1" fill="#6ee7b7" />
+                  <rect x="48" y="12" width="4" height="16" rx="1" fill="#34d399" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 3: Paid Enrollments */}
+          <div
+            className="aff-mob-metric-card"
+            onClick={() => {
+              setReferralStatusFilter('Paid');
+              setIsReferralsModalOpen(true);
+            }}
+          >
+            <div className="aff-mob-card-top">
+              <div className="aff-mob-card-icon-circle bg-[#8b5cf6]">
+                <GraduationCap className="w-3 h-3 text-white" />
+              </div>
+              <span className="aff-mob-card-badge bg-[#f3e8ff] text-[#7c3aed]">
+                {paidEnrollments > 0 ? `+ ${paidEnrollments}` : '+ 1'}
+              </span>
+            </div>
+            <div>
+              <div className="aff-mob-card-val">{paidEnrollments}</div>
+              <div className="aff-mob-card-label">Paid Enrollments</div>
+            </div>
+            <div className="aff-mob-card-bottom">
+              <span className="aff-mob-card-subtext">₹999 verified learners</span>
+              <div className="aff-mob-card-chart">
+                <svg className="w-12 h-6" viewBox="0 0 64 28" fill="none">
+                  <rect x="4" y="20" width="6" height="8" rx="1.5" fill="#f3e8ff" />
+                  <rect x="16" y="16" width="6" height="12" rx="1.5" fill="#e9d5ff" />
+                  <rect x="28" y="12" width="6" height="16" rx="1.5" fill="#d8b4fe" />
+                  <rect x="40" y="7" width="6" height="21" rx="1.5" fill="#c084fc" />
+                  <rect x="52" y="2" width="6" height="26" rx="1.5" fill="#8b5cf6" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 4: Pending Escrow */}
+          <div
+            className="aff-mob-metric-card"
+            onClick={() => {
+              setReferralStatusFilter('All');
+              setIsReferralsModalOpen(true);
+            }}
+          >
+            <div className="aff-mob-card-top">
+              <div className="aff-mob-card-icon-circle bg-[#f59e0b]">
+                <Clock className="w-3 h-3 text-white" />
+              </div>
+              <span className="aff-mob-card-badge bg-[#fef3c7] text-[#d97706]">
+                ₹{pendingBalance} pending
+              </span>
+            </div>
+            <div>
+              <div className="aff-mob-card-val text-[#ea580c]">₹{pendingBalance.toLocaleString('en-IN')}</div>
+              <div className="aff-mob-card-label">Pending Escrow</div>
+            </div>
+            <div className="aff-mob-card-bottom">
+              <span className="aff-mob-card-subtext">Unlocking on course start</span>
+              <div className="aff-mob-card-chart">
+                <svg className="w-12 h-6" viewBox="0 0 64 28" fill="none">
+                  <circle cx="10" cy="18" r="6" stroke="#f59e0b" strokeWidth="1.8" />
+                  <path d="M10 15 V18 H13" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" />
+                  <rect x="24" y="18" width="5" height="10" rx="1.5" fill="#fef3c7" />
+                  <rect x="34" y="14" width="5" height="14" rx="1.5" fill="#fde68a" />
+                  <rect x="44" y="9" width="5" height="19" rx="1.5" fill="#fcd34d" />
+                  <rect x="54" y="4" width="5" height="24" rx="1.5" fill="#f59e0b" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 5: Available to Payout */}
+          <div
+            className="aff-mob-metric-card"
+            onClick={() => {
+              setWithdrawStep('form');
+              setIsWithdrawModalOpen(true);
+            }}
+          >
+            <div className="aff-mob-card-top">
+              <div className="aff-mob-card-icon-circle bg-[#06b6d4]">
+                <Zap className="w-3 h-3 text-white" />
+              </div>
+              <span className="aff-mob-card-badge bg-[#ecfeff] text-[#0891b2]">
+                {availableBalance >= 100 ? 'Ready to Payout' : 'Min ₹100'}
+              </span>
+            </div>
+            <div>
+              <div className="aff-mob-card-val text-[#059669]">₹{availableBalance.toLocaleString('en-IN')}</div>
+              <div className="aff-mob-card-label">Available to Payout</div>
+            </div>
+            <div className="aff-mob-card-bottom">
+              <span className="aff-mob-card-subtext">Payout credited in 24 hours</span>
+              <div className="aff-mob-card-chart">
+                <svg className="w-12 h-6" viewBox="0 0 64 28" fill="none">
+                  <rect x="8" y="18" width="6" height="10" rx="1.5" fill="#cffafe" />
+                  <rect x="20" y="14" width="6" height="14" rx="1.5" fill="#a5f3fc" />
+                  <rect x="32" y="10" width="6" height="18" rx="1.5" fill="#67e8f9" />
+                  <rect x="44" y="6" width="6" height="22" rx="1.5" fill="#22d3ee" />
+                  <rect x="56" y="2" width="6" height="26" rx="1.5" fill="#06b6d4" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 6: Lifetime Earnings */}
+          <div
+            className="aff-mob-metric-card"
+            onClick={() => setIsWithdrawHistoryOpen(true)}
+          >
+            <div className="aff-mob-card-top">
+              <div className="aff-mob-card-icon-circle bg-[#6366f1]">
+                <Crown className="w-3 h-3 text-white" />
+              </div>
+              <span className="aff-mob-card-badge bg-[#f3e8ff] text-[#7c3aed]">
+                100% Verified
+              </span>
+            </div>
+            <div>
+              <div className="aff-mob-card-val text-[#4338ca]">₹{totalEarned.toLocaleString('en-IN')}</div>
+              <div className="aff-mob-card-label">Lifetime Earnings</div>
+            </div>
+            <div className="aff-mob-card-bottom">
+              <span className="aff-mob-card-subtext">Total commissions credited</span>
+              <div className="aff-mob-card-chart">
+                <svg className="w-12 h-6" viewBox="0 0 64 28" fill="none">
+                  <rect x="4" y="20" width="6" height="8" rx="1.5" fill="#e0e7ff" />
+                  <rect x="16" y="16" width="6" height="12" rx="1.5" fill="#c7d2fe" />
+                  <rect x="28" y="12" width="6" height="16" rx="1.5" fill="#a5b4fc" />
+                  <rect x="40" y="7" width="6" height="21" rx="1.5" fill="#818cf8" />
+                  <rect x="52" y="2" width="6" height="26" rx="1.5" fill="#6366f1" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 3. My Affiliate Link Card */}
+        <section className="aff-mob-section-card">
+          <div className="aff-mob-section-header">
+            <div className="aff-mob-section-hdr-left">
+              <div className="aff-mob-hdr-icon-circle">
+                <LinkIcon className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="aff-mob-section-title">My Affiliate Link</h3>
+                <p className="aff-mob-section-sub">Share across social channels to earn ₹100 / student</p>
+              </div>
+            </div>
+            <span className="aff-mob-active-pill">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] animate-pulse" />
+              Active • 24/7 Tracking
+            </span>
+          </div>
+
+          {/* Link Input Field + Attached Copy Button */}
+          <div className="aff-mob-link-input-group">
+            <input
+              type="text"
+              readOnly
+              value={affiliateRefUrl}
+              className="aff-mob-link-text"
+              title="Your unique referral link"
+            />
+            <button
+              type="button"
+              onClick={handleCopyLink}
+              className={`aff-mob-copy-btn ${copiedLink ? 'copied' : ''}`}
+            >
+              {copiedLink ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+              <span>{copiedLink ? 'Copied' : 'Copy Link'}</span>
+            </button>
+          </div>
+
+          {/* Social Share Buttons */}
+          <span className="aff-mob-share-title">Instant One-Click Share:</span>
+          <div className="aff-mob-social-row">
+            <button
+              type="button"
+              onClick={() => handleShareSocial('whatsapp')}
+              className="aff-mob-social-btn aff-mob-soc-wa"
+              title="Share on WhatsApp"
+            >
+              <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
+                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleShareSocial('telegram')}
+              className="aff-mob-social-btn aff-mob-soc-tg"
+              title="Share on Telegram"
+            >
+              <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleShareSocial('instagram')}
+              className="aff-mob-social-btn aff-mob-soc-ig"
+              title="Share on Instagram"
+            >
+              <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleShareSocial('linkedin')}
+              className="aff-mob-social-btn aff-mob-soc-li"
+              title="Share on LinkedIn"
+            >
+              <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
+                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.53 1.53 0 1 0-.01-3.06 1.53 1.53 0 0 0 .01 3.06m1.4 9.74v-8.37H5.06v8.37h2.8z" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleShareSocial('more')}
+              className="aff-mob-social-btn aff-mob-soc-more"
+              title="More Options"
+            >
+              <span className="font-black text-sm tracking-widest leading-none">•••</span>
+            </button>
+          </div>
+        </section>
+
+        {/* 4. Instant Payout Wallet Card */}
+        <section className="aff-mob-section-card">
+          <div className="aff-mob-section-header">
+            <div className="aff-mob-section-hdr-left">
+              <span className="text-xl">👛</span>
+              <div>
+                <h3 className="aff-mob-section-title">
+                  Instant <span>Payout Wallet</span>
+                </h3>
+                <p className="aff-mob-section-sub">24/7 Request • Payout within 24 Hours</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                playUiSound('click');
+                setIsWithdrawHistoryOpen(true);
+              }}
+              className="px-2.5 py-1 rounded-full bg-blue-50 text-[#0066ff] border border-blue-200 text-[10px] font-bold cursor-pointer"
+            >
+              History →
+            </button>
+          </div>
+
+          {/* Dark Navy Hero Box */}
+          <div className="aff-mob-wallet-dark-box">
+            {/* Left Box */}
+            <div className="aff-mob-wallet-left">
+              <div>
+                <span className="aff-mob-avail-tag">AVAILABLE TO WITHDRAW</span>
+                <div className="aff-mob-wallet-val-row">
+                  <span className="aff-mob-wallet-sum">₹{availableBalance.toLocaleString('en-IN')}</span>
+                  <div className="aff-mob-coins-wrap">
+                    <svg className="w-7 h-7" viewBox="0 0 48 48" fill="none">
+                      <ellipse cx="28" cy="34" rx="14" ry="6" fill="#ca8a04" />
+                      <ellipse cx="28" cy="32" rx="14" ry="6" fill="#eab308" />
+                      <ellipse cx="28" cy="30" rx="14" ry="6" fill="#facc15" />
+                      <ellipse cx="28" cy="24" rx="13" ry="5.5" fill="#ca8a04" />
+                      <ellipse cx="28" cy="22" rx="13" ry="5.5" fill="#eab308" />
+                      <ellipse cx="28" cy="20" rx="13" ry="5.5" fill="#facc15" />
+                      <circle cx="16" cy="26" r="11" fill="url(#mobGoldCoinGrad)" stroke="#fde047" strokeWidth="1.5" />
+                      <text x="16" y="30" fontSize="11" fontWeight="900" fill="#78350f" textAnchor="middle">₹</text>
+                      <defs>
+                        <radialGradient id="mobGoldCoinGrad" cx="35%" cy="35%" r="65%">
+                          <stop offset="0%" stopColor="#fef08a" />
+                          <stop offset="50%" stopColor="#eab308" />
+                          <stop offset="100%" stopColor="#a16207" />
+                        </radialGradient>
+                      </defs>
+                    </svg>
+                  </div>
+                </div>
+                <div className="aff-mob-wallet-subtext">Payout credited in 24 hours</div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  playUiSound('click');
+                  setWithdrawStep('form');
+                  setIsWithdrawModalOpen(true);
+                }}
+                className="aff-mob-withdraw-btn-gold"
+              >
+                <span>Withdraw to UPI / Bank</span>
+                <span className="text-sm font-black">→</span>
+              </button>
+            </div>
+
+            {/* Right Virtual Partner Card */}
+            <div className="aff-mob-partner-card">
+              <div className="aff-mob-partner-hdr">
+                <span className="aff-mob-partner-logo">FUTURE.AI <span>PARTNER</span></span>
+                <span className="text-amber-400 text-xs">⭐</span>
+              </div>
+              <div className="aff-mob-card-chip" />
+              <div>
+                <div className="aff-mob-partner-name">{userName}</div>
+                <div className="aff-mob-partner-valid">
+                  <span>♾️</span>
+                  <span>VALID: LIFETIME</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 5. Earnings Analytics & Growth Card */}
+        <section className="aff-mob-section-card">
+          <div className="aff-mob-section-header">
+            <div className="aff-mob-section-hdr-left">
+              <span className="text-xl text-[#0066ff]">📊</span>
+              <div>
+                <h3 className="aff-mob-section-title">
+                  Earnings Analytics <span>&amp; Growth</span>
+                </h3>
+                <p className="aff-mob-section-sub">Daily commission and student conversion</p>
+              </div>
+            </div>
+            {/* Filter Tabs */}
+            <div className="aff-mob-chart-range-capsule">
+              {(['7D', '30D', '3M', 'ALL'] as const).map((rng) => (
+                <button
+                  key={rng}
+                  type="button"
+                  className={`aff-mob-range-pill ${analyticsRangeFilter === rng ? 'active' : ''}`}
+                  onClick={() => {
+                    playUiSound('tab');
+                    setAnalyticsRangeFilter(rng);
+                  }}
+                >
+                  {rng}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Legend Row */}
+          <div className="aff-mob-legend-row">
+            <span className="aff-mob-leg-item">
+              <span className="aff-mob-leg-dot bg-[#0066ff]" />
+              <span>Clicks</span>
+            </span>
+            <span className="aff-mob-leg-item">
+              <span className="aff-mob-leg-dot bg-[#10b981]" />
+              <span>Signups</span>
+            </span>
+            <span className="aff-mob-leg-item">
+              <span className="aff-mob-leg-dot bg-[#8b5cf6]" />
+              <span>Enrollments</span>
+            </span>
+            <span className="aff-mob-leg-item">
+              <span className="aff-mob-leg-dot bg-[#f59e0b]" />
+              <span>Commission (₹)</span>
+            </span>
+          </div>
+
+          {/* Chart Container */}
+          <div className="aff-analytics-chart-container !my-1">
+            {/* Y Axis Left (Count) */}
+            <div className="aff-y-axis-left !w-6">
+              <span className="aff-axis-title !text-[8px]">COUNT</span>
+              <div className="aff-y-ticks !text-[8px]">
+                <span>500</span>
+                <span>400</span>
+                <span>300</span>
+                <span>200</span>
+                <span>100</span>
+                <span>0</span>
+              </div>
+            </div>
+
+            {/* Center Chart */}
+            <div className="aff-chart-svg-area">
+              <svg viewBox="0 0 380 180" className="w-full h-[155px]" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="mobBarBlue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#0066ff" />
+                    <stop offset="100%" stopColor="#38bdf8" />
+                  </linearGradient>
+                  <linearGradient id="mobBarGreen" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#10b981" />
+                    <stop offset="100%" stopColor="#6ee7b7" />
+                  </linearGradient>
+                  <linearGradient id="mobBarPurple" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#8b5cf6" />
+                    <stop offset="100%" stopColor="#c084fc" />
+                  </linearGradient>
+                </defs>
+
+                {/* Horizontal Gridlines */}
+                <line x1="0" y1="20" x2="380" y2="20" stroke="#f1f5f9" strokeWidth="1" />
+                <line x1="0" y1="52" x2="380" y2="52" stroke="#f1f5f9" strokeWidth="1" />
+                <line x1="0" y1="84" x2="380" y2="84" stroke="#f1f5f9" strokeWidth="1" />
+                <line x1="0" y1="116" x2="380" y2="116" stroke="#f1f5f9" strokeWidth="1" />
+                <line x1="0" y1="148" x2="380" y2="148" stroke="#f1f5f9" strokeWidth="1" />
+                <line x1="0" y1="170" x2="380" y2="170" stroke="#e2e8f0" strokeWidth="1" />
+
+                {/* Bars */}
+                {clicks > 0 && (
+                  <rect x="320" y={Math.max(30, 170 - Math.min(130, clicks * 8))} width="8" height={Math.min(130, clicks * 8)} rx="1.5" fill="url(#mobBarBlue)" />
+                )}
+                {signups > 0 && (
+                  <rect x="332" y={Math.max(30, 170 - Math.min(130, signups * 10))} width="8" height={Math.min(130, signups * 10)} rx="1.5" fill="url(#mobBarGreen)" />
+                )}
+                {paidEnrollments > 0 && (
+                  <rect x="344" y={Math.max(30, 170 - Math.min(130, paidEnrollments * 15))} width="8" height={Math.min(130, paidEnrollments * 15)} rx="1.5" fill="url(#mobBarPurple)" />
+                )}
+
+                {/* Commission Line */}
+                <polyline
+                  fill="none"
+                  stroke="#f59e0b"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  points={totalEarned > 0 ? `30,170 92,170 154,170 216,170 278,170 340,${Math.max(30, 170 - Math.min(135, (totalEarned / 100) * 14))}` : "30,170 92,170 154,170 216,170 278,170 340,170"}
+                />
+                <circle cx="340" cy={totalEarned > 0 ? Math.max(30, 170 - Math.min(135, (totalEarned / 100) * 14)) : 170} r="4" fill="#f59e0b" stroke="#ffffff" strokeWidth="2" />
+              </svg>
+
+              {/* Tooltip */}
+              <div className="aff-chart-active-tooltip !left-[44%] !top-[15%]">
+                <div className="text-[9px] font-semibold text-slate-400">Live Activity ({analyticsRangeFilter})</div>
+                <div className="text-[10.5px] font-black text-amber-400 leading-tight">₹{totalEarned.toLocaleString('en-IN')} commission</div>
+                <div className="text-[9px] font-bold text-purple-300 leading-tight">{paidEnrollments} enrollments</div>
+              </div>
+            </div>
+
+            {/* Y Axis Right (Commission) */}
+            <div className="aff-y-axis-right !w-14">
+              <span className="aff-axis-title !text-[7px]">COMMISSION (₹)</span>
+              <div className="aff-y-ticks !text-[8px]">
+                <span>4,000</span>
+                <span>3,000</span>
+                <span>2,000</span>
+                <span>1,000</span>
+                <span>0</span>
+              </div>
+            </div>
+          </div>
+
+          {/* X Axis */}
+          <div className="aff-x-axis-row !text-[8px]">
+            {chartDays.map((d) => (
+              <span key={d.date}>{d.date}</span>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      {/* DESKTOP INTERFACE (>= 768px) - 100% UNTOUCHED ORIGINAL LAYOUT        */}
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      <div className="aff-desktop-only">
       {/* =========================================================================
           1. AFFILIATE HERO BANNER SLIDER (Auto-Sliding Dual HD Banners with Controls)
           ========================================================================= */}
@@ -1983,6 +2597,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
 
         </div>
       </motion.section>
+      </div>
 
       {/* =========================================================================
           MODAL 1: INSTANT WITHDRAWAL MODAL
