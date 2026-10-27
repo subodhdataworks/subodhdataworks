@@ -579,6 +579,93 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     setCurrentBannerIndex((prev) => (prev + 1) % affiliateBanners.length);
   };
 
+  // Mobile 3-Banner Auto-Slider (Predik style compact mobile carousel)
+  const [currentMobSlide, setCurrentMobSlide] = useState(0);
+  const [isMobInteracting, setIsMobInteracting] = useState(false);
+  const mobTouchStartX = useRef<number | null>(null);
+  const mobTouchCurrentX = useRef<number | null>(null);
+
+  const mobilePromoBanners = useMemo(() => [
+    {
+      id: 'mob-banner-1',
+      image: '/images/affiliate/mobile_banner_refer_friends_blue.png',
+      alt: 'Refer Friends. Earn Cash. - Invite friends and earn referral commissions.',
+      title: 'Refer Friends. Earn Cash.',
+      subtitle: 'Invite friends and earn referral commissions.',
+      ctaText: 'Invite Friends',
+      ctaType: 'invite' as const,
+      theme: 'blue',
+    },
+    {
+      id: 'mob-banner-2',
+      image: '/images/affiliate/mobile_banner_friends_learn_green.png',
+      alt: 'Your Friends Learn. You Earn. - Earn commissions when friends enroll.',
+      title: 'Your Friends Learn. You Earn.',
+      subtitle: 'Earn commissions when friends enroll.',
+      ctaText: 'Start Earning',
+      ctaType: 'earn' as const,
+      theme: 'green',
+    },
+    {
+      id: 'mob-banner-3',
+      image: '/images/affiliate/mobile_banner_withdraw_earnings_purple.png',
+      alt: 'Withdraw Your Earnings. Direct to Bank / UPI. - Safe and secure payouts to bank or UPI.',
+      title: 'Withdraw Your Earnings. Direct to Bank / UPI.',
+      subtitle: 'Safe and secure payouts to bank or UPI.',
+      ctaText: 'Withdraw Now',
+      ctaType: 'withdraw' as const,
+      theme: 'purple',
+    },
+  ], []);
+
+  useEffect(() => {
+    if (isMobInteracting || prefersReducedMotion || mobilePromoBanners.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentMobSlide((prev) => (prev + 1) % mobilePromoBanners.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [isMobInteracting, prefersReducedMotion, mobilePromoBanners.length]);
+
+  const handleMobTouchStart = (e: React.TouchEvent) => {
+    setIsMobInteracting(true);
+    mobTouchStartX.current = e.touches[0].clientX;
+    mobTouchCurrentX.current = e.touches[0].clientX;
+  };
+
+  const handleMobTouchMove = (e: React.TouchEvent) => {
+    mobTouchCurrentX.current = e.touches[0].clientX;
+  };
+
+  const handleMobTouchEnd = () => {
+    setIsMobInteracting(false);
+    if (mobTouchStartX.current !== null && mobTouchCurrentX.current !== null) {
+      const diff = mobTouchStartX.current - mobTouchCurrentX.current;
+      if (diff > 35) {
+        setCurrentMobSlide((prev) => (prev + 1) % mobilePromoBanners.length);
+      } else if (diff < -35) {
+        setCurrentMobSlide((prev) => (prev - 1 + mobilePromoBanners.length) % mobilePromoBanners.length);
+      }
+    }
+    mobTouchStartX.current = null;
+    mobTouchCurrentX.current = null;
+  };
+
+  const handleMobBannerClick = (ctaType: 'invite' | 'earn' | 'withdraw') => {
+    if (ctaType === 'invite') {
+      handleCopyLink();
+    } else if (ctaType === 'earn') {
+      const el = document.getElementById('affiliate-main-dashboard') || document.querySelector('.affiliate-share-tool-card');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        handleCopyLink();
+      }
+    } else if (ctaType === 'withdraw') {
+      setWithdrawStep('form');
+      setIsWithdrawModalOpen(true);
+    }
+  };
+
   // Referral Filter & Search State
   const [referralStatusFilter, setReferralStatusFilter] = useState<'All' | 'Paid' | 'Approved' | 'Registered' | 'Trial Started' | 'Reversed'>('All');
   const [referralSearch, setReferralSearch] = useState('');
@@ -1170,6 +1257,69 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 setCurrentBannerIndex(idx);
               }}
               aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* =========================================================================
+          1B. MOBILE-ONLY 3-BANNER PROMOTIONAL AUTO-SLIDER (< 768px)
+          Compact 3-slide promotional carousel matching Predik mobile reference
+          ========================================================================= */}
+      <section
+        className="aff-mobile-promo-slider-wrap"
+        aria-label="Promotional Banners Carousel"
+        onMouseEnter={() => setIsMobInteracting(true)}
+        onMouseLeave={() => setIsMobInteracting(false)}
+        onTouchStart={handleMobTouchStart}
+        onTouchMove={handleMobTouchMove}
+        onTouchEnd={handleMobTouchEnd}
+      >
+        <div className="aff-mob-slider-card-viewport">
+          <div
+            className="aff-mob-slider-track"
+            style={{ transform: `translateX(-${currentMobSlide * 100}%)` }}
+          >
+            {mobilePromoBanners.map((banner, idx) => (
+              <div
+                key={banner.id}
+                className={`aff-mob-slider-slide slide-${banner.theme}`}
+                role="button"
+                tabIndex={0}
+                aria-label={`${banner.title} - ${banner.ctaText}`}
+                onClick={() => handleMobBannerClick(banner.ctaType)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleMobBannerClick(banner.ctaType);
+                  }
+                }}
+              >
+                <img
+                  src={banner.image}
+                  alt={banner.alt}
+                  className="aff-mob-banner-img"
+                  loading={idx === 0 ? 'eager' : 'lazy'}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Compact pagination dots */}
+        <div className="aff-mob-slider-dots" role="tablist" aria-label="Mobile banner pagination">
+          {mobilePromoBanners.map((banner, idx) => (
+            <button
+              key={banner.id}
+              type="button"
+              role="tab"
+              aria-selected={currentMobSlide === idx}
+              aria-label={`Go to slide ${idx + 1}: ${banner.title}`}
+              className={`aff-mob-slider-dot ${currentMobSlide === idx ? 'active' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentMobSlide(idx);
+              }}
             />
           ))}
         </div>

@@ -972,6 +972,108 @@
 }
 
 /* ============================================================ */
+/* 1B. MOBILE-ONLY 3-BANNER PROMOTIONAL AUTO-SLIDER (< 768px)   */
+/* Compact Predik-style 3-slide carousel with swipe & dots      */
+/* ============================================================ */
+.aff-mobile-promo-slider-wrap {
+  display: none;
+}
+
+@media (max-width: 767.98px) {
+  /* Hide desktop dual-banner hero on mobile */
+  .affiliate-hero-slider-wrap {
+    display: none !important;
+  }
+
+  /* Show compact mobile 3-banner auto-slider */
+  .aff-mobile-promo-slider-wrap {
+    display: block;
+    width: 100%;
+    margin: 0 0 4px 0;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .aff-mob-slider-card-viewport {
+    position: relative;
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #0f172a;
+    box-shadow: 0 3px 12px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e2e8f0;
+  }
+
+  .aff-mob-slider-track {
+    display: flex;
+    width: 100%;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+
+  .aff-mob-slider-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+    touch-action: pan-y;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f172a;
+  }
+
+  .aff-mob-banner-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    aspect-ratio: 1004 / 119;
+    pointer-events: none;
+  }
+
+  .aff-mob-slider-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 2px 0 4px;
+  }
+
+  .aff-mob-slider-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 9999px;
+    background: #cbd5e1;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .aff-mob-slider-dot.active {
+    width: 20px;
+    background: #0066ff;
+    border-radius: 9999px;
+    box-shadow: 0 1px 4px rgba(0, 102, 255, 0.35);
+  }
+}
+
+@media (min-width: 768px) {
+  .aff-mobile-promo-slider-wrap {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aff-mob-slider-track {
+    transition: none !important;
+  }
+}
+
+/* ============================================================ */
 /* 2. TOP 6 PERFORMANCE METRIC CARDS (Framer 3D Glass Cards)   */
 /* ============================================================ */
 .affiliate-perf-cards-grid {
