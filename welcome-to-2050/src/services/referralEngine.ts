@@ -8,6 +8,9 @@
  * - Single common engine, ledger-based wallet, idempotency, fraud detection.
  */
 
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from './firebase';
+
 export type ReferrerType = 'student' | 'influencer';
 export type ReferralStatus = 'ACTIVE' | 'PENDING_ENROLLMENT' | 'BLOCKED';
 export type PaymentStatus = 'INITIATED' | 'PENDING' | 'SUCCESS' | 'FAILED' | 'REFUNDED' | 'CANCELLED';
@@ -381,6 +384,25 @@ export class ReferralEngine {
     state.walletLedger.unshift(newTxn);
 
     this.saveState(state);
+
+    // Real-Time Cloud Sync: persist withdrawal to Firestore 'withdrawal_requests' collection
+    try {
+      const firestoreData = {
+        id: wth.id,
+        referrerId: state.profile.userId || state.profile.referralCode,
+        refCode: state.profile.referralCode,
+        userName: state.profile.userName,
+        userEmail: state.profile.email,
+        amount,
+        method: method === 'BANK_TRANSFER' ? 'BANK_TRANSFER' : 'UPI',
+        details,
+        status: 'UNDER_REVIEW',
+        requestedAt: wth.requestedAt,
+        referenceNo: wth.referenceNo,
+      };
+      setDoc(doc(db, 'withdrawal_requests', wth.id), firestoreData, { merge: true }).catch(() => {});
+    } catch {}
+
     return state;
   }
 

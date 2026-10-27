@@ -75,7 +75,7 @@ export class AdminDataService {
     const allUsers = await getAllRegisteredUsers();
     const suspensions = this.getSuspensions();
     const payments = this.getAllPayments();
-    const withdrawals = this.getAllWithdrawals();
+    const withdrawals = await this.getAllWithdrawals();
 
     const suspendedCount = suspensions.filter((s) => s.isSuspended).length;
     const activeCount = Math.max(0, allUsers.length - suspendedCount);
@@ -270,11 +270,76 @@ export class AdminDataService {
   }
 
   /**
-   * 4. Withdrawal Management & Immutable Ledger Safeguards
+   * 4. Withdrawal Management & Immutable Ledger Safeguards (Cloud Synced)
    */
-  public static getAllWithdrawals(): WithdrawalRequest[] {
-    const engineWithdrawals = ReferralEngine.getWithdrawals();
-    return engineWithdrawals;
+  public static async getAllWithdrawals(): Promise<WithdrawalRequest[]> {
+    const list: WithdrawalRequest[] = [];
+    const seenIds = new Set<string>();
+
+    // 1. Fetch from Firestore Cloud Database collection 'withdrawal_requests'
+    try {
+      const colRef = collection(db, 'withdrawal_requests');
+      const snap = await getDocs(colRef);
+      snap.forEach((docSnap) => {
+        const data = docSnap.data();
+        if (data && (data.id || docSnap.id)) {
+          const reqId = data.id || docSnap.id;
+          const isBank =
+            String(data.method).toUpperCase() === 'BANK' ||
+            String(data.method).toUpperCase() === 'BANK_TRANSFER' ||
+            Boolean(data.bankAccNumber || data.details?.accountNumber);
+
+          const rawStatus = String(data.status || 'UNDER_REVIEW').toUpperCase();
+          const canonicalStatus: WithdrawalRequest['status'] =
+            rawStatus === 'PAID'
+              ? 'PAID'
+              : rawStatus === 'APPROVED'
+              ? 'APPROVED'
+              : rawStatus === 'REJECTED' || rawStatus === 'CANCELLED'
+              ? 'REJECTED'
+              : rawStatus === 'PROCESSING'
+              ? 'PROCESSING'
+              : 'UNDER_REVIEW';
+
+          const req: WithdrawalRequest = {
+            id: reqId,
+            referrerId: data.referrerId || data.userId || data.refCode || data.userEmail || 'Learner',
+            amount: Number(data.amount) || 0,
+            method: isBank ? 'BANK_TRANSFER' : 'UPI',
+            details: {
+              upiId: data.details?.upiId || data.upiId || (!isBank ? data.destination : '') || '',
+              accountHolder: data.details?.accountHolder || data.accountHolder || data.userName || 'Learner',
+              accountNumber: data.details?.accountNumber || data.bankAccNumber || '',
+              ifsc: data.details?.ifsc || data.bankIfsc || '',
+              bankName: data.details?.bankName || data.bankName || 'Bank',
+            },
+            status: canonicalStatus,
+            requestedAt: data.requestedAt || data.createdAt || new Date().toISOString(),
+            paidAt: data.paidAt,
+            referenceNo: data.referenceNo || data.txId,
+          };
+          seenIds.add(req.id);
+          list.push(req);
+        }
+      });
+    } catch (err) {
+      console.warn('Firestore withdrawal_requests fetch notice:', err);
+    }
+
+    // 2. Also merge local engine withdrawals if any exist
+    try {
+      const engineWithdrawals = ReferralEngine.getWithdrawals();
+      for (const w of engineWithdrawals) {
+        if (!seenIds.has(w.id)) {
+          seenIds.add(w.id);
+          list.push(w);
+        }
+      }
+    } catch (err) {}
+
+    // 3. Sort newest first
+    list.sort((a, b) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime());
+    return list;
   }
 
   public static async updateWithdrawalStatus(params: {
@@ -287,7 +352,7 @@ export class AdminDataService {
       return { success: false, error: 'Unauthorized: You do not have permission to approve withdrawals.' };
     }
 
-    const withdrawals = this.getAllWithdrawals();
+    const withdrawals = await this.getAllWithdrawals();
     const req = withdrawals.find((w) => w.id === params.requestId);
     if (!req) {
       return { success: false, error: 'Withdrawal request not found.' };
@@ -308,10 +373,28 @@ export class AdminDataService {
       req.referenceNo = params.payoutRef?.trim();
     }
 
-    // Save state back via ReferralEngine
+    // 1. Update in Firestore collection 'withdrawal_requests'
+    try {
+      const docRef = doc(db, 'withdrawal_requests', req.id);
+      await setDoc(
+        docRef,
+        {
+          status: params.newStatus,
+          paidAt: params.newStatus === 'PAID' ? new Date().toISOString() : null,
+          referenceNo: params.payoutRef?.trim() || req.referenceNo || null,
+          adminNotes: params.adminNotes,
+          updatedAt: new Date().toISOString(),
+        },
+        { merge: true }
+      );
+    } catch (err) {
+      console.warn('Failed to update withdrawal in Firestore:', err);
+    }
+
+    // 2. Save state back via ReferralEngine
     ReferralEngine.saveWithdrawal(req);
 
-    // If REJECTED, refund the amount back to user's wallet ledger automatically
+    // 3. If REJECTED, refund the amount back to user's wallet ledger automatically
     if (params.newStatus === 'REJECTED') {
       ReferralEngine.reverseWithdrawal({
         referrerId: req.referrerId,
@@ -321,7 +404,7 @@ export class AdminDataService {
       });
     }
 
-    // Also synchronize v5 Affiliate Hub & Server API (/api/affiliate) withdrawal lifecycle
+    // 4. Also synchronize v5 Affiliate Hub & Server API (/api/affiliate) withdrawal lifecycle
     const mappedV5Status =
       params.newStatus === 'PAID'
         ? 'Paid'

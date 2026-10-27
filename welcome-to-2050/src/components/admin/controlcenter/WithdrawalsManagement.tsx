@@ -14,6 +14,7 @@ import {
   CreditCard,
   Building,
   ArrowRight,
+  RefreshCw,
   X
 } from 'lucide-react';
 import { WithdrawalRequest, ReferralEngine } from '../../../services/referralEngine';
@@ -132,6 +133,16 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
             <option value="PAID">Paid &amp; Settled</option>
             <option value="REJECTED">Rejected / Cancelled</option>
           </select>
+
+          <button
+            type="button"
+            onClick={onRefresh}
+            className="flex items-center gap-1.5 px-3 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0"
+            title="Refresh withdrawals from Firebase Cloud"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>Sync Live Cloud</span>
+          </button>
         </div>
       </div>
 

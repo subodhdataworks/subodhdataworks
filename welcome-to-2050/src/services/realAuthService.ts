@@ -1281,6 +1281,47 @@ export async function submitAffiliateWithdrawalRequest(params: {
       } catch {}
     }
 
+    // Real-Time Cloud Sync: persist withdrawal to Firestore 'withdrawal_requests' collection
+    try {
+      const uName = (typeof window !== 'undefined' ? localStorage.getItem('futureai_user_name') : '') || 'Learner';
+      const uEmail = (typeof window !== 'undefined' ? localStorage.getItem('futureai_user_email') : '') || '';
+      const firestoreDoc = {
+        id: newWithdrawal.id,
+        txId: newWithdrawal.txId,
+        requestId: newWithdrawal.requestId || newWithdrawal.id,
+        referrerId: cleanCode,
+        refCode: cleanCode,
+        userId: cleanCode,
+        userName: uName,
+        userEmail: uEmail,
+        amount: requestedAmount,
+        method: isBank ? 'BANK_TRANSFER' : 'UPI',
+        destination,
+        upiId: upiId || undefined,
+        bankAccNumber: bankAcc || undefined,
+        bankIfsc: bankIfsc || undefined,
+        bankName: bankName || undefined,
+        accountHolder: uName,
+        details: {
+          upiId: upiId || undefined,
+          accountNumber: bankAcc || undefined,
+          ifsc: bankIfsc || undefined,
+          bankName: bankName || undefined,
+          accountHolder: uName,
+        },
+        status: 'UNDER_REVIEW',
+        requestedAt: nowIso,
+        createdAt: nowIso,
+        updatedAt: nowIso,
+        referenceNo: newWithdrawal.txId,
+      };
+      setDoc(doc(db, 'withdrawal_requests', newWithdrawal.id), firestoreDoc, { merge: true }).catch((err) => {
+        console.warn('Firestore setDoc withdrawal_requests err:', err);
+      });
+    } catch (fireErr) {
+      console.warn('Firestore withdrawal sync notice:', fireErr);
+    }
+
     if (requestKey) {
       processedClientWithdrawalKeys.set(requestKey, newWithdrawal);
     }
@@ -1356,6 +1397,29 @@ export async function updateAffiliateWithdrawalStatus(params: {
       }),
       3500
     );
+  } catch {}
+
+  // Real-Time Cloud Sync: persist status change to Firestore 'withdrawal_requests'
+  try {
+    const canonicalStatus =
+      params.newStatus === 'Paid'
+        ? 'PAID'
+        : params.newStatus === 'Approved'
+        ? 'APPROVED'
+        : params.newStatus === 'Rejected' || params.newStatus === 'Cancelled'
+        ? 'REJECTED'
+        : 'UNDER_REVIEW';
+
+    setDoc(
+      doc(db, 'withdrawal_requests', params.withdrawalId),
+      {
+        status: canonicalStatus,
+        reason: params.reason || null,
+        payoutRef: params.payoutRef || null,
+        updatedAt: new Date().toISOString(),
+      },
+      { merge: true }
+    ).catch(() => {});
   } catch {}
 
   const withdrawals: any[] = Array.isArray(parsed.withdrawals) ? [...parsed.withdrawals] : [];
