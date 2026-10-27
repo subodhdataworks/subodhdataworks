@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FutureLogo } from './FutureLogo';
+import {
+  FutureLogo } from './FutureLogo';
 import { WalletWithdrawModal } from './WalletWithdrawModal';
 import { soundEffects } from '../../services/soundEffects';
 import {
@@ -31,6 +32,11 @@ import {
   CheckCircle2,
   Lock,
   FileCheck2,
+  Laptop,
+  Users,
+  Star,
+  FileText,
+  ChevronLeft,
 } from 'lucide-react';
 
 const WA_SUPPORT_PHONE = '917632099528';
@@ -112,21 +118,29 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
       if (stored && stored !== 'Learner' && stored !== 'Rahul' && stored !== 'Rahul Sharma' && stored !== 'Student') {
         return stored;
       }
-      return userName && userName !== 'Learner' && userName !== 'Rahul' && userName !== 'Rahul Sharma' && userName !== 'Student' ? userName : '';
+      return userName && userName !== 'Learner' && userName !== 'Rahul' && userName !== 'Rahul Sharma' && userName !== 'Student' ? userName : 'Subodh Kumar';
     }
     return userName && userName !== 'Learner' && userName !== 'Rahul' && userName !== 'Rahul Sharma' && userName !== 'Student' ? userName : '';
   });
 
+  const [studentEmail, setStudentEmail] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('futureai_user_email') || 'subodhkumar@gmail.com';
+    }
+    return 'subodhkumar@gmail.com';
+  });
+  const [editEmailInput, setEditEmailInput] = useState<string>(studentEmail);
+
   const [studentPhone, setStudentPhone] = useState<string>(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('futureai_user_phone') || userPhone || '';
+      return localStorage.getItem('futureai_user_phone') || userPhone || '+91 98765 43210';
     }
     return userPhone || '';
   });
 
   const [studentAvatar, setStudentAvatar] = useState<string>(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('futureai_user_avatar') || userAvatar || '';
+      return localStorage.getItem('futureai_user_avatar') || userAvatar || '/images/avatar-subodh-kumar.jpg';
     }
     return userAvatar || '';
   });
@@ -264,27 +278,21 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
     soundEffects.playClick();
     setHamburgerDrawerOpen(false);
 
-    if (target === 'help') {
-      if (typeof window !== 'undefined') {
-        window.open(WA_SUPPORT_URL, '_blank', 'noopener,noreferrer');
-      }
-      return;
-    }
-
     scrollToTop();
 
     if (!isLoggedIn) {
-      if (['dashboard', 'learning', 'practice', 'mock-interview', 'earn', 'certificate', 'internship', 'recommendation', 'placement'].includes(target)) {
+      if (['dashboard', 'learning', 'practice', 'mock-interview', 'coding-practice', 'internship', 'placement', 'certificate', 'recommendation', 'placement-support'].includes(target)) {
         const redirectMap: Record<string, string> = {
           dashboard: '#dashboard',
           learning: '#data-analyst',
-          practice: '#practice',
+          practice: '#python-challenges',
           'mock-interview': '#mockinterview',
-          earn: '#income',
-          certificate: '#certificates',
+          'coding-practice': '#game',
           internship: '#internship',
-          recommendation: '#recommendation',
           placement: '#placement',
+          certificate: '#certificates',
+          recommendation: '#recommendation',
+          'placement-support': '#placement',
         };
         const targetHash = redirectMap[target] || '#dashboard';
         if (typeof window !== 'undefined') {
@@ -306,29 +314,33 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
         if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
         break;
       case 'practice':
-        onNavigatePractice('master');
-        if (typeof window !== 'undefined') window.location.hash = '#practice';
+        onNavigatePractice('python');
+        if (typeof window !== 'undefined') window.location.hash = '#python-challenges';
         break;
       case 'mock-interview':
         if (typeof window !== 'undefined') window.location.hash = '#mockinterview';
         break;
-      case 'earn':
-        onNavigateEarn();
-        if (typeof window !== 'undefined') window.location.hash = '#income';
-        break;
-      case 'certificate':
-        if (onNavigateCertificate) onNavigateCertificate();
-        else if (typeof window !== 'undefined') window.location.hash = '#certificates';
+      case 'coding-practice':
+        onNavigatePractice('master');
+        if (typeof window !== 'undefined') window.location.hash = '#game';
         break;
       case 'internship':
         onNavigateInternship();
         if (typeof window !== 'undefined') window.location.hash = '#internship';
         break;
+      case 'placement':
+        onNavigatePlacement();
+        if (typeof window !== 'undefined') window.location.hash = '#placement';
+        break;
+      case 'certificate':
+        if (onNavigateCertificate) onNavigateCertificate();
+        else if (typeof window !== 'undefined') window.location.hash = '#certificates';
+        break;
       case 'recommendation':
         if (onNavigateRecommendation) onNavigateRecommendation();
         else if (typeof window !== 'undefined') window.location.hash = '#recommendation';
         break;
-      case 'placement':
+      case 'placement-support':
         onNavigatePlacement();
         if (typeof window !== 'undefined') window.location.hash = '#placement';
         break;
@@ -347,23 +359,26 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
       case 'learning':
         return activeNavTab === 'learning' || h.includes('#data') || h.includes('#learn') || h.includes('#course');
       case 'practice':
-        return activeNavTab === 'practice' || h.includes('#practice') || h.includes('#challenge') || h.includes('#game') || h.includes('#arena');
+        return h.includes('#python-challenges') || h.includes('#sql-challenges') || h.includes('#excel-challenges') || h.includes('#dsa') || h.includes('#arena');
       case 'mock-interview':
         return h.includes('#interview') || h.includes('#mockinterview');
-      case 'earn':
-        return activeNavTab === 'earn' || h.includes('#income') || h.includes('#wallet') || h.includes('#earn') || h.includes('#referral') || h.includes('#earnings') || h.includes('#earncash');
-      case 'certificate':
-        return h.includes('#cert');
+      case 'coding-practice':
+        return h.includes('#game') || h === '#practice' || h.includes('#codingpractice');
       case 'internship':
         return activeNavTab === 'internship' || h.includes('#intern');
+      case 'placement':
+        return activeNavTab === 'placement' || h === '#placement' || h.includes('#job');
+      case 'certificate':
+        return h.includes('#cert');
       case 'recommendation':
         return h.includes('#recom') || h.includes('#lor');
-      case 'placement':
-        return activeNavTab === 'placement' || h.includes('#place');
+      case 'placement-support':
+        return h.includes('#placement-support');
       default:
         return false;
     }
   };
+
 
   // Profile save action
   const handleSaveProfile = (e: React.FormEvent) => {
@@ -671,87 +686,6 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     </div>
                   )}
                 </button>
-
-                {/* ─── PREMIUM STUDENT PROFILE DROPDOWN CARD (Exact Visual Specification) ─── */}
-                {profileDropdownOpen && (
-                  <div
-                    className="absolute right-0 top-full mt-2.5 w-[360px] max-w-[calc(100vw-24px)] bg-white rounded-[20px] border border-[#E5EDF8] shadow-[0_15px_45px_rgba(20,50,100,0.15)] p-6 z-50 text-left transition-all duration-200 transform origin-top-right animate-fadeIn"
-                    role="dialog"
-                    aria-label="Student Profile Card"
-                  >
-                    {/* Top Profile Section: Large 100px x 100px circular photo with camera badge */}
-                    <div className="relative mx-auto w-[100px] h-[100px] mb-3">
-                      <div className="w-[100px] h-[100px] rounded-full border-[3px] border-[#DCE8FC] overflow-hidden bg-gradient-to-tr from-blue-50 to-indigo-100 flex items-center justify-center shadow-xs">
-                        {studentAvatar ? (
-                          <img src={studentAvatar} alt={studentName} className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-[#EEF4FF] text-[#1a73e8] font-black text-3xl">
-                            {studentName ? studentName.charAt(0).toUpperCase() : 'S'}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Small decorative blue camera icon at bottom-right */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setProfileDropdownOpen(false);
-                          setEditNameInput(studentName);
-                          setEditPhoneInput(studentPhone);
-                          setEditProfileModalOpen(true);
-                        }}
-                        className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[#1a73e8] hover:bg-blue-600 text-white flex items-center justify-center shadow-xs border-2 border-white cursor-pointer transition-transform hover:scale-105 active:scale-95"
-                        title="Change profile picture"
-                        aria-label="Change profile picture"
-                      >
-                        <Camera className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-
-                    {/* Student Name: Center aligned, 22px, font-weight 700, #10234A */}
-                    <h3 className="text-[22px] font-bold text-[#10234A] text-center leading-tight">
-                      {studentName}
-                    </h3>
-                    <p className="text-xs text-slate-500 font-medium text-center mt-0.5">
-                      Student
-                    </p>
-
-                    {/* Mobile Number Section */}
-                    <div className="border-t border-[#E5EDF8] pt-4 mt-5">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-[#EEF4FF] flex items-center justify-center text-[#1a73e8] shrink-0">
-                          <Phone className="w-5 h-5" />
-                        </div>
-                        <div className="min-w-0 flex-1 text-left">
-                          <span className="text-xs text-slate-500 font-medium block">Mobile Number</span>
-                          <span className="text-sm font-bold text-[#10234A] block truncate mt-0.5">
-                            {studentPhone && studentPhone.trim() ? studentPhone : 'Not provided'}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Edit Profile Button: Full width, 52px height, #EEF4FF bg, thin blue border */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        soundEffects.playClick();
-                        setProfileDropdownOpen(false);
-                        setEditNameInput(studentName);
-                        setEditPhoneInput(studentPhone);
-                        setEditProfileModalOpen(true);
-                        if (onOpenProfile) onOpenProfile();
-                      }}
-                      className="w-full h-[52px] mt-5 px-4 rounded-[12px] bg-[#EEF4FF] hover:bg-[#E0ECFF] border border-[#C8DCFC] flex items-center justify-between text-[#1a73e8] font-bold text-sm transition-all duration-200 cursor-pointer active:scale-[0.99] shadow-2xs group"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <Pencil className="w-4 h-4 text-[#1a73e8]" />
-                        <span>Edit Profile</span>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
-                    </button>
-                  </div>
-                )}
               </div>
             )}
 
@@ -784,207 +718,207 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
             aria-hidden="true"
           />
 
-          {/* Drawer Container */}
+          {/* Drawer Container (Width 82-86vw, max 340px, rounded left corners) */}
           <aside
-            className="relative z-10 w-[88vw] max-w-[340px] md:w-[340px] h-[100dvh] bg-white shadow-[-10px_0_40px_rgba(20,50,100,0.15)] md:rounded-l-[24px] flex flex-col justify-between overflow-hidden text-left animate-slideInRight"
+            className="relative z-10 w-[84vw] max-w-[340px] h-[100dvh] bg-white shadow-[-12px_0_40px_rgba(15,23,42,0.18)] rounded-l-[28px] flex flex-col justify-between overflow-hidden text-left animate-slideInRight"
             role="dialog"
-            aria-label="Quick Navigation Drawer"
+            aria-label="Navigation Drawer"
           >
-            {/* Drawer Header */}
-            <div className="p-5 pb-4 border-b border-slate-100 flex items-center justify-between shrink-0 bg-gradient-to-b from-slate-50/70 to-white">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-[#EEF4FF] border border-[#DCE8FC] flex items-center justify-center text-[#1a73e8] font-black text-sm shadow-xs shrink-0">
-                  ⚡
-                </div>
-                <div>
-                  <h2 className="text-base font-black text-[#10234A] tracking-tight leading-tight">
-                    FUTURE IT INDUSTRY
-                  </h2>
-                  <p className="text-xs text-slate-500 font-medium leading-none mt-0.5">
-                    Quick Navigation
-                  </p>
-                </div>
+            {/* Header: FUTURE IT INDUSTRY Logo on left + Close X on right */}
+            <div className="px-5 py-4 flex items-center justify-between shrink-0 bg-gradient-to-b from-blue-50/50 via-white to-white border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <FutureLogo variant="full" size="md" />
               </div>
 
-              {/* Close (X) Button */}
+              {/* Circular Close Button */}
               <button
                 type="button"
                 onClick={() => {
                   soundEffects.playClick();
                   setHamburgerDrawerOpen(false);
                 }}
-                className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-all cursor-pointer active:scale-95"
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer active:scale-95 border border-slate-200/60"
                 aria-label="Close navigation drawer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Scrollable Navigation Menu Items (Exact 11 Items in Specified Order) */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-1.5">
-              {/* 1. Dashboard — House */}
+            {/* Scrollable Navigation Menu (Exact 10 Items in Specified Order) */}
+            <div className="flex-1 overflow-y-auto px-3.5 py-2 space-y-1">
+              {/* 1. Dashboard */}
               <button
                 type="button"
                 onClick={() => handleDrawerNavigate('dashboard')}
-                className={`w-full h-[50px] px-3.5 rounded-[12px] flex items-center justify-between transition-all duration-200 cursor-pointer group ${
+                className={`w-full h-[46px] px-3.5 rounded-xl flex items-center justify-between transition-all duration-150 cursor-pointer group ${
                   isItemActive('dashboard')
-                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold border-l-4 border-[#1a73e8] shadow-xs'
+                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold shadow-xs'
                     : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <House className={`w-5 h-5 shrink-0 ${isItemActive('dashboard') ? 'text-[#1a73e8]' : 'text-slate-500 group-hover:text-[#1a73e8]'}`} />
-                  <span className="text-sm">Dashboard</span>
+                  <House className={`w-5 h-5 shrink-0 ${isItemActive('dashboard') ? 'text-[#1a73e8]' : 'text-slate-700 group-hover:text-[#1a73e8]'}`} />
+                  <span className="text-[13.5px] leading-none">Dashboard</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
+                <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isItemActive('dashboard') ? 'text-[#1a73e8]' : 'text-slate-400 group-hover:text-[#1a73e8]'}`} />
               </button>
 
-              {/* 2. My Learning — BookOpen */}
+              {/* 2. My Learning */}
               <button
                 type="button"
                 onClick={() => handleDrawerNavigate('learning')}
-                className={`w-full h-[50px] px-3.5 rounded-[12px] flex items-center justify-between transition-all duration-200 cursor-pointer group ${
+                className={`w-full h-[46px] px-3.5 rounded-xl flex items-center justify-between transition-all duration-150 cursor-pointer group ${
                   isItemActive('learning')
-                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold border-l-4 border-[#1a73e8] shadow-xs'
+                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold shadow-xs'
                     : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <BookOpen className={`w-5 h-5 shrink-0 ${isItemActive('learning') ? 'text-[#1a73e8]' : 'text-slate-500 group-hover:text-[#1a73e8]'}`} />
-                  <span className="text-sm">My Learning</span>
+                  <BookOpen className={`w-5 h-5 shrink-0 ${isItemActive('learning') ? 'text-[#1a73e8]' : 'text-slate-700 group-hover:text-[#1a73e8]'}`} />
+                  <span className="text-[13.5px] leading-none">My Learning</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
+                <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isItemActive('learning') ? 'text-[#1a73e8]' : 'text-slate-400 group-hover:text-[#1a73e8]'}`} />
               </button>
 
-              {/* 3. Hackathon / DSA Practice — CodeXml */}
+              {/* 3. Hackathon / DSA Practice */}
               <button
                 type="button"
                 onClick={() => handleDrawerNavigate('practice')}
-                className={`w-full h-[50px] px-3.5 rounded-[12px] flex items-center justify-between transition-all duration-200 cursor-pointer group ${
+                className={`w-full h-[46px] px-3.5 rounded-xl flex items-center justify-between transition-all duration-150 cursor-pointer group ${
                   isItemActive('practice')
-                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold border-l-4 border-[#1a73e8] shadow-xs'
+                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold shadow-xs'
                     : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <CodeXml className={`w-5 h-5 shrink-0 ${isItemActive('practice') ? 'text-[#1a73e8]' : 'text-slate-500 group-hover:text-[#1a73e8]'}`} />
-                  <span className="text-sm">Hackathon / DSA Practice</span>
+                  <CodeXml className={`w-5 h-5 shrink-0 ${isItemActive('practice') ? 'text-[#1a73e8]' : 'text-slate-700 group-hover:text-[#1a73e8]'}`} />
+                  <span className="text-[13.5px] leading-none">Hackathon / DSA Practice</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
+                <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isItemActive('practice') ? 'text-[#1a73e8]' : 'text-slate-400 group-hover:text-[#1a73e8]'}`} />
               </button>
 
-              {/* 4. Unlimited Mock Interview — Sparkles */}
+              {/* 4. Unlimited Mock Interview */}
               <button
                 type="button"
                 onClick={() => handleDrawerNavigate('mock-interview')}
-                className={`w-full h-[50px] px-3.5 rounded-[12px] flex items-center justify-between transition-all duration-200 cursor-pointer group ${
+                className={`w-full h-[46px] px-3.5 rounded-xl flex items-center justify-between transition-all duration-150 cursor-pointer group ${
                   isItemActive('mock-interview')
-                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold border-l-4 border-[#1a73e8] shadow-xs'
+                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold shadow-xs'
                     : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Sparkles className={`w-5 h-5 shrink-0 ${isItemActive('mock-interview') ? 'text-[#1a73e8]' : 'text-slate-500 group-hover:text-[#1a73e8]'}`} />
-                  <span className="text-sm">Unlimited Mock Interview</span>
+                  <Users className={`w-5 h-5 shrink-0 ${isItemActive('mock-interview') ? 'text-[#1a73e8]' : 'text-slate-700 group-hover:text-[#1a73e8]'}`} />
+                  <span className="text-[13.5px] leading-none">Unlimited Mock Interview</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
+                <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isItemActive('mock-interview') ? 'text-[#1a73e8]' : 'text-slate-400 group-hover:text-[#1a73e8]'}`} />
               </button>
 
-              {/* 5. Earning & Wallet — Earn Cash */}
+              {/* 5. Coding Practice */}
               <button
                 type="button"
-                onClick={() => handleDrawerNavigate('earn')}
-                className={`w-full h-[50px] px-3.5 rounded-[12px] flex items-center justify-between transition-all duration-200 cursor-pointer group ${
-                  isItemActive('earn')
-                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold border-l-4 border-[#1a73e8] shadow-xs'
+                onClick={() => handleDrawerNavigate('coding-practice')}
+                className={`w-full h-[46px] px-3.5 rounded-xl flex items-center justify-between transition-all duration-150 cursor-pointer group ${
+                  isItemActive('coding-practice')
+                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold shadow-xs'
                     : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Coins className={`w-5 h-5 shrink-0 ${isItemActive('earn') ? 'text-amber-500' : 'text-slate-500 group-hover:text-amber-500'}`} />
-                  <span className="text-sm">Earning &amp; Wallet</span>
+                  <Laptop className={`w-5 h-5 shrink-0 ${isItemActive('coding-practice') ? 'text-[#1a73e8]' : 'text-slate-700 group-hover:text-[#1a73e8]'}`} />
+                  <span className="text-[13.5px] leading-none">Coding Practice</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200/60">
-                    Earn Cash
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
-                </div>
+                <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isItemActive('coding-practice') ? 'text-[#1a73e8]' : 'text-slate-400 group-hover:text-[#1a73e8]'}`} />
               </button>
 
-              {/* 6. Certificate — Award */}
-              <button
-                type="button"
-                onClick={() => handleDrawerNavigate('certificate')}
-                className={`w-full h-[50px] px-3.5 rounded-[12px] flex items-center justify-between transition-all duration-200 cursor-pointer group ${
-                  isItemActive('certificate')
-                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold border-l-4 border-[#1a73e8] shadow-xs'
-                    : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <Award className={`w-5 h-5 shrink-0 ${isItemActive('certificate') ? 'text-[#1a73e8]' : 'text-slate-500 group-hover:text-[#1a73e8]'}`} />
-                  <span className="text-sm">Certificate</span>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
-              </button>
-
-              {/* 7. Internship — GraduationCap */}
+              {/* 6. Internship */}
               <button
                 type="button"
                 onClick={() => handleDrawerNavigate('internship')}
-                className={`w-full h-[50px] px-3.5 rounded-[12px] flex items-center justify-between transition-all duration-200 cursor-pointer group ${
+                className={`w-full h-[46px] px-3.5 rounded-xl flex items-center justify-between transition-all duration-150 cursor-pointer group ${
                   isItemActive('internship')
-                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold border-l-4 border-[#1a73e8] shadow-xs'
+                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold shadow-xs'
                     : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <GraduationCap className={`w-5 h-5 shrink-0 ${isItemActive('internship') ? 'text-[#1a73e8]' : 'text-slate-500 group-hover:text-[#1a73e8]'}`} />
-                  <span className="text-sm">Internship</span>
+                  <GraduationCap className={`w-5 h-5 shrink-0 ${isItemActive('internship') ? 'text-[#1a73e8]' : 'text-slate-700 group-hover:text-[#1a73e8]'}`} />
+                  <span className="text-[13.5px] leading-none">Internship</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
+                <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isItemActive('internship') ? 'text-[#1a73e8]' : 'text-slate-400 group-hover:text-[#1a73e8]'}`} />
               </button>
 
-              {/* 8. Recommendation Letter — FileBadge */}
+              {/* 7. Job & Placement */}
+              <button
+                type="button"
+                onClick={() => handleDrawerNavigate('placement')}
+                className={`w-full h-[46px] px-3.5 rounded-xl flex items-center justify-between transition-all duration-150 cursor-pointer group ${
+                  isItemActive('placement')
+                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold shadow-xs'
+                    : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Briefcase className={`w-5 h-5 shrink-0 ${isItemActive('placement') ? 'text-[#1a73e8]' : 'text-slate-700 group-hover:text-[#1a73e8]'}`} />
+                  <span className="text-[13.5px] leading-none">Job &amp; Placement</span>
+                </div>
+                <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isItemActive('placement') ? 'text-[#1a73e8]' : 'text-slate-400 group-hover:text-[#1a73e8]'}`} />
+              </button>
+
+              {/* 8. Certificate */}
+              <button
+                type="button"
+                onClick={() => handleDrawerNavigate('certificate')}
+                className={`w-full h-[46px] px-3.5 rounded-xl flex items-center justify-between transition-all duration-150 cursor-pointer group ${
+                  isItemActive('certificate')
+                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold shadow-xs'
+                    : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Award className={`w-5 h-5 shrink-0 ${isItemActive('certificate') ? 'text-[#1a73e8]' : 'text-slate-700 group-hover:text-[#1a73e8]'}`} />
+                  <span className="text-[13.5px] leading-none">Certificate</span>
+                </div>
+                <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isItemActive('certificate') ? 'text-[#1a73e8]' : 'text-slate-400 group-hover:text-[#1a73e8]'}`} />
+              </button>
+
+              {/* 9. Recommendation Letter */}
               <button
                 type="button"
                 onClick={() => handleDrawerNavigate('recommendation')}
-                className={`w-full h-[50px] px-3.5 rounded-[12px] flex items-center justify-between transition-all duration-200 cursor-pointer group ${
+                className={`w-full h-[46px] px-3.5 rounded-xl flex items-center justify-between transition-all duration-150 cursor-pointer group ${
                   isItemActive('recommendation')
-                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold border-l-4 border-[#1a73e8] shadow-xs'
+                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold shadow-xs'
                     : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <FileBadge className={`w-5 h-5 shrink-0 ${isItemActive('recommendation') ? 'text-[#1a73e8]' : 'text-slate-500 group-hover:text-[#1a73e8]'}`} />
-                  <span className="text-sm">Recommendation Letter</span>
+                  <FileText className={`w-5 h-5 shrink-0 ${isItemActive('recommendation') ? 'text-[#1a73e8]' : 'text-slate-700 group-hover:text-[#1a73e8]'}`} />
+                  <span className="text-[13.5px] leading-none">Recommendation Letter</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#1a73e8] group-hover:translate-x-0.5 transition-transform" />
+                <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isItemActive('recommendation') ? 'text-[#1a73e8]' : 'text-slate-400 group-hover:text-[#1a73e8]'}`} />
               </button>
 
-              {/* Thin Divider */}
-              <div className="my-2 border-t border-slate-100" />
-
-              {/* 9. Help and Support — Direct WhatsApp Chat */}
+              {/* 10. Placement Support */}
               <button
                 type="button"
-                onClick={() => handleDrawerNavigate('help')}
-                className="w-full h-[50px] px-3.5 rounded-[12px] flex items-center justify-between transition-all duration-200 cursor-pointer group text-[#10234A] hover:bg-emerald-50/80 hover:text-[#075E54] font-semibold"
+                onClick={() => handleDrawerNavigate('placement-support')}
+                className={`w-full h-[46px] px-3.5 rounded-xl flex items-center justify-between transition-all duration-150 cursor-pointer group ${
+                  isItemActive('placement-support')
+                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold shadow-xs'
+                    : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
+                }`}
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-5 h-5 flex items-center justify-center text-[#25D366] group-hover:scale-110 transition-transform">
-                    <WhatsAppIcon className="w-5 h-5" />
-                  </span>
-                  <span className="text-sm">Help and Support</span>
+                  <Star className={`w-5 h-5 shrink-0 ${isItemActive('placement-support') ? 'text-[#1a73e8]' : 'text-slate-700 group-hover:text-[#1a73e8]'}`} />
+                  <span className="text-[13.5px] leading-none">Placement Support</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-transform" />
+                <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isItemActive('placement-support') ? 'text-[#1a73e8]' : 'text-slate-400 group-hover:text-[#1a73e8]'}`} />
               </button>
+            </div>
 
-              {/* Thin Divider */}
-              <div className="my-2 border-t border-slate-100" />
-
-              {/* 11. Sign Out — LogOut */}
+            {/* Bottom Sign Out Button */}
+            <div className="p-4 pt-2 border-t border-slate-100 bg-white shrink-0">
               <button
                 type="button"
                 onClick={() => {
@@ -998,13 +932,235 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     window.location.reload();
                   }
                 }}
-                className="w-full h-[50px] px-3.5 rounded-[12px] bg-rose-50 hover:bg-rose-100/90 text-rose-600 border border-rose-100/80 flex items-center justify-between font-bold text-sm transition-all duration-200 cursor-pointer group"
+                className="w-full h-12 px-4 rounded-2xl bg-rose-50/80 hover:bg-rose-100/90 text-rose-600 border border-rose-100/80 flex items-center justify-between font-bold text-sm transition-all duration-200 cursor-pointer active:scale-[0.98] group"
               >
                 <div className="flex items-center gap-3">
                   <LogOut className="w-5 h-5 text-rose-600 shrink-0" />
-                  <span>Sign Out</span>
+                  <span className="font-extrabold text-[15px]">Sign Out</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-rose-400 group-hover:translate-x-0.5 transition-transform" />
+                <ChevronRight className="w-4 h-4 text-rose-500 group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
+
+      {/* ─── PREMIUM COMPACT MY PROFILE PANEL (Matches Reference 1:1) ─── */}
+      {profileDropdownOpen && (
+        <div className="fixed inset-0 z-[100] flex justify-end animate-fadeIn">
+          {/* Dark Translucent Backdrop */}
+          <div
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
+            onClick={() => setProfileDropdownOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Profile Drawer Panel */}
+          <aside
+            className="relative z-10 w-[84vw] max-w-[340px] h-[100dvh] bg-white shadow-[-12px_0_40px_rgba(15,23,42,0.18)] rounded-l-[28px] flex flex-col justify-between overflow-hidden text-left animate-slideInRight"
+            role="dialog"
+            aria-label="My Profile"
+          >
+            {/* Header: Back Button + My Profile + Edit Button */}
+            <div className="p-4 px-5 flex items-center justify-between shrink-0 border-b border-slate-100 bg-white">
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playClick();
+                  setProfileDropdownOpen(false);
+                }}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer active:scale-95 border border-slate-200/60"
+                aria-label="Back"
+              >
+                <ChevronLeft className="w-5 h-5 text-slate-700 -ml-0.5" />
+              </button>
+
+              <h2 className="text-base font-extrabold text-[#10234A]">My Profile</h2>
+
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playClick();
+                  setEditNameInput(studentName);
+                  setEditPhoneInput(studentPhone);
+                  setEditEmailInput(studentEmail);
+                  setEditProfileModalOpen(true);
+                }}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer active:scale-95 border border-slate-200/60"
+                aria-label="Edit Profile"
+              >
+                <Pencil className="w-4 h-4 text-slate-700" />
+              </button>
+            </div>
+
+            {/* Scrollable Body */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-3.5">
+              {/* 1. Profile Identity Header */}
+              <div className="flex items-center gap-3 pt-1">
+                <div className="relative shrink-0">
+                  <div className="w-14 h-14 rounded-full border-2 border-blue-200 overflow-hidden bg-gradient-to-tr from-blue-50 to-indigo-100 flex items-center justify-center shadow-xs">
+                    {studentAvatar ? (
+                      <img src={studentAvatar} alt={studentName} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-[#EEF4FF] text-[#1a73e8] font-black text-xl">
+                        {studentName ? studentName.charAt(0).toUpperCase() : 'S'}
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditNameInput(studentName);
+                      setEditPhoneInput(studentPhone);
+                      setEditEmailInput(studentEmail);
+                      setEditProfileModalOpen(true);
+                    }}
+                    className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#1a73e8] hover:bg-blue-600 text-white flex items-center justify-center shadow-xs border-2 border-white cursor-pointer"
+                    title="Change Photo"
+                    aria-label="Change Photo"
+                  >
+                    <Camera className="w-2.5 h-2.5" />
+                  </button>
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <h3 className="text-base font-extrabold text-[#10234A] truncate leading-tight">
+                      {studentName}
+                    </h3>
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 fill-emerald-50" />
+                  </div>
+                  <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
+                    Student • Data Analyst with GenAI
+                  </p>
+                </div>
+              </div>
+
+              {/* 2. Gamification Summary (3 Pills + XP Bar) */}
+              <div className="space-y-2.5 pt-1">
+                <div className="grid grid-cols-3 gap-1.5">
+                  <div className="flex items-center justify-center gap-1 py-1 px-1.5 rounded-lg bg-amber-50/80 border border-amber-200/60 text-amber-800 text-[10px] font-bold">
+                    <span>👑</span>
+                    <span>Level 3</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-1 py-1 px-1.5 rounded-lg bg-orange-50/80 border border-orange-200/60 text-orange-700 text-[10px] font-bold">
+                    <span>🔥</span>
+                    <span>7 Days</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-1 py-1 px-1.5 rounded-lg bg-yellow-50/80 border border-yellow-200/60 text-yellow-800 text-[10px] font-bold">
+                    <span>⭐</span>
+                    <span>12 Badges</span>
+                  </div>
+                </div>
+
+                {/* XP Progress */}
+                <div>
+                  <div className="flex items-center justify-between text-[10.5px] mb-1">
+                    <span className="font-extrabold text-[#10234A]">1,250 / 1,600 XP</span>
+                    <span className="font-bold text-[#0284c7]">78% to Level 4</span>
+                  </div>
+                  <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-blue-600 via-[#1a73e8] to-cyan-400"
+                      style={{ width: '78%' }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Personal Information Card */}
+              <div className="bg-slate-50/70 border border-slate-200/70 rounded-2xl p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-extrabold text-[#10234A]">Personal Information</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundEffects.playClick();
+                      setEditNameInput(studentName);
+                      setEditPhoneInput(studentPhone);
+                      setEditEmailInput(studentEmail);
+                      setEditProfileModalOpen(true);
+                    }}
+                    className="flex items-center gap-1 text-[11px] font-bold text-[#1a73e8] hover:underline cursor-pointer"
+                  >
+                    <Pencil className="w-3 h-3" />
+                    <span>Edit</span>
+                  </button>
+                </div>
+
+                <div className="space-y-1.5 text-[11px]">
+                  <div className="flex items-center justify-between py-0.5">
+                    <span className="text-slate-500 font-medium">Full Name</span>
+                    <span className="text-[#10234A] font-bold">{studentName}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-0.5">
+                    <span className="text-slate-500 font-medium">Email</span>
+                    <span className="text-[#10234A] font-bold truncate max-w-[170px]">{studentEmail}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-0.5">
+                    <span className="text-slate-500 font-medium">Phone</span>
+                    <span className="text-[#10234A] font-bold">{studentPhone}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. Learning Information Card */}
+              <div className="bg-slate-50/70 border border-slate-200/70 rounded-2xl p-3">
+                <div className="mb-2">
+                  <span className="text-xs font-extrabold text-[#10234A]">Learning Information</span>
+                </div>
+
+                <div className="space-y-1.5 text-[11px]">
+                  <div className="flex items-center justify-between py-0.5">
+                    <span className="text-slate-500 font-medium">Current Course</span>
+                    <span className="text-[#10234A] font-bold">Data Analyst with GenAI</span>
+                  </div>
+                  <div className="flex items-center justify-between py-0.5">
+                    <span className="text-slate-500 font-medium">Enrolled Since</span>
+                    <span className="text-[#10234A] font-bold">26 Oct 2026</span>
+                  </div>
+                  <div className="flex items-center justify-between py-0.5">
+                    <span className="text-slate-500 font-medium">Total Courses</span>
+                    <span className="text-[#10234A] font-bold">3</span>
+                  </div>
+                  <div className="flex items-center justify-between py-0.5">
+                    <span className="text-slate-500 font-medium">Completed Courses</span>
+                    <span className="text-[#10234A] font-bold">1</span>
+                  </div>
+                  <div className="flex items-center justify-between py-0.5">
+                    <span className="text-slate-500 font-medium">Certificates Earned</span>
+                    <span className="text-[#10234A] font-bold">1</span>
+                  </div>
+                  <div className="flex items-center justify-between py-0.5">
+                    <span className="text-slate-500 font-medium">Internship Status</span>
+                    <span className="px-2 py-0.5 rounded-md bg-slate-200/70 text-slate-700 text-[10px] font-semibold">
+                      Not Started
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between py-0.5">
+                    <span className="text-slate-500 font-medium">Job Assistance</span>
+                    <span className="px-2 py-0.5 rounded-md bg-slate-200/70 text-slate-700 text-[10px] font-semibold">
+                      Not Started
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Action: View My Progress */}
+            <div className="p-4 pt-2 border-t border-slate-100 bg-white shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playClick();
+                  setProfileDropdownOpen(false);
+                  onNavigateLearning();
+                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+                }}
+                className="w-full h-11 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.98] transition-all cursor-pointer"
+              >
+                <span>View My Progress</span>
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </aside>
