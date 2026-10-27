@@ -66,6 +66,7 @@ import { FutureAdvancedHeader } from './FutureAdvancedHeader';
 import { FutureAuthModal } from './FutureAuthModal';
 import { RealSuccessStoriesShowcase } from './RealSuccessStoriesShowcase';
 import { MobileCareerProgramsSection } from './MobileCareerProgramsSection';
+import { MobileAtsResumeSection } from './MobileAtsResumeSection';
 import { MobileCareerJourneySection } from './MobileCareerJourneySection';
 import { MobileWhyChooseSection } from './MobileWhyChooseSection';
 
@@ -846,6 +847,17 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         </div>
         </div>
       </section>
+
+{/* ═══════════════════════════════════════════════════════════════════════════
+          SECTION 2.5: Mobile-Only ATS Resume Analyser (< 768px)
+      ═══════════════════════════════════════════════════════════════════════════ */}
+      <div className="block md:hidden">
+        <MobileAtsResumeSection
+          onOpenAts={() => {
+            window.location.hash = '#ats';
+          }}
+        />
+      </div>
 
 {/* ═══════════════════════════════════════════════════════════════════════════
           SECTION 3: Your Journey From Learning to Earning

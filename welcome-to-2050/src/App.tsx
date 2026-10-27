@@ -258,43 +258,25 @@ export const App: React.FC = () => {
             }}
           />
         ) : currentHash.split('?')[0] === '#ats-resume-checker' || currentHash.split('?')[0] === '#ats' ? (
-          isLoggedIn ? (
-            <AtsResumeChecker
-              onBackToHome={() => {
-                window.location.hash = '#home';
-              }}
-              onOpenLogin={(candidateName?: string) => {
-                const nameToUse = candidateName || userName;
-                if (nameToUse) setUserName(nameToUse);
-                setIsLoggedIn(true);
-                if (typeof window !== 'undefined') {
-                  if (nameToUse) localStorage.setItem('futureai_user_name', nameToUse);
-                  localStorage.setItem('futureai_logged_in', 'true');
-                }
-              }}
-              onEnrollNow={() => {
-                setPayModalOpen(true);
-              }}
-              isLoggedIn={isLoggedIn}
-              userName={userName}
-            />
-          ) : (
-            <FutureAiHome
-              profile={profile}
-              theme="light"
-              isLoggedIn={false}
-              userName=""
-              initialAuthOpen={true}
-              initialAuthMessage="Please login to continue."
-              initialAuthRedirect="#ats"
-              onLoginSuccess={handleLogin}
-              onLogout={handleLogout}
-              onOpenDashboard={() => {
-                setIsLoggedIn(true);
-                window.location.hash = '#dashboard';
-              }}
-            />
-          )
+          <AtsResumeChecker
+            onBackToHome={() => {
+              window.location.hash = '#home';
+            }}
+            onOpenLogin={(candidateName?: string) => {
+              const nameToUse = candidateName || userName;
+              if (nameToUse) setUserName(nameToUse);
+              setIsLoggedIn(true);
+              if (typeof window !== 'undefined') {
+                if (nameToUse) localStorage.setItem('futureai_user_name', nameToUse);
+                localStorage.setItem('futureai_logged_in', 'true');
+              }
+            }}
+            onEnrollNow={() => {
+              setPayModalOpen(true);
+            }}
+            isLoggedIn={isLoggedIn}
+            userName={userName}
+          />
         ) : (() => {
             const baseH = (typeof window !== 'undefined' ? window.location.hash : currentHash).split('?')[0].toLowerCase();
             // If logged in, show LearnerDashboard (unless user specifically visits pre-login #home or #welcome)
