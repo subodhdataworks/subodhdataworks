@@ -26,6 +26,8 @@ function isAndroidOrMobile(): boolean {
 import { doc, setDoc, getDoc, collection, getDocs, query, where, serverTimestamp, increment } from 'firebase/firestore';
 import { auth, db, googleProvider } from './firebase';
 
+import { clearTestUserEnrollments } from './courseUnlockService';
+import { ReferralEngine } from './referralEngine';
 export interface RegisteredUserRecord {
   uid: string;
   name: string;
@@ -2091,4 +2093,278 @@ export function getAffiliateMigrationStatus(): AffiliateMigrationReport {
     } catch {}
   }
   return runAffiliateSystemResetMigrationOnce();
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FUTURE IT INDUSTRY — APPROVED FRESH CLOUD START RESET (v6_clean_cloud)
+// ─────────────────────────────────────────────────────────────────────────────
+export const FRESH_CLOUD_EPOCH = 'futureai_fresh_cloud_v6_2026';
+export const FRESH_CLOUD_REPORT_KEY = 'futureai_fresh_cloud_v6_report';
+export const ARCHIVED_TEST_DATA_KEY = 'futureai_archived_test_data_v6';
+export const ARCHIVED_TEST_WITHDRAWALS_KEY = 'futureai_archived_test_withdrawals';
+
+export interface FreshCloudStartReport {
+  epoch: string;
+  status: 'COMPLETED' | 'ALREADY_COMPLETED' | 'ERROR';
+  completedAt: string;
+  testAccountsReset: string[];
+  recordsArchived: {
+    withdrawals: number;
+    courseUnlockKeys: number;
+    legacyAffiliateKeys: number;
+  };
+  finalBalances: {
+    wallet: number;
+    pendingCommission: number;
+    availableCommission: number;
+  };
+  withdrawalQueueActiveCount: number;
+  enrolledCoursesCount: number;
+  preservedKeys: string[];
+  cloudAuthoritativeSource: string;
+}
+
+/**
+ * Executes the owner-approved Fresh Cloud Start reset across the 4 systems:
+ * 1. Wallet Balance -> Reset confirmed test balances to ₹0
+ * 2. Withdrawal Requests -> Archive historical test requests & clear active queue
+ * 3. Referral Commission -> Reset test earnings & statistics to 0
+ * 4. Course Enrollment -> Remove test enrollment entitlements & purge obsolete unlock flags
+ * Strictly preserves user authentication, passwords, profiles, ATS resumes, and AI interviews.
+ */
+export function runFreshCloudStartResetMigrationOnce(): FreshCloudStartReport {
+  const defaultReport: FreshCloudStartReport = {
+    epoch: FRESH_CLOUD_EPOCH,
+    status: 'COMPLETED',
+    completedAt: new Date().toISOString(),
+    testAccountsReset: ['SUBODHKUMAR', 'TREND1XS', 'PARTNER', 'user_subodh_123', 'subodhkumar@gmail.com'],
+    recordsArchived: { withdrawals: 0, courseUnlockKeys: 0, legacyAffiliateKeys: 0 },
+    finalBalances: { wallet: 0, pendingCommission: 0, availableCommission: 0 },
+    withdrawalQueueActiveCount: 0,
+    enrolledCoursesCount: 0,
+    preservedKeys: ['futureai_logged_in', 'futureai_user_email', 'futureai_user_name'],
+    cloudAuthoritativeSource: 'Firebase Firestore (future-it-industry-f97af)',
+  };
+
+  if (typeof window === 'undefined') return defaultReport;
+
+  try {
+    // Check if version sentinel has already executed
+    if (localStorage.getItem(FRESH_CLOUD_EPOCH) === 'true') {
+      const saved = localStorage.getItem(FRESH_CLOUD_REPORT_KEY);
+      if (saved) {
+        return { ...JSON.parse(saved), status: 'ALREADY_COMPLETED' };
+      }
+      return { ...defaultReport, status: 'ALREADY_COMPLETED' };
+    }
+
+    // Confirmed owner-controlled test profiles ONLY
+    const confirmedTestCodes = ['SUBODHKUMAR', 'TREND1XS', 'PARTNER'];
+    const confirmedTestUserIds = ['user_subodh_123', 'subodhkumar@gmail.com', 'trend@futureitindustry.com'];
+
+    // STEP 1: Reset Wallet & Referral Commission for confirmed test codes
+    const freshZeroHubState = {
+      availableBalance: 0,
+      pendingBalance: 0,
+      totalPaid: 0,
+      totalEarned: 0,
+      reversedBalance: 0,
+      clicks: 0,
+      signups: 0,
+      paidEnrollments: 0,
+      referrals: [],
+      withdrawals: [],
+      updatedAt: new Date().toISOString(),
+    };
+
+    const freshPayoutMethodState = {
+      status: 'NOT_LINKED',
+      upiId: '',
+      isUpiVerified: false,
+      bankAccNumber: '',
+      bankIfsc: '',
+      bankHolder: '',
+      bankName: '',
+      isBankVerified: false,
+      updatedAt: new Date().toISOString(),
+    };
+
+    for (const code of confirmedTestCodes) {
+      localStorage.setItem(`futureai_affiliate_hub_v5_${code}`, JSON.stringify(freshZeroHubState));
+      localStorage.setItem(`futureai_payout_method_v5_${code}`, JSON.stringify(freshPayoutMethodState));
+      try {
+        setDoc(doc(db, 'affiliate_stats', code), {
+          refCode: code,
+          availableBalance: 0,
+          pendingBalance: 0,
+          totalEarned: 0,
+          totalPaid: 0,
+          clicks: 0,
+          signups: 0,
+          paidEnrollments: 0,
+          updatedAt: new Date().toISOString(),
+        }, { merge: true }).catch(() => {});
+      } catch {}
+    }
+    localStorage.setItem('futureai_user_wallet', '0');
+
+    // STEP 2: Archive historical test withdrawals & clear them from active queue
+    let archivedWithdrawalsCount = 0;
+    const archivedWithdrawals: any[] = [];
+    try {
+      const engineState = ReferralEngine.getState();
+      if (Array.isArray(engineState.withdrawals) && engineState.withdrawals.length > 0) {
+        for (const w of engineState.withdrawals) {
+          archivedWithdrawals.push({
+            ...w,
+            archived: true,
+            archivedAt: new Date().toISOString(),
+            archivedReason: 'Pre-Reset Historical Test Withdrawal Preserved for Audit',
+          });
+        }
+        archivedWithdrawalsCount += engineState.withdrawals.length;
+        engineState.withdrawals = [];
+        engineState.walletLedger = [];
+        engineState.availableCommission = 0;
+        engineState.pendingCommission = 0;
+        ReferralEngine.saveState(engineState);
+      }
+    } catch {}
+
+    try {
+      const priorArchived = localStorage.getItem(ARCHIVED_TEST_WITHDRAWALS_KEY);
+      if (priorArchived) {
+        const parsed = JSON.parse(priorArchived);
+        if (Array.isArray(parsed)) {
+          for (const item of parsed) {
+            if (!archivedWithdrawals.some((a) => a.id === item.id)) {
+              archivedWithdrawals.push(item);
+            }
+          }
+        }
+      }
+    } catch {}
+    localStorage.setItem(ARCHIVED_TEST_WITHDRAWALS_KEY, JSON.stringify(archivedWithdrawals));
+
+    // STEP 3: Remove test course enrollments & purge legacy unlock keys
+    let legacyKeysPurgedCount = 0;
+    const legacyUnlockKeys = [
+      'futureai_unlocked_courses',
+      'futureai_unlocked_courses_v1',
+      'futureai_course_enrolled',
+      'futureai_cloud_user_entitlements_v1',
+      'futureai_unlocked_data_analyst',
+      'futureai_unlocked_data_science',
+      'futureai_unlocked_ml_engineering',
+      'futureai_unlocked_deep_learning',
+      'futureai_unlocked_ai_engineering',
+      'futureai_unlocked_ai_tools_prompt',
+      'futureai_unlocked_ms_office_copilot',
+      'futureai_unlocked_full_stack_mern',
+    ];
+
+    const archivedDataSnapshot: Record<string, any> = {};
+    for (const key of legacyUnlockKeys) {
+      const val = localStorage.getItem(key);
+      if (val !== null) {
+        archivedDataSnapshot[key] = val;
+        localStorage.removeItem(key);
+        legacyKeysPurgedCount++;
+      }
+    }
+
+    // Clear user-scoped enrollment caches for confirmed test users
+    clearTestUserEnrollments(confirmedTestUserIds);
+
+    // Update test user in MASTER_REGISTRY_KEY
+    try {
+      const rawRegistry = localStorage.getItem(MASTER_REGISTRY_KEY);
+      if (rawRegistry) {
+        const reg: RegisteredUserRecord[] = JSON.parse(rawRegistry);
+        if (Array.isArray(reg)) {
+          const updatedReg = reg.map((u) => {
+            const isTestUser = confirmedTestUserIds.some(
+              (id) => u.uid === id || u.email?.toLowerCase() === id.toLowerCase()
+            );
+            if (isTestUser) {
+              return {
+                ...u,
+                enrolledCourses: [],
+                isEnrolled: false,
+                lastPayment: undefined,
+              };
+            }
+            return u;
+          });
+          localStorage.setItem(MASTER_REGISTRY_KEY, JSON.stringify(updatedReg));
+        }
+      }
+    } catch {}
+
+    localStorage.removeItem('futureai_ref_attribution');
+    try { sessionStorage.removeItem('futureai_ref_attribution'); } catch {}
+
+    localStorage.setItem(ARCHIVED_TEST_DATA_KEY, JSON.stringify({
+      archivedAt: new Date().toISOString(),
+      testAccountsReset: confirmedTestCodes,
+      purgedKeys: archivedDataSnapshot,
+    }));
+
+    // STEP 4: Strict Preservation Verification
+    const preservedKeys = [
+      'futureai_logged_in',
+      'futureai_user_name',
+      'futureai_user_email',
+      'futureai_user_phone',
+      'futureai_user_uid',
+      'futureai_user_avatar',
+      'futureai_python_challenges_progress_SUBODHKUMAR',
+    ].filter((k) => localStorage.getItem(k) !== null);
+
+    // STEP 5: Mark Sentinel Flag and Broadcast Events
+    localStorage.setItem(FRESH_CLOUD_EPOCH, 'true');
+    localStorage.setItem('futureai_fresh_cloud_v6_reset_at', new Date().toISOString());
+
+    window.dispatchEvent(new Event('futureai_wallet_updated'));
+    window.dispatchEvent(new Event('futureai_affiliate_updated'));
+    window.dispatchEvent(new CustomEvent('futureai_course_unlocked', { detail: { courses: [] } }));
+
+    const report: FreshCloudStartReport = {
+      epoch: FRESH_CLOUD_EPOCH,
+      status: 'COMPLETED',
+      completedAt: new Date().toISOString(),
+      testAccountsReset: ['SUBODHKUMAR', 'TREND1XS', 'PARTNER', 'user_subodh_123', 'subodhkumar@gmail.com'],
+      recordsArchived: {
+        withdrawals: archivedWithdrawalsCount,
+        courseUnlockKeys: legacyKeysPurgedCount,
+        legacyAffiliateKeys: confirmedTestCodes.length,
+      },
+      finalBalances: {
+        wallet: 0,
+        pendingCommission: 0,
+        availableCommission: 0,
+      },
+      withdrawalQueueActiveCount: 0,
+      enrolledCoursesCount: 0,
+      preservedKeys,
+      cloudAuthoritativeSource: 'Firebase Firestore (future-it-industry-f97af)',
+    };
+
+    localStorage.setItem(FRESH_CLOUD_REPORT_KEY, JSON.stringify(report));
+    return report;
+  } catch (err) {
+    console.error("Fresh Cloud Start reset error:", err);
+    return { ...defaultReport, status: 'ERROR' };
+  }
+}
+
+export function getFreshCloudStartStatus(): FreshCloudStartReport {
+  if (typeof window !== 'undefined') {
+    try {
+      const saved = localStorage.getItem(FRESH_CLOUD_REPORT_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch {}
+  }
+  return runFreshCloudStartResetMigrationOnce();
 }

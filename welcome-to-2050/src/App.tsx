@@ -18,7 +18,7 @@ import { AboutUsView } from './components/legal/AboutUsView';
 import { PaymentResultModal } from './components/futureai/PaymentResultModal';
 import { auth } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { findExistingUser, recordUserInDatabase, runAffiliateSystemResetMigrationOnce } from './services/realAuthService';
+import { findExistingUser, recordUserInDatabase, runAffiliateSystemResetMigrationOnce, runFreshCloudStartResetMigrationOnce } from './services/realAuthService';
 import { restoreUserEntitlementsFromCloud } from './services/cloudSyncService';
 import { clearActiveCourseSessionCacheOnLogout } from './services/courseUnlockService';
 
@@ -27,6 +27,7 @@ export const App: React.FC = () => {
   // Resets only affiliate metrics, affiliate wallets, payout history, and bank/UPI links once.
   // Preserves user login accounts, authentication sessions, and course enrollment records.
   runAffiliateSystemResetMigrationOnce();
+  runFreshCloudStartResetMigrationOnce();
 
   const profile = StorageService.getProfile();
   const [payModalOpen, setPayModalOpen] = useState(false);

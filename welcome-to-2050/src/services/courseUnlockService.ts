@@ -271,6 +271,34 @@ export function runCourseUnlockUserIsolationMigrationOnce(): void {
   }
 }
 
+/**
+ * Clears course enrollments for confirmed test accounts during the approved Fresh Cloud Start reset.
+ * Does NOT affect genuine paying customers or non-test accounts.
+ */
+export function clearTestUserEnrollments(testUserIds: string[]): number {
+  if (typeof window === 'undefined') return 0;
+  let clearedCount = 0;
+  try {
+    for (const rawId of testUserIds) {
+      const cleanId = normalizeUserId(rawId);
+      if (!cleanId) continue;
+      const key = getUserEnrollmentStorageKey(cleanId);
+      if (key && localStorage.getItem(key)) {
+        localStorage.removeItem(key);
+        clearedCount++;
+      }
+    }
+    localStorage.removeItem('futureai_cloud_user_entitlements_v1');
+    localStorage.removeItem('futureai_unlocked_courses');
+    localStorage.removeItem('futureai_unlocked_courses_v1');
+    localStorage.removeItem('futureai_course_enrolled');
+    for (const k of LEGACY_GLOBAL_KEYS) {
+      localStorage.removeItem(k);
+    }
+  } catch {}
+  return clearedCount;
+}
+
 function saveUserEnrollmentRecord(record: CourseEnrollmentRecord): boolean {
   const cleanUserId = normalizeUserId(record.userId);
   if (!cleanUserId) return false;

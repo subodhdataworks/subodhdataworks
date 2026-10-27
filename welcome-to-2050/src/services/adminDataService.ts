@@ -282,7 +282,7 @@ export class AdminDataService {
       const snap = await getDocs(colRef);
       snap.forEach((docSnap) => {
         const data = docSnap.data();
-        if (data && (data.id || docSnap.id)) {
+        if (data && (data.id || docSnap.id) && !data.archived) {
           const reqId = data.id || docSnap.id;
           const isBank =
             String(data.method).toUpperCase() === 'BANK' ||
@@ -330,7 +330,7 @@ export class AdminDataService {
     try {
       const engineWithdrawals = ReferralEngine.getWithdrawals();
       for (const w of engineWithdrawals) {
-        if (!seenIds.has(w.id)) {
+        if (!seenIds.has(w.id) && !(w as any).archived) {
           seenIds.add(w.id);
           list.push(w);
         }
@@ -340,6 +340,19 @@ export class AdminDataService {
     // 3. Sort newest first
     list.sort((a, b) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime());
     return list;
+  }
+
+  /**
+   * Returns all archived historical test withdrawals for audit inspection
+   */
+  public static getArchivedWithdrawals(): any[] {
+    if (typeof window === 'undefined') return [];
+    try {
+      const raw = localStorage.getItem('futureai_archived_test_withdrawals');
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
   }
 
   public static async updateWithdrawalStatus(params: {
