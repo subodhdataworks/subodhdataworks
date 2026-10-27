@@ -299,13 +299,53 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
               </button>
 
               {notificationsOpen && (
-                <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-xl border border-slate-200 p-3 z-50 text-left space-y-2 animate-fadeIn">
-                  <span className="text-xs font-black text-slate-900 block">Notifications</span>
-                  <div className="text-xs text-slate-600 p-2 rounded-xl bg-slate-50">
-                    <strong>New Enrollment:</strong> Data Analyst with GenAI purchased by Aman Sharma (₹18,999 / ₹4)
+                <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-2xl border-2 border-slate-300 p-4 z-[999] text-left space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+                    <span className="text-xs font-black text-slate-900 flex items-center gap-1.5">
+                      <Bell className="w-3.5 h-3.5 text-blue-600" />
+                      <span>Admin System Updates</span>
+                    </span>
+                    <span className="text-[10px] font-black text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full">
+                      Live Cloud
+                    </span>
                   </div>
-                  <div className="text-xs text-slate-600 p-2 rounded-xl bg-slate-50">
-                    <strong>Withdrawal Request:</strong> ₹1,100 pending for affiliate Rohit Verma
+
+                  <div className="space-y-2 text-xs">
+                    <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800">
+                      <div className="flex items-center justify-between font-bold text-slate-900 mb-0.5">
+                        <span>👥 Registered Learners</span>
+                        <span className="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded font-black">{users.length} Active</span>
+                      </div>
+                      <p className="text-[11px] text-slate-600 font-medium">All student profiles securely synced in Firestore cloud.</p>
+                    </div>
+
+                    <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-slate-800">
+                      <div className="flex items-center justify-between font-bold text-amber-900 mb-0.5">
+                        <span>💳 Withdraw Requests</span>
+                        <span className="text-[10px] text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded font-black">
+                          {withdrawals.filter((w) => w.status === 'UNDER_REVIEW' || w.status === 'PROCESSING' || w.status === 'REQUESTED').length} Pending
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-amber-800/90 font-medium">Payout queue ready for UPI / Bank verification.</p>
+                    </div>
+
+                    <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-slate-800">
+                      <div className="flex items-center justify-between font-bold text-emerald-900 mb-0.5">
+                        <span>⚡ 4 Pillars Cloud Sync</span>
+                        <span className="text-[10px] text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded font-black">100% Active</span>
+                      </div>
+                      <p className="text-[11px] text-emerald-800/90 font-medium">Enrollments, Wallets, Referrals, and Payouts synced.</p>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-200 text-right">
+                    <button
+                      type="button"
+                      onClick={() => setNotificationsOpen(false)}
+                      className="text-[11px] font-bold text-slate-500 hover:text-slate-800 cursor-pointer"
+                    >
+                      Close ✕
+                    </button>
                   </div>
                 </div>
               )}

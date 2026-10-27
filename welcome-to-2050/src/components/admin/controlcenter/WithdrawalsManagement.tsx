@@ -147,7 +147,7 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
       </div>
 
       {feedbackMsg && (
-        <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs rounded-xl flex items-center gap-2">
+        <div className="p-3 bg-emerald-600 text-white font-bold shadow-lg border border-emerald-500 text-xs rounded-xl flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4" />
           <span>{feedbackMsg}</span>
         </div>

@@ -627,7 +627,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
               {/* Notifications Floating Card */}
               {notificationsOpen && (
-                <div className="absolute right-0 top-full mt-2 w-[calc(100vw-24px)] max-w-80 sm:w-80 bg-white/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-100 py-3 px-3 z-50 animate-fadeIn text-left">
+                <div className="absolute right-0 top-full mt-2 w-[calc(100vw-24px)] max-w-80 sm:w-80 bg-white rounded-2xl shadow-2xl border-2 border-slate-300 py-3 px-3 z-[999] text-left ring-1 ring-slate-900/10">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                     <span className="text-xs font-black text-slate-800">Notifications</span>
                     <span className="text-[10px] font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded-full">2 New</span>

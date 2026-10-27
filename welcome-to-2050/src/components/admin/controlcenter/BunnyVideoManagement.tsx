@@ -107,8 +107,8 @@ export const BunnyVideoManagement: React.FC<BunnyVideoManagementProps> = ({ onRe
         <div
           className={`p-4 rounded-2xl flex items-center justify-between text-xs font-bold border transition-all ${
             feedbackMsg.type === 'success'
-              ? isDark ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-emerald-50 border-emerald-200 text-emerald-700'
-              : isDark ? 'bg-rose-500/10 border-rose-500/20 text-rose-400' : 'bg-rose-50 border-rose-200 text-rose-700'
+              ? isDark ? 'bg-emerald-950 border-emerald-500 text-emerald-200' : 'bg-emerald-50 border-emerald-200 text-emerald-700'
+              : isDark ? 'bg-rose-950 border-rose-500 text-rose-200' : 'bg-rose-50 border-rose-200 text-rose-700'
           }`}
         >
           <div className="flex items-center gap-2">
