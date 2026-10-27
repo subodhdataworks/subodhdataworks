@@ -69,6 +69,7 @@ import { MobileCareerProgramsSection } from './MobileCareerProgramsSection';
 import { MobileAtsResumeSection } from './MobileAtsResumeSection';
 import { MobileCareerJourneySection } from './MobileCareerJourneySection';
 import { MobileWhyChooseSection } from './MobileWhyChooseSection';
+import { MobileFooter } from './MobileFooter';
 
 // ─── Reusable Smooth Typewriter Heading Component ─────────────────────────────
 interface TypewriterHeadingProps {
@@ -1048,10 +1049,10 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 8: Premium Compact 3-Column Footer (Campus Background with Dark Navy Overlay)
+          SECTION 8: Desktop-Only Footer (>= 768px, 100% Untouched)
       ═══════════════════════════════════════════════════════════════════════════ */}
       <footer
-        className="relative w-full border-t border-slate-700/60 overflow-hidden text-white"
+        className="hidden md:block relative w-full border-t border-slate-700/60 overflow-hidden text-white"
         style={{
           backgroundImage: "url('/images/future_ai_campus_footer.png')",
           backgroundSize: 'cover',
@@ -1196,6 +1197,13 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           </div>
         </div>
       </footer>
+
+      {/* ═══════════════════════════════════════════════════════════════════════════
+          SECTION 9: Mobile-Only Premium Footer (< 768px, 1:1 Match to Approved Reference)
+      ═══════════════════════════════════════════════════════════════════════════ */}
+      <div className="block md:hidden">
+        <MobileFooter />
+      </div>
 
       {/* Clean Auth Modal for Sign Up / Full Login Options */}
       <FutureAuthModal
