@@ -322,6 +322,25 @@ export async function restoreUserEntitlementsFromCloud(identifier?: {
       }
     }
 
+    // 4. Restore user wallet balance from Firestore affiliate_stats if available
+    if (typeof window !== 'undefined') {
+      try {
+        const userRefCode =
+          localStorage.getItem('futureai_user_referral_code') ||
+          (cleanEmail ? cleanEmail.replace(/[^a-zA-Z0-9]/g, '').toUpperCase() : '');
+        if (userRefCode) {
+          const statsDoc = await withTimeout(getDoc(doc(db, 'affiliate_stats', userRefCode)), 2000);
+          if (statsDoc.exists()) {
+            const sData = statsDoc.data();
+            if (typeof sData?.availableBalance === 'number') {
+              localStorage.setItem('futureai_user_wallet', String(sData.availableBalance));
+              window.dispatchEvent(new Event('futureai_wallet_updated'));
+            }
+          }
+        }
+      } catch {}
+    }
+
     const restoredCourses = Array.from(restoredCoursesSet);
     if (restoredCourses.length > 0 && typeof window !== 'undefined') {
       replaceUserEnrollmentsCache(cleanUserId, restoredCourses, 'CLOUD_RESTORE');

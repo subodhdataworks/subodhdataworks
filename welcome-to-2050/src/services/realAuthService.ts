@@ -1791,7 +1791,37 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
   const finalEarned = Math.max(cloudTotalEarned, finalPaidEnrollments * 100, localData.totalEarned || 0);
 
   const localWithdrawals = Array.isArray(localData.withdrawals) ? localData.withdrawals : [];
-  const balances = computeAffiliateBalancesFromWithdrawals(finalEarned, localWithdrawals);
+
+  // 4. Fetch user's withdrawals directly from Firestore collection 'withdrawal_requests'
+  const cloudWithdrawals: any[] = [];
+  try {
+    const wCol = collection(db, 'withdrawal_requests');
+    const wQuery = query(wCol, where('refCode', '==', cleanCode));
+    const wSnap = await withTimeout(getDocs(wQuery), 3000);
+    wSnap.forEach((docSnap) => {
+      const d = docSnap.data();
+      if (d) {
+        cloudWithdrawals.push({
+          id: d.id || docSnap.id,
+          txId: d.txId || d.referenceNo || d.id,
+          date: (d.requestedAt || d.createdAt || '').slice(0, 10),
+          createdAt: d.requestedAt || d.createdAt,
+          updatedAt: d.updatedAt,
+          amount: Number(d.amount) || 0,
+          method: (d.method === 'BANK_TRANSFER' || d.method === 'Bank') ? 'Bank' : 'UPI',
+          destination: d.destination || (d.method === 'BANK_TRANSFER' ? (d.details?.accountNumber ? `Bank ••••${d.details.accountNumber.slice(-4)}` : 'Bank') : d.details?.upiId || ''),
+          status: d.status === 'PAID' ? 'Paid' : d.status === 'APPROVED' ? 'Approved' : d.status === 'REJECTED' ? 'Rejected' : 'Pending',
+          payoutRef: d.referenceNo || d.payoutRef,
+          rejectionReason: d.adminNotes || d.reason,
+        });
+      }
+    });
+  } catch (wErr) {
+    console.warn('Fetch cloud withdrawals for user notice:', wErr);
+  }
+
+  const mergedWithdrawals = mergeWithdrawalsList(cloudWithdrawals, localWithdrawals);
+  const balances = computeAffiliateBalancesFromWithdrawals(finalEarned, mergedWithdrawals);
   const walletLedger: WalletLedgerEntry[] = Array.isArray(localData.walletLedger) ? localData.walletLedger : [];
 
   return {
@@ -1805,7 +1835,7 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
     totalPaid: balances.totalPaid,
     totalEarned: balances.totalEarned,
     referrals: mergedRefs,
-    withdrawals: localWithdrawals,
+    withdrawals: mergedWithdrawals,
     walletLedger,
   };
 }
