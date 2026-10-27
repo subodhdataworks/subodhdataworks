@@ -999,7 +999,7 @@
     width: 100%;
     border-radius: 14px;
     overflow: hidden;
-    background: #0f172a;
+    background: #ffffff;
     box-shadow: 0 3px 12px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
     border: 1px solid #e2e8f0;
   }
@@ -1021,7 +1021,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #0f172a;
+    background: #ffffff;
   }
 
   .aff-mob-banner-img {
@@ -1029,7 +1029,7 @@
     width: 100%;
     height: auto;
     object-fit: cover;
-    aspect-ratio: 1004 / 119;
+    aspect-ratio: 1004 / 238;
     pointer-events: none;
   }
 
