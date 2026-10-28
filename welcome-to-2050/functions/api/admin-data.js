@@ -33,6 +33,11 @@ const corsHeaders = {
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), { status, headers: corsHeaders });
 
+function normalizeRefCode(raw) {
+  if (!raw || typeof raw !== 'string') return '';
+  return raw.trim().toUpperCase().replace(/100$/, '');
+}
+
 const GOOGLE_TOKEN_ENDPOINT = 'https://oauth2.googleapis.com/token';
 const ADMIN_DATA_SCOPES =
   'https://www.googleapis.com/auth/identitytoolkit https://www.googleapis.com/auth/datastore';
@@ -280,8 +285,15 @@ async function handleUpdateWithdrawalStatus(context, body) {
       // 2. Update affiliate_stats record if refCode exists
       if (refCode) {
         let statsDoc = await tx.get('affiliate_stats', refCode);
+        const cleanRefCode = normalizeRefCode(refCode);
+        if (!statsDoc && cleanRefCode && cleanRefCode !== refCode) {
+          statsDoc = await tx.get('affiliate_stats', cleanRefCode);
+        }
         if (!statsDoc && existingReq.userId && existingReq.userId !== refCode) {
           statsDoc = await tx.get('affiliate_stats', existingReq.userId);
+        }
+        if (!statsDoc && cleanRefCode) {
+          statsDoc = await tx.get('affiliate_stats', `${cleanRefCode}100`);
         }
 
         if (statsDoc) {

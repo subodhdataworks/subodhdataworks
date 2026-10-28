@@ -113,7 +113,7 @@ function recalculateAffiliateBalances(record) {
   for (const w of withdrawals) {
     const amt = Number(w.amount) || 0;
     if (amt <= 0) continue;
-    const st = String(w.status || '').trim().toUpperCase();
+    const st = String(w.rawStatus || w.status || '').trim().toUpperCase();
     if (st === 'PENDING' || st === 'PROCESSING' || st === 'UNDER_REVIEW' || st === 'APPROVED') {
       reservedPending += amt;
     } else if (st === 'PAID') {
@@ -121,9 +121,11 @@ function recalculateAffiliateBalances(record) {
     }
   }
 
-  record.pendingBalance = reservedPending;
-  record.totalPaid = paidTotal;
-  record.availableBalance = Math.max(0, (record.totalEarned || 0) - paidTotal - reservedPending);
+  if (withdrawals.length > 0) {
+    record.pendingBalance = reservedPending;
+    record.totalPaid = paidTotal;
+  }
+  record.availableBalance = Math.max(0, (record.totalEarned || 0) - (record.totalPaid || 0) - (record.pendingBalance || 0));
   record.availableToPayout = record.availableBalance;
   record.availableToWithdraw = record.availableBalance;
   return record;
@@ -375,6 +377,48 @@ export async function onRequestGet(context) {
             approvedDate: p.creditedAt || new Date().toISOString(),
           });
         }
+      }
+
+      // Read real cloud withdrawal requests from Firestore
+      const allWithdrawalDocs = await listFirestoreCollectionDocs('withdrawal_requests', env);
+      const userWithdrawals = allWithdrawalDocs
+        .filter((w) => {
+          const wRef = normalizeRefCode(w.refCode || w.userId || w.referrerId || '');
+          return (
+            wRef === cleanCode ||
+            w.refCode === cleanCode ||
+            w.userId === cleanCode ||
+            w.refCode === `${cleanCode}100` ||
+            w.userId === `${cleanCode}100`
+          );
+        })
+        .map((w) => {
+          const rawSt = String(w.status || 'UNDER_REVIEW').trim().toUpperCase();
+          let displayStatus = 'Pending';
+          if (rawSt === 'PAID') displayStatus = 'Paid';
+          else if (rawSt === 'APPROVED') displayStatus = 'Approved';
+          else if (rawSt === 'REJECTED' || rawSt === 'CANCELLED' || rawSt === 'FAILED') displayStatus = 'Rejected';
+
+          return {
+            id: w.id || w.txId,
+            txId: w.txId || w.referenceNo || w.id,
+            requestId: w.id || w.txId,
+            date: (w.requestedAt || w.createdAt || '').slice(0, 10),
+            createdAt: w.requestedAt || w.createdAt,
+            updatedAt: w.updatedAt,
+            amount: Number(w.amount) || 0,
+            method: (w.method === 'BANK_TRANSFER' || w.method === 'Bank' || w.method === 'BANK') ? 'Bank' : 'UPI',
+            destination: w.destination || (w.method === 'BANK_TRANSFER' ? (w.details?.accountNumber ? `Bank ••••${w.details.accountNumber.slice(-4)}` : 'Bank') : w.details?.upiId || ''),
+            status: displayStatus,
+            rawStatus: rawSt,
+            payoutRef: w.referenceNo || w.payoutRef || null,
+            rejectionReason: w.adminNotes || w.reason || null,
+          };
+        })
+        .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+
+      if (userWithdrawals.length > 0) {
+        record.withdrawals = userWithdrawals;
       }
     } catch (fsErr) {
       console.warn('Firestore read affiliate notice:', fsErr?.message);

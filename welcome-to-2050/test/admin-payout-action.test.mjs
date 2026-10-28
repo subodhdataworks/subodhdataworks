@@ -352,7 +352,7 @@ runTest('11. Affiliate KPI Cards: verify exact 6 cards in order in AffiliateEarn
     'paid',
     'available',
     'pending-withdrawal',
-    'lifetime'
+    'total-paid-out'
   ];
 
   assert.deepEqual(idMatches, expectedOrder, `KPI Cards must be in exact order: ${expectedOrder.join(', ')}`);
@@ -681,6 +681,132 @@ runTest('22. Transaction Execution Regression: verify transaction fields resolve
       assert.equal(capturedFields.paidAt, nowIso);
     }
   }
+});
+
+runTest('23. Production Bug Scenario: ₹300 Lifetime, ₹100 UNDER_REVIEW, ₹1 PAID produces exact expected accounting', () => {
+  function computeBalances(totalEarned, withdrawals = []) {
+    let pendingBalance = 0;
+    let totalPaid = 0;
+    for (const w of withdrawals) {
+      const amt = Number(w?.amount) || 0;
+      if (amt <= 0) continue;
+      const st = String(w?.rawStatus || w?.status || '').trim().toUpperCase();
+      if (st === 'PENDING' || st === 'PROCESSING' || st === 'UNDER_REVIEW' || st === 'APPROVED') {
+        pendingBalance += amt;
+      } else if (st === 'PAID') {
+        totalPaid += amt;
+      }
+    }
+    const safeEarned = Math.max(0, Number(totalEarned) || 0);
+    const availableBalance = Math.max(0, safeEarned - totalPaid - pendingBalance);
+    return {
+      totalEarned: safeEarned,
+      pendingBalance,
+      totalPaid,
+      availableBalance,
+      availableToPayout: availableBalance,
+    };
+  }
+
+  const withdrawals = [
+    { id: 'wth_100', txId: 'WTH-100', amount: 100, status: 'UNDER_REVIEW', rawStatus: 'UNDER_REVIEW' },
+    { id: 'wth_1', txId: 'WTH-1', amount: 1, status: 'PAID', rawStatus: 'PAID' },
+  ];
+
+  const result = computeBalances(300, withdrawals);
+  assert.equal(result.totalEarned, 300, 'Lifetime Earnings must be ₹300');
+  assert.equal(result.pendingBalance, 100, 'Pending Withdrawal must be ₹100 (excluding ₹1 PAID)');
+  assert.equal(result.totalPaid, 1, 'Total Paid Out must be ₹1');
+  assert.equal(result.availableBalance, 199, 'Available to Payout must be ₹199 (300 - 1 - 100)');
+  assert.equal(result.availableToPayout, 199, 'availableToPayout must match availableBalance');
+});
+
+runTest('24. mergeWithdrawalsList cross-field deduplication and server status authority', () => {
+  function mergeWithdrawalsList(serverList = [], localList = []) {
+    const result = [];
+    const processedServerIndices = new Set();
+    const validLocal = Array.isArray(localList) ? localList.filter(Boolean) : [];
+    const validServer = Array.isArray(serverList) ? serverList.filter(Boolean) : [];
+
+    for (const local of validLocal) {
+      const localId = String(local.id || '').trim();
+      const localTxId = String(local.txId || '').trim();
+      const localReqId = String(local.requestId || '').trim();
+
+      const serverIdx = validServer.findIndex((srv, idx) => {
+        if (processedServerIndices.has(idx)) return false;
+        const srvId = String(srv.id || '').trim();
+        const srvTxId = String(srv.txId || '').trim();
+        const srvReqId = String(srv.requestId || '').trim();
+        return (
+          (localId && (localId === srvId || localId === srvTxId)) ||
+          (localTxId && (localTxId === srvId || localTxId === srvTxId)) ||
+          (localReqId && (localReqId === srvId || localReqId === srvReqId || localReqId === srvTxId))
+        );
+      });
+
+      if (serverIdx >= 0) {
+        processedServerIndices.add(serverIdx);
+        const srv = validServer[serverIdx];
+        result.push({
+          ...local,
+          ...srv,
+          status: srv.status || local.status,
+        });
+      } else {
+        result.push({ ...local });
+      }
+    }
+
+    validServer.forEach((srv, idx) => {
+      if (!processedServerIndices.has(idx)) {
+        result.push({ ...srv });
+      }
+    });
+
+    return result;
+  }
+
+  // Local storage has both requests as UNDER_REVIEW (from before server paid the ₹1)
+  const localList = [
+    { id: 'w_client_100', txId: 'WTH-100', amount: 100, status: 'UNDER_REVIEW' },
+    { id: 'w_client_1', txId: 'WTH-1', amount: 1, status: 'UNDER_REVIEW' },
+  ];
+
+  // Server has the ₹1 request marked as Paid
+  const serverList = [
+    { id: 'wth_server_100', txId: 'WTH-100', amount: 100, status: 'Pending', rawStatus: 'UNDER_REVIEW' },
+    { id: 'wth_server_1', txId: 'WTH-1', amount: 1, status: 'Paid', rawStatus: 'PAID', payoutRef: 'UTR-9876543210' },
+  ];
+
+  const merged = mergeWithdrawalsList(serverList, localList);
+  assert.equal(merged.length, 2, 'Must not duplicate withdrawal records');
+
+  const w100 = merged.find((w) => w.amount === 100);
+  assert.ok(w100, 'Must have ₹100 withdrawal');
+  assert.equal(w100.status, 'Pending');
+
+  const w1 = merged.find((w) => w.amount === 1);
+  assert.ok(w1, 'Must have ₹1 withdrawal');
+  assert.equal(w1.status, 'Paid', 'Server Paid status must overwrite local UNDER_REVIEW status');
+  assert.equal(w1.payoutRef, 'UTR-9876543210', 'Payout reference must be preserved from server');
+});
+
+runTest('25. Affiliate API static verification: reads withdrawal_requests collection and exports mergeWithdrawalsList', () => {
+  const apiPath = path.resolve('functions/api/affiliate.js');
+  const apiContent = fs.readFileSync(apiPath, 'utf-8');
+  assert.ok(apiContent.includes("listFirestoreCollectionDocs('withdrawal_requests', env)"), 'affiliate.js must query withdrawal_requests');
+
+  const servicePath = path.resolve('welcome-to-2050/src/services/realAuthService.ts');
+  const serviceContent = fs.readFileSync(servicePath, 'utf-8');
+  assert.ok(serviceContent.includes('export function mergeWithdrawalsList'), 'realAuthService.ts must export mergeWithdrawalsList');
+
+  const hubPath = path.resolve('welcome-to-2050/src/components/futureai/AffiliateEarningsHub.tsx');
+  const hubContent = fs.readFileSync(hubPath, 'utf-8');
+  assert.ok(hubContent.includes('mergeWithdrawalsList(real.withdrawals, prev.withdrawals)'), 'AffiliateEarningsHub must use mergeWithdrawalsList');
+  assert.ok(hubContent.includes("id: 'total-paid-out'"), 'AffiliateEarningsHub must have card id total-paid-out');
+  assert.ok(hubContent.includes("label: 'Total Paid Out'"), 'AffiliateEarningsHub must have card label Total Paid Out');
+  assert.ok(hubContent.includes('Total commissions earned since joining'), 'AffiliateEarningsHub must describe Lifetime Earnings in details');
 });
 
 console.log('\n----------------------------------------------------------------');

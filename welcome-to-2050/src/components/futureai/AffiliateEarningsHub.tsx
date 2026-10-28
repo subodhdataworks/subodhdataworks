@@ -43,6 +43,7 @@ import {
   recordReferralPayment,
   submitAffiliateWithdrawalRequest,
   computeAffiliateBalancesFromWithdrawals,
+  mergeWithdrawalsList,
   WalletLedgerEntry,
 } from '../../services/realAuthService';
 import { isAnyCourseUnlocked } from '../../services/courseUnlockService';
@@ -208,20 +209,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
             const nextEarned = Math.max(prev.totalEarned, real.totalEarned || 0, nextPaidEnrollments * 100);
             const nextReferrals = real.referrals && real.referrals.length > 0 ? real.referrals : prev.referrals;
 
-            // Merge withdrawals preferring latest status from server/real data
-            const wMap = new Map<string, WithdrawalItem>();
-            for (const w of prev.withdrawals) {
-              wMap.set(w.id || w.txId, w);
-            }
-            if (Array.isArray(real.withdrawals)) {
-              for (const rw of real.withdrawals) {
-                const key = rw.id || rw.txId;
-                if (key) {
-                  wMap.set(key, { ...(wMap.get(key) || {}), ...rw });
-                }
-              }
-            }
-            const nextWithdrawals = Array.from(wMap.values());
+            // Merge withdrawals preferring latest authoritative status from server/real data
+            const nextWithdrawals = mergeWithdrawalsList(real.withdrawals, prev.withdrawals);
             const nextBalances = computeAffiliateBalancesFromWithdrawals(nextEarned, nextWithdrawals);
             const nextLedger =
               Array.isArray(real.walletLedger) && real.walletLedger.length > 0
@@ -972,7 +961,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       iconBg: '#8b5cf6',
       badgeClass: 'badge-purple-soft',
       icon: <GraduationCap className="w-4 h-4 text-white" />,
-      subtext: '₹999 verified learners',
+      subtext: 'Verified course purchases',
       chart: (
         <svg className="w-16 h-7" viewBox="0 0 64 28" fill="none">
           <rect x="4" y="20" width="6" height="8" rx="1.5" fill="#f3e8ff" />
@@ -997,7 +986,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       iconBg: '#059669',
       badgeClass: 'badge-emerald-soft',
       icon: <Zap className="w-4 h-4 text-white" />,
-      subtext: 'Payout credited in 24 hours',
+      subtext: 'Ready for withdrawal',
       valColor: '#059669',
       chart: (
         <svg className="w-16 h-7" viewBox="0 0 64 28" fill="none">
@@ -1023,7 +1012,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       iconBg: '#f59e0b',
       badgeClass: 'badge-amber-soft',
       icon: <Clock className="w-4 h-4 text-white" />,
-      subtext: 'Reserved for payout processing',
+      subtext: 'Under payout processing',
       valColor: '#ea580c',
       chart: (
         <svg className="w-16 h-7" viewBox="0 0 64 28" fill="none">
@@ -1039,25 +1028,26 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
         setIsWithdrawHistoryOpen(true);
       }
     },
-    // 6. Lifetime Earnings (Position 6)
+    // 6. Total Paid Out (Position 6 - Replaces Lifetime Earnings with Premium Success Checkmark)
     {
-      id: 'lifetime',
-      label: 'Lifetime Earnings',
-      val: `₹${totalEarned.toLocaleString('en-IN')}`,
-      growth: '100% Verified',
+      id: 'total-paid-out',
+      label: 'Total Paid Out',
+      val: `₹${totalPaid.toLocaleString('en-IN')}`,
+      growth: totalPaid > 0 ? 'Transferred' : '₹0 settled',
       colorClass: 'card-indigo',
-      iconBg: '#6366f1',
-      badgeClass: 'badge-purple-soft',
-      icon: <Crown className="w-4 h-4 text-white" />,
-      subtext: 'Total commissions credited',
-      valColor: '#4338ca',
+      iconBg: '#10b981',
+      badgeClass: 'badge-emerald-soft',
+      icon: <CheckCircle2 className="w-4 h-4 text-white" />,
+      subtext: 'Successfully transferred to Bank / UPI',
+      valColor: '#059669',
       chart: (
         <svg className="w-16 h-7" viewBox="0 0 64 28" fill="none">
-          <rect x="4" y="20" width="6" height="8" rx="1.5" fill="#e0e7ff" />
-          <rect x="16" y="16" width="6" height="12" rx="1.5" fill="#c7d2fe" />
-          <rect x="28" y="12" width="6" height="16" rx="1.5" fill="#a5b4fc" />
-          <rect x="40" y="7" width="6" height="21" rx="1.5" fill="#818cf8" />
-          <rect x="52" y="2" width="6" height="26" rx="1.5" fill="#6366f1" />
+          <path d="M4 18 L16 14 L28 16 L42 8 L58 4" stroke="#10b981" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="58" cy="4" r="3" fill="#10b981" />
+          <rect x="8" y="20" width="5" height="8" rx="1" fill="#d1fae5" />
+          <rect x="20" y="16" width="5" height="12" rx="1" fill="#a7f3d0" />
+          <rect x="32" y="12" width="5" height="16" rx="1" fill="#6ee7b7" />
+          <rect x="44" y="8" width="5" height="20" rx="1" fill="#34d399" />
         </svg>
       ),
       onClick: () => setIsWithdrawHistoryOpen(true)
@@ -1805,13 +1795,14 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               </div>
             </div>
 
-            {/* 4 Financial State Stats (Task 3: Available to Payout, Pending Withdrawal, Pending Escrow, Lifetime Earnings) */}
+            {/* 4 Financial State Stats (Lifetime Earnings, Total Paid Out, Pending Withdrawal, Available to Payout) */}
             <div className="aff-wallet-stats-4col">
               <div className="aff-ws-box ws-blue">
                 <span className="text-base">📈</span>
                 <div>
                   <span className="aff-ws-label">Lifetime Earnings</span>
                   <strong className="aff-ws-val text-slate-800">₹{totalEarned.toLocaleString('en-IN')}</strong>
+                  <span className="text-[9px] text-slate-500 block leading-tight mt-0.5">Total commissions earned since joining</span>
                 </div>
               </div>
               <div className="aff-ws-box ws-green">
@@ -1819,6 +1810,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 <div>
                   <span className="aff-ws-label">Total Paid Out</span>
                   <strong className="aff-ws-val text-slate-800">₹{totalPaid.toLocaleString('en-IN')}</strong>
+                  <span className="text-[9px] text-slate-500 block leading-tight mt-0.5">Successfully transferred to Bank / UPI</span>
                 </div>
               </div>
               <div className="aff-ws-box ws-amber">
@@ -1826,13 +1818,15 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 <div>
                   <span className="aff-ws-label">Pending Withdrawal</span>
                   <strong className="aff-ws-val text-amber-600">₹{pendingWithdrawalAmount.toLocaleString('en-IN')}</strong>
+                  <span className="text-[9px] text-slate-500 block leading-tight mt-0.5">Under payout processing</span>
                 </div>
               </div>
               <div className="aff-ws-box ws-purple">
-                <span className="text-base">🔒</span>
+                <span className="text-base">👛</span>
                 <div>
-                  <span className="aff-ws-label">Pending Escrow</span>
-                  <strong className="aff-ws-val text-indigo-600">₹{pendingEscrowAmount.toLocaleString('en-IN')}</strong>
+                  <span className="aff-ws-label">Available to Payout</span>
+                  <strong className="aff-ws-val text-emerald-600">₹{availableBalance.toLocaleString('en-IN')}</strong>
+                  <span className="text-[9px] text-slate-500 block leading-tight mt-0.5">Ready for withdrawal</span>
                 </div>
               </div>
             </div>
@@ -2562,6 +2556,30 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
             </div>
 
             <div className="modal-body-content">
+              {/* Financial Summary Strip */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4 p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                <div className="p-2 rounded-lg bg-white border border-slate-100 shadow-sm">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Lifetime Earnings</span>
+                  <strong className="text-sm font-black text-slate-900 block">₹{totalEarned.toLocaleString('en-IN')}</strong>
+                  <span className="text-[9px] text-slate-400 block leading-tight mt-0.5">Total commissions earned since joining</span>
+                </div>
+                <div className="p-2 rounded-lg bg-white border border-slate-100 shadow-sm">
+                  <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider block">Total Paid Out</span>
+                  <strong className="text-sm font-black text-emerald-600 block">₹{totalPaid.toLocaleString('en-IN')}</strong>
+                  <span className="text-[9px] text-slate-400 block leading-tight mt-0.5">Transferred to Bank / UPI</span>
+                </div>
+                <div className="p-2 rounded-lg bg-white border border-slate-100 shadow-sm">
+                  <span className="text-[10px] font-bold text-amber-600 uppercase tracking-wider block">Pending Withdrawal</span>
+                  <strong className="text-sm font-black text-amber-600 block">₹{pendingWithdrawalAmount.toLocaleString('en-IN')}</strong>
+                  <span className="text-[9px] text-slate-400 block leading-tight mt-0.5">Under payout processing</span>
+                </div>
+                <div className="p-2 rounded-lg bg-white border border-slate-100 shadow-sm">
+                  <span className="text-[10px] font-bold text-sky-600 uppercase tracking-wider block">Available to Payout</span>
+                  <strong className="text-sm font-black text-sky-600 block">₹{availableBalance.toLocaleString('en-IN')}</strong>
+                  <span className="text-[9px] text-slate-400 block leading-tight mt-0.5">Ready for withdrawal</span>
+                </div>
+              </div>
+
               <div className="wth-modal-head">
                 <span className="col-date">Date</span>
                 <span className="col-comm">Amount</span>

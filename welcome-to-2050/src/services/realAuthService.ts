@@ -966,22 +966,52 @@ export function computeAffiliateBalancesFromWithdrawals(totalEarned: number, wit
   };
 }
 
-function mergeWithdrawalsList(serverList: any[] = [], localList: any[] = []): any[] {
-  const map = new Map<string, any>();
-  for (const w of Array.isArray(localList) ? localList : []) {
-    if (!w) continue;
-    const key = String(w.id || w.txId || w.requestId || '');
-    if (key) map.set(key, { ...w });
-  }
-  for (const w of Array.isArray(serverList) ? serverList : []) {
-    if (!w) continue;
-    const key = String(w.id || w.txId || w.requestId || '');
-    if (key) {
-      const existing = map.get(key);
-      map.set(key, existing ? { ...existing, ...w } : { ...w });
+export function mergeWithdrawalsList(serverList: any[] = [], localList: any[] = []): any[] {
+  const result: any[] = [];
+  const processedServerIndices = new Set<number>();
+  const validLocal = Array.isArray(localList) ? localList.filter(Boolean) : [];
+  const validServer = Array.isArray(serverList) ? serverList.filter(Boolean) : [];
+
+  for (const local of validLocal) {
+    const localId = String(local.id || '').trim();
+    const localTxId = String(local.txId || '').trim();
+    const localReqId = String(local.requestId || '').trim();
+
+    // Match by any shared identifier
+    const serverIdx = validServer.findIndex((srv, idx) => {
+      if (processedServerIndices.has(idx)) return false;
+      const srvId = String(srv.id || '').trim();
+      const srvTxId = String(srv.txId || '').trim();
+      const srvReqId = String(srv.requestId || '').trim();
+      return (
+        (localId && (localId === srvId || localId === srvTxId)) ||
+        (localTxId && (localTxId === srvId || localTxId === srvTxId)) ||
+        (localReqId && (localReqId === srvId || localReqId === srvReqId || localReqId === srvTxId))
+      );
+    });
+
+    if (serverIdx >= 0) {
+      processedServerIndices.add(serverIdx);
+      const srv = validServer[serverIdx];
+      // Authoritative server record overrides status, payoutRef, updatedAt
+      result.push({
+        ...local,
+        ...srv,
+        status: srv.status || local.status,
+      });
+    } else {
+      result.push({ ...local });
     }
   }
-  return Array.from(map.values());
+
+  // Include any remaining server items not in local
+  validServer.forEach((srv, idx) => {
+    if (!processedServerIndices.has(idx)) {
+      result.push({ ...srv });
+    }
+  });
+
+  return result;
 }
 
 const activeClientWithdrawalLocks = new Set<string>();
@@ -1717,6 +1747,23 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
             : Array.isArray(localData.walletLedger)
             ? localData.walletLedger
             : [];
+
+        try {
+          const storageKey = `futureai_affiliate_hub_v5_${cleanCode}`;
+          localStorage.setItem(
+            storageKey,
+            JSON.stringify({
+              ...localData,
+              ...serverData,
+              withdrawals: mergedWithdrawals,
+              availableBalance: balances.availableBalance,
+              pendingBalance: balances.pendingBalance,
+              totalPaid: balances.totalPaid,
+              totalEarned: balances.totalEarned,
+            })
+          );
+          localStorage.setItem('futureai_user_wallet', balances.availableBalance.toString());
+        } catch {}
 
         return {
           clicks: Math.max(serverData.clicks || 0, localData.clicks || 0, paidEnrollments),
