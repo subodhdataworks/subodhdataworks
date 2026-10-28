@@ -507,7 +507,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                   : 'text-slate-700 hover:text-[#1a73e8] hover:bg-slate-50'
               }`}
             >
-              <Code2 className={`w-4 h-4 ${activeNavTab === 'practice' ? 'text-[#1a73e8]' : 'text-slate-500'}`} />
+              <Laptop className={`w-4 h-4 ${activeNavTab === 'practice' ? 'text-[#1a73e8]' : 'text-slate-500'}`} />
               <span>Hackathon / DSA Practice</span>
             </button>
 
@@ -792,7 +792,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <CodeXml className={`w-5 h-5 shrink-0 ${isItemActive('practice') ? 'text-[#1a73e8]' : 'text-slate-700 group-hover:text-[#1a73e8]'}`} />
+                  <Laptop className={`w-5 h-5 shrink-0 ${isItemActive('practice') ? 'text-[#1a73e8]' : 'text-slate-700 group-hover:text-[#1a73e8]'}`} />
                   <span className="text-[13.5px] leading-none">Hackathon / DSA Practice</span>
                 </div>
                 <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isItemActive('practice') ? 'text-[#1a73e8]' : 'text-slate-400 group-hover:text-[#1a73e8]'}`} />
@@ -815,24 +815,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isItemActive('mock-interview') ? 'text-[#1a73e8]' : 'text-slate-400 group-hover:text-[#1a73e8]'}`} />
               </button>
 
-              {/* 5. Coding Practice */}
-              <button
-                type="button"
-                onClick={() => handleDrawerNavigate('coding-practice')}
-                className={`w-full h-[46px] px-3.5 rounded-xl flex items-center justify-between transition-all duration-150 cursor-pointer group ${
-                  isItemActive('coding-practice')
-                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold shadow-xs'
-                    : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <Laptop className={`w-5 h-5 shrink-0 ${isItemActive('coding-practice') ? 'text-[#1a73e8]' : 'text-slate-700 group-hover:text-[#1a73e8]'}`} />
-                  <span className="text-[13.5px] leading-none">Coding Practice</span>
-                </div>
-                <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isItemActive('coding-practice') ? 'text-[#1a73e8]' : 'text-slate-400 group-hover:text-[#1a73e8]'}`} />
-              </button>
-
-              {/* 6. Internship */}
+              {/* 5. Internship */}
               <button
                 type="button"
                 onClick={() => handleDrawerNavigate('internship')}
@@ -915,31 +898,6 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                   <span className="text-[13.5px] leading-none">Placement Support</span>
                 </div>
                 <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isItemActive('placement-support') ? 'text-[#1a73e8]' : 'text-slate-400 group-hover:text-[#1a73e8]'}`} />
-              </button>
-            </div>
-
-            {/* Bottom Sign Out Button */}
-            <div className="p-4 pt-2 border-t border-slate-100 bg-white shrink-0">
-              <button
-                type="button"
-                onClick={() => {
-                  soundEffects.playClick();
-                  setHamburgerDrawerOpen(false);
-                  if (onLogout) {
-                    onLogout();
-                  } else {
-                    localStorage.removeItem('futureai_logged_in');
-                    window.location.hash = '#home';
-                    window.location.reload();
-                  }
-                }}
-                className="w-full h-12 px-4 rounded-2xl bg-rose-50/80 hover:bg-rose-100/90 text-rose-600 border border-rose-100/80 flex items-center justify-between font-bold text-sm transition-all duration-200 cursor-pointer active:scale-[0.98] group"
-              >
-                <div className="flex items-center gap-3">
-                  <LogOut className="w-5 h-5 text-rose-600 shrink-0" />
-                  <span className="font-extrabold text-[15px]">Sign Out</span>
-                </div>
-                <ChevronRight className="w-4 h-4 text-rose-500 group-hover:translate-x-0.5 transition-transform" />
               </button>
             </div>
           </aside>
@@ -1104,64 +1062,43 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                   </div>
                 </div>
               </div>
-
-              {/* 4. Learning Information Card */}
-              <div className="bg-slate-50/70 border border-slate-200/70 rounded-2xl p-3">
-                <div className="mb-2">
-                  <span className="text-xs font-extrabold text-[#10234A]">Learning Information</span>
-                </div>
-
-                <div className="space-y-1.5 text-[11px]">
-                  <div className="flex items-center justify-between py-0.5">
-                    <span className="text-slate-500 font-medium">Current Course</span>
-                    <span className="text-[#10234A] font-bold">Data Analyst with GenAI</span>
-                  </div>
-                  <div className="flex items-center justify-between py-0.5">
-                    <span className="text-slate-500 font-medium">Enrolled Since</span>
-                    <span className="text-[#10234A] font-bold">26 Oct 2026</span>
-                  </div>
-                  <div className="flex items-center justify-between py-0.5">
-                    <span className="text-slate-500 font-medium">Total Courses</span>
-                    <span className="text-[#10234A] font-bold">3</span>
-                  </div>
-                  <div className="flex items-center justify-between py-0.5">
-                    <span className="text-slate-500 font-medium">Completed Courses</span>
-                    <span className="text-[#10234A] font-bold">1</span>
-                  </div>
-                  <div className="flex items-center justify-between py-0.5">
-                    <span className="text-slate-500 font-medium">Certificates Earned</span>
-                    <span className="text-[#10234A] font-bold">1</span>
-                  </div>
-                  <div className="flex items-center justify-between py-0.5">
-                    <span className="text-slate-500 font-medium">Internship Status</span>
-                    <span className="px-2 py-0.5 rounded-md bg-slate-200/70 text-slate-700 text-[10px] font-semibold">
-                      Not Started
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between py-0.5">
-                    <span className="text-slate-500 font-medium">Job Assistance</span>
-                    <span className="px-2 py-0.5 rounded-md bg-slate-200/70 text-slate-700 text-[10px] font-semibold">
-                      Not Started
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
 
-            {/* Bottom Action: View My Progress */}
+            {/* Animated Lighting Logout Button */}
             <div className="p-4 pt-2 border-t border-slate-100 bg-white shrink-0">
               <button
                 type="button"
                 onClick={() => {
                   soundEffects.playClick();
                   setProfileDropdownOpen(false);
-                  onNavigateLearning();
-                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+                  if (onLogout) {
+                    onLogout();
+                  } else {
+                    localStorage.removeItem('futureai_logged_in');
+                    window.location.hash = '#home';
+                    window.location.reload();
+                  }
                 }}
-                className="w-full h-11 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.98] transition-all cursor-pointer"
+                className="relative group w-full p-[2.5px] rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-[0_0_25px_rgba(239,68,68,0.4)] hover:shadow-[0_0_35px_rgba(244,63,94,0.7)]"
+                title="Log Out of Account"
+                aria-label="Log Out of Account"
               >
-                <span>View My Progress</span>
-                <ChevronRight className="w-3.5 h-3.5" />
+                {/* Continuous Rotating Electric Lighting Border Beam */}
+                <div className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#f43f5e_0%,#fb7185_25%,#38bdf8_50%,#a855f7_75%,#f43f5e_100%)] opacity-95 group-hover:opacity-100" />
+
+                {/* Inner Glowing Body */}
+                <div className="relative w-full py-3.5 px-4 rounded-[14px] bg-gradient-to-r from-slate-950 via-rose-950 to-slate-950 flex items-center justify-center gap-2.5 text-white font-black text-sm tracking-wide overflow-hidden border border-rose-500/40">
+                  {/* Shimmer Light Beam Sweep */}
+                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+
+                  {/* Pulsing Light Core Aura */}
+                  <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-32 h-10 bg-rose-500/30 blur-xl rounded-full pointer-events-none group-hover:bg-rose-400/50 transition-all duration-300" />
+
+                  <LogOut className="w-5 h-5 text-rose-400 group-hover:text-rose-200 transition-colors drop-shadow-[0_0_10px_rgba(244,63,94,0.9)] animate-pulse" />
+                  <span className="drop-shadow-[0_0_12px_rgba(244,63,94,0.8)] text-rose-50 group-hover:text-white transition-colors">
+                    Log Out
+                  </span>
+                </div>
               </button>
             </div>
           </aside>

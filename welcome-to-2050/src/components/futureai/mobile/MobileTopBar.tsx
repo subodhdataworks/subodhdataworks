@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Wallet, Bell, ArrowLeft, Home, Code2, Coins, Briefcase, HelpCircle, LogOut } from 'lucide-react';
+import { Search, Wallet, Bell, ArrowLeft, Home, Laptop, Coins, Briefcase, HelpCircle, LogOut } from 'lucide-react';
 import { LearnerTelemetry } from '../../../services/realAuthService';
 import { useThemeAccent } from '../../../context/ThemeAccentContext';
 import { FutureLogo } from '../FutureLogo';
@@ -327,7 +327,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
                   }}
                   className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition cursor-pointer"
                 >
-                  <Code2 className="w-3.5 h-3.5 text-slate-500" />
+                  <Laptop className="w-3.5 h-3.5 text-slate-500" />
                   <span>Hackathon/DSA Practice</span>
                 </button>
 
