@@ -102,17 +102,21 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   const myStoredName = typeof window !== 'undefined' ? (localStorage.getItem('futureai_user_name') || userName || '') : userName;
   const myStoredCode = typeof window !== 'undefined' ? (localStorage.getItem('futureai_user_ref_code') || '') : '';
 
-  // Determine if this user is owner Subodh
-  const isOwnerSubodh =
+  // Determine if this user is owner Subodh / Kitabi
+  const isOwner =
     myEmail.toLowerCase().includes('subodh') ||
+    myEmail.toLowerCase().includes('powergreen') ||
     myStoredName.toLowerCase().includes('subodh') ||
-    userName.toLowerCase().includes('subodh');
+    myStoredName.toLowerCase().includes('kitabi') ||
+    userName.toLowerCase().includes('subodh') ||
+    userName.toLowerCase().includes('kitabi');
 
-  // Deterministic unique referral code for THIS user's own affiliate link
-  const cleanRefCode = isOwnerSubodh
-    ? 'SUBODHKUMAR'
-    : (myStoredCode
-        ? normalizeRefCode(myStoredCode)
+  // Deterministic unique referral code for THIS user's own affiliate link:
+  // If user already has a stored code (e.g. KITABI3IZ or custom), preserve it!
+  const cleanRefCode = (myStoredCode
+    ? normalizeRefCode(myStoredCode)
+    : (isOwner
+        ? 'KITABI3IZ'
         : (myEmail
             ? normalizeRefCode(getUserReferralCode(myEmail))
             : (myStoredName && myStoredName.toLowerCase() !== 'learner'
@@ -120,7 +124,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 : 'PARTNER'
               )
           )
-      ) || 'PARTNER';
+      )
+  ) || 'KITABI3IZ';
 
   const minWithdrawal = getEffectiveMinWithdrawal(cleanRefCode);
 
@@ -203,10 +208,10 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
         const real = await fetchAffiliateRealData(cleanRefCode);
         if (isMounted) {
           setHubState((prev) => {
-            const nextClicks = Math.max(prev.clicks, real.clicks || 0);
-            const nextSignups = Math.max(prev.signups, real.signups || 0);
-            const nextPaidEnrollments = Math.max(prev.paidEnrollments, real.paidEnrollments || 0);
-            const nextEarned = Math.max(prev.totalEarned, real.totalEarned || 0, nextPaidEnrollments * 100);
+            const nextClicks = Number(real.clicks) || 0;
+            const nextSignups = Number(real.signups) || 0;
+            const nextPaidEnrollments = real.paidEnrollments;
+            const nextEarned = real.totalEarned;
             const nextReferrals = real.referrals && real.referrals.length > 0 ? real.referrals : prev.referrals;
 
             // Merge withdrawals preferring latest authoritative status from server/real data

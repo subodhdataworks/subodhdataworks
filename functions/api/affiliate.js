@@ -331,15 +331,31 @@ export async function onRequestGet(context) {
     }
   }
 
-    // Sync with authoritative Firestore records (affiliate_stats, processed_referral_payments, platform_payments, wallet_ledger, withdrawal_requests)
+    // Sync with authoritative Firestore records (affiliate_stats, processed_referral_payments, platform_payments, wallet_ledger, withdrawal_requests, course_enrollments)
   if (cleanCode && getServiceAccount(env)) {
     try {
+      const isOwnerAffiliate =
+        cleanCode === 'SUBODHKUMAR' ||
+        cleanCode === 'KITABI3IZ' ||
+        cleanCode === 'BUSINE1XP' ||
+        cleanUserId === INTENDED_OWNER_ADMIN_UID ||
+        cleanUserId === 'KITABI3IZ' ||
+        cleanUserId === 'SUBODHKUMAR' ||
+        isAuthorizedTestAccount(cleanCode) ||
+        isAuthorizedTestAccount(cleanUserId);
+
       // 1. Check affiliate_stats across all possible key aliases (cleanCode, ${cleanCode}100, cleanUserId, INTENDED_OWNER_ADMIN_UID)
       let fsDoc = await getFirestoreDocument('affiliate_stats', cleanCode, env);
       if (!fsDoc && cleanUserId) {
         fsDoc = await getFirestoreDocument('affiliate_stats', cleanUserId, env);
       }
-      if (!fsDoc && (cleanCode === 'SUBODHKUMAR' || cleanUserId === INTENDED_OWNER_ADMIN_UID)) {
+      if (!fsDoc && isOwnerAffiliate) {
+        fsDoc = await getFirestoreDocument('affiliate_stats', 'KITABI3IZ', env);
+      }
+      if (!fsDoc && isOwnerAffiliate) {
+        fsDoc = await getFirestoreDocument('affiliate_stats', 'SUBODHKUMAR', env);
+      }
+      if (!fsDoc && isOwnerAffiliate) {
         fsDoc = await getFirestoreDocument('affiliate_stats', INTENDED_OWNER_ADMIN_UID, env);
       }
       if (!fsDoc) {
@@ -357,10 +373,25 @@ export async function onRequestGet(context) {
         const norm = normalizeRefCode(str);
         if (norm && (norm === cleanCode || norm === `${cleanCode}100`)) return true;
         if (cleanUserId && str === cleanUserId) return true;
-        if (cleanCode === 'SUBODHKUMAR' || cleanUserId === INTENDED_OWNER_ADMIN_UID) {
-          if (str === INTENDED_OWNER_ADMIN_UID || norm === 'SUBODHKUMAR') return true;
+        if (isOwnerAffiliate) {
+          if (
+            str === INTENDED_OWNER_ADMIN_UID ||
+            norm === 'SUBODHKUMAR' ||
+            norm === 'KITABI3IZ' ||
+            norm === 'BUSINE1XP' ||
+            norm === 'ANUBHAH7S'
+          ) {
+            return true;
+          }
           const lower = str.toLowerCase();
-          if (lower.includes('subodh') || lower.includes('powergreen')) return true;
+          if (
+            lower.includes('subodh') ||
+            lower.includes('powergreen') ||
+            lower.includes('kitabi') ||
+            lower.includes('anubhav')
+          ) {
+            return true;
+          }
         }
         return false;
       };
@@ -375,7 +406,16 @@ export async function onRequestGet(context) {
       const allPlatformDocs = await listFirestoreCollectionDocs('platform_payments', env);
       const userPlatformPayments = allPlatformDocs.filter((p) => {
         const isCaptured = String(p.status || p.paymentStatus || '').toUpperCase() === 'CAPTURED';
-        return isCaptured && (matchesAffiliateUser(p.referredBy) || matchesAffiliateUser(p.refCode));
+        return isCaptured && (matchesAffiliateUser(p.referredBy) || matchesAffiliateUser(p.refCode) || (isOwnerAffiliate && !p.referredBy));
+      });
+
+      // 3b. Read course enrollments for verified captured enrollments
+      const allCourseDocs = await listFirestoreCollectionDocs('course_enrollments', env);
+      const userCourseEnrollments = allCourseDocs.filter((e) => {
+        const isCaptured =
+          String(e.paymentStatus || '').toUpperCase() === 'CAPTURED' ||
+          String(e.enrollmentStatus || '').toUpperCase() === 'ACTIVE';
+        return isCaptured && (matchesAffiliateUser(e.referredBy) || matchesAffiliateUser(e.refCode) || isOwnerAffiliate);
       });
 
       // 4. Read real cloud wallet ledger entries
@@ -396,6 +436,32 @@ export async function onRequestGet(context) {
       for (const r of record.referrals) {
         if (r.paymentId && r.status === 'Paid') {
           uniquePaymentIds.add(r.paymentId);
+        }
+      }
+
+      // Seed from course enrollments
+      for (const e of userCourseEnrollments) {
+        const pid = e.paymentTransactionId || e.paymentId;
+        if (pid) {
+          uniquePaymentIds.add(pid);
+          if (!existingPaymentIds.has(pid)) {
+            existingPaymentIds.add(pid);
+            record.referrals.unshift({
+              id: `ref_enr_${pid}`,
+              refCode: cleanCode,
+              name: e.userId ? e.userId.split('@')[0] : 'Enrolled Student',
+              email: e.userId || '',
+              phone: '',
+              date: (e.enrolledAt || e.createdAt || '').slice(0, 10) || new Date().toISOString().slice(0, 10),
+              status: 'Paid',
+              amount: Number(e.amount) || 4,
+              commission: 100,
+              course: e.courseId || 'Data Analyst with GenAI',
+              paymentId: pid,
+              referralId: `RF-${String(pid).slice(-4).toUpperCase()}`,
+              approvedDate: e.enrolledAt || new Date().toISOString(),
+            });
+          }
         }
       }
 
@@ -450,16 +516,8 @@ export async function onRequestGet(context) {
 
       // Calculate authoritative paid enrollments & lifetime earnings
       const verifiedPaidCount = uniquePaymentIds.size;
-      record.paidEnrollments = Math.max(
-        verifiedPaidCount,
-        Number(fsDoc?.paidEnrollments) || 0,
-        record.paidEnrollments || 0
-      );
-      record.totalEarned = Math.max(
-        record.paidEnrollments * 100,
-        Number(fsDoc?.totalEarned) || 0,
-        record.totalEarned || 0
-      );
+      record.paidEnrollments = verifiedPaidCount > 0 ? verifiedPaidCount : (Number(fsDoc?.paidEnrollments) || 0);
+      record.totalEarned = record.paidEnrollments * 100;
 
       // 5. Read real cloud withdrawal requests from Firestore
       const allWithdrawalDocs = await listFirestoreCollectionDocs('withdrawal_requests', env);
@@ -530,6 +588,13 @@ export async function onRequestGet(context) {
           if (cleanUserId && cleanUserId !== cleanCode) {
             await setFirestoreDocument('affiliate_stats', cleanUserId, healData, env, true);
           }
+          if (isOwnerAffiliate) {
+            await Promise.all([
+              setFirestoreDocument('affiliate_stats', 'KITABI3IZ', healData, env, true),
+              setFirestoreDocument('affiliate_stats', 'SUBODHKUMAR', healData, env, true),
+              setFirestoreDocument('affiliate_stats', INTENDED_OWNER_ADMIN_UID, healData, env, true),
+            ]).catch(() => {});
+          }
         } catch (healErr) {
           console.warn('Auto-heal affiliate_stats notice:', healErr?.message);
         }
@@ -581,6 +646,15 @@ export async function onRequestPost(context) {
     // Event 1: Referral Link Click
     if (eventType === 'click') {
       record.clicks += 1;
+      if (getServiceAccount(env)) {
+        try {
+          const existing = await getFirestoreDocument('affiliate_stats', cleanRef, env);
+          const nextClicks = (Number(existing?.clicks) || 0) + 1;
+          await setFirestoreDocument('affiliate_stats', cleanRef, { clicks: nextClicks, updatedAt: new Date().toISOString() }, env, true);
+        } catch (e) {
+          console.warn('Click persist notice:', e?.message);
+        }
+      }
       return json({
         success: true,
         eventType: 'click',
@@ -613,6 +687,15 @@ export async function onRequestPost(context) {
 
       store.registeredSignupEmails.add(email);
       record.signups += 1;
+      if (getServiceAccount(env)) {
+        try {
+          const existing = await getFirestoreDocument('affiliate_stats', cleanRef, env);
+          const nextSignups = (Number(existing?.signups) || 0) + 1;
+          await setFirestoreDocument('affiliate_stats', cleanRef, { signups: nextSignups, updatedAt: new Date().toISOString() }, env, true);
+        } catch (e) {
+          console.warn('Signup persist notice:', e?.message);
+        }
+      }
       record.referrals.unshift({
         id: `ref_sig_${Date.now()}`,
         name: body.name || email.split('@')[0] || 'Registered Learner',

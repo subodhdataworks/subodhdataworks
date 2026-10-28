@@ -1674,14 +1674,18 @@ export async function updateAffiliateWithdrawalStatus(params: {
   };
 }
 
+// Track request sequence to prevent out-of-order race conditions
+let latestAffiliateFetchRequestId = 0;
+
 /**
  * Real-time Affiliate Hub Data Fetcher
  * Aggregates Server API (/api/affiliate) + Firestore cloud stats + local v5 storage
  * Enforces:
- * - Single Source of Truth: availableBalance = Math.max(0, totalEarned - totalPaid - pendingBalance)
+ * - Single Source of Truth: authoritative deduplicated cloud records strictly govern counts & balances
  * - Free signups give ₹0
  * - Verified paid enrollment gives ₹100
  * - Pending withdrawals remain reserved and are NEVER overwritten by background sync
+ * - No stale cached KPI fallbacks
  */
 export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
   clicks: number;
@@ -1696,7 +1700,9 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
   referrals: any[];
   withdrawals: any[];
   walletLedger: WalletLedgerEntry[];
+  isAuthoritative?: boolean;
 }> {
+  const currentRequestId = ++latestAffiliateFetchRequestId;
   const cleanCode = normalizeRefCode(refCodeOrName);
   if (!cleanCode) {
     return {
@@ -1730,9 +1736,15 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
     const res = await withTimeout(fetch(`/api/affiliate?refCode=${encodeURIComponent(cleanCode)}${uidParam}`), 3500);
     if (res.ok) {
       const serverData = await res.json();
+      // Drop late response if a newer request already finished
+      if (currentRequestId < latestAffiliateFetchRequestId) {
+        return localData;
+      }
       if (serverData && typeof serverData.paidEnrollments === 'number') {
-        const paidEnrollments = Math.max(serverData.paidEnrollments || 0, localData.paidEnrollments || 0);
-        const totalEarned = Math.max(serverData.totalEarned || 0, localData.totalEarned || 0, paidEnrollments * 100);
+        const paidEnrollments = serverData.paidEnrollments;
+        const totalEarned = typeof serverData.totalEarned === 'number'
+          ? serverData.totalEarned
+          : (paidEnrollments * 100);
         const mergedWithdrawals = mergeWithdrawalsList(serverData.withdrawals, localData.withdrawals);
         const balances = computeAffiliateBalancesFromWithdrawals(totalEarned, mergedWithdrawals);
 
@@ -1757,8 +1769,11 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
             JSON.stringify({
               ...localData,
               ...serverData,
+              paidEnrollments,
               withdrawals: mergedWithdrawals,
               availableBalance: balances.availableBalance,
+              availableToPayout: balances.availableToPayout,
+              availableToWithdraw: balances.availableToWithdraw,
               pendingBalance: balances.pendingBalance,
               totalPaid: balances.totalPaid,
               totalEarned: balances.totalEarned,
@@ -1768,8 +1783,8 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
         } catch {}
 
         return {
-          clicks: Math.max(serverData.clicks || 0, localData.clicks || 0),
-          signups: Math.max(serverData.signups || 0, localData.signups || 0),
+          clicks: Number(serverData.clicks) || 0,
+          signups: Number(serverData.signups) || 0,
           paidEnrollments,
           availableBalance: balances.availableBalance,
           availableToPayout: balances.availableToPayout,
@@ -1780,6 +1795,7 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
           referrals,
           withdrawals: mergedWithdrawals,
           walletLedger,
+          isAuthoritative: true,
         };
       }
     }

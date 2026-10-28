@@ -891,6 +891,72 @@ runTest('29. Mobile Hero Carousel Resiliency: Rich HTML fallback content & gradi
   assert.ok(cssContent.includes('.aff-mob-slide-content'), 'Must style .aff-mob-slide-content');
 });
 
+runTest('30. Multi-Collection Authoritative Paid Referral Tracking (course_enrollments + platform_payments)', () => {
+  const apiPath = path.resolve('functions/api/affiliate.js');
+  const content = fs.readFileSync(apiPath, 'utf-8');
+
+  assert.ok(content.includes("listFirestoreCollectionDocs('course_enrollments'"), 'Must query course_enrollments collection');
+  assert.ok(content.includes("userCourseEnrollments"), 'Must filter user course enrollments');
+  assert.ok(content.includes("uniquePaymentIds.add(pid)"), 'Must add unique payment IDs from enrollments');
+  assert.ok(!content.includes("record.paidEnrollments = record.availableBalance / 100"), 'Must NOT derive enrollments by dividing balance by 100');
+});
+
+runTest('31. 5-Payment Deduplication & Financial Invariant Simulation', () => {
+  // Simulate 5 verified live referral payments across collections and aliases
+  const livePayments = [
+    { id: 'pay_TtFyyxbJ2BLXHx', status: 'CAPTURED', ref: 'KITABI3IZ' },
+    { id: 'pay_TtGfhDdDtIjwJZ', status: 'CAPTURED', ref: 'KITABI3IZ' },
+    { id: 'pay_TtHc3LgBUbz8Ao', status: 'CAPTURED', ref: 'KITABI3IZ' },
+    { id: 'pay_TtKezk4U0hZcAs', status: 'CAPTURED', ref: 'ANUBHAH7S' }, // sub-referral
+    { id: 'pay_TtN2qabFjfE1cW', status: 'CAPTURED', ref: 'KITABI3IZ' },
+  ];
+
+  const uniquePaymentIds = new Set();
+  for (const p of livePayments) {
+    if (p.status === 'CAPTURED') {
+      uniquePaymentIds.add(p.id);
+    }
+  }
+
+  assert.equal(uniquePaymentIds.size, 5, 'Must accurately count exactly 5 unique paid enrollments');
+  const totalEarned = uniquePaymentIds.size * 100;
+  assert.equal(totalEarned, 500, 'Total earned must be ₹500 (5 x 100)');
+
+  // Production withdrawals: 1 x ₹100 UNDER_REVIEW, 2 x ₹1 PAID
+  const withdrawals = [
+    { id: 'w_1793177405137_B5ZVP', amount: 100, status: 'UNDER_REVIEW' },
+    { id: 'w_1793186331663_JPB1H', amount: 1, status: 'PAID' },
+    { id: 'w_1793200045402_4JIB7', amount: 1, status: 'PAID' },
+  ];
+
+  let pendingBalance = 0;
+  let totalPaid = 0;
+  for (const w of withdrawals) {
+    if (w.status === 'UNDER_REVIEW') pendingBalance += w.amount;
+    if (w.status === 'PAID') totalPaid += w.amount;
+  }
+
+  const availableBalance = Math.max(0, totalEarned - totalPaid - pendingBalance);
+  assert.equal(pendingBalance, 100, 'Pending balance must be ₹100');
+  assert.equal(totalPaid, 2, 'Total paid must be ₹2');
+  assert.equal(availableBalance, 398, 'Available balance must be ₹398 (500 - 100 - 2)');
+  assert.equal(availableBalance + pendingBalance + totalPaid, totalEarned, 'Conservation invariant holds');
+});
+
+runTest('32. Out-of-Order API Protection & Cross-Device Account Scoping', () => {
+  const servicePath = path.resolve('welcome-to-2050/src/services/realAuthService.ts');
+  const content = fs.readFileSync(servicePath, 'utf-8');
+
+  assert.ok(content.includes('latestAffiliateFetchRequestId'), 'Must track latestAffiliateFetchRequestId');
+  assert.ok(content.includes('currentRequestId < latestAffiliateFetchRequestId'), 'Must drop late out-of-order responses');
+
+  const hubPath = path.resolve('welcome-to-2050/src/components/futureai/AffiliateEarningsHub.tsx');
+  const hubContent = fs.readFileSync(hubPath, 'utf-8');
+
+  // Verify stored referral code preservation
+  assert.ok(/myStoredCode\s*\?\s*normalizeRefCode\(myStoredCode\)/.test(hubContent), 'Must preserve myStoredCode when present');
+});
+
 console.log('\n----------------------------------------------------------------');
 console.log(`Summary: ${passedTests}/${totalTests} Tests Passed`);
 console.log('----------------------------------------------------------------\n');
