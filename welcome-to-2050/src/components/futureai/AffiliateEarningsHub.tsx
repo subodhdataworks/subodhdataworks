@@ -137,68 +137,30 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   }, [cleanRefCode]);
 
   const affiliateRefUrl = `https://futureitindustry.com/?ref=${cleanRefCode}100`;
-  const storageKey = `futureai_affiliate_hub_v5_${cleanRefCode}`;
   if (typeof window !== 'undefined') {
-    try { localStorage.removeItem(`futureai_affiliate_hub_v3_${cleanRefCode}`); } catch {}
+    try {
+      localStorage.removeItem(`futureai_affiliate_hub_v3_${cleanRefCode}`);
+      localStorage.removeItem(`futureai_affiliate_hub_v5_${cleanRefCode}`);
+      localStorage.removeItem('futureai_user_wallet');
+    } catch {}
   }
 
   // Live Financial State (User-Scoped & Defaults strictly to 0)
-  const [hubState, setHubState] = useState<HubState>(() => {
-    try {
-      if (typeof window !== 'undefined') {
-        const saved = localStorage.getItem(storageKey);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          const paidEnrollments = typeof parsed.paidEnrollments === 'number' ? parsed.paidEnrollments : 0;
-          const totalEarned = Math.max(
-            typeof parsed.totalEarned === 'number' ? parsed.totalEarned : 0,
-            paidEnrollments * 100
-          );
-          const withdrawals = Array.isArray(parsed.withdrawals) ? (parsed.withdrawals as WithdrawalItem[]) : [];
-          const recomputed = computeAffiliateBalancesFromWithdrawals(totalEarned, withdrawals);
-          return {
-            availableBalance: recomputed.availableBalance,
-            pendingBalance: recomputed.pendingBalance,
-            totalPaid: recomputed.totalPaid,
-            totalEarned: recomputed.totalEarned,
-            clicks: typeof parsed.clicks === 'number' ? parsed.clicks : 0,
-            signups: typeof parsed.signups === 'number' ? parsed.signups : 0,
-            paidEnrollments,
-            referrals: Array.isArray(parsed.referrals) ? (parsed.referrals as ReferralItem[]) : [],
-            withdrawals,
-            walletLedger: Array.isArray(parsed.walletLedger) ? parsed.walletLedger : [],
-          };
-        }
-      }
-    } catch {
-      // ignore
-    }
-    return {
-      availableBalance: 0,
-      pendingBalance: 0,
-      totalPaid: 0,
-      totalEarned: 0,
-      clicks: 0,
-      signups: 0,
-      paidEnrollments: 0,
-      referrals: [] as ReferralItem[],
-      withdrawals: [] as WithdrawalItem[],
-      walletLedger: [] as WalletLedgerEntry[],
-    };
+  const [hubState, setHubState] = useState<HubState>({
+    availableBalance: 0,
+    pendingBalance: 0,
+    totalPaid: 0,
+    totalEarned: 0,
+    clicks: 0,
+    signups: 0,
+    paidEnrollments: 0,
+    referrals: [] as ReferralItem[],
+    withdrawals: [] as WithdrawalItem[],
+    walletLedger: [] as WalletLedgerEntry[],
   });
+  const [isSyncing, setIsSyncing] = useState(true);
 
-  // Automatically sync to local storage
-  useEffect(() => {
-    try {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(storageKey, JSON.stringify(hubState));
-        localStorage.setItem('futureai_user_wallet', hubState.availableBalance.toString());
-        window.dispatchEvent(new Event('futureai_wallet_updated'));
-      }
-    } catch {
-      // ignore
-    }
-  }, [hubState, storageKey]);
+  // LocalStorage auto-save removed: server is the single source of truth
 
   // Live real-time sync with Cloud Database & Master Registry for 100% accurate referral signups & withdrawals
   useEffect(() => {
@@ -210,47 +172,20 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
           if (!real || typeof real.paidEnrollments !== 'number') {
             return;
           }
+          setIsSyncing(false);
           setHubState((prev) => {
-            const nextClicks = Number(real.clicks) || 0;
-            const nextSignups = Number(real.signups) || 0;
-            const nextPaidEnrollments = typeof real.paidEnrollments === 'number' ? real.paidEnrollments : (prev.paidEnrollments || 0);
-            const nextEarned = typeof real.totalEarned === 'number' ? real.totalEarned : (prev.totalEarned || nextPaidEnrollments * 100);
-            const nextReferrals = real.referrals && real.referrals.length > 0 ? real.referrals : prev.referrals;
-
-            // Merge withdrawals preferring latest authoritative status from server/real data
             const nextWithdrawals = mergeWithdrawalsList(real.withdrawals, prev.withdrawals);
-            const nextBalances = computeAffiliateBalancesFromWithdrawals(nextEarned, nextWithdrawals);
-            const nextLedger =
-              Array.isArray(real.walletLedger) && real.walletLedger.length > 0
-                ? real.walletLedger
-                : prev.walletLedger || [];
-
-            if (
-              nextClicks === prev.clicks &&
-              nextSignups === prev.signups &&
-              nextPaidEnrollments === prev.paidEnrollments &&
-              nextBalances.availableBalance === prev.availableBalance &&
-              nextBalances.pendingBalance === prev.pendingBalance &&
-              nextBalances.totalPaid === prev.totalPaid &&
-              nextBalances.totalEarned === prev.totalEarned &&
-              nextReferrals.length === prev.referrals.length &&
-              nextWithdrawals.length === prev.withdrawals.length
-            ) {
-              return prev;
-            }
-
             return {
-              ...prev,
-              clicks: nextClicks,
-              signups: nextSignups,
-              paidEnrollments: nextPaidEnrollments,
-              availableBalance: nextBalances.availableBalance,
-              pendingBalance: nextBalances.pendingBalance,
-              totalPaid: nextBalances.totalPaid,
-              totalEarned: nextBalances.totalEarned,
-              referrals: nextReferrals,
+              availableBalance: real.availableBalance || 0,
+              pendingBalance: real.pendingBalance || 0,
+              totalPaid: real.totalPaid || 0,
+              totalEarned: real.totalEarned || 0,
+              clicks: Number(real.clicks) || 0,
+              signups: Number(real.signups) || 0,
+              paidEnrollments: real.paidEnrollments || 0,
+              referrals: Array.isArray(real.referrals) ? real.referrals : [],
               withdrawals: nextWithdrawals,
-              walletLedger: nextLedger,
+              walletLedger: Array.isArray(real.walletLedger) ? real.walletLedger : [],
             };
           });
         }
@@ -794,11 +729,23 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
 
       if (res.success) {
         showToast('🎉 Verified! ₹100 referral commission credited to your wallet!', 'success');
-        const storageKey = `futureai_affiliate_hub_v5_${cleanRefCode}`;
-        const updatedRaw = localStorage.getItem(storageKey);
-        if (updatedRaw) {
-          setHubState(JSON.parse(updatedRaw));
-        }
+        try {
+          const fresh = await fetchAffiliateRealData(cleanRefCode);
+          if (fresh) {
+            setHubState({
+              availableBalance: fresh.availableBalance || 0,
+              pendingBalance: fresh.pendingBalance || 0,
+              totalPaid: fresh.totalPaid || 0,
+              totalEarned: fresh.totalEarned || 0,
+              clicks: Number(fresh.clicks) || 0,
+              signups: Number(fresh.signups) || 0,
+              paidEnrollments: fresh.paidEnrollments || 0,
+              referrals: Array.isArray(fresh.referrals) ? fresh.referrals : [],
+              withdrawals: Array.isArray(fresh.withdrawals) ? fresh.withdrawals : [],
+              walletLedger: Array.isArray(fresh.walletLedger) ? fresh.walletLedger : [],
+            });
+          }
+        } catch {}
         try {
           confetti({
             particleCount: 100,

@@ -39,6 +39,8 @@ function decodeJwtPayload(token: string): Record<string, any> | null {
   }
 }
 
+import { clearActiveCourseSessionCacheOnLogout } from './courseUnlockService';
+
 export class AdminAuthService {
   /**
    * Check if current session exists, is valid, and not expired
@@ -420,6 +422,9 @@ export class AdminAuthService {
     }
     if (typeof window !== 'undefined') {
       localStorage.removeItem(ADMIN_STORAGE_KEY);
+      try {
+        clearActiveCourseSessionCacheOnLogout();
+      } catch {}
     }
     try {
       await auth.signOut();

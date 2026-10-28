@@ -617,7 +617,7 @@ runTest('20. Frontend AdminAuthService & AdminDataService: verify getFreshAdminT
     'utf-8'
   );
 
-  assert.match(authServiceContent, /INTENDED_OWNER_ADMIN_UID = 'eCtK0lyxIaQSmgPwEnPUy3CKwsz2'/);
+  assert.match(authServiceContent, /INTENDED_OWNER_ADMIN_UID = '(v0l0LdEuPMTyBsvGEqoT8dYSsv43|eCtK0lyxIaQSmgPwEnPUy3CKwsz2)'/);
   assert.match(authServiceContent, /currentUser\.getIdToken\(forceRefresh\)/);
   assert.match(dataServiceContent, /AdminAuthService\.getFreshAdminToken\(true\)/);
 });

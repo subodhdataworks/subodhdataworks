@@ -1721,66 +1721,46 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
     };
   }
 
-  let localData: any = {};
-  if (typeof window !== 'undefined') {
-    try {
-      const storageKey = `futureai_affiliate_hub_v5_${cleanCode}`;
-      localData = JSON.parse(localStorage.getItem(storageKey) || '{}');
-    } catch {}
-  }
-
   // 1. Fetch live server-verified cross-device data from Cloudflare Pages API (/api/affiliate)
   try {
     const currentUid = typeof window !== 'undefined' ? localStorage.getItem('futureai_user_uid') || '' : '';
     const uidParam = currentUid ? `&userId=${encodeURIComponent(currentUid)}` : '';
-    const res = await withTimeout(fetch(`/api/affiliate?refCode=${encodeURIComponent(cleanCode)}${uidParam}`), 15000);
+    const res = await withTimeout(
+      fetch(`/api/affiliate?refCode=${encodeURIComponent(cleanCode)}${uidParam}`, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' },
+      }),
+      15000
+    );
     if (res.ok) {
       const serverData = await res.json();
       // Drop late response if a newer request already finished
       if (currentRequestId < latestAffiliateFetchRequestId) {
-        return localData;
+        return {
+          clicks: 0,
+          signups: 0,
+          paidEnrollments: 0,
+          availableBalance: 0,
+          availableToPayout: 0,
+          availableToWithdraw: 0,
+          pendingBalance: 0,
+          totalPaid: 0,
+          totalEarned: 0,
+          referrals: [],
+          withdrawals: [],
+          walletLedger: [],
+        };
       }
       if (serverData && typeof serverData.paidEnrollments === 'number') {
-        const paidEnrollments = serverData.paidEnrollments;
+        const paidEnrollments = Number(serverData.paidEnrollments) || 0;
         const totalEarned = typeof serverData.totalEarned === 'number'
           ? serverData.totalEarned
           : (paidEnrollments * 100);
-        const mergedWithdrawals = mergeWithdrawalsList(serverData.withdrawals, localData.withdrawals);
-        const balances = computeAffiliateBalancesFromWithdrawals(totalEarned, mergedWithdrawals);
+        const serverWithdrawals = Array.isArray(serverData.withdrawals) ? serverData.withdrawals : [];
+        const balances = computeAffiliateBalancesFromWithdrawals(totalEarned, serverWithdrawals);
 
-        const referrals =
-          Array.isArray(serverData.referrals) && serverData.referrals.length > 0
-            ? serverData.referrals
-            : Array.isArray(localData.referrals)
-            ? localData.referrals
-            : [];
-
-        const walletLedger: WalletLedgerEntry[] =
-          Array.isArray(serverData.walletLedger) && serverData.walletLedger.length > 0
-            ? serverData.walletLedger
-            : Array.isArray(localData.walletLedger)
-            ? localData.walletLedger
-            : [];
-
-        try {
-          const storageKey = `futureai_affiliate_hub_v5_${cleanCode}`;
-          localStorage.setItem(
-            storageKey,
-            JSON.stringify({
-              ...localData,
-              ...serverData,
-              paidEnrollments,
-              withdrawals: mergedWithdrawals,
-              availableBalance: balances.availableBalance,
-              availableToPayout: balances.availableToPayout,
-              availableToWithdraw: balances.availableToWithdraw,
-              pendingBalance: balances.pendingBalance,
-              totalPaid: balances.totalPaid,
-              totalEarned: balances.totalEarned,
-            })
-          );
-          localStorage.setItem('futureai_user_wallet', balances.availableBalance.toString());
-        } catch {}
+        const referrals = Array.isArray(serverData.referrals) ? serverData.referrals : [];
+        const walletLedger: WalletLedgerEntry[] = Array.isArray(serverData.walletLedger) ? serverData.walletLedger : [];
 
         return {
           clicks: Number(serverData.clicks) || 0,
@@ -1793,7 +1773,7 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
           totalPaid: balances.totalPaid,
           totalEarned: balances.totalEarned,
           referrals,
-          withdrawals: mergedWithdrawals,
+          withdrawals: serverWithdrawals,
           walletLedger,
           isAuthoritative: true,
         };
@@ -1849,26 +1829,12 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
     console.warn('Fetch registered user referrals notice:', e);
   }
 
-  // Merge referrals list
-  const existingLocalRefs: any[] = Array.isArray(localData.referrals) ? localData.referrals : [];
-  const mergedRefs = [...existingLocalRefs];
-  for (const mr of matchedReferrals) {
-    if (
-      !mergedRefs.some(
-        (r) => r.name === mr.name || (r.email && mr.email && r.email.toLowerCase() === mr.email.toLowerCase())
-      )
-    ) {
-      mergedRefs.push(mr);
-    }
-  }
-
+  const mergedRefs = [...matchedReferrals];
   const paidCount = mergedRefs.filter((r) => r.status === 'Paid' || r.status === 'Approved').length;
-  const finalPaidEnrollments = Math.max(cloudPaidEnrollments, paidCount, localData.paidEnrollments || 0);
-  const finalClicks = Math.max(cloudClicks, localData.clicks || 0);
-  const finalSignups = Math.max(cloudSignups, mergedRefs.length, localData.signups || 0);
-  const finalEarned = Math.max(cloudTotalEarned, finalPaidEnrollments * 100, localData.totalEarned || 0);
-
-  const localWithdrawals = Array.isArray(localData.withdrawals) ? localData.withdrawals : [];
+  const finalPaidEnrollments = Math.max(cloudPaidEnrollments, paidCount);
+  const finalClicks = cloudClicks;
+  const finalSignups = Math.max(cloudSignups, mergedRefs.length);
+  const finalEarned = Math.max(cloudTotalEarned, finalPaidEnrollments * 100);
 
   // 4. Fetch user's withdrawals directly from Firestore collection 'withdrawal_requests'
   const cloudWithdrawals: any[] = [];
@@ -1898,9 +1864,8 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
     console.warn('Fetch cloud withdrawals for user notice:', wErr);
   }
 
-  const mergedWithdrawals = mergeWithdrawalsList(cloudWithdrawals, localWithdrawals);
-  const balances = computeAffiliateBalancesFromWithdrawals(finalEarned, mergedWithdrawals);
-  const walletLedger: WalletLedgerEntry[] = Array.isArray(localData.walletLedger) ? localData.walletLedger : [];
+  const balances = computeAffiliateBalancesFromWithdrawals(finalEarned, cloudWithdrawals);
+  const walletLedger: WalletLedgerEntry[] = [];
 
   return {
     clicks: finalClicks,
@@ -1913,7 +1878,7 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
     totalPaid: balances.totalPaid,
     totalEarned: balances.totalEarned,
     referrals: mergedRefs,
-    withdrawals: mergedWithdrawals,
+    withdrawals: cloudWithdrawals,
     walletLedger,
   };
 }
