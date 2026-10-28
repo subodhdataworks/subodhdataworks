@@ -536,6 +536,7 @@ export async function onRequestGet(context) {
       }
     } catch (fsErr) {
       console.warn('Firestore read affiliate notice:', fsErr?.message);
+      record._fsErr = fsErr?.message;
     }
   }
 
@@ -556,6 +557,7 @@ export async function onRequestGet(context) {
     referrals: record.referrals,
     withdrawals: record.withdrawals,
     walletLedger: record.walletLedger,
+    ...(record._fsErr ? { _fsErr: record._fsErr } : {}),
   });
 }
 

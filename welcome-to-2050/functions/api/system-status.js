@@ -15,6 +15,7 @@ import {
   getServiceAccount,
   getFirestoreDocument,
   setFirestoreDocument,
+  listFirestoreCollectionDocs,
   inspectAndEnsureOwnerAdminClaim,
 } from './_firestore-admin.js';
 
@@ -80,6 +81,63 @@ export async function onRequestGet(context) {
           intendedOwnerUid: INTENDED_OWNER_ADMIN_UID,
           error: String(claimErr.message || claimErr).slice(0, 120),
         };
+      }
+
+      // Safe Diagnostic Trace of Referral & Payment Collections
+      try {
+        const [refPayments, platPayments, ledgerEntries, affStats, withdrawals] = await Promise.all([
+          listFirestoreCollectionDocs('processed_referral_payments', env),
+          listFirestoreCollectionDocs('platform_payments', env),
+          listFirestoreCollectionDocs('wallet_ledger', env),
+          listFirestoreCollectionDocs('affiliate_stats', env),
+          listFirestoreCollectionDocs('withdrawal_requests', env),
+        ]);
+
+        statusReport.affiliateAudit = {
+          processed_referral_payments: refPayments.map((p) => ({
+            id: p.id,
+            paymentId: p.paymentId,
+            refCode: p.refCode,
+            payerEmail: p.payerEmail ? p.payerEmail.slice(0, 3) + '***' : null,
+            commission: p.commission,
+            creditedAt: p.creditedAt,
+          })),
+          platform_payments: platPayments.map((p) => ({
+            id: p.id,
+            paymentId: p.paymentId,
+            referredBy: p.referredBy,
+            amount: p.amount,
+            status: p.status || p.paymentStatus,
+          })),
+          wallet_ledger: ledgerEntries.map((l) => ({
+            id: l.id,
+            userId: l.userId,
+            paymentId: l.paymentId,
+            amount: l.amount,
+            type: l.type,
+          })),
+          affiliate_stats: affStats.map((s) => ({
+            id: s.id,
+            refCode: s.refCode,
+            paidEnrollments: s.paidEnrollments,
+            totalEarned: s.totalEarned,
+            availableBalance: s.availableBalance,
+            pendingBalance: s.pendingBalance,
+            totalPaid: s.totalPaid,
+            clicks: s.clicks,
+            signups: s.signups,
+          })),
+          withdrawal_requests: withdrawals.map((w) => ({
+            id: w.id,
+            txId: w.txId,
+            userId: w.userId,
+            refCode: w.refCode,
+            amount: w.amount,
+            status: w.status,
+          })),
+        };
+      } catch (auditErr) {
+        statusReport.affiliateAuditError = auditErr?.message;
       }
     } catch (err) {
       statusReport.firestore = {
