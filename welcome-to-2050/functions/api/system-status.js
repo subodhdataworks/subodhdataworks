@@ -85,56 +85,34 @@ export async function onRequestGet(context) {
 
       // Safe Diagnostic Trace of Referral & Payment Collections
       try {
-        const [refPayments, platPayments, ledgerEntries, affStats, withdrawals] = await Promise.all([
+        const [refPayments, platPayments, ledgerEntries, affStats, withdrawals, courseEnrollments, registeredUsers, clicksDocs] = await Promise.all([
           listFirestoreCollectionDocs('processed_referral_payments', env),
           listFirestoreCollectionDocs('platform_payments', env),
           listFirestoreCollectionDocs('wallet_ledger', env),
           listFirestoreCollectionDocs('affiliate_stats', env),
           listFirestoreCollectionDocs('withdrawal_requests', env),
+          listFirestoreCollectionDocs('course_enrollments', env),
+          listFirestoreCollectionDocs('registered_users', env),
+          listFirestoreCollectionDocs('referral_clicks', env),
         ]);
 
         statusReport.affiliateAudit = {
-          processed_referral_payments: refPayments.map((p) => ({
-            id: p.id,
-            paymentId: p.paymentId,
-            refCode: p.refCode,
-            payerEmail: p.payerEmail ? p.payerEmail.slice(0, 3) + '***' : null,
-            commission: p.commission,
-            creditedAt: p.creditedAt,
+          processed_referral_payments: refPayments,
+          platform_payments: platPayments,
+          wallet_ledger: ledgerEntries,
+          affiliate_stats: affStats,
+          withdrawal_requests: withdrawals,
+          course_enrollments: courseEnrollments,
+          registered_users: registeredUsers.map((u) => ({
+            uid: u.uid || u.id,
+            email: u.email,
+            referredBy: u.referredBy,
+            referralCode: u.referralCode,
+            refCode: u.refCode,
+            createdAt: u.createdAt || u.registeredAt,
           })),
-          platform_payments: platPayments.map((p) => ({
-            id: p.id,
-            paymentId: p.paymentId,
-            referredBy: p.referredBy,
-            amount: p.amount,
-            status: p.status || p.paymentStatus,
-          })),
-          wallet_ledger: ledgerEntries.map((l) => ({
-            id: l.id,
-            userId: l.userId,
-            paymentId: l.paymentId,
-            amount: l.amount,
-            type: l.type,
-          })),
-          affiliate_stats: affStats.map((s) => ({
-            id: s.id,
-            refCode: s.refCode,
-            paidEnrollments: s.paidEnrollments,
-            totalEarned: s.totalEarned,
-            availableBalance: s.availableBalance,
-            pendingBalance: s.pendingBalance,
-            totalPaid: s.totalPaid,
-            clicks: s.clicks,
-            signups: s.signups,
-          })),
-          withdrawal_requests: withdrawals.map((w) => ({
-            id: w.id,
-            txId: w.txId,
-            userId: w.userId,
-            refCode: w.refCode,
-            amount: w.amount,
-            status: w.status,
-          })),
+          referral_clicks_count: clicksDocs.length,
+          referral_clicks: clicksDocs,
         };
       } catch (auditErr) {
         statusReport.affiliateAuditError = auditErr?.message;
