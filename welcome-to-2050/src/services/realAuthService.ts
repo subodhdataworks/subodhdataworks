@@ -946,10 +946,10 @@ export function computeAffiliateBalancesFromWithdrawals(totalEarned: number, wit
   for (const w of Array.isArray(withdrawals) ? withdrawals : []) {
     const amt = Number(w?.amount) || 0;
     if (amt <= 0) continue;
-    const st = String(w?.status || '').trim();
-    if (st === 'Pending' || st === 'Processing' || st === 'UNDER_REVIEW' || st === 'PENDING' || st === 'PROCESSING') {
+    const st = String(w?.status || '').trim().toUpperCase();
+    if (st === 'PENDING' || st === 'PROCESSING' || st === 'UNDER_REVIEW' || st === 'APPROVED') {
       pendingBalance += amt;
-    } else if (st === 'Paid' || st === 'Approved' || st === 'PAID' || st === 'APPROVED') {
+    } else if (st === 'PAID') {
       totalPaid += amt;
     }
   }

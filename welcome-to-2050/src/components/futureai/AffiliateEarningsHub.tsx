@@ -303,7 +303,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     return (withdrawalHistory || [])
       .filter((w) => {
         const s = String(w?.status || '').toUpperCase();
-        return s === 'PENDING' || s === 'PROCESSING' || s === 'UNDER_REVIEW';
+        return s === 'PENDING' || s === 'PROCESSING' || s === 'UNDER_REVIEW' || s === 'APPROVED';
       })
       .reduce((sum, w) => sum + (Number(w?.amount) || 0), 0);
   }, [withdrawalHistory]);
@@ -908,6 +908,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
 
   // Metric cards definitions with 1:1 graphics from screenshot
   const metricCards = [
+    // 1. Total Clicks
     {
       id: 'clicks',
       label: 'Total Clicks',
@@ -933,6 +934,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       ),
       onClick: () => showToast(`${clicks} total clicks tracked across all shared channels.`, 'info')
     },
+    // 2. Free Signups
     {
       id: 'signups',
       label: 'Free Signups',
@@ -957,6 +959,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
         setIsReferralsModalOpen(true);
       }
     },
+    // 3. Paid Enrollments
     {
       id: 'paid',
       label: 'Paid Enrollments',
@@ -981,16 +984,43 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
         setIsReferralsModalOpen(true);
       }
     },
+    // 4. Available to Payout (Position 4 - Green Status)
     {
-      id: 'pending',
-      label: pendingWithdrawalAmount > 0 ? 'Pending Withdrawal' : (pendingEscrowAmount > 0 ? 'Pending Commission / Escrow' : 'Pending Withdrawal'),
-      val: `₹${(pendingWithdrawalAmount > 0 ? pendingWithdrawalAmount : (pendingEscrowAmount > 0 ? pendingEscrowAmount : 0)).toLocaleString('en-IN')}`,
-      growth: pendingWithdrawalAmount > 0 ? 'Under Review' : (pendingEscrowAmount > 0 ? '7-Day Clear' : '₹0 pending'),
+      id: 'available',
+      label: 'Available to Payout',
+      val: `₹${availableBalance.toLocaleString('en-IN')}`,
+      growth: availableBalance >= 100 ? 'Ready to Payout' : 'Min ₹100',
+      colorClass: 'card-teal',
+      iconBg: '#059669',
+      badgeClass: 'badge-emerald-soft',
+      icon: <Zap className="w-4 h-4 text-white" />,
+      subtext: 'Payout credited in 24 hours',
+      valColor: '#059669',
+      chart: (
+        <svg className="w-16 h-7" viewBox="0 0 64 28" fill="none">
+          <rect x="8" y="18" width="6" height="10" rx="1.5" fill="#cffafe" />
+          <rect x="20" y="14" width="6" height="14" rx="1.5" fill="#a5f3fc" />
+          <rect x="32" y="10" width="6" height="18" rx="1.5" fill="#67e8f9" />
+          <rect x="44" y="6" width="6" height="22" rx="1.5" fill="#22d3ee" />
+          <rect x="56" y="2" width="6" height="26" rx="1.5" fill="#059669" />
+        </svg>
+      ),
+      onClick: () => {
+        setWithdrawStep('form');
+        setIsWithdrawModalOpen(true);
+      }
+    },
+    // 5. Pending Withdrawal (Position 5 - Orange Status)
+    {
+      id: 'pending-withdrawal',
+      label: 'Pending Withdrawal',
+      val: `₹${pendingWithdrawalAmount.toLocaleString('en-IN')}`,
+      growth: pendingWithdrawalAmount > 0 ? 'Under Review' : '₹0 pending',
       colorClass: 'card-amber',
       iconBg: '#f59e0b',
       badgeClass: 'badge-amber-soft',
       icon: <Clock className="w-4 h-4 text-white" />,
-      subtext: pendingWithdrawalAmount > 0 ? 'Reserved for payout processing' : (pendingEscrowAmount > 0 ? 'Unlocking on course start' : 'Reserved for payout processing'),
+      subtext: 'Reserved for payout processing',
       valColor: '#ea580c',
       chart: (
         <svg className="w-16 h-7" viewBox="0 0 64 28" fill="none">
@@ -1003,35 +1033,10 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
         </svg>
       ),
       onClick: () => {
-        setReferralStatusFilter('All');
-        setIsReferralsModalOpen(true);
+        setIsWithdrawHistoryOpen(true);
       }
     },
-    {
-      id: 'available',
-      label: 'Available to Payout',
-      val: `₹${availableBalance.toLocaleString('en-IN')}`,
-      growth: availableBalance >= 100 ? 'Ready to Payout' : 'Min ₹100',
-      colorClass: 'card-teal',
-      iconBg: '#06b6d4',
-      badgeClass: 'badge-cyan-soft',
-      icon: <Zap className="w-4 h-4 text-white" />,
-      subtext: 'Payout credited in 24 hours',
-      valColor: '#059669',
-      chart: (
-        <svg className="w-16 h-7" viewBox="0 0 64 28" fill="none">
-          <rect x="8" y="18" width="6" height="10" rx="1.5" fill="#cffafe" />
-          <rect x="20" y="14" width="6" height="14" rx="1.5" fill="#a5f3fc" />
-          <rect x="32" y="10" width="6" height="18" rx="1.5" fill="#67e8f9" />
-          <rect x="44" y="6" width="6" height="22" rx="1.5" fill="#22d3ee" />
-          <rect x="56" y="2" width="6" height="26" rx="1.5" fill="#06b6d4" />
-        </svg>
-      ),
-      onClick: () => {
-        setWithdrawStep('form');
-        setIsWithdrawModalOpen(true);
-      }
-    },
+    // 6. Lifetime Earnings (Position 6)
     {
       id: 'lifetime',
       label: 'Lifetime Earnings',

@@ -15,6 +15,8 @@
  */
 
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
 
 console.log('================================================================');
 console.log('🧪 ADMIN WITHDRAWAL PAYOUT ACTION & SECURITY TEST SUITE');
@@ -332,6 +334,121 @@ runTest('10. Successfully Reject: restores reserved ₹100 back to Available Bal
   assert.equal(res.stats.availableBalance, 100, 'Available balance must be restored to ₹100');
   assert.equal(res.stats.totalPaid, 0, 'Total paid must remain 0');
   assert.equal(res.stats.totalEarned, 100, 'Lifetime earnings must remain untouched at ₹100');
+});
+
+runTest('11. Affiliate KPI Cards: verify exact 6 cards in order in AffiliateEarningsHub.tsx', () => {
+  const filePath = path.resolve('welcome-to-2050/src/components/futureai/AffiliateEarningsHub.tsx');
+  const content = fs.readFileSync(filePath, 'utf-8');
+
+  // Extract metricCards array definition
+  const metricCardsMatch = content.match(/const metricCards = \[\s*([\s\S]*?)\n\s*\];/);
+  assert.ok(metricCardsMatch, 'metricCards array should be found in AffiliateEarningsHub.tsx');
+
+  // Extract id fields in order
+  const idMatches = [...metricCardsMatch[1].matchAll(/id:\s*['"]([^'"]+)['"]/g)].map(m => m[1]);
+  const expectedOrder = [
+    'clicks',
+    'signups',
+    'paid',
+    'available',
+    'pending-withdrawal',
+    'lifetime'
+  ];
+
+  assert.deepEqual(idMatches, expectedOrder, `KPI Cards must be in exact order: ${expectedOrder.join(', ')}`);
+  assert.equal(idMatches.length, 6, 'Must contain exactly 6 KPI cards');
+});
+
+runTest('12. Affiliate Wallet Balance Computation: ₹200 earned scenario through all states', () => {
+  function computeBalances(totalEarned, withdrawals = []) {
+    let pendingBalance = 0;
+    let totalPaid = 0;
+    for (const w of withdrawals) {
+      const amt = Number(w?.amount) || 0;
+      if (amt <= 0) continue;
+      const st = String(w?.status || '').trim().toUpperCase();
+      if (st === 'PENDING' || st === 'PROCESSING' || st === 'UNDER_REVIEW' || st === 'APPROVED') {
+        pendingBalance += amt;
+      } else if (st === 'PAID') {
+        totalPaid += amt;
+      }
+    }
+    const safeEarned = Math.max(0, Number(totalEarned) || 0);
+    const availableBalance = Math.max(0, safeEarned - totalPaid - pendingBalance);
+    return { availableBalance, pendingBalance, totalPaid, lifetimeEarnings: safeEarned };
+  }
+
+  const initialEarned = 200;
+
+  // State A: Initial withdrawal requested (UNDER_REVIEW) for ₹100
+  const stateA = computeBalances(initialEarned, [
+    { id: 'W1', amount: 100, status: 'UNDER_REVIEW' }
+  ]);
+  assert.equal(stateA.availableBalance, 100, 'Available should be ₹100');
+  assert.equal(stateA.pendingBalance, 100, 'Pending should be ₹100');
+  assert.equal(stateA.totalPaid, 0, 'Total Paid should be ₹0');
+  assert.equal(stateA.lifetimeEarnings, 200, 'Lifetime Earnings must be ₹200');
+
+  // State B: Admin approves withdrawal (APPROVED) for ₹100
+  const stateB = computeBalances(initialEarned, [
+    { id: 'W1', amount: 100, status: 'APPROVED' }
+  ]);
+  assert.equal(stateB.availableBalance, 100, 'Available must remain ₹100 after APPROVED');
+  assert.equal(stateB.pendingBalance, 100, 'Pending must remain ₹100 (reserved) after APPROVED');
+  assert.equal(stateB.totalPaid, 0, 'Total Paid must be ₹0 until external payout is marked PAID');
+  assert.equal(stateB.lifetimeEarnings, 200, 'Lifetime Earnings must remain ₹200');
+
+  // State C: Admin completes payout with Bank UTR (PAID) for ₹100
+  const stateC = computeBalances(initialEarned, [
+    { id: 'W1', amount: 100, status: 'PAID' }
+  ]);
+  assert.equal(stateC.availableBalance, 100, 'Available must remain ₹100 after PAID');
+  assert.equal(stateC.pendingBalance, 0, 'Pending must decrease to ₹0 after PAID');
+  assert.equal(stateC.totalPaid, 100, 'Total Paid must increase to ₹100 after PAID');
+  assert.equal(stateC.lifetimeEarnings, 200, 'Lifetime Earnings must remain ₹200 (never deducted)');
+
+  // State D: If withdrawal was REJECTED instead
+  const stateD = computeBalances(initialEarned, [
+    { id: 'W1', amount: 100, status: 'REJECTED' }
+  ]);
+  assert.equal(stateD.availableBalance, 200, 'Available must restore to ₹200 upon REJECTED');
+  assert.equal(stateD.pendingBalance, 0, 'Pending must decrease to ₹0 upon REJECTED');
+  assert.equal(stateD.totalPaid, 0, 'Total Paid remains ₹0 upon REJECTED');
+  assert.equal(stateD.lifetimeEarnings, 200, 'Lifetime Earnings remains ₹200 upon REJECTED');
+});
+
+runTest('13. Affiliate Accounting Invariance: Lifetime Earnings is strictly cumulative and never double-counted', () => {
+  // Test multiple withdrawals and ensure Lifetime Earnings is independent of withdrawal status
+  function computeBalances(totalEarned, withdrawals = []) {
+    let pendingBalance = 0;
+    let totalPaid = 0;
+    for (const w of withdrawals) {
+      const amt = Number(w?.amount) || 0;
+      if (amt <= 0) continue;
+      const st = String(w?.status || '').trim().toUpperCase();
+      if (st === 'PENDING' || st === 'PROCESSING' || st === 'UNDER_REVIEW' || st === 'APPROVED') {
+        pendingBalance += amt;
+      } else if (st === 'PAID') {
+        totalPaid += amt;
+      }
+    }
+    const safeEarned = Math.max(0, Number(totalEarned) || 0);
+    const availableBalance = Math.max(0, safeEarned - totalPaid - pendingBalance);
+    return { availableBalance, pendingBalance, totalPaid, lifetimeEarnings: safeEarned };
+  }
+
+  const multiWithdrawals = [
+    { id: 'W1', amount: 100, status: 'PAID' },
+    { id: 'W2', amount: 50, status: 'APPROVED' },
+    { id: 'W3', amount: 25, status: 'UNDER_REVIEW' },
+    { id: 'W4', amount: 25, status: 'REJECTED' },
+  ];
+
+  const res = computeBalances(200, multiWithdrawals);
+  assert.equal(res.totalPaid, 100, 'Only PAID withdrawal counts towards totalPaid');
+  assert.equal(res.pendingBalance, 75, 'APPROVED (50) + UNDER_REVIEW (25) = 75 reserved in pending');
+  assert.equal(res.availableBalance, 25, '200 - 100 - 75 = 25 available');
+  assert.equal(res.lifetimeEarnings, 200, 'Lifetime earnings unchanged at 200');
 });
 
 console.log('\n----------------------------------------------------------------');
