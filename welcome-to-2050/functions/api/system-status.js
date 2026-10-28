@@ -16,6 +16,7 @@ import {
   getFirestoreDocument,
   setFirestoreDocument,
   listFirestoreCollectionDocs,
+  listFirebaseAuthUsers,
   inspectAndEnsureOwnerAdminClaim,
 } from './_firestore-admin.js';
 
@@ -83,9 +84,9 @@ export async function onRequestGet(context) {
         };
       }
 
-      // Safe Diagnostic Trace of Referral & Payment Collections
+      // Safe Diagnostic Trace & Full Production Backup Audit
       try {
-        const [refPayments, platPayments, ledgerEntries, affStats, withdrawals, courseEnrollments, registeredUsers, clicksDocs] = await Promise.all([
+        const [refPayments, platPayments, ledgerEntries, affStats, withdrawals, courseEnrollments, registeredUsers, clicksDocs, authUsers] = await Promise.all([
           listFirestoreCollectionDocs('processed_referral_payments', env),
           listFirestoreCollectionDocs('platform_payments', env),
           listFirestoreCollectionDocs('wallet_ledger', env),
@@ -94,9 +95,19 @@ export async function onRequestGet(context) {
           listFirestoreCollectionDocs('course_enrollments', env),
           listFirestoreCollectionDocs('registered_users', env),
           listFirestoreCollectionDocs('referral_clicks', env),
+          listFirebaseAuthUsers(env).catch((e) => [{ error: e.message }]),
         ]);
 
         statusReport.affiliateAudit = {
+          auth_users: (authUsers || []).map((u) => ({
+            uid: u.localId || u.uid,
+            email: u.email,
+            displayName: u.displayName,
+            phoneNumber: u.phoneNumber,
+            createdAt: u.createdAt,
+            lastLoginAt: u.lastLoginAt,
+            customAttributes: u.customAttributes,
+          })),
           processed_referral_payments: refPayments,
           platform_payments: platPayments,
           wallet_ledger: ledgerEntries,

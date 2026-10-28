@@ -1733,7 +1733,7 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
   try {
     const currentUid = typeof window !== 'undefined' ? localStorage.getItem('futureai_user_uid') || '' : '';
     const uidParam = currentUid ? `&userId=${encodeURIComponent(currentUid)}` : '';
-    const res = await withTimeout(fetch(`/api/affiliate?refCode=${encodeURIComponent(cleanCode)}${uidParam}`), 3500);
+    const res = await withTimeout(fetch(`/api/affiliate?refCode=${encodeURIComponent(cleanCode)}${uidParam}`), 15000);
     if (res.ok) {
       const serverData = await res.json();
       // Drop late response if a newer request already finished

@@ -207,11 +207,14 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       try {
         const real = await fetchAffiliateRealData(cleanRefCode);
         if (isMounted) {
+          if (!real || typeof real.paidEnrollments !== 'number') {
+            return;
+          }
           setHubState((prev) => {
             const nextClicks = Number(real.clicks) || 0;
             const nextSignups = Number(real.signups) || 0;
-            const nextPaidEnrollments = real.paidEnrollments;
-            const nextEarned = real.totalEarned;
+            const nextPaidEnrollments = typeof real.paidEnrollments === 'number' ? real.paidEnrollments : (prev.paidEnrollments || 0);
+            const nextEarned = typeof real.totalEarned === 'number' ? real.totalEarned : (prev.totalEarned || nextPaidEnrollments * 100);
             const nextReferrals = real.referrals && real.referrals.length > 0 ? real.referrals : prev.referrals;
 
             // Merge withdrawals preferring latest authoritative status from server/real data

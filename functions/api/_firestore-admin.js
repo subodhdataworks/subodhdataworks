@@ -555,3 +555,24 @@ export async function inspectAndEnsureOwnerAdminClaim(env, targetUid = INTENDED_
     restoredDuringCheck: true,
   };
 }
+
+/**
+ * List all users from Firebase Authentication via Identity Toolkit REST API
+ */
+export async function listFirebaseAuthUsers(env) {
+  const accessToken = await getFirestoreAccessToken(env);
+  const projectId = env?.VITE_FIREBASE_PROJECT_ID || env?.FIREBASE_PROJECT_ID || DEFAULT_PROJECT_ID;
+  const res = await fetch(
+    `https://identitytoolkit.googleapis.com/v1/projects/${projectId}/accounts:batchGet?maxResults=100`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  if (!res.ok) {
+    throw new Error(`Identity Toolkit batchGet failed with HTTP ${res.status}`);
+  }
+  const data = await res.json();
+  return data.users || [];
+}

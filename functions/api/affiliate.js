@@ -396,21 +396,24 @@ export async function onRequestGet(context) {
         return false;
       };
 
-      // 2. Read real processed referral payments
-      const allProcessedDocs = await listFirestoreCollectionDocs('processed_referral_payments', env);
+      // 2. Concurrently read all relevant Firestore collections in parallel
+      const [allProcessedDocs, allPlatformDocs, allCourseDocs, allLedgerDocs, allWithdrawalDocs] = await Promise.all([
+        listFirestoreCollectionDocs('processed_referral_payments', env),
+        listFirestoreCollectionDocs('platform_payments', env),
+        listFirestoreCollectionDocs('course_enrollments', env),
+        listFirestoreCollectionDocs('wallet_ledger', env),
+        listFirestoreCollectionDocs('withdrawal_requests', env),
+      ]);
+
       const userReferralPayments = allProcessedDocs.filter(
         (p) => matchesAffiliateUser(p.refCode) || matchesAffiliateUser(p.referrerId) || matchesAffiliateUser(p.userId)
       );
 
-      // 3. Read real platform payments for captured referral enrollments
-      const allPlatformDocs = await listFirestoreCollectionDocs('platform_payments', env);
       const userPlatformPayments = allPlatformDocs.filter((p) => {
         const isCaptured = String(p.status || p.paymentStatus || '').toUpperCase() === 'CAPTURED';
         return isCaptured && (matchesAffiliateUser(p.referredBy) || matchesAffiliateUser(p.refCode) || (isOwnerAffiliate && !p.referredBy));
       });
 
-      // 3b. Read course enrollments for verified captured enrollments
-      const allCourseDocs = await listFirestoreCollectionDocs('course_enrollments', env);
       const userCourseEnrollments = allCourseDocs.filter((e) => {
         const isCaptured =
           String(e.paymentStatus || '').toUpperCase() === 'CAPTURED' ||
@@ -418,8 +421,6 @@ export async function onRequestGet(context) {
         return isCaptured && (matchesAffiliateUser(e.referredBy) || matchesAffiliateUser(e.refCode) || isOwnerAffiliate);
       });
 
-      // 4. Read real cloud wallet ledger entries
-      const allLedgerDocs = await listFirestoreCollectionDocs('wallet_ledger', env);
       const userLedger = allLedgerDocs
         .filter((l) => matchesAffiliateUser(l.userId) || matchesAffiliateUser(l.refCode))
         .sort((a, b) => new Date(b.timestamp || 0).getTime() - new Date(a.timestamp || 0).getTime());
@@ -519,8 +520,7 @@ export async function onRequestGet(context) {
       record.paidEnrollments = verifiedPaidCount > 0 ? verifiedPaidCount : (Number(fsDoc?.paidEnrollments) || 0);
       record.totalEarned = record.paidEnrollments * 100;
 
-      // 5. Read real cloud withdrawal requests from Firestore
-      const allWithdrawalDocs = await listFirestoreCollectionDocs('withdrawal_requests', env);
+      // 5. Filter real cloud withdrawal requests from Firestore
       const userWithdrawals = allWithdrawalDocs
         .filter((w) =>
           matchesAffiliateUser(w.refCode) ||
