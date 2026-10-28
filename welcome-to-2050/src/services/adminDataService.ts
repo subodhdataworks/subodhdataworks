@@ -5,6 +5,7 @@ import {
   RegisteredUserRecord,
   getLearnerTelemetry,
   updateAffiliateWithdrawalStatus,
+  computeAffiliateBalancesFromWithdrawals,
 } from './realAuthService';
 import { ReferralEngine, WithdrawalRequest, ReferralRecord } from './referralEngine';
 import { COURSES_CATALOG } from '../data/coursesCatalog';
@@ -536,6 +537,53 @@ export class AdminDataService {
             withdrawalId: existing.id,
             reason: params.adminNotes,
           });
+        }
+
+        // Live Synchronize affiliate hub state in client storage if present
+        if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+          for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (k && k.startsWith('futureai_affiliate_hub_v5_')) {
+              try {
+                const hub = JSON.parse(localStorage.getItem(k) || '{}');
+                if (Array.isArray(hub.withdrawals)) {
+                  let changed = false;
+                  hub.withdrawals = hub.withdrawals.map((w: any) => {
+                    const match =
+                      w.id === params.requestId ||
+                      w.txId === params.requestId ||
+                      w.requestId === params.requestId ||
+                      (existing && (w.id === existing.id || w.txId === existing.id));
+                    if (match) {
+                      changed = true;
+                      return {
+                        ...w,
+                        status:
+                          params.newStatus === 'PAID'
+                            ? 'Paid'
+                            : params.newStatus === 'APPROVED'
+                            ? 'Approved'
+                            : params.newStatus === 'REJECTED'
+                            ? 'Rejected'
+                            : 'Pending',
+                        paidAt: params.newStatus === 'PAID' ? new Date().toISOString() : w.paidAt,
+                        payoutRef: params.payoutRef?.trim() || w.payoutRef,
+                        rejectionReason: params.adminNotes || w.rejectionReason,
+                      };
+                    }
+                    return w;
+                  });
+                  if (changed) {
+                    const balances = computeAffiliateBalancesFromWithdrawals(hub.totalEarned || 0, hub.withdrawals);
+                    localStorage.setItem(k, JSON.stringify({ ...hub, ...balances }));
+                    localStorage.setItem('futureai_user_wallet', balances.availableBalance.toString());
+                  }
+                }
+              } catch {}
+            }
+          }
+          window.dispatchEvent(new Event('futureai_affiliate_updated'));
+          window.dispatchEvent(new Event('futureai_wallet_updated'));
         }
       } catch {}
 
