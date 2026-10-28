@@ -23,7 +23,7 @@ function isAndroidOrMobile(): boolean {
   const ua = navigator.userAgent.toLowerCase();
   return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
 }
-import { doc, setDoc, getDoc, collection, getDocs, query, where, serverTimestamp, increment } from 'firebase/firestore';
+import { doc, setDoc, getDoc, collection, getDocs, query, where, limit, serverTimestamp, increment } from 'firebase/firestore';
 import { auth, db, googleProvider } from './firebase';
 
 import { clearTestUserEnrollments } from './courseUnlockService';
@@ -412,7 +412,8 @@ export async function getAllRegisteredUsers(): Promise<RegisteredUserRecord[]> {
   // 2. Read from Firestore Cloud
   try {
     const colRef = collection(db, 'registered_users');
-    const snapshot = await getDocs(colRef);
+    const q = query(colRef, limit(100));
+    const snapshot = await getDocs(q);
     snapshot.forEach((d) => {
       const data = d.data() as RegisteredUserRecord;
       usersMap.set(data.email || data.uid, data);
@@ -485,6 +486,23 @@ export async function fetchCanonicalReferralProfile(
     return { referralCode: '1', referralId: 'RF-1' };
   }
 
+  // Persistent Client-Side Cache: One Firebase UID = One Permanent Referral ID
+  // Eliminates repeated network queries on page navigations
+  if (typeof window !== 'undefined') {
+    const cached = localStorage.getItem(`futureai_canonical_ref_${cleanUid}`);
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (parsed && parsed.referralCode) {
+          return {
+            referralCode: normalizeRefCode(parsed.referralCode),
+            referralId: parsed.referralId || `RF-${normalizeRefCode(parsed.referralCode)}`,
+          };
+        }
+      } catch {}
+    }
+  }
+
   try {
     const params = new URLSearchParams({
       uid: cleanUid,
@@ -498,10 +516,16 @@ export async function fetchCanonicalReferralProfile(
     if (res.ok) {
       const data = await res.json();
       if (data && data.referralCode) {
-        return {
+        const result = {
           referralCode: normalizeRefCode(data.referralCode),
           referralId: data.referralId || `RF-${data.referralCode}`,
         };
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.setItem(`futureai_canonical_ref_${cleanUid}`, JSON.stringify(result));
+          } catch {}
+        }
+        return result;
       }
     }
   } catch (e) {
@@ -1857,29 +1881,29 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
     console.warn('Fetch affiliate_stats cloud notice:', e);
   }
 
-  // 3. Fetch all registered users who were referred by this code
+  // 3. Targeted Indexed Query for referred users (Zero full collection scan)
   const matchedReferrals: any[] = [];
   try {
-    const allUsers = await getAllRegisteredUsers();
-    for (const u of allUsers) {
-      if (u.referredBy) {
-        const userRef = normalizeRefCode(u.referredBy);
-        if (userRef === cleanCode || cleanCode.startsWith(userRef) || userRef.startsWith(cleanCode)) {
-          matchedReferrals.push({
-            id: `ref_${u.uid}`,
-            name: u.name || 'Student Learner',
-            email: u.email,
-            phone: u.phone,
-            date: u.registeredAt ? u.registeredAt.slice(0, 10) : new Date().toISOString().slice(0, 10),
-            status: 'Registered',
-            amount: 0,
-            commission: 0, // Free signup ₹0
-            course: 'Data Analytics with GenAI',
-            referralId: `RF-${Math.abs(u.uid.split('').reduce((acc, c) => acc + c.charCodeAt(0), 1000) % 9000)}`,
-          });
-        }
+    const colRef = collection(db, 'registered_users');
+    const q = query(colRef, where('referredBy', '==', cleanCode), limit(50));
+    const snap = await withTimeout(getDocs(q), 3000);
+    snap.forEach((d) => {
+      const u = d.data() as RegisteredUserRecord;
+      if (u) {
+        matchedReferrals.push({
+          id: `ref_${u.uid || d.id}`,
+          name: u.name || 'Student Learner',
+          email: u.email,
+          phone: u.phone,
+          date: u.registeredAt ? u.registeredAt.slice(0, 10) : new Date().toISOString().slice(0, 10),
+          status: 'Registered',
+          amount: 0,
+          commission: 0, // Free signup ₹0
+          course: 'Data Analytics with GenAI',
+          referralId: `RF-${u.referralCode || cleanCode}`,
+        });
       }
-    }
+    });
   } catch (e) {
     console.warn('Fetch registered user referrals notice:', e);
   }
@@ -1895,7 +1919,7 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
   const cloudWithdrawals: any[] = [];
   try {
     const wCol = collection(db, 'withdrawal_requests');
-    const wQuery = query(wCol, where('refCode', '==', cleanCode));
+    const wQuery = query(wCol, where('refCode', '==', cleanCode), limit(25));
     const wSnap = await withTimeout(getDocs(wQuery), 3000);
     wSnap.forEach((docSnap) => {
       const d = docSnap.data();

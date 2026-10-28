@@ -130,15 +130,27 @@ export class SessionService {
     if (typeof window === 'undefined' || !uid) return;
     this.stopHeartbeat();
 
-    // 3 minutes interval = 20 checks/hour max (zero Firestore query storms)
-    heartbeatInterval = setInterval(async () => {
+    const sendHeartbeatIfEligible = async () => {
+      // 1. Skip if page is hidden/backgrounded (zero background queries)
+      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') {
+        return;
+      }
+
       const sessionId = this.getSessionId();
       if (!sessionId) {
         this.stopHeartbeat();
         return;
       }
 
+      // 2. Cross-tab coordination: check if another tab in this browser already sent heartbeat recently
+      const now = Date.now();
+      const lastHb = Number(localStorage.getItem('futureai_last_session_heartbeat') || 0);
+      if (lastHb > 0 && now - lastHb < 270000) {
+        return; // Another tab heartbeat is still fresh (< 4.5 minutes)
+      }
+
       try {
+        localStorage.setItem('futureai_last_session_heartbeat', String(now));
         const res = await fetch('/api/session', {
           method: 'POST',
           headers: {
@@ -169,7 +181,19 @@ export class SessionService {
       } catch (err) {
         // Network blip, will retry on next tick
       }
-    }, 180000);
+    };
+
+    // 3 minutes interval (180000ms) with cross-tab deduplication and tab-visibility protection
+    heartbeatInterval = setInterval(sendHeartbeatIfEligible, 180000);
+
+    if (typeof document !== 'undefined') {
+      const handleVis = () => {
+        if (document.visibilityState === 'visible') {
+          sendHeartbeatIfEligible();
+        }
+      };
+      document.addEventListener('visibilitychange', handleVis);
+    }
   }
 
   public static stopHeartbeat(): void {

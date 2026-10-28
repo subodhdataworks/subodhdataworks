@@ -321,6 +321,62 @@ export async function setFirestoreDocument(collection, docId, data, env, merge =
 /**
  * List / Read all documents in a collection from Firestore REST API
  */
+
+/**
+ * Execute an indexed, bounded structured query via Firestore REST API (runQuery)
+ * Scopes reads strictly to matching documents, preventing full collection scans.
+ */
+export async function queryFirestoreCollectionDocs(collection, field, value, limitCount = 50, env) {
+  try {
+    const accessToken = await getFirestoreAccessToken(env);
+    const baseUrl = getFirestoreBaseUrl(env);
+    const url = `${baseUrl}:runQuery`;
+
+    const payload = {
+      structuredQuery: {
+        from: [{ collectionId: collection }],
+        where: {
+          fieldFilter: {
+            field: { fieldPath: field },
+            op: 'EQUAL',
+            value: toFirestoreValue(value),
+          },
+        },
+        limit: limitCount,
+      },
+    };
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      return [];
+    }
+
+    const items = await res.json();
+    if (!Array.isArray(items)) return [];
+
+    return items
+      .map((item) => {
+        if (!item.document) return null;
+        return {
+          id: item.document.name.split('/').pop(),
+          ...fromFirestoreFields(item.document.fields || {}),
+        };
+      })
+      .filter(Boolean);
+  } catch (err) {
+    console.warn(`[FirestoreAdmin] queryFirestoreCollectionDocs ${collection} error:`, err?.message);
+    return [];
+  }
+}
+
 export async function listFirestoreCollectionDocs(collection, env) {
   try {
     const accessToken = await getFirestoreAccessToken(env);

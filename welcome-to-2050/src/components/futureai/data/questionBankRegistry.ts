@@ -187,6 +187,10 @@ export async function saveQuestionBankOverride(
  * Revalidate cached question bank from shared backend (Firestore + optional REST endpoint)
  * Called when opening or returning to a topic on Desktop or Android Mobile PWA.
  */
+
+// In-memory revalidation cache: 1-hour TTL per topic to prevent repeated Firestore reads
+const questionBankRevalCache = new Map<string, number>();
+
 export async function revalidateQuestionBankFromBackend(
   tabId: number | string = 1,
   topicKeyOrId: string | number = 1
@@ -197,6 +201,13 @@ export async function revalidateQuestionBankFromBackend(
   const canonicalKey = base?.topicKey || String(topicKeyOrId);
   const mapKey = `tab_${numericTab}_topic_${canonicalKey}`;
   const idKey = base?.id ? `tab_${numericTab}_id_${base.id}` : mapKey;
+
+  // 1-hour cache check: avoid querying Firestore for curriculum on every click
+  const lastReval = questionBankRevalCache.get(mapKey) || 0;
+  if (Date.now() - lastReval < 3600000) {
+    return false;
+  }
+  questionBankRevalCache.set(mapKey, Date.now());
 
   let hasChanges = false;
 

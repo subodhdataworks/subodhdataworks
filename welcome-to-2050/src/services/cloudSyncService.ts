@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, collection, getDocs, query, where, serverTimestamp, arrayUnion } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, getDocs, query, where, limit, serverTimestamp, arrayUnion } from 'firebase/firestore';
 import { db } from './firebase';
 import {
   unlockCourse,
@@ -195,6 +195,10 @@ export async function recordCourseEnrollmentInCloud(params: {
  * Restore all enrolled courses for the specific authenticated user from Firestore (`course_enrollments` & `registered_users`).
  * Never writes global unlock keys; scopes restored courses strictly to `cleanUserId`.
  */
+
+// In-flight request deduplication map to prevent parallel query storms
+const inFlightEntitlementSyncs = new Map<string, Promise<string[]>>();
+
 export async function restoreUserEntitlementsFromCloud(identifier?: {
   email?: string;
   phone?: string;
@@ -221,22 +225,35 @@ export async function restoreUserEntitlementsFromCloud(identifier?: {
     return [];
   }
 
+  // In-flight deduplication: return existing promise if already syncing this user
+  if (inFlightEntitlementSyncs.has(cleanUserId)) {
+    return inFlightEntitlementSyncs.get(cleanUserId)!;
+  }
+
   const restoredCoursesSet = new Set<string>();
   const lastSyncKey = `futureai_entitlements_last_sync_${cleanUserId}`;
   const lastSync = typeof window !== 'undefined' ? Number(localStorage.getItem(lastSyncKey) || 0) : 0;
   const now = Date.now();
-  if (lastSync && now - lastSync < 10 * 60 * 1000) {
-    const cached = getUnlockedCourses(cleanUserId);
-    if (cached && cached.length > 0) {
-      return cached;
+
+  // Quota cooldown check: if Firestore previously returned 429/RESOURCE_EXHAUSTED, serve local cache
+  if (typeof window !== 'undefined') {
+    const quotaCooldown = Number(localStorage.getItem('futureai_firestore_quota_cooldown') || 0);
+    if (quotaCooldown && now < quotaCooldown) {
+      return getUnlockedCourses(cleanUserId) || [];
     }
+  }
+
+  // Authoritative 10-minute cache: applies to both paid learners and free users (0 courses)
+  // Eliminates repeated query storms on page navigation, tab focus, and hash changes
+  if (lastSync && now - lastSync < 10 * 60 * 1000) {
+    return getUnlockedCourses(cleanUserId) || [];
   }
 
   try {
     // 1. Check dedicated `course_enrollments` collection for this specific userId
     try {
       const enrollCol = collection(db, 'course_enrollments');
-      const enrollQuery = query(enrollCol, where('userId', '==', cleanUserId));
+      const enrollQuery = query(enrollCol, where('userId', '==', cleanUserId), limit(10));
       const enrollSnap = await withTimeout(getDocs(enrollQuery), 2500);
       enrollSnap.forEach((docSnap) => {
         const d = docSnap.data();
@@ -362,9 +379,20 @@ export async function restoreUserEntitlementsFromCloud(identifier?: {
       );
     }
     return restoredCourses;
-  } catch (err) {
-    console.warn('Cloud restore notice (running user-scoped local cache):', err);
+  } catch (err: any) {
+    const errCode = String(err?.code || '').toLowerCase();
+    const errMsg = String(err?.message || '').toLowerCase();
+    if (errCode === 'resource-exhausted' || errMsg.includes('resource_exhausted') || errMsg.includes('429') || errMsg.includes('quota')) {
+      console.warn('[CloudSync] Firestore quota exhausted (429). Setting 5-minute cooldown.');
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('futureai_firestore_quota_cooldown', String(Date.now() + 5 * 60 * 1000));
+      }
+    } else {
+      console.warn('Cloud restore notice (running user-scoped local cache):', err?.message);
+    }
     return Array.from(restoredCoursesSet);
+  } finally {
+    inFlightEntitlementSyncs.delete(cleanUserId);
   }
 }
 

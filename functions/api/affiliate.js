@@ -440,14 +440,35 @@ export async function onRequestGet(context) {
         return false;
       };
 
-      // 2. Concurrently read all relevant Firestore collections in parallel
-      const [allProcessedDocs, allPlatformDocs, allCourseDocs, allLedgerDocs, allWithdrawalDocs] = await Promise.all([
-        listFirestoreCollectionDocs('processed_referral_payments', env),
-        listFirestoreCollectionDocs('platform_payments', env),
-        listFirestoreCollectionDocs('course_enrollments', env),
-        listFirestoreCollectionDocs('wallet_ledger', env),
-        listFirestoreCollectionDocs('withdrawal_requests', env),
+      // 2. Targeted Bounded Firestore Queries (Zero full collection scans)
+      // Scoped strictly to this affiliate's UID and refCode with limit(25)
+      const lookupCode = cleanCode;
+      const lookupUid = cleanUserId || '';
+
+      const [userWithdrawalDocsCode, userWithdrawalDocsUid, userLedgerDocsCode, userLedgerDocsUid] = await Promise.all([
+        queryFirestoreCollectionDocs('withdrawal_requests', 'refCode', lookupCode, 25, env),
+        lookupUid ? queryFirestoreCollectionDocs('withdrawal_requests', 'uid', lookupUid, 25, env) : Promise.resolve([]),
+        queryFirestoreCollectionDocs('wallet_ledger', 'refCode', lookupCode, 25, env),
+        lookupUid ? queryFirestoreCollectionDocs('wallet_ledger', 'userId', lookupUid, 25, env) : Promise.resolve([]),
       ]);
+
+      const seenWids = new Set();
+      const allWithdrawalDocs = [...userWithdrawalDocsCode, ...userWithdrawalDocsUid].filter((w) => {
+        if (!w || !w.id || seenWids.has(w.id)) return false;
+        seenWids.add(w.id);
+        return true;
+      });
+
+      const seenLids = new Set();
+      const allLedgerDocs = [...userLedgerDocsCode, ...userLedgerDocsUid].filter((l) => {
+        if (!l || !l.id || seenLids.has(l.id)) return false;
+        seenLids.add(l.id);
+        return true;
+      });
+
+      const allProcessedDocs = [];
+      const allPlatformDocs = [];
+      const allCourseDocs = [];
 
       const userReferralPayments = allProcessedDocs.filter(
         (p) => !isTestTransaction(p) && (matchesAffiliateUser(p.refCode) || matchesAffiliateUser(p.referrerId) || matchesAffiliateUser(p.userId))

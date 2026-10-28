@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, collection, getDocs, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, getDocs, query, limit, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import {
   getAllRegisteredUsers,
@@ -127,7 +127,8 @@ export class AdminDataService {
 
     try {
       const colRef = collection(db, 'platform_payments');
-      const snap = await getDocs(colRef);
+      const q = query(colRef, limit(100));
+      const snap = await getDocs(q);
       const list: SystemPaymentRecord[] = [];
       snap.forEach((d) => {
         const data = d.data();
@@ -353,7 +354,8 @@ export class AdminDataService {
     // 1. Fetch from Firestore Cloud Database collection 'withdrawal_requests'
     try {
       const colRef = collection(db, 'withdrawal_requests');
-      const snap = await getDocs(colRef);
+      const q = query(colRef, limit(100));
+      const snap = await getDocs(q);
       snap.forEach((docSnap) => {
         const data = docSnap.data();
         if (data && (data.id || docSnap.id) && !data.archived) {

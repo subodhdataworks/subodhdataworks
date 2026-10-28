@@ -170,12 +170,24 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
 
   // LocalStorage auto-save removed: server is the single source of truth
 
-  // Live real-time sync with Cloud Database & Master Registry for 100% accurate referral signups & withdrawals
+  // Live real-time sync with Cloud Database & Master Registry (Throttled & Event-Driven; Zero 2.5s Polling Storms)
   useEffect(() => {
     let isMounted = true;
-    const syncRealCloudData = async () => {
+    let isSyncInProgress = false;
+    let lastSyncTimestamp = 0;
+
+    const syncRealCloudData = async (force = false) => {
+      if (isSyncInProgress) return;
+      const now = Date.now();
+      // Throttle: avoid repeated syncs within 30 seconds unless explicitly forced (e.g. event-driven)
+      if (!force && lastSyncTimestamp > 0 && now - lastSyncTimestamp < 30000) {
+        return;
+      }
+
+      isSyncInProgress = true;
       try {
         const real = await fetchAffiliateRealData(cleanRefCode);
+        lastSyncTimestamp = Date.now();
         if (isMounted) {
           if (!real || typeof real.paidEnrollments !== 'number') {
             return;
@@ -199,29 +211,39 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
         }
       } catch (err) {
         console.warn('Real affiliate sync notice:', err);
+      } finally {
+        isSyncInProgress = false;
       }
     };
 
-    syncRealCloudData();
-    const interval = setInterval(syncRealCloudData, 2500);
-    const onAffiliateUpdated = () => syncRealCloudData();
+    // Initial mount sync
+    syncRealCloudData(true);
+
+    // Calm 120-second interval: strictly runs only when tab is visible (zero background Firestore consumption)
+    const interval = setInterval(() => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        syncRealCloudData();
+      }
+    }, 120000);
+
+    const onAffiliateUpdated = () => syncRealCloudData(true);
     const onVisibilityChange = () => {
       if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
         syncRealCloudData();
       }
     };
+
     window.addEventListener('futureai_affiliate_updated', onAffiliateUpdated);
-    window.addEventListener('focus', syncRealCloudData);
-    window.addEventListener('online', syncRealCloudData);
+    window.addEventListener('online', onAffiliateUpdated);
     if (typeof document !== 'undefined') {
       document.addEventListener('visibilitychange', onVisibilityChange);
     }
+
     return () => {
       isMounted = false;
       clearInterval(interval);
       window.removeEventListener('futureai_affiliate_updated', onAffiliateUpdated);
-      window.removeEventListener('focus', syncRealCloudData);
-      window.removeEventListener('online', syncRealCloudData);
+      window.removeEventListener('online', onAffiliateUpdated);
       if (typeof document !== 'undefined') {
         document.removeEventListener('visibilitychange', onVisibilityChange);
       }
