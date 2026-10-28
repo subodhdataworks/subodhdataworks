@@ -5,6 +5,7 @@ import {
   normalizeCourseId,
   normalizeUserId,
   replaceUserEnrollmentsCache,
+  getUnlockedCourses,
 } from './courseUnlockService';
 
 export interface CloudStudentEntitlement {
@@ -221,6 +222,15 @@ export async function restoreUserEntitlementsFromCloud(identifier?: {
   }
 
   const restoredCoursesSet = new Set<string>();
+  const lastSyncKey = `futureai_entitlements_last_sync_${cleanUserId}`;
+  const lastSync = typeof window !== 'undefined' ? Number(localStorage.getItem(lastSyncKey) || 0) : 0;
+  const now = Date.now();
+  if (lastSync && now - lastSync < 10 * 60 * 1000) {
+    const cached = getUnlockedCourses(cleanUserId);
+    if (cached && cached.length > 0) {
+      return cached;
+    }
+  }
 
   try {
     // 1. Check dedicated `course_enrollments` collection for this specific userId
@@ -341,6 +351,7 @@ export async function restoreUserEntitlementsFromCloud(identifier?: {
       } catch {}
     }
 
+    try { localStorage.setItem(lastSyncKey, String(Date.now())); } catch {}
     const restoredCourses = Array.from(restoredCoursesSet);
     if (restoredCourses.length > 0 && typeof window !== 'undefined') {
       replaceUserEnrollmentsCache(cleanUserId, restoredCourses, 'CLOUD_RESTORE');

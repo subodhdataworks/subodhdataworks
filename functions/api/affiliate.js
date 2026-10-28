@@ -36,6 +36,39 @@ const corsHeaders = {
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), { status, headers: corsHeaders });
 
+// ============================================================================
+// VERIFIED HISTORICAL TEST TRANSACTIONS (EXPLICIT FINANCIAL CLASSIFICATION)
+// ============================================================================
+export const TEST_PAYMENT_IDS = new Set([
+  'pay_TtFyyxbJ2BLXHx',
+  'pay_TtGfhDdDtIjwJZ',
+  'pay_TtHc3LgBUbz8Ao',
+  'pay_TtKezk4U0hZcAs',
+  'pay_TtN2qabFjfE1cW',
+]);
+
+export const TEST_WITHDRAWAL_IDS = new Set([
+  'w_1793186331663_JPB1H',
+  'w_1793200045402_4JIB7',
+  'w_1793177405137_B5ZVP',
+]);
+
+export function isTestTransaction(p) {
+  if (!p) return false;
+  const pid = String(p.id || p.paymentId || p.paymentTransactionId || '');
+  if (TEST_PAYMENT_IDS.has(pid)) return true;
+  if (p.classification === 'TEST' || p.isTest === true) return true;
+  return false;
+}
+
+export function isTestWithdrawal(w) {
+  if (!w) return false;
+  const wid = String(w.id || w.txId || w.requestId || '');
+  if (TEST_WITHDRAWAL_IDS.has(wid)) return true;
+  if (w.classification === 'TEST' || w.isTest === true) return true;
+  return false;
+}
+
 const MIGRATION_VERSION = 'affiliate_v5_complete_reset_2026';
 const AFFILIATE_EPOCH = 'v5_clean';
 // ============================================================================
@@ -289,6 +322,7 @@ export async function onRequestGet(context) {
 
           // Rule 5: Failed or incomplete payments get ₹0
           if (p.status !== 'captured') continue;
+          if (isTestTransaction(p)) continue;
 
           // Rule 4 & 6: Idempotent ₹100 credit for verified captured payment
           if (!store.processedPaymentIds.has(p.id)) {
@@ -406,15 +440,17 @@ export async function onRequestGet(context) {
       ]);
 
       const userReferralPayments = allProcessedDocs.filter(
-        (p) => matchesAffiliateUser(p.refCode) || matchesAffiliateUser(p.referrerId) || matchesAffiliateUser(p.userId)
+        (p) => !isTestTransaction(p) && (matchesAffiliateUser(p.refCode) || matchesAffiliateUser(p.referrerId) || matchesAffiliateUser(p.userId))
       );
 
       const userPlatformPayments = allPlatformDocs.filter((p) => {
+        if (isTestTransaction(p)) return false;
         const isCaptured = String(p.status || p.paymentStatus || '').toUpperCase() === 'CAPTURED';
         return isCaptured && (matchesAffiliateUser(p.referredBy) || matchesAffiliateUser(p.refCode) || (isOwnerAffiliate && !p.referredBy));
       });
 
       const userCourseEnrollments = allCourseDocs.filter((e) => {
+        if (isTestTransaction(e)) return false;
         const isCaptured =
           String(e.paymentStatus || '').toUpperCase() === 'CAPTURED' ||
           String(e.enrollmentStatus || '').toUpperCase() === 'ACTIVE';
@@ -522,8 +558,7 @@ export async function onRequestGet(context) {
 
       // 5. Filter real cloud withdrawal requests from Firestore
       const userWithdrawals = allWithdrawalDocs
-        .filter((w) =>
-          matchesAffiliateUser(w.refCode) ||
+        .filter((w) => !isTestWithdrawal(w) && matchesAffiliateUser(w.refCode) ||
           matchesAffiliateUser(w.userId) ||
           matchesAffiliateUser(w.referrerId) ||
           matchesAffiliateUser(w.userEmail)
@@ -560,45 +595,7 @@ export async function onRequestGet(context) {
       // Recalculate balances strictly from authoritative totals and withdrawal requests
       recalculateAffiliateBalances(record);
 
-      // 6. Self-heal Firestore affiliate_stats doc so all edge isolates stay permanently in sync
-      const shouldHeal =
-        !fsDoc ||
-        fsDoc.paidEnrollments !== record.paidEnrollments ||
-        fsDoc.totalEarned !== record.totalEarned ||
-        fsDoc.availableBalance !== record.availableBalance ||
-        fsDoc.pendingBalance !== record.pendingBalance ||
-        fsDoc.totalPaid !== record.totalPaid;
-
-      if (shouldHeal) {
-        try {
-          const healData = {
-            refCode: cleanCode,
-            paidEnrollments: record.paidEnrollments,
-            totalEarned: record.totalEarned,
-            availableBalance: record.availableBalance,
-            availableToPayout: record.availableBalance,
-            availableToWithdraw: record.availableBalance,
-            pendingBalance: record.pendingBalance,
-            totalPaid: record.totalPaid,
-            clicks: record.clicks,
-            signups: record.signups,
-            updatedAt: new Date().toISOString(),
-          };
-          await setFirestoreDocument('affiliate_stats', cleanCode, healData, env, true);
-          if (cleanUserId && cleanUserId !== cleanCode) {
-            await setFirestoreDocument('affiliate_stats', cleanUserId, healData, env, true);
-          }
-          if (isOwnerAffiliate) {
-            await Promise.all([
-              setFirestoreDocument('affiliate_stats', 'KITABI3IZ', healData, env, true),
-              setFirestoreDocument('affiliate_stats', 'SUBODHKUMAR', healData, env, true),
-              setFirestoreDocument('affiliate_stats', INTENDED_OWNER_ADMIN_UID, healData, env, true),
-            ]).catch(() => {});
-          }
-        } catch (healErr) {
-          console.warn('Auto-heal affiliate_stats notice:', healErr?.message);
-        }
-      }
+      // 6. Financial GET requests are strictly read-only: zero mutations on GET
     } catch (fsErr) {
       console.warn('Firestore read affiliate notice:', fsErr?.message);
       record._fsErr = fsErr?.message;

@@ -576,3 +576,120 @@ export async function listFirebaseAuthUsers(env) {
   const data = await res.json();
   return data.users || [];
 }
+
+
+/**
+ * Permanently delete a document from Firestore REST API
+ */
+export async function deleteFirestoreDocument(collection, docId, env) {
+  try {
+    const accessToken = await getFirestoreAccessToken(env);
+    const baseUrl = getFirestoreBaseUrl(env);
+    const res = await fetch(`${baseUrl}/${collection}/${docId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Permanently delete a user from Firebase Authentication via Identity Toolkit REST API
+ */
+export async function deleteFirebaseAuthUser(uid, env) {
+  try {
+    const accessToken = await getFirestoreAccessToken(env);
+    const projectId = env?.VITE_FIREBASE_PROJECT_ID || env?.FIREBASE_PROJECT_ID || DEFAULT_PROJECT_ID;
+    const res = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/projects/${projectId}/accounts:delete`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ localId: uid }),
+      }
+    );
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Bootstrap or recreate an Admin user with custom claim { admin: true }
+ */
+export async function bootstrapAdminUser(email, env) {
+  const accessToken = await getFirestoreAccessToken(env);
+  const projectId = env?.VITE_FIREBASE_PROJECT_ID || env?.FIREBASE_PROJECT_ID || DEFAULT_PROJECT_ID;
+
+  // 1. Create user account
+  const createRes = await fetch(
+    `https://identitytoolkit.googleapis.com/v1/projects/${projectId}/accounts`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        emailVerified: true,
+      }),
+    }
+  );
+
+  let newUid = '';
+  if (createRes.ok) {
+    const data = await createRes.json();
+    newUid = data.localId;
+  } else {
+    // Look up if user already exists
+    const lookupRes = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/projects/${projectId}/accounts:lookup`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: [email] }),
+      }
+    );
+    if (lookupRes.ok) {
+      const lData = await lookupRes.json();
+      newUid = lData.users?.[0]?.localId;
+    }
+  }
+
+  if (!newUid) {
+    throw new Error('Failed to create or lookup admin user account');
+  }
+
+  // 2. Set Admin Custom Claims
+  const claimsRes = await fetch(
+    `https://identitytoolkit.googleapis.com/v1/projects/${projectId}/accounts:update`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        localId: newUid,
+        customAttributes: JSON.stringify({ admin: true }),
+      }),
+    }
+  );
+
+  if (!claimsRes.ok) {
+    throw new Error('Failed to set admin custom claims on user');
+  }
+
+  return { uid: newUid, email, admin: true };
+}

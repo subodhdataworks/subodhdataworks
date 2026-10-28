@@ -547,17 +547,47 @@ export function replaceUserEnrollmentsCache(
 /**
  * Clears any legacy global keys and dispatches a state refresh when a user logs out or switches accounts.
  */
-export function clearActiveCourseSessionCacheOnLogout(): void {
+export function clearActiveCourseSessionCacheOnLogout(currentUserId?: string): void {
   try {
     for (const key of LEGACY_GLOBAL_KEYS) {
       localStorage.removeItem(key);
     }
+    localStorage.removeItem('futureai_cloud_user_entitlements_v1');
+    localStorage.removeItem('futureai_user_wallet');
+    localStorage.removeItem('futureai_entitlements_last_sync');
+
+    if (currentUserId) {
+      const cleanId = normalizeUserId(currentUserId);
+      if (cleanId) {
+        localStorage.removeItem(USER_ENROLLMENTS_PREFIX + cleanId);
+        localStorage.removeItem('futureai_entitlements_last_sync_' + cleanId);
+      }
+    }
+
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k) {
+        if (
+          k.startsWith(USER_ENROLLMENTS_PREFIX) ||
+          k.startsWith('futureai_affiliate_hub_v5_') ||
+          k.startsWith('futureai_enrollment_proof_') ||
+          k.startsWith('futureai_entitlements_last_sync_')
+        ) {
+          keysToRemove.push(k);
+        }
+      }
+    }
+    keysToRemove.forEach((k) => localStorage.removeItem(k));
+
     if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
       window.dispatchEvent(
         new CustomEvent('futureai_course_unlocked', {
           detail: { userId: '', loggedOut: true },
         })
       );
+      window.dispatchEvent(new Event('futureai_wallet_updated'));
+      window.dispatchEvent(new Event('futureai_affiliate_updated'));
     }
   } catch {
     // Ignore errors
