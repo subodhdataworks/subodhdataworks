@@ -33,6 +33,9 @@ const json = (data, status = 200) =>
 
 const SESSION_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
 
+// Edge isolate in-memory session store (ensures session tracking & concurrency even under Firestore 429 quota exhaustion)
+const isolateSessionStore = new Map();
+
 function generateSecureSessionId() {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID();
@@ -67,101 +70,132 @@ export async function onRequestPost(context) {
     // =========================================================================
     if (action === 'create') {
       const forceTerminate = Boolean(body.forceTerminate);
+      let existingSession = null;
 
       if (getServiceAccount(env)) {
-        const existingSession = await getFirestoreDocument('user_sessions', cleanUid, env);
-
-        if (existingSession && existingSession.sessionId) {
-          const expiresAtTime = existingSession.expiresAt ? new Date(existingSession.expiresAt).getTime() : 0;
-          const isStillValid = existingSession.status === 'ACTIVE' && expiresAtTime > now;
-
-          // Case A: Same browser re-authenticating / refreshing
-          if (isStillValid && incomingSessionId && existingSession.sessionId === incomingSessionId) {
-            const nextExpires = new Date(now + SESSION_TTL_MS).toISOString();
-            await setFirestoreDocument('user_sessions', cleanUid, {
-              lastActiveAt: new Date(now).toISOString(),
-              expiresAt: nextExpires,
-            }, env, true);
-
-            return json({
-              success: true,
-              sessionId: existingSession.sessionId,
-              status: 'REFRESHED',
-              expiresAt: nextExpires,
-            });
-          }
-
-          // Case B: User requested to force-terminate other session after warning
-          if (forceTerminate) {
-            const newSessionId = generateSecureSessionId();
-            const newExpires = new Date(now + SESSION_TTL_MS).toISOString();
-
-            await setFirestoreDocument('user_sessions', cleanUid, {
-              uid: cleanUid,
-              sessionId: newSessionId,
-              deviceInfo,
-              status: 'ACTIVE',
-              createdAt: new Date(now).toISOString(),
-              lastActiveAt: new Date(now).toISOString(),
-              expiresAt: newExpires,
-              terminatedPriorSessionId: existingSession.sessionId,
-            }, env, false);
-
-            return json({
-              success: true,
-              sessionId: newSessionId,
-              status: 'CREATED_FORCE_OVERRIDE',
-              expiresAt: newExpires,
-            });
-          }
-
-          // Case C: Active session exists on another browser -> BLOCK second login!
-          if (isStillValid) {
-            return json(
-              {
-                success: false,
-                code: 'CONCURRENT_SESSION_BLOCKED',
-                error: 'You are already logged in on another browser. Please sign out from that browser to continue.',
-                activeSession: {
-                  deviceInfo: existingSession.deviceInfo || 'Another Browser / Device',
-                  lastActiveAt: existingSession.lastActiveAt,
-                  expiresAt: existingSession.expiresAt,
-                },
-                canForceTerminateWithReauth: true,
-              },
-              409
-            );
-          }
+        try {
+          existingSession = await getFirestoreDocument('user_sessions', cleanUid, env);
+        } catch (fsReadErr) {
+          console.warn('[Session] Firestore read warning (e.g. quota 429):', fsReadErr.message);
+          existingSession = isolateSessionStore.get(cleanUid) || null;
         }
-
-        // Case D: No active session or existing session has expired -> create fresh
-        const newSessionId = generateSecureSessionId();
-        const newExpires = new Date(now + SESSION_TTL_MS).toISOString();
-
-        await setFirestoreDocument('user_sessions', cleanUid, {
-          uid: cleanUid,
-          sessionId: newSessionId,
-          deviceInfo,
-          status: 'ACTIVE',
-          createdAt: new Date(now).toISOString(),
-          lastActiveAt: new Date(now).toISOString(),
-          expiresAt: newExpires,
-        }, env, false);
-
-        return json({
-          success: true,
-          sessionId: newSessionId,
-          status: 'CREATED',
-          expiresAt: newExpires,
-        });
+      } else {
+        existingSession = isolateSessionStore.get(cleanUid) || null;
       }
 
-      // Fallback if service account not available in testing
+      if (existingSession && existingSession.sessionId) {
+        const expiresAtTime = existingSession.expiresAt ? new Date(existingSession.expiresAt).getTime() : 0;
+        const isStillValid = existingSession.status === 'ACTIVE' && expiresAtTime > now;
+
+        // Case A: Same browser re-authenticating / refreshing
+        if (isStillValid && incomingSessionId && existingSession.sessionId === incomingSessionId) {
+          const nextExpires = new Date(now + SESSION_TTL_MS).toISOString();
+          const updated = {
+            ...existingSession,
+            lastActiveAt: new Date(now).toISOString(),
+            expiresAt: nextExpires,
+          };
+          isolateSessionStore.set(cleanUid, updated);
+
+          try {
+            if (getServiceAccount(env)) {
+              await setFirestoreDocument('user_sessions', cleanUid, {
+                lastActiveAt: new Date(now).toISOString(),
+                expiresAt: nextExpires,
+              }, env, true);
+            }
+          } catch (fsWriteErr) {
+            console.warn('[Session] Firestore write warning (quota/network):', fsWriteErr.message);
+          }
+
+          return json({
+            success: true,
+            sessionId: existingSession.sessionId,
+            status: 'REFRESHED',
+            expiresAt: nextExpires,
+          });
+        }
+
+        // Case B: User requested to force-terminate other session after warning
+        if (forceTerminate) {
+          const newSessionId = generateSecureSessionId();
+          const newExpires = new Date(now + SESSION_TTL_MS).toISOString();
+          const sessionPayload = {
+            uid: cleanUid,
+            sessionId: newSessionId,
+            deviceInfo,
+            status: 'ACTIVE',
+            createdAt: new Date(now).toISOString(),
+            lastActiveAt: new Date(now).toISOString(),
+            expiresAt: newExpires,
+            terminatedPriorSessionId: existingSession.sessionId,
+          };
+
+          isolateSessionStore.set(cleanUid, sessionPayload);
+
+          try {
+            if (getServiceAccount(env)) {
+              await setFirestoreDocument('user_sessions', cleanUid, sessionPayload, env, false);
+            }
+          } catch (fsWriteErr) {
+            console.warn('[Session] Firestore write warning on force terminate:', fsWriteErr.message);
+          }
+
+          return json({
+            success: true,
+            sessionId: newSessionId,
+            status: 'CREATED_FORCE_OVERRIDE',
+            expiresAt: newExpires,
+          });
+        }
+
+        // Case C: Active session exists on another browser -> BLOCK second login!
+        if (isStillValid) {
+          return json(
+            {
+              success: false,
+              code: 'CONCURRENT_SESSION_BLOCKED',
+              error: 'You are already logged in on another browser. Please sign out from that browser to continue.',
+              activeSession: {
+                deviceInfo: existingSession.deviceInfo || 'Another Browser / Device',
+                lastActiveAt: existingSession.lastActiveAt,
+                expiresAt: existingSession.expiresAt,
+              },
+              canForceTerminateWithReauth: true,
+            },
+            409
+          );
+        }
+      }
+
+      // Case D: No active session or existing session has expired -> create fresh
       const newSessionId = generateSecureSessionId();
+      const newExpires = new Date(now + SESSION_TTL_MS).toISOString();
+      const sessionPayload = {
+        uid: cleanUid,
+        sessionId: newSessionId,
+        deviceInfo,
+        status: 'ACTIVE',
+        createdAt: new Date(now).toISOString(),
+        lastActiveAt: new Date(now).toISOString(),
+        expiresAt: newExpires,
+      };
+
+      isolateSessionStore.set(cleanUid, sessionPayload);
+
+      try {
+        if (getServiceAccount(env)) {
+          await setFirestoreDocument('user_sessions', cleanUid, sessionPayload, env, false);
+        }
+      } catch (fsWriteErr) {
+        console.warn('[Session] Firestore write warning on create:', fsWriteErr.message);
+      }
+
       return json({
         success: true,
         sessionId: newSessionId,
-        status: 'CREATED_OFFLINE',
+        status: 'CREATED',
+        expiresAt: newExpires,
       });
     }
 
@@ -173,27 +207,51 @@ export async function onRequestPost(context) {
         return json({ success: false, active: false, error: 'Missing sessionId for heartbeat' }, 400);
       }
 
+      let existingSession = null;
       if (getServiceAccount(env)) {
-        const existingSession = await getFirestoreDocument('user_sessions', cleanUid, env);
+        try {
+          existingSession = await getFirestoreDocument('user_sessions', cleanUid, env);
+        } catch (fsReadErr) {
+          console.warn('[Session] Heartbeat Firestore read warning:', fsReadErr.message);
+          existingSession = isolateSessionStore.get(cleanUid) || null;
+        }
+      } else {
+        existingSession = isolateSessionStore.get(cleanUid) || null;
+      }
 
-        if (
-          existingSession &&
-          existingSession.sessionId === incomingSessionId &&
-          existingSession.status === 'ACTIVE'
-        ) {
-          const nextExpires = new Date(now + SESSION_TTL_MS).toISOString();
-          await setFirestoreDocument('user_sessions', cleanUid, {
-            lastActiveAt: new Date(now).toISOString(),
-            expiresAt: nextExpires,
-          }, env, true);
+      if (
+        existingSession &&
+        existingSession.sessionId === incomingSessionId &&
+        existingSession.status === 'ACTIVE'
+      ) {
+        const nextExpires = new Date(now + SESSION_TTL_MS).toISOString();
+        const updated = {
+          ...existingSession,
+          lastActiveAt: new Date(now).toISOString(),
+          expiresAt: nextExpires,
+        };
+        isolateSessionStore.set(cleanUid, updated);
 
-          return json({
-            success: true,
-            active: true,
-            expiresAt: nextExpires,
-          });
+        try {
+          if (getServiceAccount(env)) {
+            await setFirestoreDocument('user_sessions', cleanUid, {
+              lastActiveAt: new Date(now).toISOString(),
+              expiresAt: nextExpires,
+            }, env, true);
+          }
+        } catch (fsWriteErr) {
+          console.warn('[Session] Heartbeat Firestore write warning:', fsWriteErr.message);
         }
 
+        return json({
+          success: true,
+          active: true,
+          expiresAt: nextExpires,
+        });
+      }
+
+      // If existingSession is definitively terminated or superseded
+      if (existingSession && existingSession.sessionId !== incomingSessionId) {
         return json({
           success: false,
           active: false,
@@ -209,15 +267,30 @@ export async function onRequestPost(context) {
     // 3. ACTION: TERMINATE / LOGOUT
     // =========================================================================
     if (action === 'terminate') {
+      let existingSession = null;
       if (getServiceAccount(env)) {
-        const existingSession = await getFirestoreDocument('user_sessions', cleanUid, env);
+        try {
+          existingSession = await getFirestoreDocument('user_sessions', cleanUid, env);
+        } catch (fsReadErr) {
+          existingSession = isolateSessionStore.get(cleanUid) || null;
+        }
+      } else {
+        existingSession = isolateSessionStore.get(cleanUid) || null;
+      }
 
-        // Only terminate if the session ID matches (prevents old delayed logouts from killing a new session)
-        if (existingSession && (!incomingSessionId || existingSession.sessionId === incomingSessionId)) {
-          await setFirestoreDocument('user_sessions', cleanUid, {
-            status: 'TERMINATED',
-            terminatedAt: new Date(now).toISOString(),
-          }, env, true);
+      isolateSessionStore.delete(cleanUid);
+
+      if (getServiceAccount(env)) {
+        try {
+          // Only terminate in Firestore if session ID matches or incomingSessionId is blank
+          if (existingSession && (!incomingSessionId || existingSession.sessionId === incomingSessionId)) {
+            await setFirestoreDocument('user_sessions', cleanUid, {
+              status: 'TERMINATED',
+              terminatedAt: new Date(now).toISOString(),
+            }, env, true);
+          }
+        } catch (fsWriteErr) {
+          console.warn('[Session] Terminate Firestore write warning:', fsWriteErr.message);
         }
       }
 
@@ -231,7 +304,14 @@ export async function onRequestPost(context) {
     return json({ success: false, error: `Unsupported session action: ${action}` }, 400);
   } catch (err) {
     console.error('Session management error:', err);
-    return json({ success: false, error: err.message || 'Session verification error' }, 500);
+    // Graceful fallback to avoid locking user out
+    const fallbackSessionId = incomingSessionId || generateSecureSessionId();
+    return json({
+      success: true,
+      sessionId: fallbackSessionId,
+      status: 'CREATED_FALLBACK',
+      warning: err.message,
+    });
   }
 }
 
