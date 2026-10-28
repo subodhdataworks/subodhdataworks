@@ -68,10 +68,90 @@ const DEFAULT_SETTINGS: SystemBusinessSettings = {
 };
 
 export class AdminDataService {
+  private static cachedCloudData: any = null;
+  private static cacheTime = 0;
+
+  /**
+   * Fetches authoritative cloud telemetry directly from /api/admin-data
+   * Authenticated by Firebase ID Token custom claim { admin: true }
+   */
+  public static async fetchCloudAdminData(forceRefresh = false): Promise<any> {
+    if (!forceRefresh && this.cachedCloudData && Date.now() - this.cacheTime < 15000) {
+      return this.cachedCloudData;
+    }
+
+    try {
+      const session = AdminAuthService.getCurrentSession();
+      const token = session?.token;
+      if (!token) return null;
+
+      const res = await fetch('/api/admin-data', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success) {
+          this.cachedCloudData = data;
+          this.cacheTime = Date.now();
+          return data;
+        }
+      }
+    } catch (e) {
+      console.warn('[AdminDataService] fetchCloudAdminData notice:', e);
+    }
+    return null;
+  }
+
+  public static async getLivePayments(): Promise<SystemPaymentRecord[]> {
+    const cloud = await this.fetchCloudAdminData();
+    if (cloud && Array.isArray(cloud.payments)) {
+      return cloud.payments;
+    }
+
+    try {
+      const colRef = collection(db, 'platform_payments');
+      const snap = await getDocs(colRef);
+      const list: SystemPaymentRecord[] = [];
+      snap.forEach((d) => {
+        const data = d.data();
+        if (data) {
+          list.push({
+            id: data.paymentId || d.id,
+            userId: data.userId || data.email || d.id,
+            userName: data.userName || (data.userId ? data.userId.split('@')[0] : 'Learner'),
+            userEmail: data.email || data.userId || '',
+            userPhone: data.phone || '',
+            courseId: data.courseId || '',
+            courseName: data.courseName || data.courseTitle || data.courseId || 'Course',
+            amount: Number(data.amount) || 0,
+            status: String(data.paymentStatus || data.status || 'SUCCESS').toUpperCase() === 'CAPTURED' ? 'SUCCESS' : 'PENDING',
+            provider: 'Razorpay',
+            paymentRef: data.paymentId || d.id,
+            orderId: data.orderId || '',
+            date: data.verifiedAt || data.createdAt || new Date().toISOString(),
+          });
+        }
+      });
+      return list;
+    } catch (err) {
+      console.warn('Firestore platform_payments fetch notice:', err);
+    }
+
+    return this.getAllPayments();
+  }
   /**
    * 1. Aggregated Platform Statistics & Telemetry
    */
   public static async getPlatformStats(): Promise<PlatformStats> {
+    const cloud = await this.fetchCloudAdminData();
+    if (cloud && cloud.stats) {
+      return cloud.stats;
+    }
+
     const allUsers = await getAllRegisteredUsers();
     const suspensions = this.getSuspensions();
     const payments = this.getAllPayments();

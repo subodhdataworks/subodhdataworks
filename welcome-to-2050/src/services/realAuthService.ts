@@ -384,6 +384,15 @@ export async function findUserByPhone(phone: string): Promise<RegisteredUserReco
  * Get all registered user records for marketing and export
  */
 export async function getAllRegisteredUsers(): Promise<RegisteredUserRecord[]> {
+  // If admin session is active, attempt to get real authoritative users from cloud
+  try {
+    const { AdminDataService } = await import('./adminDataService');
+    const cloud = await AdminDataService.fetchCloudAdminData();
+    if (cloud && Array.isArray(cloud.users) && cloud.users.length > 0) {
+      return cloud.users;
+    }
+  } catch {}
+
   const usersMap = new Map<string, RegisteredUserRecord>();
 
   // 1. Read from local master registry

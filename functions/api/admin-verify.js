@@ -143,22 +143,14 @@ export async function onRequestPost(context) {
   const payload = verification.payload;
   const userEmail = (payload.email || '').toLowerCase().trim();
 
-  // Enforce explicit trusted admin allowlist from environment bindings
-  const rawAllowlist = env?.TRUSTED_ADMIN_EMAILS || 'admin@futureitindustry.com,subodh@futureitindustry.com';
-  const trustedAdminEmails = rawAllowlist
-    .toLowerCase()
-    .split(',')
-    .map((e) => e.trim())
-    .filter(Boolean);
-
-  const isAllowlisted = trustedAdminEmails.includes(userEmail);
+  // Enforce explicit custom claims; email alone does not grant admin access (no email-only bypass)
   const hasAdminClaim = payload.admin === true || payload.role === 'admin';
 
-  if (!isAllowlisted && !hasAdminClaim) {
+  if (!hasAdminClaim) {
     return json(
       {
         success: false,
-        error: 'Forbidden: Account does not have administrative privileges.',
+        error: 'Forbidden: Account does not have administrative privileges. Firebase Custom Claim { admin: true } required.',
       },
       403
     );

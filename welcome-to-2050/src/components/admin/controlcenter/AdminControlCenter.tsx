@@ -27,7 +27,8 @@ import {
   PlusCircle,
   Download,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  AlertTriangle
 } from 'lucide-react';
 import { FutureLogo } from '../../futureai/FutureLogo';
 import { AdminAuthService } from '../../../services/adminAuthService';
@@ -73,6 +74,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
   const [isLoading, setIsLoading] = useState(false);
   const [dateRange, setDateRange] = useState('Oct 1, 2026 - Oct 31, 2026');
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   // Live Data State
   const [stats, setStats] = useState<PlatformStats | null>(null);
@@ -85,25 +87,34 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
 
   const loadAllData = async () => {
     setIsLoading(true);
+    setLoadError(null);
     try {
-      const [allUsers, liveStats, allPayments, allWithdrawals, suspList, logs] = await Promise.all([
-        getAllRegisteredUsers(),
-        AdminDataService.getPlatformStats(),
-        Promise.resolve(AdminDataService.getAllPayments()),
-        Promise.resolve(AdminDataService.getAllWithdrawals()),
-        Promise.resolve(AdminDataService.getSuspensions()),
-        Promise.resolve(AdminAuthService.getAuditLogs()),
-      ]);
+      // 1. Fetch live authoritative cloud telemetry from /api/admin-data
+      const cloudData = await AdminDataService.fetchCloudAdminData(true);
 
-      setUsers(allUsers);
-      setStats(liveStats);
-      setPayments(allPayments);
-      setWithdrawals(allWithdrawals);
-      setSuspensions(suspList);
-      setAuditLogs(logs);
+      if (cloudData && cloudData.success) {
+        setUsers(cloudData.users || []);
+        setStats(cloudData.stats || null);
+        setPayments(cloudData.payments || []);
+        setWithdrawals(cloudData.withdrawals || []);
+      } else {
+        const [allUsers, liveStats, allPayments, allWithdrawals] = await Promise.all([
+          getAllRegisteredUsers(),
+          AdminDataService.getPlatformStats(),
+          AdminDataService.getLivePayments(),
+          AdminDataService.getAllWithdrawals(),
+        ]);
+        setUsers(allUsers);
+        setStats(liveStats);
+        setPayments(allPayments);
+        setWithdrawals(allWithdrawals);
+      }
+      setSuspensions(AdminDataService.getSuspensions());
+      setAuditLogs(AdminAuthService.getAuditLogs());
       setBusinessSettings(AdminDataService.getBusinessSettings());
-    } catch (e) {
+    } catch (e: any) {
       console.error('Error loading admin live data:', e);
+      setLoadError(e?.message || 'Failed to sync with cloud backend.');
     } finally {
       setIsLoading(false);
     }
@@ -371,6 +382,34 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
         {/* Scrollable Content Body */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1500px] w-full mx-auto space-y-6">
           
+          {/* Cloud Synchronization Loading State */}
+          {isLoading && (
+            <div className="flex items-center gap-3 p-4 rounded-2xl bg-blue-50/90 border border-blue-200/90 text-blue-900 text-xs font-bold animate-pulse shadow-xs">
+              <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin shrink-0" />
+              <span>Synchronizing live metrics from Google Identity Toolkit &amp; Cloud Firestore backend...</span>
+            </div>
+          )}
+
+          {/* Cloud Telemetry Error Banner */}
+          {loadError && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-rose-50 border border-rose-200/90 text-rose-900 text-xs shadow-xs">
+              <div className="flex items-center gap-2.5">
+                <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0" />
+                <div>
+                  <strong className="block font-black text-rose-950">Cloud Backend Telemetry Alert</strong>
+                  <p className="text-rose-700 font-medium">{loadError}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => loadAllData()}
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs transition cursor-pointer self-start sm:self-auto shrink-0"
+              >
+                Retry Cloud Sync
+              </button>
+            </div>
+          )}
+
           {/* Active Tab Router */}
           {activeTab === 'dashboard' && stats && (
             <DashboardOverview

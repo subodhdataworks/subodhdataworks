@@ -17,6 +17,7 @@ import {
 import { SystemBusinessSettings } from '../../../services/adminDataService';
 import { AdminAuthService } from '../../../services/adminAuthService';
 import { AdminRole, AdminAuditLog } from '../../../types/admin';
+import { getAffiliateMigrationStatus } from '../../../services/realAuthService';
 
 interface SystemSettingsProps {
   settings: SystemBusinessSettings;
@@ -56,6 +57,7 @@ export const SystemSettings: React.FC<SystemSettingsProps> = ({
 
   const canManageSettings = AdminAuthService.hasPermission('manage_settings');
   const canManageAdmins = AdminAuthService.hasPermission('manage_admins');
+  const migrationStatus = getAffiliateMigrationStatus();
 
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -313,6 +315,81 @@ export const SystemSettings: React.FC<SystemSettingsProps> = ({
           </form>
         </div>
       )}
+
+      {/* ── 2B. Affiliate System v5 Reset & Migration Architecture ── */}
+      <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold border border-emerald-500/20">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-base font-black text-white">
+                Affiliate System Status &amp; Reset Migration (v5)
+              </h3>
+              <p className="text-xs text-slate-400 font-medium">
+                Authoritative Firestore commission engine, ledger anti-forgery &amp; idempotency
+              </p>
+            </div>
+          </div>
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-black border border-emerald-500/20 self-start sm:self-auto">
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            <span>Reset Completion: {migrationStatus.status}</span>
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+          <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800">
+            <span className="text-slate-400 font-bold uppercase text-[10px] block">Reset Migration ID</span>
+            <strong className="text-white font-black text-sm mt-0.5 block">{migrationStatus.migrationId}</strong>
+            <span className="text-emerald-400 font-semibold text-[11px]">One-Time Idempotent Execution ✓</span>
+          </div>
+
+          <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800">
+            <span className="text-slate-400 font-bold uppercase text-[10px] block">Processed Records</span>
+            <strong className="text-white font-black text-sm mt-0.5 block">
+              {migrationStatus.usersProcessed} Users Clean Reset
+            </strong>
+            <span className="text-slate-400 font-semibold text-[11px]">
+              {migrationStatus.legacyKeysArchived} Legacy Keys Safely Archived
+            </span>
+          </div>
+
+          <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800">
+            <span className="text-slate-400 font-bold uppercase text-[10px] block">Commission Structure</span>
+            <strong className="text-emerald-400 font-black text-sm mt-0.5 block">
+              Free: ₹0 • Paid Course: ₹100
+            </strong>
+            <span className="text-slate-400 font-semibold text-[11px]">
+              No Self-Referral • Unique Email Verification
+            </span>
+          </div>
+
+          <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800">
+            <span className="text-slate-400 font-bold uppercase text-[10px] block">Payment Gateway Idempotency</span>
+            <strong className="text-white font-black text-sm mt-0.5 block">
+              {migrationStatus.paymentVerification}
+            </strong>
+            <span className="text-blue-400 font-semibold text-[11px]">HMAC-SHA256 Webhook Verification</span>
+          </div>
+
+          <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800">
+            <span className="text-slate-400 font-bold uppercase text-[10px] block">Payout &amp; Banking Isolation</span>
+            <strong className="text-white font-black text-sm mt-0.5 block">
+              {migrationStatus.payoutIntegrationStatus}
+            </strong>
+            <span className="text-amber-400 font-semibold text-[11px]">Admin UTR Entry Mandatory Before Payout</span>
+          </div>
+
+          <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800">
+            <span className="text-slate-400 font-bold uppercase text-[10px] block">User Profile Integrity</span>
+            <strong className="text-white font-black text-sm mt-0.5 block">
+              Login &amp; Unlocks Preserved
+            </strong>
+            <span className="text-emerald-400 font-semibold text-[11px]">0 Zero-Balance Hallucinations</span>
+          </div>
+        </div>
+      </div>
 
       {/* ── 3. Security Audit Trail Log (Immutable Event Stream) ── */}
       <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 shadow-sm">

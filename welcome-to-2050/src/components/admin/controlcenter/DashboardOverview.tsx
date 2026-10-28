@@ -59,6 +59,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   const [unlockModalUser, setUnlockModalUser] = useState<RegisteredUserRecord | null>(null);
   const [unlockTargetCourse, setUnlockTargetCourse] = useState('data_analyst');
   const [unlockSuccessMsg, setUnlockSuccessMsg] = useState('');
+  const [showMigrationDetails, setShowMigrationDetails] = useState(false);
   const migrationStatus = getAffiliateMigrationStatus();
 
   const cardBg = 'bg-white border border-slate-200/90 shadow-xs hover:shadow-sm transition-all rounded-3xl p-5';
@@ -76,21 +77,6 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   };
 
   // Static mock fallbacks if user list is empty, ensuring UI looks full & lively like the screenshot
-  const displayUsers = recentUsers.length > 0 ? recentUsers.slice(0, 5) : [
-    { uid: 'u1', name: 'Amit Kumar', email: 'amit@gmail.com', phone: '9876543210', referralCode: 'AMIT100', registeredAt: '2026-10-21', source: 'Google', status: 'active' },
-    { uid: 'u2', name: 'Priya Singh', email: 'priya@gmail.com', phone: '9876543211', referralCode: 'PRIYA100', registeredAt: '2026-10-21', source: 'Direct', status: 'active' },
-    { uid: 'u3', name: 'Rohit Verma', email: 'rohit@gmail.com', phone: '9876543212', referralCode: 'ROHIT100', registeredAt: '2026-10-20', source: 'Google', status: 'active' },
-    { uid: 'u4', name: 'Neha Gupta', email: 'neha@gmail.com', phone: '9876543213', referralCode: 'NEHA100', registeredAt: '2026-10-20', source: 'Direct', status: 'active' },
-    { uid: 'u5', name: 'Vikash Raj', email: 'vikash@gmail.com', phone: '9876543214', referralCode: 'VIKASH100', registeredAt: '2026-10-19', source: 'Phone', status: 'inactive' },
-  ];
-
-  const recentEnrollments = [
-    { course: 'Data Analyst with GenAI', student: 'Aman Sharma', amount: '₹18,999 / ₹9', date: '21 Oct 2026', color: 'bg-blue-500' },
-    { course: 'Data Science & Agentic AI', student: 'Priya Singh', amount: '₹29,999', date: '21 Oct 2026', color: 'bg-purple-500' },
-    { course: 'AI Engineering & LLMOps', student: 'Rohit Verma', amount: '₹39,999', date: '20 Oct 2026', color: 'bg-amber-500' },
-    { course: 'Machine Learning Engineering', student: 'Neha Gupta', amount: '₹49,999', date: '20 Oct 2026', color: 'bg-emerald-500' },
-    { course: 'Full-Stack Web Development', student: 'Vikash Raj', amount: '₹24,999', date: '19 Oct 2026', color: 'bg-sky-500' },
-  ];
 
   const recentSubmissions = [
     { student: 'Amit Kumar', question: 'Print Your Name', language: 'Python', result: 'Correct', time: '2 min ago' },
@@ -196,81 +182,110 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       </div>
 
       {/* =========================================================================
-          1B. AFFILIATE SYSTEM v5 RESET & STATUS PANEL (Admin Security & Audit)
+          1B. AFFILIATE SYSTEM v5 RESET & COMPACT STATUS PANEL
           ========================================================================= */}
-      <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-sm sm:text-base font-black text-slate-900">
-                Affiliate System Status &amp; Reset Migration (v5)
-              </h3>
-              <p className="text-xs text-slate-500 font-medium">
-                Controlled one-time database reset &amp; server-verified commission engine
-              </p>
-            </div>
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+            <ShieldCheck className="w-4 h-4" />
           </div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-black">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Reset Completion: {migrationStatus.status}</span>
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
-          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-            <span className="text-slate-400 font-bold uppercase text-[10px] block">Reset Migration Status</span>
-            <strong className="text-slate-900 font-black text-sm mt-0.5 block">{migrationStatus.migrationId}</strong>
-            <span className="text-emerald-600 font-semibold text-[11px]">One-Time Idempotent Execution ✓</span>
-          </div>
-
-          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-            <span className="text-slate-400 font-bold uppercase text-[10px] block">Total Users Processed</span>
-            <strong className="text-slate-900 font-black text-sm mt-0.5 block">
-              {Math.max(stats.totalUsers, migrationStatus.usersProcessed)} Users Reset to ₹0
-            </strong>
-            <span className="text-slate-500 font-semibold text-[11px]">
-              {migrationStatus.legacyKeysArchived} Legacy Keys Archived Safely
-            </span>
-          </div>
-
-          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-            <span className="text-slate-400 font-bold uppercase text-[10px] block">New-System Commission Rules</span>
-            <strong className="text-emerald-700 font-black text-sm mt-0.5 block">
-              Free Signup: ₹0 • Paid Enrollment: ₹100
-            </strong>
-            <span className="text-slate-500 font-semibold text-[11px]">
-              Failed Payment: ₹0 • Unique Email &amp; No Self-Referral
-            </span>
-          </div>
-
-          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-            <span className="text-slate-400 font-bold uppercase text-[10px] block">Payment Verification Status</span>
-            <strong className="text-slate-900 font-black text-sm mt-0.5 block">
-              {migrationStatus.paymentVerification}
-            </strong>
-            <span className="text-blue-600 font-semibold text-[11px]">Duplicate Webhook Idempotency Active</span>
-          </div>
-
-          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-            <span className="text-slate-400 font-bold uppercase text-[10px] block">Affiliate Payout Integration</span>
-            <strong className="text-slate-900 font-black text-sm mt-0.5 block">
-              {migrationStatus.payoutIntegrationStatus}
-            </strong>
-            <span className="text-amber-600 font-semibold text-[11px]">Old Bank/UPI Purged • Re-Verification Enforced</span>
-          </div>
-
-          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-            <span className="text-slate-400 font-bold uppercase text-[10px] block">Audit &amp; Account Isolation</span>
-            <strong className="text-slate-900 font-black text-sm mt-0.5 block">
-              Login &amp; Course Unlocks Preserved
-            </strong>
-            <span className="text-emerald-600 font-semibold text-[11px]">Sensitive Bank/UPI Redacted from Logs</span>
+          <div>
+            <h4 className="text-xs font-black text-slate-900 flex items-center gap-1.5">
+              <span>Affiliate System v5 Cloud Synchronized</span>
+              <span className="bg-emerald-50 text-emerald-700 text-[10px] font-black px-2 py-0.5 rounded-full">
+                Active &amp; Idempotent
+              </span>
+            </h4>
+            <p className="text-[11px] text-slate-500 font-medium">
+              Real-time Firestore commission &amp; balance reservation engine
+            </p>
           </div>
         </div>
+        <button
+          type="button"
+          onClick={() => setShowMigrationDetails(!showMigrationDetails)}
+          className="text-xs font-bold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition cursor-pointer flex items-center gap-1 self-start sm:self-auto"
+        >
+          <span>{showMigrationDetails ? 'Hide Migration Details' : 'View Migration Details'}</span>
+          <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showMigrationDetails ? 'rotate-180' : ''}`} />
+        </button>
       </div>
+
+      {showMigrationDetails && (
+        <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-sm sm:text-base font-black text-slate-900">
+                  Affiliate System Status &amp; Reset Migration (v5)
+                </h3>
+                <p className="text-xs text-slate-500 font-medium">
+                  Controlled one-time database reset &amp; server-verified commission engine
+                </p>
+              </div>
+            </div>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-black">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Reset Completion: {migrationStatus.status}</span>
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+              <span className="text-slate-400 font-bold uppercase text-[10px] block">Reset Migration Status</span>
+              <strong className="text-slate-900 font-black text-sm mt-0.5 block">{migrationStatus.migrationId}</strong>
+              <span className="text-emerald-600 font-semibold text-[11px]">One-Time Idempotent Execution ✓</span>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+              <span className="text-slate-400 font-bold uppercase text-[10px] block">Total Users Processed</span>
+              <strong className="text-slate-900 font-black text-sm mt-0.5 block">
+                {Math.max(stats.totalUsers, migrationStatus.usersProcessed)} Users Reset to ₹0
+              </strong>
+              <span className="text-slate-500 font-semibold text-[11px]">
+                {migrationStatus.legacyKeysArchived} Legacy Keys Archived Safely
+              </span>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+              <span className="text-slate-400 font-bold uppercase text-[10px] block">New-System Commission Rules</span>
+              <strong className="text-emerald-700 font-black text-sm mt-0.5 block">
+                Free Signup: ₹0 • Paid Enrollment: ₹100
+              </strong>
+              <span className="text-slate-500 font-semibold text-[11px]">
+                Failed Payment: ₹0 • Unique Email &amp; No Self-Referral
+              </span>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+              <span className="text-slate-400 font-bold uppercase text-[10px] block">Payment Verification Status</span>
+              <strong className="text-slate-900 font-black text-sm mt-0.5 block">
+                {migrationStatus.paymentVerification}
+              </strong>
+              <span className="text-blue-600 font-semibold text-[11px]">Duplicate Webhook Idempotency Active</span>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+              <span className="text-slate-400 font-bold uppercase text-[10px] block">Affiliate Payout Integration</span>
+              <strong className="text-slate-900 font-black text-sm mt-0.5 block">
+                {migrationStatus.payoutIntegrationStatus}
+              </strong>
+              <span className="text-amber-600 font-semibold text-[11px]">Old Bank/UPI Purged • Re-Verification Enforced</span>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+              <span className="text-slate-400 font-bold uppercase text-[10px] block">Audit &amp; Account Isolation</span>
+              <strong className="text-slate-900 font-black text-sm mt-0.5 block">
+                Login &amp; Course Unlocks Preserved
+              </strong>
+              <span className="text-emerald-600 font-semibold text-[11px]">Sensitive Bank/UPI Redacted from Logs</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* =========================================================================
           2. MIDDLE ROW: USER GROWTH (AREA CHART) & COURSE ENROLLMENTS (DONUT)

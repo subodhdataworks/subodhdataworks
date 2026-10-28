@@ -17,14 +17,11 @@ service cloud.firestore {
       );
     }
 
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
-    }
-
     // ─────────────────────────────────────────────────────────────────────────
     // 1. WALLET BALANCE & AFFILIATE METRICS: affiliate_stats
     // ─────────────────────────────────────────────────────────────────────────
     // Read: Authenticated user can read ONLY their own stats. Admins can read all.
+    // Supports owner-scoped collection queries: where('userId', '==', auth.uid)
     // Write: COMPLETELY DENIED for clients. Updates must occur via trusted server.
     match /affiliate_stats/{refCode} {
       allow read: if isAuthenticated() && (
@@ -38,8 +35,8 @@ service cloud.firestore {
     // 2. WITHDRAWAL REQUESTS: withdrawal_requests
     // ─────────────────────────────────────────────────────────────────────────
     // Read: Authenticated user can read ONLY their own withdrawals. Admin can read all.
-    // Write: COMPLETELY DENIED for clients. Withdrawals must be created and
-    //        managed via server endpoint using atomic Firestore transactions.
+    // Supports owner-scoped collection queries: where('userId', '==', auth.uid)
+    // Write: COMPLETELY DENIED for clients. Managed strictly via server endpoint.
     match /withdrawal_requests/{reqId} {
       allow read: if isAuthenticated() && (
         isAdmin() ||
@@ -61,6 +58,7 @@ service cloud.firestore {
     // 4. COURSE ENROLLMENTS: course_enrollments
     // ─────────────────────────────────────────────────────────────────────────
     // Read: Authenticated user can read ONLY their own verified course entitlements.
+    // Supports owner-scoped collection queries: where('userId', '==', auth.uid)
     // Write: COMPLETELY DENIED for clients. Granted strictly via server webhook.
     match /course_enrollments/{enrollmentId} {
       allow read: if isAuthenticated() && (
@@ -73,37 +71,38 @@ service cloud.firestore {
     // ─────────────────────────────────────────────────────────────────────────
     // 5. REGISTERED USERS & PROFILES: registered_users
     // ─────────────────────────────────────────────────────────────────────────
-    // Read: User can read their own profile. Admin can read all.
-    // Create: Allowed for authenticated user with strictly non-privileged fields.
-    // Update: STRICTLY LIMITED to explicit allowlist of safe profile fields.
-    //         Modification of financial, course, referral, and role fields is BLOCKED.
-    match /registered_users/{userDocId} {
+    // Strict Document Ownership Model:
+    // - Document ID MUST be exactly request.auth.uid.
+    // - Forgery of userId, uid, or email is strictly blocked.
+    // - Modification of financial, role, or administrative fields is completely
+    //   blocked for both users and admin profile updates.
+    match /registered_users/{userId} {
       allow read: if isAuthenticated() && (
         isAdmin() ||
-        resource.data.userId == request.auth.uid ||
-        userDocId == request.auth.uid
+        userId == request.auth.uid ||
+        resource.data.userId == request.auth.uid
       );
 
-      // Initial user registration allowlist
-      allow create: if isAuthenticated() && (
-        request.resource.data.userId == request.auth.uid ||
-        request.resource.data.uid == request.auth.uid ||
-        userDocId == request.auth.uid
-      ) &&
-      request.resource.data.keys().hasOnly([
-        'uid', 'userId', 'name', 'displayName', 'email', 'phone', 'avatar',
-        'photoURL', 'source', 'registeredAt', 'createdAt'
-      ]);
+      // Initial user registration allowlist with strict ownership binding
+      allow create: if isAuthenticated() &&
+        userId == request.auth.uid &&
+        request.resource.data.uid == request.auth.uid &&
+        (!('userId' in request.resource.data) || request.resource.data.userId == request.auth.uid) &&
+        (!('email' in request.auth.token) || request.resource.data.email == request.auth.token.email) &&
+        request.resource.data.keys().hasOnly([
+          'uid', 'userId', 'name', 'displayName', 'email', 'phone', 'avatar',
+          'photoURL', 'source', 'registeredAt', 'createdAt'
+        ]);
 
-      // Profile updates restricted strictly to safe fields
-      allow update: if isAuthenticated() && (
-        isAdmin() || (
-          (resource.data.userId == request.auth.uid || userDocId == request.auth.uid) &&
-          request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-            'name', 'displayName', 'phone', 'avatar', 'photoURL', 'updatedAt'
-          ])
-        )
-      );
+      // Profile updates restricted strictly to safe fields (even for admins)
+      // Disallows tampering with walletBalance, enrolledCourses, role, etc.
+      allow update: if isAuthenticated() &&
+        (isAdmin() || userId == request.auth.uid || resource.data.userId == request.auth.uid) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'name', 'displayName', 'phone', 'avatar', 'photoURL', 'updatedAt'
+        ]) &&
+        (!('uid' in request.resource.data) || request.resource.data.uid == resource.data.uid) &&
+        (!('userId' in request.resource.data) || request.resource.data.userId == resource.data.userId);
 
       allow delete: if false;
     }
@@ -112,6 +111,7 @@ service cloud.firestore {
     // 6. PLATFORM PAYMENTS: platform_payments
     // ─────────────────────────────────────────────────────────────────────────
     // Read: Paying user can view only their own payment records. Admin can read all.
+    // Supports owner-scoped collection queries: where('userId', '==', auth.uid)
     // Write: Server only (Razorpay webhook / server verification).
     match /platform_payments/{paymentId} {
       allow read: if isAuthenticated() && (
@@ -125,6 +125,7 @@ service cloud.firestore {
     // 7. WALLET LEDGER: wallet_ledger
     // ─────────────────────────────────────────────────────────────────────────
     // Read: User can read only their own ledger transactions. Admin can read all.
+    // Supports owner-scoped collection queries: where('userId', '==', auth.uid)
     // Write: Immutable audit ledger. Client write denied.
     match /wallet_ledger/{ledgerId} {
       allow read: if isAuthenticated() && (
@@ -147,7 +148,7 @@ service cloud.firestore {
       allow write: if false;
     }
 
-    // Default deny for all other collections and operations
+    // Default deny for all other collections
     match /{document=**} {
       allow read, write: if false;
     }

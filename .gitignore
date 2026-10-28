@@ -18,3 +18,9 @@ __pycache__/
 .env.local
 .env.*
 *.env
+
+# Local debug logs & backups
+*.log
+backups/
+scripts/assign_owner_admin_claim.mjs
+welcome-to-2050/scripts/
