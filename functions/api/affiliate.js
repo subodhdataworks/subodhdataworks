@@ -383,13 +383,27 @@ export async function onRequestGet(context) {
       const allWithdrawalDocs = await listFirestoreCollectionDocs('withdrawal_requests', env);
       const userWithdrawals = allWithdrawalDocs
         .filter((w) => {
-          const wRef = normalizeRefCode(w.refCode || w.userId || w.referrerId || '');
+          const wRef = normalizeRefCode(w.refCode || '');
+          const wUser = normalizeRefCode(w.userId || '');
+          const wReferrer = normalizeRefCode(w.referrerId || '');
+          const isOwnerSubodh =
+            cleanCode === 'SUBODHKUMAR' &&
+            (w.userId === 'eCtK0lyxIaQSmgPwEnPUy3CKwsz2' ||
+              w.referrerId === 'eCtK0lyxIaQSmgPwEnPUy3CKwsz2' ||
+              String(w.userEmail || '').toLowerCase().includes('subodh') ||
+              String(w.userEmail || '').toLowerCase().includes('powergreen'));
+
           return (
             wRef === cleanCode ||
+            wUser === cleanCode ||
+            wReferrer === cleanCode ||
             w.refCode === cleanCode ||
             w.userId === cleanCode ||
+            w.referrerId === cleanCode ||
             w.refCode === `${cleanCode}100` ||
-            w.userId === `${cleanCode}100`
+            w.userId === `${cleanCode}100` ||
+            w.referrerId === `${cleanCode}100` ||
+            isOwnerSubodh
           );
         })
         .map((w) => {
