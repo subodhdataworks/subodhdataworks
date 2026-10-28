@@ -123,8 +123,9 @@ async function handleUpdateWithdrawalStatus(context, body) {
     );
   }
 
-  const payload = verification.payload;
-  const hasAdminClaim = payload.admin === true || payload.role === 'admin';
+  const adminClaims = verification.payload;
+  const payload = adminClaims;
+  const hasAdminClaim = adminClaims.admin === true || adminClaims.role === 'admin';
   if (!hasAdminClaim) {
     if (payload.sub === INTENDED_OWNER_ADMIN_UID) {
       try {
@@ -265,7 +266,7 @@ async function handleUpdateWithdrawalStatus(context, body) {
         status: rawTargetStatus,
         updatedAt: nowIso,
         adminNotes: adminNotes || existingReq.adminNotes || `Status updated to ${rawTargetStatus} by administrator.`,
-        processedBy: claims.email || claims.sub || 'Admin',
+        processedBy: adminClaims.email || adminClaims.sub || 'Admin',
       };
 
       if (rawTargetStatus === 'PAID') {
@@ -350,8 +351,9 @@ export async function onRequestGet(context) {
   }
 
   // 2. Enforce Admin Custom Claim (Strictly requires admin: true or role: admin; no email-only bypass)
-  const payload = verification.payload;
-  const hasAdminClaim = payload.admin === true || payload.role === 'admin';
+  const adminClaims = verification.payload;
+  const payload = adminClaims;
+  const hasAdminClaim = adminClaims.admin === true || adminClaims.role === 'admin';
 
   if (!hasAdminClaim) {
     if (payload.sub === INTENDED_OWNER_ADMIN_UID) {

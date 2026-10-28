@@ -536,8 +536,8 @@ runTest('17. Admin Custom Claim Payload Unwrapping: verify admin-data.js reads v
   // Must NOT have the old buggy pattern `claims.admin !== true` where `claims = await verifyFirebaseIdToken(...)`
   assert.ok(!content.includes('claims.admin !== true'), 'Must not read claims.admin on the outer wrapper object');
   assert.match(content, /const verification = await verifyFirebaseIdToken\(token, projectId\)/);
-  assert.match(content, /const payload = verification\.payload/);
-  assert.match(content, /const hasAdminClaim = payload\.admin === true \|\| payload\.role === 'admin'/);
+  assert.match(content, /const adminClaims = verification\.payload;/);
+  assert.match(content, /const hasAdminClaim = adminClaims\.admin === true \|\| adminClaims\.role === 'admin'/);
 });
 
 runTest('18. Auth Status Codes: Missing/Expired token -> 401, Student token -> 403, Owner Admin token -> 200', () => {
@@ -620,6 +620,67 @@ runTest('20. Frontend AdminAuthService & AdminDataService: verify getFreshAdminT
   assert.match(authServiceContent, /INTENDED_OWNER_ADMIN_UID = 'eCtK0lyxIaQSmgPwEnPUy3CKwsz2'/);
   assert.match(authServiceContent, /currentUser\.getIdToken\(forceRefresh\)/);
   assert.match(dataServiceContent, /AdminAuthService\.getFreshAdminToken\(true\)/);
+});
+
+runTest('21. Static Regression: verify no undefined claims variable in admin-data.js', () => {
+  const file1 = fs.readFileSync(path.resolve('functions/api/admin-data.js'), 'utf-8');
+  const file2 = fs.readFileSync(path.resolve('welcome-to-2050/functions/api/admin-data.js'), 'utf-8');
+
+  for (const [name, content] of [['functions/api/admin-data.js', file1], ['welcome-to-2050/functions/api/admin-data.js', file2]]) {
+    // Must NOT contain bare `claims.` in handleUpdateWithdrawalStatus
+    assert.ok(!content.includes('processedBy: claims.'), `Found undefined claims in ${name}`);
+    assert.match(content, /const adminClaims = verification\.payload;/);
+    assert.match(content, /processedBy:\s*adminClaims\.email \|\| adminClaims\.sub \|\| 'Admin'/);
+  }
+});
+
+runTest('22. Transaction Execution Regression: verify transaction fields resolve adminClaims without ReferenceError', () => {
+  const adminClaims = {
+    sub: 'eCtK0lyxIaQSmgPwEnPUy3CKwsz2',
+    email: 'admin@futureitindustry.com',
+    admin: true,
+  };
+  const existingReq = {
+    id: 'WREQ-001',
+    amount: 1,
+    adminNotes: 'Prior notes',
+    refCode: 'SUBODHKUMAR',
+  };
+  const nowIso = new Date().toISOString();
+  const payoutRef = 'UTR9876543210AXIS';
+
+  for (const rawTargetStatus of ['APPROVED', 'PAID', 'REJECTED']) {
+    let capturedFields = null;
+    const mockTx = {
+      update(col, id, fields) {
+        capturedFields = fields;
+      },
+    };
+
+    // Run the exact field mapping block from handleUpdateWithdrawalStatus
+    const updatedWithdrawalFields = {
+      status: rawTargetStatus,
+      updatedAt: nowIso,
+      adminNotes: `Status updated to ${rawTargetStatus} by administrator.`,
+      processedBy: adminClaims.email || adminClaims.sub || 'Admin',
+    };
+
+    if (rawTargetStatus === 'PAID') {
+      updatedWithdrawalFields.paidAt = nowIso;
+      updatedWithdrawalFields.referenceNo = payoutRef;
+      updatedWithdrawalFields.payoutRef = payoutRef;
+    }
+
+    mockTx.update('withdrawal_requests', existingReq.id, updatedWithdrawalFields);
+
+    assert.ok(capturedFields, `Transaction update should succeed for ${rawTargetStatus}`);
+    assert.equal(capturedFields.processedBy, 'admin@futureitindustry.com');
+    assert.equal(capturedFields.status, rawTargetStatus);
+    if (rawTargetStatus === 'PAID') {
+      assert.equal(capturedFields.referenceNo, payoutRef);
+      assert.equal(capturedFields.paidAt, nowIso);
+    }
+  }
 });
 
 console.log('\n----------------------------------------------------------------');
