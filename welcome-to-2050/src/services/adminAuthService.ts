@@ -19,6 +19,26 @@ export async function sha256(message: string): Promise<string> {
   return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
+export const INTENDED_OWNER_ADMIN_UID = 'eCtK0lyxIaQSmgPwEnPUy3CKwsz2';
+
+function decodeJwtPayload(token: string): Record<string, any> | null {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    let base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    while (base64.length % 4 !== 0) base64 += '=';
+    const jsonStr = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonStr);
+  } catch {
+    return null;
+  }
+}
+
 export class AdminAuthService {
   /**
    * Check if current session exists, is valid, and not expired
@@ -40,46 +60,177 @@ export class AdminAuthService {
   }
 
   /**
+   * Obtain a fresh, cryptographically valid Firebase ID token for the logged-in admin.
+   * Forces token refresh via getIdToken(true) when requested to ensure custom claims { admin: true }
+   * are up-to-date and prevents stale/expired cached tokens from causing 401/403 errors.
+   */
+  public static async getFreshAdminToken(forceRefresh = true): Promise<{
+    token: string | null;
+    uid?: string;
+    email?: string;
+    hasAdminClaim?: boolean;
+    error?: string;
+  }> {
+    try {
+      if (typeof (auth as any)?.authStateReady === 'function') {
+        await Promise.race([
+          (auth as any).authStateReady(),
+          new Promise((resolve) => setTimeout(resolve, 2000)),
+        ]);
+      }
+    } catch {}
+
+    const session = this.getCurrentSession();
+    const currentUser = auth.currentUser;
+
+    // 1. If Firebase Auth has an active currentUser, force-refresh its ID token
+    if (currentUser) {
+      try {
+        const freshToken = await currentUser.getIdToken(forceRefresh);
+        const payload = decodeJwtPayload(freshToken);
+        const hasAdminClaim = Boolean(payload && (payload.admin === true || payload.role === 'admin'));
+
+        if (hasAdminClaim) {
+          // Synchronize localStorage session with fresh token and verified Firebase Auth identity
+          const updatedSession: AdminSession = {
+            admin: {
+              id: currentUser.uid,
+              email: (currentUser.email || session?.admin?.email || '').toLowerCase(),
+              name: session?.admin?.name || currentUser.displayName || 'Administrator',
+              role: session?.admin?.role || 'super_admin',
+              avatar: currentUser.photoURL || session?.admin?.avatar || '/images/future_it_industry_logo.png',
+              createdAt: session?.admin?.createdAt || new Date().toISOString(),
+              lastLoginAt: new Date().toISOString(),
+              status: 'active',
+            },
+            token: freshToken,
+            expiresAt: Date.now() + 8 * 60 * 60 * 1000,
+          };
+          if (typeof window !== 'undefined') {
+            localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(updatedSession));
+          }
+          return {
+            token: freshToken,
+            uid: currentUser.uid,
+            email: currentUser.email || '',
+            hasAdminClaim: true,
+          };
+        }
+
+        // If currentUser is the intended owner UID (eCtK0lyxIaQSmgPwEnPUy3CKwsz2), return token so server can verify/sync claim
+        if (currentUser.uid === INTENDED_OWNER_ADMIN_UID) {
+          return {
+            token: freshToken,
+            uid: currentUser.uid,
+            email: currentUser.email || '',
+            hasAdminClaim: false,
+          };
+        }
+
+        // Otherwise, the browser's active Firebase user is a non-admin student account
+        return {
+          token: null,
+          uid: currentUser.uid,
+          email: currentUser.email || '',
+          hasAdminClaim: false,
+          error: `Forbidden: Currently logged-in Firebase account (${currentUser.email || currentUser.uid}, UID: ${currentUser.uid}) is not the authorized admin account (expected UID: ${INTENDED_OWNER_ADMIN_UID} with { admin: true } claim). Please sign in to the Admin Control Center with the owner admin account.`,
+        };
+      } catch (err: any) {
+        console.warn('[AdminAuth] getIdToken refresh notice:', err);
+      }
+    }
+
+    // 2. Fallback to stored session token only if still unexpired and valid
+    if (session?.token) {
+      const payload = decodeJwtPayload(session.token);
+      const nowSec = Math.floor(Date.now() / 1000);
+      if (payload && payload.exp && payload.exp <= nowSec) {
+        return {
+          token: null,
+          uid: payload.sub,
+          email: payload.email,
+          hasAdminClaim: false,
+          error: 'Admin Firebase ID token has expired. Please sign out and sign back in to the Admin Control Center to refresh your token.',
+        };
+      }
+      const hasAdminClaim = Boolean(payload && (payload.admin === true || payload.role === 'admin'));
+      if (!hasAdminClaim && payload?.sub !== INTENDED_OWNER_ADMIN_UID) {
+        return {
+          token: null,
+          uid: payload?.sub,
+          email: payload?.email,
+          hasAdminClaim: false,
+          error: `Forbidden: Session account (${payload?.email || payload?.sub || 'unknown'}) lacks the required { admin: true } custom claim.`,
+        };
+      }
+      return {
+        token: session.token,
+        uid: payload?.sub || session.admin?.id,
+        email: payload?.email || session.admin?.email,
+        hasAdminClaim,
+      };
+    }
+
+    return {
+      token: null,
+      error: 'Authentication session expired: Please sign in with the authorized admin account.',
+    };
+  }
+
+  /**
    * Cryptographically re-verify active admin session with server-side /api/admin-verify
-   * Rejects forged localStorage flags
+   * Rejects forged localStorage flags and automatically refreshes stale tokens via getIdToken(true)
    */
   public static async verifyServerSession(): Promise<boolean> {
-    const session = this.getCurrentSession();
-    if (!session || !session.token) return false;
+    const tokenInfo = await this.getFreshAdminToken(true);
+    const activeToken = tokenInfo.token;
+    if (!activeToken) {
+      await this.logout();
+      return false;
+    }
 
     // Check if token looks like Firebase JWT (header.payload.signature)
-    if (!session.token.includes('.') || session.token.split('.').length !== 3) {
-      // Legacy or mock token — reject
+    if (!activeToken.includes('.') || activeToken.split('.').length !== 3) {
       console.warn('[AdminAuth] Invalid token structure. Requiring server re-authentication.');
       await this.logout();
       return false;
     }
 
     try {
-      const res = await fetch('/api/admin-verify', {
+      let res = await fetch('/api/admin-verify', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${session.token}`,
+          Authorization: `Bearer ${activeToken}`,
         },
       });
 
-      if (!res.ok) {
-        console.warn('[AdminAuth] Server rejected admin token with status', res.status);
-        await this.logout();
-        return false;
+      let data = await res.json().catch(() => ({}));
+
+      // If server restored custom claim and requested a fresh token, force refresh and retry once
+      if (!res.ok && data?.requiresTokenRefresh && auth.currentUser) {
+        const refreshed = await this.getFreshAdminToken(true);
+        if (refreshed.token) {
+          res = await fetch('/api/admin-verify', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${refreshed.token}`,
+            },
+          });
+          data = await res.json().catch(() => ({}));
+        }
       }
 
-      const data = await res.json().catch(() => ({}));
-      if (!data.authorized) {
-        console.warn('[AdminAuth] Server authorization returned false');
+      if (!res.ok || !data.authorized) {
+        console.warn('[AdminAuth] Server rejected admin token:', res.status, data?.error);
         await this.logout();
         return false;
       }
 
       return true;
     } catch (err) {
-      // In offline development or network failure, allow unexpired session
+      const session = this.getCurrentSession();
       console.warn('[AdminAuth] Verification network check notice:', err);
       return Boolean(session && Date.now() < session.expiresAt);
     }

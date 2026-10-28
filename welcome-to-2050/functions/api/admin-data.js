@@ -12,12 +12,14 @@
 
 import {
   DEFAULT_PROJECT_ID,
+  INTENDED_OWNER_ADMIN_UID,
   getServiceAccount,
   pemToBinaryDer,
   base64UrlEncode,
   fromFirestoreFields,
   listFirestoreCollectionDocs,
   runFirestoreTransaction,
+  inspectAndEnsureOwnerAdminClaim,
 } from './_firestore-admin.js';
 import { verifyFirebaseIdToken } from './admin-verify.js';
 
@@ -108,9 +110,48 @@ async function handleUpdateWithdrawalStatus(context, body) {
 
   const token = authHeader.slice(7).trim();
   const projectId = env?.VITE_FIREBASE_PROJECT_ID || env?.FIREBASE_PROJECT_ID || DEFAULT_PROJECT_ID;
-  const claims = await verifyFirebaseIdToken(token, projectId);
-  if (!claims || (claims.admin !== true && claims.role !== 'admin')) {
-    return json({ success: false, error: 'Forbidden: Admin custom claim { admin: true } required to process payouts.' }, 403);
+  const verification = await verifyFirebaseIdToken(token, projectId);
+  if (!verification || !verification.valid || !verification.payload) {
+    return json(
+      {
+        success: false,
+        code: 'TOKEN_INVALID_OR_EXPIRED',
+        requiresTokenRefresh: true,
+        error: `Unauthorized: ${verification?.error || 'Invalid or expired Firebase ID token.'}`,
+      },
+      401
+    );
+  }
+
+  const payload = verification.payload;
+  const hasAdminClaim = payload.admin === true || payload.role === 'admin';
+  if (!hasAdminClaim) {
+    if (payload.sub === INTENDED_OWNER_ADMIN_UID) {
+      try {
+        await inspectAndEnsureOwnerAdminClaim(env, INTENDED_OWNER_ADMIN_UID);
+      } catch {}
+      return json(
+        {
+          success: false,
+          code: 'STALE_ADMIN_TOKEN_REFRESH_REQUIRED',
+          requiresTokenRefresh: true,
+          uid: payload.sub,
+          error: 'Stale Firebase ID token detected for owner admin account. Force-refreshing token via getIdToken(true)...',
+        },
+        403
+      );
+    }
+
+    return json(
+      {
+        success: false,
+        code: 'FORBIDDEN_NOT_ADMIN',
+        uid: payload.sub,
+        expectedOwnerUid: INTENDED_OWNER_ADMIN_UID,
+        error: `Forbidden: Logged-in account (${payload.email || payload.sub}, UID: ${payload.sub}) is not the authorized admin (expected UID: ${INTENDED_OWNER_ADMIN_UID}). Admin custom claim { admin: true } required to process payouts.`,
+      },
+      403
+    );
   }
 
   // 2. Validate Service Account binding
@@ -313,10 +354,29 @@ export async function onRequestGet(context) {
   const hasAdminClaim = payload.admin === true || payload.role === 'admin';
 
   if (!hasAdminClaim) {
+    if (payload.sub === INTENDED_OWNER_ADMIN_UID) {
+      try {
+        await inspectAndEnsureOwnerAdminClaim(env, INTENDED_OWNER_ADMIN_UID);
+      } catch {}
+      return json(
+        {
+          success: false,
+          code: 'STALE_ADMIN_TOKEN_REFRESH_REQUIRED',
+          requiresTokenRefresh: true,
+          uid: payload.sub,
+          error: 'Stale Firebase ID token detected for owner admin account. Please refresh token via getIdToken(true).',
+        },
+        403
+      );
+    }
+
     return json(
       {
         success: false,
-        error: 'Forbidden: Account does not have administrative privileges. Firebase Custom Claim { admin: true } required.',
+        code: 'FORBIDDEN_NOT_ADMIN',
+        uid: payload.sub,
+        expectedOwnerUid: INTENDED_OWNER_ADMIN_UID,
+        error: `Forbidden: Account (${payload.email || payload.sub}, UID: ${payload.sub}) does not have administrative privileges. Firebase Custom Claim { admin: true } required.`,
       },
       403
     );

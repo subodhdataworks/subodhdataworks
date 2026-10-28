@@ -14,8 +14,9 @@
  */
 
 export const DEFAULT_PROJECT_ID = 'future-it-industry-f97af';
+export const INTENDED_OWNER_ADMIN_UID = 'eCtK0lyxIaQSmgPwEnPUy3CKwsz2';
 const GOOGLE_TOKEN_ENDPOINT = 'https://oauth2.googleapis.com/token';
-const FIRESTORE_SCOPE = 'https://www.googleapis.com/auth/datastore';
+const FIRESTORE_SCOPE = 'https://www.googleapis.com/auth/datastore https://www.googleapis.com/auth/identitytoolkit';
 
 // In-memory token cache scoped to the worker isolate
 let cachedAccessToken = null;
@@ -470,4 +471,87 @@ export async function runFirestoreTransaction(transactionFn, env) {
   }
 
   return result;
+}
+
+/**
+ * Securely inspect the owner account custom claims via Google Identity Toolkit Admin API
+ * and restore { admin: true } if missing on the intended owner UID.
+ * Never logs or returns any sensitive credentials or tokens.
+ */
+export async function inspectAndEnsureOwnerAdminClaim(env, targetUid = INTENDED_OWNER_ADMIN_UID) {
+  const projectId = env?.VITE_FIREBASE_PROJECT_ID || env?.FIREBASE_PROJECT_ID || DEFAULT_PROJECT_ID;
+  const accessToken = await getFirestoreAccessToken(env);
+
+  const lookupRes = await fetch(
+    `https://identitytoolkit.googleapis.com/v1/projects/${projectId}/accounts:lookup`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ localId: [targetUid] }),
+    }
+  );
+
+  if (!lookupRes.ok) {
+    throw new Error(`Identity Toolkit lookup failed with HTTP ${lookupRes.status}`);
+  }
+
+  const lookupData = await lookupRes.json();
+  const userRecord = (lookupData.users || [])[0];
+  if (!userRecord) {
+    return {
+      intendedOwnerUid: targetUid,
+      uidExists: false,
+      hasAdminCustomClaim: false,
+      restoredDuringCheck: false,
+    };
+  }
+
+  let customAttrs = {};
+  if (userRecord.customAttributes) {
+    try {
+      customAttrs = JSON.parse(userRecord.customAttributes);
+    } catch {
+      customAttrs = {};
+    }
+  }
+
+  const alreadyHasAdmin = customAttrs.admin === true;
+  if (alreadyHasAdmin) {
+    return {
+      intendedOwnerUid: targetUid,
+      uidExists: true,
+      hasAdminCustomClaim: true,
+      restoredDuringCheck: false,
+    };
+  }
+
+  const updatedAttrs = { ...customAttrs, admin: true };
+  const updateRes = await fetch(
+    `https://identitytoolkit.googleapis.com/v1/projects/${projectId}/accounts:update`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        localId: targetUid,
+        customAttributes: JSON.stringify(updatedAttrs),
+      }),
+    }
+  );
+
+  if (!updateRes.ok) {
+    throw new Error(`Identity Toolkit claim update failed with HTTP ${updateRes.status}`);
+  }
+
+  return {
+    intendedOwnerUid: targetUid,
+    uidExists: true,
+    hasAdminCustomClaim: true,
+    restoredDuringCheck: true,
+  };
 }

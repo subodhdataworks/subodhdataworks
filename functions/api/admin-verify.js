@@ -1,3 +1,5 @@
+import { INTENDED_OWNER_ADMIN_UID, inspectAndEnsureOwnerAdminClaim } from './_firestore-admin.js';
+
 /**
  * Cloudflare Pages Function — /api/admin-verify
  * Cryptographically verifies Firebase ID Token and enforces trusted admin allowlist.
@@ -147,10 +149,31 @@ export async function onRequestPost(context) {
   const hasAdminClaim = payload.admin === true || payload.role === 'admin';
 
   if (!hasAdminClaim) {
+    if (payload.sub === INTENDED_OWNER_ADMIN_UID) {
+      try {
+        await inspectAndEnsureOwnerAdminClaim(env, INTENDED_OWNER_ADMIN_UID);
+      } catch {}
+      return json(
+        {
+          success: false,
+          authorized: false,
+          code: 'STALE_ADMIN_TOKEN_REFRESH_REQUIRED',
+          requiresTokenRefresh: true,
+          uid: payload.sub,
+          error: 'Stale ID token detected for owner admin account. Please refresh token via getIdToken(true).',
+        },
+        403
+      );
+    }
+
     return json(
       {
         success: false,
-        error: 'Forbidden: Account does not have administrative privileges. Firebase Custom Claim { admin: true } required.',
+        authorized: false,
+        code: 'FORBIDDEN_NOT_ADMIN',
+        uid: payload.sub,
+        expectedOwnerUid: INTENDED_OWNER_ADMIN_UID,
+        error: `Forbidden: Account (${userEmail || payload.sub}, UID: ${payload.sub}) does not have administrative privileges. Firebase Custom Claim { admin: true } required.`,
       },
       403
     );

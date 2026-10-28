@@ -11,9 +11,11 @@
 
 import {
   DEFAULT_PROJECT_ID,
+  INTENDED_OWNER_ADMIN_UID,
   getServiceAccount,
   getFirestoreDocument,
   setFirestoreDocument,
+  inspectAndEnsureOwnerAdminClaim,
 } from './_firestore-admin.js';
 
 const corsHeaders = {
@@ -70,6 +72,15 @@ export async function onRequestGet(context) {
         documentPath: 'system_health/backend_ping',
         lastVerified: readDoc?.timestamp || pingPayload.timestamp,
       };
+
+      try {
+        statusReport.ownerAdminClaim = await inspectAndEnsureOwnerAdminClaim(env, INTENDED_OWNER_ADMIN_UID);
+      } catch (claimErr) {
+        statusReport.ownerAdminClaim = {
+          intendedOwnerUid: INTENDED_OWNER_ADMIN_UID,
+          error: String(claimErr.message || claimErr).slice(0, 120),
+        };
+      }
     } catch (err) {
       statusReport.firestore = {
         status: 'ERROR',

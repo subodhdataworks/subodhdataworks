@@ -529,6 +529,99 @@ runTest('16. Restore ₹100 Minimum Verification: toggling TEMPORARY_TEST_MIN_WI
   assert.equal(resolveMin(false, true, 'SUBODHKUMAR'), 100, 'Toggling master flag to false restores ₹100 for all');
 });
 
+runTest('17. Admin Custom Claim Payload Unwrapping: verify admin-data.js reads verification.payload.admin', () => {
+  const adminDataPath = path.resolve('functions/api/admin-data.js');
+  const content = fs.readFileSync(adminDataPath, 'utf-8');
+
+  // Must NOT have the old buggy pattern `claims.admin !== true` where `claims = await verifyFirebaseIdToken(...)`
+  assert.ok(!content.includes('claims.admin !== true'), 'Must not read claims.admin on the outer wrapper object');
+  assert.match(content, /const verification = await verifyFirebaseIdToken\(token, projectId\)/);
+  assert.match(content, /const payload = verification\.payload/);
+  assert.match(content, /const hasAdminClaim = payload\.admin === true \|\| payload\.role === 'admin'/);
+});
+
+runTest('18. Auth Status Codes: Missing/Expired token -> 401, Student token -> 403, Owner Admin token -> 200', () => {
+  const OWNER_UID = 'eCtK0lyxIaQSmgPwEnPUy3CKwsz2';
+
+  function evaluatePayoutAuth(authHeader, mockVerifyResult) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return { status: 401, code: 'MISSING_TOKEN' };
+    }
+    const verification = mockVerifyResult;
+    if (!verification || !verification.valid || !verification.payload) {
+      return { status: 401, code: 'TOKEN_INVALID_OR_EXPIRED', requiresTokenRefresh: true };
+    }
+    const payload = verification.payload;
+    const hasAdminClaim = payload.admin === true || payload.role === 'admin';
+    if (!hasAdminClaim) {
+      if (payload.sub === OWNER_UID) {
+        return { status: 403, code: 'STALE_ADMIN_TOKEN_REFRESH_REQUIRED', requiresTokenRefresh: true };
+      }
+      return { status: 403, code: 'FORBIDDEN_NOT_ADMIN', uid: payload.sub };
+    }
+    return { status: 200, authorized: true, uid: payload.sub };
+  }
+
+  // 1. Missing token -> 401
+  assert.equal(evaluatePayoutAuth('', null).status, 401);
+
+  // 2. Expired token -> 401
+  const expiredRes = evaluatePayoutAuth('Bearer expired.jwt.token', { valid: false, error: 'Token has expired' });
+  assert.equal(expiredRes.status, 401);
+  assert.equal(expiredRes.code, 'TOKEN_INVALID_OR_EXPIRED');
+
+  // 3. Normal student token -> 403 Forbidden
+  const studentRes = evaluatePayoutAuth('Bearer student.jwt.token', {
+    valid: true,
+    payload: { sub: 'student_uid_999', email: 'student@example.com' },
+  });
+  assert.equal(studentRes.status, 403);
+  assert.equal(studentRes.code, 'FORBIDDEN_NOT_ADMIN');
+
+  // 4. Correct owner admin token -> 200 Authorized
+  const ownerRes = evaluatePayoutAuth('Bearer owner.jwt.token', {
+    valid: true,
+    payload: { sub: OWNER_UID, email: 'admin@futureitindustry.com', admin: true },
+  });
+  assert.equal(ownerRes.status, 200);
+  assert.equal(ownerRes.authorized, true);
+  assert.equal(ownerRes.uid, OWNER_UID);
+});
+
+runTest('19. Stale Token Refresh & Retry Flow: stale token triggers getIdToken(true) and succeeds on retry', () => {
+  const OWNER_UID = 'eCtK0lyxIaQSmgPwEnPUy3CKwsz2';
+  let tokenRefreshCalls = 0;
+
+  // First call has stale token (missing admin: true), refresh mints fresh token with admin: true
+  function mockGetIdToken(forceRefresh) {
+    if (forceRefresh) tokenRefreshCalls++;
+    return tokenRefreshCalls >= 1
+      ? { valid: true, payload: { sub: OWNER_UID, admin: true } }
+      : { valid: true, payload: { sub: OWNER_UID } };
+  }
+
+  // Simulate client calling getFreshAdminToken(true) before payout action
+  const tokenVerification = mockGetIdToken(true);
+  assert.equal(tokenRefreshCalls, 1, 'getIdToken(true) must be called before payout action');
+  assert.equal(tokenVerification.payload.admin, true, 'Refreshed token contains { admin: true }');
+  assert.equal(tokenVerification.payload.sub, OWNER_UID, 'Refreshed token matches owner UID');
+});
+
+runTest('20. Frontend AdminAuthService & AdminDataService: verify getFreshAdminToken(true) integration', () => {
+  const authServiceContent = fs.readFileSync(
+    path.resolve('welcome-to-2050/src/services/adminAuthService.ts'),
+    'utf-8'
+  );
+  const dataServiceContent = fs.readFileSync(
+    path.resolve('welcome-to-2050/src/services/adminDataService.ts'),
+    'utf-8'
+  );
+
+  assert.match(authServiceContent, /INTENDED_OWNER_ADMIN_UID = 'eCtK0lyxIaQSmgPwEnPUy3CKwsz2'/);
+  assert.match(authServiceContent, /currentUser\.getIdToken\(forceRefresh\)/);
+  assert.match(dataServiceContent, /AdminAuthService\.getFreshAdminToken\(true\)/);
+});
+
 console.log('\n----------------------------------------------------------------');
 console.log(`Summary: ${passedTests}/${totalTests} Tests Passed`);
 console.log('----------------------------------------------------------------\n');

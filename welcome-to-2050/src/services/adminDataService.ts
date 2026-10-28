@@ -81,16 +81,28 @@ export class AdminDataService {
     }
 
     try {
-      const session = AdminAuthService.getCurrentSession();
-      const token = session?.token;
+      const tokenInfo = await AdminAuthService.getFreshAdminToken(forceRefresh);
+      let token = tokenInfo.token;
       if (!token) return null;
 
-      const res = await fetch('/api/admin-data', {
+      let res = await fetch('/api/admin-data', {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
+
+      if ((res.status === 401 || res.status === 403) && !forceRefresh) {
+        const retryTokenInfo = await AdminAuthService.getFreshAdminToken(true);
+        if (retryTokenInfo.token) {
+          res = await fetch('/api/admin-data', {
+            headers: {
+              Authorization: `Bearer ${retryTokenInfo.token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+        }
+      }
 
       if (res.ok) {
         const data = await res.json();
@@ -445,30 +457,53 @@ export class AdminDataService {
       return { success: false, error: 'Unauthorized: You do not have permission to approve withdrawals.' };
     }
 
-    const session = AdminAuthService.getCurrentSession();
-    const token = session?.token;
-    if (!token) {
-      return { success: false, error: 'Authentication session expired: Please re-login to perform payout operations.' };
+    // Force-refresh Firebase ID token via getIdToken(true) before authenticated payout requests
+    let tokenInfo = await AdminAuthService.getFreshAdminToken(true);
+    if (!tokenInfo.token) {
+      return {
+        success: false,
+        error:
+          tokenInfo.error ||
+          'Authentication session expired: Please sign in with the authorized owner admin account to perform payout operations.',
+      };
     }
 
     try {
-      // 1. Authoritative Server-Side Update via authenticated Cloudflare Pages /api/admin-data endpoint
-      const res = await fetch('/api/admin-data', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          action: 'update_withdrawal_status',
-          requestId: params.requestId,
-          newStatus: params.newStatus,
-          adminNotes: params.adminNotes,
-          payoutRef: params.payoutRef,
-        }),
+      const requestPayload = JSON.stringify({
+        action: 'update_withdrawal_status',
+        requestId: params.requestId,
+        newStatus: params.newStatus,
+        adminNotes: params.adminNotes,
+        payoutRef: params.payoutRef,
       });
 
-      const data = await res.json().catch(() => null);
+      // 1. Authoritative Server-Side Update via authenticated Cloudflare Pages /api/admin-data endpoint
+      let res = await fetch('/api/admin-data', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${tokenInfo.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: requestPayload,
+      });
+
+      let data = await res.json().catch(() => null);
+
+      // If stale token detected or claim was just restored, force token refresh via getIdToken(true) and retry once
+      if ((res.status === 401 || res.status === 403) && data?.requiresTokenRefresh) {
+        const refreshed = await AdminAuthService.getFreshAdminToken(true);
+        if (refreshed.token) {
+          res = await fetch('/api/admin-data', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${refreshed.token}`,
+              'Content-Type': 'application/json',
+            },
+            body: requestPayload,
+          });
+          data = await res.json().catch(() => null);
+        }
+      }
 
       if (!res.ok || !data?.success) {
         return {
