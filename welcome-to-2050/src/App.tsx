@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { AlertCircle } from 'lucide-react';
 import { FutureAiHome } from './components/futureai/FutureAiHome';
 import { LearnerDashboard } from './components/futureai/LearnerDashboard';
 import { AtsResumeChecker } from './components/futureai/AtsResumeChecker';
@@ -21,6 +22,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { findExistingUser, recordUserInDatabase, runAffiliateSystemResetMigrationOnce, runFreshCloudStartResetMigrationOnce } from './services/realAuthService';
 import { restoreUserEntitlementsFromCloud } from './services/cloudSyncService';
 import { clearActiveCourseSessionCacheOnLogout } from './services/courseUnlockService';
+import { SessionService } from './services/sessionService';
 
 export const App: React.FC = () => {
   // ─── CONTROLLED VERSIONED ONE-TIME AFFILIATE SYSTEM v5 RESET MIGRATION ───
@@ -31,6 +33,11 @@ export const App: React.FC = () => {
 
   const profile = StorageService.getProfile();
   const [payModalOpen, setPayModalOpen] = useState(false);
+  const [blockedSessionModal, setBlockedSessionModal] = useState<{
+    uid: string;
+    error: string;
+    deviceInfo?: string;
+  } | null>(null);
 
   // Check referral code in URL immediately on page load and on navigation
   const captureReferralAttribution = () => {
@@ -66,8 +73,38 @@ export const App: React.FC = () => {
   // Permanent Firebase Session Sync (IndexedDB Auto-Recovery)
   // Ensures Google session persists permanently and never logs user out after 30 mins
   useEffect(() => {
+    const handleRemoteTermination = () => {
+      setIsLoggedIn(false);
+      setUserName('');
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('futureai_logged_in');
+        clearActiveCourseSessionCacheOnLogout();
+      }
+      alert('Your session was signed out because this account was logged into from another browser.');
+    };
+
+    window.addEventListener('futureai_session_terminated', handleRemoteTermination);
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        // Enforce Part 2: One Account, One Active Browser Session
+        const sessionRes = await SessionService.createOrValidateSession(user.uid);
+        if (sessionRes.blocked) {
+          await auth.signOut();
+          setIsLoggedIn(false);
+          setUserName('');
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('futureai_logged_in');
+            clearActiveCourseSessionCacheOnLogout();
+          }
+          setBlockedSessionModal({
+            uid: user.uid,
+            error: sessionRes.error || 'You are already logged in on another browser. Please sign out from that browser to continue.',
+            deviceInfo: sessionRes.activeSession?.deviceInfo,
+          });
+          return;
+        }
+
         const storedName = localStorage.getItem('futureai_user_name');
         const fallbackName = user.displayName || user.email?.split('@')[0] || '';
         const finalName = (storedName && storedName !== 'Learner' && storedName !== 'Rahul' && storedName !== 'Student') ? storedName : fallbackName;
@@ -78,6 +115,7 @@ export const App: React.FC = () => {
         if (typeof window !== 'undefined') {
           localStorage.setItem('futureai_logged_in', 'true');
           localStorage.setItem('futureai_user_name', finalName);
+          localStorage.setItem('futureai_user_uid', user.uid);
           if (user.email) localStorage.setItem('futureai_user_email', user.email);
           if (user.photoURL) localStorage.setItem('futureai_user_avatar', user.photoURL);
         }
@@ -87,7 +125,10 @@ export const App: React.FC = () => {
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      window.removeEventListener('futureai_session_terminated', handleRemoteTermination);
+      unsubscribe();
+    };
   }, []);
 
   // Validate existing authentication sessions correctly:
@@ -192,6 +233,10 @@ export const App: React.FC = () => {
   };
 
   const handleLogout = async () => {
+    const currentUid = typeof window !== 'undefined' ? localStorage.getItem('futureai_user_uid') || '' : '';
+    if (currentUid) {
+      await SessionService.terminateSession(currentUid);
+    }
     try {
       await auth.signOut();
     } catch (e) {
@@ -215,8 +260,8 @@ export const App: React.FC = () => {
       sessionStorage.removeItem('futureai_auth_redirect');
       localStorage.removeItem('futureai_auth_redirect');
       clearActiveCourseSessionCacheOnLogout();
+      SessionService.clearSessionId();
       window.location.hash = '#home';
-      window.location.reload();
     }
   };
 
@@ -379,7 +424,50 @@ export const App: React.FC = () => {
 
         
       </div>
-    </ThemeAccentProvider>
+            {blockedSessionModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-fadeIn">
+            <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-200 text-center space-y-4">
+              <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center mx-auto">
+                <AlertCircle className="w-7 h-7" />
+              </div>
+              <h3 className="text-lg font-black text-slate-900 tracking-tight">Active Session on Another Browser</h3>
+              <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                {blockedSessionModal.error}
+              </p>
+              {blockedSessionModal.deviceInfo && (
+                <div className="text-[11px] bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-500 font-mono text-left truncate">
+                  Active device: {blockedSessionModal.deviceInfo}
+                </div>
+              )}
+              <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setBlockedSessionModal(null)}
+                  className="w-full sm:w-1/2 py-2.5 px-4 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const uid = blockedSessionModal.uid;
+                    setBlockedSessionModal(null);
+                    const res = await SessionService.createOrValidateSession(uid, { forceTerminate: true });
+                    if (res.success) {
+                      window.location.reload();
+                    } else {
+                      alert(res.error || 'Failed to switch session.');
+                    }
+                  }}
+                  className="w-full sm:w-1/2 py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-xs font-bold text-white transition cursor-pointer shadow-sm"
+                >
+                  Sign Out Other Browser
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </ThemeAccentProvider>
   );
 };
 

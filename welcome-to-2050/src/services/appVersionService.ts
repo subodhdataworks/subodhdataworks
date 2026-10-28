@@ -8,7 +8,7 @@
  * financial and dashboard caches without reload loops.
  */
 
-export const APP_CACHE_VERSION = 'v2_clean_slate_20261028_final';
+export const APP_CACHE_VERSION = 'v3_master_fix_20261029_final';
 const VERSION_STORAGE_KEY = 'futureai_app_cache_version';
 
 export function initAppCacheVersioning(): void {
@@ -22,7 +22,7 @@ export function initAppCacheVersioning(): void {
 
     console.info(`[AppVersion] Incompatible/outdated cache version detected (${currentVersion || 'none'}). Upgrading to ${APP_CACHE_VERSION}...`);
 
-    // 1. Purge all deprecated financial, affiliate, and stale enrollment storage keys
+    // 1. Purge all deprecated financial, affiliate, and stale admin/referral storage keys
     const deprecatedKeyPrefixes = [
       'futureai_affiliate_hub_',
       'futureai_user_wallet',
@@ -33,6 +33,12 @@ export function initAppCacheVersioning(): void {
       'futureai_ambiguous_',
       'futureai_ref_attribution',
       'futureai_entitlements_last_sync',
+      'futureai_referral_state_',
+      'futureai_system_payments_',
+      'futureai_user_suspensions_',
+      'futureai_archived_test_withdrawals',
+      'futureai_user_ref_code',
+      'futureai_user_support_notes_',
     ];
 
     const keysToRemove: string[] = [];

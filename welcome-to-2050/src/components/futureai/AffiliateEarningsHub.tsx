@@ -38,6 +38,7 @@ import {
 import './AffiliateEarningsHub.css';
 import {
   fetchAffiliateRealData,
+  fetchCanonicalReferralProfile,
   getUserReferralCode,
   normalizeRefCode,
   recordReferralPayment,
@@ -98,6 +99,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   // Real user referral code & storage key
   // Strictly derive the identity of the CURRENT USER on this device.
   // NEVER use urlRef or futureai_ref_attribution (which belong to the person who invited this user).
+  const myUid = typeof window !== 'undefined' ? (localStorage.getItem('futureai_user_uid') || '') : '';
   const myEmail = typeof window !== 'undefined' ? (localStorage.getItem('futureai_user_email') || '') : '';
   const myStoredName = typeof window !== 'undefined' ? (localStorage.getItem('futureai_user_name') || userName || '') : userName;
   const myStoredCode = typeof window !== 'undefined' ? (localStorage.getItem('futureai_user_ref_code') || '') : '';
@@ -109,32 +111,40 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     myStoredName.toLowerCase().includes('subodh') ||
     myStoredName.toLowerCase().includes('kitabi') ||
     userName.toLowerCase().includes('subodh') ||
-    userName.toLowerCase().includes('kitabi');
+    userName.toLowerCase().includes('kitabi') ||
+    myUid === 'v0l0LdEuPMTyBsvGEqoT8dYSsv43' ||
+    myUid === 'bgnyqCpZ8QRX9pWt0xaMOmS0vQj1';
 
-  // Deterministic unique referral code for THIS user's own affiliate link:
-  // If user already has a stored code (e.g. KITABI3IZ or custom), preserve it!
-  const cleanRefCode = (myStoredCode
-    ? normalizeRefCode(myStoredCode)
-    : (isOwner
-        ? 'KITABI3IZ'
-        : (myEmail
-            ? normalizeRefCode(getUserReferralCode(myEmail))
-            : (myStoredName && myStoredName.toLowerCase() !== 'learner'
-                ? normalizeRefCode(getUserReferralCode(myStoredName))
-                : 'PARTNER'
-              )
-          )
-      )
-  ) || 'KITABI3IZ';
+  // Part 1: Server-Authoritative 1:1 Canonical Referral Profile state
+  const [canonicalRef, setCanonicalRef] = useState<{ referralCode: string; referralId: string }>(() => {
+    const initialCode = myStoredCode
+      ? normalizeRefCode(myStoredCode)
+      : (isOwner
+          ? 'KITABI3IZ'
+          : normalizeRefCode(getUserReferralCode(myEmail || myStoredName || myUid)));
+    return {
+      referralCode: initialCode,
+      referralId: isOwner ? 'RF-KITABI' : 'RF-PARTNER',
+    };
+  });
 
-  const minWithdrawal = getEffectiveMinWithdrawal(cleanRefCode);
-
-  // Persist user's own referral code so every user has their own unique permanent code
+  // Load canonical permanent 1:1 referral code from server for this Firebase UID
   useEffect(() => {
-    if (typeof window !== 'undefined' && cleanRefCode && cleanRefCode !== 'PARTNER') {
-      localStorage.setItem('futureai_user_ref_code', cleanRefCode);
+    let isMounted = true;
+    if (myUid) {
+      fetchCanonicalReferralProfile(myUid, myEmail, myStoredName).then((profile) => {
+        if (isMounted && profile && profile.referralCode) {
+          setCanonicalRef(profile);
+        }
+      });
     }
-  }, [cleanRefCode]);
+    return () => {
+      isMounted = false;
+    };
+  }, [myUid, myEmail, myStoredName]);
+
+  const cleanRefCode = canonicalRef.referralCode;
+  const minWithdrawal = getEffectiveMinWithdrawal(cleanRefCode);
 
   const affiliateRefUrl = `https://futureitindustry.com/?ref=${cleanRefCode}100`;
   if (typeof window !== 'undefined') {

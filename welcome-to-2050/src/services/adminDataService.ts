@@ -7,7 +7,7 @@ import {
   updateAffiliateWithdrawalStatus,
   computeAffiliateBalancesFromWithdrawals,
 } from './realAuthService';
-import { ReferralEngine, WithdrawalRequest, ReferralRecord } from './referralEngine';
+import type { WithdrawalRequest, ReferralRecord } from './referralEngine';
 import { COURSES_CATALOG } from '../data/coursesCatalog';
 import { TOPICS } from '../components/futureai/PythonChapterView';
 import {
@@ -154,7 +154,7 @@ export class AdminDataService {
       console.warn('Firestore platform_payments fetch notice:', err);
     }
 
-    return this.getAllPayments();
+    return [];
   }
   /**
    * 1. Aggregated Platform Statistics & Telemetry
@@ -167,7 +167,7 @@ export class AdminDataService {
 
     const allUsers = await getAllRegisteredUsers();
     const suspensions = this.getSuspensions();
-    const payments = this.getAllPayments();
+    const payments = await this.getLivePayments();
     const withdrawals = await this.getAllWithdrawals();
 
     const suspendedCount = suspensions.filter((s) => s.isSuspended).length;
@@ -318,26 +318,7 @@ export class AdminDataService {
    * 3. Financial Transactions & Payment Reconciliation
    */
   public static getAllPayments(): SystemPaymentRecord[] {
-    if (typeof window === 'undefined') return [];
-    try {
-      const raw = localStorage.getItem(PAYMENTS_KEY);
-      if (raw) {
-        const list: SystemPaymentRecord[] = JSON.parse(raw);
-        // Strict purge: remove any previously seeded fake demo transactions
-        const cleanList = list.filter(
-          (p) =>
-            !p.id.startsWith('tx_pay_9920') &&
-            p.userName !== 'Aakash Verma' &&
-            p.userName !== 'Priya Sharma' &&
-            p.userName !== 'Rahul Kumar'
-        );
-        if (cleanList.length !== list.length) {
-          localStorage.setItem(PAYMENTS_KEY, JSON.stringify(cleanList));
-        }
-        return cleanList;
-      }
-    } catch {}
-
+    // Authoritative cloud payments only; legacy localStorage hydration permanently removed
     return [];
   }
 
@@ -419,18 +400,7 @@ export class AdminDataService {
       console.warn('Firestore withdrawal_requests fetch notice:', err);
     }
 
-    // 2. Also merge local engine withdrawals if any exist
-    try {
-      const engineWithdrawals = ReferralEngine.getWithdrawals();
-      for (const w of engineWithdrawals) {
-        if (!seenIds.has(w.id) && !(w as any).archived) {
-          seenIds.add(w.id);
-          list.push(w);
-        }
-      }
-    } catch (err) {}
-
-    // 3. Sort newest first
+    // 2. Sort newest first (Authoritative Cloud records only, never merged with localStorage)
     list.sort((a, b) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime());
     return list;
   }
@@ -517,71 +487,9 @@ export class AdminDataService {
       this.cachedCloudData = null;
       this.cacheTime = 0;
 
-      // 3. Local engine & audit synchronization
+      // 3. Reactive UI event dispatch (Firestore server is the single authoritative source of truth)
       try {
-        const engineWithdrawals = ReferralEngine.getWithdrawals();
-        const existing = engineWithdrawals.find((w) => w.id === params.requestId);
-        if (existing) {
-          existing.status = params.newStatus;
-          if (params.newStatus === 'PAID') {
-            existing.paidAt = new Date().toISOString();
-            existing.referenceNo = params.payoutRef?.trim();
-          }
-          ReferralEngine.saveWithdrawal(existing);
-        }
-
-        if (params.newStatus === 'REJECTED' && existing) {
-          ReferralEngine.reverseWithdrawal({
-            referrerId: existing.referrerId,
-            amount: existing.amount,
-            withdrawalId: existing.id,
-            reason: params.adminNotes,
-          });
-        }
-
-        // Live Synchronize affiliate hub state in client storage if present
-        if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-          for (let i = 0; i < localStorage.length; i++) {
-            const k = localStorage.key(i);
-            if (k && k.startsWith('futureai_affiliate_hub_v5_')) {
-              try {
-                const hub = JSON.parse(localStorage.getItem(k) || '{}');
-                if (Array.isArray(hub.withdrawals)) {
-                  let changed = false;
-                  hub.withdrawals = hub.withdrawals.map((w: any) => {
-                    const match =
-                      w.id === params.requestId ||
-                      w.txId === params.requestId ||
-                      w.requestId === params.requestId ||
-                      (existing && (w.id === existing.id || w.txId === existing.id));
-                    if (match) {
-                      changed = true;
-                      return {
-                        ...w,
-                        status:
-                          params.newStatus === 'PAID'
-                            ? 'Paid'
-                            : params.newStatus === 'APPROVED'
-                            ? 'Approved'
-                            : params.newStatus === 'REJECTED'
-                            ? 'Rejected'
-                            : 'Pending',
-                        paidAt: params.newStatus === 'PAID' ? new Date().toISOString() : w.paidAt,
-                        payoutRef: params.payoutRef?.trim() || w.payoutRef,
-                        rejectionReason: params.adminNotes || w.rejectionReason,
-                      };
-                    }
-                    return w;
-                  });
-                  if (changed) {
-                    const balances = computeAffiliateBalancesFromWithdrawals(hub.totalEarned || 0, hub.withdrawals);
-                    localStorage.setItem(k, JSON.stringify({ ...hub, ...balances }));
-                    localStorage.setItem('futureai_user_wallet', balances.availableBalance.toString());
-                  }
-                }
-              } catch {}
-            }
-          }
+        if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
           window.dispatchEvent(new Event('futureai_affiliate_updated'));
           window.dispatchEvent(new Event('futureai_wallet_updated'));
         }

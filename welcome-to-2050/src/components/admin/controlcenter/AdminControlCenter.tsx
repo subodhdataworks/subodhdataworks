@@ -142,6 +142,9 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
         setPayments(cloudData.payments || []);
         setWithdrawals(cloudData.withdrawals || []);
       } else {
+        if (cloudData && cloudData.error) {
+          setLoadError(cloudData.error);
+        }
         const [allUsers, liveStats, allPayments, allWithdrawals] = await Promise.all([
           getAllRegisteredUsers(),
           AdminDataService.getPlatformStats(),

@@ -466,6 +466,55 @@ export function normalizeRefCode(ref?: string): string {
 }
 
 /**
+ * Fetch or generate the canonical 1:1 server-authoritative referral identity for a Firebase UID
+ * Enforces Part 1: One Account, One Permanent Referral ID across all browsers & devices.
+ */
+export async function fetchCanonicalReferralProfile(
+  uid: string,
+  email?: string,
+  name?: string
+): Promise<{ referralCode: string; referralId: string }> {
+  const cleanUid = String(uid || '').trim();
+  if (!cleanUid) {
+    return { referralCode: 'KITABI3IZ', referralId: 'RF-KITABI' };
+  }
+
+  try {
+    const params = new URLSearchParams({
+      uid: cleanUid,
+      email: (email || '').trim().toLowerCase(),
+      name: (name || '').trim(),
+    });
+    const res = await fetch(`/api/referral-profile?${params.toString()}`, {
+      cache: 'no-store',
+      headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.referralCode) {
+        return {
+          referralCode: normalizeRefCode(data.referralCode),
+          referralId: data.referralId || `RF-${data.referralCode}`,
+        };
+      }
+    }
+  } catch (e) {
+    console.warn('Notice fetching canonical referral profile:', e);
+  }
+
+  // Deterministic fallback if offline
+  if (
+    cleanUid === 'v0l0LdEuPMTyBsvGEqoT8dYSsv43' ||
+    cleanUid === 'bgnyqCpZ8QRX9pWt0xaMOmS0vQj1' ||
+    (email && (email.includes('subodh') || email.includes('admin@futureitindustry.com')))
+  ) {
+    return { referralCode: 'KITABI3IZ', referralId: 'RF-KITABI' };
+  }
+  const code = getUserReferralCode(email || name || cleanUid);
+  return { referralCode: normalizeRefCode(code), referralId: `RF-${normalizeRefCode(code)}` };
+}
+
+/**
  * Standardize user referral code (slice up to 8 chars + 100)
  */
 export function getUserReferralCode(nameOrEmail: string): string {

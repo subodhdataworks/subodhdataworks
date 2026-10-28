@@ -17,6 +17,7 @@ import {
   recordUserInDatabase,
 } from '../../services/realAuthService';
 import { BRAND } from '../../config/brand';
+import { SessionService } from '../../services/sessionService';
 
 export interface FutureAuthModalProps {
   isOpen: boolean;
@@ -280,6 +281,17 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
     try {
       const fbUser = await loginWithGooglePopup();
 
+      // Enforce Part 2: One Account, One Active Browser Session
+      const sessionRes = await SessionService.createOrValidateSession(fbUser.uid);
+      if (sessionRes.blocked) {
+        clearAuthTimeout();
+        setLoadingStage('idle');
+        setIsSubmitting(false);
+        try { await auth.signOut(); } catch {}
+        setValidationError(sessionRes.error || 'You are already logged in on another browser. Please sign out from that browser to continue.');
+        return;
+      }
+
       clearAuthTimeout();
       setLoadingStage('verifying');
       setCustomStageText('Verifying your account...');
@@ -353,6 +365,17 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
 
     try {
       const res = await loginWithEmailFirebase(cleanEmail, passwordInput.trim());
+
+      // Enforce Part 2: One Account, One Active Browser Session
+      const sessionRes = await SessionService.createOrValidateSession(res.uid);
+      if (sessionRes.blocked) {
+        clearAuthTimeout();
+        setLoadingStage('idle');
+        setIsSubmitting(false);
+        try { await auth.signOut(); } catch {}
+        setValidationError(sessionRes.error || 'You are already logged in on another browser. Please sign out from that browser to continue.');
+        return;
+      }
 
       clearAuthTimeout();
       setLoadingStage('verifying');
