@@ -719,9 +719,9 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
             aria-hidden="true"
           />
 
-          {/* Drawer Container (Width 82-86vw, max 340px, rounded left corners) */}
+          {/* Drawer Container (Tightly wrapped, ends right after last item without bottom blank space) */}
           <aside
-            className="relative z-10 w-[84vw] max-w-[340px] h-[100dvh] bg-white shadow-[-12px_0_40px_rgba(15,23,42,0.18)] rounded-l-[28px] flex flex-col justify-between overflow-hidden text-left animate-slideInRight"
+            className="relative z-10 w-[84vw] max-w-[340px] h-auto max-h-[92dvh] bg-white shadow-[-12px_12px_40px_rgba(15,23,42,0.2)] rounded-bl-[28px] border-l border-b border-slate-200/80 flex flex-col overflow-hidden text-left animate-slideInRight"
             role="dialog"
             aria-label="Navigation Drawer"
           >
@@ -745,8 +745,8 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               </button>
             </div>
 
-            {/* Scrollable Navigation Menu (Exact 10 Items in Specified Order) */}
-            <div className="flex-1 overflow-y-auto px-3.5 py-2 space-y-1">
+            {/* Navigation Menu (Tightly wrapped, ends at last item) */}
+            <div className="overflow-y-auto px-3.5 py-2 pb-3.5 space-y-1">
               {/* 1. Dashboard */}
               <button
                 type="button"
@@ -882,23 +882,6 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 </div>
                 <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isItemActive('recommendation') ? 'text-[#1a73e8]' : 'text-slate-400 group-hover:text-[#1a73e8]'}`} />
               </button>
-
-              {/* 10. Placement Support */}
-              <button
-                type="button"
-                onClick={() => handleDrawerNavigate('placement-support')}
-                className={`w-full h-[46px] px-3.5 rounded-xl flex items-center justify-between transition-all duration-150 cursor-pointer group ${
-                  isItemActive('placement-support')
-                    ? 'bg-[#EEF4FF] text-[#1a73e8] font-bold shadow-xs'
-                    : 'text-[#10234A] hover:bg-[#EEF4FF] hover:text-[#1a73e8] font-semibold'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <Star className={`w-5 h-5 shrink-0 ${isItemActive('placement-support') ? 'text-[#1a73e8]' : 'text-slate-700 group-hover:text-[#1a73e8]'}`} />
-                  <span className="text-[13.5px] leading-none">Placement Support</span>
-                </div>
-                <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isItemActive('placement-support') ? 'text-[#1a73e8]' : 'text-slate-400 group-hover:text-[#1a73e8]'}`} />
-              </button>
             </div>
           </aside>
         </div>
@@ -914,9 +897,9 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
             aria-hidden="true"
           />
 
-          {/* Profile Drawer Panel */}
+          {/* Profile Drawer Panel (Tightly wrapped, ends right after logout without bottom blank space) */}
           <aside
-            className="relative z-10 w-[84vw] max-w-[340px] h-[100dvh] bg-white shadow-[-12px_0_40px_rgba(15,23,42,0.18)] rounded-l-[28px] flex flex-col justify-between overflow-hidden text-left animate-slideInRight"
+            className="relative z-10 w-[84vw] max-w-[340px] h-auto max-h-[92dvh] bg-white shadow-[-12px_12px_40px_rgba(15,23,42,0.2)] rounded-bl-[28px] border-l border-b border-slate-200/80 flex flex-col overflow-hidden text-left animate-slideInRight"
             role="dialog"
             aria-label="My Profile"
           >
@@ -952,8 +935,8 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               </button>
             </div>
 
-            {/* Scrollable Body */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3.5">
+            {/* Compact Body without excess blank space */}
+            <div className="overflow-y-auto p-4 space-y-3 pb-4">
               {/* 1. Profile Identity Header */}
               <div className="flex items-center gap-3 pt-1">
                 <div className="relative shrink-0">
@@ -995,39 +978,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 </div>
               </div>
 
-              {/* 2. Gamification Summary (3 Pills + XP Bar) */}
-              <div className="space-y-2.5 pt-1">
-                <div className="grid grid-cols-3 gap-1.5">
-                  <div className="flex items-center justify-center gap-1 py-1 px-1.5 rounded-lg bg-amber-50/80 border border-amber-200/60 text-amber-800 text-[10px] font-bold">
-                    <span>👑</span>
-                    <span>Level 3</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-1 py-1 px-1.5 rounded-lg bg-orange-50/80 border border-orange-200/60 text-orange-700 text-[10px] font-bold">
-                    <span>🔥</span>
-                    <span>7 Days</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-1 py-1 px-1.5 rounded-lg bg-yellow-50/80 border border-yellow-200/60 text-yellow-800 text-[10px] font-bold">
-                    <span>⭐</span>
-                    <span>12 Badges</span>
-                  </div>
-                </div>
-
-                {/* XP Progress */}
-                <div>
-                  <div className="flex items-center justify-between text-[10.5px] mb-1">
-                    <span className="font-extrabold text-[#10234A]">1,250 / 1,600 XP</span>
-                    <span className="font-bold text-[#0284c7]">78% to Level 4</span>
-                  </div>
-                  <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-blue-600 via-[#1a73e8] to-cyan-400"
-                      style={{ width: '78%' }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* 3. Personal Information Card */}
+              {/* 2. Personal Information Card with Premium Blue Lighting Log Out */}
               <div className="bg-slate-50/70 border border-slate-200/70 rounded-2xl p-3">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-extrabold text-[#10234A]">Personal Information</span>
@@ -1061,45 +1012,45 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     <span className="text-[#10234A] font-bold">{studentPhone}</span>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Animated Lighting Logout Button */}
-            <div className="p-4 pt-2 border-t border-slate-100 bg-white shrink-0">
-              <button
-                type="button"
-                onClick={() => {
-                  soundEffects.playClick();
-                  setProfileDropdownOpen(false);
-                  if (onLogout) {
-                    onLogout();
-                  } else {
-                    localStorage.removeItem('futureai_logged_in');
-                    window.location.hash = '#home';
-                    window.location.reload();
-                  }
-                }}
-                className="relative group w-full p-[2.5px] rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-[0_0_25px_rgba(239,68,68,0.4)] hover:shadow-[0_0_35px_rgba(244,63,94,0.7)]"
-                title="Log Out of Account"
-                aria-label="Log Out of Account"
-              >
-                {/* Continuous Rotating Electric Lighting Border Beam */}
-                <div className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#f43f5e_0%,#fb7185_25%,#38bdf8_50%,#a855f7_75%,#f43f5e_100%)] opacity-95 group-hover:opacity-100" />
+                {/* Animated Lighting Logout Button in Premium Blue (Directly under Phone Number) */}
+                <div className="pt-3 mt-3 border-t border-slate-200/80">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundEffects.playClick();
+                      setProfileDropdownOpen(false);
+                      if (onLogout) {
+                        onLogout();
+                      } else {
+                        localStorage.removeItem('futureai_logged_in');
+                        window.location.hash = '#home';
+                        window.location.reload();
+                      }
+                    }}
+                    className="relative group w-full p-[2.5px] rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-[0_0_22px_rgba(26,115,232,0.4)] hover:shadow-[0_0_32px_rgba(26,115,232,0.7)]"
+                    title="Log Out of Account"
+                    aria-label="Log Out of Account"
+                  >
+                    {/* Continuous Rotating Electric Blue Lighting Border Beam */}
+                    <div className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#0284c7_0%,#38bdf8_25%,#6366f1_50%,#2563eb_75%,#0284c7_100%)] opacity-95 group-hover:opacity-100" />
 
-                {/* Inner Glowing Body */}
-                <div className="relative w-full py-3.5 px-4 rounded-[14px] bg-gradient-to-r from-slate-950 via-rose-950 to-slate-950 flex items-center justify-center gap-2.5 text-white font-black text-sm tracking-wide overflow-hidden border border-rose-500/40">
-                  {/* Shimmer Light Beam Sweep */}
-                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+                    {/* Inner Glowing Body in Premium Sapphire & Royal Blue */}
+                    <div className="relative w-full py-3 px-4 rounded-[14px] bg-gradient-to-r from-slate-950 via-[#0a1936] to-slate-950 flex items-center justify-center gap-2.5 text-white font-black text-sm tracking-wide overflow-hidden border border-sky-400/40">
+                      {/* Shimmer Light Beam Sweep */}
+                      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
 
-                  {/* Pulsing Light Core Aura */}
-                  <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-32 h-10 bg-rose-500/30 blur-xl rounded-full pointer-events-none group-hover:bg-rose-400/50 transition-all duration-300" />
+                      {/* Pulsing Light Core Blue Aura */}
+                      <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-32 h-10 bg-sky-500/30 blur-xl rounded-full pointer-events-none group-hover:bg-sky-400/50 transition-all duration-300" />
 
-                  <LogOut className="w-5 h-5 text-rose-400 group-hover:text-rose-200 transition-colors drop-shadow-[0_0_10px_rgba(244,63,94,0.9)] animate-pulse" />
-                  <span className="drop-shadow-[0_0_12px_rgba(244,63,94,0.8)] text-rose-50 group-hover:text-white transition-colors">
-                    Log Out
-                  </span>
+                      <LogOut className="w-4 h-4 text-sky-400 group-hover:text-sky-200 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.9)] animate-pulse" />
+                      <span className="drop-shadow-[0_0_12px_rgba(56,189,248,0.8)] text-sky-50 group-hover:text-white transition-colors">
+                        Log Out
+                      </span>
+                    </div>
+                  </button>
                 </div>
-              </button>
+              </div>
             </div>
           </aside>
         </div>
