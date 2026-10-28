@@ -263,9 +263,15 @@ export async function onRequestGet(context) {
       }
     });
 
+    const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+    const activeUsersCount = authUsers.filter((u) => {
+      const lastLogin = Number(u.lastLoginAt || u.lastSignInTime || 0);
+      return lastLogin >= thirtyDaysAgo;
+    }).length;
+
     const stats = {
       totalUsers: reconciledUsers.length, // Live count of Firebase Auth accounts (13)
-      activeUsers: reconciledUsers.length,
+      activeUsers: activeUsersCount,
       suspendedUsers: 0,
       enrolledStudents: enrollmentsDocs.length,
       totalRevenue: totalRev,

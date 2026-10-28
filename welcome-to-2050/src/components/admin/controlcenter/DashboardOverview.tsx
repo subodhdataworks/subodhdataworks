@@ -44,18 +44,31 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   const [showMigrationDetails, setShowMigrationDetails] = useState(false);
   const migrationStatus = getAffiliateMigrationStatus();
 
-  // Active Users metric: Do not assume all registered users are active. Never invent counts.
+  // Active Users metric: Verified sign-ins within 30-day activity window.
   const activeCount = useMemo(() => {
-    return recentUsers.filter((u: any) => Boolean(u.lastLoginAt)).length;
+    const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+    return recentUsers.filter((u: any) => {
+      if (!u.lastLoginAt) return false;
+      const t = new Date(u.lastLoginAt).getTime();
+      return !isNaN(t) && t >= thirtyDaysAgo;
+    }).length;
   }, [recentUsers]);
 
-  // Real User Growth aggregated from real Firebase Auth registration timestamps
+  // Real User Growth aggregated from real Firebase Auth registration timestamps, filtered by date range
   const userGrowthData = useMemo(() => {
     if (!recentUsers || recentUsers.length === 0) return [];
     
-    // Parse dates and sort ascending
+    const now = Date.now();
+    const daysLimit = Number(dateRangeFilter) || 30;
+    const cutoff = now - daysLimit * 24 * 60 * 60 * 1000;
+
+    // Filter users within selected date range, parse dates, sort ascending
     const sorted = [...recentUsers]
-      .filter((u) => u.registeredAt)
+      .filter((u) => {
+        if (!u.registeredAt) return false;
+        const regTime = new Date(u.registeredAt).getTime();
+        return !isNaN(regTime) && regTime >= cutoff;
+      })
       .sort((a, b) => new Date(a.registeredAt).getTime() - new Date(b.registeredAt).getTime());
 
     if (sorted.length === 0) return [];
@@ -82,7 +95,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         total: runningTotal,
       };
     });
-  }, [recentUsers]);
+  }, [recentUsers, dateRangeFilter]);
 
   const handleQuickUnlock = async (user: RegisteredUserRecord, courseId: string) => {
     const studentIdentifier = user.email || user.phone || user.uid;
@@ -143,23 +156,28 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         </div>
 
         {/* KPI 2: Active Users */}
-        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:shadow-sm transition-all">
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-[#ECFDF5] text-[#059669] flex items-center justify-center font-bold">
-              <UserCheck className="w-5 h-5" />
+        {(() => {
+          const effectiveActive = typeof stats.activeUsers === 'number' ? stats.activeUsers : activeCount;
+          return (
+            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:shadow-sm transition-all">
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-xl bg-[#ECFDF5] text-[#059669] flex items-center justify-center font-bold">
+                  <UserCheck className="w-5 h-5" />
+                </div>
+                <span className="text-[11px] font-bold text-[#059669] bg-[#ECFDF5] border border-[#A7F3D0] px-2.5 py-0.5 rounded-full">
+                  {effectiveActive} Active (30d)
+                </span>
+              </div>
+              <span className="text-xs font-semibold text-[#64748B] block">Active Users (30-day Window)</span>
+              <div className="text-3xl font-black text-[#0F172A] mt-1 tracking-tight">
+                {effectiveActive.toLocaleString()}
+              </div>
+              <span className="text-[11px] text-[#64748B] font-medium mt-1 block">
+                {effectiveActive > 0 ? 'Verified sign-ins in last 30 days' : 'No sign-ins in last 30 days'}
+              </span>
             </div>
-            <span className="text-[11px] font-bold text-[#64748B] bg-[#F1F5F9] border border-[#E2E8F0] px-2.5 py-0.5 rounded-full">
-              {activeCount > 0 ? `${activeCount} Verified Active` : 'Not tracked'}
-            </span>
-          </div>
-          <span className="text-xs font-semibold text-[#64748B] block">Active Users</span>
-          <div className="text-3xl font-black text-[#0F172A] mt-1 tracking-tight">
-            {activeCount > 0 ? activeCount.toLocaleString() : 'Not tracked'}
-          </div>
-          <span className="text-[11px] text-[#64748B] font-medium mt-1 block">
-            {activeCount > 0 ? 'Verified recent logins' : 'Activity tracking inactive'}
-          </span>
-        </div>
+          );
+        })()}
 
         {/* KPI 3: Paid Enrollments */}
         <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:shadow-sm transition-all">

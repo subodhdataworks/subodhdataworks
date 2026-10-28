@@ -587,29 +587,25 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
           )}
 
           {activeTab === 'referrals' && (
-            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-4 text-left">
-              <h3 className="text-lg font-bold text-[#0F172A]">Affiliate Referral Engine Management</h3>
-              <p className="text-xs text-[#64748B]">Live verified click-throughs, registered free signups, and paid commissions (₹100 flat per verified Razorpay enrollment)</p>
+            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-6 text-left">
+              <div>
+                <h3 className="text-lg font-bold text-[#0F172A]">Affiliate Referral Engine Management</h3>
+                <p className="text-xs text-[#64748B]">Real referral relationships, registered accounts, and paid commissions (₹100 flat per verified Razorpay enrollment)</p>
+              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 pt-2">
+              {/* 4 Metric Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                 <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-center">
-                  <span className="text-xs font-bold text-[#2563EB] block">Total Link Clicks</span>
+                  <span className="text-xs font-bold text-[#2563EB] block">Affiliate Codes Active</span>
                   <div className="text-2xl font-black text-[#0F172A] mt-1">
-                    {(() => {
-                      try {
-                        const s = typeof window !== 'undefined' ? localStorage.getItem('futureai_referral_state_v2') : null;
-                        if (s) {
-                          const p = JSON.parse(s);
-                          return (p.clicksCount || 0).toLocaleString();
-                        }
-                      } catch {}
-                      return 0;
-                    })()}
+                    {users.filter(u => Boolean(u.referralCode)).length.toLocaleString()}
                   </div>
                 </div>
                 <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-center">
-                  <span className="text-xs font-bold text-[#2563EB] block">Free Signups</span>
-                  <div className="text-2xl font-black text-[#0F172A] mt-1">{users.length.toLocaleString()}</div>
+                  <span className="text-xs font-bold text-[#2563EB] block">Referred Signups</span>
+                  <div className="text-2xl font-black text-[#0F172A] mt-1">
+                    {users.filter(u => Boolean(u.referredBy)).length.toLocaleString()}
+                  </div>
                 </div>
                 <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-center">
                   <span className="text-xs font-bold text-[#059669] block">Paid Enrollments</span>
@@ -623,6 +619,53 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
                     ₹{withdrawals.filter(w => w.status === 'PAID').reduce((sum, w) => sum + (w.amount || 0), 0).toLocaleString()}
                   </div>
                 </div>
+              </div>
+
+              {/* Real Referral Relationships Table */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-bold text-[#0F172A]">Referral Relationships</h4>
+                {(() => {
+                  const referredUsers = users.filter((u) => Boolean(u.referredBy));
+                  if (referredUsers.length === 0) {
+                    return (
+                      <div className="p-8 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-center text-xs text-[#64748B] space-y-1">
+                        <Users className="w-8 h-8 text-[#94A3B8] mx-auto mb-1" />
+                        <p className="font-bold text-[#0F172A]">No referral relationships recorded yet</p>
+                        <p>When learners register via an affiliate link or promo code, their attribution will appear here live from Firestore.</p>
+                      </div>
+                    );
+                  }
+                  return (
+                    <div className="overflow-x-auto rounded-xl border border-[#E2E8F0]">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[10px] font-bold uppercase text-[#64748B]">
+                          <tr>
+                            <th className="py-2.5 px-3">Student Name</th>
+                            <th className="py-2.5 px-3">Email</th>
+                            <th className="py-2.5 px-3">Referred By Code</th>
+                            <th className="py-2.5 px-3">Registered Date</th>
+                            <th className="py-2.5 px-3 text-right">Commission Status</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#E2E8F0]">
+                          {referredUsers.map((u) => (
+                            <tr key={u.uid} className="hover:bg-[#F8FAFC]">
+                              <td className="py-2.5 px-3 font-bold text-[#0F172A]">{u.name}</td>
+                              <td className="py-2.5 px-3 text-[#64748B]">{u.email || 'N/A'}</td>
+                              <td className="py-2.5 px-3 font-semibold text-[#2563EB]">{u.referredBy}</td>
+                              <td className="py-2.5 px-3 text-[#64748B]">{u.registeredAt}</td>
+                              <td className="py-2.5 px-3 text-right">
+                                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#EFF6FF] border border-[#BFDBFE] text-[#2563EB]">
+                                  ₹100 on Course Purchase
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           )}
