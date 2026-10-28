@@ -119,12 +119,10 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   const [canonicalRef, setCanonicalRef] = useState<{ referralCode: string; referralId: string }>(() => {
     const initialCode = myStoredCode
       ? normalizeRefCode(myStoredCode)
-      : (isOwner
-          ? 'KITABI3IZ'
-          : normalizeRefCode(getUserReferralCode(myEmail || myStoredName || myUid)));
+      : (isOwner ? '1' : normalizeRefCode(getUserReferralCode(myEmail || myStoredName || myUid)));
     return {
       referralCode: initialCode,
-      referralId: isOwner ? 'RF-KITABI' : 'RF-PARTNER',
+      referralId: isOwner ? 'RF-1' : 'RF-PARTNER',
     };
   });
 
@@ -146,7 +144,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   const cleanRefCode = canonicalRef.referralCode;
   const minWithdrawal = getEffectiveMinWithdrawal(cleanRefCode);
 
-  const affiliateRefUrl = `https://futureitindustry.com/?ref=${cleanRefCode}100`;
+  const affiliateRefUrl = `https://futureitindustry.com/?ref=${cleanRefCode}`;
   if (typeof window !== 'undefined') {
     try {
       localStorage.removeItem(`futureai_affiliate_hub_v3_${cleanRefCode}`);

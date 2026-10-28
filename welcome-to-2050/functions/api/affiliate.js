@@ -116,7 +116,13 @@ function getEffectiveMinWithdrawal(userOrRef = '') {
 
 function normalizeRefCode(ref) {
   if (!ref) return '';
-  return String(ref).trim().toUpperCase().replace(/100$/, '').replace(/[^A-Z0-9]/g, '');
+  const s = String(ref).trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+  // Do not strip if it is pure numeric (e.g. '100') or an RF sequence ID (e.g. 'RF100')
+  if (/^(RF)?\d+$/.test(s)) {
+    return s;
+  }
+  // Only strip legacy promotional '100' suffix if preceded by at least 3 alphabetic letters (e.g. ZODIYO100 -> ZODIYO)
+  return s.replace(/^([A-Z]{3,})100$/, '$1');
 }
 
 function getServerStore() {

@@ -462,7 +462,13 @@ export async function exportUsersToCSV(): Promise<{ count: number; filename: str
  */
 export function normalizeRefCode(ref?: string): string {
   if (!ref) return '';
-  return ref.trim().toUpperCase().replace(/100$/, '').replace(/[^A-Z0-9]/g, '');
+  const s = ref.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+  // Do not strip if it is pure numeric (e.g. '100') or an RF sequence ID (e.g. 'RF100')
+  if (/^(RF)?\d+$/.test(s)) {
+    return s;
+  }
+  // Only strip legacy promotional '100' suffix if preceded by at least 3 alphabetic letters (e.g. ZODIYO100 -> ZODIYO)
+  return s.replace(/^([A-Z]{3,})100$/, '$1');
 }
 
 /**
@@ -476,7 +482,7 @@ export async function fetchCanonicalReferralProfile(
 ): Promise<{ referralCode: string; referralId: string }> {
   const cleanUid = String(uid || '').trim();
   if (!cleanUid) {
-    return { referralCode: 'KITABI3IZ', referralId: 'RF-KITABI' };
+    return { referralCode: '1', referralId: 'RF-1' };
   }
 
   try {
@@ -508,7 +514,7 @@ export async function fetchCanonicalReferralProfile(
     cleanUid === 'bgnyqCpZ8QRX9pWt0xaMOmS0vQj1' ||
     (email && (email.includes('subodh') || email.includes('admin@futureitindustry.com')))
   ) {
-    return { referralCode: 'KITABI3IZ', referralId: 'RF-KITABI' };
+    return { referralCode: '1', referralId: 'RF-1' };
   }
   const code = getUserReferralCode(email || name || cleanUid);
   return { referralCode: normalizeRefCode(code), referralId: `RF-${normalizeRefCode(code)}` };
