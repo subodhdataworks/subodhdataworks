@@ -137,6 +137,8 @@ export async function startRazorpayCheckout(params: {
               userId: cleanUserId,
               email: params.email || cleanUserId,
               courseId: params.courseId || order.courseId,
+              amount: params.amount,
+              refCode,
             }),
             signal: controller.signal,
           });

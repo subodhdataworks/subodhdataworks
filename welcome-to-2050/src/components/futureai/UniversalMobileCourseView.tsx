@@ -33,6 +33,8 @@ import {
   startRazorpayCheckout,
   getCurrentUserForPayment
 } from '../../services/razorpayService';
+import { recordReferralPayment } from '../../services/realAuthService';
+import { recordCourseEnrollmentInCloud } from '../../services/cloudSyncService';
 import './UniversalMobileCourseView.css';
 
 export interface UniversalTopicItem {
@@ -380,6 +382,57 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
           detail: { courseId: canonicalId }
         })
       );
+
+      const storedRefCode =
+        (typeof window !== 'undefined'
+          ? localStorage.getItem('futureai_ref_attribution') ||
+            sessionStorage.getItem('futureai_ref_attribution') ||
+            new URLSearchParams(window.location.search).get('ref') ||
+            ''
+          : ''
+        ).trim().toUpperCase();
+
+      (async () => {
+        if (storedRefCode) {
+          try {
+            await recordReferralPayment({
+              paymentId: result.paymentId,
+              orderId: result.orderId,
+              amount: livePrice,
+              payerEmail: user.email,
+              payerPhone: user.phone || undefined,
+              payerName: user.name || 'Student',
+              courseTitle: displayTitle,
+              refCode: storedRefCode,
+            });
+            window.dispatchEvent(
+              new CustomEvent('futureai_referral_earned', {
+                detail: { refCode: storedRefCode, amount: 100 },
+              })
+            );
+          } catch (refErr) {
+            console.warn('Referral payment record notice:', refErr);
+          }
+        }
+
+        try {
+          await recordCourseEnrollmentInCloud({
+            userId: user.userId,
+            email: user.email,
+            phone: user.phone || undefined,
+            name: user.name || 'Student',
+            courseId: canonicalId,
+            courseTitle: displayTitle,
+            paymentId: result.paymentId,
+            orderId: result.orderId,
+            amount: result.amount,
+            entitlementProof: result.entitlementProof,
+            verifiedAt: result.verifiedAt,
+          });
+        } catch (cloudErr) {
+          console.warn('Cloud sync enrollment record notice:', cloudErr);
+        }
+      })();
 
       if (onEnroll) onEnroll();
     } catch (err: any) {

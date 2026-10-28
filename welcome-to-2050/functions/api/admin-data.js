@@ -228,10 +228,27 @@ export async function onRequestGet(context) {
     });
 
     // 6. Calculate verified live financials
+    const CANONICAL_PRICES_FALLBACK = {
+      data_analyst: 4,
+      data_science: 987,
+      ml_engineering: 987,
+      deep_learning: 987,
+      ai_engineering: 987,
+      ai_tools_prompt: 499,
+      ms_office_copilot: 499,
+      full_stack_mern: 987,
+    };
+
     const verifiedPayments = paymentsDocs.filter(
       (p) => String(p.paymentStatus || p.status || '').toUpperCase() === 'CAPTURED'
     );
-    const totalRev = verifiedPayments.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
+    const totalRev = verifiedPayments.reduce((acc, curr) => {
+      const parsedAmt = Number(curr.amount);
+      const amt = Number.isFinite(parsedAmt) && parsedAmt > 0
+        ? parsedAmt
+        : (CANONICAL_PRICES_FALLBACK[curr.courseId] || 4);
+      return acc + amt;
+    }, 0);
 
     const pendingWithdrawals = withdrawalsDocs.filter(
       (w) => String(w.status || '').toUpperCase() === 'UNDER_REVIEW' || String(w.status || '').toUpperCase() === 'PENDING'

@@ -318,6 +318,37 @@ export async function setFirestoreDocument(collection, docId, data, env, merge =
 }
 
 /**
+ * List / Read all documents in a collection from Firestore REST API
+ */
+export async function listFirestoreCollectionDocs(collection, env) {
+  try {
+    const accessToken = await getFirestoreAccessToken(env);
+    const baseUrl = getFirestoreBaseUrl(env);
+    const url = `${baseUrl}/${collection}?pageSize=300`;
+
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!res.ok) {
+      return [];
+    }
+
+    const data = await res.json();
+    return (data.documents || []).map((d) => ({
+      id: d.name.split('/').pop(),
+      ...fromFirestoreFields(d.fields || {}),
+    }));
+  } catch {
+    return [];
+  }
+}
+
+/**
  * Execute an atomic transaction via Firestore REST API
  * 1. beginTransaction
  * 2. executes transactionFn({ get, set, update })

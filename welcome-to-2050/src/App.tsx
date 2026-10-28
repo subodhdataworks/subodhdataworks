@@ -43,10 +43,13 @@ export const App: React.FC = () => {
         refCode = hashParams.get('ref') || hashParams.get('refCode') || hashParams.get('referredBy');
       }
       if (refCode) {
-        const clean = refCode.trim();
-        localStorage.setItem('futureai_ref_attribution', clean);
-        sessionStorage.setItem('futureai_ref_attribution', clean);
-        recordReferralClick(clean);
+        const clean = refCode.trim().toUpperCase();
+        const existing = localStorage.getItem('futureai_ref_attribution');
+        if (!existing) {
+          localStorage.setItem('futureai_ref_attribution', clean);
+          sessionStorage.setItem('futureai_ref_attribution', clean);
+          recordReferralClick(clean);
+        }
       }
     } catch {}
   };

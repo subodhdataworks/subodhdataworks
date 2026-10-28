@@ -3,6 +3,7 @@ import {
   getFirestoreDocument,
   setFirestoreDocument,
   runFirestoreTransaction,
+  listFirestoreCollectionDocs,
 } from './_firestore-admin.js';
 /**
  * Cloudflare Pages Function — /api/affiliate
@@ -287,7 +288,7 @@ export async function onRequestGet(context) {
     }
   }
 
-    // Sync with Firestore affiliate_stats when credentials are bound
+    // Sync with Firestore affiliate_stats, wallet_ledger, and processed_referral_payments
   if (cleanCode && getServiceAccount(env)) {
     try {
       const fsDoc = await getFirestoreDocument('affiliate_stats', cleanCode, env);
@@ -299,6 +300,44 @@ export async function onRequestGet(context) {
         if (Number.isFinite(fsDoc.paidEnrollments)) record.paidEnrollments = fsDoc.paidEnrollments;
         record.availableToPayout = record.availableBalance;
         record.availableToWithdraw = record.availableBalance;
+      }
+
+      // Read real cloud wallet ledger entries
+      const allLedgerDocs = await listFirestoreCollectionDocs('wallet_ledger', env);
+      const userLedger = allLedgerDocs
+        .filter((l) => l.userId === cleanCode || l.userId === `${cleanCode}100`)
+        .sort((a, b) => new Date(b.timestamp || 0).getTime() - new Date(a.timestamp || 0).getTime());
+
+      if (userLedger.length > 0) {
+        record.walletLedger = userLedger;
+      }
+
+      // Read real processed referral payments
+      const allProcessedDocs = await listFirestoreCollectionDocs('processed_referral_payments', env);
+      const userReferralPayments = allProcessedDocs.filter(
+        (p) => p.refCode === cleanCode || p.refCode === `${cleanCode}100`
+      );
+
+      const existingPaymentIds = new Set(record.referrals.map((r) => r.paymentId));
+      for (const p of userReferralPayments) {
+        if (!existingPaymentIds.has(p.paymentId)) {
+          existingPaymentIds.add(p.paymentId);
+          record.referrals.unshift({
+            id: `ref_paid_${p.paymentId}`,
+            refCode: cleanCode,
+            name: p.payerEmail ? p.payerEmail.split('@')[0] : 'Enrolled Student',
+            email: p.payerEmail || '',
+            phone: '',
+            date: p.creditedAt ? p.creditedAt.slice(0, 10) : new Date().toISOString().slice(0, 10),
+            status: 'Paid',
+            amount: Number(p.amount) || 4,
+            commission: Number(p.commission) || 100,
+            course: p.courseId || 'Data Analyst with GenAI',
+            paymentId: p.paymentId,
+            referralId: `RF-${p.paymentId.slice(-4).toUpperCase()}`,
+            approvedDate: p.creditedAt || new Date().toISOString(),
+          });
+        }
       }
     } catch (fsErr) {
       console.warn('Firestore read affiliate notice:', fsErr?.message);
@@ -983,6 +1022,63 @@ export async function onRequestPost(context) {
       timestamp: new Date().toISOString(),
       description: `Verified paid enrollment commission (${paymentId})`,
     });
+
+    // Synchronize commission credit to Cloud Firestore
+    if (getServiceAccount(env)) {
+      try {
+        const nowIso = new Date().toISOString();
+        await runFirestoreTransaction(async (tx) => {
+          const processed = await tx.get('processed_referral_payments', paymentId);
+          if (processed) return;
+
+          const affiliateDoc = (await tx.get('affiliate_stats', cleanRef)) || {};
+          const totalEarned = (Number(affiliateDoc.totalEarned) || 0) + 100;
+          const totalPaid = Number(affiliateDoc.totalPaid) || 0;
+          const pendingBalance = Number(affiliateDoc.pendingBalance) || 0;
+          const availableBalance = Math.max(0, totalEarned - totalPaid - pendingBalance);
+          const paidEnrollments = (Number(affiliateDoc.paidEnrollments) || 0) + 1;
+
+          tx.set('affiliate_stats', cleanRef, {
+            refCode: cleanRef,
+            paidEnrollments,
+            totalEarned,
+            availableBalance,
+            availableToPayout: availableBalance,
+            availableToWithdraw: availableBalance,
+            pendingBalance,
+            totalPaid,
+            updatedAt: nowIso,
+          });
+
+          tx.set('processed_referral_payments', paymentId, {
+            paymentId,
+            orderId: body.orderId || '',
+            refCode: cleanRef,
+            payerUserId: payerEmail || cleanRef,
+            payerEmail,
+            courseId: body.courseTitle || 'data_analyst',
+            commission: 100,
+            creditedAt: nowIso,
+          });
+
+          const ledgerId = `led_comm_${paymentId}`;
+          tx.set('wallet_ledger', ledgerId, {
+            id: ledgerId,
+            paymentId,
+            userId: cleanRef,
+            type: 'COMMISSION_CREDITED',
+            amount: 100,
+            balanceBefore: Number(affiliateDoc.availableBalance) || 0,
+            balanceAfter: availableBalance,
+            status: 'Credited',
+            timestamp: nowIso,
+            description: `Verified paid enrollment commission (${paymentId})`,
+          });
+        }, env);
+      } catch (fsErr) {
+        console.warn('Firestore write affiliate notice:', fsErr?.message);
+      }
+    }
 
     return json({
       success: true,
