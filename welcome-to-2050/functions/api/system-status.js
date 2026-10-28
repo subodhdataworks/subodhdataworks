@@ -74,65 +74,67 @@ export async function onRequestGet(context) {
         documentPath: 'system_health/backend_ping',
         lastVerified: readDoc?.timestamp || pingPayload.timestamp,
       };
-
-      try {
-        statusReport.ownerAdminClaim = await inspectAndEnsureOwnerAdminClaim(env, INTENDED_OWNER_ADMIN_UID);
-      } catch (claimErr) {
-        statusReport.ownerAdminClaim = {
-          intendedOwnerUid: INTENDED_OWNER_ADMIN_UID,
-          error: String(claimErr.message || claimErr).slice(0, 120),
-        };
-      }
-
-      // Safe Diagnostic Trace & Full Production Backup Audit
-      try {
-        const [refPayments, platPayments, ledgerEntries, affStats, withdrawals, courseEnrollments, registeredUsers, clicksDocs, authUsers] = await Promise.all([
-          listFirestoreCollectionDocs('processed_referral_payments', env),
-          listFirestoreCollectionDocs('platform_payments', env),
-          listFirestoreCollectionDocs('wallet_ledger', env),
-          listFirestoreCollectionDocs('affiliate_stats', env),
-          listFirestoreCollectionDocs('withdrawal_requests', env),
-          listFirestoreCollectionDocs('course_enrollments', env),
-          listFirestoreCollectionDocs('registered_users', env),
-          listFirestoreCollectionDocs('referral_clicks', env),
-          listFirebaseAuthUsers(env).catch((e) => [{ error: e.message }]),
-        ]);
-
-        statusReport.affiliateAudit = {
-          auth_users: (authUsers || []).map((u) => ({
-            uid: u.localId || u.uid,
-            email: u.email,
-            displayName: u.displayName,
-            phoneNumber: u.phoneNumber,
-            createdAt: u.createdAt,
-            lastLoginAt: u.lastLoginAt,
-            customAttributes: u.customAttributes,
-          })),
-          processed_referral_payments: refPayments,
-          platform_payments: platPayments,
-          wallet_ledger: ledgerEntries,
-          affiliate_stats: affStats,
-          withdrawal_requests: withdrawals,
-          course_enrollments: courseEnrollments,
-          registered_users: registeredUsers.map((u) => ({
-            uid: u.uid || u.id,
-            email: u.email,
-            referredBy: u.referredBy,
-            referralCode: u.referralCode,
-            refCode: u.refCode,
-            createdAt: u.createdAt || u.registeredAt,
-          })),
-          referral_clicks_count: clicksDocs.length,
-          referral_clicks: clicksDocs,
-        };
-      } catch (auditErr) {
-        statusReport.affiliateAuditError = auditErr?.message;
-      }
     } catch (err) {
       statusReport.firestore = {
         status: 'ERROR',
         error: String(err.message || err).slice(0, 150),
       };
+    }
+
+    try {
+      statusReport.ownerAdminClaim = await inspectAndEnsureOwnerAdminClaim(env, INTENDED_OWNER_ADMIN_UID);
+    } catch (claimErr) {
+      statusReport.ownerAdminClaim = {
+        intendedOwnerUid: INTENDED_OWNER_ADMIN_UID,
+        error: String(claimErr.message || claimErr).slice(0, 120),
+      };
+    }
+
+    // Safe Diagnostic Trace & Full Production Backup Audit
+    try {
+      const [refPayments, platPayments, ledgerEntries, affStats, withdrawals, courseEnrollments, registeredUsers, clicksDocs, authUsers] = await Promise.all([
+        listFirestoreCollectionDocs('processed_referral_payments', env).catch((e) => [{ _err: e.message }]),
+        listFirestoreCollectionDocs('platform_payments', env).catch((e) => [{ _err: e.message }]),
+        listFirestoreCollectionDocs('wallet_ledger', env).catch((e) => [{ _err: e.message }]),
+        listFirestoreCollectionDocs('affiliate_stats', env).catch((e) => [{ _err: e.message }]),
+        listFirestoreCollectionDocs('withdrawal_requests', env).catch((e) => [{ _err: e.message }]),
+        listFirestoreCollectionDocs('course_enrollments', env).catch((e) => [{ _err: e.message }]),
+        listFirestoreCollectionDocs('registered_users', env).catch((e) => [{ _err: e.message }]),
+        listFirestoreCollectionDocs('referral_clicks', env).catch((e) => [{ _err: e.message }]),
+        listFirebaseAuthUsers(env).catch((e) => [{ error: e.message }]),
+      ]);
+
+      statusReport.affiliateAudit = {
+        auth_users: (authUsers || []).map((u) => ({
+          uid: u.localId || u.uid,
+          email: u.email,
+          displayName: u.displayName,
+          phoneNumber: u.phoneNumber,
+          createdAt: u.createdAt,
+          lastLoginAt: u.lastLoginAt,
+          customAttributes: u.customAttributes,
+          error: u.error,
+        })),
+        processed_referral_payments: refPayments,
+        platform_payments: platPayments,
+        wallet_ledger: ledgerEntries,
+        affiliate_stats: affStats,
+        withdrawal_requests: withdrawals,
+        course_enrollments: courseEnrollments,
+        registered_users: (registeredUsers || []).map((u) => ({
+          uid: u.uid || u.id,
+          email: u.email,
+          referredBy: u.referredBy,
+          referralCode: u.referralCode,
+          refCode: u.refCode,
+          createdAt: u.createdAt || u.registeredAt,
+          _err: u._err,
+        })),
+        referral_clicks_count: (clicksDocs || []).length,
+        referral_clicks: clicksDocs,
+      };
+    } catch (auditErr) {
+      statusReport.affiliateAuditError = auditErr?.message;
     }
   }
 
