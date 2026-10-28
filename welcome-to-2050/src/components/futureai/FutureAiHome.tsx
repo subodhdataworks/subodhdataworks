@@ -305,6 +305,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
   initialAuthMessage = '',
   initialAuthRedirect = '',
   onLoginSuccess,
+  onLogout,
 }) => {
   // Full Auth Modal
   const [authModalOpen, setAuthModalOpen] = useState(initialAuthOpen);
@@ -345,6 +346,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           userName={userName}
           activeNavTab="home"
           isLoggedIn={isLoggedIn}
+          onLogout={onLogout}
           onNavigateHome={() => {
             if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
           }}

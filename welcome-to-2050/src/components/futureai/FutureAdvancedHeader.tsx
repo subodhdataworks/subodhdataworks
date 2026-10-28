@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  FutureLogo } from './FutureLogo';
+import { FutureLogo } from './FutureLogo';
 import { WalletWithdrawModal } from './WalletWithdrawModal';
 import { soundEffects } from '../../services/soundEffects';
+import { auth } from '../../services/firebase';
+import { SessionService } from '../../services/sessionService';
+import { clearActiveCourseSessionCacheOnLogout } from '../../services/courseUnlockService';
 import {
   House,
   Home,
@@ -400,6 +402,52 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
     if (onOpenProfile) onOpenProfile();
   };
 
+  // Authoritative Sign Out Handler (Terminates session, signs out Firebase auth, purges local storage)
+  const handleSignOutAction = async () => {
+    soundEffects.playClick();
+    setProfileDropdownOpen(false);
+    setHamburgerDrawerOpen(false);
+
+    try {
+      if (onLogout) {
+        await onLogout();
+      }
+    } catch (err) {
+      console.warn('onLogout error:', err);
+    }
+
+    try {
+      const currentUid = typeof window !== 'undefined' ? localStorage.getItem('futureai_user_uid') || '' : '';
+      if (currentUid) {
+        await SessionService.terminateSession(currentUid).catch(() => {});
+      }
+      await auth.signOut().catch(() => {});
+    } catch (e) {
+      console.warn('Firebase signout error:', e);
+    }
+
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('futureai_logged_in');
+      localStorage.removeItem('futureai_user_name');
+      localStorage.removeItem('futureai_user_email');
+      localStorage.removeItem('futureai_user_phone');
+      localStorage.removeItem('futureai_user_uid');
+      localStorage.removeItem('futureai_user_avatar');
+      localStorage.removeItem('futureai_user_role');
+      localStorage.removeItem('futureai_user_wallet');
+      localStorage.removeItem('futureai_user_coins');
+      localStorage.removeItem('futureai_user_gems');
+      localStorage.removeItem('futureai_payment_order_id');
+      localStorage.removeItem('futureai_payment_txn_id');
+      sessionStorage.removeItem('futureai_auth_redirect');
+      localStorage.removeItem('futureai_auth_redirect');
+      clearActiveCourseSessionCacheOnLogout();
+      SessionService.clearSessionId();
+      window.location.hash = '#home';
+      window.location.reload();
+    }
+  };
+
   // Notification items
   const notificationItems = [
     {
@@ -711,22 +759,22 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
       {/* ─── PREMIUM RIGHT-SIDE NAVIGATION DRAWER (Slide-in From Right) ─── */}
       {hamburgerDrawerOpen && (
-        <div className="fixed inset-0 z-[100] flex justify-end animate-fadeIn">
+        <div className="fixed inset-0 z-[100] flex justify-end items-start animate-fadeIn pointer-events-none">
           {/* Dark Translucent Backdrop */}
           <div
-            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity pointer-events-auto"
             onClick={() => setHamburgerDrawerOpen(false)}
             aria-hidden="true"
           />
 
-          {/* Drawer Container (Tightly wrapped, ends right after last item without bottom blank space) */}
+          {/* Drawer Container (Strictly wraps content, terminates right after the last icon) */}
           <aside
-            className="relative z-10 w-[84vw] max-w-[340px] h-auto max-h-[92dvh] bg-white shadow-[-12px_12px_40px_rgba(15,23,42,0.2)] rounded-bl-[28px] border-l border-b border-slate-200/80 flex flex-col overflow-hidden text-left animate-slideInRight"
+            className="relative z-10 w-[84vw] max-w-[320px] h-auto self-start bg-white shadow-[-12px_12px_40px_rgba(15,23,42,0.22)] rounded-bl-[24px] border-l border-b border-slate-200/90 flex flex-col overflow-hidden text-left animate-slideInRight pointer-events-auto"
             role="dialog"
             aria-label="Navigation Drawer"
           >
             {/* Header: FUTURE IT INDUSTRY Logo on left + Close X on right */}
-            <div className="px-5 py-4 flex items-center justify-between shrink-0 bg-gradient-to-b from-blue-50/50 via-white to-white border-b border-slate-100">
+            <div className="px-4 py-3 flex items-center justify-between shrink-0 bg-gradient-to-b from-blue-50/40 via-white to-white border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <FutureLogo variant="full" size="md" />
               </div>
@@ -745,8 +793,8 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               </button>
             </div>
 
-            {/* Navigation Menu (Tightly wrapped, ends at last item) */}
-            <div className="overflow-y-auto px-3.5 py-2 pb-3.5 space-y-1">
+            {/* Navigation Menu (Tightly wrapped, ends right at last icon) */}
+            <div className="p-2.5 pb-2.5 space-y-1">
               {/* 1. Dashboard */}
               <button
                 type="button"
@@ -887,24 +935,24 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
         </div>
       )}
 
-      {/* ─── PREMIUM COMPACT MY PROFILE PANEL (Matches Reference 1:1) ─── */}
+      {/* ─── PREMIUM COMPACT MY PROFILE PANEL ─── */}
       {profileDropdownOpen && (
-        <div className="fixed inset-0 z-[100] flex justify-end animate-fadeIn">
+        <div className="fixed inset-0 z-[100] flex justify-end items-start animate-fadeIn pointer-events-none">
           {/* Dark Translucent Backdrop */}
           <div
-            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity pointer-events-auto"
             onClick={() => setProfileDropdownOpen(false)}
             aria-hidden="true"
           />
 
-          {/* Profile Drawer Panel (Tightly wrapped, ends right after logout without bottom blank space) */}
+          {/* Profile Drawer Panel (Strictly terminates right at the logout button, absolutely no blank space below) */}
           <aside
-            className="relative z-10 w-[84vw] max-w-[340px] h-auto max-h-[92dvh] bg-white shadow-[-12px_12px_40px_rgba(15,23,42,0.2)] rounded-bl-[28px] border-l border-b border-slate-200/80 flex flex-col overflow-hidden text-left animate-slideInRight"
+            className="relative z-10 w-[84vw] max-w-[320px] h-auto self-start bg-white shadow-[-12px_12px_40px_rgba(15,23,42,0.22)] rounded-bl-[24px] border-l border-b border-slate-200/90 flex flex-col overflow-hidden text-left animate-slideInRight pointer-events-auto"
             role="dialog"
             aria-label="My Profile"
           >
             {/* Header: Back Button + My Profile + Edit Button */}
-            <div className="p-4 px-5 flex items-center justify-between shrink-0 border-b border-slate-100 bg-white">
+            <div className="p-3 px-4 flex items-center justify-between shrink-0 border-b border-slate-100 bg-white">
               <button
                 type="button"
                 onClick={() => {
@@ -935,12 +983,12 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               </button>
             </div>
 
-            {/* Compact Body without excess blank space */}
-            <div className="overflow-y-auto p-4 space-y-3 pb-4">
+            {/* Compact Body - Tightly wraps, ends directly at bottom of logout button with 0 trailing whitespace */}
+            <div className="p-3 pb-3 space-y-2.5">
               {/* 1. Profile Identity Header */}
-              <div className="flex items-center gap-3 pt-1">
+              <div className="flex items-center gap-3">
                 <div className="relative shrink-0">
-                  <div className="w-14 h-14 rounded-full border-2 border-blue-200 overflow-hidden bg-gradient-to-tr from-blue-50 to-indigo-100 flex items-center justify-center shadow-xs">
+                  <div className="w-12 h-12 rounded-full border-2 border-blue-200 overflow-hidden bg-gradient-to-tr from-blue-50 to-indigo-100 flex items-center justify-center shadow-xs">
                     {studentAvatar ? (
                       <img src={studentAvatar} alt={studentName} className="w-full h-full object-cover" />
                     ) : (
@@ -967,7 +1015,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
-                    <h3 className="text-base font-extrabold text-[#10234A] truncate leading-tight">
+                    <h3 className="text-[15px] font-extrabold text-[#10234A] truncate leading-tight">
                       {studentName}
                     </h3>
                     <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 fill-emerald-50" />
@@ -978,9 +1026,9 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 </div>
               </div>
 
-              {/* 2. Personal Information Card with Premium Blue Lighting Log Out */}
-              <div className="bg-slate-50/70 border border-slate-200/70 rounded-2xl p-3">
-                <div className="flex items-center justify-between mb-2">
+              {/* 2. Personal Information Card containing Sky Color Lighting Log Out Button */}
+              <div className="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-3 pb-2.5">
+                <div className="flex items-center justify-between mb-1.5">
                   <span className="text-xs font-extrabold text-[#10234A]">Personal Information</span>
                   <button
                     type="button"
@@ -1013,38 +1061,28 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                   </div>
                 </div>
 
-                {/* Animated Lighting Logout Button in Premium Blue (Directly under Phone Number) */}
-                <div className="pt-3 mt-3 border-t border-slate-200/80">
+                {/* Animated Lighting Logout Button in Sky Color (Directly under Phone Number) */}
+                <div className="pt-2.5 mt-2.5 border-t border-slate-200/80">
                   <button
                     type="button"
-                    onClick={() => {
-                      soundEffects.playClick();
-                      setProfileDropdownOpen(false);
-                      if (onLogout) {
-                        onLogout();
-                      } else {
-                        localStorage.removeItem('futureai_logged_in');
-                        window.location.hash = '#home';
-                        window.location.reload();
-                      }
-                    }}
-                    className="relative group w-full p-[2.5px] rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-[0_0_22px_rgba(26,115,232,0.4)] hover:shadow-[0_0_32px_rgba(26,115,232,0.7)]"
+                    onClick={handleSignOutAction}
+                    className="relative group w-full p-[2.5px] rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-[0_0_20px_rgba(14,165,233,0.5)] hover:shadow-[0_0_30px_rgba(14,165,233,0.8)]"
                     title="Log Out of Account"
                     aria-label="Log Out of Account"
                   >
-                    {/* Continuous Rotating Electric Blue Lighting Border Beam */}
-                    <div className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#0284c7_0%,#38bdf8_25%,#6366f1_50%,#2563eb_75%,#0284c7_100%)] opacity-95 group-hover:opacity-100" />
+                    {/* Continuous Rotating Electric Sky Lighting Border Beam */}
+                    <div className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#38bdf8_0%,#0284c7_25%,#38bdf8_50%,#0ea5e9_75%,#38bdf8_100%)] opacity-95 group-hover:opacity-100" />
 
-                    {/* Inner Glowing Body in Premium Sapphire & Royal Blue */}
-                    <div className="relative w-full py-3 px-4 rounded-[14px] bg-gradient-to-r from-slate-950 via-[#0a1936] to-slate-950 flex items-center justify-center gap-2.5 text-white font-black text-sm tracking-wide overflow-hidden border border-sky-400/40">
+                    {/* Inner Glowing Body in Vibrant Sky Blue */}
+                    <div className="relative w-full py-2.5 px-4 rounded-[10px] bg-gradient-to-r from-sky-400 via-sky-500 to-sky-600 hover:from-sky-300 hover:via-sky-400 hover:to-sky-500 flex items-center justify-center gap-2 text-white font-black text-sm tracking-wide overflow-hidden border border-sky-200/70 transition-colors">
                       {/* Shimmer Light Beam Sweep */}
-                      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+                      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/35 to-transparent pointer-events-none" />
 
-                      {/* Pulsing Light Core Blue Aura */}
-                      <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-32 h-10 bg-sky-500/30 blur-xl rounded-full pointer-events-none group-hover:bg-sky-400/50 transition-all duration-300" />
+                      {/* Pulsing Light Aura */}
+                      <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-32 h-10 bg-white/25 blur-lg rounded-full pointer-events-none" />
 
-                      <LogOut className="w-4 h-4 text-sky-400 group-hover:text-sky-200 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.9)] animate-pulse" />
-                      <span className="drop-shadow-[0_0_12px_rgba(56,189,248,0.8)] text-sky-50 group-hover:text-white transition-colors">
+                      <LogOut className="w-4 h-4 text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] animate-pulse" />
+                      <span className="drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] text-white font-extrabold text-[13.5px]">
                         Log Out
                       </span>
                     </div>
