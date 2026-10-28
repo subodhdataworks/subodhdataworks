@@ -594,26 +594,29 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   const mobilePromoBanners = useMemo(() => [
     {
       id: 'mob-banner-1',
+      badge: '⚡ FLAT ₹100 / STUDENT',
       image: '/images/affiliate/mobile_banner_refer_friends_blue.png',
       alt: 'Earn ₹100 Per Referral - Share your link with students & friends. Earn ₹100 on every verified enrollment.',
       title: 'Earn ₹100 Per Referral',
-      subtitle: 'Share your link with students & friends. Earn ₹100 on every verified enrollment.',
+      subtitle: 'Share your link with students & friends. Earn flat ₹100 on every verified enrollment.',
       ctaText: 'Share Link',
       ctaType: 'invite' as const,
       theme: 'blue',
     },
     {
       id: 'mob-banner-2',
+      badge: '🔥 UNLIMITED CASH REWARDS',
       image: '/images/affiliate/mobile_banner_friends_learn_green.png',
       alt: 'Your Friends Learn. You Earn ₹100. - When they enroll in any course, you get ₹100 commission instantly.',
       title: 'Your Friends Learn. You Earn ₹100.',
-      subtitle: 'When they enroll in any course, you get ₹100 commission instantly.',
-      ctaText: 'Start Earning',
+      subtitle: 'When they enroll in any course, you get ₹100 commission credited directly.',
+      ctaText: 'Copy Referral Link',
       ctaType: 'earn' as const,
       theme: 'green',
     },
     {
       id: 'mob-banner-3',
+      badge: '🏛 24/7 BANK / UPI TRANSFER',
       image: '/images/affiliate/mobile_banner_withdraw_earnings_purple.png',
       alt: 'Get Paid Directly to Bank / UPI. - Transfer your eligible earnings to your Bank Account or UPI anytime.',
       title: 'Get Paid Directly to Bank / UPI.',
@@ -1325,23 +1328,39 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   }
                 }}
               >
+                {/* Background image illustration with graceful opacity fallback */}
                 <img
                   src={banner.image}
                   alt={banner.alt}
                   className="aff-mob-banner-img"
                   loading={idx === 0 ? 'eager' : 'lazy'}
-                />
-
-                {/* Accessible clickable hotspot over embedded CTA button */}
-                <button
-                  type="button"
-                  className="aff-mob-cta-hotspot"
-                  aria-label={`${banner.ctaText} - ${banner.title}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleMobBannerClick(banner.ctaType);
+                  onError={(e) => {
+                    (e.currentTarget as HTMLElement).style.opacity = '0';
                   }}
                 />
+
+                {/* Translucent overlay for guaranteed text contrast */}
+                <div className={`aff-mob-banner-gradient-overlay overlay-${banner.theme}`} />
+
+                {/* Rich HTML slide content: Always visible even if images take time or are blocked */}
+                <div className="aff-mob-slide-content">
+                  <div className="aff-mob-badge-row">
+                    <span className={`aff-mob-badge-pill badge-${banner.theme}`}>
+                      {banner.badge}
+                    </span>
+                  </div>
+                  <h3 className="aff-mob-slide-title">{banner.title}</h3>
+                  <p className="aff-mob-slide-subtitle">{banner.subtitle}</p>
+                  <div className="aff-mob-action-row">
+                    <span className="aff-mob-slide-btn">
+                      {banner.ctaType === 'invite' && <Share2 className="w-3.5 h-3.5 inline mr-1" />}
+                      {banner.ctaType === 'earn' && <Sparkles className="w-3.5 h-3.5 inline mr-1" />}
+                      {banner.ctaType === 'withdraw' && <Wallet className="w-3.5 h-3.5 inline mr-1" />}
+                      {banner.ctaText}
+                      <ArrowUpRight className="w-3.5 h-3.5 inline ml-1" />
+                    </span>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

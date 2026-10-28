@@ -96,6 +96,16 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
 
     setIsLoading(true);
     try {
+      // 1. Extract attribution code prior to checkout so server receives it in order & verification notes
+      const storedRefCode =
+        (typeof window !== 'undefined'
+          ? localStorage.getItem('futureai_ref_attribution') ||
+            sessionStorage.getItem('futureai_ref_attribution') ||
+            new URLSearchParams(window.location.search).get('ref') ||
+            ''
+          : ''
+        ).trim().toUpperCase();
+
       const result = await startRazorpayCheckout({
         amount: effectivePrice,
         courseId: canonicalCourseId,
@@ -104,6 +114,7 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
         name: user.name || 'Student',
         email: user.email || user.userId,
         phone: user.phone || undefined,
+        refCode: storedRefCode || undefined,
       });
 
       // 1. Verify & unlock strictly for this authenticated user and this specific course
@@ -142,15 +153,6 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
         localStorage.setItem('futureai_payment_txn_id', result.paymentId);
       } catch {}
 
-      // 2. Extract attribution code
-      const storedRefCode =
-        (typeof window !== 'undefined'
-          ? localStorage.getItem('futureai_ref_attribution') ||
-            sessionStorage.getItem('futureai_ref_attribution') ||
-            new URLSearchParams(window.location.search).get('ref') ||
-            ''
-          : ''
-        ).trim().toUpperCase();
 
       window.dispatchEvent(new CustomEvent('futureai_course_unlocked', { detail: { courseId: canonicalCourseId } }));
       setIsLoading(false);

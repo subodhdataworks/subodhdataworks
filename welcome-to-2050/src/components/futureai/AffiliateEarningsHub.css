@@ -997,9 +997,10 @@
   .aff-mob-slider-card-viewport {
     position: relative;
     width: 100%;
+    min-height: 142px;
     border-radius: 18px;
     overflow: hidden;
-    background: #ffffff;
+    background: #0f172a;
     box-shadow: 0 4px 18px rgba(15, 23, 42, 0.1), 0 1px 4px rgba(0, 0, 0, 0.05);
     border: 1px solid rgba(226, 232, 240, 0.85);
   }
@@ -1007,6 +1008,7 @@
   .aff-mob-slider-track {
     display: flex;
     width: 100%;
+    height: 100%;
     transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
     will-change: transform;
   }
@@ -1014,37 +1016,123 @@
   .aff-mob-slider-slide {
     flex: 0 0 100%;
     width: 100%;
+    min-height: 142px;
     position: relative;
     cursor: pointer;
     touch-action: pan-y;
     overflow: hidden;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #ffffff;
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+
+  .aff-mob-slider-slide.slide-blue {
+    background: linear-gradient(135deg, #0b1e3b 0%, #1d4ed8 55%, #0284c7 100%);
+  }
+
+  .aff-mob-slider-slide.slide-green {
+    background: linear-gradient(135deg, #064e3b 0%, #059669 55%, #10b981 100%);
+  }
+
+  .aff-mob-slider-slide.slide-purple {
+    background: linear-gradient(135deg, #3b0764 0%, #7c3aed 55%, #a855f7 100%);
   }
 
   .aff-mob-banner-img {
-    display: block;
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: cover;
-    aspect-ratio: 996 / 330;
+    object-position: right center;
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  .aff-mob-banner-gradient-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
     pointer-events: none;
   }
 
-  .aff-mob-cta-hotspot {
-    position: absolute;
-    right: 3%;
-    bottom: 7%;
-    width: 24%;
-    height: 26%;
+  .aff-mob-banner-gradient-overlay.overlay-blue {
+    background: linear-gradient(90deg, rgba(11, 30, 59, 0.95) 0%, rgba(11, 30, 59, 0.82) 55%, rgba(11, 30, 59, 0.3) 100%);
+  }
+
+  .aff-mob-banner-gradient-overlay.overlay-green {
+    background: linear-gradient(90deg, rgba(6, 78, 59, 0.95) 0%, rgba(6, 78, 59, 0.82) 55%, rgba(6, 78, 59, 0.3) 100%);
+  }
+
+  .aff-mob-banner-gradient-overlay.overlay-purple {
+    background: linear-gradient(90deg, rgba(59, 7, 100, 0.95) 0%, rgba(59, 7, 100, 0.82) 55%, rgba(59, 7, 100, 0.3) 100%);
+  }
+
+  .aff-mob-slide-content {
+    position: relative;
+    z-index: 3;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 82%;
+    text-align: left;
+    color: #ffffff;
+  }
+
+  .aff-mob-badge-row {
+    margin-bottom: 6px;
+  }
+
+  .aff-mob-badge-pill {
+    display: inline-block;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
     border-radius: 9999px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    z-index: 5;
-    outline: none;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+  }
+
+  .aff-mob-slide-title {
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.25;
+    color: #ffffff;
+    margin: 0 0 4px 0;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  .aff-mob-slide-subtitle {
+    font-size: 11px;
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 10px 0;
+    max-width: 90%;
+  }
+
+  .aff-mob-action-row {
+    display: flex;
+    align-items: center;
+  }
+
+  .aff-mob-slide-btn {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 9999px;
+    background: #ffffff;
+    color: #0f172a;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.15s ease;
   }
 
   .aff-mob-nav-btn {

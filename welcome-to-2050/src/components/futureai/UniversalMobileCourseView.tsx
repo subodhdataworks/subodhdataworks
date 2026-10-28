@@ -337,6 +337,15 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
 
     setIsCheckingOut(true);
     try {
+      const storedRefCode =
+        (typeof window !== 'undefined'
+          ? localStorage.getItem('futureai_ref_attribution') ||
+            sessionStorage.getItem('futureai_ref_attribution') ||
+            new URLSearchParams(window.location.search).get('ref') ||
+            ''
+          : ''
+        ).trim().toUpperCase();
+
       const result = await startRazorpayCheckout({
         amount: livePrice,
         courseId: canonicalId,
@@ -344,7 +353,8 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
         userId: user.userId,
         name: user.name || 'Student',
         email: user.email || user.userId,
-        phone: user.phone || undefined
+        phone: user.phone || undefined,
+        refCode: storedRefCode || undefined
       });
 
       if (result.entitlementProof && result.verifiedAt) {
@@ -382,15 +392,6 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
           detail: { courseId: canonicalId }
         })
       );
-
-      const storedRefCode =
-        (typeof window !== 'undefined'
-          ? localStorage.getItem('futureai_ref_attribution') ||
-            sessionStorage.getItem('futureai_ref_attribution') ||
-            new URLSearchParams(window.location.search).get('ref') ||
-            ''
-          : ''
-        ).trim().toUpperCase();
 
       (async () => {
         if (storedRefCode) {

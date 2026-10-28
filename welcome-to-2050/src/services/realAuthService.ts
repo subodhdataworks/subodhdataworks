@@ -1725,7 +1725,9 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
 
   // 1. Fetch live server-verified cross-device data from Cloudflare Pages API (/api/affiliate)
   try {
-    const res = await withTimeout(fetch(`/api/affiliate?refCode=${encodeURIComponent(cleanCode)}`), 3500);
+    const currentUid = typeof window !== 'undefined' ? localStorage.getItem('futureai_user_uid') || '' : '';
+    const uidParam = currentUid ? `&userId=${encodeURIComponent(currentUid)}` : '';
+    const res = await withTimeout(fetch(`/api/affiliate?refCode=${encodeURIComponent(cleanCode)}${uidParam}`), 3500);
     if (res.ok) {
       const serverData = await res.json();
       if (serverData && typeof serverData.paidEnrollments === 'number') {
@@ -1766,8 +1768,8 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
         } catch {}
 
         return {
-          clicks: Math.max(serverData.clicks || 0, localData.clicks || 0, paidEnrollments),
-          signups: Math.max(serverData.signups || 0, localData.signups || 0, paidEnrollments),
+          clicks: Math.max(serverData.clicks || 0, localData.clicks || 0),
+          signups: Math.max(serverData.signups || 0, localData.signups || 0),
           paidEnrollments,
           availableBalance: balances.availableBalance,
           availableToPayout: balances.availableToPayout,

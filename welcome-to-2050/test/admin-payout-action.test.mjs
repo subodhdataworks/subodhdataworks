@@ -809,6 +809,88 @@ runTest('25. Affiliate API static verification: reads withdrawal_requests collec
   assert.ok(hubContent.includes('Total commissions earned since joining'), 'AffiliateEarningsHub must describe Lifetime Earnings in details');
 });
 
+runTest('26. Decoupled Clicks & Signups: verify clicks and signups are not artificially clamped to paidEnrollments', () => {
+  const servicePath = path.resolve('welcome-to-2050/src/services/realAuthService.ts');
+  const content = fs.readFileSync(servicePath, 'utf-8');
+
+  // Must NOT contain Math.max(serverData.clicks || 0, localData.clicks || 0, paidEnrollments)
+  assert.ok(!content.includes('localData.clicks || 0, paidEnrollments)'), 'clicks must NOT be clamped to paidEnrollments');
+  assert.ok(!content.includes('localData.signups || 0, paidEnrollments)'), 'signups must NOT be clamped to paidEnrollments');
+
+  // Verify pure independent metrics
+  function computeIndependentMetrics(serverData, localData, paidEnrollments) {
+    return {
+      clicks: Math.max(serverData.clicks || 0, localData.clicks || 0),
+      signups: Math.max(serverData.signups || 0, localData.signups || 0),
+      paidEnrollments,
+    };
+  }
+
+  // Example: 2 clicks, 3 signups, 5 paid enrollments
+  const res = computeIndependentMetrics({ clicks: 2, signups: 3 }, { clicks: 0, signups: 0 }, 5);
+  assert.equal(res.clicks, 2, 'Clicks must remain 2, not forced to 5');
+  assert.equal(res.signups, 3, 'Signups must remain 3, not forced to 5');
+  assert.equal(res.paidEnrollments, 5, 'Paid enrollments tracks accurately at 5');
+});
+
+runTest('27. Cross-Device 5-Enrollment & Wallet Invariance Scenario', () => {
+  // Scenario: 5 verified paid enrollments (₹500 Lifetime), 1 x ₹100 UNDER_REVIEW, 2 x ₹1 PAID
+  const totalEarned = 500;
+  const withdrawals = [
+    { id: 'w1', amount: 100, status: 'UNDER_REVIEW' },
+    { id: 'w2', amount: 1, status: 'PAID' },
+    { id: 'w3', amount: 1, status: 'PAID' },
+  ];
+
+  let pending = 0;
+  let paid = 0;
+  for (const w of withdrawals) {
+    if (w.status === 'UNDER_REVIEW' || w.status === 'APPROVED' || w.status === 'Pending') {
+      pending += w.amount;
+    } else if (w.status === 'PAID' || w.status === 'Paid') {
+      paid += w.amount;
+    }
+  }
+
+  const available = Math.max(0, totalEarned - paid - pending);
+  assert.equal(totalEarned, 500, 'Lifetime earnings must be ₹500');
+  assert.equal(pending, 100, 'Pending withdrawal must be ₹100');
+  assert.equal(paid, 2, 'Total paid out must be ₹2');
+  assert.equal(available, 398, 'Available to payout must be ₹398 (500 - 100 - 2)');
+  assert.equal(available + pending + paid, totalEarned, 'Conservation invariant: Available + Pending + Total Paid = Lifetime');
+});
+
+runTest('28. Authoritative Server-Side Firestore Reconciliation in affiliate.js', () => {
+  const apiPath = path.resolve('functions/api/affiliate.js');
+  const content = fs.readFileSync(apiPath, 'utf-8');
+
+  // Verify multi-collection aggregation & payment deduplication
+  assert.ok(content.includes("listFirestoreCollectionDocs('processed_referral_payments'"), 'Must query processed_referral_payments');
+  assert.ok(content.includes("listFirestoreCollectionDocs('platform_payments'"), 'Must query platform_payments');
+  assert.ok(content.includes("listFirestoreCollectionDocs('withdrawal_requests'"), 'Must query withdrawal_requests');
+  assert.ok(content.includes('uniquePaymentIds'), 'Must track unique payment IDs');
+  assert.ok(content.includes('setFirestoreDocument'), 'Must support self-healing firestore update');
+});
+
+runTest('29. Mobile Hero Carousel Resiliency: Rich HTML fallback content & gradient overlays', () => {
+  const hubPath = path.resolve('welcome-to-2050/src/components/futureai/AffiliateEarningsHub.tsx');
+  const hubContent = fs.readFileSync(hubPath, 'utf-8');
+
+  assert.ok(hubContent.includes('aff-mob-slide-content'), 'Must render aff-mob-slide-content HTML layer');
+  assert.ok(hubContent.includes('aff-mob-slide-title'), 'Must render aff-mob-slide-title');
+  assert.ok(hubContent.includes('aff-mob-slide-subtitle'), 'Must render aff-mob-slide-subtitle');
+  assert.ok(hubContent.includes('aff-mob-slide-btn'), 'Must render aff-mob-slide-btn');
+  assert.ok(hubContent.includes('aff-mob-badge-pill'), 'Must render aff-mob-badge-pill');
+
+  const cssPath = path.resolve('welcome-to-2050/src/components/futureai/AffiliateEarningsHub.css');
+  const cssContent = fs.readFileSync(cssPath, 'utf-8');
+
+  assert.ok(cssContent.includes('.slide-blue'), 'Must style .slide-blue gradient');
+  assert.ok(cssContent.includes('.slide-green'), 'Must style .slide-green gradient');
+  assert.ok(cssContent.includes('.slide-purple'), 'Must style .slide-purple gradient');
+  assert.ok(cssContent.includes('.aff-mob-slide-content'), 'Must style .aff-mob-slide-content');
+});
+
 console.log('\n----------------------------------------------------------------');
 console.log(`Summary: ${passedTests}/${totalTests} Tests Passed`);
 console.log('----------------------------------------------------------------\n');

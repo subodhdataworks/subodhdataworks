@@ -1,4 +1,6 @@
 import {
+  DEFAULT_PROJECT_ID,
+  INTENDED_OWNER_ADMIN_UID,
   getServiceAccount,
   getFirestoreDocument,
   setFirestoreDocument,
@@ -206,7 +208,9 @@ export async function onRequestGet(context) {
   }
 
   const rawCode = url.searchParams.get('refCode') || url.searchParams.get('ref') || '';
+  const userIdParam = url.searchParams.get('userId') || url.searchParams.get('uid') || '';
   const cleanCode = normalizeRefCode(rawCode);
+  const cleanUserId = String(userIdParam).trim();
 
   if (!cleanCode) {
     return json({
@@ -327,38 +331,77 @@ export async function onRequestGet(context) {
     }
   }
 
-    // Sync with Firestore affiliate_stats, wallet_ledger, and processed_referral_payments
+    // Sync with authoritative Firestore records (affiliate_stats, processed_referral_payments, platform_payments, wallet_ledger, withdrawal_requests)
   if (cleanCode && getServiceAccount(env)) {
     try {
-      const fsDoc = await getFirestoreDocument('affiliate_stats', cleanCode, env);
-      if (fsDoc) {
-        if (Number.isFinite(fsDoc.totalEarned)) record.totalEarned = fsDoc.totalEarned;
-        if (Number.isFinite(fsDoc.totalPaid)) record.totalPaid = fsDoc.totalPaid;
-        if (Number.isFinite(fsDoc.pendingBalance)) record.pendingBalance = fsDoc.pendingBalance;
-        if (Number.isFinite(fsDoc.availableBalance)) record.availableBalance = fsDoc.availableBalance;
-        if (Number.isFinite(fsDoc.paidEnrollments)) record.paidEnrollments = fsDoc.paidEnrollments;
-        record.availableToPayout = record.availableBalance;
-        record.availableToWithdraw = record.availableBalance;
+      // 1. Check affiliate_stats across all possible key aliases (cleanCode, ${cleanCode}100, cleanUserId, INTENDED_OWNER_ADMIN_UID)
+      let fsDoc = await getFirestoreDocument('affiliate_stats', cleanCode, env);
+      if (!fsDoc && cleanUserId) {
+        fsDoc = await getFirestoreDocument('affiliate_stats', cleanUserId, env);
+      }
+      if (!fsDoc && (cleanCode === 'SUBODHKUMAR' || cleanUserId === INTENDED_OWNER_ADMIN_UID)) {
+        fsDoc = await getFirestoreDocument('affiliate_stats', INTENDED_OWNER_ADMIN_UID, env);
+      }
+      if (!fsDoc) {
+        fsDoc = await getFirestoreDocument('affiliate_stats', `${cleanCode}100`, env);
       }
 
-      // Read real cloud wallet ledger entries
+      if (fsDoc) {
+        if (Number.isFinite(fsDoc.clicks)) record.clicks = Math.max(record.clicks || 0, fsDoc.clicks);
+        if (Number.isFinite(fsDoc.signups)) record.signups = Math.max(record.signups || 0, fsDoc.signups);
+      }
+
+      const matchesAffiliateUser = (val) => {
+        if (!val) return false;
+        const str = String(val).trim();
+        const norm = normalizeRefCode(str);
+        if (norm && (norm === cleanCode || norm === `${cleanCode}100`)) return true;
+        if (cleanUserId && str === cleanUserId) return true;
+        if (cleanCode === 'SUBODHKUMAR' || cleanUserId === INTENDED_OWNER_ADMIN_UID) {
+          if (str === INTENDED_OWNER_ADMIN_UID || norm === 'SUBODHKUMAR') return true;
+          const lower = str.toLowerCase();
+          if (lower.includes('subodh') || lower.includes('powergreen')) return true;
+        }
+        return false;
+      };
+
+      // 2. Read real processed referral payments
+      const allProcessedDocs = await listFirestoreCollectionDocs('processed_referral_payments', env);
+      const userReferralPayments = allProcessedDocs.filter(
+        (p) => matchesAffiliateUser(p.refCode) || matchesAffiliateUser(p.referrerId) || matchesAffiliateUser(p.userId)
+      );
+
+      // 3. Read real platform payments for captured referral enrollments
+      const allPlatformDocs = await listFirestoreCollectionDocs('platform_payments', env);
+      const userPlatformPayments = allPlatformDocs.filter((p) => {
+        const isCaptured = String(p.status || p.paymentStatus || '').toUpperCase() === 'CAPTURED';
+        return isCaptured && (matchesAffiliateUser(p.referredBy) || matchesAffiliateUser(p.refCode));
+      });
+
+      // 4. Read real cloud wallet ledger entries
       const allLedgerDocs = await listFirestoreCollectionDocs('wallet_ledger', env);
       const userLedger = allLedgerDocs
-        .filter((l) => l.userId === cleanCode || l.userId === `${cleanCode}100`)
+        .filter((l) => matchesAffiliateUser(l.userId) || matchesAffiliateUser(l.refCode))
         .sort((a, b) => new Date(b.timestamp || 0).getTime() - new Date(a.timestamp || 0).getTime());
 
       if (userLedger.length > 0) {
         record.walletLedger = userLedger;
       }
 
-      // Read real processed referral payments
-      const allProcessedDocs = await listFirestoreCollectionDocs('processed_referral_payments', env);
-      const userReferralPayments = allProcessedDocs.filter(
-        (p) => p.refCode === cleanCode || p.refCode === `${cleanCode}100`
-      );
+      // Collect all verified payment IDs to calculate authoritative unique paid enrollments
+      const uniquePaymentIds = new Set();
+      const existingPaymentIds = new Set(record.referrals.map((r) => r.paymentId).filter(Boolean));
 
-      const existingPaymentIds = new Set(record.referrals.map((r) => r.paymentId));
+      // Seed from in-memory captured referrals
+      for (const r of record.referrals) {
+        if (r.paymentId && r.status === 'Paid') {
+          uniquePaymentIds.add(r.paymentId);
+        }
+      }
+
+      // Seed from processed referral payments
       for (const p of userReferralPayments) {
+        if (p.paymentId) uniquePaymentIds.add(p.paymentId);
         if (!existingPaymentIds.has(p.paymentId)) {
           existingPaymentIds.add(p.paymentId);
           record.referrals.unshift({
@@ -379,33 +422,54 @@ export async function onRequestGet(context) {
         }
       }
 
-      // Read real cloud withdrawal requests from Firestore
+      // Seed from platform payments (ensures all verified payments are counted even if delayed in processed_referral_payments)
+      for (const p of userPlatformPayments) {
+        const pid = p.paymentId || p.id;
+        if (pid) {
+          uniquePaymentIds.add(pid);
+          if (!existingPaymentIds.has(pid)) {
+            existingPaymentIds.add(pid);
+            record.referrals.unshift({
+              id: `ref_paid_${pid}`,
+              refCode: cleanCode,
+              name: p.payerEmail ? p.payerEmail.split('@')[0] : (p.name || 'Enrolled Student'),
+              email: p.payerEmail || p.email || '',
+              phone: p.phone || '',
+              date: (p.verifiedAt || p.createdAt || '').slice(0, 10) || new Date().toISOString().slice(0, 10),
+              status: 'Paid',
+              amount: Number(p.amount) || 4,
+              commission: 100,
+              course: p.courseId || 'Data Analyst with GenAI',
+              paymentId: pid,
+              referralId: `RF-${String(pid).slice(-4).toUpperCase()}`,
+              approvedDate: p.verifiedAt || new Date().toISOString(),
+            });
+          }
+        }
+      }
+
+      // Calculate authoritative paid enrollments & lifetime earnings
+      const verifiedPaidCount = uniquePaymentIds.size;
+      record.paidEnrollments = Math.max(
+        verifiedPaidCount,
+        Number(fsDoc?.paidEnrollments) || 0,
+        record.paidEnrollments || 0
+      );
+      record.totalEarned = Math.max(
+        record.paidEnrollments * 100,
+        Number(fsDoc?.totalEarned) || 0,
+        record.totalEarned || 0
+      );
+
+      // 5. Read real cloud withdrawal requests from Firestore
       const allWithdrawalDocs = await listFirestoreCollectionDocs('withdrawal_requests', env);
       const userWithdrawals = allWithdrawalDocs
-        .filter((w) => {
-          const wRef = normalizeRefCode(w.refCode || '');
-          const wUser = normalizeRefCode(w.userId || '');
-          const wReferrer = normalizeRefCode(w.referrerId || '');
-          const isOwnerSubodh =
-            cleanCode === 'SUBODHKUMAR' &&
-            (w.userId === 'eCtK0lyxIaQSmgPwEnPUy3CKwsz2' ||
-              w.referrerId === 'eCtK0lyxIaQSmgPwEnPUy3CKwsz2' ||
-              String(w.userEmail || '').toLowerCase().includes('subodh') ||
-              String(w.userEmail || '').toLowerCase().includes('powergreen'));
-
-          return (
-            wRef === cleanCode ||
-            wUser === cleanCode ||
-            wReferrer === cleanCode ||
-            w.refCode === cleanCode ||
-            w.userId === cleanCode ||
-            w.referrerId === cleanCode ||
-            w.refCode === `${cleanCode}100` ||
-            w.userId === `${cleanCode}100` ||
-            w.referrerId === `${cleanCode}100` ||
-            isOwnerSubodh
-          );
-        })
+        .filter((w) =>
+          matchesAffiliateUser(w.refCode) ||
+          matchesAffiliateUser(w.userId) ||
+          matchesAffiliateUser(w.referrerId) ||
+          matchesAffiliateUser(w.userEmail)
+        )
         .map((w) => {
           const rawSt = String(w.status || 'UNDER_REVIEW').trim().toUpperCase();
           let displayStatus = 'Pending';
@@ -433,6 +497,42 @@ export async function onRequestGet(context) {
 
       if (userWithdrawals.length > 0) {
         record.withdrawals = userWithdrawals;
+      }
+
+      // Recalculate balances strictly from authoritative totals and withdrawal requests
+      recalculateAffiliateBalances(record);
+
+      // 6. Self-heal Firestore affiliate_stats doc so all edge isolates stay permanently in sync
+      const shouldHeal =
+        !fsDoc ||
+        fsDoc.paidEnrollments !== record.paidEnrollments ||
+        fsDoc.totalEarned !== record.totalEarned ||
+        fsDoc.availableBalance !== record.availableBalance ||
+        fsDoc.pendingBalance !== record.pendingBalance ||
+        fsDoc.totalPaid !== record.totalPaid;
+
+      if (shouldHeal) {
+        try {
+          const healData = {
+            refCode: cleanCode,
+            paidEnrollments: record.paidEnrollments,
+            totalEarned: record.totalEarned,
+            availableBalance: record.availableBalance,
+            availableToPayout: record.availableBalance,
+            availableToWithdraw: record.availableBalance,
+            pendingBalance: record.pendingBalance,
+            totalPaid: record.totalPaid,
+            clicks: record.clicks,
+            signups: record.signups,
+            updatedAt: new Date().toISOString(),
+          };
+          await setFirestoreDocument('affiliate_stats', cleanCode, healData, env, true);
+          if (cleanUserId && cleanUserId !== cleanCode) {
+            await setFirestoreDocument('affiliate_stats', cleanUserId, healData, env, true);
+          }
+        } catch (healErr) {
+          console.warn('Auto-heal affiliate_stats notice:', healErr?.message);
+        }
       }
     } catch (fsErr) {
       console.warn('Firestore read affiliate notice:', fsErr?.message);
