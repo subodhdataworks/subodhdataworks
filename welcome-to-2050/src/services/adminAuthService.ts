@@ -19,7 +19,7 @@ export async function sha256(message: string): Promise<string> {
   return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
-export const INTENDED_OWNER_ADMIN_UID = 'eCtK0lyxIaQSmgPwEnPUy3CKwsz2';
+export const INTENDED_OWNER_ADMIN_UID = 'v0l0LdEuPMTyBsvGEqoT8dYSsv43';
 
 function decodeJwtPayload(token: string): Record<string, any> | null {
   try {
@@ -117,7 +117,7 @@ export class AdminAuthService {
           };
         }
 
-        // If currentUser is the intended owner UID (eCtK0lyxIaQSmgPwEnPUy3CKwsz2), return token so server can verify/sync claim
+        // If currentUser is the intended owner UID (v0l0LdEuPMTyBsvGEqoT8dYSsv43), return token so server can verify/sync claim
         if (currentUser.uid === INTENDED_OWNER_ADMIN_UID) {
           return {
             token: freshToken,

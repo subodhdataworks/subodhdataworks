@@ -14,7 +14,7 @@
  */
 
 export const DEFAULT_PROJECT_ID = 'future-it-industry-f97af';
-export const INTENDED_OWNER_ADMIN_UID = 'eCtK0lyxIaQSmgPwEnPUy3CKwsz2';
+export const INTENDED_OWNER_ADMIN_UID = 'v0l0LdEuPMTyBsvGEqoT8dYSsv43';
 const GOOGLE_TOKEN_ENDPOINT = 'https://oauth2.googleapis.com/token';
 const FIRESTORE_SCOPE = 'https://www.googleapis.com/auth/datastore https://www.googleapis.com/auth/identitytoolkit';
 
