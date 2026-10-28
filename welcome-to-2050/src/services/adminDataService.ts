@@ -440,88 +440,87 @@ export class AdminDataService {
     newStatus: 'UNDER_REVIEW' | 'APPROVED' | 'PROCESSING' | 'PAID' | 'REJECTED';
     adminNotes: string;
     payoutRef?: string;
-  }): Promise<{ success: boolean; error?: string }> {
+  }): Promise<{ success: boolean; error?: string; message?: string }> {
     if (!AdminAuthService.hasPermission('approve_withdrawals')) {
       return { success: false, error: 'Unauthorized: You do not have permission to approve withdrawals.' };
     }
 
-    const withdrawals = await this.getAllWithdrawals();
-    const req = withdrawals.find((w) => w.id === params.requestId);
-    if (!req) {
-      return { success: false, error: 'Withdrawal request not found.' };
+    const session = AdminAuthService.getCurrentSession();
+    const token = session?.token;
+    if (!token) {
+      return { success: false, error: 'Authentication session expired: Please re-login to perform payout operations.' };
     }
 
-    // Immutable Transition Enforcement
-    if (req.status === 'PAID') {
-      return { success: false, error: 'Cannot modify a withdrawal that has already been verified as PAID.' };
-    }
-
-    if (params.newStatus === 'PAID' && !params.payoutRef?.trim()) {
-      return { success: false, error: 'Payout transaction reference (Bank UTR / UPI Ref) is mandatory before marking Paid.' };
-    }
-
-    req.status = params.newStatus;
-    if (params.newStatus === 'PAID') {
-      req.paidAt = new Date().toISOString();
-      req.referenceNo = params.payoutRef?.trim();
-    }
-
-    // 1. Update in Firestore collection 'withdrawal_requests'
     try {
-      const docRef = doc(db, 'withdrawal_requests', req.id);
-      await setDoc(
-        docRef,
-        {
-          status: params.newStatus,
-          paidAt: params.newStatus === 'PAID' ? new Date().toISOString() : null,
-          referenceNo: params.payoutRef?.trim() || req.referenceNo || null,
-          adminNotes: params.adminNotes,
-          updatedAt: new Date().toISOString(),
+      // 1. Authoritative Server-Side Update via authenticated Cloudflare Pages /api/admin-data endpoint
+      const res = await fetch('/api/admin-data', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        { merge: true }
-      );
-    } catch (err) {
-      console.warn('Failed to update withdrawal in Firestore:', err);
-    }
-
-    // 2. Save state back via ReferralEngine
-    ReferralEngine.saveWithdrawal(req);
-
-    // 3. If REJECTED, refund the amount back to user's wallet ledger automatically
-    if (params.newStatus === 'REJECTED') {
-      ReferralEngine.reverseWithdrawal({
-        referrerId: req.referrerId,
-        amount: req.amount,
-        withdrawalId: req.id,
-        reason: params.adminNotes,
+        body: JSON.stringify({
+          action: 'update_withdrawal_status',
+          requestId: params.requestId,
+          newStatus: params.newStatus,
+          adminNotes: params.adminNotes,
+          payoutRef: params.payoutRef,
+        }),
       });
+
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok || !data?.success) {
+        return {
+          success: false,
+          error: data?.error || `Server rejected payout update [HTTP ${res.status}].`,
+        };
+      }
+
+      // 2. Invalidate local admin cache to immediately display fresh cloud state
+      this.cachedCloudData = null;
+      this.cacheTime = 0;
+
+      // 3. Local engine & audit synchronization
+      try {
+        const engineWithdrawals = ReferralEngine.getWithdrawals();
+        const existing = engineWithdrawals.find((w) => w.id === params.requestId);
+        if (existing) {
+          existing.status = params.newStatus;
+          if (params.newStatus === 'PAID') {
+            existing.paidAt = new Date().toISOString();
+            existing.referenceNo = params.payoutRef?.trim();
+          }
+          ReferralEngine.saveWithdrawal(existing);
+        }
+
+        if (params.newStatus === 'REJECTED' && existing) {
+          ReferralEngine.reverseWithdrawal({
+            referrerId: existing.referrerId,
+            amount: existing.amount,
+            withdrawalId: existing.id,
+            reason: params.adminNotes,
+          });
+        }
+      } catch {}
+
+      await AdminAuthService.logAudit({
+        action: `WITHDRAWAL_${params.newStatus}`,
+        category: 'WITHDRAWAL',
+        targetId: params.requestId,
+        details: `Withdrawal status updated to ${params.newStatus}. Notes: ${params.adminNotes || 'None'}${params.payoutRef ? ` | Ref: ${params.payoutRef}` : ''}`,
+      });
+
+      return {
+        success: true,
+        message: data.message || `Withdrawal request #${params.requestId} marked as ${params.newStatus}.`,
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err?.message || 'Network failure communicating with admin payout service.',
+      };
     }
-
-    // 4. Also synchronize v5 Affiliate Hub & Server API (/api/affiliate) withdrawal lifecycle
-    const mappedV5Status =
-      params.newStatus === 'PAID'
-        ? 'Paid'
-        : params.newStatus === 'APPROVED'
-        ? 'Approved'
-        : params.newStatus === 'REJECTED'
-        ? 'Rejected'
-        : 'Processing';
-    await updateAffiliateWithdrawalStatus({
-      refCode: req.referrerId,
-      withdrawalId: req.id,
-      newStatus: mappedV5Status,
-      reason: params.adminNotes,
-      payoutRef: params.payoutRef,
-    });
-
-    await AdminAuthService.logAudit({
-      action: `WITHDRAWAL_${params.newStatus}`,
-      category: 'WITHDRAWAL',
-      targetId: req.id,
-      details: `Withdrawal ${req.id} for ₹${req.amount} marked ${params.newStatus}. Ref: ${params.payoutRef || 'N/A'}. Note: ${params.adminNotes}`,
-    });
-
-    return { success: true };
   }
 
   /**

@@ -16,6 +16,8 @@ import {
   pemToBinaryDer,
   base64UrlEncode,
   fromFirestoreFields,
+  listFirestoreCollectionDocs,
+  runFirestoreTransaction,
 } from './_firestore-admin.js';
 import { verifyFirebaseIdToken } from './admin-verify.js';
 
@@ -88,6 +90,206 @@ async function getAdminOAuth2Token(serviceAccount) {
   cachedAdminToken = data.access_token;
   tokenExpiresAt = now + (data.expires_in || 3600);
   return cachedAdminToken;
+}
+
+
+/**
+ * Authoritative Server-Side Payout Action Handler
+ * Enforces admin authorization, banking UTR validation, idempotency, and atomic Cloud Firestore updates.
+ */
+async function handleUpdateWithdrawalStatus(context, body) {
+  const { request, env } = context;
+
+  // 1. Authenticate Admin via Firebase ID Token
+  const authHeader = request.headers.get('Authorization') || '';
+  if (!authHeader.startsWith('Bearer ')) {
+    return json({ success: false, error: 'Unauthorized: Bearer token required in Authorization header.' }, 401);
+  }
+
+  const token = authHeader.slice(7).trim();
+  const projectId = env?.VITE_FIREBASE_PROJECT_ID || env?.FIREBASE_PROJECT_ID || DEFAULT_PROJECT_ID;
+  const claims = await verifyFirebaseIdToken(token, projectId);
+  if (!claims || (claims.admin !== true && claims.role !== 'admin')) {
+    return json({ success: false, error: 'Forbidden: Admin custom claim { admin: true } required to process payouts.' }, 403);
+  }
+
+  // 2. Validate Service Account binding
+  const sa = getServiceAccount(env);
+  if (!sa) {
+    return json({ success: false, error: 'Server configuration error: FIREBASE_SERVICE_ACCOUNT binding not available.' }, 500);
+  }
+
+  // 3. Extract and sanitize parameters
+  const requestId = String(body.requestId || '').trim();
+  const rawTargetStatus = String(body.newStatus || '').trim().toUpperCase();
+  const payoutRef = String(body.payoutRef || '').trim();
+  const adminNotes = String(body.adminNotes || '').trim();
+
+  if (!requestId) {
+    return json({ success: false, error: 'requestId is mandatory.' }, 400);
+  }
+
+  if (!['APPROVED', 'PAID', 'REJECTED', 'UNDER_REVIEW'].includes(rawTargetStatus)) {
+    return json({ success: false, error: `Invalid target status '${rawTargetStatus}'. Must be APPROVED, PAID, or REJECTED.` }, 400);
+  }
+
+  // 4. Strict Validation for Mark Paid
+  if (rawTargetStatus === 'PAID') {
+    if (!payoutRef) {
+      return json({
+        success: false,
+        error: 'Mandatory banking verification: Enter Bank UTR / UPI Reference Number before marking Paid.',
+      }, 400);
+    }
+
+    const upperRef = payoutRef.toUpperCase();
+
+    // Prevent entering internal system IDs as proof of transfer
+    if (
+      upperRef === requestId.toUpperCase() ||
+      upperRef.startsWith('WREQ-') ||
+      upperRef.startsWith('WTX-') ||
+      upperRef.startsWith('REQ-')
+    ) {
+      return json({
+        success: false,
+        error: 'Invalid Payout Reference: You entered the internal system withdrawal ID. Please enter the actual Bank UTR or UPI Reference Number (e.g. 12-digit UPI RRN or Bank UTR from your net banking app).',
+      }, 400);
+    }
+
+    // Prevent arbitrary/dummy text
+    const DUMMY_WORDS = ['TEST', 'PENDING', 'PAID', 'DONE', 'OK', '123', '1234', '12345', '123456', 'CASH', 'NA', 'NULL', 'UNDEFINED', 'TRANSFER'];
+    if (DUMMY_WORDS.includes(upperRef) || payoutRef.length < 6 || payoutRef.length > 35) {
+      return json({
+        success: false,
+        error: 'Invalid Payout Reference: A valid external Bank UTR or UPI Reference Number (6-35 alphanumeric characters) is required as proof of transfer.',
+      }, 400);
+    }
+  }
+
+  // 5. Strict Validation for Rejection
+  if (rawTargetStatus === 'REJECTED' && !adminNotes) {
+    return json({
+      success: false,
+      error: 'Mandatory financial safeguard: A valid rejection reason must be provided in Admin Notes.',
+    }, 400);
+  }
+
+  // 6. Fetch existing withdrawals and verify state
+  const allWithdrawals = await listFirestoreCollectionDocs('withdrawal_requests', env);
+  const existingReq = allWithdrawals.find((w) => w.id === requestId || w.txId === requestId);
+
+  if (!existingReq) {
+    return json({
+      success: false,
+      error: `Withdrawal request #${requestId} not found in Cloud Firestore.`,
+    }, 404);
+  }
+
+  const currentStatus = String(existingReq.status || 'UNDER_REVIEW').toUpperCase();
+
+  // Immutable check: cannot modify an already PAID withdrawal
+  if (currentStatus === 'PAID') {
+    return json({
+      success: false,
+      error: 'CANNOT_MODIFY_PAID_WITHDRAWAL: This withdrawal request is already marked as PAID and settled. Repeated PAID transitions are prohibited.',
+    }, 400);
+  }
+
+  // Check duplicate UTR across all other withdrawals
+  if (rawTargetStatus === 'PAID') {
+    const duplicate = allWithdrawals.find(
+      (w) =>
+        (w.id !== requestId && (w.txId || '') !== requestId) &&
+        (String(w.referenceNo || '').toLowerCase() === payoutRef.toLowerCase() ||
+         String(w.payoutRef || '').toLowerCase() === payoutRef.toLowerCase())
+    );
+    if (duplicate) {
+      return json({
+        success: false,
+        error: `DUPLICATE_PAYOUT_REF: Payout reference '${payoutRef}' has already been used on withdrawal #${duplicate.id}. Duplicate banking references are blocked for financial integrity.`,
+      }, 400);
+    }
+  }
+
+  // 7. Atomic Cloud Firestore Execution
+  const nowIso = new Date().toISOString();
+  const withdrawAmount = Number(existingReq.amount) || 0;
+  const refCode = existingReq.refCode || existingReq.userId || existingReq.referrerId || '';
+
+  try {
+    await runFirestoreTransaction(async (tx) => {
+      // 1. Update withdrawal_requests record
+      const updatedWithdrawalFields = {
+        status: rawTargetStatus,
+        updatedAt: nowIso,
+        adminNotes: adminNotes || existingReq.adminNotes || `Status updated to ${rawTargetStatus} by administrator.`,
+        processedBy: claims.email || claims.sub || 'Admin',
+      };
+
+      if (rawTargetStatus === 'PAID') {
+        updatedWithdrawalFields.paidAt = nowIso;
+        updatedWithdrawalFields.referenceNo = payoutRef;
+        updatedWithdrawalFields.payoutRef = payoutRef;
+      }
+
+      tx.update('withdrawal_requests', existingReq.id, updatedWithdrawalFields);
+
+      // 2. Update affiliate_stats record if refCode exists
+      if (refCode) {
+        let statsDoc = await tx.get('affiliate_stats', refCode);
+        if (!statsDoc && existingReq.userId && existingReq.userId !== refCode) {
+          statsDoc = await tx.get('affiliate_stats', existingReq.userId);
+        }
+
+        if (statsDoc) {
+          const currentPending = Number(statsDoc.pendingBalance) || 0;
+          const currentPaid = Number(statsDoc.totalPaid) || 0;
+          const currentAvail = Number(statsDoc.availableBalance) || 0;
+          const currentEarned = Number(statsDoc.totalEarned) || 0;
+
+          if (rawTargetStatus === 'PAID') {
+            // Pending withdrawal clears into totalPaid. Available balance is untouched. Lifetime earnings untouched!
+            tx.set('affiliate_stats', statsDoc.id, {
+              ...statsDoc,
+              pendingBalance: Math.max(0, currentPending - withdrawAmount),
+              totalPaid: currentPaid + withdrawAmount,
+              availableBalance: currentAvail,
+              totalEarned: currentEarned,
+              updatedAt: nowIso,
+            });
+          } else if (rawTargetStatus === 'REJECTED') {
+            // Rejected withdrawal returns reserved funds back to available balance.
+            tx.set('affiliate_stats', statsDoc.id, {
+              ...statsDoc,
+              pendingBalance: Math.max(0, currentPending - withdrawAmount),
+              availableBalance: currentAvail + withdrawAmount,
+              totalPaid: currentPaid,
+              totalEarned: currentEarned,
+              updatedAt: nowIso,
+            });
+          }
+        }
+      }
+    }, env);
+
+    return json({
+      success: true,
+      message: `Withdrawal request #${requestId} successfully updated to ${rawTargetStatus}.`,
+      withdrawal: {
+        id: requestId,
+        status: rawTargetStatus,
+        payoutRef: rawTargetStatus === 'PAID' ? payoutRef : (existingReq.payoutRef || null),
+        paidAt: rawTargetStatus === 'PAID' ? nowIso : null,
+        updatedAt: nowIso,
+      },
+    });
+  } catch (txErr) {
+    return json({
+      success: false,
+      error: `Firestore transaction failed: ${String(txErr?.message || txErr).slice(0, 150)}`,
+    }, 500);
+  }
 }
 
 export async function onRequestGet(context) {
@@ -363,6 +565,18 @@ export async function onRequestGet(context) {
 }
 
 export async function onRequestPost(context) {
+  const { request } = context;
+  let body = {};
+  try {
+    body = await request.clone().json();
+  } catch {
+    body = {};
+  }
+
+  if (body && body.action === 'update_withdrawal_status') {
+    return handleUpdateWithdrawalStatus(context, body);
+  }
+
   return onRequestGet(context);
 }
 

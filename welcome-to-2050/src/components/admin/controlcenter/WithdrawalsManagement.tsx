@@ -9,7 +9,8 @@ import {
   Building,
   RefreshCw,
   X,
-  AlertCircle
+  AlertCircle,
+  Info
 } from 'lucide-react';
 import { WithdrawalRequest, ReferralEngine } from '../../../services/referralEngine';
 import { AdminDataService } from '../../../services/adminDataService';
@@ -138,6 +139,8 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
   const [actionNotes, setActionNotes] = useState('');
   const [payoutRef, setPayoutRef] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [actionError, setActionError] = useState('');
+  const [actionSuccess, setActionSuccess] = useState('');
   const [feedbackMsg, setFeedbackMsg] = useState('');
 
   // Safe normalized array
@@ -164,17 +167,66 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
     });
   }, [safeList, searchTerm, statusFilter]);
 
+  const openActionModal = (req: NormalizedWithdrawal, defaultAction: 'APPROVE' | 'PAY' | 'REJECT' | null = null) => {
+    setSelectedReq(req);
+    setActionType(defaultAction);
+    setActionNotes('');
+    setPayoutRef('');
+    setActionError('');
+    setActionSuccess('');
+  };
+
+  const closeModal = () => {
+    if (isProcessing) return;
+    setSelectedReq(null);
+    setActionType(null);
+    setActionNotes('');
+    setPayoutRef('');
+    setActionError('');
+    setActionSuccess('');
+  };
+
   const handleAction = async () => {
     if (!selectedReq || !actionType) return;
+    setActionError('');
+    setActionSuccess('');
 
-    if (actionType === 'REJECT' && !actionNotes.trim()) {
-      alert('Mandatory financial safeguard: A valid rejection reason must be provided.');
-      return;
+    // 1. Validation for Reject
+    if (actionType === 'REJECT') {
+      if (!actionNotes.trim()) {
+        setActionError('Mandatory financial safeguard: A valid rejection reason must be provided in Admin Notes.');
+        return;
+      }
     }
 
-    if (actionType === 'PAY' && !payoutRef.trim()) {
-      alert('Mandatory banking verification: Enter Bank UTR / UPI Reference Number before marking Paid.');
-      return;
+    // 2. Validation for Mark Paid
+    if (actionType === 'PAY') {
+      const cleanRef = payoutRef.trim();
+      if (!cleanRef) {
+        setActionError('Mandatory banking verification: Enter Bank UTR / UPI Reference Number before marking Paid.');
+        return;
+      }
+
+      const upperRef = cleanRef.toUpperCase();
+      if (
+        upperRef === selectedReq.id.toUpperCase() ||
+        upperRef.startsWith('WREQ-') ||
+        upperRef.startsWith('WTX-') ||
+        upperRef.startsWith('REQ-')
+      ) {
+        setActionError(
+          'Invalid Payout Reference: You entered the internal system withdrawal ID. Please enter the actual Bank UTR or UPI Reference Number (e.g. 12-digit UPI RRN or Bank UTR from your net banking app).'
+        );
+        return;
+      }
+
+      const DUMMY_WORDS = ['TEST', 'PENDING', 'PAID', 'DONE', 'OK', '123', '1234', '12345', '123456', 'CASH', 'NA', 'NULL', 'UNDEFINED', 'TRANSFER'];
+      if (DUMMY_WORDS.includes(upperRef) || cleanRef.length < 6 || cleanRef.length > 35) {
+        setActionError(
+          'Invalid Payout Reference: A valid external Bank UTR or UPI Reference Number (6-35 alphanumeric characters) is required as proof of transfer.'
+        );
+        return;
+      }
     }
 
     setIsProcessing(true);
@@ -192,18 +244,19 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
       });
 
       if (res.success) {
-        setFeedbackMsg(`✓ Withdrawal request #${selectedReq.id} marked as ${targetStatus}.`);
-        setSelectedReq(null);
-        setActionType(null);
-        setActionNotes('');
-        setPayoutRef('');
+        const msg = res.message || `✓ Withdrawal request #${selectedReq.id} marked as ${targetStatus}.`;
+        setActionSuccess(msg);
+        setFeedbackMsg(msg);
         onRefresh();
-        setTimeout(() => setFeedbackMsg(''), 5000);
+        setTimeout(() => {
+          closeModal();
+          setTimeout(() => setFeedbackMsg(''), 5000);
+        }, 1200);
       } else {
-        alert(res.error || 'Failed to update request status.');
+        setActionError(res.error || 'Failed to update request status on server.');
       }
     } catch (e: any) {
-      alert(e?.message || 'Error occurred while updating withdrawal.');
+      setActionError(e?.message || 'Unexpected error occurred while updating withdrawal status.');
     } finally {
       setIsProcessing(false);
     }
@@ -344,10 +397,7 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
                       {req.status !== 'PAID' && req.status !== 'REJECTED' ? (
                         <button
                           type="button"
-                          onClick={() => {
-                            setSelectedReq(req);
-                            setActionType('PAY');
-                          }}
+                          onClick={() => openActionModal(req, 'PAY')}
                           className="px-3 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs cursor-pointer transition-colors shadow-2xs"
                         >
                           Process Payout ➔
@@ -355,10 +405,7 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
                       ) : (
                         <button
                           type="button"
-                          onClick={() => {
-                            setSelectedReq(req);
-                            setActionType(null);
-                          }}
+                          onClick={() => openActionModal(req, null)}
                           className="px-3 py-1.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] font-bold text-xs cursor-pointer"
                         >
                           View Details
@@ -379,11 +426,9 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
           <div className="max-w-md w-full bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xl relative text-left space-y-4">
             <button
               type="button"
-              onClick={() => {
-                setSelectedReq(null);
-                setActionType(null);
-              }}
-              className="absolute top-5 right-5 p-2 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] cursor-pointer"
+              disabled={isProcessing}
+              onClick={closeModal}
+              className="absolute top-5 right-5 p-2 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] cursor-pointer disabled:opacity-40"
             >
               <X className="w-5 h-5" />
             </button>
@@ -392,8 +437,25 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
               Withdrawal Request #{selectedReq.id}
             </h3>
 
+            {/* Inline Error Banner */}
+            {actionError && (
+              <div className="p-3 bg-[#FEF2F2] border border-[#FECACA] rounded-xl text-xs text-[#DC2626] font-semibold flex items-start gap-2 shadow-2xs">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <div className="flex-1">{actionError}</div>
+              </div>
+            )}
+
+            {/* Inline Success Banner */}
+            {actionSuccess && (
+              <div className="p-3 bg-[#ECFDF5] border border-[#A7F3D0] rounded-xl text-xs text-[#059669] font-bold flex items-center gap-2 shadow-2xs">
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <div className="flex-1">{actionSuccess}</div>
+              </div>
+            )}
+
+            {/* Details Summary Box */}
             <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs space-y-1">
-              <div><strong>Learner:</strong> {selectedReq.accountHolder}</div>
+              <div><strong>Learner / Creator:</strong> {selectedReq.accountHolder}</div>
               <div><strong>Affiliate UID:</strong> {selectedReq.referrerId}</div>
               <div><strong>Amount:</strong> ₹{selectedReq.amount}</div>
               <div><strong>Method:</strong> {selectedReq.method}</div>
@@ -406,6 +468,20 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
                   <div><strong>Bank:</strong> {selectedReq.bankName || 'Bank'}</div>
                 </>
               )}
+              <div>
+                <strong>Current Status:</strong>{' '}
+                <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                  selectedReq.status === 'PAID'
+                    ? 'bg-[#ECFDF5] text-[#059669]'
+                    : selectedReq.status === 'APPROVED'
+                    ? 'bg-[#EFF6FF] text-[#2563EB]'
+                    : selectedReq.status === 'REJECTED'
+                    ? 'bg-[#FEF2F2] text-[#DC2626]'
+                    : 'bg-[#FFFBEB] text-[#D97706]'
+                }`}>
+                  {selectedReq.status}
+                </span>
+              </div>
               {selectedReq.referenceNo && <div><strong>Payout Reference (UTR):</strong> {selectedReq.referenceNo}</div>}
               {selectedReq.paidAt && <div><strong>Paid At:</strong> {safeFormatDate(selectedReq.paidAt)}</div>}
               {selectedReq.adminNotes && <div><strong>Admin Notes:</strong> {selectedReq.adminNotes}</div>}
@@ -413,89 +489,140 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
 
             {selectedReq.status !== 'PAID' && selectedReq.status !== 'REJECTED' && (
               <div className="space-y-3">
+                {/* Workflow Guidance for UNDER_REVIEW requests */}
+                {selectedReq.status === 'UNDER_REVIEW' && (
+                  <div className="p-3 bg-[#EFF6FF] border border-[#BFDBFE] rounded-xl text-xs text-[#1E40AF] space-y-1">
+                    <div className="font-bold flex items-center gap-1.5">
+                      <Info className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
+                      <span>Standard Payout Sequence</span>
+                    </div>
+                    <p className="text-[11px] text-[#3B82F6] leading-relaxed">
+                      1. Click <strong>Approve</strong> to verify affiliate legitimacy.<br />
+                      2. Execute external bank transfer/UPI of ₹{selectedReq.amount} to <strong>{selectedReq.upiId || selectedReq.destination}</strong>.<br />
+                      3. Select <strong>Mark Paid</strong> and enter the external Bank UTR / UPI Ref to finalize settlement.
+                    </p>
+                  </div>
+                )}
+
+                {/* Action Selector */}
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    onClick={() => setActionType('PAY')}
-                    className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+                    disabled={isProcessing}
+                    onClick={() => {
+                      setActionType('PAY');
+                      setActionError('');
+                    }}
+                    className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer disabled:opacity-50 ${
                       actionType === 'PAY'
                         ? 'bg-[#059669] text-white border-[#059669]'
-                        : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B]'
+                        : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]'
                     }`}
                   >
                     Mark Paid
                   </button>
                   <button
                     type="button"
-                    onClick={() => setActionType('APPROVE')}
-                    className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+                    disabled={isProcessing}
+                    onClick={() => {
+                      setActionType('APPROVE');
+                      setActionError('');
+                    }}
+                    className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer disabled:opacity-50 ${
                       actionType === 'APPROVE'
                         ? 'bg-[#2563EB] text-white border-[#2563EB]'
-                        : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B]'
+                        : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]'
                     }`}
                   >
                     Approve
                   </button>
                   <button
                     type="button"
-                    onClick={() => setActionType('REJECT')}
-                    className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+                    disabled={isProcessing}
+                    onClick={() => {
+                      setActionType('REJECT');
+                      setActionError('');
+                    }}
+                    className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer disabled:opacity-50 ${
                       actionType === 'REJECT'
                         ? 'bg-[#DC2626] text-white border-[#DC2626]'
-                        : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B]'
+                        : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]'
                     }`}
                   >
                     Reject
                   </button>
                 </div>
 
+                {/* Payout Reference Field (Mandatory for PAID) */}
                 {actionType === 'PAY' && (
                   <div>
                     <label className="block text-xs font-bold text-[#0F172A] mb-1">
-                      Bank UTR / UPI Reference ID *
+                      Bank UTR / UPI Reference ID * (from external transfer)
                     </label>
                     <input
                       type="text"
                       required
+                      disabled={isProcessing}
                       value={payoutRef}
-                      onChange={(e) => setPayoutRef(e.target.value)}
-                      placeholder="e.g. UTR4928172648 or UPI/2026/..."
+                      onChange={(e) => {
+                        setPayoutRef(e.target.value);
+                        setActionError('');
+                      }}
+                      placeholder="e.g. 12-digit UPI RRN (202610281234) or Bank UTR (UTR4928172648)"
                       className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] placeholder:text-[#94A3B8] font-mono focus:outline-none focus:border-[#2563EB]"
                     />
+                    <p className="text-[10px] text-[#64748B] mt-1">
+                      Do not enter the internal ID #{selectedReq.id}. Enter genuine bank/UPI UTR received after completing payment.
+                    </p>
                   </div>
                 )}
 
+                {/* Admin Notes */}
                 <div>
                   <label className="block text-xs font-bold text-[#0F172A] mb-1">
                     Admin Notes {actionType === 'REJECT' && '* (Mandatory for rejection)'}
                   </label>
                   <textarea
                     rows={2}
+                    disabled={isProcessing}
                     value={actionNotes}
-                    onChange={(e) => setActionNotes(e.target.value)}
-                    placeholder="Enter notes or audit justification..."
+                    onChange={(e) => {
+                      setActionNotes(e.target.value);
+                      setActionError('');
+                    }}
+                    placeholder={
+                      actionType === 'REJECT'
+                        ? 'State reason for rejection (refunds reserved funds back to user wallet)...'
+                        : 'Enter internal notes or audit justification...'
+                    }
                     className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:border-[#2563EB]"
                   />
                 </div>
 
+                {/* Footer Buttons */}
                 <div className="flex items-center justify-end gap-2 pt-2">
                   <button
                     type="button"
-                    onClick={() => {
-                      setSelectedReq(null);
-                      setActionType(null);
-                    }}
-                    className="px-4 py-2 rounded-xl text-xs font-bold text-[#64748B] hover:text-[#0F172A] cursor-pointer"
+                    disabled={isProcessing}
+                    onClick={closeModal}
+                    className="px-4 py-2 rounded-xl text-xs font-bold text-[#64748B] hover:text-[#0F172A] cursor-pointer disabled:opacity-50"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
-                    disabled={isProcessing}
+                    disabled={isProcessing || !actionType}
                     onClick={handleAction}
-                    className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer disabled:opacity-50"
+                    className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
                   >
-                    {isProcessing ? 'Processing...' : 'Confirm Action'}
+                    {isProcessing ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <span>Processing Payout...</span>
+                      </>
+                    ) : (
+                      <span>Confirm {actionType ? (actionType === 'PAY' ? 'Mark Paid' : actionType === 'APPROVE' ? 'Approval' : 'Rejection') : 'Action'}</span>
+                    )}
                   </button>
                 </div>
               </div>
