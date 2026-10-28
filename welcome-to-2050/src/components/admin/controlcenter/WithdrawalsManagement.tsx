@@ -2,18 +2,11 @@ import React, { useState } from 'react';
 import {
   IndianRupee,
   Search,
-  Filter,
   CheckCircle2,
   Clock,
   XCircle,
-  AlertTriangle,
-  Send,
-  Eye,
-  FileText,
-  ShieldCheck,
   CreditCard,
   Building,
-  ArrowRight,
   RefreshCw,
   X
 } from 'lucide-react';
@@ -27,14 +20,10 @@ interface WithdrawalsManagementProps {
   isDark?: boolean;
 }
 
-export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ withdrawals, onRefresh, isDark = false }) => {
+export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ withdrawals, onRefresh }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedReq, setSelectedReq] = useState<WithdrawalRequest | null>(null);
-
-  const cardBg = isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200/90 shadow-sm';
-  const textPrimary = isDark ? 'text-white' : 'text-slate-900';
-  const textMuted = isDark ? 'text-slate-400' : 'text-slate-500';
 
   // Modal action state
   const [actionType, setActionType] = useState<'APPROVE' | 'PAY' | 'REJECT' | null>(null);
@@ -83,12 +72,12 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
       const res = await AdminDataService.updateWithdrawalStatus({
         requestId: selectedReq.id,
         newStatus: targetStatus,
-        adminNotes: actionNotes.trim() || `Processed by finance administrator`,
-        payoutRef: payoutRef.trim() || undefined,
+        adminNotes: actionNotes.trim() || `Status updated to ${targetStatus} by administrator.`,
+        payoutRef: payoutRef.trim(),
       });
 
       if (res.success) {
-        setFeedbackMsg(`Successfully marked request ${selectedReq.id} as ${targetStatus}!`);
+        setFeedbackMsg(`✓ Withdrawal request #${selectedReq.id} marked as ${targetStatus}.`);
         setSelectedReq(null);
         setActionType(null);
         setActionNotes('');
@@ -106,17 +95,17 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
   };
 
   return (
-    <div className="space-y-6 text-left">
+    <div className="space-y-6 text-left font-sans text-[#0F172A]">
       {/* Top Search & Filter Bar */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="relative w-full md:w-80">
-          <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#94A3B8] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search request ID, user, UPI ID or bank account..."
-            className="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-700/80 rounded-xl text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
+            className="w-full pl-10 pr-4 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:border-[#2563EB]"
           />
         </div>
 
@@ -124,7 +113,7 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 bg-slate-950 border border-slate-700/80 rounded-xl text-xs text-slate-300 font-semibold cursor-pointer"
+            className="px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] font-semibold cursor-pointer outline-none hover:border-[#CBD5E1]"
           >
             <option value="all">All Request Statuses</option>
             <option value="REQUESTED">Requested (New)</option>
@@ -137,7 +126,7 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
           <button
             type="button"
             onClick={onRefresh}
-            className="flex items-center gap-1.5 px-3 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0"
+            className="flex items-center gap-1.5 px-3 py-2 bg-[#EFF6FF] hover:bg-[#DBEAFE] text-[#2563EB] border border-[#BFDBFE] rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 shadow-2xs"
             title="Refresh withdrawals from Firebase Cloud"
           >
             <RefreshCw className="w-3.5 h-3.5" />
@@ -147,17 +136,17 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
       </div>
 
       {feedbackMsg && (
-        <div className="p-3 bg-emerald-600 text-white font-bold shadow-lg border border-emerald-500 text-xs rounded-xl flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4" />
+        <div className="p-3 bg-[#ECFDF5] border border-[#A7F3D0] text-[#059669] font-bold text-xs rounded-xl flex items-center gap-2 shadow-2xs">
+          <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{feedbackMsg}</span>
         </div>
       )}
 
       {/* Withdrawals Table */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-3xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-950/60 border-b border-slate-800 text-[11px] font-black text-slate-400 uppercase tracking-wider">
+            <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-bold text-[#64748B] uppercase tracking-wider">
               <tr>
                 <th className="py-3 px-4">Request ID / Date</th>
                 <th className="py-3 px-4">Learner / Creator</th>
@@ -167,53 +156,52 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
                 <th className="py-3 px-4 text-right">Finance Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-[#E2E8F0]">
               {filteredWithdrawals.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-slate-500 text-xs">
-                    No withdrawal requests matching current criteria found.
+                  <td colSpan={6} className="py-12 text-center text-[#64748B] text-xs font-medium space-y-1">
+                    <IndianRupee className="w-8 h-8 mx-auto text-[#94A3B8] mb-1" />
+                    <p className="font-bold text-[#0F172A]">No withdrawal requests found</p>
+                    <p className="text-[11px]">Affiliate partner payout requests will appear here live.</p>
                   </td>
                 </tr>
               ) : (
                 filteredWithdrawals.map((req) => (
-                  <tr key={req.id} className="hover:bg-slate-800/40 transition-colors">
-                    {/* ID & Date */}
+                  <tr key={req.id} className="hover:bg-[#F8FAFC] transition-colors">
                     <td className="py-3.5 px-4">
-                      <div className="font-mono text-xs font-bold text-white">{req.id}</div>
-                      <div className="text-[10px] text-slate-500 mt-0.5">
+                      <div className="font-mono text-xs font-bold text-[#0F172A]">{req.id}</div>
+                      <div className="text-[10px] text-[#64748B] mt-0.5">
                         {new Date(req.requestedAt).toLocaleString()}
                       </div>
                     </td>
 
-                    {/* Referrer User */}
                     <td className="py-3.5 px-4 space-y-0.5">
-                      <div className="font-bold text-white">Learner / Partner</div>
-                      <div className="text-[10px] text-slate-400 font-mono">{req.referrerId}</div>
+                      <div className="font-bold text-[#0F172A]">{req.details.accountHolder || 'Learner'}</div>
+                      <div className="text-[11px] text-[#64748B] font-mono">{req.referrerId}</div>
                     </td>
 
-                    {/* Amount */}
                     <td className="py-3.5 px-4">
-                      <div className="text-sm font-black text-white">₹{req.amount.toLocaleString()}</div>
-                      <span className="text-[10px] text-slate-500 font-semibold">Eligible Balance</span>
+                      <div className="text-sm font-black text-[#0F172A]">₹{req.amount.toLocaleString()}</div>
+                      <span className="text-[10px] text-[#059669] font-bold">Available balance reserved</span>
                     </td>
 
                     {/* Masked Account Details */}
                     <td className="py-3.5 px-4 space-y-0.5">
-                      <div className="flex items-center gap-1.5 text-slate-200 font-bold">
+                      <div className="flex items-center gap-1.5 text-[#0F172A] font-bold">
                         {req.method === 'UPI' ? (
                           <>
-                            <CreditCard className="w-3.5 h-3.5 text-purple-400" />
+                            <CreditCard className="w-3.5 h-3.5 text-[#9333EA]" />
                             <span>UPI: {req.details.upiId}</span>
                           </>
                         ) : (
                           <>
-                            <Building className="w-3.5 h-3.5 text-blue-400" />
+                            <Building className="w-3.5 h-3.5 text-[#2563EB]" />
                             <span>Bank: A/C {req.details.accountNumber ? `••••${req.details.accountNumber.slice(-4)}` : 'N/A'}</span>
                           </>
                         )}
                       </div>
                       {req.referenceNo && (
-                        <div className="text-[10px] text-emerald-400 font-mono">
+                        <div className="text-[10px] text-[#059669] font-mono">
                           UTR: {req.referenceNo}
                         </div>
                       )}
@@ -221,14 +209,14 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
 
                     {/* Status Badge */}
                     <td className="py-3.5 px-4">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black border ${
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold border ${
                         req.status === 'PAID'
-                          ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                          ? 'bg-[#ECFDF5] border-[#A7F3D0] text-[#059669]'
                           : req.status === 'APPROVED'
-                          ? 'bg-blue-500/10 border-blue-500/20 text-blue-400'
+                          ? 'bg-[#EFF6FF] border-[#BFDBFE] text-[#2563EB]'
                           : req.status === 'REJECTED'
-                          ? 'bg-rose-500/10 border-rose-500/20 text-rose-400'
-                          : 'bg-amber-500/10 border-amber-500/20 text-amber-400'
+                          ? 'bg-[#FEF2F2] border-[#FECACA] text-[#DC2626]'
+                          : 'bg-[#FFFBEB] border-[#FDE68A] text-[#D97706]'
                       }`}>
                         {req.status === 'PAID' && <CheckCircle2 className="w-3 h-3" />}
                         {req.status === 'REJECTED' && <XCircle className="w-3 h-3" />}
@@ -246,7 +234,7 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
                             setSelectedReq(req);
                             setActionType('PAY');
                           }}
-                          className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs cursor-pointer transition-colors"
+                          className="px-3 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs cursor-pointer transition-colors shadow-2xs"
                         >
                           Process Payout ➔
                         </button>
@@ -254,7 +242,7 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
                         <button
                           type="button"
                           onClick={() => setSelectedReq(req)}
-                          className="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs cursor-pointer"
+                          className="px-3 py-1.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] font-bold text-xs cursor-pointer"
                         >
                           View Details
                         </button>
@@ -268,109 +256,130 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
         </div>
       </div>
 
-      {/* ── Process Payout / Review Modal ── */}
+      {/* Modal: Process Action on Withdrawal */}
       {selectedReq && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fadeIn">
-          <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl relative text-left">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-fadeIn">
+          <div className="max-w-md w-full bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xl relative text-left space-y-4">
             <button
               type="button"
               onClick={() => {
                 setSelectedReq(null);
                 setActionType(null);
               }}
-              className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+              className="absolute top-5 right-5 p-2 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h3 className="text-base font-black text-white mb-1">
-              Review Withdrawal Request
+            <h3 className="text-base font-bold text-[#0F172A]">
+              Withdrawal Request #{selectedReq.id}
             </h3>
-            <p className="text-xs text-slate-400 font-mono mb-4">{selectedReq.id}</p>
 
-            <div className="space-y-3 p-4 bg-slate-950 rounded-2xl border border-slate-800 text-xs mb-4">
-              <div className="flex justify-between">
-                <span className="text-slate-400">Requested Amount:</span>
-                <strong className="text-white text-sm">₹{selectedReq.amount.toLocaleString()}</strong>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Method:</span>
-                <span className="text-white font-bold">{selectedReq.method}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Target Details:</span>
-                <span className="text-blue-400 font-mono font-bold">
-                  {selectedReq.method === 'UPI' ? selectedReq.details.upiId : selectedReq.details.accountNumber}
-                </span>
-              </div>
-              {selectedReq.details.bankName && (
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Bank:</span>
-                  <span className="text-slate-300">{selectedReq.details.bankName} (IFSC: {selectedReq.details.ifsc})</span>
-                </div>
+            <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs space-y-1">
+              <div><strong>Learner:</strong> {selectedReq.details.accountHolder}</div>
+              <div><strong>Affiliate UID:</strong> {selectedReq.referrerId}</div>
+              <div><strong>Amount:</strong> ₹{selectedReq.amount}</div>
+              <div><strong>Method:</strong> {selectedReq.method}</div>
+              {selectedReq.method === 'UPI' ? (
+                <div><strong>UPI ID:</strong> {selectedReq.details.upiId}</div>
+              ) : (
+                <>
+                  <div><strong>Account Number:</strong> {selectedReq.details.accountNumber}</div>
+                  <div><strong>IFSC:</strong> {selectedReq.details.ifsc}</div>
+                  <div><strong>Bank:</strong> {selectedReq.details.bankName}</div>
+                </>
               )}
+              {selectedReq.referenceNo && <div><strong>Payout Reference (UTR):</strong> {selectedReq.referenceNo}</div>}
+              {selectedReq.paidAt && <div><strong>Paid At:</strong> {new Date(selectedReq.paidAt).toLocaleString()}</div>}
             </div>
 
-            {selectedReq.status !== 'PAID' && selectedReq.status !== 'REJECTED' && canPayout ? (
-              <div className="space-y-3 text-xs">
-                <div>
-                  <label className="block text-slate-300 font-bold mb-1">
-                    Bank UTR / UPI Reference Number *
-                  </label>
-                  <input
-                    type="text"
-                    value={payoutRef}
-                    onChange={(e) => setPayoutRef(e.target.value)}
-                    placeholder="e.g. 529104812391 (Mandatory for Paid status)"
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white placeholder:text-slate-500 focus:outline-none font-mono"
-                  />
+            {selectedReq.status !== 'PAID' && selectedReq.status !== 'REJECTED' && (
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setActionType('PAY')}
+                    className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+                      actionType === 'PAY'
+                        ? 'bg-[#059669] text-white border-[#059669]'
+                        : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B]'
+                    }`}
+                  >
+                    Mark Paid
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActionType('APPROVE')}
+                    className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+                      actionType === 'APPROVE'
+                        ? 'bg-[#2563EB] text-white border-[#2563EB]'
+                        : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B]'
+                    }`}
+                  >
+                    Approve
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActionType('REJECT')}
+                    className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+                      actionType === 'REJECT'
+                        ? 'bg-[#DC2626] text-white border-[#DC2626]'
+                        : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B]'
+                    }`}
+                  >
+                    Reject
+                  </button>
                 </div>
 
+                {actionType === 'PAY' && (
+                  <div>
+                    <label className="block text-xs font-bold text-[#0F172A] mb-1">
+                      Bank UTR / UPI Reference ID *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={payoutRef}
+                      onChange={(e) => setPayoutRef(e.target.value)}
+                      placeholder="e.g. UTR4928172648 or UPI/2026/..."
+                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] placeholder:text-[#94A3B8] font-mono focus:outline-none focus:border-[#2563EB]"
+                    />
+                  </div>
+                )}
+
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">
-                    Internal Processing Notes
+                  <label className="block text-xs font-bold text-[#0F172A] mb-1">
+                    Admin Notes {actionType === 'REJECT' && '* (Mandatory for rejection)'}
                   </label>
-                  <input
-                    type="text"
+                  <textarea
+                    rows={2}
                     value={actionNotes}
                     onChange={(e) => setActionNotes(e.target.value)}
-                    placeholder="Reason or payout notes..."
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white placeholder:text-slate-500 focus:outline-none"
+                    placeholder="Enter notes or audit justification..."
+                    className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:border-[#2563EB]"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 pt-2">
+                <div className="flex items-center justify-end gap-2 pt-2">
                   <button
                     type="button"
-                    disabled={isProcessing}
                     onClick={() => {
-                      setActionType('REJECT');
-                      handleAction();
+                      setSelectedReq(null);
+                      setActionType(null);
                     }}
-                    className="py-2.5 px-4 bg-rose-600/20 border border-rose-500/30 hover:bg-rose-600/30 text-rose-300 font-bold rounded-xl cursor-pointer"
+                    className="px-4 py-2 rounded-xl text-xs font-bold text-[#64748B] hover:text-[#0F172A]"
                   >
-                    Reject &amp; Refund
+                    Cancel
                   </button>
-
                   <button
                     type="button"
                     disabled={isProcessing}
-                    onClick={() => {
-                      setActionType('PAY');
-                      handleAction();
-                    }}
-                    className="py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-md shadow-emerald-600/25 cursor-pointer"
+                    onClick={handleAction}
+                    className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs rounded-xl shadow-sm transition-colors cursor-pointer disabled:opacity-50"
                   >
-                    {isProcessing ? 'Recording...' : 'Mark Paid ➔'}
+                    {isProcessing ? 'Processing...' : 'Confirm Action'}
                   </button>
                 </div>
-              </div>
-            ) : (
-              <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs text-slate-400">
-                This request has been finalized as <strong className="text-white">{selectedReq.status}</strong>.
-                {selectedReq.referenceNo && (
-                  <div className="mt-1 text-emerald-400 font-mono">Bank UTR: {selectedReq.referenceNo}</div>
-                )}
               </div>
             )}
           </div>

@@ -1,36 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Users,
-  GraduationCap,
   IndianRupee,
-  Share2,
-  Clock,
-  CheckCircle2,
-  AlertTriangle,
-  ArrowUpRight,
-  TrendingUp,
   BookOpen,
   ShieldCheck,
-  Search,
-  Filter,
-  Download,
   Calendar,
-  Code2,
-  FileCheck,
-  Award,
-  Sparkles,
   ChevronDown,
-  Check,
   X,
   CreditCard,
   UserCheck,
   Briefcase,
-  HelpCircle,
-  Trophy,
   ArrowRight,
   Unlock,
-  PlusCircle,
-  Eye
+  CheckCircle2,
+  Clock,
+  Building
 } from 'lucide-react';
 import { PlatformStats, SystemPaymentRecord } from '../../../types/admin';
 import { RegisteredUserRecord, getAffiliateMigrationStatus } from '../../../services/realAuthService';
@@ -52,131 +36,167 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   recentPayments,
   recentWithdrawals,
   onNavigateTab,
-  isDark = false,
 }) => {
-  const [selectedCourseFilter, setSelectedCourseFilter] = useState('All');
-  const [dateRange, setDateRange] = useState('Oct 1, 2026 - Oct 31, 2026');
+  const [dateRangeFilter, setDateRangeFilter] = useState<'30' | '7' | '365'>('30');
   const [unlockModalUser, setUnlockModalUser] = useState<RegisteredUserRecord | null>(null);
   const [unlockTargetCourse, setUnlockTargetCourse] = useState('data_analyst');
   const [unlockSuccessMsg, setUnlockSuccessMsg] = useState('');
   const [showMigrationDetails, setShowMigrationDetails] = useState(false);
   const migrationStatus = getAffiliateMigrationStatus();
 
-  const cardBg = 'bg-white border border-slate-200/90 shadow-xs hover:shadow-sm transition-all rounded-3xl p-5';
-  const textPrimary = 'text-slate-900';
-  const textMuted = 'text-slate-500';
+  // Active Users metric: Do not assume all registered users are active. Never invent counts.
+  const activeCount = useMemo(() => {
+    return recentUsers.filter((u: any) => Boolean(u.lastLoginAt)).length;
+  }, [recentUsers]);
+
+  // Real User Growth aggregated from real Firebase Auth registration timestamps
+  const userGrowthData = useMemo(() => {
+    if (!recentUsers || recentUsers.length === 0) return [];
+    
+    // Parse dates and sort ascending
+    const sorted = [...recentUsers]
+      .filter((u) => u.registeredAt)
+      .sort((a, b) => new Date(a.registeredAt).getTime() - new Date(b.registeredAt).getTime());
+
+    if (sorted.length === 0) return [];
+
+    // Group by date (YYYY-MM-DD)
+    const dateCounts: Record<string, number> = {};
+    sorted.forEach((u) => {
+      const d = u.registeredAt.slice(0, 10);
+      dateCounts[d] = (dateCounts[d] || 0) + 1;
+    });
+
+    const entries = Object.entries(dateCounts);
+    let runningTotal = 0;
+    return entries.map(([dateStr, count]) => {
+      runningTotal += count;
+      const parsed = new Date(dateStr);
+      const label = isNaN(parsed.getTime())
+        ? dateStr
+        : parsed.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return {
+        date: label,
+        rawDate: dateStr,
+        newUsers: count,
+        total: runningTotal,
+      };
+    });
+  }, [recentUsers]);
 
   const handleQuickUnlock = async (user: RegisteredUserRecord, courseId: string) => {
     const studentIdentifier = user.email || user.phone || user.uid;
     const ok = await adminGrantCourseToStudent(studentIdentifier, courseId);
     if (ok) {
-      setUnlockSuccessMsg(`🎉 Successfully unlocked ${courseId.replace(/_/g, ' ').toUpperCase()} for ${user.name}! Data saved to Cloud.`);
+      setUnlockSuccessMsg(`🎉 Successfully unlocked ${courseId.replace(/_/g, ' ').toUpperCase()} for ${user.name}! Saved to cloud.`);
       setTimeout(() => setUnlockSuccessMsg(''), 4500);
       setUnlockModalUser(null);
+    } else {
+      alert('Failed to grant course unlock. Check admin privileges.');
     }
   };
 
-  // Static mock fallbacks if user list is empty, ensuring UI looks full & lively like the screenshot
-
-  const recentSubmissions = [
-    { student: 'Amit Kumar', question: 'Print Your Name', language: 'Python', result: 'Correct', time: '2 min ago' },
-    { student: 'Priya Singh', question: 'Sum of Two Numbers', language: 'Python', result: 'Correct', time: '5 min ago' },
-    { student: 'Rohit Verma', question: 'Check Even or Odd', language: 'Python', result: 'Wrong', time: '8 min ago' },
-    { student: 'Neha Gupta', question: 'Find Largest Element', language: 'Python', result: 'Correct', time: '12 min ago' },
-    { student: 'Vikash Raj', question: 'Reverse a String', language: 'Python', result: 'Correct', time: '15 min ago' }
-  ];
-
-  const topPerformers = [
-    { rank: 1, student: 'Rahul Sharma', points: '2,450', problems: '320', medal: '🥇' },
-    { rank: 2, student: 'Priya Singh', points: '2,380', problems: '305', medal: '🥈' },
-    { rank: 3, student: 'Amit Kumar', points: '2,120', problems: '290', medal: '🥉' },
-    { rank: 4, student: 'Neha Gupta', points: '1,980', problems: '275', medal: '4' },
-    { rank: 5, student: 'Rohit Verma', points: '1,860', problems: '260', medal: '5' }
-  ];
+  // Filter recent paid enrollments from verified payments
+  const recentEnrollments = useMemo(() => {
+    return recentPayments.filter((p) => p.status === 'SUCCESS');
+  }, [recentPayments]);
 
   return (
-    <div className="space-y-6 text-left font-sans">
+    <div className="space-y-6 text-left font-sans text-[#0F172A]">
       
       {/* Success Notification Bar */}
       {unlockSuccessMsg && (
-        <div className="p-4 rounded-2xl bg-emerald-500 text-white font-bold text-xs flex items-center justify-between shadow-lg shadow-emerald-500/20 animate-fadeIn">
+        <div className="p-4 rounded-2xl bg-[#059669] text-white font-bold text-xs flex items-center justify-between shadow-xs animate-fadeIn">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-5 h-5 text-white shrink-0" />
             <span>{unlockSuccessMsg}</span>
           </div>
-          <button onClick={() => setUnlockSuccessMsg('')} className="p-1 hover:bg-white/20 rounded-lg">
+          <button onClick={() => setUnlockSuccessMsg('')} className="p-1 hover:bg-white/20 rounded-lg cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
       {/* =========================================================================
-          1. TOP 4 KPI CARDS (Matching Screenshot: media_1792940388047_60fc0a29.jpg)
+          1. TOP 4 KPI CARDS (PREMIUM LIGHT THEME)
           ========================================================================= */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         
-        {/* KPI 1: Total Users */}
-        <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs hover:shadow-md transition-all">
-          <div className="flex items-center justify-between mb-2">
-            <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+        {/* KPI 1: Total Registered Users */}
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:shadow-sm transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center font-bold">
               <Users className="w-5 h-5" />
             </div>
-            <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-0.5">
-              Live in cloud
+            <span className="text-[11px] font-bold text-[#059669] bg-[#ECFDF5] border border-[#A7F3D0] px-2.5 py-0.5 rounded-full flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#059669] animate-pulse" />
+              Live from Firebase
             </span>
           </div>
-          <span className="text-xs font-bold text-slate-500 block">Total Users</span>
-          <div className="text-3xl font-black text-slate-900 mt-0.5 tracking-tight">
+          <span className="text-xs font-semibold text-[#64748B] block">Total Registered Users</span>
+          <div className="text-3xl font-black text-[#0F172A] mt-1 tracking-tight">
             {stats.totalUsers.toLocaleString()}
           </div>
+          <span className="text-[11px] text-[#64748B] font-medium mt-1 block">
+            Authoritative Google Identity accounts
+          </span>
         </div>
 
         {/* KPI 2: Active Users */}
-        <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs hover:shadow-md transition-all">
-          <div className="flex items-center justify-between mb-2">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:shadow-sm transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-[#ECFDF5] text-[#059669] flex items-center justify-center font-bold">
               <UserCheck className="w-5 h-5" />
             </div>
-            <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-0.5">
-              Live in cloud
+            <span className="text-[11px] font-bold text-[#64748B] bg-[#F1F5F9] border border-[#E2E8F0] px-2.5 py-0.5 rounded-full">
+              {activeCount > 0 ? `${activeCount} Verified Active` : 'Not tracked'}
             </span>
           </div>
-          <span className="text-xs font-bold text-slate-500 block">Active Users</span>
-          <div className="text-3xl font-black text-slate-900 mt-0.5 tracking-tight">
-            {stats.activeUsers.toLocaleString()}
+          <span className="text-xs font-semibold text-[#64748B] block">Active Users</span>
+          <div className="text-3xl font-black text-[#0F172A] mt-1 tracking-tight">
+            {activeCount > 0 ? activeCount.toLocaleString() : 'Not tracked'}
           </div>
+          <span className="text-[11px] text-[#64748B] font-medium mt-1 block">
+            {activeCount > 0 ? 'Verified recent logins' : 'Activity tracking inactive'}
+          </span>
         </div>
 
         {/* KPI 3: Paid Enrollments */}
-        <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs hover:shadow-md transition-all">
-          <div className="flex items-center justify-between mb-2">
-            <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:shadow-sm transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center font-bold">
               <Briefcase className="w-5 h-5" />
             </div>
-            <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-0.5">
-              Verified payments
+            <span className="text-[11px] font-bold text-[#2563EB] bg-[#EFF6FF] border border-[#BFDBFE] px-2.5 py-0.5 rounded-full">
+              Firestore cloud
             </span>
           </div>
-          <span className="text-xs font-bold text-slate-500 block">Paid Enrollments</span>
-          <div className="text-3xl font-black text-slate-900 mt-0.5 tracking-tight">
+          <span className="text-xs font-semibold text-[#64748B] block">Paid Enrollments</span>
+          <div className="text-3xl font-black text-[#0F172A] mt-1 tracking-tight">
             {stats.enrolledStudents.toLocaleString()}
           </div>
+          <span className="text-[11px] text-[#64748B] font-medium mt-1 block">
+            Verified course purchases
+          </span>
         </div>
 
         {/* KPI 4: Total Revenue */}
-        <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs hover:shadow-md transition-all">
-          <div className="flex items-center justify-between mb-2">
-            <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs hover:shadow-sm transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-[#F3E8FF] text-[#9333EA] flex items-center justify-center font-bold">
               <IndianRupee className="w-5 h-5" />
             </div>
-            <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-0.5">
+            <span className="text-[11px] font-bold text-[#059669] bg-[#ECFDF5] border border-[#A7F3D0] px-2.5 py-0.5 rounded-full">
               Direct Razorpay
             </span>
           </div>
-          <span className="text-xs font-bold text-slate-500 block">Total Revenue</span>
-          <div className="text-3xl font-black text-slate-900 mt-0.5 tracking-tight">
+          <span className="text-xs font-semibold text-[#64748B] block">Total Revenue</span>
+          <div className="text-3xl font-black text-[#0F172A] mt-1 tracking-tight">
             ₹{stats.totalRevenue.toLocaleString()}
           </div>
+          <span className="text-[11px] text-[#64748B] font-medium mt-1 block">
+            Captured gateway payments
+          </span>
         </div>
 
       </div>
@@ -184,19 +204,19 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       {/* =========================================================================
           1B. AFFILIATE SYSTEM v5 RESET & COMPACT STATUS PANEL
           ========================================================================= */}
-      <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-            <ShieldCheck className="w-4 h-4" />
+          <div className="w-9 h-9 rounded-xl bg-[#ECFDF5] text-[#059669] flex items-center justify-center font-bold shrink-0">
+            <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-xs font-black text-slate-900 flex items-center gap-1.5">
+            <h4 className="text-xs font-bold text-[#0F172A] flex items-center gap-2">
               <span>Affiliate System v5 Cloud Synchronized</span>
-              <span className="bg-emerald-50 text-emerald-700 text-[10px] font-black px-2 py-0.5 rounded-full">
+              <span className="bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] text-[10px] font-black px-2 py-0.5 rounded-full">
                 Active &amp; Idempotent
               </span>
             </h4>
-            <p className="text-[11px] text-slate-500 font-medium">
+            <p className="text-[11px] text-[#64748B] font-medium">
               Real-time Firestore commission &amp; balance reservation engine
             </p>
           </div>
@@ -204,7 +224,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         <button
           type="button"
           onClick={() => setShowMigrationDetails(!showMigrationDetails)}
-          className="text-xs font-bold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition cursor-pointer flex items-center gap-1 self-start sm:self-auto"
+          className="text-xs font-bold text-[#64748B] hover:text-[#0F172A] px-3 py-1.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-[#F1F5F9] transition cursor-pointer flex items-center gap-1.5 self-start sm:self-auto shrink-0"
         >
           <span>{showMigrationDetails ? 'Hide Migration Details' : 'View Migration Details'}</span>
           <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showMigrationDetails ? 'rotate-180' : ''}`} />
@@ -212,604 +232,487 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       </div>
 
       {showMigrationDetails && (
-        <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E2E8F0] pb-3">
             <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+              <div className="w-9 h-9 rounded-xl bg-[#ECFDF5] text-[#059669] flex items-center justify-center font-bold">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-sm sm:text-base font-black text-slate-900">
+                <h3 className="text-sm font-bold text-[#0F172A]">
                   Affiliate System Status &amp; Reset Migration (v5)
                 </h3>
-                <p className="text-xs text-slate-500 font-medium">
+                <p className="text-xs text-[#64748B] font-medium">
                   Controlled one-time database reset &amp; server-verified commission engine
                 </p>
               </div>
             </div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-black">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] text-xs font-bold">
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>Reset Completion: {migrationStatus.status}</span>
             </span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-              <span className="text-slate-400 font-bold uppercase text-[10px] block">Reset Migration Status</span>
-              <strong className="text-slate-900 font-black text-sm mt-0.5 block">{migrationStatus.migrationId}</strong>
-              <span className="text-emerald-600 font-semibold text-[11px]">One-Time Idempotent Execution ✓</span>
+            <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+              <span className="text-[#64748B] font-bold uppercase text-[10px] block">Reset Migration ID</span>
+              <strong className="text-[#0F172A] font-black text-sm mt-0.5 block">{migrationStatus.migrationId}</strong>
+              <span className="text-[#059669] font-semibold text-[11px]">One-Time Idempotent Execution ✓</span>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-              <span className="text-slate-400 font-bold uppercase text-[10px] block">Total Users Processed</span>
-              <strong className="text-slate-900 font-black text-sm mt-0.5 block">
+            <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+              <span className="text-[#64748B] font-bold uppercase text-[10px] block">Total Users Processed</span>
+              <strong className="text-[#0F172A] font-black text-sm mt-0.5 block">
                 {Math.max(stats.totalUsers, migrationStatus.usersProcessed)} Users Reset to ₹0
               </strong>
-              <span className="text-slate-500 font-semibold text-[11px]">
-                {migrationStatus.legacyKeysArchived} Legacy Keys Archived Safely
+              <span className="text-[#64748B] font-semibold text-[11px]">
+                {migrationStatus.legacyKeysArchived} Legacy Keys Safely Archived
               </span>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-              <span className="text-slate-400 font-bold uppercase text-[10px] block">New-System Commission Rules</span>
-              <strong className="text-emerald-700 font-black text-sm mt-0.5 block">
+            <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+              <span className="text-[#64748B] font-bold uppercase text-[10px] block">New-System Commission Rules</span>
+              <strong className="text-[#059669] font-black text-sm mt-0.5 block">
                 Free Signup: ₹0 • Paid Enrollment: ₹100
               </strong>
-              <span className="text-slate-500 font-semibold text-[11px]">
+              <span className="text-[#64748B] font-semibold text-[11px]">
                 Failed Payment: ₹0 • Unique Email &amp; No Self-Referral
               </span>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-              <span className="text-slate-400 font-bold uppercase text-[10px] block">Payment Verification Status</span>
-              <strong className="text-slate-900 font-black text-sm mt-0.5 block">
+            <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+              <span className="text-[#64748B] font-bold uppercase text-[10px] block">Payment Verification Status</span>
+              <strong className="text-[#0F172A] font-black text-sm mt-0.5 block">
                 {migrationStatus.paymentVerification}
               </strong>
-              <span className="text-blue-600 font-semibold text-[11px]">Duplicate Webhook Idempotency Active</span>
+              <span className="text-[#2563EB] font-semibold text-[11px]">Duplicate Webhook Idempotency Active</span>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-              <span className="text-slate-400 font-bold uppercase text-[10px] block">Affiliate Payout Integration</span>
-              <strong className="text-slate-900 font-black text-sm mt-0.5 block">
+            <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+              <span className="text-[#64748B] font-bold uppercase text-[10px] block">Affiliate Payout Integration</span>
+              <strong className="text-[#0F172A] font-black text-sm mt-0.5 block">
                 {migrationStatus.payoutIntegrationStatus}
               </strong>
-              <span className="text-amber-600 font-semibold text-[11px]">Old Bank/UPI Purged • Re-Verification Enforced</span>
+              <span className="text-[#D97706] font-semibold text-[11px]">Old Bank/UPI Purged • Re-Verification Enforced</span>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-              <span className="text-slate-400 font-bold uppercase text-[10px] block">Audit &amp; Account Isolation</span>
-              <strong className="text-slate-900 font-black text-sm mt-0.5 block">
+            <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+              <span className="text-[#64748B] font-bold uppercase text-[10px] block">Audit &amp; Account Isolation</span>
+              <strong className="text-[#0F172A] font-black text-sm mt-0.5 block">
                 Login &amp; Course Unlocks Preserved
               </strong>
-              <span className="text-emerald-600 font-semibold text-[11px]">Sensitive Bank/UPI Redacted from Logs</span>
+              <span className="text-[#059669] font-semibold text-[11px]">Sensitive Bank/UPI Redacted from Logs</span>
             </div>
           </div>
         </div>
       )}
 
       {/* =========================================================================
-          2. MIDDLE ROW: USER GROWTH (AREA CHART) & COURSE ENROLLMENTS (DONUT)
+          2. MIDDLE ROW: USER GROWTH (REAL SVG CHART) & COURSE ENROLLMENTS
           ========================================================================= */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         
-        {/* Left: User Growth Area Chart (8 of 12 cols) */}
-        <div className="lg:col-span-8 bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs space-y-4">
+        {/* Left: User Growth (8 of 12 cols) - 100% REAL DATA ONLY */}
+        <div className="lg:col-span-8 bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-black text-slate-900">User Growth</h3>
-              <p className="text-xs text-slate-500 font-medium">New student registrations over time</p>
+              <h3 className="text-base font-bold text-[#0F172A]">User Growth</h3>
+              <p className="text-xs text-[#64748B] font-medium">Real registered student accounts from Firebase Authentication</p>
             </div>
             <div className="flex items-center gap-2">
-              <select className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-slate-50 outline-none cursor-pointer">
-                <option>Last 30 Days</option>
-                <option>Last 7 Days</option>
-                <option>This Year</option>
+              <select
+                value={dateRangeFilter}
+                onChange={(e: any) => setDateRangeFilter(e.target.value)}
+                className="px-3 py-1.5 rounded-xl border border-[#E2E8F0] text-xs font-bold text-[#0F172A] bg-[#F8FAFC] outline-none cursor-pointer hover:border-[#CBD5E1]"
+              >
+                <option value="30">Last 30 Days</option>
+                <option value="7">Last 7 Days</option>
+                <option value="365">This Year</option>
               </select>
             </div>
           </div>
 
-          {/* Realistic SVG Area Curve matching screenshot */}
-          <div className="relative w-full h-56 pt-4">
-            <svg viewBox="0 0 700 200" className="w-full h-full overflow-visible">
-              <defs>
-                <linearGradient id="userGrowthGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.35" />
-                  <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.0" />
-                </linearGradient>
-              </defs>
-
-              {/* Horizontal grid lines */}
-              <line x1="40" y1="20" x2="680" y2="20" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
-              <text x="10" y="24" fontSize="10" fill="#94a3b8" fontWeight="bold">8K</text>
-
-              <line x1="40" y1="65" x2="680" y2="65" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
-              <text x="10" y="69" fontSize="10" fill="#94a3b8" fontWeight="bold">6K</text>
-
-              <line x1="40" y1="110" x2="680" y2="110" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
-              <text x="10" y="114" fontSize="10" fill="#94a3b8" fontWeight="bold">4K</text>
-
-              <line x1="40" y1="155" x2="680" y2="155" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
-              <text x="10" y="159" fontSize="10" fill="#94a3b8" fontWeight="bold">2K</text>
-
-              <line x1="40" y1="190" x2="680" y2="190" stroke="#e2e8f0" strokeWidth="1" />
-              <text x="10" y="194" fontSize="10" fill="#94a3b8" fontWeight="bold">0</text>
-
-              {/* Area fill */}
-              <polygon
-                points="40,190 40,165 100,150 160,158 220,135 280,120 340,140 400,105 460,95 520,110 580,75 640,65 680,45 680,190"
-                fill="url(#userGrowthGrad)"
-              />
-
-              {/* Top smooth curve */}
-              <polyline
-                fill="none"
-                stroke="#2563eb"
-                strokeWidth="3.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                points="40,165 100,150 160,158 220,135 280,120 340,140 400,105 460,95 520,110 580,75 640,65 680,45"
-              />
-
-              {/* Active data dots */}
-              <circle cx="400" cy="105" r="4" fill="#2563eb" stroke="#ffffff" strokeWidth="2" />
-              <circle cx="580" cy="75" r="4" fill="#2563eb" stroke="#ffffff" strokeWidth="2" />
-              <circle cx="680" cy="45" r="5" fill="#2563eb" stroke="#ffffff" strokeWidth="2.5" />
-            </svg>
-
-            {/* X-axis labels */}
-            <div className="flex justify-between pl-10 pr-4 text-[10px] font-bold text-slate-400 mt-2">
-              <span>1 Oct</span>
-              <span>7 Oct</span>
-              <span>14 Oct</span>
-              <span>21 Oct</span>
-              <span>28 Oct</span>
+          {/* Real SVG Curve or Clean Empty State */}
+          {userGrowthData.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-52 text-center">
+              <Users className="w-8 h-8 text-[#94A3B8] mb-2" />
+              <span className="text-xs font-bold text-[#0F172A]">No user registrations in selected period</span>
+              <span className="text-[11px] text-[#64748B]">New student registrations will plot here live in real-time.</span>
             </div>
-          </div>
+          ) : (
+            <div className="relative w-full h-56 pt-2">
+              <svg viewBox="0 0 700 200" className="w-full h-full overflow-visible">
+                <defs>
+                  <linearGradient id="userGrowthGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#2563eb" stopOpacity="0.25" />
+                    <stop offset="100%" stopColor="#2563eb" stopOpacity="0.0" />
+                  </linearGradient>
+                </defs>
+
+                {/* Horizontal reference grid lines */}
+                <line x1="40" y1="30" x2="680" y2="30" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                <text x="10" y="34" fontSize="10" fill="#94A3B8" fontWeight="bold">15</text>
+
+                <line x1="40" y1="75" x2="680" y2="75" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                <text x="10" y="79" fontSize="10" fill="#94A3B8" fontWeight="bold">10</text>
+
+                <line x1="40" y1="125" x2="680" y2="125" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                <text x="10" y="129" fontSize="10" fill="#94A3B8" fontWeight="bold">5</text>
+
+                <line x1="40" y1="175" x2="680" y2="175" stroke="#E2E8F0" strokeWidth="1" />
+                <text x="10" y="179" fontSize="10" fill="#94A3B8" fontWeight="bold">0</text>
+
+                {/* Plot real coordinates */}
+                {(() => {
+                  const maxVal = Math.max(15, stats.totalUsers);
+                  const count = userGrowthData.length;
+                  const xStep = count > 1 ? (640 / (count - 1)) : 320;
+                  
+                  const points = userGrowthData.map((d, idx) => {
+                    const x = count === 1 ? 360 : 40 + idx * xStep;
+                    const y = 175 - (d.total / maxVal) * 145;
+                    return { x, y, ...d };
+                  });
+
+                  const polylinePoints = points.map((p) => `${p.x},${p.y}`).join(' ');
+                  const firstX = points[0]?.x || 40;
+                  const lastX = points[points.length - 1]?.x || 680;
+                  const polygonPoints = `${firstX},175 ${polylinePoints} ${lastX},175`;
+
+                  return (
+                    <g>
+                      <polygon points={polygonPoints} fill="url(#userGrowthGrad)" />
+                      <polyline
+                        fill="none"
+                        stroke="#2563EB"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        points={polylinePoints}
+                      />
+                      {points.map((p, idx) => (
+                        <g key={idx}>
+                          <circle cx={p.x} cy={p.y} r="4.5" fill="#2563EB" stroke="#FFFFFF" strokeWidth="2.5" />
+                          <title>{`${p.date}: ${p.total} total registered students (+${p.newUsers})`}</title>
+                        </g>
+                      ))}
+                    </g>
+                  );
+                })()}
+              </svg>
+
+              {/* X-axis real dates */}
+              <div className="flex justify-between pl-10 pr-4 text-[10px] font-bold text-[#64748B] mt-2">
+                {userGrowthData.slice(0, 6).map((d, i) => (
+                  <span key={i}>{d.date}</span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Right: Course Enrollments Donut Chart (4 of 12 cols) */}
-        <div className="lg:col-span-4 bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs flex flex-col justify-between">
+        {/* Right: Course Enrollments (4 of 12 cols) - 100% REAL DATA ONLY */}
+        <div className="lg:col-span-4 bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <h3 className="text-base font-black text-slate-900">Course Enrollments</h3>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Distribution</span>
-          </div>
-
-          {/* Donut Chart with Center Text */}
-          <div className="relative flex items-center justify-center my-4">
-            <svg viewBox="0 0 160 160" className="w-40 h-40 transform -rotate-90">
-              {/* Data Analytics: 45% (cyan/blue) */}
-              <circle cx="80" cy="80" r="60" fill="transparent" stroke="#0ea5e9" strokeWidth="20" strokeDasharray="170 377" strokeDashoffset="0" />
-              {/* Data Science: 25% (purple) */}
-              <circle cx="80" cy="80" r="60" fill="transparent" stroke="#8b5cf6" strokeWidth="20" strokeDasharray="95 377" strokeDashoffset="-170" />
-              {/* ML Engineering: 15% (amber/orange) */}
-              <circle cx="80" cy="80" r="60" fill="transparent" stroke="#f59e0b" strokeWidth="20" strokeDasharray="57 377" strokeDashoffset="-265" />
-              {/* AI Engineering: 10% (emerald) */}
-              <circle cx="80" cy="80" r="60" fill="transparent" stroke="#10b981" strokeWidth="20" strokeDasharray="38 377" strokeDashoffset="-322" />
-              {/* Other: 5% (slate/violet) */}
-              <circle cx="80" cy="80" r="60" fill="transparent" stroke="#6366f1" strokeWidth="20" strokeDasharray="17 377" strokeDashoffset="-360" />
-            </svg>
-
-            {/* Inner Center Content */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-              <span className="text-2xl font-black text-slate-900 leading-tight">1,286</span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Enrollments</span>
+            <div>
+              <h3 className="text-base font-bold text-[#0F172A]">Course Enrollments</h3>
+              <p className="text-xs text-[#64748B] font-medium">Verified student purchases</p>
             </div>
-          </div>
-
-          {/* Legend */}
-          <div className="space-y-1.5 text-xs font-bold text-slate-600 pt-2 border-t border-slate-100">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-sky-500" />
-                <span>Data Analytics</span>
-              </div>
-              <span className="text-slate-900">45%</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-purple-500" />
-                <span>Data Science</span>
-              </div>
-              <span className="text-slate-900">25%</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                <span>ML Engineering</span>
-              </div>
-              <span className="text-slate-900">15%</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                <span>AI Engineering</span>
-              </div>
-              <span className="text-slate-900">10%</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
-                <span>Other Programs</span>
-              </div>
-              <span className="text-slate-900">5%</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* =========================================================================
-          3. CODING PRACTICE STATS & POPULAR LANGUAGES ROW
-          ========================================================================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        
-        {/* Left: Hackathon/DSA Practice Stats (6 of 12 cols) */}
-        <div className="lg:col-span-6 bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-base font-black text-slate-900">Hackathon/DSA Practice Stats</h3>
-            <span className="text-xs font-bold text-blue-600 hover:text-blue-700 cursor-pointer" onClick={() => onNavigateTab('practice')}>
-              View Arena →
+            <span className="text-[10px] font-bold text-[#2563EB] bg-[#EFF6FF] border border-[#BFDBFE] px-2 py-0.5 rounded-full">
+              Real-time
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-            
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-center space-y-1">
-              <div className="w-7 h-7 mx-auto rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
-                <HelpCircle className="w-4 h-4" />
+          {/* Real Empty State if zero enrollments */}
+          {stats.enrolledStudents === 0 ? (
+            <div className="flex-1 flex flex-col items-center justify-center py-8 text-center">
+              <div className="w-14 h-14 rounded-2xl bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center mb-3">
+                <BookOpen className="w-7 h-7" />
               </div>
-              <span className="text-[11px] font-bold text-slate-400 block">Questions</span>
-              <div className="text-lg font-black text-slate-900">1,250</div>
+              <h4 className="text-sm font-bold text-[#0F172A] mb-1">No enrollments yet</h4>
+              <p className="text-xs text-[#64748B] max-w-[200px]">
+                Verified course purchases will appear here.
+              </p>
             </div>
-
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-center space-y-1">
-              <div className="w-7 h-7 mx-auto rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center">
-                <FileCheck className="w-4 h-4" />
+          ) : (
+            <div className="space-y-4 my-auto py-4">
+              <div className="text-center">
+                <div className="text-3xl font-black text-[#0F172A]">{stats.enrolledStudents}</div>
+                <div className="text-xs text-[#64748B] font-medium">Active Enrolled Learners</div>
               </div>
-              <span className="text-[11px] font-bold text-slate-400 block">Submissions</span>
-              <div className="text-lg font-black text-slate-900">0</div>
-            </div>
-
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-center space-y-1">
-              <div className="w-7 h-7 mx-auto rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
-                <CheckCircle2 className="w-4 h-4" />
+              <div className="space-y-2 text-xs font-semibold">
+                {Object.entries(stats.courseEnrollments || {}).map(([cName, count], idx) => (
+                  <div key={idx} className="flex items-center justify-between p-2 rounded-xl bg-[#F8FAFC]">
+                    <span className="text-[#0F172A] truncate max-w-[180px]">{cName}</span>
+                    <span className="text-[#2563EB] font-bold">{count}</span>
+                  </div>
+                ))}
               </div>
-              <span className="text-[11px] font-bold text-slate-400 block">Success Rate</span>
-              <div className="text-lg font-black text-emerald-600">0%</div>
             </div>
+          )}
 
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-center space-y-1">
-              <div className="w-7 h-7 mx-auto rounded-xl bg-cyan-100 text-cyan-600 flex items-center justify-center">
-                <Award className="w-4 h-4" />
-              </div>
-              <span className="text-[11px] font-bold text-slate-400 block">Avg. Score</span>
-              <div className="text-lg font-black text-slate-900">0/100</div>
-            </div>
-
-          </div>
-        </div>
-
-        {/* Right: Popular Languages Bar Chart (6 of 12 cols) */}
-        <div className="lg:col-span-6 bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-base font-black text-slate-900">Popular Languages</h3>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Usage</span>
-          </div>
-
-          <div className="flex items-end justify-between gap-4 h-40 pt-4 px-4">
-            
-            {/* Python */}
-            <div className="flex flex-col items-center flex-1 h-full justify-end group">
-              <span className="text-[10px] font-black text-blue-600 mb-1 group-hover:scale-110 transition-transform">58%</span>
-              <div className="w-full bg-blue-600 rounded-t-xl transition-all" style={{ height: '85%' }} />
-              <span className="text-xs font-bold text-slate-700 mt-2">Python</span>
-            </div>
-
-            {/* SQL */}
-            <div className="flex flex-col items-center flex-1 h-full justify-end group">
-              <span className="text-[10px] font-black text-sky-600 mb-1 group-hover:scale-110 transition-transform">26%</span>
-              <div className="w-full bg-sky-500 rounded-t-xl transition-all" style={{ height: '55%' }} />
-              <span className="text-xs font-bold text-slate-700 mt-2">SQL</span>
-            </div>
-
-            {/* JavaScript */}
-            <div className="flex flex-col items-center flex-1 h-full justify-end group">
-              <span className="text-[10px] font-black text-amber-500 mb-1 group-hover:scale-110 transition-transform">11%</span>
-              <div className="w-full bg-amber-400 rounded-t-xl transition-all" style={{ height: '30%' }} />
-              <span className="text-xs font-bold text-slate-700 mt-2">JavaScript</span>
-            </div>
-
-            {/* C++ */}
-            <div className="flex flex-col items-center flex-1 h-full justify-end group">
-              <span className="text-[10px] font-black text-purple-600 mb-1 group-hover:scale-110 transition-transform">5%</span>
-              <div className="w-full bg-purple-500 rounded-t-xl transition-all" style={{ height: '18%' }} />
-              <span className="text-xs font-bold text-slate-700 mt-2">C++</span>
-            </div>
-
+          <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs text-[#64748B]">
+            <span>Total Enrolled</span>
+            <strong className="text-[#0F172A] font-bold">{stats.enrolledStudents} Students</strong>
           </div>
         </div>
 
       </div>
 
       {/* =========================================================================
-          4. BOTTOM FOUR TABLES: RECENT USERS, ENROLLMENTS, SUBMISSIONS, TOP PERFORMERS
+          3. RECENT ACTIVITY SECTIONS: 3 CLEAN CARDS (ENROLLMENTS, PAYMENTS, WITHDRAWALS)
           ========================================================================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         
-        {/* Table 1: Recent Users (with 1-Click Course Unlock!) */}
-        <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-base font-black text-slate-900">Recent Users</h3>
-              <p className="text-xs text-slate-500 font-medium">Latest registered learners in database</p>
+        {/* Card 1: Recent Enrollments */}
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs space-y-4 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="text-sm font-bold text-[#0F172A] flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-[#2563EB]" />
+                <span>Recent Enrollments</span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => onNavigateTab('courses')}
+                className="text-xs font-bold text-[#2563EB] hover:text-[#1D4ED8] flex items-center gap-0.5 cursor-pointer"
+              >
+                <span>View</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
             </div>
-            <button
-              onClick={() => onNavigateTab('users')}
-              className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 cursor-pointer"
-            >
-              <span>View All</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+            <p className="text-xs text-[#64748B]">Verified paid course unlocks</p>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                <tr>
-                  <th className="py-2.5 px-3">Name</th>
-                  <th className="py-2.5 px-3">Email</th>
-                  <th className="py-2.5 px-3">Joined</th>
-                  <th className="py-2.5 px-3">Status</th>
-                  <th className="py-2.5 px-3 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {recentUsers.length === 0 ? (
+            {recentEnrollments.length === 0 ? (
+              <div className="py-8 text-center text-[#64748B] text-xs font-medium space-y-1">
+                <BookOpen className="w-6 h-6 mx-auto text-[#94A3B8]" />
+                <p className="font-bold text-[#0F172A]">No enrollments yet</p>
+                <p className="text-[11px] text-[#64748B]">Verified course purchases will appear here live.</p>
+              </div>
+            ) : (
+              <table className="w-full text-left text-xs">
+                <thead className="bg-[#F8FAFC] text-[10px] uppercase font-bold text-[#64748B]">
                   <tr>
-                    <td colSpan={5} className="py-8 text-center text-slate-400 text-xs font-medium">
-                      No users registered yet. New signups will appear here live in real-time.
-                    </td>
+                    <th className="py-2 px-2.5">Course</th>
+                    <th className="py-2 px-2.5">Learner</th>
+                    <th className="py-2 px-2.5 text-right">Amount</th>
                   </tr>
-                ) : (
-                  recentUsers.slice(0, 5).map((u: any, i: number) => (
-                  <tr key={u.uid || i} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="py-2.5 px-3 font-bold text-slate-900 flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 font-black text-[10px] flex items-center justify-center shrink-0">
-                        {u.name.charAt(0).toUpperCase()}
-                      </div>
-                      <span className="truncate max-w-[100px]">{u.name}</span>
-                    </td>
-                    <td className="py-2.5 px-3 text-slate-500 truncate max-w-[120px]">{u.email || u.phone || '-'}</td>
-                    <td className="py-2.5 px-3 text-slate-500 text-[11px]">{u.registeredAt ? u.registeredAt.slice(0, 10) : '21 Oct 2026'}</td>
-                    <td className="py-2.5 px-3">
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
-                        (u as any).status === 'inactive' ? 'bg-slate-100 text-slate-600' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                      }`}>
-                        {(u as any).status === 'inactive' ? 'Inactive' : 'Active'}
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-3 text-right">
-                      <button
-                        type="button"
-                        onClick={() => setUnlockModalUser(u as any)}
-                        className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-700 text-[10px] font-extrabold transition-all border border-blue-200 cursor-pointer shadow-2xs inline-flex items-center gap-1"
-                        title="Manually unlock course for this user"
-                      >
-                        <Unlock className="w-3 h-3" />
-                        <span>Unlock</span>
-                      </button>
-                    </td>
-                  </tr>
-                )))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-[#E2E8F0]">
+                  {recentEnrollments.slice(0, 5).map((e, idx) => (
+                    <tr key={idx} className="hover:bg-[#F8FAFC] transition-colors">
+                      <td className="py-2.5 px-2.5 font-bold text-[#0F172A] truncate max-w-[120px]">
+                        {e.courseName || 'Course'}
+                      </td>
+                      <td className="py-2.5 px-2.5 text-[#64748B] truncate max-w-[100px]">
+                        {e.userName || e.userEmail || 'Learner'}
+                      </td>
+                      <td className="py-2.5 px-2.5 text-right font-black text-[#0F172A]">
+                        ₹{e.amount}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
 
-        {/* Table 2: Recent Enrollments */}
-        <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-base font-black text-slate-900">Recent Enrollments</h3>
-              <p className="text-xs text-slate-500 font-medium">Verified course payments</p>
+        {/* Card 2: Recent Payments */}
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs space-y-4 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="text-sm font-bold text-[#0F172A] flex items-center gap-2">
+                <CreditCard className="w-4 h-4 text-[#2563EB]" />
+                <span>Recent Payments</span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => onNavigateTab('payments')}
+                className="text-xs font-bold text-[#2563EB] hover:text-[#1D4ED8] flex items-center gap-0.5 cursor-pointer"
+              >
+                <span>View</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
             </div>
-            <button
-              onClick={() => onNavigateTab('payments')}
-              className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 cursor-pointer"
-            >
-              <span>View All</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+            <p className="text-xs text-[#64748B]">Direct gateway transactions</p>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                <tr>
-                  <th className="py-2.5 px-3">Course</th>
-                  <th className="py-2.5 px-3">Student</th>
-                  <th className="py-2.5 px-3">Amount</th>
-                  <th className="py-2.5 px-3 text-right">Date</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {recentPayments.length === 0 ? (
+            {recentPayments.length === 0 ? (
+              <div className="py-8 text-center text-[#64748B] text-xs font-medium space-y-1">
+                <CreditCard className="w-6 h-6 mx-auto text-[#94A3B8]" />
+                <p className="font-bold text-[#0F172A]">No payments recorded yet</p>
+                <p className="text-[11px] text-[#64748B]">Live gateway payments will appear here.</p>
+              </div>
+            ) : (
+              <table className="w-full text-left text-xs">
+                <thead className="bg-[#F8FAFC] text-[10px] uppercase font-bold text-[#64748B]">
                   <tr>
-                    <td colSpan={4} className="py-8 text-center text-slate-400 text-xs font-medium">
-                      No paid enrollments yet. Verified course purchases will appear here live.
-                    </td>
+                    <th className="py-2 px-2.5">Tx ID / Date</th>
+                    <th className="py-2 px-2.5">Learner</th>
+                    <th className="py-2 px-2.5 text-right">Status</th>
                   </tr>
-                ) : (
-                  recentPayments.slice(0, 5).map((e: any, idx: number) => (
-                  <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="py-2.5 px-3 font-bold text-slate-900 flex items-center gap-2">
-                      <span className={`w-2 h-2 rounded-full ${e.color} shrink-0`} />
-                      <span className="truncate max-w-[140px]">{e.courseTitle || e.course || 'Course'}</span>
-                    </td>
-                    <td className="py-2.5 px-3 text-slate-600 font-medium">{e.studentName || e.email || e.phone || 'Learner'}</td>
-                    <td className="py-2.5 px-3 font-black text-slate-900">₹{e.amount}</td>
-                    <td className="py-2.5 px-3 text-slate-500 text-[11px] text-right">{e.date ? String(e.date).slice(0, 10) : 'Today'}</td>
-                  </tr>
-                )))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-[#E2E8F0]">
+                  {recentPayments.slice(0, 5).map((pay) => (
+                    <tr key={pay.id} className="hover:bg-[#F8FAFC] transition-colors">
+                      <td className="py-2.5 px-2.5">
+                        <div className="font-mono text-[11px] font-bold text-[#0F172A] truncate max-w-[90px]">{pay.id}</div>
+                        <div className="text-[10px] text-[#64748B]">{new Date(pay.date).toLocaleDateString()}</div>
+                      </td>
+                      <td className="py-2.5 px-2.5 font-medium text-[#64748B] truncate max-w-[100px]">
+                        {pay.userName}
+                      </td>
+                      <td className="py-2.5 px-2.5 text-right">
+                        <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          pay.status === 'SUCCESS'
+                            ? 'bg-[#ECFDF5] text-[#059669]'
+                            : 'bg-[#FFFBEB] text-[#D97706]'
+                        }`}>
+                          {pay.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
 
-        {/* Table 3: Recent Submissions */}
-        <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-base font-black text-slate-900">Recent Submissions</h3>
-              <p className="text-xs text-slate-500 font-medium">Live challenge attempts in Coding Arena</p>
+        {/* Card 3: Withdrawal Requests */}
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs space-y-4 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="text-sm font-bold text-[#0F172A] flex items-center gap-2">
+                <IndianRupee className="w-4 h-4 text-[#2563EB]" />
+                <span>Withdrawal Requests</span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => onNavigateTab('withdrawals')}
+                className="text-xs font-bold text-[#2563EB] hover:text-[#1D4ED8] flex items-center gap-0.5 cursor-pointer"
+              >
+                <span>View</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
             </div>
-            <button
-              onClick={() => onNavigateTab('practice')}
-              className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 cursor-pointer"
-            >
-              <span>View All</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+            <p className="text-xs text-[#64748B]">Affiliate payout queue</p>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                <tr>
-                  <th className="py-2.5 px-3">Student</th>
-                  <th className="py-2.5 px-3">Question</th>
-                  <th className="py-2.5 px-3">Language</th>
-                  <th className="py-2.5 px-3">Result</th>
-                  <th className="py-2.5 px-3 text-right">Time</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {recentSubmissions.map((s, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="py-2.5 px-3 font-bold text-slate-900">{s.student}</td>
-                    <td className="py-2.5 px-3 text-slate-600 truncate max-w-[130px]">{s.question}</td>
-                    <td className="py-2.5 px-3 font-semibold text-blue-600">{s.language}</td>
-                    <td className="py-2.5 px-3">
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
-                        s.result === 'Correct' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
-                      }`}>
-                        {s.result}
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-3 text-slate-400 text-[10.5px] text-right">{s.time}</td>
+            {recentWithdrawals.length === 0 ? (
+              <div className="py-8 text-center text-[#64748B] text-xs font-medium space-y-1">
+                <IndianRupee className="w-6 h-6 mx-auto text-[#94A3B8]" />
+                <p className="font-bold text-[#0F172A]">No withdrawal requests yet</p>
+                <p className="text-[11px] text-[#64748B]">Payout requests will appear here live.</p>
+              </div>
+            ) : (
+              <table className="w-full text-left text-xs">
+                <thead className="bg-[#F8FAFC] text-[10px] uppercase font-bold text-[#64748B]">
+                  <tr>
+                    <th className="py-2 px-2.5">Affiliate</th>
+                    <th className="py-2 px-2.5">Amount</th>
+                    <th className="py-2 px-2.5 text-right">Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Table 4: Top Performers */}
-        <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-base font-black text-slate-900">Top Performers</h3>
-              <p className="text-xs text-slate-500 font-medium">Highest scoring students this week</p>
-            </div>
-            <button
-              onClick={() => onNavigateTab('leaderboard')}
-              className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 cursor-pointer"
-            >
-              <span>View All</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                <tr>
-                  <th className="py-2.5 px-3">Rank</th>
-                  <th className="py-2.5 px-3">Student</th>
-                  <th className="py-2.5 px-3">Points</th>
-                  <th className="py-2.5 px-3 text-right">Problems</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {topPerformers.map((p, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="py-2.5 px-3 font-black text-slate-900 text-sm">
-                      {p.medal}
-                    </td>
-                    <td className="py-2.5 px-3 font-bold text-slate-900">{p.student}</td>
-                    <td className="py-2.5 px-3 font-extrabold text-blue-600">{p.points}</td>
-                    <td className="py-2.5 px-3 text-slate-500 text-right">{p.problems} solved</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-[#E2E8F0]">
+                  {recentWithdrawals.slice(0, 5).map((w) => (
+                    <tr key={w.id} className="hover:bg-[#F8FAFC] transition-colors">
+                      <td className="py-2.5 px-2.5">
+                        <div className="font-bold text-[#0F172A] truncate max-w-[100px]">{w.referrerId}</div>
+                        <div className="text-[10px] text-[#64748B] flex items-center gap-1">
+                          {w.method === 'UPI' ? <CreditCard className="w-3 h-3 text-[#2563EB]" /> : <Building className="w-3 h-3 text-[#2563EB]" />}
+                          <span>{w.method}</span>
+                        </div>
+                      </td>
+                      <td className="py-2.5 px-2.5 font-black text-[#0F172A]">
+                        ₹{w.amount}
+                      </td>
+                      <td className="py-2.5 px-2.5 text-right">
+                        <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          w.status === 'PAID'
+                            ? 'bg-[#ECFDF5] text-[#059669]'
+                            : w.status === 'REJECTED'
+                            ? 'bg-[#FEF2F2] text-[#DC2626]'
+                            : 'bg-[#FFFBEB] text-[#D97706]'
+                        }`}>
+                          {w.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
 
       </div>
 
       {/* =========================================================================
-          MODAL: 1-CLICK INSTANT COURSE UNLOCK FOR ANY STUDENT
+          4. MODAL: 1-CLICK INSTANT COURSE UNLOCK FOR ANY STUDENT
           ========================================================================= */}
       {unlockModalUser && (
-        <div className="fixed inset-0 z-[1200] flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-3xl border border-slate-200 max-w-md w-full p-6 shadow-2xl relative space-y-4">
+        <div className="fixed inset-0 z-[1200] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-2xl border border-[#E2E8F0] max-w-md w-full p-6 shadow-xl relative space-y-4">
             
             <button
               type="button"
               onClick={() => setUnlockModalUser(null)}
-              className="absolute top-4 right-4 p-1 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700"
+              className="absolute top-4 right-4 p-1 rounded-lg hover:bg-[#F8FAFC] text-[#64748B] hover:text-[#0F172A] cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center">
-                <Unlock className="w-6 h-6" />
+              <div className="w-11 h-11 rounded-xl bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center">
+                <Unlock className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-base font-black text-slate-900">Unlock Course for Student</h4>
-                <p className="text-xs text-slate-500">Cloud database persistence active</p>
+                <h4 className="text-base font-bold text-[#0F172A]">Unlock Course for Student</h4>
+                <p className="text-xs text-[#64748B]">Direct cloud database entitlement</p>
               </div>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs space-y-1">
+            <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs space-y-1">
               <div><strong>Student Name:</strong> {unlockModalUser.name}</div>
               <div><strong>Email:</strong> {unlockModalUser.email || 'None'}</div>
               <div><strong>Phone:</strong> {unlockModalUser.phone || 'None'}</div>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700 block">Select Course to Unlock:</label>
+            <div>
+              <label className="text-xs font-bold text-[#64748B] block mb-1">Target Program</label>
               <select
                 value={unlockTargetCourse}
                 onChange={(e) => setUnlockTargetCourse(e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-300 bg-white text-xs font-bold text-slate-800 outline-none"
+                className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs font-semibold text-[#0F172A] outline-none cursor-pointer"
               >
-                <option value="data_analyst">Data Analyst with GenAI (₹4 Flagship)</option>
-                <option value="data_science">Data Science & Agentic AI (₹987)</option>
-                <option value="ml_engineering">Machine Learning Engineering (₹987)</option>
-                <option value="ai_engineering">AI Engineering & LLMOps (₹987)</option>
-                <option value="ai_tools_prompt">AI Tools & Prompt Engineering (₹987)</option>
-                <option value="ms_office_copilot">Microsoft 365 with Copilot AI (₹987)</option>
-                <option value="full_stack_mern">Full-Stack MERN Development (₹987)</option>
+                <option value="data_analyst">Data Analyst with GenAI Flagship</option>
+                <option value="data_science">Data Science &amp; Agentic AI</option>
+                <option value="ml_engineering">Machine Learning Engineering</option>
+                <option value="ai_engineering">AI Engineering &amp; LLMOps</option>
+                <option value="full_stack">Full-Stack Web Development</option>
               </select>
             </div>
 
-            <div className="flex items-center gap-2 pt-2">
-              <button
-                type="button"
-                onClick={() => handleQuickUnlock(unlockModalUser, unlockTargetCourse)}
-                className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-md shadow-blue-500/20 active:scale-95 transition-all cursor-pointer"
-              >
-                Confirm & Unlock Course Now
-              </button>
+            <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => setUnlockModalUser(null)}
-                className="px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-bold text-[#64748B] hover:text-[#0F172A] cursor-pointer"
               >
                 Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickUnlock(unlockModalUser, unlockTargetCourse)}
+                className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-sm"
+              >
+                Confirm Cloud Unlock
               </button>
             </div>
 
@@ -820,5 +723,3 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
     </div>
   );
 };
-
-export default DashboardOverview;

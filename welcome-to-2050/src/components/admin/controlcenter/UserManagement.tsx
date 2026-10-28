@@ -70,7 +70,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
   const textPrimary = isDark ? 'text-white' : 'text-slate-900';
   const textMuted = isDark ? 'text-slate-400' : 'text-slate-500';
   const inputBg = isDark
-    ? 'bg-slate-950 border-slate-700/80 text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500'
+    ? 'bg-slate-950 border-slate-700/80 text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:border-blue-500'
     : 'bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-blue-600 shadow-sm';
   const tableHead = isDark ? 'bg-slate-950/60 border-slate-800 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-600';
   const tableBorder = isDark ? 'divide-slate-800' : 'divide-slate-100';
@@ -240,12 +240,12 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
               value={quickStudentId}
               onChange={(e) => setQuickStudentId(e.target.value)}
               placeholder="Enter Student Email or Mobile Number..."
-              className="w-full sm:w-64 px-3.5 py-2.5 bg-slate-950/80 border border-slate-700 rounded-xl text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 font-medium"
+              className="w-full sm:w-64 px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:border-blue-500 font-medium"
             />
             <select
               value={quickCourse}
               onChange={(e) => setQuickCourse(e.target.value)}
-              className="w-full sm:w-56 px-3 py-2.5 bg-slate-950/80 border border-slate-700 rounded-xl text-xs text-slate-200 font-bold cursor-pointer focus:outline-none focus:border-blue-500"
+              className="w-full sm:w-56 px-3 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] font-bold cursor-pointer focus:outline-none focus:border-blue-500"
             >
               <option value="data_analyst">Data Analyst with GenAI (₹4)</option>
               <option value="data_science">Data Science &amp; Agentic AI (₹987)</option>
@@ -457,7 +457,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
                           <button
                             type="button"
                             onClick={() => setSelectedUser(user)}
-                            className="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[11px] cursor-pointer transition-colors"
+                            className="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-[#0F172A] font-bold text-[11px] cursor-pointer transition-colors"
                           >
                             Details ➔
                           </button>
@@ -474,19 +474,19 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
 
       {/* ── User Profile Drawer Modal ── */}
       {selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fadeIn">
-          <div className="max-w-2xl w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto text-left">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-fadeIn">
+          <div className="max-w-2xl w-full bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xl relative max-h-[90vh] overflow-y-auto text-left">
             {/* Close button */}
             <button
               type="button"
               onClick={() => setSelectedUser(null)}
-              className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+              className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-white hover:bg-[#F8FAFC] cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
             {/* Modal Header */}
-            <div className="flex items-center gap-3.5 pb-4 border-b border-slate-800 mb-6">
+            <div className="flex items-center gap-3.5 pb-4 border-b border-[#E2E8F0] mb-6">
               <div className="w-12 h-12 rounded-2xl bg-blue-600/20 border border-blue-500/30 text-blue-400 flex items-center justify-center font-black text-lg">
                 {selectedUser.name.charAt(0).toUpperCase()}
               </div>
@@ -498,19 +498,19 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
 
             {/* Profile Grid */}
             <div className="grid grid-cols-2 gap-3.5 mb-6 text-xs">
-              <div className="p-3 bg-slate-950 rounded-xl border border-slate-800">
+              <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]">
                 <span className="text-slate-500 text-[10px] font-bold uppercase block">Email Address</span>
-                <span className="text-white font-medium">{selectedUser.email || 'None'}</span>
+                <span className="text-[#0F172A] font-medium">{selectedUser.email || 'None'}</span>
               </div>
-              <div className="p-3 bg-slate-950 rounded-xl border border-slate-800">
+              <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]">
                 <span className="text-slate-500 text-[10px] font-bold uppercase block">Mobile Phone</span>
-                <span className="text-white font-medium">{selectedUser.phone || 'None'}</span>
+                <span className="text-[#0F172A] font-medium">{selectedUser.phone || 'None'}</span>
               </div>
-              <div className="p-3 bg-slate-950 rounded-xl border border-slate-800">
+              <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]">
                 <span className="text-slate-500 text-[10px] font-bold uppercase block">Referral Code</span>
                 <span className="text-blue-400 font-bold">{selectedUser.referralCode}</span>
               </div>
-              <div className="p-3 bg-slate-950 rounded-xl border border-slate-800">
+              <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]">
                 <span className="text-slate-500 text-[10px] font-bold uppercase block">Referred By</span>
                 <span className="text-slate-300 font-medium">{selectedUser.referredBy || 'Organic / Direct'}</span>
               </div>
@@ -518,8 +518,8 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
 
             {/* Suspension Control Section */}
             {canSuspend && (
-              <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 mb-6 space-y-3">
-                <h4 className="text-xs font-black text-white flex items-center gap-2">
+              <div className="p-4 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0] mb-6 space-y-3">
+                <h4 className="text-xs font-black text-[#0F172A] flex items-center gap-2">
                   <Shield className="w-4 h-4 text-amber-400" />
                   <span>Account Status &amp; Suspension Controls</span>
                 </h4>
@@ -533,7 +533,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
                       type="button"
                       disabled={isSuspending}
                       onClick={() => handleToggleSuspend(selectedUser)}
-                      className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl cursor-pointer transition-colors"
+                      className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-[#0F172A] font-bold text-xs rounded-xl cursor-pointer transition-colors"
                     >
                       {isSuspending ? 'Reactivating...' : 'Reactivate Account'}
                     </button>
@@ -545,13 +545,13 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
                       value={suspensionReason}
                       onChange={(e) => setSuspensionReason(e.target.value)}
                       placeholder="Reason for suspension (audit required)..."
-                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder:text-slate-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none"
                     />
                     <button
                       type="button"
                       disabled={isSuspending || !suspensionReason.trim()}
                       onClick={() => handleToggleSuspend(selectedUser)}
-                      className="w-full py-2.5 px-4 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl cursor-pointer transition-colors disabled:opacity-40"
+                      className="w-full py-2.5 px-4 bg-rose-600 hover:bg-rose-500 text-[#0F172A] font-bold text-xs rounded-xl cursor-pointer transition-colors disabled:opacity-40"
                     >
                       {isSuspending ? 'Suspending...' : 'Suspend This Account'}
                     </button>
@@ -562,7 +562,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
 
             {/* Support Notes Section */}
             <div className="space-y-3">
-              <h4 className="text-xs font-black text-white flex items-center gap-2">
+              <h4 className="text-xs font-black text-[#0F172A] flex items-center gap-2">
                 <FileText className="w-4 h-4 text-blue-400" />
                 <span>Internal Support Notes</span>
               </h4>
@@ -573,12 +573,12 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
                   value={newNoteText}
                   onChange={(e) => setNewNoteText(e.target.value)}
                   placeholder="Add an internal support note..."
-                  className="flex-1 px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder:text-slate-500 focus:outline-none"
+                  className="flex-1 px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none"
                 />
                 <select
                   value={noteCategory}
                   onChange={(e: any) => setNoteCategory(e.target.value)}
-                  className="px-2.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-300 font-semibold cursor-pointer"
+                  className="px-2.5 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-slate-300 font-semibold cursor-pointer"
                 >
                   <option value="GENERAL">General</option>
                   <option value="PAYMENT">Payment</option>
@@ -588,7 +588,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
                 <button
                   type="button"
                   onClick={() => handleAddSupportNote(selectedUser.uid)}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl cursor-pointer"
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-[#0F172A] font-bold text-xs rounded-xl cursor-pointer"
                 >
                   Post Note
                 </button>
@@ -613,17 +613,17 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
 
       {/* ── UNLOCK COURSE MODAL ── */}
       {unlockModalUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
-          <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl relative text-left">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-fadeIn">
+          <div className="max-w-md w-full bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xl relative text-left">
             <button
               type="button"
               onClick={() => setUnlockModalUser(null)}
-              className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+              className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-white hover:bg-[#F8FAFC] cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center gap-3 pb-3 border-b border-slate-800 mb-5">
+            <div className="flex items-center gap-3 pb-3 border-b border-[#E2E8F0] mb-5">
               <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-400 flex items-center justify-center font-black">
                 <Zap className="w-5 h-5" />
               </div>
@@ -641,7 +641,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
                 <select
                   value={targetCourseToUnlock}
                   onChange={(e) => setTargetCourseToUnlock(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white font-bold cursor-pointer focus:outline-none focus:border-amber-500"
+                  className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] font-bold cursor-pointer focus:outline-none focus:border-amber-500"
                 >
                   <option value="data_analyst">Data Analyst with GenAI (₹4)</option>
                   <option value="data_science">Data Science &amp; Agentic AI (₹987)</option>
@@ -661,7 +661,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
                 <button
                   type="button"
                   onClick={() => setUnlockModalUser(null)}
-                  className="w-1/2 py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl cursor-pointer"
+                  className="w-1/2 py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-[#0F172A] font-bold text-xs rounded-xl cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -682,17 +682,17 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
 
       {/* ── WALLET ADJUSTMENT MODAL ── */}
       {walletModalUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
-          <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl relative text-left">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-fadeIn">
+          <div className="max-w-md w-full bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xl relative text-left">
             <button
               type="button"
               onClick={() => setWalletModalUser(null)}
-              className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+              className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-white hover:bg-[#F8FAFC] cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center gap-3 pb-3 border-b border-slate-800 mb-5">
+            <div className="flex items-center gap-3 pb-3 border-b border-[#E2E8F0] mb-5">
               <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center font-black">
                 <Wallet className="w-5 h-5" />
               </div>
@@ -735,7 +735,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
                   value={walletAmountDelta}
                   onChange={(e) => setWalletAmountDelta(Number(e.target.value))}
                   placeholder="Enter amount (e.g. 100)"
-                  className="w-full mt-2 px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white font-bold focus:outline-none focus:border-emerald-500"
+                  className="w-full mt-2 px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] font-bold focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
@@ -748,7 +748,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
                   value={walletReason}
                   onChange={(e) => setWalletReason(e.target.value)}
                   placeholder="e.g. Verified referral payment commission"
-                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
@@ -756,7 +756,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
                 <button
                   type="button"
                   onClick={() => setWalletModalUser(null)}
-                  className="w-1/2 py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl cursor-pointer"
+                  className="w-1/2 py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-[#0F172A] font-bold text-xs rounded-xl cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -764,7 +764,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
                   type="button"
                   disabled={isAdjustingWallet}
                   onClick={handleAdjustWalletForUser}
-                  className="w-1/2 py-2.5 px-4 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:opacity-95 text-white font-black text-xs rounded-xl cursor-pointer disabled:opacity-50 flex items-center justify-center gap-1.5"
+                  className="w-1/2 py-2.5 px-4 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:opacity-95 text-[#0F172A] font-bold text-xs rounded-xl cursor-pointer disabled:opacity-50 flex items-center justify-center gap-1.5"
                 >
                   <Wallet className="w-3.5 h-3.5" />
                   <span>{isAdjustingWallet ? 'Saving...' : 'Apply Adjustment'}</span>
