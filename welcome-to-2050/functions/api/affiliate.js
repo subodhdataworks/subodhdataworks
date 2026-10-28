@@ -1,3 +1,9 @@
+import {
+  getServiceAccount,
+  getFirestoreDocument,
+  setFirestoreDocument,
+  runFirestoreTransaction,
+} from './_firestore-admin.js';
 /**
  * Cloudflare Pages Function — /api/affiliate
  *
@@ -278,6 +284,24 @@ export async function onRequestGet(context) {
       }
     } catch (err) {
       console.warn('Razorpay v5 query notice:', err);
+    }
+  }
+
+    // Sync with Firestore affiliate_stats when credentials are bound
+  if (cleanCode && getServiceAccount(env)) {
+    try {
+      const fsDoc = await getFirestoreDocument('affiliate_stats', cleanCode, env);
+      if (fsDoc) {
+        if (Number.isFinite(fsDoc.totalEarned)) record.totalEarned = fsDoc.totalEarned;
+        if (Number.isFinite(fsDoc.totalPaid)) record.totalPaid = fsDoc.totalPaid;
+        if (Number.isFinite(fsDoc.pendingBalance)) record.pendingBalance = fsDoc.pendingBalance;
+        if (Number.isFinite(fsDoc.availableBalance)) record.availableBalance = fsDoc.availableBalance;
+        if (Number.isFinite(fsDoc.paidEnrollments)) record.paidEnrollments = fsDoc.paidEnrollments;
+        record.availableToPayout = record.availableBalance;
+        record.availableToWithdraw = record.availableBalance;
+      }
+    } catch (fsErr) {
+      console.warn('Firestore read affiliate notice:', fsErr?.message);
     }
   }
 
@@ -567,6 +591,47 @@ export async function onRequestPost(context) {
 
         if (requestKey) {
           store.processedWithdrawalRequests.set(requestKey, withdrawalRecord);
+        }
+
+                // Synchronize withdrawal reservation atomically to Cloud Firestore
+        if (getServiceAccount(env)) {
+          try {
+            await runFirestoreTransaction(async (tx) => {
+              const fsDoc = await tx.get('affiliate_stats', cleanRef);
+              const fsAvail = (fsDoc && Number.isFinite(fsDoc.availableBalance)) ? fsDoc.availableBalance : record.availableBalance;
+              if (requestedAmount > fsAvail) {
+                throw new Error(`Insufficient Firestore available balance: requested ₹${requestedAmount}, available ₹${fsAvail}`);
+              }
+              const newAvail = Math.max(0, fsAvail - requestedAmount);
+              const newPending = ((fsDoc && Number.isFinite(fsDoc.pendingBalance)) ? fsDoc.pendingBalance : (record.pendingBalance || 0)) + requestedAmount;
+
+              tx.set('affiliate_stats', cleanRef, {
+                refCode: cleanRef,
+                availableBalance: newAvail,
+                availableToPayout: newAvail,
+                availableToWithdraw: newAvail,
+                pendingBalance: newPending,
+                totalEarned: (fsDoc && Number.isFinite(fsDoc.totalEarned)) ? fsDoc.totalEarned : (record.totalEarned || 0),
+                totalPaid: (fsDoc && Number.isFinite(fsDoc.totalPaid)) ? fsDoc.totalPaid : (record.totalPaid || 0),
+                updatedAt: nowIso,
+              });
+
+              tx.set('withdrawal_requests', withdrawalId, {
+                id: withdrawalId,
+                txId,
+                userId: cleanRef,
+                refCode: cleanRef,
+                amount: requestedAmount,
+                method: methodLabel,
+                destination,
+                status: 'UNDER_REVIEW',
+                createdAt: nowIso,
+                updatedAt: nowIso,
+              });
+            }, env);
+          } catch (fsErr) {
+            console.warn('Firestore withdrawal sync notice:', fsErr?.message);
+          }
         }
 
         return json({

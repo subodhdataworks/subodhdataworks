@@ -7,6 +7,8 @@
  * 3. Canonical amount, currency (INR), userId, and courseId entitlement verification
  * 4. Rejects failed/cancelled payments without creating any course unlock
  * 5. Safe mode toggle (ENABLE_LIVE_WEBHOOK) for staging/dry-run safety
+ * 6. Trusted Firestore REST API integration for server-verified course enrollments,
+ *    platform payments, and atomic ₹100 referral commission crediting.
  */
 
 import {
@@ -14,6 +16,11 @@ import {
   normalizeUserId,
   upsertVerifiedEnrollment,
 } from './entitlements.js';
+import {
+  getServiceAccount,
+  setFirestoreDocument,
+  runFirestoreTransaction,
+} from './_firestore-admin.js';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -264,6 +271,97 @@ export async function onRequestPost(context) {
         courseId,
         record: enrollmentRecord,
       });
+
+      // Synchronize to Firestore collections if service account is configured
+      if (getServiceAccount(env)) {
+        try {
+          const enrDocId = `ENR_${cleanUserId}_${courseId}`;
+          const nowIso = new Date().toISOString();
+
+          // 1. Course Enrollment Record
+          await setFirestoreDocument(
+            'course_enrollments',
+            enrDocId,
+            {
+              userId: cleanUserId,
+              courseId,
+              paymentTransactionId: paymentId,
+              orderId: orderId || '',
+              enrollmentStatus: 'ACTIVE',
+              paymentStatus: 'CAPTURED',
+              enrolledAt: nowIso,
+            },
+            env,
+            true
+          );
+
+          // 2. Platform Payment Record
+          await setFirestoreDocument(
+            'platform_payments',
+            paymentId,
+            {
+              paymentId,
+              orderId: orderId || '',
+              userId: cleanUserId,
+              courseId,
+              amount: amountInRupees,
+              paymentStatus: 'CAPTURED',
+              verifiedAt: nowIso,
+            },
+            env,
+            true
+          );
+
+          // 3. Referral Commission Crediting (Flat ₹100, Idempotent, Self-Referral Protected)
+          const rawRef = String(notes?.refCode || notes?.ref || '').trim();
+          const cleanRef = rawRef.toUpperCase().replace(/100$/, '').replace(/[^A-Z0-9]/g, '');
+
+          // Check payer is not referrer
+          const payerPrefix = cleanUserId.split('@')[0].toUpperCase().replace(/[^A-Z0-9]/g, '');
+          const isSelfReferral = cleanRef && (cleanRef === payerPrefix || cleanRef === cleanUserId.toUpperCase());
+
+          if (cleanRef && !isSelfReferral) {
+            await runFirestoreTransaction(async (tx) => {
+              // Deduplication check on processed_referral_payments
+              const processed = await tx.get('processed_referral_payments', paymentId);
+              if (processed) {
+                return; // Already processed referral commission
+              }
+
+              // Get existing affiliate stats
+              const affiliateDoc = await tx.get('affiliate_stats', cleanRef);
+              const totalEarned = (affiliateDoc?.totalEarned || 0) + 100;
+              const totalPaid = affiliateDoc?.totalPaid || 0;
+              const pendingBalance = affiliateDoc?.pendingBalance || 0;
+              const availableBalance = Math.max(0, totalEarned - totalPaid - pendingBalance);
+              const paidEnrollments = (affiliateDoc?.paidEnrollments || 0) + 1;
+
+              tx.set('affiliate_stats', cleanRef, {
+                refCode: cleanRef,
+                paidEnrollments,
+                totalEarned,
+                availableBalance,
+                availableToPayout: availableBalance,
+                availableToWithdraw: availableBalance,
+                pendingBalance,
+                totalPaid,
+                updatedAt: nowIso,
+              });
+
+              tx.set('processed_referral_payments', paymentId, {
+                paymentId,
+                refCode: cleanRef,
+                payerUserId: cleanUserId,
+                courseId,
+                commission: 100,
+                creditedAt: nowIso,
+              });
+            }, env);
+          }
+        } catch (fsErr) {
+          console.warn('Firestore server sync in webhook notice:', fsErr?.message);
+        }
+      }
     }
 
     return json({

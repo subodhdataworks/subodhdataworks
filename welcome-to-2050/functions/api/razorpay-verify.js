@@ -2,6 +2,7 @@
  * Cloudflare Pages Function — /api/razorpay-verify
  * Verifies Razorpay payment signature server-side and generates user-bound entitlement proofs.
  * Secret key is read exclusively from Cloudflare environment variables.
+ * Securely syncs verified enrollment & payment records to Cloud Firestore when credentials are present.
  */
 
 import {
@@ -9,6 +10,10 @@ import {
   normalizeUserId,
   upsertVerifiedEnrollment,
 } from './entitlements.js';
+import {
+  getServiceAccount,
+  setFirestoreDocument,
+} from './_firestore-admin.js';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -130,6 +135,45 @@ export async function onRequestPost(context) {
         return json({ success: false, error: enrollRes.error }, enrollRes.status || 409);
       }
       enrollmentRecord = enrollRes.record;
+
+      // Sync to Cloud Firestore when service account credentials are bound in Cloudflare runtime
+      if (getServiceAccount(env)) {
+        try {
+          const enrDocId = `ENR_${cleanUserId}_${canonicalCourseId}`;
+          await setFirestoreDocument(
+            'course_enrollments',
+            enrDocId,
+            {
+              userId: cleanUserId,
+              courseId: canonicalCourseId,
+              paymentTransactionId: razorpay_payment_id,
+              orderId: razorpay_order_id,
+              enrollmentStatus: 'ACTIVE',
+              paymentStatus: 'CAPTURED',
+              enrolledAt: new Date(verifiedTimestamp).toISOString(),
+            },
+            env,
+            true
+          );
+
+          await setFirestoreDocument(
+            'platform_payments',
+            razorpay_payment_id,
+            {
+              paymentId: razorpay_payment_id,
+              orderId: razorpay_order_id,
+              userId: cleanUserId,
+              courseId: canonicalCourseId,
+              paymentStatus: 'CAPTURED',
+              verifiedAt: new Date(verifiedTimestamp).toISOString(),
+            },
+            env,
+            true
+          );
+        } catch (fsErr) {
+          console.warn('Firestore server sync notice:', fsErr?.message);
+        }
+      }
     }
 
     return json({
