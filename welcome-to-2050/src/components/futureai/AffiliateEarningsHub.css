@@ -2891,6 +2891,22 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
+.aff-wallet-stats-4col {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+
+@media (max-width: 640px) {
+  .aff-wallet-stats-4col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.ws-amber { background: #fffbeb; border-color: #fef3c7; }
+.ws-purple { background: #faf5ff; border-color: #f3e8ff; }
+
 .aff-wallet-stats-3col {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -3351,7 +3367,23 @@
   .aff-wallet-action-row {
     grid-template-columns: 1fr;
   }
-  .aff-wallet-stats-3col {
+  .aff-wallet-stats-4col {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+
+@media (max-width: 640px) {
+  .aff-wallet-stats-4col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.ws-amber { background: #fffbeb; border-color: #fef3c7; }
+.ws-purple { background: #faf5ff; border-color: #f3e8ff; }
+
+.aff-wallet-stats-3col {
     grid-template-columns: 1fr;
   }
   .aff-donut-grid {

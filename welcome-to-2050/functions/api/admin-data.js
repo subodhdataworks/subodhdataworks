@@ -308,7 +308,47 @@ export async function onRequestGet(context) {
       users: reconciledUsers,
       payments: verifiedPayments,
       enrollments: enrollmentsDocs,
-      withdrawals: withdrawalsDocs,
+      withdrawals: withdrawalsDocs.map((w) => {
+        const isBank =
+          String(w.method || '').toUpperCase() === 'BANK' ||
+          String(w.method || '').toUpperCase() === 'BANK_TRANSFER' ||
+          Boolean(w.bankAccNumber || w.details?.accountNumber);
+        const dest = w.destination || w.details?.upiId || w.details?.accountNumber || '';
+        const rawStatus = String(w.status || 'UNDER_REVIEW').toUpperCase();
+        const status =
+          rawStatus === 'PAID'
+            ? 'PAID'
+            : rawStatus === 'APPROVED'
+            ? 'APPROVED'
+            : rawStatus === 'REJECTED' || rawStatus === 'CANCELLED'
+            ? 'REJECTED'
+            : rawStatus === 'PROCESSING'
+            ? 'PROCESSING'
+            : 'UNDER_REVIEW';
+
+        return {
+          id: w.id || w.txId || 'REQ',
+          txId: w.txId || w.id || '',
+          userId: w.userId || w.referrerId || '',
+          referrerId: w.referrerId || w.userId || w.refCode || 'Learner',
+          refCode: w.refCode || '',
+          amount: Number(w.amount) || 0,
+          method: isBank ? 'BANK_TRANSFER' : 'UPI',
+          destination: dest,
+          status,
+          createdAt: w.createdAt || w.requestedAt || new Date().toISOString(),
+          requestedAt: w.requestedAt || w.createdAt || new Date().toISOString(),
+          paidAt: w.paidAt || null,
+          referenceNo: w.referenceNo || w.txId || w.payoutRef || '',
+          details: {
+            upiId: w.details?.upiId || (!isBank ? dest : ''),
+            accountNumber: w.details?.accountNumber || (isBank ? dest : ''),
+            accountHolder: w.details?.accountHolder || w.accountHolder || w.userName || w.refCode || 'Learner',
+            ifsc: w.details?.ifsc || w.ifsc || '',
+            bankName: w.details?.bankName || w.bankName || 'Bank',
+          },
+        };
+      }),
       affiliates: affiliateDocs,
     });
   } catch (err) {

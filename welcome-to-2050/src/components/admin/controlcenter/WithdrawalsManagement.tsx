@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   IndianRupee,
   Search,
@@ -8,22 +8,130 @@ import {
   CreditCard,
   Building,
   RefreshCw,
-  X
+  X,
+  AlertCircle
 } from 'lucide-react';
 import { WithdrawalRequest, ReferralEngine } from '../../../services/referralEngine';
 import { AdminDataService } from '../../../services/adminDataService';
 import { AdminAuthService } from '../../../services/adminAuthService';
 
 interface WithdrawalsManagementProps {
-  withdrawals: WithdrawalRequest[];
+  withdrawals: WithdrawalRequest[] | any[];
   onRefresh: () => void;
   isDark?: boolean;
 }
 
-export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ withdrawals, onRefresh }) => {
+interface NormalizedWithdrawal {
+  id: string;
+  txId: string;
+  userId: string;
+  referrerId: string;
+  amount: number;
+  method: 'UPI' | 'BANK_TRANSFER' | 'BANK';
+  destination: string;
+  upiId: string;
+  accountNumber: string;
+  accountHolder: string;
+  ifsc: string;
+  bankName: string;
+  status: string;
+  requestedAt: string;
+  paidAt?: string | null;
+  referenceNo: string;
+  adminNotes?: string;
+  raw: any;
+}
+
+function normalizeItem(w: any): NormalizedWithdrawal {
+  const id = String(w?.id || w?.txId || 'REQ');
+  const txId = String(w?.txId || w?.id || '');
+  const userId = String(w?.userId || w?.referrerId || '');
+  const referrerId = String(w?.referrerId || w?.userId || w?.refCode || w?.userEmail || 'Learner');
+  const rawMethod = String(w?.method || '').toUpperCase();
+  const hasBankFields = Boolean(w?.details?.accountNumber || w?.bankAccNumber || w?.accountNumber);
+  const isBank = rawMethod === 'BANK' || rawMethod === 'BANK_TRANSFER' || hasBankFields;
+  const method: 'UPI' | 'BANK_TRANSFER' | 'BANK' = isBank ? 'BANK_TRANSFER' : 'UPI';
+
+  const destination = String(
+    w?.destination ||
+    w?.details?.upiId ||
+    w?.details?.accountNumber ||
+    w?.bankAccNumber ||
+    w?.upiId ||
+    ''
+  );
+
+  const upiId = String(w?.details?.upiId || w?.upiId || (!isBank ? destination : ''));
+  const accountNumber = String(w?.details?.accountNumber || w?.bankAccNumber || w?.accountNumber || (isBank ? destination : ''));
+  const accountHolder = String(
+    w?.details?.accountHolder ||
+    w?.accountHolder ||
+    w?.userName ||
+    w?.name ||
+    referrerId ||
+    'Learner'
+  );
+  const ifsc = String(w?.details?.ifsc || w?.ifsc || w?.bankIfsc || '');
+  const bankName = String(w?.details?.bankName || w?.bankName || 'Bank');
+  const amount = Number(w?.amount) || 0;
+
+  const rawStatus = String(w?.status || 'UNDER_REVIEW').toUpperCase();
+  const status =
+    rawStatus === 'PAID'
+      ? 'PAID'
+      : rawStatus === 'APPROVED'
+      ? 'APPROVED'
+      : rawStatus === 'REJECTED' || rawStatus === 'CANCELLED'
+      ? 'REJECTED'
+      : rawStatus === 'PROCESSING'
+      ? 'PROCESSING'
+      : 'UNDER_REVIEW';
+
+  const requestedAt = String(w?.requestedAt || w?.createdAt || w?.date || new Date().toISOString());
+  const referenceNo = String(w?.referenceNo || w?.txId || w?.payoutRef || '');
+  const paidAt = w?.paidAt || null;
+  const adminNotes = w?.adminNotes || '';
+
+  return {
+    id,
+    txId,
+    userId,
+    referrerId,
+    amount,
+    method,
+    destination,
+    upiId,
+    accountNumber,
+    accountHolder,
+    ifsc,
+    bankName,
+    status,
+    requestedAt,
+    paidAt,
+    referenceNo,
+    adminNotes,
+    raw: w,
+  };
+}
+
+function safeFormatDate(val?: string | null): string {
+  if (!val) return 'Recently';
+  try {
+    const d = new Date(val);
+    if (isNaN(d.getTime())) return String(val);
+    return d.toLocaleString('en-IN', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    });
+  } catch {
+    return String(val);
+  }
+}
+
+export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ withdrawals = [], onRefresh }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [selectedReq, setSelectedReq] = useState<WithdrawalRequest | null>(null);
+  const [selectedReq, setSelectedReq] = useState<NormalizedWithdrawal | null>(null);
 
   // Modal action state
   const [actionType, setActionType] = useState<'APPROVE' | 'PAY' | 'REJECT' | null>(null);
@@ -32,22 +140,29 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
   const [isProcessing, setIsProcessing] = useState(false);
   const [feedbackMsg, setFeedbackMsg] = useState('');
 
-  const canApprove = AdminAuthService.hasPermission('approve_withdrawals');
-  const canPayout = AdminAuthService.hasPermission('manage_payouts');
+  // Safe normalized array
+  const safeList = useMemo(() => {
+    if (!Array.isArray(withdrawals)) return [];
+    return withdrawals.map(normalizeItem);
+  }, [withdrawals]);
 
-  const filteredWithdrawals = withdrawals.filter((w) => {
+  const filteredWithdrawals = useMemo(() => {
     const q = searchTerm.toLowerCase().trim();
-    const matchesSearch =
-      !q ||
-      w.id.toLowerCase().includes(q) ||
-      w.referrerId.toLowerCase().includes(q) ||
-      (w.details.upiId && w.details.upiId.toLowerCase().includes(q)) ||
-      (w.details.accountNumber && w.details.accountNumber.includes(q)) ||
-      (w.referenceNo && w.referenceNo.toLowerCase().includes(q));
+    return safeList.filter((w) => {
+      const matchesSearch =
+        !q ||
+        w.id.toLowerCase().includes(q) ||
+        w.referrerId.toLowerCase().includes(q) ||
+        w.accountHolder.toLowerCase().includes(q) ||
+        w.upiId.toLowerCase().includes(q) ||
+        w.accountNumber.toLowerCase().includes(q) ||
+        w.destination.toLowerCase().includes(q) ||
+        w.referenceNo.toLowerCase().includes(q);
 
-    const matchesStatus = statusFilter === 'all' || w.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+      const matchesStatus = statusFilter === 'all' || w.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [safeList, searchTerm, statusFilter]);
 
   const handleAction = async () => {
     if (!selectedReq || !actionType) return;
@@ -116,8 +231,7 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
             className="px-3 py-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] font-semibold cursor-pointer outline-none hover:border-[#CBD5E1]"
           >
             <option value="all">All Request Statuses</option>
-            <option value="REQUESTED">Requested (New)</option>
-            <option value="UNDER_REVIEW">Under Review</option>
+            <option value="UNDER_REVIEW">Under Review (New)</option>
             <option value="APPROVED">Approved</option>
             <option value="PAID">Paid &amp; Settled</option>
             <option value="REJECTED">Rejected / Cancelled</option>
@@ -162,7 +276,7 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
                   <td colSpan={6} className="py-12 text-center text-[#64748B] text-xs font-medium space-y-1">
                     <IndianRupee className="w-8 h-8 mx-auto text-[#94A3B8] mb-1" />
                     <p className="font-bold text-[#0F172A]">No withdrawal requests found</p>
-                    <p className="text-[11px]">Affiliate partner payout requests will appear here live.</p>
+                    <p className="text-[11px]">Affiliate partner payout requests will appear here live from Cloud Firestore.</p>
                   </td>
                 </tr>
               ) : (
@@ -171,17 +285,17 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
                     <td className="py-3.5 px-4">
                       <div className="font-mono text-xs font-bold text-[#0F172A]">{req.id}</div>
                       <div className="text-[10px] text-[#64748B] mt-0.5">
-                        {new Date(req.requestedAt).toLocaleString()}
+                        {safeFormatDate(req.requestedAt)}
                       </div>
                     </td>
 
                     <td className="py-3.5 px-4 space-y-0.5">
-                      <div className="font-bold text-[#0F172A]">{req.details.accountHolder || 'Learner'}</div>
+                      <div className="font-bold text-[#0F172A]">{req.accountHolder}</div>
                       <div className="text-[11px] text-[#64748B] font-mono">{req.referrerId}</div>
                     </td>
 
                     <td className="py-3.5 px-4">
-                      <div className="text-sm font-black text-[#0F172A]">₹{req.amount.toLocaleString()}</div>
+                      <div className="text-sm font-black text-[#0F172A]">₹{req.amount.toLocaleString('en-IN')}</div>
                       <span className="text-[10px] text-[#059669] font-bold">Available balance reserved</span>
                     </td>
 
@@ -190,13 +304,13 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
                       <div className="flex items-center gap-1.5 text-[#0F172A] font-bold">
                         {req.method === 'UPI' ? (
                           <>
-                            <CreditCard className="w-3.5 h-3.5 text-[#9333EA]" />
-                            <span>UPI: {req.details.upiId}</span>
+                            <CreditCard className="w-3.5 h-3.5 text-[#9333EA] shrink-0" />
+                            <span>UPI: {req.upiId || req.destination || 'Not Specified'}</span>
                           </>
                         ) : (
                           <>
-                            <Building className="w-3.5 h-3.5 text-[#2563EB]" />
-                            <span>Bank: A/C {req.details.accountNumber ? `••••${req.details.accountNumber.slice(-4)}` : 'N/A'}</span>
+                            <Building className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
+                            <span>Bank: A/C {req.accountNumber ? `••••${req.accountNumber.slice(-4)}` : (req.destination ? `••••${req.destination.slice(-4)}` : 'N/A')}</span>
                           </>
                         )}
                       </div>
@@ -241,7 +355,10 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
                       ) : (
                         <button
                           type="button"
-                          onClick={() => setSelectedReq(req)}
+                          onClick={() => {
+                            setSelectedReq(req);
+                            setActionType(null);
+                          }}
                           className="px-3 py-1.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] font-bold text-xs cursor-pointer"
                         >
                           View Details
@@ -276,21 +393,22 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
             </h3>
 
             <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs space-y-1">
-              <div><strong>Learner:</strong> {selectedReq.details.accountHolder}</div>
+              <div><strong>Learner:</strong> {selectedReq.accountHolder}</div>
               <div><strong>Affiliate UID:</strong> {selectedReq.referrerId}</div>
               <div><strong>Amount:</strong> ₹{selectedReq.amount}</div>
               <div><strong>Method:</strong> {selectedReq.method}</div>
               {selectedReq.method === 'UPI' ? (
-                <div><strong>UPI ID:</strong> {selectedReq.details.upiId}</div>
+                <div><strong>UPI ID:</strong> {selectedReq.upiId || selectedReq.destination}</div>
               ) : (
                 <>
-                  <div><strong>Account Number:</strong> {selectedReq.details.accountNumber}</div>
-                  <div><strong>IFSC:</strong> {selectedReq.details.ifsc}</div>
-                  <div><strong>Bank:</strong> {selectedReq.details.bankName}</div>
+                  <div><strong>Account Number:</strong> {selectedReq.accountNumber || selectedReq.destination}</div>
+                  <div><strong>IFSC:</strong> {selectedReq.ifsc || 'N/A'}</div>
+                  <div><strong>Bank:</strong> {selectedReq.bankName || 'Bank'}</div>
                 </>
               )}
               {selectedReq.referenceNo && <div><strong>Payout Reference (UTR):</strong> {selectedReq.referenceNo}</div>}
-              {selectedReq.paidAt && <div><strong>Paid At:</strong> {new Date(selectedReq.paidAt).toLocaleString()}</div>}
+              {selectedReq.paidAt && <div><strong>Paid At:</strong> {safeFormatDate(selectedReq.paidAt)}</div>}
+              {selectedReq.adminNotes && <div><strong>Admin Notes:</strong> {selectedReq.adminNotes}</div>}
             </div>
 
             {selectedReq.status !== 'PAID' && selectedReq.status !== 'REJECTED' && (
@@ -367,7 +485,7 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
                       setSelectedReq(null);
                       setActionType(null);
                     }}
-                    className="px-4 py-2 rounded-xl text-xs font-bold text-[#64748B] hover:text-[#0F172A]"
+                    className="px-4 py-2 rounded-xl text-xs font-bold text-[#64748B] hover:text-[#0F172A] cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -375,7 +493,7 @@ export const WithdrawalsManagement: React.FC<WithdrawalsManagementProps> = ({ wi
                     type="button"
                     disabled={isProcessing}
                     onClick={handleAction}
-                    className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs rounded-xl shadow-sm transition-colors cursor-pointer disabled:opacity-50"
+                    className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer disabled:opacity-50"
                   >
                     {isProcessing ? 'Processing...' : 'Confirm Action'}
                   </button>

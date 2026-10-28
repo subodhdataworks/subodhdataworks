@@ -298,6 +298,20 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     walletLedger = [],
   } = hubState;
 
+  // Separate financial state accounting (Task 3: Available to Payout, Pending Withdrawal, Pending Escrow, Lifetime Earnings)
+  const pendingWithdrawalAmount = useMemo(() => {
+    return (withdrawalHistory || [])
+      .filter((w) => {
+        const s = String(w?.status || '').toUpperCase();
+        return s === 'PENDING' || s === 'PROCESSING' || s === 'UNDER_REVIEW';
+      })
+      .reduce((sum, w) => sum + (Number(w?.amount) || 0), 0);
+  }, [withdrawalHistory]);
+
+  const pendingEscrowAmount = useMemo(() => {
+    return Math.max(0, (pendingBalance || 0) - pendingWithdrawalAmount);
+  }, [pendingBalance, pendingWithdrawalAmount]);
+
   // Notification Toast
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
   const showToast = (message: string, type: 'success' | 'info' | 'error' = 'success') => {
@@ -969,14 +983,14 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     },
     {
       id: 'pending',
-      label: 'Pending Escrow',
-      val: `₹${pendingBalance.toLocaleString('en-IN')}`,
-      growth: pendingBalance > 0 ? '7-Day Clear' : '₹0 pending',
+      label: pendingWithdrawalAmount > 0 ? 'Pending Withdrawal' : (pendingEscrowAmount > 0 ? 'Pending Commission / Escrow' : 'Pending Withdrawal'),
+      val: `₹${(pendingWithdrawalAmount > 0 ? pendingWithdrawalAmount : (pendingEscrowAmount > 0 ? pendingEscrowAmount : 0)).toLocaleString('en-IN')}`,
+      growth: pendingWithdrawalAmount > 0 ? 'Under Review' : (pendingEscrowAmount > 0 ? '7-Day Clear' : '₹0 pending'),
       colorClass: 'card-amber',
       iconBg: '#f59e0b',
       badgeClass: 'badge-amber-soft',
       icon: <Clock className="w-4 h-4 text-white" />,
-      subtext: 'Unlocking on course start',
+      subtext: pendingWithdrawalAmount > 0 ? 'Reserved for payout processing' : (pendingEscrowAmount > 0 ? 'Unlocking on course start' : 'Reserved for payout processing'),
       valColor: '#ea580c',
       chart: (
         <svg className="w-16 h-7" viewBox="0 0 64 28" fill="none">
@@ -1783,27 +1797,34 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               </div>
             </div>
 
-            {/* 3 Mini Stats */}
-            <div className="aff-wallet-stats-3col">
+            {/* 4 Financial State Stats (Task 3: Available to Payout, Pending Withdrawal, Pending Escrow, Lifetime Earnings) */}
+            <div className="aff-wallet-stats-4col">
               <div className="aff-ws-box ws-blue">
-                <span className="text-lg">📈</span>
+                <span className="text-base">📈</span>
                 <div>
-                  <span className="aff-ws-label">Total Earned</span>
+                  <span className="aff-ws-label">Lifetime Earnings</span>
                   <strong className="aff-ws-val text-slate-800">₹{totalEarned.toLocaleString('en-IN')}</strong>
                 </div>
               </div>
               <div className="aff-ws-box ws-green">
-                <span className="text-lg">💸</span>
+                <span className="text-base">💸</span>
                 <div>
-                  <span className="aff-ws-label">Total Paid</span>
+                  <span className="aff-ws-label">Total Paid Out</span>
                   <strong className="aff-ws-val text-slate-800">₹{totalPaid.toLocaleString('en-IN')}</strong>
                 </div>
               </div>
-              <div className="aff-ws-box ws-red">
-                <span className="text-lg">⏱️</span>
+              <div className="aff-ws-box ws-amber">
+                <span className="text-base">⏳</span>
                 <div>
-                  <span className="aff-ws-label">Pending</span>
-                  <strong className="aff-ws-val text-rose-600">₹{pendingBalance.toLocaleString('en-IN')}</strong>
+                  <span className="aff-ws-label">Pending Withdrawal</span>
+                  <strong className="aff-ws-val text-amber-600">₹{pendingWithdrawalAmount.toLocaleString('en-IN')}</strong>
+                </div>
+              </div>
+              <div className="aff-ws-box ws-purple">
+                <span className="text-base">🔒</span>
+                <div>
+                  <span className="aff-ws-label">Pending Escrow</span>
+                  <strong className="aff-ws-val text-indigo-600">₹{pendingEscrowAmount.toLocaleString('en-IN')}</strong>
                 </div>
               </div>
             </div>

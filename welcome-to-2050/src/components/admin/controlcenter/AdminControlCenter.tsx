@@ -20,7 +20,8 @@ import {
   X,
   LogOut,
   ExternalLink,
-  AlertTriangle
+  AlertTriangle,
+  AlertCircle
 } from 'lucide-react';
 import { AdminAuthService } from '../../../services/adminAuthService';
 import { AdminDataService, SystemBusinessSettings, UserSuspensionRecord } from '../../../services/adminDataService';
@@ -55,6 +56,59 @@ export type AdminTab =
 
 interface AdminControlCenterProps {
   onClose?: () => void;
+}
+
+interface TabErrorBoundaryProps {
+  tabName: string;
+  onRetry?: () => void;
+  children: React.ReactNode;
+}
+
+interface TabErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class TabErrorBoundary extends React.Component<TabErrorBoundaryProps, TabErrorBoundaryState> {
+  constructor(props: TabErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): TabErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error(`[AdminControlCenter] Error in tab ${this.props.tabName}:`, error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="bg-white border border-[#FECACA] rounded-2xl p-8 text-center space-y-3 shadow-xs">
+          <div className="w-12 h-12 bg-[#FEF2F2] text-[#DC2626] rounded-full flex items-center justify-center mx-auto">
+            <AlertCircle className="w-6 h-6" />
+          </div>
+          <h3 className="text-base font-bold text-[#0F172A]">Unable to display {this.props.tabName}</h3>
+          <p className="text-xs text-[#64748B] max-w-md mx-auto">
+            {this.state.error?.message || 'An unexpected rendering error occurred.'}
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              this.setState({ hasError: false, error: null });
+              this.props.onRetry?.();
+            }}
+            className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
+          >
+            Retry {this.props.tabName}
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
 }
 
 export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose }) => {
@@ -579,11 +633,13 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
           )}
 
           {activeTab === 'withdrawals' && (
-            <WithdrawalsManagement
-              withdrawals={withdrawals}
-              onRefresh={loadAllData}
-              isDark={false}
-            />
+            <TabErrorBoundary tabName="Withdrawal Requests" onRetry={loadAllData}>
+              <WithdrawalsManagement
+                withdrawals={withdrawals}
+                onRefresh={loadAllData}
+                isDark={false}
+              />
+            </TabErrorBoundary>
           )}
 
           {activeTab === 'referrals' && (
@@ -616,7 +672,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
                 <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-center">
                   <span className="text-xs font-bold text-[#D97706] block">Commissions Paid</span>
                   <div className="text-2xl font-black text-[#0F172A] mt-1">
-                    ₹{withdrawals.filter(w => w.status === 'PAID').reduce((sum, w) => sum + (w.amount || 0), 0).toLocaleString()}
+                    ₹{withdrawals.filter(w => String(w?.status || '').toUpperCase() === 'PAID').reduce((sum, w) => sum + (Number(w?.amount) || 0), 0).toLocaleString()}
                   </div>
                 </div>
               </div>
