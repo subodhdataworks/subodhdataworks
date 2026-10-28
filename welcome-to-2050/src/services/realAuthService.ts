@@ -28,6 +28,7 @@ import { auth, db, googleProvider } from './firebase';
 
 import { clearTestUserEnrollments } from './courseUnlockService';
 import { ReferralEngine } from './referralEngine';
+import { getEffectiveMinWithdrawal } from '../config/withdrawalConfig';
 export interface RegisteredUserRecord {
   uid: string;
   name: string;
@@ -1117,9 +1118,10 @@ export async function submitAffiliateWithdrawalRequest(params: {
     }
 
     const requestedAmount = Math.round(rawAmount * 100) / 100;
-    if (requestedAmount < 100) {
+    const minAllowed = getEffectiveMinWithdrawal(cleanCode);
+    if (requestedAmount < minAllowed) {
       return emptyFail(
-        'Minimum withdrawal amount is ₹100.',
+        `Minimum withdrawal amount is ₹${minAllowed}.`,
         'BELOW_MINIMUM_WITHDRAWAL',
         state.availableBalance,
         state.pendingBalance,

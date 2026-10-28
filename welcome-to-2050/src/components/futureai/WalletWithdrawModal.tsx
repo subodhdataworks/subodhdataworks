@@ -17,6 +17,7 @@ import {
   getUserReferralCode,
   computeAffiliateBalancesFromWithdrawals,
 } from '../../services/realAuthService';
+import { getEffectiveMinWithdrawal } from '../../config/withdrawalConfig';
 
 interface WalletWithdrawModalProps {
   isOpen: boolean;
@@ -47,10 +48,11 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
               )
           )
       ) || 'PARTNER';
+  const minWithdrawal = getEffectiveMinWithdrawal(cleanRefCode);
   const payoutStorageKey = `futureai_payout_method_v5_${cleanRefCode}`;
 
   const [availableBalance, setAvailableBalance] = useState<number>(0);
-  const [withdrawAmount, setWithdrawAmount] = useState<string>('100');
+  const [withdrawAmount, setWithdrawAmount] = useState<string>(minWithdrawal.toString());
   const [payoutMethod, setPayoutMethod] = useState<'upi' | 'bank'>('upi');
   const [upiId, setUpiId] = useState<string>('');
   const [isUpiVerified, setIsUpiVerified] = useState<boolean>(false);
@@ -118,7 +120,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
         resolvedBalance = 0;
       }
       setAvailableBalance(resolvedBalance);
-      setWithdrawAmount(resolvedBalance >= 100 ? resolvedBalance.toString() : '100');
+      setWithdrawAmount(resolvedBalance >= minWithdrawal ? resolvedBalance.toString() : minWithdrawal.toString());
     }
   }, [isOpen, cleanRefCode, payoutStorageKey]);
 
@@ -172,8 +174,8 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
       showToast('Please enter a valid withdrawal amount.', 'error');
       return;
     }
-    if (amt < 100) {
-      showToast('Minimum withdrawal amount is ₹100.', 'error');
+    if (amt < minWithdrawal) {
+      showToast(`Minimum withdrawal amount is ₹${minWithdrawal}.`, 'error');
       return;
     }
     if (amt > availableBalance) {
@@ -286,13 +288,13 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
               </span>
             </div>
 
-            {availableBalance < 100 && (
+            {availableBalance < minWithdrawal && (
               <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 mb-3 text-xs text-amber-900 flex items-start gap-2.5">
                 <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                 <div>
-                  <strong className="block font-bold">Minimum Balance: ₹100</strong>
+                  <strong className="block font-bold">Minimum Balance: ₹{minWithdrawal}</strong>
                   <span>
-                    You need at least ₹100 in your wallet to withdraw. Share your referral link with students and
+                    You need at least ₹{minWithdrawal} in your wallet to withdraw. Share your referral link with students and
                     friends to earn Flat ₹100 per enrollment!
                   </span>
                 </div>
@@ -309,7 +311,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                   type="number"
                   value={withdrawAmount}
                   onChange={(e) => setWithdrawAmount(e.target.value)}
-                  placeholder="100"
+                  placeholder={minWithdrawal.toString()}
                   className="w-full pl-8 pr-16 py-2.5 rounded-xl border border-slate-300 font-black text-base focus:border-sky-500 focus:outline-none text-slate-900"
                 />
                 <button
@@ -323,7 +325,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
 
               {/* Quick Pick Chips */}
               <div className="flex gap-2 mt-2">
-                {[100, 500, 1000, 2500].map((amt) => (
+                {[minWithdrawal, 100, 500, 1000].map((amt) => (
                   <button
                     key={amt}
                     type="button"
@@ -335,7 +337,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                 ))}
               </div>
               <span className="text-[10px] text-slate-400 mt-1.5 block">
-                Minimum withdrawal: ₹100 • Zero processing fees
+                Minimum withdrawal: ₹{minWithdrawal} • Zero processing fees
               </span>
             </div>
 
@@ -474,9 +476,9 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
 
             <button
               type="button"
-              disabled={availableBalance < 100 || !isPayoutMethodLinked}
+              disabled={availableBalance < minWithdrawal || !isPayoutMethodLinked}
               className={`w-full mt-5 py-3 rounded-xl font-black text-sm shadow-lg transition-all ${
-                availableBalance >= 100 && isPayoutMethodLinked
+                availableBalance >= minWithdrawal && isPayoutMethodLinked
                   ? 'bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sky-500/25 cursor-pointer active:scale-95'
                   : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
               }`}
@@ -484,9 +486,9 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
             >
               {!isPayoutMethodLinked
                 ? 'Verify UPI / Bank Method First'
-                : availableBalance >= 100
+                : availableBalance >= minWithdrawal
                 ? 'Proceed to Confirmation →'
-                : 'Minimum ₹100 Balance Required'}
+                : `Minimum ₹${minWithdrawal} Balance Required`}
             </button>
           </div>
         )}

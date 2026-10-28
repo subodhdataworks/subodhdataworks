@@ -46,6 +46,7 @@ import {
   WalletLedgerEntry,
 } from '../../services/realAuthService';
 import { isAnyCourseUnlocked } from '../../services/courseUnlockService';
+import { getEffectiveMinWithdrawal } from '../../config/withdrawalConfig';
 
 export interface AffiliateEarningsHubProps {
   userName?: string;
@@ -119,6 +120,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               )
           )
       ) || 'PARTNER';
+
+  const minWithdrawal = getEffectiveMinWithdrawal(cleanRefCode);
 
   // Persist user's own referral code so every user has their own unique permanent code
   useEffect(() => {
@@ -440,7 +443,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
 
   // Payout Method & Withdrawal Form State (Reset to Not Linked under v5 rules)
   const payoutStorageKey = `futureai_payout_method_v5_${cleanRefCode}`;
-  const [withdrawAmount, setWithdrawAmount] = useState<string>('100');
+  const [withdrawAmount, setWithdrawAmount] = useState<string>(minWithdrawal.toString());
   const [payoutMethod, setPayoutMethod] = useState<'upi' | 'bank'>('upi');
   const [upiId, setUpiId] = useState<string>(() => {
     if (typeof window === 'undefined') return '';
@@ -833,8 +836,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       showToast('Please enter a valid withdrawal amount.', 'error');
       return;
     }
-    if (amt < 100) {
-      showToast('Minimum withdrawal amount is ₹100.', 'error');
+    if (amt < minWithdrawal) {
+      showToast(`Minimum withdrawal amount is ₹${minWithdrawal}.`, 'error');
       return;
     }
     if (amt > availableBalance) {
@@ -989,7 +992,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       id: 'available',
       label: 'Available to Payout',
       val: `₹${availableBalance.toLocaleString('en-IN')}`,
-      growth: availableBalance >= 100 ? 'Ready to Payout' : 'Min ₹100',
+      growth: availableBalance >= minWithdrawal ? 'Ready to Payout' : `Min ₹${minWithdrawal}`,
       colorClass: 'card-teal',
       iconBg: '#059669',
       badgeClass: 'badge-emerald-soft',
@@ -2288,12 +2291,12 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">24/7 Payout (Within 24h)</span>
                 </div>
 
-                {availableBalance < 100 && (
+                {availableBalance < minWithdrawal && (
                   <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 mb-3 text-xs text-amber-900 flex items-start gap-2.5">
                     <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                     <div>
-                      <strong className="block font-bold">Minimum Balance: ₹100</strong>
-                      <span>You need at least ₹100 in your wallet to withdraw. Share your referral link with students and friends to earn Flat ₹100 per enrollment!</span>
+                      <strong className="block font-bold">Minimum Balance: ₹{minWithdrawal}</strong>
+                      <span>You need at least ₹{minWithdrawal} in your wallet to withdraw. Share your referral link with students and friends to earn Flat ₹100 per enrollment!</span>
                     </div>
                   </div>
                 )}
@@ -2306,7 +2309,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                       type="number"
                       value={withdrawAmount}
                       onChange={(e) => setWithdrawAmount(e.target.value)}
-                      placeholder="100"
+                      placeholder={minWithdrawal.toString()}
                       className="w-full pl-8 pr-16 py-2.5 rounded-xl border border-slate-300 font-black text-base focus:border-sky-500 focus:outline-none"
                     />
                     <button
@@ -2319,7 +2322,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
 
                   {/* Quick Pick Chips */}
                   <div className="flex gap-2 mt-2">
-                    {[100, 500, 1000, 2500].map((amt) => (
+                    {[minWithdrawal, 100, 500, 1000].map((amt) => (
                       <button
                         key={amt}
                         type="button"
@@ -2330,7 +2333,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                       </button>
                     ))}
                   </div>
-                  <span className="text-[10px] text-slate-400 mt-1.5 block">Minimum withdrawal: ₹100 • Zero processing fees</span>
+                  <span className="text-[10px] text-slate-400 mt-1.5 block">Minimum withdrawal: ₹{minWithdrawal} • Zero processing fees</span>
                 </div>
 
                 <div className="mt-4">
@@ -2445,9 +2448,9 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 )}
 
                 <button
-                  disabled={availableBalance < 100 || !isPayoutMethodLinked}
+                  disabled={availableBalance < minWithdrawal || !isPayoutMethodLinked}
                   className={`w-full mt-5 py-3 rounded-xl font-black text-sm shadow-lg transition-all ${
-                    availableBalance >= 100 && isPayoutMethodLinked
+                    availableBalance >= minWithdrawal && isPayoutMethodLinked
                       ? 'bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sky-500/25 cursor-pointer active:scale-95'
                       : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
                   }`}
@@ -2455,9 +2458,9 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 >
                   {!isPayoutMethodLinked
                     ? 'Verify UPI / Bank Method First'
-                    : availableBalance >= 100
+                    : availableBalance >= minWithdrawal
                     ? 'Proceed to Confirmation →'
-                    : 'Minimum ₹100 Balance Required'}
+                    : `Minimum ₹${minWithdrawal} Balance Required`}
                 </button>
               </div>
             )}
@@ -2572,7 +2575,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   <div className="py-10 text-center text-slate-400">
                     <Clock className="w-8 h-8 text-slate-300 mx-auto mb-2" />
                     <p className="text-xs font-semibold text-slate-700">No withdrawal requests yet</p>
-                    <p className="text-[11px] text-slate-400 mt-1">Once you earn ₹100 or more, request an instant payout here.</p>
+                    <p className="text-[11px] text-slate-400 mt-1">Once you earn ₹{minWithdrawal} or more, request an instant payout here.</p>
                   </div>
                 ) : (
                   withdrawalHistory.map((item: WithdrawalItem) => (

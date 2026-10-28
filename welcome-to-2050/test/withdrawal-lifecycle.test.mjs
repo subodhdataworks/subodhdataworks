@@ -178,8 +178,8 @@ await runTest('Scenario 3: Approve & Pay the ₹1,000 request -> do NOT deduct �
   assert.equal(appData.availableBalance, 1200, 'Approving MUST NOT deduct ₹1,000 a second time');
   assert.equal(appData.availableToPayout, 1200);
   assert.equal(appData.availableToWithdraw, 1200);
-  assert.equal(appData.pendingBalance, 0, 'Pending reservation cleared on approval');
-  assert.equal(appData.totalPaid, 1000, 'Total Paid becomes ₹1,000');
+  assert.equal(appData.pendingBalance, 1000, 'Approved keeps funds reserved in Pending Withdrawal until external transfer is Paid');
+  assert.equal(appData.totalPaid, 0, 'Total Paid remains ₹0 until marked Paid');
 
   // Mark Paid & repeat call to verify idempotency
   const paidRes = await onRequestPost(
@@ -194,6 +194,7 @@ await runTest('Scenario 3: Approve & Pay the ₹1,000 request -> do NOT deduct �
   const paidData = await paidRes.json();
   assert.equal(paidData.success, true);
   assert.equal(paidData.availableBalance, 1200, 'Marking Paid MUST NOT deduct ₹1,000 again');
+  assert.equal(paidData.pendingBalance, 0, 'Pending reservation cleared on Paid');
   assert.equal(paidData.totalPaid, 1000);
 
   const repeatPaidRes = await onRequestPost(
@@ -382,12 +383,12 @@ await runTest('Scenario 8: Lifetime Earnings remains ₹2,200 & invalid/unverifi
   );
   assert.equal(zeroRes.status, 400);
 
-  // Below ₹100 minimum rejected
+  // Below ₹1 minimum rejected
   const minRes = await onRequestPost(
     makePostContext({
       eventType: 'withdrawal_request',
       refCode: TEST_USER,
-      amount: 50,
+      amount: 0.5,
       method: 'UPI',
       upiId: 'partner2200@okaxis',
       isVerified: true,

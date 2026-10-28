@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { WalletWithdrawModal } from '../WalletWithdrawModal';
+import { getEffectiveMinWithdrawal } from '../../../config/withdrawalConfig';
 import {
   Link2,
   Copy,
@@ -225,8 +226,9 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
       setWithdrawError(`Amount exceeds available balance of ₹${availableBalance.toLocaleString('en-IN')}`);
       return;
     }
-    if (amt < 100) {
-      setWithdrawError('Minimum withdrawal amount is ₹100.');
+    const minAllowed = getEffectiveMinWithdrawal();
+    if (amt < minAllowed) {
+      setWithdrawError(`Minimum withdrawal amount is ₹${minAllowed}.`);
       return;
     }
     if (!upiIdInput.trim() || !upiIdInput.includes('@')) {

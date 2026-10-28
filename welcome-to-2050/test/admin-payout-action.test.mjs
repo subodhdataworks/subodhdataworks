@@ -451,6 +451,84 @@ runTest('13. Affiliate Accounting Invariance: Lifetime Earnings is strictly cumu
   assert.equal(res.lifetimeEarnings, 200, 'Lifetime earnings unchanged at 200');
 });
 
+runTest('14. Temporary ₹1 Minimum Withdrawal Config: verified in withdrawalConfig.ts & affiliate.js', () => {
+  const configPath = path.resolve('welcome-to-2050/src/config/withdrawalConfig.ts');
+  const configContent = fs.readFileSync(configPath, 'utf-8');
+  assert.match(configContent, /TEMPORARY_TEST_MIN_WITHDRAWAL_ACTIVE\s*=\s*true/);
+  assert.match(configContent, /STANDARD_MIN_WITHDRAWAL\s*=\s*100/);
+  assert.match(configContent, /TEST_MIN_WITHDRAWAL\s*=\s*1/);
+
+  const apiPath = path.resolve('functions/api/affiliate.js');
+  const apiContent = fs.readFileSync(apiPath, 'utf-8');
+  assert.match(apiContent, /TEMPORARY_TEST_MIN_WITHDRAWAL_ACTIVE\s*=\s*true/);
+  assert.match(apiContent, /STANDARD_MIN_WITHDRAWAL_AMOUNT\s*=\s*100/);
+  assert.match(apiContent, /TEST_MIN_WITHDRAWAL_AMOUNT\s*=\s*1/);
+});
+
+runTest('15. Live ₹1 Payout Test Simulation alongside existing ₹100 pending withdrawal', () => {
+  function computeBalances(totalEarned, withdrawals = []) {
+    let pendingBalance = 0;
+    let totalPaid = 0;
+    for (const w of withdrawals) {
+      const amt = Number(w?.amount) || 0;
+      if (amt <= 0) continue;
+      const st = String(w?.status || '').trim().toUpperCase();
+      if (st === 'PENDING' || st === 'PROCESSING' || st === 'UNDER_REVIEW' || st === 'APPROVED') {
+        pendingBalance += amt;
+      } else if (st === 'PAID') {
+        totalPaid += amt;
+      }
+    }
+    const safeEarned = Math.max(0, Number(totalEarned) || 0);
+    const availableBalance = Math.max(0, safeEarned - totalPaid - pendingBalance);
+    return { availableBalance, pendingBalance, totalPaid, lifetimeEarnings: safeEarned };
+  }
+
+  // Starting production state: ₹200 earned, ₹100 existing UNDER_REVIEW withdrawal -> ₹100 Available
+  const withdrawals = [{ id: 'WREQ-EXISTING-100', amount: 100, status: 'UNDER_REVIEW' }];
+  const before = computeBalances(200, withdrawals);
+  assert.equal(before.availableBalance, 100);
+  assert.equal(before.pendingBalance, 100);
+  assert.equal(before.totalPaid, 0);
+
+  // Step 1: Submit new ₹1 withdrawal
+  withdrawals.push({ id: 'WREQ-TEST-1', amount: 1, status: 'UNDER_REVIEW' });
+  const afterRequest = computeBalances(200, withdrawals);
+  assert.equal(afterRequest.availableBalance, 99, 'Available to Payout becomes ₹99');
+  assert.equal(afterRequest.pendingBalance, 101, 'Pending Withdrawal becomes ₹101 (₹100 + ₹1)');
+  assert.equal(afterRequest.totalPaid, 0);
+  assert.equal(afterRequest.lifetimeEarnings, 200);
+
+  // Step 2: Admin Approves the ₹1 request
+  withdrawals[1].status = 'APPROVED';
+  const afterApprove = computeBalances(200, withdrawals);
+  assert.equal(afterApprove.availableBalance, 99, 'Available stays ₹99');
+  assert.equal(afterApprove.pendingBalance, 101, 'Pending stays ₹101 while APPROVED');
+  assert.equal(afterApprove.totalPaid, 0);
+
+  // Step 3: Admin completes external ₹1 transfer and Marks PAID with genuine UTR
+  withdrawals[1].status = 'PAID';
+  withdrawals[1].referenceNo = 'UTR20261028TEST1RS99';
+  const afterPaid = computeBalances(200, withdrawals);
+  assert.equal(afterPaid.availableBalance, 99, 'Available stays ₹99');
+  assert.equal(afterPaid.pendingBalance, 100, 'Pending decreases to ₹100 (existing ₹100 request untouched)');
+  assert.equal(afterPaid.totalPaid, 1, 'Total Paid Out becomes ₹1');
+  assert.equal(afterPaid.lifetimeEarnings, 200, 'Lifetime Earnings remains ₹200');
+});
+
+runTest('16. Restore ₹100 Minimum Verification: toggling TEMPORARY_TEST_MIN_WITHDRAWAL_ACTIVE = false restores ₹100', () => {
+  function resolveMin(active, isTestSession, userRef) {
+    if (!active) return 100;
+    if (isTestSession || ['SUBODHKUMAR', 'ADMIN'].includes(userRef)) return 1;
+    return 100;
+  }
+
+  assert.equal(resolveMin(true, true, 'LEARNER1'), 1, 'Active test session allows ₹1');
+  assert.equal(resolveMin(true, false, 'SUBODHKUMAR'), 1, 'Authorized test account gets ₹1');
+  assert.equal(resolveMin(true, false, 'PUBLIC_USER'), 100, 'Normal public user kept at ₹100 when session flag is false');
+  assert.equal(resolveMin(false, true, 'SUBODHKUMAR'), 100, 'Toggling master flag to false restores ₹100 for all');
+});
+
 console.log('\n----------------------------------------------------------------');
 console.log(`Summary: ${passedTests}/${totalTests} Tests Passed`);
 console.log('----------------------------------------------------------------\n');

@@ -36,7 +36,44 @@ const json = (data, status = 200) =>
 
 const MIGRATION_VERSION = 'affiliate_v5_complete_reset_2026';
 const AFFILIATE_EPOCH = 'v5_clean';
-const MIN_WITHDRAWAL_AMOUNT = 100;
+// ============================================================================
+// TEMPORARY LIVE PAYOUT TEST CONFIGURATION
+// To restore original minimum (₹100 for all), toggle TEMPORARY_TEST_MIN_WITHDRAWAL_ACTIVE = false
+// ============================================================================
+const TEMPORARY_TEST_MIN_WITHDRAWAL_ACTIVE = true;
+const STANDARD_MIN_WITHDRAWAL_AMOUNT = 100;
+const TEST_MIN_WITHDRAWAL_AMOUNT = 1;
+const APPLY_TO_TEST_SESSION = true;
+
+const AUTHORIZED_TEST_ACCOUNTS = [
+  'SUBODHKUMAR',
+  'SUBODH',
+  'TREND1XS',
+  'PARTNER',
+  'ADMIN',
+  'TEST',
+  'TESTER',
+  'user_subodh_123',
+  'subodhkumar@gmail.com',
+  'subodh.dataworks@gmail.com',
+  'trend@futureitindustry.com',
+];
+
+function isAuthorizedTestAccount(userOrRef = '') {
+  if (!userOrRef) return false;
+  const clean = String(userOrRef).trim().toUpperCase();
+  return AUTHORIZED_TEST_ACCOUNTS.some((auth) => clean.includes(auth));
+}
+
+function getEffectiveMinWithdrawal(userOrRef = '') {
+  if (!TEMPORARY_TEST_MIN_WITHDRAWAL_ACTIVE) {
+    return STANDARD_MIN_WITHDRAWAL_AMOUNT;
+  }
+  if (APPLY_TO_TEST_SESSION || isAuthorizedTestAccount(userOrRef)) {
+    return TEST_MIN_WITHDRAWAL_AMOUNT;
+  }
+  return STANDARD_MIN_WITHDRAWAL_AMOUNT;
+}
 
 function normalizeRefCode(ref) {
   if (!ref) return '';
@@ -76,10 +113,10 @@ function recalculateAffiliateBalances(record) {
   for (const w of withdrawals) {
     const amt = Number(w.amount) || 0;
     if (amt <= 0) continue;
-    const st = String(w.status || '').trim();
-    if (st === 'Pending' || st === 'Processing' || st === 'UNDER_REVIEW' || st === 'PENDING' || st === 'PROCESSING') {
+    const st = String(w.status || '').trim().toUpperCase();
+    if (st === 'PENDING' || st === 'PROCESSING' || st === 'UNDER_REVIEW' || st === 'APPROVED') {
       reservedPending += amt;
-    } else if (st === 'Paid' || st === 'Approved' || st === 'PAID' || st === 'APPROVED') {
+    } else if (st === 'PAID') {
       paidTotal += amt;
     }
   }
@@ -523,11 +560,12 @@ export async function onRequestPost(context) {
         }
 
         const requestedAmount = Math.round(rawAmount * 100) / 100;
-        if (requestedAmount < MIN_WITHDRAWAL_AMOUNT) {
+        const minAllowed = getEffectiveMinWithdrawal(cleanRef);
+        if (requestedAmount < minAllowed) {
           return json({
             success: false,
             reason: 'BELOW_MINIMUM_WITHDRAWAL',
-            error: `Minimum withdrawal amount is ₹${MIN_WITHDRAWAL_AMOUNT}.`,
+            error: `Minimum withdrawal amount is ₹${minAllowed}.`,
           }, 400);
         }
 
