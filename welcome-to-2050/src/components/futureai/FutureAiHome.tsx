@@ -467,8 +467,8 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                 <p className="text-slate-900 font-bold mt-0.5">From Learning to Earning, We&apos;re With You.</p>
               </div>
 
-              {/* CTAs Row */}
-              <div className="mt-3.5 flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-3">
+              {/* CTAs Row (Desktop: Side-by-side with video) */}
+              <div className="hidden lg:flex mt-3.5 flex-wrap items-center justify-start gap-2 sm:gap-3">
                 <button
                   type="button"
                   onClick={promptLogin}
@@ -488,8 +488,8 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                 </button>
               </div>
 
-              {/* Rating */}
-              <div className="mt-2.5 flex flex-wrap items-center justify-center lg:justify-start gap-1.5 sm:gap-2 text-[11px] text-slate-500 font-medium">
+              {/* Rating (Desktop View) */}
+              <div className="hidden lg:flex mt-2.5 flex-wrap items-center justify-start gap-1.5 sm:gap-2 text-[11px] text-slate-500 font-medium">
                 <div className="flex items-center text-amber-400 shrink-0">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
@@ -521,6 +521,40 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                   </video>
                 </div>
 
+              </div>
+            </div>
+
+            {/* MOBILE ONLY (< lg): Start Learning + Explore + Rating placed directly below Video & above Our Hiring Partners */}
+            <div className="lg:hidden col-span-1 flex flex-col items-center justify-center text-center mt-1 sm:mt-2 z-10 w-full px-2">
+              {/* CTAs Row */}
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 w-full">
+                <button
+                  type="button"
+                  onClick={promptLogin}
+                  className="px-4 min-[375px]:px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2 group"
+                >
+                  <span>Start Learning Free</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform shrink-0" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={promptLogin}
+                  className="px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-white hover:bg-slate-50 active:scale-95 text-slate-800 font-bold text-xs sm:text-sm border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2"
+                >
+                  <Code2 className="w-3.5 h-3.5 text-[#1a73e8] shrink-0" />
+                  <span>Explore Hackathon/DSA Practice</span>
+                </button>
+              </div>
+
+              {/* Rating */}
+              <div className="mt-2.5 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-[11px] text-slate-500 font-medium">
+                <div className="flex items-center text-amber-400 shrink-0">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
+                  ))}
+                </div>
+                <span><strong className="text-slate-900 font-bold">4.9/5</strong> rating trusted by 100K+ learners across India</span>
               </div>
             </div>
 
