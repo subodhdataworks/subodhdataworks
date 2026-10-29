@@ -625,25 +625,27 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </div>
 
       {/* ─── MOBILE ONLY CTAs & RATING (Placed Directly Below "Our Hiring Partners") ─── */}
-      <div className="lg:hidden w-full max-w-[1440px] mx-auto px-4 sm:px-6 py-3 flex flex-col items-center justify-center text-center z-10 shrink-0">
-        {/* CTAs Row */}
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 w-full">
+      <div className="lg:hidden w-full max-w-[1440px] mx-auto px-3 sm:px-6 py-3 flex flex-col items-center justify-center text-center z-10 shrink-0">
+        {/* CTAs Row: Left (Join Today!) & Right (Hackathon/DSA Practice) */}
+        <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full max-w-lg">
+          {/* Left Side: Join Today! */}
           <button
             type="button"
             onClick={promptLogin}
-            className="px-4 min-[375px]:px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2 group"
+            className="w-full px-2.5 min-[375px]:px-4 py-2.5 sm:py-3 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-extrabold text-xs min-[375px]:text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer flex items-center justify-center gap-1.5 group whitespace-nowrap"
           >
-            <span>Start Learning Free</span>
+            <span>Join Today!</span>
             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform shrink-0" />
           </button>
 
+          {/* Right Side: Hackathon/DSA Practice */}
           <button
             type="button"
             onClick={promptLogin}
-            className="px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-white hover:bg-slate-50 active:scale-95 text-slate-800 font-bold text-xs sm:text-sm border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2"
+            className="w-full px-2 min-[375px]:px-3 py-2.5 sm:py-3 rounded-xl bg-white hover:bg-slate-50 active:scale-95 text-slate-800 font-bold text-[11px] min-[375px]:text-xs sm:text-sm border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap"
           >
             <Code2 className="w-3.5 h-3.5 text-[#1a73e8] shrink-0" />
-            <span>Explore Hackathon/DSA Practice</span>
+            <span className="truncate">Hackathon/DSA Practice</span>
           </button>
         </div>
 
