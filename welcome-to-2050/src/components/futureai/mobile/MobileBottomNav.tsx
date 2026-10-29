@@ -150,12 +150,15 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
             }`}
           >
             {/* 3D Embossed Gold Coin */}
-            <div className="w-[20px] h-[20px] rounded-full bg-gradient-to-br from-amber-300 via-amber-400 to-orange-500 text-slate-950 flex items-center justify-center text-[10.5px] font-black shadow-[0_2px_6px_rgba(245,158,11,0.4)] border border-amber-200/90 leading-none">
-              ₹
+            <div className="relative w-[22px] h-[22px] rounded-full bg-gradient-to-br from-[#ffe57f] via-[#f59e0b] to-[#b45309] text-[#451a03] flex items-center justify-center border border-amber-200/90 shadow-[0_2px_6px_rgba(217,119,6,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.9),inset_0_-1.5px_2px_rgba(146,64,14,0.6)] leading-none">
+              <span className="absolute top-0.5 inset-x-1 h-1.5 bg-gradient-to-b from-white/70 to-transparent rounded-t-full pointer-events-none" />
+              <span className="text-[11.5px] font-black drop-shadow-[0_0.5px_0.5px_rgba(255,255,255,0.7)] select-none">
+                ₹
+              </span>
             </div>
             {/* Unread live badge */}
             {unreadEarnBadge && (
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white animate-pulse" />
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white animate-pulse" />
             )}
           </div>
           <span
@@ -165,7 +168,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                 : 'font-semibold text-slate-500'
             }`}
           >
-            Affiliate
+            Earn Cash
           </span>
           {isTabActive('earn') ? (
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.9)] mt-0.5" />
