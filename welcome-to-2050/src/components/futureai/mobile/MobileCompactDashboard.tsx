@@ -19,6 +19,26 @@ import { CAREER_COURSES_12, CareerCourseItem } from '../../../data/careerCourses
 import { isCourseUnlocked } from '../../../services/courseUnlockService';
 import { MobileLoggedInHero } from './MobileLoggedInHero';
 
+const HIRING_PARTNER_LOGOS = [
+  { name: 'Google', logo: '/images/companies/google.svg', h: 18 },
+  { name: 'Microsoft', logo: '/images/companies/microsoft.svg', h: 18 },
+  { name: 'Amazon', logo: '/images/companies/amazon.svg', h: 18 },
+  { name: 'Accenture', logo: '/images/companies/accenture.svg', h: 17 },
+  { name: 'Deloitte', logo: '/images/companies/deloitte.svg', h: 17 },
+  { name: 'TCS', logo: '/images/companies/tcs.svg', h: 18 },
+  { name: 'Infosys', logo: '/images/companies/infosys.svg', h: 17 },
+  { name: 'Wipro', logo: '/images/companies/wipro.svg', h: 18 },
+  { name: 'IBM', logo: '/images/companies/ibm.svg', h: 16 },
+  { name: 'Adobe', logo: '/images/companies/adobe.svg', h: 17 },
+  { name: 'EY', logo: '/images/companies/ey.svg', h: 18 },
+  { name: 'Cognizant', logo: '/images/companies/cognizant.svg', h: 16 },
+  { name: 'Capgemini', logo: '/images/companies/capgemini.svg', h: 17 },
+  { name: 'PwC', logo: '/images/companies/pwc.svg', h: 18 },
+  { name: 'KPMG', logo: '/images/companies/kpmg.svg', h: 17 },
+  { name: 'Tech Mahindra', logo: '/images/companies/techmahindra.svg', h: 16 },
+  { name: 'HCL', logo: '/images/companies/hcl.svg', h: 15 },
+];
+
 /**
  * Viewport-aware inline looping course video with poster thumbnail fallback.
  * - Plays automatically when card is visible in viewport.
@@ -196,26 +216,61 @@ export const MobileCompactDashboard: React.FC<MobileCompactDashboardProps> = ({
         ))}
       </section>
 
-      {/* ─── 3. HIRING PARTNERS STRIP ─── */}
-      <button
-        type="button"
+      {/* ─── 3. CONTINUOUS HIRING PARTNERS INFINITE MARQUEE ("chalta rahega saare company") ─── */}
+      <div
+        role="button"
+        tabIndex={0}
         onClick={() => {
           playClick?.();
           onOpenJobSupport();
         }}
-        className="mt-2 w-full flex items-center gap-2 rounded-xl bg-white border border-[#e3ecfb] px-2.5 py-2 shadow-[0_2px_8px_rgba(30,80,180,0.05)] active:scale-[0.99] transition-transform text-left"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            playClick?.();
+            onOpenJobSupport();
+          }
+        }}
+        className="mt-2.5 w-full flex items-center gap-2 rounded-xl bg-white border border-[#e3ecfb] px-2.5 py-2 shadow-[0_2px_8px_rgba(30,80,180,0.05)] cursor-pointer overflow-hidden select-none active:scale-[0.99] transition-transform"
+        aria-label="Our Hiring Partners - Click to view placement opportunities"
       >
-        <span className="w-2 h-2 shrink-0 rounded-full bg-emerald-500" />
-        <span className="shrink-0 text-[11px] font-extrabold text-[#0b1a3a]">Our Hiring Partners</span>
-        <span className="shrink-0 w-px h-4 bg-slate-200" />
-        <span className="min-w-0 truncate text-[10px] font-semibold text-slate-500">and 700+ more…</span>
-        <span className="ml-auto flex items-center gap-2 shrink-0">
-          <img src="/images/companies/tcs.svg" alt="TCS" className="h-[18px] w-auto object-contain" loading="lazy" />
-          <img src="/images/companies/infosys.svg" alt="Infosys" className="h-[18px] w-auto object-contain" loading="lazy" />
-          <img src="/images/companies/wipro.svg" alt="Wipro" className="h-[18px] w-auto object-contain max-[370px]:hidden" loading="lazy" />
-          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-        </span>
-      </button>
+        {/* Left Badge */}
+        <div className="shrink-0 flex items-center gap-1.5 border-r border-slate-200 pr-2">
+          <span className="w-2 h-2 shrink-0 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="text-[11px] font-extrabold text-[#0b1a3a] whitespace-nowrap">
+            Our Hiring Partners
+          </span>
+        </div>
+
+        {/* Continuous Infinite Marquee Ticker */}
+        <div className="relative overflow-hidden flex-1 min-w-0">
+          {/* Subtle fade edges */}
+          <div className="absolute left-0 top-0 bottom-0 w-3 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-3 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+          {/* Scrolling Track */}
+          <div className="animate-marquee-left flex items-center gap-5">
+            {[...HIRING_PARTNER_LOGOS, ...HIRING_PARTNER_LOGOS].map((comp, idx) => (
+              <div
+                key={`${comp.name}-${idx}`}
+                className="shrink-0 flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity"
+              >
+                <img
+                  src={comp.logo}
+                  alt={comp.name}
+                  style={{ height: `${comp.h}px` }}
+                  className="w-auto object-contain max-w-[65px]"
+                  loading="lazy"
+                />
+                <span className="text-[10px] font-bold text-slate-700 whitespace-nowrap hidden min-[360px]:inline">
+                  {comp.name}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-0.5" />
+      </div>
 
       {/* ─── 3. COURSES (LIVE COUNT + HORIZONTAL CARDS WITH AUTOPLAY LOOPING VIDEOS) ─── */}
       <section id="mobile-courses-list" className="mt-4 scroll-mt-20">

@@ -200,7 +200,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                 : 'font-semibold text-slate-500'
             }`}
           >
-            Placement
+            Get Job
           </span>
           {isTabActive('placement') ? (
             <span className="w-1.5 h-1.5 rounded-full bg-rose-600 shadow-[0_0_8px_rgba(225,29,72,0.9)] mt-0.5" />

@@ -1477,6 +1477,16 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }
           }}
+          onJob={() => {
+            playClick();
+            setSelectedModuleView(null);
+            setActiveTopicWs(null);
+            setDockTab('placement');
+            if (typeof window !== 'undefined') {
+              window.location.hash = '#placement';
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
           onProfile={() => {
             playClick();
             if (!isLoggedIn) {
@@ -2253,7 +2263,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       <div className="md:hidden h-20 shrink-0" aria-hidden="true" />
       <MobileDashboardBottomNav
         active={
-          dockTab === 'income' || dockTab === 'referral' || dockTab === 'wallet' || dockTab === 'withdraw'
+          dockTab === 'placement'
+            ? 'job'
+            : dockTab === 'income' || dockTab === 'referral' || dockTab === 'wallet' || dockTab === 'withdraw'
             ? 'earn'
             : dockTab === 'game' ||
               selectedModuleView === 'python_challenges' ||
@@ -2301,6 +2313,16 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           setDockTab('income');
           if (typeof window !== 'undefined') {
             window.location.hash = '#income';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }}
+        onJob={() => {
+          playClick();
+          setSelectedModuleView(null);
+          setActiveTopicWs(null);
+          setDockTab('placement');
+          if (typeof window !== 'undefined') {
+            window.location.hash = '#placement';
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }
         }}

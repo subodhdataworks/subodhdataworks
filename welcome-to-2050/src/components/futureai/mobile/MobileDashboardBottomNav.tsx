@@ -1,7 +1,7 @@
 import React from 'react';
-import { Home, LayoutGrid, Code2, Coins, User } from 'lucide-react';
+import { Home, LayoutGrid, Code2, Coins, Briefcase } from 'lucide-react';
 
-export type MobileDashNavTab = 'home' | 'learning' | 'practice' | 'earn' | 'profile';
+export type MobileDashNavTab = 'home' | 'learning' | 'practice' | 'earn' | 'job' | 'profile';
 
 export interface MobileDashboardBottomNavProps {
   active: MobileDashNavTab;
@@ -9,7 +9,8 @@ export interface MobileDashboardBottomNavProps {
   onLearning: () => void;
   onPractice: () => void;
   onEarn: () => void;
-  onProfile: () => void;
+  onJob?: () => void;
+  onProfile?: () => void;
 }
 
 /**
@@ -22,6 +23,7 @@ export const MobileDashboardBottomNav: React.FC<MobileDashboardBottomNavProps> =
   onLearning,
   onPractice,
   onEarn,
+  onJob,
   onProfile,
 }) => {
   const item = (tab: MobileDashNavTab, label: string, icon: React.ReactNode, onClick: () => void) => {
@@ -75,7 +77,7 @@ export const MobileDashboardBottomNav: React.FC<MobileDashboardBottomNavProps> =
         </button>
 
         {item('earn', 'Earn Cash', <Coins className="w-[22px] h-[22px] text-amber-500" />, onEarn)}
-        {item('profile', 'Profile', <User className="w-[22px] h-[22px]" />, onProfile)}
+        {item('job', 'Get Job', <Briefcase className="w-[22px] h-[22px]" />, onJob || onProfile || (() => {}))}
       </div>
     </nav>
   );
