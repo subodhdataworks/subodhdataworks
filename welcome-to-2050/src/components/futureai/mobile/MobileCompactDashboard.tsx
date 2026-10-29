@@ -166,117 +166,39 @@ export const MobileCompactDashboard: React.FC<MobileCompactDashboardProps> = ({
     document.getElementById('mobile-courses-list')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
+  const heroVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    const vid = heroVideoRef.current;
+    if (!vid) return;
+    vid.muted = true;
+    vid.defaultMuted = true;
+    vid.playsInline = true;
+    vid.setAttribute('muted', '');
+    vid.setAttribute('playsinline', '');
+    vid.setAttribute('webkit-playsinline', 'true');
+    const p = vid.play();
+    if (p && typeof p.catch === 'function') {
+      p.catch(() => {});
+    }
+  }, []);
+
   return (
     <div className="md:hidden px-3 pt-2 pb-4 font-sans text-left max-w-md mx-auto">
-      {/* ─── 1. NEW PROMOTIONAL BANNER: Practical Learning ECOSYSTEM ─── */}
-      <section className="relative w-full rounded-3xl overflow-hidden shadow-xs border border-sky-100 bg-white">
-        <img
-          src="/images/practical_learning_ecosystem_banner.png"
-          alt="Practical Learning ECOSYSTEM - Learn AI & Data Skills. Get Job-Ready."
+      {/* ─── 1. HERO VIDEO: Practical Learning ECOSYSTEM ─── */}
+      <section className="relative w-full rounded-2xl overflow-hidden shadow-xs border border-sky-100 bg-black">
+        <video
+          ref={heroVideoRef}
+          src="/videos/mobile_hero_ecosystem.mp4"
+          poster="/images/hero_video_frame.jpg"
+          autoPlay
+          loop
+          muted
+          playsInline
+          controls={false}
+          preload="auto"
           className="w-full h-auto object-cover block select-none"
         />
-      </section>
-
-      {/* ─── 2. FIVE TECHNOLOGY SKILL CARDS (Python, SQL, Excel, Power BI, GenAI) ─── */}
-      <section className="mt-3 w-full grid grid-cols-5 gap-1.5 min-[375px]:gap-2">
-        {/* Python */}
-        <div
-          onClick={() => {
-            playClick?.();
-            onOpenCodingPractice();
-          }}
-          className="bg-[#F0F7FE] border border-[#E0EEFB] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
-        >
-          <div className="w-8 h-8 flex items-center justify-center shrink-0">
-            <img src="/images/tech_icon_python.png" alt="Python" className="w-7 h-7 object-contain" />
-          </div>
-          <div className="w-full">
-            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">Python</div>
-            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
-              Write Code.<br />Solve Problems.
-            </div>
-          </div>
-        </div>
-
-        {/* SQL */}
-        <div
-          onClick={() => {
-            playClick?.();
-            const sqlCourse = courses.find((c) => c.id === 'data-analyst-genai') || courses[0];
-            onCourseClick(sqlCourse);
-          }}
-          className="bg-[#F0F4FF] border border-[#E2EBFC] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
-        >
-          <div className="w-8 h-8 flex items-center justify-center shrink-0">
-            <img src="/images/tech_icon_sql.png" alt="SQL" className="w-7 h-7 object-contain" />
-          </div>
-          <div className="w-full">
-            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">SQL</div>
-            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
-              Handle Data.<br />Make Decisions.
-            </div>
-          </div>
-        </div>
-
-        {/* Excel */}
-        <div
-          onClick={() => {
-            playClick?.();
-            const excelCourse = courses.find((c) => c.id === 'ms-office-copilot') || courses[0];
-            onCourseClick(excelCourse);
-          }}
-          className="bg-[#EEFBF4] border border-[#DCF5E8] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
-        >
-          <div className="w-8 h-8 flex items-center justify-center shrink-0">
-            <img src="/images/tech_icon_excel.png" alt="Excel" className="w-7 h-7 object-contain" />
-          </div>
-          <div className="w-full">
-            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">Excel</div>
-            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
-              Work Smarter.<br />Not Harder.
-            </div>
-          </div>
-        </div>
-
-        {/* Power BI */}
-        <div
-          onClick={() => {
-            playClick?.();
-            const pbiCourse = courses.find((c) => c.id === 'data-analyst-genai') || courses[0];
-            onCourseClick(pbiCourse);
-          }}
-          className="bg-[#FFF9EC] border border-[#FEEEC9] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
-        >
-          <div className="w-8 h-8 flex items-center justify-center shrink-0">
-            <img src="/images/tech_icon_powerbi.png" alt="Power BI" className="w-7 h-7 object-contain" />
-          </div>
-          <div className="w-full">
-            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">Power BI</div>
-            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
-              Visualize Data.<br />Tell Stories.
-            </div>
-          </div>
-        </div>
-
-        {/* GenAI */}
-        <div
-          onClick={() => {
-            playClick?.();
-            const genAiCourse = courses.find((c) => c.id === 'ai-tools-prompt') || courses[1] || courses[0];
-            onCourseClick(genAiCourse);
-          }}
-          className="bg-[#FDF2FB] border border-[#F9DDF5] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
-        >
-          <div className="w-8 h-8 flex items-center justify-center shrink-0">
-            <img src="/images/tech_icon_genai.png" alt="GenAI" className="w-7 h-7 object-contain" />
-          </div>
-          <div className="w-full">
-            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">GenAI</div>
-            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
-              Think Bigger.<br />Build Faster.
-            </div>
-          </div>
-        </div>
       </section>
 
       {/* ─── 3. FOUR BENEFIT ITEMS (Industry Projects, Expert Mentors, Placement Support, Lifetime Access) ─── */}

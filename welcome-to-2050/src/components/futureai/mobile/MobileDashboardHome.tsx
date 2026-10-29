@@ -98,6 +98,23 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
   }, []);
 
   // Hiring Partners & Real People Home Showcase State
+  const heroVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    const vid = heroVideoRef.current;
+    if (!vid) return;
+    vid.muted = true;
+    vid.defaultMuted = true;
+    vid.playsInline = true;
+    vid.setAttribute('muted', '');
+    vid.setAttribute('playsinline', '');
+    vid.setAttribute('webkit-playsinline', 'true');
+    const p = vid.play();
+    if (p && typeof p.catch === 'function') {
+      p.catch(() => {});
+    }
+  }, []);
+
   const [activeStoryIdx, setActiveStoryIdx] = useState(0);
   const [isStoryAutoPlaying, setIsStoryAutoPlaying] = useState(true);
   const [isMarqueePaused, setIsMarqueePaused] = useState(false);
@@ -508,118 +525,21 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       
 
       {/* =========================================================================
-          2. NEW HERO BANNER: "Practical Learning ECOSYSTEM"
+          2. HERO VIDEO: Practical Learning ECOSYSTEM
           ========================================================================= */}
-      <div className="relative w-full rounded-3xl overflow-hidden shadow-xs border border-sky-100 bg-white">
-        <img
-          src="/images/practical_learning_ecosystem_banner.png"
-          alt="Practical Learning ECOSYSTEM - Learn AI & Data Skills. Get Job-Ready."
+      <div className="relative w-full rounded-2xl overflow-hidden shadow-xs border border-sky-100 bg-black">
+        <video
+          ref={heroVideoRef}
+          src="/videos/mobile_hero_ecosystem.mp4"
+          poster="/images/hero_video_frame.jpg"
+          autoPlay
+          loop
+          muted
+          playsInline
+          controls={false}
+          preload="auto"
           className="w-full h-auto object-cover block select-none"
         />
-      </div>
-
-      {/* =========================================================================
-          3. FIVE TECHNOLOGY SKILL CARDS (Python, SQL, Excel, Power BI, GenAI)
-          ========================================================================= */}
-      <div className="w-full grid grid-cols-5 gap-1.5 min-[375px]:gap-2">
-        {/* 1. Python */}
-        <div
-          onClick={() => {
-            playClick?.();
-            onStartPython();
-          }}
-          className="bg-[#F0F7FE] border border-[#E0EEFB] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
-        >
-          <div className="w-8 h-8 flex items-center justify-center shrink-0">
-            <img src="/images/tech_icon_python.png" alt="Python" className="w-7 h-7 object-contain" />
-          </div>
-          <div className="w-full">
-            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">Python</div>
-            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
-              Write Code.<br />Solve Problems.
-            </div>
-          </div>
-        </div>
-
-        {/* 2. SQL */}
-        <div
-          onClick={() => {
-            playClick?.();
-            if (onOpenSql) onOpenSql();
-            else onStartPython();
-          }}
-          className="bg-[#F0F4FF] border border-[#E2EBFC] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
-        >
-          <div className="w-8 h-8 flex items-center justify-center shrink-0">
-            <img src="/images/tech_icon_sql.png" alt="SQL" className="w-7 h-7 object-contain" />
-          </div>
-          <div className="w-full">
-            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">SQL</div>
-            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
-              Handle Data.<br />Make Decisions.
-            </div>
-          </div>
-        </div>
-
-        {/* 3. Excel */}
-        <div
-          onClick={() => {
-            playClick?.();
-            if (onOpenExcel) onOpenExcel();
-            else onStartPython();
-          }}
-          className="bg-[#EEFBF4] border border-[#DCF5E7] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
-        >
-          <div className="w-8 h-8 flex items-center justify-center shrink-0">
-            <img src="/images/tech_icon_excel.png" alt="Excel" className="w-7 h-7 object-contain" />
-          </div>
-          <div className="w-full">
-            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">Excel</div>
-            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
-              Work Smarter.<br />Not Harder.
-            </div>
-          </div>
-        </div>
-
-        {/* 4. Power BI */}
-        <div
-          onClick={() => {
-            playClick?.();
-            if (onOpenPowerBi) onOpenPowerBi();
-            else onStartPython();
-          }}
-          className="bg-[#FFF9EC] border border-[#FEF0D4] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
-        >
-          <div className="w-8 h-8 flex items-center justify-center shrink-0">
-            <img src="/images/tech_icon_powerbi.png" alt="Power BI" className="w-7 h-7 object-contain" />
-          </div>
-          <div className="w-full">
-            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">Power BI</div>
-            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
-              Visualize Data.<br />Tell Stories.
-            </div>
-          </div>
-        </div>
-
-        {/* 5. GenAI */}
-        <div
-          onClick={() => {
-            playClick?.();
-            if (onOpenGenAi) onOpenGenAi();
-            else onStartPython();
-          }}
-          className="bg-[#FDF2FB] border border-[#FAE1F6] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
-        >
-          <div className="w-8 h-8 flex items-center justify-center shrink-0">
-            <img src="/images/tech_icon_genai.png" alt="GenAI" className="w-7 h-7 object-contain" />
-          </div>
-          <div className="w-full">
-            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">GenAI</div>
-            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
-              Think Bigger.<br />Build Faster.
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* =========================================================================
