@@ -149,22 +149,26 @@ export async function onRequestPost(context) {
           });
         }
 
-        // Case C: Active session exists on another browser -> BLOCK second login!
+        // Case C: Multi-device login enabled: allow concurrent sessions without blocking
         if (isStillValid) {
-          return json(
-            {
-              success: false,
-              code: 'CONCURRENT_SESSION_BLOCKED',
-              error: 'You are already logged in on another browser. Please sign out from that browser to continue.',
-              activeSession: {
-                deviceInfo: existingSession.deviceInfo || 'Another Browser / Device',
-                lastActiveAt: existingSession.lastActiveAt,
-                expiresAt: existingSession.expiresAt,
-              },
-              canForceTerminateWithReauth: true,
-            },
-            409
-          );
+          const newSessionId = generateSecureSessionId();
+          const newExpires = new Date(now + SESSION_TTL_MS).toISOString();
+          const sessionPayload = {
+            uid: cleanUid,
+            sessionId: newSessionId,
+            deviceInfo,
+            status: 'ACTIVE',
+            createdAt: new Date(now).toISOString(),
+            lastActiveAt: new Date(now).toISOString(),
+            expiresAt: newExpires,
+          };
+          isolateSessionStore.set(cleanUid, sessionPayload);
+          return json({
+            success: true,
+            sessionId: newSessionId,
+            status: 'CREATED_MULTI_DEVICE',
+            expiresAt: newExpires,
+          });
         }
       }
 
@@ -250,13 +254,12 @@ export async function onRequestPost(context) {
         });
       }
 
-      // If existingSession is definitively terminated or superseded
+      // Multi-device login: maintain continuous active session across all devices
       if (existingSession && existingSession.sessionId !== incomingSessionId) {
         return json({
-          success: false,
-          active: false,
-          reason: 'SESSION_TERMINATED_OR_SUPERSEDED',
-          error: 'Your session has been signed out or terminated from another browser.',
+          success: true,
+          active: true,
+          status: 'MULTI_DEVICE_ACTIVE',
         });
       }
 

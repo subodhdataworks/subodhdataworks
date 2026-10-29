@@ -66,23 +66,18 @@ test('2. Part 1: Invariance simulation across multiple browser environments for 
   assert.strictEqual(chromeResult.referralId, firefoxResult.referralId, 'Chrome and Firefox must receive identical referral IDs');
 });
 
-test('3. Part 2: Single Browser Session API implementation & concurrent login blocking', () => {
+test('3. Part 2: Session API multi-device login support without blocking', () => {
   const sessionFuncPath = path.resolve('functions/api/session.js');
   const sessionContent = fs.readFileSync(sessionFuncPath, 'utf8');
 
-  // Verify collection and conflict detection
+  // Verify collection and multi-device support
   assert.ok(sessionContent.includes('user_sessions'), 'session.js must use user_sessions collection');
-  assert.ok(sessionContent.includes('CONCURRENT_SESSION_BLOCKED'), 'session.js must define CONCURRENT_SESSION_BLOCKED error code');
-  assert.ok(
-    sessionContent.includes('You are already logged in on another browser. Please sign out from that browser to continue.'),
-    'Must contain the exact required user warning string'
-  );
-  assert.ok(sessionContent.includes('forceTerminate'), 'session.js must support secure forceTerminate override');
+  assert.ok(sessionContent.includes('CREATED_MULTI_DEVICE'), 'session.js must allow multi-device session creation');
   assert.ok(sessionContent.includes("action === 'heartbeat'"), 'session.js must handle session heartbeat');
   assert.ok(sessionContent.includes("action === 'terminate'"), 'session.js must handle session termination on logout');
 });
 
-test('4. Part 2: Frontend SessionService & App.tsx session integration', () => {
+test('4. Part 2: Frontend SessionService & App.tsx multi-device integration', () => {
   const servicePath = path.resolve('welcome-to-2050/src/services/sessionService.ts');
   const serviceContent = fs.readFileSync(servicePath, 'utf8');
 
@@ -94,7 +89,7 @@ test('4. Part 2: Frontend SessionService & App.tsx session integration', () => {
   const appPath = path.resolve('welcome-to-2050/src/App.tsx');
   const appContent = fs.readFileSync(appPath, 'utf8');
   assert.ok(appContent.includes('SessionService.createOrValidateSession(user.uid)'), 'App.tsx must validate session on auth state change');
-  assert.ok(appContent.includes('blockedSessionModal'), 'App.tsx must render blockedSessionModal on concurrent session detection');
+  assert.ok(!appContent.includes('blockedSessionModal'), 'App.tsx must NOT render blockedSessionModal (multi-device login enabled)');
   assert.ok(appContent.includes('SessionService.terminateSession(currentUid)'), 'App.tsx must terminate server session on logout');
 });
 

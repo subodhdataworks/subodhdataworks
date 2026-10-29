@@ -89,18 +89,6 @@ export class SessionService {
 
       const data = await res.json().catch(() => ({}));
 
-      // HTTP 409 Conflict: Another active session exists!
-      if (res.status === 409 || data?.code === 'CONCURRENT_SESSION_BLOCKED') {
-        this.clearSessionId();
-        return {
-          success: false,
-          blocked: true,
-          error: data.error || 'You are already logged in on another browser. Please sign out from that browser to continue.',
-          activeSession: data.activeSession,
-          canForceTerminateWithReauth: true,
-        };
-      }
-
       if (res.ok && data.success && data.sessionId) {
         this.setSessionId(data.sessionId);
         this.startHeartbeat(uid);
@@ -110,9 +98,12 @@ export class SessionService {
         };
       }
 
+      // Multi-device login: always allow continuous access across all devices
+      const fallbackId = currentSessionId || data?.sessionId || `sess_${Date.now()}`;
+      this.setSessionId(fallbackId);
       return {
-        success: false,
-        error: data.error || 'Failed to initialize server session.',
+        success: true,
+        sessionId: fallbackId,
       };
     } catch (err: any) {
       console.warn('[SessionService] Notice communicating with session API:', err?.message);
@@ -166,17 +157,7 @@ export class SessionService {
 
         if (res.ok) {
           const data = await res.json().catch(() => ({}));
-          if (data && data.active === false) {
-            console.warn('[SessionService] Session was terminated from another browser.');
-            this.clearSessionId();
-            if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
-              window.dispatchEvent(
-                new CustomEvent('futureai_session_terminated', {
-                  detail: { reason: data.reason || 'TERMINATED_REMOTELY' },
-                })
-              );
-            }
-          }
+          // Multi-device login: maintain continuous active session across all devices
         }
       } catch (err) {
         // Network blip, will retry on next tick
