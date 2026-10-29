@@ -12,7 +12,6 @@ import {
   Trophy,
   Star,
   ArrowRight,
-  CheckCircle2,
   Layers,
   Cpu,
   Brain,
@@ -466,22 +465,6 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               <div className="mt-2 sm:mt-2.5 text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-600 leading-snug max-w-lg mx-auto lg:mx-0">
                 <p>Real Practical Courses. Real Projects. Industry Guidance.</p>
                 <p className="text-slate-900 font-bold mt-0.5">From Learning to Earning, We&apos;re With You.</p>
-              </div>
-
-              {/* Key Features Bullet points */}
-              <div className="mt-2.5 sm:mt-3 space-y-1 text-[11px] sm:text-xs text-slate-600 font-semibold max-w-md mx-auto lg:mx-0">
-                <div className="flex items-center gap-1.5 sm:gap-2 justify-center lg:justify-start">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span className="text-left">100% Hands-On Coding Challenges &amp; Industry Datasets</span>
-                </div>
-                <div className="flex items-center gap-1.5 sm:gap-2 justify-center lg:justify-start">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span className="text-left">AI Mock Interview Simulator with Live Scoring</span>
-                </div>
-                <div className="flex items-center gap-1.5 sm:gap-2 justify-center lg:justify-start">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span className="text-left">700+ Hiring Partners • Pay Fee Only After Placement</span>
-                </div>
               </div>
 
               {/* CTAs Row */}
