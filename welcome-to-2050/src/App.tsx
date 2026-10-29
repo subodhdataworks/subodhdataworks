@@ -87,6 +87,14 @@ export const App: React.FC = () => {
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        if (typeof window !== 'undefined' && sessionStorage.getItem('futureai_logging_out') === 'true') {
+          sessionStorage.removeItem('futureai_logging_out');
+          try { await auth.signOut(); } catch {}
+          setIsLoggedIn(false);
+          setUserName('');
+          return;
+        }
+
         // Enforce Part 2: One Account, One Active Browser Session
         const sessionRes = await SessionService.createOrValidateSession(user.uid);
         if (sessionRes.blocked) {
@@ -233,9 +241,12 @@ export const App: React.FC = () => {
   };
 
   const handleLogout = async () => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('futureai_logging_out', 'true');
+    }
     const currentUid = typeof window !== 'undefined' ? localStorage.getItem('futureai_user_uid') || '' : '';
     if (currentUid) {
-      await SessionService.terminateSession(currentUid);
+      await SessionService.terminateSession(currentUid).catch(() => {});
     }
     try {
       await auth.signOut();

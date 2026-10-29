@@ -235,12 +235,9 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
     };
   }, [hamburgerDrawerOpen]);
 
-  // Close dropdowns on outside click
+  // Close notifications dropdown on outside click (Profile drawer uses its own modal backdrop)
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
-      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
-        setProfileDropdownOpen(false);
-      }
       if (notificationsRef.current && !notificationsRef.current.contains(e.target as Node)) {
         setNotificationsOpen(false);
       }
@@ -403,17 +400,17 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
   };
 
   // Authoritative Sign Out Handler (Terminates session, signs out Firebase auth, purges local storage)
-  const handleSignOutAction = async () => {
+  const handleSignOutAction = async (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     soundEffects.playClick();
     setProfileDropdownOpen(false);
     setHamburgerDrawerOpen(false);
 
-    try {
-      if (onLogout) {
-        await onLogout();
-      }
-    } catch (err) {
-      console.warn('onLogout error:', err);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('futureai_logging_out', 'true');
     }
 
     try {
@@ -421,9 +418,23 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
       if (currentUid) {
         await SessionService.terminateSession(currentUid).catch(() => {});
       }
-      await auth.signOut().catch(() => {});
+    } catch {}
+
+    try {
+      await Promise.race([
+        auth.signOut(),
+        new Promise((resolve) => setTimeout(resolve, 1500)),
+      ]);
     } catch (e) {
       console.warn('Firebase signout error:', e);
+    }
+
+    try {
+      if (onLogout) {
+        await onLogout();
+      }
+    } catch (err) {
+      console.warn('onLogout error:', err);
     }
 
     if (typeof window !== 'undefined') {
@@ -444,7 +455,9 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
       clearActiveCourseSessionCacheOnLogout();
       SessionService.clearSessionId();
       window.location.hash = '#home';
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 50);
     }
   };
 
@@ -759,17 +772,18 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
       {/* ─── PREMIUM RIGHT-SIDE NAVIGATION DRAWER (Slide-in From Right) ─── */}
       {hamburgerDrawerOpen && (
-        <div className="fixed inset-0 z-[100] flex justify-end items-start animate-fadeIn pointer-events-none">
+        <div className="fixed inset-0 z-[100] flex justify-end items-start animate-fadeIn">
           {/* Dark Translucent Backdrop */}
           <div
-            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity pointer-events-auto"
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
             onClick={() => setHamburgerDrawerOpen(false)}
             aria-hidden="true"
           />
 
           {/* Drawer Container (Strictly wraps content, terminates right after the last icon) */}
           <aside
-            className="relative z-10 w-[84vw] max-w-[320px] h-auto self-start bg-white shadow-[-12px_12px_40px_rgba(15,23,42,0.22)] rounded-bl-[24px] border-l border-b border-slate-200/90 flex flex-col overflow-hidden text-left animate-slideInRight pointer-events-auto"
+            onClick={(e) => e.stopPropagation()}
+            className="relative z-10 w-[84vw] max-w-[320px] h-auto self-start bg-white shadow-[-12px_12px_40px_rgba(15,23,42,0.22)] rounded-bl-[24px] border-l border-b border-slate-200/90 flex flex-col overflow-hidden text-left animate-slideInRight"
             role="dialog"
             aria-label="Navigation Drawer"
           >
@@ -937,17 +951,18 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
       {/* ─── PREMIUM COMPACT MY PROFILE PANEL ─── */}
       {profileDropdownOpen && (
-        <div className="fixed inset-0 z-[100] flex justify-end items-start animate-fadeIn pointer-events-none">
+        <div className="fixed inset-0 z-[100] flex justify-end items-start animate-fadeIn">
           {/* Dark Translucent Backdrop */}
           <div
-            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity pointer-events-auto"
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
             onClick={() => setProfileDropdownOpen(false)}
             aria-hidden="true"
           />
 
           {/* Profile Drawer Panel (Strictly terminates right at the logout button, absolutely no blank space below) */}
           <aside
-            className="relative z-10 w-[84vw] max-w-[320px] h-auto self-start bg-white shadow-[-12px_12px_40px_rgba(15,23,42,0.22)] rounded-bl-[24px] border-l border-b border-slate-200/90 flex flex-col overflow-hidden text-left animate-slideInRight pointer-events-auto"
+            onClick={(e) => e.stopPropagation()}
+            className="relative z-10 w-[84vw] max-w-[320px] h-auto self-start bg-white shadow-[-12px_12px_40px_rgba(15,23,42,0.22)] rounded-bl-[24px] border-l border-b border-slate-200/90 flex flex-col overflow-hidden text-left animate-slideInRight"
             role="dialog"
             aria-label="My Profile"
           >
@@ -1066,6 +1081,8 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                   <button
                     type="button"
                     onClick={handleSignOutAction}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onTouchStart={(e) => e.stopPropagation()}
                     className="relative group w-full p-[2.5px] rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-[0_0_20px_rgba(14,165,233,0.5)] hover:shadow-[0_0_30px_rgba(14,165,233,0.8)]"
                     title="Log Out of Account"
                     aria-label="Log Out of Account"
