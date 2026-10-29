@@ -166,54 +166,133 @@ export const MobileCompactDashboard: React.FC<MobileCompactDashboardProps> = ({
     document.getElementById('mobile-courses-list')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const quickActions = [
-    { label: 'My Courses', icon: <PlayCircle className="w-6 h-6" />, cls: 'bg-rose-50 border-rose-100 text-rose-500', txt: 'text-rose-600', onClick: onOpenMyCourses },
-    { label: 'Coding Practice', icon: <Code2 className="w-6 h-6" />, cls: 'bg-blue-50 border-blue-100 text-blue-600', txt: 'text-blue-700', onClick: onOpenCodingPractice },
-    { label: 'Mock Interview', icon: <FileText className="w-6 h-6" />, cls: 'bg-emerald-50 border-emerald-100 text-emerald-600', txt: 'text-emerald-700', onClick: onOpenMockInterview },
-    { label: 'Job Support', icon: <BriefcaseBusiness className="w-6 h-6" />, cls: 'bg-violet-50 border-violet-100 text-violet-600', txt: 'text-violet-700', onClick: onOpenJobSupport },
-  ];
-
   return (
-    <div className="md:hidden px-3 pt-3 pb-4 font-sans text-left">
-      {/* ─── 1. COMPACT PREMIUM HERO ─── */}
-      <section className="relative overflow-hidden rounded-[22px] bg-gradient-to-br from-white via-[#f4f8ff] to-[#e8f1ff] border border-[#dbe7fb] shadow-[0_6px_22px_rgba(30,80,180,0.08)]">
+    <div className="md:hidden px-3 pt-2 pb-4 font-sans text-left max-w-md mx-auto">
+      {/* ─── 1. NEW PROMOTIONAL BANNER: Practical Learning ECOSYSTEM ─── */}
+      <section className="relative w-full rounded-3xl overflow-hidden shadow-xs border border-sky-100 bg-white">
         <img
-          src="/images/dashboard/mobile_hero_student_robot.jpg"
-          alt="Student learning AI and data skills with an AI robot"
-          className="absolute right-0 top-0 h-full w-[56%] object-cover object-center [mask-image:linear-gradient(to_right,transparent,black_28%)] select-none pointer-events-none"
-          draggable={false}
+          src="/images/practical_learning_ecosystem_banner.png"
+          alt="Practical Learning ECOSYSTEM - Learn AI & Data Skills. Get Job-Ready."
+          className="w-full h-auto object-cover block select-none"
         />
-        <div className="relative z-10 p-4 pr-[40%] min-[400px]:pr-[42%]">
-          <h1 className="text-[21px] min-[400px]:text-[23px] font-black leading-[1.12] tracking-tight text-[#0b1a3a]">
-            Learn AI &amp;<br />Data Skills.
-          </h1>
-          <p className="mt-1 text-[19px] min-[400px]:text-[21px] font-black leading-tight tracking-tight bg-gradient-to-r from-[#1a6bff] to-[#7c3aed] bg-clip-text text-transparent">
-            Get Job-Ready.
-          </p>
-          <p className="mt-0.5 text-[13px] min-[400px]:text-sm font-extrabold text-[#0b1a3a] leading-tight">
-            Build Real Skills.
-          </p>
-          <button
-            type="button"
-            onClick={() => {
-              playClick?.();
-              scrollToCourses();
-            }}
-            className="mt-3 inline-flex items-center gap-1.5 h-10 px-4 rounded-full bg-gradient-to-r from-[#1a6bff] to-[#0b5cf0] text-white text-[13px] font-bold shadow-[0_6px_16px_rgba(26,107,255,0.35)] active:scale-95 transition-transform"
-          >
-            Explore Courses <ArrowRight className="w-4 h-4" />
-          </button>
+      </section>
+
+      {/* ─── 2. FIVE TECHNOLOGY SKILL CARDS (Python, SQL, Excel, Power BI, GenAI) ─── */}
+      <section className="mt-3 w-full grid grid-cols-5 gap-1.5 min-[375px]:gap-2">
+        {/* Python */}
+        <div
+          onClick={() => {
+            playClick?.();
+            onOpenCodingPractice();
+          }}
+          className="bg-[#F0F7FE] border border-[#E0EEFB] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
+        >
+          <div className="w-8 h-8 flex items-center justify-center shrink-0">
+            <img src="/images/tech_icon_python.png" alt="Python" className="w-7 h-7 object-contain" />
+          </div>
+          <div className="w-full">
+            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">Python</div>
+            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
+              Write Code.<br />Solve Problems.
+            </div>
+          </div>
         </div>
-        <ul className="relative z-10 grid grid-cols-4 bg-white/85 backdrop-blur-sm border-t border-[#e3ecfb] py-2">
+
+        {/* SQL */}
+        <div
+          onClick={() => {
+            playClick?.();
+            const sqlCourse = courses.find((c) => c.id === 'data-analyst-genai') || courses[0];
+            onCourseClick(sqlCourse);
+          }}
+          className="bg-[#F0F4FF] border border-[#E2EBFC] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
+        >
+          <div className="w-8 h-8 flex items-center justify-center shrink-0">
+            <img src="/images/tech_icon_sql.png" alt="SQL" className="w-7 h-7 object-contain" />
+          </div>
+          <div className="w-full">
+            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">SQL</div>
+            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
+              Handle Data.<br />Make Decisions.
+            </div>
+          </div>
+        </div>
+
+        {/* Excel */}
+        <div
+          onClick={() => {
+            playClick?.();
+            const excelCourse = courses.find((c) => c.id === 'ms-office-copilot') || courses[0];
+            onCourseClick(excelCourse);
+          }}
+          className="bg-[#EEFBF4] border border-[#DCF5E8] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
+        >
+          <div className="w-8 h-8 flex items-center justify-center shrink-0">
+            <img src="/images/tech_icon_excel.png" alt="Excel" className="w-7 h-7 object-contain" />
+          </div>
+          <div className="w-full">
+            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">Excel</div>
+            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
+              Work Smarter.<br />Not Harder.
+            </div>
+          </div>
+        </div>
+
+        {/* Power BI */}
+        <div
+          onClick={() => {
+            playClick?.();
+            const pbiCourse = courses.find((c) => c.id === 'data-analyst-genai') || courses[0];
+            onCourseClick(pbiCourse);
+          }}
+          className="bg-[#FFF9EC] border border-[#FEEEC9] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
+        >
+          <div className="w-8 h-8 flex items-center justify-center shrink-0">
+            <img src="/images/tech_icon_powerbi.png" alt="Power BI" className="w-7 h-7 object-contain" />
+          </div>
+          <div className="w-full">
+            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">Power BI</div>
+            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
+              Visualize Data.<br />Tell Stories.
+            </div>
+          </div>
+        </div>
+
+        {/* GenAI */}
+        <div
+          onClick={() => {
+            playClick?.();
+            const genAiCourse = courses.find((c) => c.id === 'ai-tools-prompt') || courses[1] || courses[0];
+            onCourseClick(genAiCourse);
+          }}
+          className="bg-[#FDF2FB] border border-[#F9DDF5] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
+        >
+          <div className="w-8 h-8 flex items-center justify-center shrink-0">
+            <img src="/images/tech_icon_genai.png" alt="GenAI" className="w-7 h-7 object-contain" />
+          </div>
+          <div className="w-full">
+            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">GenAI</div>
+            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
+              Think Bigger.<br />Build Faster.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 3. FOUR BENEFIT ITEMS (Industry Projects, Expert Mentors, Placement Support, Lifetime Access) ─── */}
+      <section className="mt-3 w-full bg-white rounded-2xl border border-sky-100 p-2.5 shadow-2xs">
+        <ul className="grid grid-cols-4">
           {[
             { icon: <Briefcase className="w-4 h-4 text-amber-500" />, l1: 'Industry', l2: 'Projects' },
             { icon: <Star className="w-4 h-4 text-emerald-500" />, l1: 'Expert', l2: 'Mentors' },
             { icon: <Users className="w-4 h-4 text-blue-500" />, l1: 'Placement', l2: 'Support' },
             { icon: <InfinityIcon className="w-4 h-4 text-violet-500" />, l1: 'Lifetime', l2: 'Access' },
           ].map((f, i) => (
-            <li key={f.l1} className={`flex flex-col items-center text-center gap-0.5 ${i > 0 ? 'border-l border-slate-200' : ''}`}>
-              {f.icon}
-              <span className="text-[10px] font-semibold text-slate-600 leading-tight">
+            <li key={f.l1} className={`flex flex-col items-center text-center gap-1 ${i > 0 ? 'border-l border-slate-100' : ''}`}>
+              <div className="w-7 h-7 rounded-full bg-slate-50 flex items-center justify-center">
+                {f.icon}
+              </div>
+              <span className="text-[10px] font-bold text-slate-700 leading-tight">
                 {f.l1}
                 <br />
                 {f.l2}
@@ -221,39 +300,6 @@ export const MobileCompactDashboard: React.FC<MobileCompactDashboardProps> = ({
             </li>
           ))}
         </ul>
-      </section>
-
-      {/* ─── 2. QUICK ACTIONS ─── */}
-      <section className="mt-4">
-        <div className="flex items-center justify-between mb-2.5">
-          <h2 className="text-[16px] font-extrabold text-[#0b1a3a]">Quick Actions</h2>
-          <button
-            type="button"
-            onClick={() => {
-              playClick?.();
-              scrollToCourses();
-            }}
-            className="inline-flex items-center gap-1 text-[12px] font-bold text-[#1a5fe0] active:scale-95 transition-transform"
-          >
-            View All <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-        <div className="grid grid-cols-4 gap-2">
-          {quickActions.map((a) => (
-            <button
-              key={a.label}
-              type="button"
-              onClick={() => {
-                playClick?.();
-                a.onClick();
-              }}
-              className={`flex flex-col items-center justify-center gap-1.5 h-[78px] rounded-2xl border ${a.cls} active:scale-95 transition-transform`}
-            >
-              {a.icon}
-              <span className={`text-[10.5px] font-semibold leading-tight text-center px-0.5 ${a.txt}`}>{a.label}</span>
-            </button>
-          ))}
-        </div>
       </section>
 
       {/* ─── 3. COURSES (LIVE COUNT + HORIZONTAL CARDS WITH AUTOPLAY LOOPING VIDEOS) ─── */}
