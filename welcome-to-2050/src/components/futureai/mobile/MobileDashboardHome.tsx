@@ -36,6 +36,7 @@ import {
 import { LearnerTelemetry } from '../../../services/realAuthService';
 import { useThemeAccent } from '../../../context/ThemeAccentContext';
 import { isCourseUnlocked } from '../../../services/courseUnlockService';
+import { MobileLoggedInHero } from './MobileLoggedInHero';
 import '../LearnerHomeHub.css';
 
 interface MobileDashboardHomeProps {
@@ -98,23 +99,6 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
   }, []);
 
   // Hiring Partners & Real People Home Showcase State
-  const heroVideoRef = useRef<HTMLVideoElement | null>(null);
-
-  useEffect(() => {
-    const vid = heroVideoRef.current;
-    if (!vid) return;
-    vid.muted = true;
-    vid.defaultMuted = true;
-    vid.playsInline = true;
-    vid.setAttribute('muted', '');
-    vid.setAttribute('playsinline', '');
-    vid.setAttribute('webkit-playsinline', 'true');
-    const p = vid.play();
-    if (p && typeof p.catch === 'function') {
-      p.catch(() => {});
-    }
-  }, []);
-
   const [activeStoryIdx, setActiveStoryIdx] = useState(0);
   const [isStoryAutoPlaying, setIsStoryAutoPlaying] = useState(true);
   const [isMarqueePaused, setIsMarqueePaused] = useState(false);
@@ -525,22 +509,12 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       
 
       {/* =========================================================================
-          2. HERO VIDEO: Practical Learning ECOSYSTEM
+          2. COMPACT ANIMATED HERO: Practical Learning ECOSYSTEM
           ========================================================================= */}
-      <div className="relative w-full rounded-2xl overflow-hidden shadow-xs border border-sky-100 bg-black">
-        <video
-          ref={heroVideoRef}
-          src="/videos/mobile_hero_ecosystem.mp4"
-          poster="/images/hero_video_frame.jpg"
-          autoPlay
-          loop
-          muted
-          playsInline
-          controls={false}
-          preload="auto"
-          className="w-full h-auto object-cover block select-none"
-        />
-      </div>
+      <MobileLoggedInHero
+        onContinueLearning={onStartPython}
+        playClick={playClick}
+      />
 
       {/* =========================================================================
           4. FOUR BENEFIT ITEMS (Industry Projects, Expert Mentors, Placement Support, Lifetime Access)

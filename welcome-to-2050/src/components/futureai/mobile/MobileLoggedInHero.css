@@ -1,0 +1,304 @@
+/* =========================================================================
+   Logged-in Mobile Hero — Practical Learning Ecosystem
+   Ultra-Premium Animated EdTech Experience
+   ========================================================================= */
+
+.ple-hero-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ─── Main Banner Card ─── */
+.ple-banner-card {
+  position: relative;
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1.5px solid #d4e4fc;
+  box-shadow: 0 10px 30px rgba(24, 76, 179, 0.12), 0 2px 8px rgba(24, 76, 179, 0.05);
+  isolation: isolate;
+  aspect-ratio: 540 / 310;
+}
+
+/* Background image */
+.ple-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Shimmering glass light sweep */
+.ple-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 65%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 15%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 85%
+  );
+  transform: skewX(-20deg);
+  animation: ple-sweep 5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Animated Twinkling Stars */
+.ple-star {
+  position: absolute;
+  background: #fbbf24;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  pointer-events: none;
+  z-index: 6;
+  animation: ple-twinkle 2.8s ease-in-out infinite;
+}
+
+/* Cyan Aura around the Robot */
+.ple-robot-glow {
+  position: absolute;
+  top: 28%;
+  right: 5%;
+  width: 32%;
+  height: 48%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.5) 0%, rgba(56, 189, 248, 0) 70%);
+  filter: blur(5px);
+  animation: ple-aura-pulse 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Robot Thumbs-up Sparkle */
+.ple-robot-sparkle {
+  position: absolute;
+  top: 55%;
+  right: 5%;
+  width: 9px;
+  height: 9px;
+  background: #38bdf8;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  animation: ple-twinkle 1.8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 7;
+}
+
+/* Dynamic Typing Speech Bubble over Robot */
+.ple-speech-bubble {
+  position: absolute;
+  top: 10%;
+  right: 12px;
+  max-width: 132px;
+  min-height: 30px;
+  padding: 5px 8px;
+  border-radius: 12px 12px 2px 12px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1.5px solid #60a5fa;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.22);
+  backdrop-filter: blur(6px);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 8.5px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #0b1a3a;
+  z-index: 8;
+  animation: ple-bubble-bob 3.5s ease-in-out infinite;
+}
+
+.ple-speech-bubble::after {
+  content: '';
+  position: absolute;
+  right: 16px;
+  bottom: -6px;
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  border-right: 1.5px solid #60a5fa;
+  border-bottom: 1.5px solid #60a5fa;
+  transform: rotate(45deg);
+}
+
+.ple-caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 9px;
+  margin-left: 1px;
+  vertical-align: -1px;
+  background: #2563eb;
+  animation: ple-blink 0.8s steps(1) infinite;
+}
+
+/* Sound button */
+.ple-sound-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #bfdbfe;
+  background: rgba(255, 255, 255, 0.92);
+  color: #2563eb;
+  cursor: pointer;
+  z-index: 9;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.ple-sound-btn:active {
+  transform: scale(0.92);
+}
+.ple-sound-btn[aria-pressed='true'] {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+/* Primary CTA Button embedded over the card */
+.ple-cta-btn {
+  position: absolute;
+  bottom: 8%;
+  left: 6%;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 33px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: none;
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 55%, #3b82f6 100%);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  z-index: 7;
+  transition: transform 0.15s ease;
+  animation: ple-pulse-cta 3s ease-in-out infinite;
+}
+.ple-cta-btn:active {
+  transform: scale(0.95);
+}
+
+/* ─── 5 Floating Technology Tool Cards ─── */
+.ple-tools-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.ple-tool-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  padding: 6px 3px;
+  min-height: 86px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 3px 10px rgba(30, 80, 180, 0.06);
+  animation: ple-float 4.2s ease-in-out infinite;
+}
+.ple-tool-card:active {
+  transform: scale(0.94);
+}
+
+.ple-tool-icon-wrap {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ple-tool-icon {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  display: block;
+}
+
+.ple-tool-title {
+  font-size: 10px;
+  font-weight: 900;
+  color: #0b1a3a;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.ple-tool-desc {
+  font-size: 6.5px;
+  font-weight: 600;
+  color: #64748b;
+  line-height: 1.15;
+  margin-top: 1px;
+}
+
+/* ─── Keyframe Animations ─── */
+@keyframes ple-sweep {
+  0% { left: -100%; opacity: 0; }
+  20% { opacity: 1; }
+  60% { left: 140%; opacity: 1; }
+  100% { left: 140%; opacity: 0; }
+}
+
+@keyframes ple-twinkle {
+  0%, 100% { transform: scale(0.6) rotate(0deg); opacity: 0.4; }
+  50% { transform: scale(1.15) rotate(25deg); opacity: 1; filter: drop-shadow(0 0 4px #f59e0b); }
+}
+
+@keyframes ple-aura-pulse {
+  0%, 100% { transform: scale(0.95); opacity: 0.4; }
+  50% { transform: scale(1.12); opacity: 0.75; }
+}
+
+@keyframes ple-bubble-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes ple-float {
+  0%, 100% { transform: translateY(0) rotate(var(--ple-rot, 0deg)); }
+  50% { transform: translateY(-5px) rotate(calc(var(--ple-rot, 0deg) * -1)); }
+}
+
+@keyframes ple-pulse-cta {
+  0%, 100% { box-shadow: 0 4px 14px rgba(37, 99, 235, 0.38); }
+  50% { box-shadow: 0 4px 20px rgba(37, 99, 235, 0.65), 0 0 0 2px rgba(96, 165, 250, 0.4); }
+}
+
+@keyframes ple-blink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .ple-shimmer,
+  .ple-star,
+  .ple-robot-glow,
+  .ple-robot-sparkle,
+  .ple-speech-bubble,
+  .ple-tool-card,
+  .ple-cta-btn,
+  .ple-caret {
+    animation: none !important;
+  }
+}

@@ -11,9 +11,13 @@ import {
   PlayCircle,
   Star,
   Users,
+  Building2,
+  Trophy,
+  ChevronRight,
 } from 'lucide-react';
 import { CAREER_COURSES_12, CareerCourseItem } from '../../../data/careerCourses12';
 import { isCourseUnlocked } from '../../../services/courseUnlockService';
+import { MobileLoggedInHero } from './MobileLoggedInHero';
 
 /**
  * Viewport-aware inline looping course video with poster thumbnail fallback.
@@ -166,63 +170,52 @@ export const MobileCompactDashboard: React.FC<MobileCompactDashboardProps> = ({
     document.getElementById('mobile-courses-list')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const heroVideoRef = useRef<HTMLVideoElement | null>(null);
-
-  useEffect(() => {
-    const vid = heroVideoRef.current;
-    if (!vid) return;
-    vid.muted = true;
-    vid.defaultMuted = true;
-    vid.playsInline = true;
-    vid.setAttribute('muted', '');
-    vid.setAttribute('playsinline', '');
-    vid.setAttribute('webkit-playsinline', 'true');
-    const p = vid.play();
-    if (p && typeof p.catch === 'function') {
-      p.catch(() => {});
-    }
-  }, []);
-
   return (
     <div className="md:hidden px-3 pt-2 pb-4 font-sans text-left max-w-md mx-auto">
-      {/* ─── 1. HERO VIDEO: Practical Learning ECOSYSTEM ─── */}
-      <section className="relative w-full rounded-2xl overflow-hidden shadow-xs border border-sky-100 bg-black">
-        <video
-          ref={heroVideoRef}
-          src="/videos/mobile_hero_ecosystem.mp4"
-          poster="/images/hero_video_frame.jpg"
-          autoPlay
-          loop
-          muted
-          playsInline
-          controls={false}
-          preload="auto"
-          className="w-full h-auto object-cover block select-none"
-        />
+      {/* ─── 1. COMPACT ANIMATED HERO (logged-in mobile only) ─── */}
+      <MobileLoggedInHero onContinueLearning={onOpenMyCourses} playClick={playClick} />
+
+      {/* ─── 2. TRUST STATS (same figures as the public homepage) ─── */}
+      <section className="mt-2.5 grid grid-cols-4 gap-1.5">
+        {[
+          { icon: <Users className="w-3.5 h-3.5" />, cls: 'bg-purple-50 text-purple-600', v: '100K+', l: 'Students' },
+          { icon: <Building2 className="w-3.5 h-3.5" />, cls: 'bg-pink-50 text-pink-600', v: '700+', l: 'Hiring Partners' },
+          { icon: <Trophy className="w-3.5 h-3.5" />, cls: 'bg-amber-50 text-amber-500', v: '99%', l: 'Placement Support' },
+          { icon: <Star className="w-3.5 h-3.5" />, cls: 'bg-yellow-50 text-yellow-500', v: 'Industry', l: 'Aligned Curriculum' },
+        ].map((s) => (
+          <div
+            key={s.l}
+            className="min-w-0 flex items-center gap-1 rounded-xl bg-white border border-[#e3ecfb] px-1.5 py-1.5 shadow-[0_2px_8px_rgba(30,80,180,0.05)]"
+          >
+            <span className={`w-6 h-6 shrink-0 rounded-lg flex items-center justify-center ${s.cls}`}>{s.icon}</span>
+            <span className="min-w-0">
+              <span className="block text-[11px] min-[400px]:text-[12px] font-black text-[#0b1a3a] leading-none tracking-tight truncate">{s.v}</span>
+              <span className="block mt-0.5 text-[8px] min-[400px]:text-[8.5px] font-semibold text-slate-500 leading-[1.15]">{s.l}</span>
+            </span>
+          </div>
+        ))}
       </section>
 
-      {/* ─── 3. FOUR BENEFIT ITEMS (Industry Projects, Expert Mentors, Placement Support, Lifetime Access) ─── */}
-      <section className="mt-3 w-full bg-white rounded-2xl border border-sky-100 p-2.5 shadow-2xs">
-        <ul className="grid grid-cols-4">
-          {[
-            { icon: <Briefcase className="w-4 h-4 text-amber-500" />, l1: 'Industry', l2: 'Projects' },
-            { icon: <Star className="w-4 h-4 text-emerald-500" />, l1: 'Expert', l2: 'Mentors' },
-            { icon: <Users className="w-4 h-4 text-blue-500" />, l1: 'Placement', l2: 'Support' },
-            { icon: <InfinityIcon className="w-4 h-4 text-violet-500" />, l1: 'Lifetime', l2: 'Access' },
-          ].map((f, i) => (
-            <li key={f.l1} className={`flex flex-col items-center text-center gap-1 ${i > 0 ? 'border-l border-slate-100' : ''}`}>
-              <div className="w-7 h-7 rounded-full bg-slate-50 flex items-center justify-center">
-                {f.icon}
-              </div>
-              <span className="text-[10px] font-bold text-slate-700 leading-tight">
-                {f.l1}
-                <br />
-                {f.l2}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {/* ─── 3. HIRING PARTNERS STRIP ─── */}
+      <button
+        type="button"
+        onClick={() => {
+          playClick?.();
+          onOpenJobSupport();
+        }}
+        className="mt-2 w-full flex items-center gap-2 rounded-xl bg-white border border-[#e3ecfb] px-2.5 py-2 shadow-[0_2px_8px_rgba(30,80,180,0.05)] active:scale-[0.99] transition-transform text-left"
+      >
+        <span className="w-2 h-2 shrink-0 rounded-full bg-emerald-500" />
+        <span className="shrink-0 text-[11px] font-extrabold text-[#0b1a3a]">Our Hiring Partners</span>
+        <span className="shrink-0 w-px h-4 bg-slate-200" />
+        <span className="min-w-0 truncate text-[10px] font-semibold text-slate-500">and 700+ more…</span>
+        <span className="ml-auto flex items-center gap-2 shrink-0">
+          <img src="/images/companies/tcs.svg" alt="TCS" className="h-[18px] w-auto object-contain" loading="lazy" />
+          <img src="/images/companies/infosys.svg" alt="Infosys" className="h-[18px] w-auto object-contain" loading="lazy" />
+          <img src="/images/companies/wipro.svg" alt="Wipro" className="h-[18px] w-auto object-contain max-[370px]:hidden" loading="lazy" />
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+        </span>
+      </button>
 
       {/* ─── 3. COURSES (LIVE COUNT + HORIZONTAL CARDS WITH AUTOPLAY LOOPING VIDEOS) ─── */}
       <section id="mobile-courses-list" className="mt-4 scroll-mt-20">
