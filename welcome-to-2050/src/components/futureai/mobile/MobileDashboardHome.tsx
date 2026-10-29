@@ -31,6 +31,7 @@ import {
   Layers,
   LayoutGrid,
   List,
+  Infinity as InfinityIcon,
 } from 'lucide-react';
 import { LearnerTelemetry } from '../../../services/realAuthService';
 import { useThemeAccent } from '../../../context/ThemeAccentContext';
@@ -507,191 +508,155 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       
 
       {/* =========================================================================
-          2. HERO BANNER: "Learn AI & Data Skills. Get Job-Ready. Build Real Skills."
+          2. NEW HERO BANNER: "Practical Learning ECOSYSTEM"
           ========================================================================= */}
-      <div className="relative w-full rounded-3xl overflow-hidden shadow-md border border-sky-200/90 bg-gradient-to-br from-sky-100 via-blue-50 to-indigo-100">
-        {/* Background Building Image */}
+      <div className="relative w-full rounded-3xl overflow-hidden shadow-xs border border-sky-100 bg-white">
         <img
-          src="/images/future_it_university_hero.jpg"
-          alt="Future IT Industries Campus"
-          className="absolute inset-0 w-full h-full object-cover opacity-75"
+          src="/images/practical_learning_ecosystem_banner.png"
+          alt="Practical Learning ECOSYSTEM - Learn AI & Data Skills. Get Job-Ready."
+          className="w-full h-auto object-cover block select-none"
         />
-        
-        {/* Crisp Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-transparent" />
+      </div>
 
-        {/* Content Container */}
-        <div className="relative p-3.5 min-[375px]:p-4 sm:p-5 flex flex-col justify-between min-h-[175px]">
-          <div className="max-w-[82%] sm:max-w-[72%]">
-            <h1 className="text-[18px] min-[375px]:text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-tight">
-              Learn AI &amp;<br />
-              Data Skills.<br />
-              <span className="text-slate-900">Get Job-Ready.</span><br />
-              <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 bg-clip-text text-transparent">
-                Build Real Skills.
-              </span>
-            </h1>
-
-            {/* Red Limited-Time Offer pill */}
-            <div className="inline-flex items-center gap-1 mt-2 px-2.5 py-0.5 rounded-full bg-rose-500 text-white text-[9px] font-black shadow-xs uppercase tracking-wider">
-              <Gift className="w-3 h-3 text-white shrink-0" />
-              <span>LIMITED-TIME OFFER</span>
+      {/* =========================================================================
+          3. FIVE TECHNOLOGY SKILL CARDS (Python, SQL, Excel, Power BI, GenAI)
+          ========================================================================= */}
+      <div className="w-full grid grid-cols-5 gap-1.5 min-[375px]:gap-2">
+        {/* 1. Python */}
+        <div
+          onClick={() => {
+            playClick?.();
+            onStartPython();
+          }}
+          className="bg-[#F0F7FE] border border-[#E0EEFB] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
+        >
+          <div className="w-8 h-8 flex items-center justify-center shrink-0">
+            <img src="/images/tech_icon_python.png" alt="Python" className="w-7 h-7 object-contain" />
+          </div>
+          <div className="w-full">
+            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">Python</div>
+            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
+              Write Code.<br />Solve Problems.
             </div>
           </div>
+        </div>
 
-          {/* Bottom Row: White Enroll Pill Button + Placement Support Card (Zero Overlap at 320px–430px) */}
-          <div className="mt-2.5 flex items-end justify-between gap-2 w-full">
-            <button
-              type="button"
-              onClick={() => {
-                playClick?.();
-                onOpenLockedModule('All Premium Courses Bundle');
-              }}
-              className="bg-white hover:bg-slate-50 border border-sky-300 shadow-sm rounded-2xl sm:rounded-full py-1.5 px-2.5 min-[375px]:px-3 flex items-center gap-1.5 min-[375px]:gap-2 cursor-pointer active:scale-95 transition-all min-w-0 flex-1 max-w-[205px]"
-            >
-              <div className="text-left leading-tight min-w-0">
-                <div className="text-[8.5px] min-[375px]:text-[9px] font-bold text-slate-500 leading-tight">Unlock All Premium Courses for Just</div>
-                <div className="text-xs min-[375px]:text-sm font-black text-blue-600 mt-0.5">₹987</div>
-              </div>
-              <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0">
-                <ArrowRight className="w-3 h-3" />
-              </div>
-            </button>
+        {/* 2. SQL */}
+        <div
+          onClick={() => {
+            playClick?.();
+            if (onOpenSql) onOpenSql();
+            else onStartPython();
+          }}
+          className="bg-[#F0F4FF] border border-[#E2EBFC] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
+        >
+          <div className="w-8 h-8 flex items-center justify-center shrink-0">
+            <img src="/images/tech_icon_sql.png" alt="SQL" className="w-7 h-7 object-contain" />
+          </div>
+          <div className="w-full">
+            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">SQL</div>
+            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
+              Handle Data.<br />Make Decisions.
+            </div>
+          </div>
+        </div>
 
-            {/* Right Floating Card: Placement Support */}
-            <div className="shrink-0 bg-white/95 backdrop-blur-md border border-white/95 rounded-2xl p-2 min-[375px]:p-2.5 shadow-md text-right">
-              <div className="flex items-center justify-end gap-1 text-[8.5px] min-[375px]:text-[9px] font-bold text-emerald-900">
-                <Briefcase className="w-2.5 h-2.5 min-[375px]:w-3 min-[375px]:h-3 text-emerald-700 shrink-0" />
-                <span className="leading-tight whitespace-nowrap">Placement Support</span>
-              </div>
-              <div className="text-sm min-[375px]:text-base font-black text-emerald-600 leading-none mt-0.5">700+</div>
-              <div className="text-[7.5px] min-[375px]:text-[8px] font-semibold text-slate-500 mt-0.5 leading-tight whitespace-nowrap">Hiring Partners</div>
+        {/* 3. Excel */}
+        <div
+          onClick={() => {
+            playClick?.();
+            if (onOpenExcel) onOpenExcel();
+            else onStartPython();
+          }}
+          className="bg-[#EEFBF4] border border-[#DCF5E7] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
+        >
+          <div className="w-8 h-8 flex items-center justify-center shrink-0">
+            <img src="/images/tech_icon_excel.png" alt="Excel" className="w-7 h-7 object-contain" />
+          </div>
+          <div className="w-full">
+            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">Excel</div>
+            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
+              Work Smarter.<br />Not Harder.
+            </div>
+          </div>
+        </div>
+
+        {/* 4. Power BI */}
+        <div
+          onClick={() => {
+            playClick?.();
+            if (onOpenPowerBi) onOpenPowerBi();
+            else onStartPython();
+          }}
+          className="bg-[#FFF9EC] border border-[#FEF0D4] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
+        >
+          <div className="w-8 h-8 flex items-center justify-center shrink-0">
+            <img src="/images/tech_icon_powerbi.png" alt="Power BI" className="w-7 h-7 object-contain" />
+          </div>
+          <div className="w-full">
+            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">Power BI</div>
+            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
+              Visualize Data.<br />Tell Stories.
+            </div>
+          </div>
+        </div>
+
+        {/* 5. GenAI */}
+        <div
+          onClick={() => {
+            playClick?.();
+            if (onOpenGenAi) onOpenGenAi();
+            else onStartPython();
+          }}
+          className="bg-[#FDF2FB] border border-[#FAE1F6] rounded-2xl p-1.5 min-[375px]:p-2 flex flex-col items-center justify-between text-center cursor-pointer active:scale-95 transition-all shadow-2xs hover:shadow-xs min-h-[96px]"
+        >
+          <div className="w-8 h-8 flex items-center justify-center shrink-0">
+            <img src="/images/tech_icon_genai.png" alt="GenAI" className="w-7 h-7 object-contain" />
+          </div>
+          <div className="w-full">
+            <div className="text-[10px] min-[375px]:text-[11px] font-black text-slate-900 leading-tight">GenAI</div>
+            <div className="text-[6.5px] min-[375px]:text-[7.5px] font-medium text-slate-500 leading-tight mt-0.5">
+              Think Bigger.<br />Build Faster.
             </div>
           </div>
         </div>
       </div>
 
       {/* =========================================================================
-          3. QUICK COURSE PILLS & FEATURE BADGES (Exact 2 Rows from Screenshot)
+          4. FOUR BENEFIT ITEMS (Industry Projects, Expert Mentors, Placement Support, Lifetime Access)
           ========================================================================= */}
-      <div className="space-y-2">
-        {/* Row 1: 4 Course Price Cards */}
-        <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
-          {/* 1. Data Analyst with GenAI */}
-          <div
-            onClick={() => {
-              playClick?.();
-              if (onOpenDataAnalyst) onOpenDataAnalyst();
-              else onStartPython();
-            }}
-            className="p-1.5 sm:p-2 rounded-2xl bg-sky-50/90 border border-sky-200/90 flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-2xs"
-          >
-            <div className="w-7 h-7 rounded-xl bg-sky-100 flex items-center justify-center shrink-0 text-sky-600">
-              <BarChart3 className="w-4 h-4" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-[9px] font-black text-slate-900 leading-tight truncate">Data Analyst</div>
-              <div className="text-[8px] text-slate-500 font-semibold leading-tight truncate">with GenAI</div>
-              <div className="text-[10px] font-black text-rose-600 leading-tight mt-0.5">₹18,999</div>
-            </div>
+      <div className="w-full bg-white rounded-2xl border border-slate-200/80 shadow-2xs py-2.5 px-1">
+        <div className="grid grid-cols-4 divide-x divide-slate-100">
+          {/* 1. Industry Projects */}
+          <div className="flex flex-col items-center justify-center text-center px-1">
+            <Briefcase className="w-4 h-4 min-[375px]:w-5 min-[375px]:h-5 text-amber-500 stroke-[1.8]" />
+            <span className="text-[8.5px] min-[375px]:text-[9.5px] font-extrabold text-slate-800 leading-tight mt-1 text-center">
+              Industry<br />Projects
+            </span>
           </div>
 
-          {/* 2. Data Science & Agentic AI */}
-          <div
-            onClick={() => {
-              playClick?.();
-              if (onOpenDataScience) onOpenDataScience();
-              else if (onOpenGenAi) onOpenGenAi();
-            }}
-            className="p-1.5 sm:p-2 rounded-2xl bg-purple-50/90 border border-purple-200/90 flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-2xs"
-          >
-            <div className="w-7 h-7 rounded-xl bg-purple-100 flex items-center justify-center shrink-0 text-purple-600">
-              <Brain className="w-4 h-4" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-[9px] font-black text-slate-900 leading-tight truncate">Data Science</div>
-              <div className="text-[8px] text-slate-500 font-semibold leading-tight truncate">&amp; Agentic AI</div>
-              <div className="text-[10px] font-black text-rose-600 leading-tight mt-0.5">₹29,999</div>
-            </div>
+          {/* 2. Expert Mentors */}
+          <div className="flex flex-col items-center justify-center text-center px-1">
+            <Star className="w-4 h-4 min-[375px]:w-5 min-[375px]:h-5 text-emerald-500 stroke-[1.8]" />
+            <span className="text-[8.5px] min-[375px]:text-[9.5px] font-extrabold text-slate-800 leading-tight mt-1 text-center">
+              Expert<br />Mentors
+            </span>
           </div>
 
-          {/* 3. ML Engineering */}
-          <div
-            onClick={() => {
-              playClick?.();
-              if (onOpenMlEngineering) onOpenMlEngineering();
-              else if (onOpenPowerBi) onOpenPowerBi();
-            }}
-            className="p-1.5 sm:p-2 rounded-2xl bg-amber-50/90 border border-amber-200/90 flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-2xs"
-          >
-            <div className="w-7 h-7 rounded-xl bg-amber-100 flex items-center justify-center shrink-0 text-amber-600">
-              <Cpu className="w-4 h-4" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-[9px] font-black text-slate-900 leading-tight truncate">ML</div>
-              <div className="text-[8px] text-slate-500 font-semibold leading-tight truncate">Engineering</div>
-              <div className="text-[10px] font-black text-rose-600 leading-tight mt-0.5">₹39,999</div>
-            </div>
+          {/* 3. Placement Support */}
+          <div className="flex flex-col items-center justify-center text-center px-1">
+            <Users className="w-4 h-4 min-[375px]:w-5 min-[375px]:h-5 text-blue-500 stroke-[1.8]" />
+            <span className="text-[8.5px] min-[375px]:text-[9.5px] font-extrabold text-slate-800 leading-tight mt-1 text-center">
+              Placement<br />Support
+            </span>
           </div>
 
-          {/* 4. AI Engineering */}
-          <div
-            onClick={() => {
-              playClick?.();
-              if (onOpenAiEngineering) onOpenAiEngineering();
-            }}
-            className="p-1.5 sm:p-2 rounded-2xl bg-emerald-50/90 border border-emerald-200/90 flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-2xs"
-          >
-            <div className="w-7 h-7 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0 text-emerald-600">
-              <Bot className="w-4 h-4" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-[9px] font-black text-slate-900 leading-tight truncate">AI</div>
-              <div className="text-[8px] text-slate-500 font-semibold leading-tight truncate">Engineering</div>
-              <div className="text-[10px] font-black text-rose-600 leading-tight mt-0.5">₹49,999</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Row 2: 4 Feature Pills */}
-        <div className="grid grid-cols-4 gap-1.5">
-          <div className="bg-white border border-slate-200 rounded-xl py-1.5 px-2 flex items-center justify-center gap-1 shadow-2xs">
-            <FolderKanban className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-            <span className="text-[9px] font-bold text-slate-700 truncate">28 Projects</span>
-          </div>
-
-          <div
-            onClick={() => {
-              playClick?.();
-              onOpenArena();
-            }}
-            className="bg-white border border-slate-200 rounded-xl py-1.5 px-2 flex items-center justify-center gap-1 shadow-2xs cursor-pointer active:scale-95"
-          >
-            <Code2 className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-            <span className="text-[9px] font-bold text-slate-700 truncate">Hackathon/DSA Practice</span>
-          </div>
-
-          <div
-            onClick={() => {
-              playClick?.();
-              window.location.hash = '#mockinterview';
-            }}
-            className="bg-white border border-slate-200 rounded-xl py-1.5 px-2 flex items-center justify-center gap-1 shadow-2xs cursor-pointer active:scale-95"
-          >
-            <Users className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-            <span className="text-[9px] font-bold text-slate-700 truncate">AI Mock Prep</span>
-          </div>
-
-          <div
-            onClick={() => {
-              playClick?.();
-              if (onOpenPlacement) onOpenPlacement();
-              else window.location.hash = '#placement';
-            }}
-            className="bg-white border border-slate-200 rounded-xl py-1.5 px-2 flex items-center justify-center gap-1 shadow-2xs cursor-pointer active:scale-95"
-          >
-            <FileCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-            <span className="text-[9px] font-bold text-slate-700 truncate">Job Support</span>
+          {/* 4. Lifetime Access */}
+          <div className="flex flex-col items-center justify-center text-center px-1">
+            <InfinityIcon className="w-4 h-4 min-[375px]:w-5 min-[375px]:h-5 text-purple-600 stroke-[1.8]" />
+            <span className="text-[8.5px] min-[375px]:text-[9.5px] font-extrabold text-slate-800 leading-tight mt-1 text-center">
+              Lifetime<br />Access
+            </span>
           </div>
         </div>
       </div>
@@ -700,20 +665,35 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
           4. "4 High-Paying Industry Courses" (Exact Match to User Reference Screenshot)
           ========================================================================= */}
       <div className="w-full space-y-3.5">
-        {/* Section Header */}
+        {/* Section Header (Exact Match to Desired Mobile Design) */}
         <div>
-          <div className="flex items-start gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 shadow-2xs mt-0.5">
-              <Layers className="w-5 h-5 text-blue-600" />
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-7 h-7 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100 shadow-2xs">
+                <Layers className="w-4 h-4 text-blue-600" />
+              </div>
+              <div className="min-w-0">
+                <h2 className="text-[14px] min-[375px]:text-[15px] font-black text-[#0B1B3D] tracking-tight leading-tight truncate">
+                  {flagshipCourses.length} High-Paying Industry Courses
+                </h2>
+                <p className="text-[10px] min-[375px]:text-[11px] font-medium text-slate-500 leading-tight truncate mt-0.5">
+                  Job-Ready Skills for a Brighter Tomorrow
+                </p>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-snug">
-                {flagshipCourses.length} High-Paying Industry Courses
-              </h2>
-              <p className="text-xs font-semibold text-slate-500">
-                Job-Ready Skills for a Brighter Tomorrow
-              </p>
-            </div>
+
+            {/* All Courses Button on Right */}
+            <button
+              type="button"
+              onClick={() => {
+                playClick?.();
+                setFilter('all');
+              }}
+              className="px-2.5 py-1 rounded-full border border-blue-200 text-blue-600 font-bold text-[11px] flex items-center gap-1 bg-white hover:bg-blue-50 active:scale-95 transition-all shrink-0 cursor-pointer shadow-2xs"
+            >
+              <span>All Courses</span>
+              <ArrowRight className="w-3 h-3" />
+            </button>
           </div>
 
           {/* Filter Pills & View Switcher */}
