@@ -18,7 +18,7 @@ import { AboutUsView } from './components/legal/AboutUsView';
 import { PaymentResultModal } from './components/futureai/PaymentResultModal';
 import { auth } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { findExistingUser, recordUserInDatabase, runAffiliateSystemResetMigrationOnce, runFreshCloudStartResetMigrationOnce } from './services/realAuthService';
+import { findExistingUser, recordUserInDatabase, runAffiliateSystemResetMigrationOnce, runFreshCloudStartResetMigrationOnce, fetchCanonicalReferralProfile } from './services/realAuthService';
 import { restoreUserEntitlementsFromCloud } from './services/cloudSyncService';
 import { clearActiveCourseSessionCacheOnLogout } from './services/courseUnlockService';
 import { SessionService } from './services/sessionService';
@@ -94,6 +94,13 @@ export const App: React.FC = () => {
           localStorage.setItem('futureai_user_uid', user.uid);
           if (user.email) localStorage.setItem('futureai_user_email', user.email);
           if (user.photoURL) localStorage.setItem('futureai_user_avatar', user.photoURL);
+
+          // Asynchronously warm and synchronize canonical referral profile
+          fetchCanonicalReferralProfile(user.uid, user.email || '', finalName).then((p) => {
+            if (p?.referralCode && typeof window !== 'undefined') {
+              localStorage.setItem('futureai_user_ref_code', p.referralCode);
+            }
+          }).catch(() => {});
         }
         try {
           restoreUserEntitlementsFromCloud({ email: user.email || undefined, uid: user.uid });
@@ -228,6 +235,8 @@ export const App: React.FC = () => {
       localStorage.removeItem('futureai_user_email');
       localStorage.removeItem('futureai_user_phone');
       localStorage.removeItem('futureai_user_uid');
+      localStorage.removeItem('futureai_user_ref_code');
+      if (currentUid) localStorage.removeItem(`futureai_canonical_ref_${currentUid}`);
       localStorage.removeItem('futureai_user_avatar');
       localStorage.removeItem('futureai_user_role');
       localStorage.removeItem('futureai_user_wallet');

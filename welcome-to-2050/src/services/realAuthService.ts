@@ -61,9 +61,39 @@ export async function recordUserInDatabase(userData: {
   const cleanName = (userData.name || cleanEmail.split('@')[0] || cleanPhone || 'Learner').trim();
   const uid = userData.uid || `usr_${cleanEmail ? cleanEmail.replace(/[^a-zA-Z0-9]/g, '_') : Date.now()}`;
 
-  // Unique referral code for this user (standardized to 8 characters + 100)
-  const cleanRef = cleanName.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 8) || 'PARTNER';
-  const referralCode = `${cleanRef}100`;
+  // Check if an existing valid referral code already exists in master registry or cloud
+  let referralCode = '';
+  if (typeof window !== 'undefined') {
+    try {
+      const existingRaw = localStorage.getItem(MASTER_REGISTRY_KEY);
+      if (existingRaw) {
+        const localList: RegisteredUserRecord[] = JSON.parse(existingRaw);
+        const match = localList.find((u) => (cleanEmail && u.email && u.email.toLowerCase() === cleanEmail) || (uid && u.uid === uid));
+        if (match?.referralCode && !/^(RF)?\d+$/.test(match.referralCode)) {
+          referralCode = match.referralCode;
+        }
+      }
+    } catch {}
+
+    if (!referralCode) {
+      const storedCode = localStorage.getItem('futureai_user_ref_code');
+      if (storedCode && !/^(RF)?\d+$/.test(storedCode)) {
+        referralCode = storedCode;
+      }
+    }
+  }
+
+  // If no existing valid code exists, derive deterministically from email/name/uid (permanent & immutable)
+  if (!referralCode) {
+    const rawDerived = getUserReferralCode(cleanEmail || cleanName || uid);
+    referralCode = normalizeRefCode(rawDerived);
+  }
+
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem('futureai_user_ref_code', normalizeRefCode(referralCode));
+    } catch {}
+  }
 
   // Check attribution from URL (search params or hash params) or localStorage
   let referredBy = '';
@@ -468,8 +498,8 @@ export function normalizeRefCode(ref?: string): string {
   if (/^(RF)?\d+$/.test(s)) {
     return s;
   }
-  // Only strip legacy promotional '100' suffix if preceded by at least 3 alphabetic letters (e.g. ZODIYO100 -> ZODIYO)
-  return s.replace(/^([A-Z]{3,})100$/, '$1');
+  // Strip promotional '100' suffix if preceded by at least 2 alphanumeric chars starting with a letter
+  return s.replace(/^([A-Z][A-Z0-9]{2,})100$/, '$1');
 }
 
 /**
@@ -482,22 +512,31 @@ export async function fetchCanonicalReferralProfile(
   name?: string
 ): Promise<{ referralCode: string; referralId: string }> {
   const cleanUid = String(uid || '').trim();
+  const cleanEmail = (email || '').trim().toLowerCase();
+  const cleanName = (name || '').trim();
+
+  // If no UID is provided, derive deterministically from email/name
   if (!cleanUid) {
-    return { referralCode: '1', referralId: 'RF-1' };
+    const fallbackCode = normalizeRefCode(getUserReferralCode(cleanEmail || cleanName || 'PARTNER'));
+    return { referralCode: fallbackCode, referralId: `RF-${fallbackCode}` };
   }
 
   // Persistent Client-Side Cache: One Firebase UID = One Permanent Referral ID
-  // Eliminates repeated network queries on page navigations
+  // Purge any stale bare-numeric counter cache (e.g. '4') to avoid propagating old bugs
   if (typeof window !== 'undefined') {
     const cached = localStorage.getItem(`futureai_canonical_ref_${cleanUid}`);
     if (cached) {
       try {
         const parsed = JSON.parse(cached);
-        if (parsed && parsed.referralCode) {
+        const code = parsed?.referralCode ? normalizeRefCode(parsed.referralCode) : '';
+        if (code && !/^(RF)?\d+$/.test(code)) {
           return {
-            referralCode: normalizeRefCode(parsed.referralCode),
-            referralId: parsed.referralId || `RF-${normalizeRefCode(parsed.referralCode)}`,
+            referralCode: code,
+            referralId: parsed.referralId || `RF-${code}`,
           };
+        } else if (/^(RF)?\d+$/.test(code)) {
+          // Clear stale numeric counter cache
+          localStorage.removeItem(`futureai_canonical_ref_${cleanUid}`);
         }
       } catch {}
     }
@@ -506,8 +545,8 @@ export async function fetchCanonicalReferralProfile(
   try {
     const params = new URLSearchParams({
       uid: cleanUid,
-      email: (email || '').trim().toLowerCase(),
-      name: (name || '').trim(),
+      email: cleanEmail,
+      name: cleanName,
     });
     const res = await fetch(`/api/referral-profile?${params.toString()}`, {
       cache: 'no-store',
@@ -518,11 +557,12 @@ export async function fetchCanonicalReferralProfile(
       if (data && data.referralCode) {
         const result = {
           referralCode: normalizeRefCode(data.referralCode),
-          referralId: data.referralId || `RF-${data.referralCode}`,
+          referralId: data.referralId || `RF-${normalizeRefCode(data.referralCode)}`,
         };
         if (typeof window !== 'undefined') {
           try {
             localStorage.setItem(`futureai_canonical_ref_${cleanUid}`, JSON.stringify(result));
+            localStorage.setItem('futureai_user_ref_code', result.referralCode);
           } catch {}
         }
         return result;
@@ -533,15 +573,14 @@ export async function fetchCanonicalReferralProfile(
   }
 
   // Deterministic fallback if offline
-  if (
-    cleanUid === 'v0l0LdEuPMTyBsvGEqoT8dYSsv43' ||
-    cleanUid === 'bgnyqCpZ8QRX9pWt0xaMOmS0vQj1' ||
-    (email && (email.includes('subodh') || email.includes('admin@futureitindustry.com')))
-  ) {
-    return { referralCode: '1', referralId: 'RF-1' };
+  const code = normalizeRefCode(getUserReferralCode(cleanEmail || cleanName || cleanUid));
+  const fallback = { referralCode: code, referralId: `RF-${code}` };
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem('futureai_user_ref_code', code);
+    } catch {}
   }
-  const code = getUserReferralCode(email || name || cleanUid);
-  return { referralCode: normalizeRefCode(code), referralId: `RF-${normalizeRefCode(code)}` };
+  return fallback;
 }
 
 /**

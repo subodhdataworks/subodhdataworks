@@ -15,6 +15,8 @@ import {
   loginWithGooglePopup,
   loginWithEmailFirebase,
   recordUserInDatabase,
+  fetchCanonicalReferralProfile,
+  normalizeRefCode,
 } from '../../services/realAuthService';
 import { BRAND } from '../../config/brand';
 import { SessionService } from '../../services/sessionService';
@@ -207,7 +209,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
 
         setLoadingStage('success');
         setTimeout(() => {
-          if (isMounted) completeLogin(name, email, avatar, 'student');
+          if (isMounted) completeLogin(name, email, avatar, 'student', uid);
         }, 400);
       })
       .catch((err) => {
@@ -231,7 +233,9 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
     name: string,
     userEmail: string,
     avatar: string,
-    userRole: 'student' | 'influencer' = 'student'
+    userRole: 'student' | 'influencer' = 'student',
+    uid?: string,
+    referralCode?: string
   ) => {
     clearAuthTimeout();
     if (typeof window !== 'undefined') {
@@ -239,10 +243,21 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
       if (cleanName) localStorage.setItem('futureai_user_name', cleanName);
       if (userEmail) localStorage.setItem('futureai_user_email', userEmail);
       if (avatar) localStorage.setItem('futureai_user_avatar', avatar);
+      if (uid) localStorage.setItem('futureai_user_uid', uid);
+      if (referralCode) localStorage.setItem('futureai_user_ref_code', normalizeRefCode(referralCode));
       localStorage.setItem('futureai_user_role', userRole);
       localStorage.setItem('futureai_logged_in', 'true');
       if (!localStorage.getItem('futureai_user_wallet')) {
         localStorage.setItem('futureai_user_wallet', '0');
+      }
+
+      // Proactively warm and sync canonical referral profile across devices
+      if (uid) {
+        fetchCanonicalReferralProfile(uid, userEmail, cleanName).then((p) => {
+          if (p?.referralCode && typeof window !== 'undefined') {
+            localStorage.setItem('futureai_user_ref_code', p.referralCode);
+          }
+        }).catch(() => {});
       }
 
       // Automatically redirect to the requested target route
@@ -299,7 +314,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
       }, 550);
 
       setTimeout(() => {
-        completeLogin(fbUser.name, fbUser.email, fbUser.avatar, 'student');
+        completeLogin(fbUser.name, fbUser.email, fbUser.avatar, 'student', fbUser.uid);
       }, 950);
     } catch (err: any) {
       clearAuthTimeout();
@@ -376,7 +391,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
       }, 550);
 
       setTimeout(() => {
-        completeLogin(res.name, res.email, res.avatar, 'student');
+        completeLogin(res.name, res.email, res.avatar, 'student', res.uid);
       }, 950);
     } catch (err: any) {
       clearAuthTimeout();

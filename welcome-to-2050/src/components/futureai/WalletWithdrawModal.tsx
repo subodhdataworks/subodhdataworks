@@ -36,10 +36,11 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
   const isOwnerSubodh =
     myEmail.toLowerCase().includes('subodh') ||
     myStoredName.toLowerCase().includes('subodh');
+  const cleanStored = myStoredCode && !/^(RF)?\d+$/.test(myStoredCode) ? normalizeRefCode(myStoredCode) : '';
   const cleanRefCode = isOwnerSubodh
     ? 'SUBODHKUMAR'
-    : (myStoredCode
-        ? normalizeRefCode(myStoredCode)
+    : (cleanStored
+        ? cleanStored
         : (myEmail
             ? normalizeRefCode(getUserReferralCode(myEmail))
             : (myStoredName && myStoredName.toLowerCase() !== 'learner'

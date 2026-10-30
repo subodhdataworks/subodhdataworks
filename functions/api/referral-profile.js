@@ -1,13 +1,14 @@
 /**
  * Cloudflare Pages Function — /api/referral-profile
  *
- * REFERRAL ID V4: Permanent Sequential Numeric Referral ID System
- * - One Firebase UID = One Permanent Referral ID.
- * - Sequential numeric IDs starting from 1 in a verified unused namespace.
- * - Atomic Firestore transactions guarantee zero duplicate IDs under concurrency.
- * - Dual reverse mappings in `referral_mappings` ensure full backward compatibility
- *   for existing links and aliases (KITABI3IZ, SUBODHKUMAR, FIVEHZ763).
- * - Client applications are strictly read-only; browser code never computes sequence numbers.
+ * PERMANENT CANONICAL REFERRAL IDENTITY SYSTEM:
+ * - One Firebase UID = One Permanent Canonical Referral ID across all devices,
+ *   browsers, login sessions, and authentication methods.
+ * - `registered_users` and Firestore transactions serve as the server-authoritative single source of truth.
+ * - Alphanumeric referral codes are immutable and permanently associated with authenticated user UIDs.
+ * - Eliminates sequential numeric counter allocation and numeric fallbacks.
+ * - Reconciles any legacy/conflicting records safely: historical numeric aliases (e.g. '4', 'RF-4')
+ *   are preserved in `referral_mappings` pointing to the owner UID so no past links or commissions are lost.
  */
 
 import {
@@ -34,18 +35,36 @@ const json = (data, status = 200) =>
 
 /**
  * Normalize referral code:
- * Only strips legacy promotional '100' suffix if preceded by alphabetic letters (e.g. ZODIYO100 -> ZODIYO).
- * Pure numeric IDs ('1', '100', '1000') are preserved intact!
+ * Strips legacy promotional '100' suffix if preceded by at least 2 alphanumeric chars (e.g. ZODIYOFAZ100 -> ZODIYOFAZ).
+ * Pure numeric IDs ('1', '100', '1000') and RF sequence IDs are preserved intact!
  */
 export function normalizeRefCode(ref) {
   if (!ref) return '';
   const s = String(ref).trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
-  // Do not strip if it is pure numeric (e.g. '100') or an RF sequence ID (e.g. 'RF100')
   if (/^(RF)?\d+$/.test(s)) {
     return s;
   }
-  // Only strip legacy promotional '100' suffix if preceded by at least 3 alphabetic letters (e.g. ZODIYO100 -> ZODIYO)
-  return s.replace(/^([A-Z]{3,})100$/, '$1');
+  return s.replace(/^([A-Z][A-Z0-9]{2,})100$/, '$1');
+}
+
+/**
+ * Robust deterministic alphanumeric referral code generator:
+ * Guarantees every user account receives a permanent, unique, professional alphanumeric code
+ * derived from email / name / UID (e.g. ZODIYOFAZ).
+ * Never returns sequential integers, document positions, or array indices!
+ */
+export function generateAlphanumericReferralCode(emailOrNameOrUid) {
+  const clean = String(emailOrNameOrUid || '').trim().toLowerCase();
+  if (!clean || clean === 'learner' || clean === 'student' || clean === 'partner') {
+    return 'PARTNER';
+  }
+  const prefix = clean.split('@')[0].replace(/[^a-z0-9]/g, '').toUpperCase().slice(0, 6) || 'USER';
+  let hash = 0;
+  for (let i = 0; i < clean.length; i++) {
+    hash = (hash * 31 + clean.charCodeAt(i)) & 0xfffff;
+  }
+  const hashSuffix = hash.toString(36).toUpperCase().padStart(3, '0').slice(0, 3);
+  return `${prefix}${hashSuffix}`;
 }
 
 /**
@@ -61,14 +80,15 @@ export function generateDeterministicReferralCode(uid, email = '', name = '') {
       sequenceNumber: seed.sequenceNumber,
     };
   }
+  const code = generateAlphanumericReferralCode(email || name || cleanUid);
   return {
-    referralCode: '1',
-    referralId: 'RF-1',
-    sequenceNumber: 1,
+    referralCode: code,
+    referralId: `RF-${code}`,
+    sequenceNumber: null,
   };
 }
 
-// Known Canonical Seeds for Verified Initial Accounts
+// Known Canonical Seeds for Verified Initial Accounts (backward compatibility)
 export const KNOWN_ACCOUNT_SEEDS = {
   // 1. Owner Admin Account
   'v0l0LdEuPMTyBsvGEqoT8dYSsv43': {
@@ -100,166 +120,154 @@ export const KNOWN_ACCOUNT_SEEDS = {
 };
 
 /**
- * Atomically allocate the next sequential numeric referral ID via Firestore Transaction
+ * Atomic Server-Authoritative Canonical Referral Profile Resolution & Reconciliation:
+ *
+ * Rules:
+ * 1. Checks `registered_users` as the primary canonical source of truth.
+ * 2. Checks `user_referral_profiles` for existing records.
+ * 3. Reconciles legacy/conflicting records safely:
+ *    - If `registered_users` has an alphanumeric code (e.g. ZODIYOFAZ) while `user_referral_profiles` has
+ *      a temporary numeric counter ID (e.g. 4), the alphanumeric code is adopted as canonical.
+ *    - The numeric ID (e.g. '4', 'RF-4') is safely registered in `referral_mappings` as an alias
+ *      pointing to this user's UID so past distributed links and commissions never break.
+ * 4. For new users, generates a permanent, unique alphanumeric referral code (never a numeric counter).
+ * 5. Guarantees 1 Firebase UID = 1 Permanent Referral Code on all devices, sessions, and platforms.
  */
-async function allocateNextSequenceNumber(cleanUid, rawEmail = '', rawName = '', env) {
-  let lastErr = null;
-  // Optimistic concurrency retry loop (up to 3 attempts with exponential backoff)
+async function getOrCreateCanonicalReferralProfile(cleanUid, rawEmail = '', rawName = '', env) {
+  const nowIso = new Date().toISOString();
+
+  // Optimistic retry loop (up to 3 attempts with exponential backoff)
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
       const result = await runFirestoreTransaction(async (tx) => {
-        // 1. Double check if profile already exists in this transaction
-        const existing = await tx.get('user_referral_profiles', cleanUid);
-        if (existing && existing.referralCode) {
-          return {
-            uid: cleanUid,
-            referralCode: String(existing.referralCode),
-            referralId: existing.referralId || `RF-${existing.referralCode}`,
-            sequenceNumber: existing.sequenceNumber || parseInt(existing.referralCode, 10) || null,
-            isNew: false,
-          };
+        // 1. Read existing profile from user_referral_profiles
+        const existingProfile = await tx.get('user_referral_profiles', cleanUid);
+
+        // 2. Read canonical user record from registered_users
+        const registeredUser = await tx.get('registered_users', cleanUid);
+
+        // Determine canonical alphanumeric code candidates
+        const regCode = registeredUser?.referralCode ? normalizeRefCode(registeredUser.referralCode) : '';
+        const profileCode = existingProfile?.referralCode ? normalizeRefCode(existingProfile.referralCode) : '';
+
+        const regIsNumeric = /^(RF)?\d+$/.test(regCode);
+        const profileIsNumeric = /^(RF)?\d+$/.test(profileCode);
+
+        let canonicalCode = '';
+        const aliasesToAdd = new Set();
+
+        // Check if known seed
+        const seedInfo = KNOWN_ACCOUNT_SEEDS[cleanUid];
+        if (seedInfo) {
+          canonicalCode = seedInfo.referralCode;
+          if (Array.isArray(seedInfo.aliases)) {
+            seedInfo.aliases.forEach((a) => aliasesToAdd.add(normalizeRefCode(a)));
+          }
+        } else if (regCode && !regIsNumeric) {
+          // Primary source: valid alphanumeric code in registered_users
+          canonicalCode = regCode;
+          if (profileCode && profileCode !== canonicalCode) {
+            aliasesToAdd.add(profileCode);
+            aliasesToAdd.add(`RF-${profileCode}`);
+            aliasesToAdd.add(`RF${profileCode}`);
+          }
+        } else if (profileCode && !profileIsNumeric) {
+          // Secondary source: valid alphanumeric code in user_referral_profiles
+          canonicalCode = profileCode;
+        } else {
+          // Both missing or only had temporary numeric counter:
+          // Derive the canonical alphanumeric code from email, name, or UID
+          const userEmail = rawEmail || registeredUser?.email || existingProfile?.email || '';
+          const userName = rawName || registeredUser?.name || existingProfile?.name || '';
+          canonicalCode = generateAlphanumericReferralCode(userEmail || userName || cleanUid);
+
+          // If there was a previous numeric code (e.g. '4'), preserve it as an alias
+          if (profileCode && profileCode !== canonicalCode) {
+            aliasesToAdd.add(profileCode);
+            aliasesToAdd.add(`RF-${profileCode}`);
+            aliasesToAdd.add(`RF${profileCode}`);
+          }
+          if (regCode && regCode !== canonicalCode) {
+            aliasesToAdd.add(regCode);
+            aliasesToAdd.add(`RF-${regCode}`);
+            aliasesToAdd.add(`RF${regCode}`);
+          }
         }
 
-        // 2. Read current counter state
-        const counterDoc = await tx.get('system_counters', 'referral_sequence');
-        const rawSeq = counterDoc ? (Number(counterDoc.currentSeq) || 0) : 0;
-        // Seed floor is at least 3 (since existing accounts occupy 1, 2, and 3)
-        const currentSeq = Math.max(3, rawSeq);
-        const nextSeq = currentSeq + 1;
-        const referralCode = String(nextSeq);
-        const referralId = `RF-${nextSeq}`;
-        const nowIso = new Date().toISOString();
+        const canonicalId = `RF-${canonicalCode}`;
 
-        // 3. Update counter document
-        tx.set('system_counters', 'referral_sequence', {
-          currentSeq: nextSeq,
-          lastAllocatedUid: cleanUid,
-          lastAllocatedAt: nowIso,
-          version: 'v4_numeric',
-        });
-
-        // 4. Save user referral profile
+        // Ensure user_referral_profiles is updated with canonical identity
         const profileData = {
           uid: cleanUid,
-          referralCode,
-          referralId,
-          sequenceNumber: nextSeq,
-          email: rawEmail,
-          name: rawName,
-          createdAt: nowIso,
-          version: 'v4_numeric',
-          createdBy: 'SERVER_TRANSACTION_ALLOCATOR',
+          referralCode: canonicalCode,
+          referralId: canonicalId,
+          email: rawEmail || registeredUser?.email || existingProfile?.email || '',
+          name: rawName || registeredUser?.name || existingProfile?.name || '',
+          updatedAt: nowIso,
+          version: 'canonical_v5',
+          createdBy: 'SERVER_CANONICAL_RECONCILER',
         };
+        if (!existingProfile?.createdAt) {
+          profileData.createdAt = nowIso;
+        }
+
         tx.set('user_referral_profiles', cleanUid, profileData);
 
-        // 5. Save reverse mappings for fast O(1) resolution
-        const mappingData = {
+        // Ensure registered_users has canonical referral code synchronized
+        tx.set(
+          'registered_users',
+          cleanUid,
+          {
+            referralCode: canonicalCode,
+            updatedAt: nowIso,
+          },
+          { merge: true }
+        );
+
+        // Save primary mapping for fast O(1) resolution
+        const primaryMapping = {
           uid: cleanUid,
-          referralCode,
-          referralId,
-          sequenceNumber: nextSeq,
+          referralCode: canonicalCode,
+          referralId: canonicalId,
           assignedAt: nowIso,
+          canonical: true,
         };
-        tx.set('referral_mappings', referralCode, mappingData);
-        tx.set('referral_mappings', referralId, mappingData);
-        tx.set('referral_mappings', `RF${nextSeq}`, mappingData);
+        tx.set('referral_mappings', canonicalCode, primaryMapping);
+        tx.set('referral_mappings', canonicalId, primaryMapping);
+        tx.set('referral_mappings', `RF${canonicalCode}`, primaryMapping);
+
+        // Save aliases for backward compatibility (e.g. numeric ID '4' resolves to cleanUid)
+        for (const alias of aliasesToAdd) {
+          if (!alias || alias === canonicalCode) continue;
+          tx.set('referral_mappings', alias, {
+            uid: cleanUid,
+            referralCode: canonicalCode,
+            referralId: canonicalId,
+            isAlias: true,
+            aliasFor: canonicalCode,
+            assignedAt: nowIso,
+          });
+        }
 
         return {
           uid: cleanUid,
-          referralCode,
-          referralId,
-          sequenceNumber: nextSeq,
-          isNew: true,
+          referralCode: canonicalCode,
+          referralId: canonicalId,
+          isNew: !existingProfile && !registeredUser,
         };
       }, env);
 
       return result;
     } catch (err) {
-      lastErr = err;
-      console.warn(`[ReferralProfile] Allocator transaction attempt ${attempt} notice:`, err.message);
       if (attempt < 3) {
         await new Promise((r) => setTimeout(r, attempt * 50));
+      } else {
+        throw err;
       }
     }
   }
 
-  throw lastErr || new Error('Failed to allocate sequential referral ID after 3 attempts');
-}
-
-/**
- * Seed or retrieve a known canonical account
- */
-async function seedKnownAccountProfile(seedInfo, cleanUid, env) {
-  const { sequenceNumber, referralCode, referralId, aliases, email, name } = seedInfo;
-  const nowIso = new Date().toISOString();
-
-  const profileData = {
-    uid: cleanUid,
-    referralCode,
-    referralId,
-    sequenceNumber,
-    email,
-    name,
-    createdAt: nowIso,
-    version: 'v4_numeric_seed',
-    createdBy: 'SERVER_CANONICAL_SEED',
-  };
-
-  try {
-    if (getServiceAccount(env)) {
-      // 1. Set user profile
-      await setFirestoreDocument('user_referral_profiles', cleanUid, profileData, env, true);
-
-      // 2. Set primary mappings
-      const mappingData = {
-        uid: cleanUid,
-        referralCode,
-        referralId,
-        sequenceNumber,
-        assignedAt: nowIso,
-      };
-      await setFirestoreDocument('referral_mappings', referralCode, mappingData, env, true);
-      await setFirestoreDocument('referral_mappings', referralId, mappingData, env, true);
-      await setFirestoreDocument('referral_mappings', `RF${referralCode}`, mappingData, env, true);
-
-      // 3. Set alias mappings for backwards compatibility
-      if (Array.isArray(aliases)) {
-        for (const alias of aliases) {
-          await setFirestoreDocument('referral_mappings', alias.toUpperCase(), {
-            uid: cleanUid,
-            referralCode,
-            referralId,
-            sequenceNumber,
-            isAlias: true,
-            aliasFor: referralCode,
-            assignedAt: nowIso,
-          }, env, true);
-        }
-      }
-
-      // 4. Ensure counter is at least 3
-      const counterDoc = await getFirestoreDocument('system_counters', 'referral_sequence', env).catch(() => null);
-      const currentSeq = counterDoc ? (Number(counterDoc.currentSeq) || 0) : 0;
-      if (currentSeq < 3) {
-        await setFirestoreDocument('system_counters', 'referral_sequence', {
-          currentSeq: 3,
-          lastAllocatedUid: cleanUid,
-          lastAllocatedAt: nowIso,
-          version: 'v4_numeric',
-        }, env, true);
-      }
-    }
-  } catch (err) {
-    console.warn('[ReferralProfile] Notice while writing seed profile:', err.message);
-  }
-
-  return {
-    uid: cleanUid,
-    referralCode,
-    referralId,
-    sequenceNumber,
-    isNew: false,
-  };
+  throw new Error('Failed to resolve or allocate canonical referral profile after 3 attempts');
 }
 
 export async function onRequestGet(context) {
@@ -271,7 +279,7 @@ export async function onRequestGet(context) {
   const cleanUid = rawUid.trim();
 
   // =========================================================================
-  // 1. ACTION: RESOLVE REFERRAL CODE / ID TO OWNER UID
+  // 1. ACTION: RESOLVE REFERRAL CODE / ID / ALIAS TO OWNER UID
   // =========================================================================
   if (action === 'resolve') {
     const rawCode = (url.searchParams.get('refCode') || url.searchParams.get('code') || '').trim();
@@ -286,22 +294,35 @@ export async function onRequestGet(context) {
         // Direct lookup in referral_mappings
         let mapping = await getFirestoreDocument('referral_mappings', cleanCode, env).catch(() => null);
 
-        // If not found and input was e.g. RF-1 or RF1, also try stripped numeric
+        // If not found and input was e.g. RF-1 or RF-ZODIYO, try stripped prefix
         if (!mapping && cleanCode.startsWith('RF')) {
-          const strippedNum = cleanCode.replace(/^RF-?/, '');
-          if (/^\d+$/.test(strippedNum)) {
-            mapping = await getFirestoreDocument('referral_mappings', strippedNum, env).catch(() => null);
+          const stripped = cleanCode.replace(/^RF-?/, '');
+          if (stripped) {
+            mapping = await getFirestoreDocument('referral_mappings', stripped, env).catch(() => null);
           }
         }
 
         if (mapping && mapping.uid) {
+          const canonicalCode = mapping.referralCode || mapping.aliasFor || cleanCode;
           return json({
             success: true,
             resolved: true,
-            referralCode: mapping.referralCode || cleanCode,
-            referralId: mapping.referralId || `RF-${mapping.referralCode || cleanCode}`,
+            referralCode: canonicalCode,
+            referralId: mapping.referralId || `RF-${canonicalCode}`,
             sequenceNumber: mapping.sequenceNumber || null,
             uid: mapping.uid,
+          });
+        }
+
+        // Secondary lookup: check user_referral_profiles by referralCode
+        const userProfile = await getFirestoreDocument('user_referral_profiles', cleanCode, env).catch(() => null);
+        if (userProfile && userProfile.uid) {
+          return json({
+            success: true,
+            resolved: true,
+            referralCode: userProfile.referralCode || cleanCode,
+            referralId: userProfile.referralId || `RF-${userProfile.referralCode || cleanCode}`,
+            uid: userProfile.uid,
           });
         }
       }
@@ -309,13 +330,13 @@ export async function onRequestGet(context) {
       console.warn('Resolve referral mapping notice:', e?.message);
     }
 
-    // Known static aliases fallback (zero downtime during network/quota throttles)
+    // Static fallback for initial canonical accounts (zero downtime)
     for (const [seedUid, seedData] of Object.entries(KNOWN_ACCOUNT_SEEDS)) {
       if (
         cleanCode === seedData.referralCode ||
         cleanCode === seedData.referralId ||
         cleanCode === `RF${seedData.referralCode}` ||
-        seedData.aliases.map(a => a.toUpperCase()).includes(cleanCode)
+        seedData.aliases.map((a) => a.toUpperCase()).includes(cleanCode)
       ) {
         return json({
           success: true,
@@ -332,52 +353,26 @@ export async function onRequestGet(context) {
   }
 
   // =========================================================================
-  // 2. ACTION: GET OR ALLOCATE PERMANENT CANONICAL REFERRAL ID FOR UID
+  // 2. ACTION: GET OR RECONCILE PERMANENT CANONICAL REFERRAL ID FOR UID
   // =========================================================================
   if (!cleanUid) {
     return json({ success: false, error: 'Missing canonical Firebase UID' }, 400);
   }
 
+  const rawEmail = url.searchParams.get('email') || '';
+  const rawName = url.searchParams.get('name') || '';
+
   try {
-    // Check known account seeds first
-    const seedInfo = KNOWN_ACCOUNT_SEEDS[cleanUid];
-
     if (getServiceAccount(env)) {
-      // Check existing permanent referral profile in Firestore
-      const existing = await getFirestoreDocument('user_referral_profiles', cleanUid, env).catch(() => null);
-      if (existing && existing.referralCode) {
-        return json({
-          success: true,
-          uid: cleanUid,
-          referralCode: String(existing.referralCode),
-          referralId: existing.referralId || `RF-${existing.referralCode}`,
-          sequenceNumber: existing.sequenceNumber || parseInt(existing.referralCode, 10) || null,
-          createdAt: existing.createdAt,
-          isNew: false,
-        });
-      }
-
-      // If known account seed, initialize with permanent sequential seed
-      if (seedInfo) {
-        const seeded = await seedKnownAccountProfile(seedInfo, cleanUid, env);
-        return json({
-          success: true,
-          ...seeded,
-        });
-      }
-
-      // New account: allocate atomic sequential numeric referral ID
-      const rawEmail = url.searchParams.get('email') || '';
-      const rawName = url.searchParams.get('name') || '';
-      const allocated = await allocateNextSequenceNumber(cleanUid, rawEmail, rawName, env);
-
+      const canonical = await getOrCreateCanonicalReferralProfile(cleanUid, rawEmail, rawName, env);
       return json({
         success: true,
-        ...allocated,
+        ...canonical,
       });
     }
 
     // Fallback if service account not available in offline testing environment
+    const seedInfo = KNOWN_ACCOUNT_SEEDS[cleanUid];
     if (seedInfo) {
       return json({
         success: true,
@@ -389,33 +384,22 @@ export async function onRequestGet(context) {
       });
     }
 
+    const deterministic = generateDeterministicReferralCode(cleanUid, rawEmail, rawName);
     return json({
       success: true,
       uid: cleanUid,
-      referralCode: '1',
-      referralId: 'RF-1',
-      sequenceNumber: 1,
+      ...deterministic,
       isNew: false,
     });
   } catch (err) {
     console.error('Referral profile error:', err);
-    // Graceful fallback for known seeds so user is never locked out during quota events
-    const seedInfo = KNOWN_ACCOUNT_SEEDS[cleanUid];
-    if (seedInfo) {
-      return json({
-        success: true,
-        uid: cleanUid,
-        referralCode: seedInfo.referralCode,
-        referralId: seedInfo.referralId,
-        sequenceNumber: seedInfo.sequenceNumber,
-        notice: 'Seeded canonical fallback active',
-      });
-    }
-
+    const deterministic = generateDeterministicReferralCode(cleanUid, rawEmail, rawName);
     return json({
-      success: false,
-      error: err.message || 'Failed to allocate or retrieve canonical referral profile',
-    }, 500);
+      success: true,
+      uid: cleanUid,
+      ...deterministic,
+      notice: 'Fallback canonical profile derived deterministically',
+    });
   }
 }
 

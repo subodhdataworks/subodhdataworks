@@ -117,22 +117,44 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
 
   // Part 1: Server-Authoritative 1:1 Canonical Referral Profile state
   const [canonicalRef, setCanonicalRef] = useState<{ referralCode: string; referralId: string }>(() => {
+    // Check client-side cached canonical ref for UID first (skipping any stale numeric counter)
+    if (typeof window !== 'undefined' && myUid) {
+      try {
+        const cached = localStorage.getItem(`futureai_canonical_ref_${myUid}`);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          const cCode = parsed?.referralCode ? normalizeRefCode(parsed.referralCode) : '';
+          if (cCode && !/^(RF)?\d+$/.test(cCode)) {
+            return {
+              referralCode: cCode,
+              referralId: parsed.referralId || `RF-${cCode}`,
+            };
+          }
+        }
+      } catch {}
+    }
+
     const initialCode = myStoredCode
       ? normalizeRefCode(myStoredCode)
       : (isOwner ? '1' : normalizeRefCode(getUserReferralCode(myEmail || myStoredName || myUid)));
     return {
       referralCode: initialCode,
-      referralId: isOwner ? 'RF-1' : 'RF-PARTNER',
+      referralId: isOwner ? 'RF-1' : `RF-${initialCode}`,
     };
   });
 
-  // Load canonical permanent 1:1 referral code from server for this Firebase UID
+  // Load canonical permanent 1:1 referral code from server for this Firebase UID / Email
   useEffect(() => {
     let isMounted = true;
-    if (myUid) {
+    if (myUid || myEmail) {
       fetchCanonicalReferralProfile(myUid, myEmail, myStoredName).then((profile) => {
         if (isMounted && profile && profile.referralCode) {
           setCanonicalRef(profile);
+          if (typeof window !== 'undefined') {
+            try {
+              localStorage.setItem('futureai_user_ref_code', profile.referralCode);
+            } catch {}
+          }
         }
       });
     }
