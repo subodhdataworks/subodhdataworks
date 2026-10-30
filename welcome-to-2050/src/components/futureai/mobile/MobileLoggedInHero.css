@@ -24,7 +24,14 @@
   aspect-ratio: 540 / 310;
 }
 
-/* Background image */
+/* Video banner (16:9 promo video) */
+.ple-banner-card--video {
+  aspect-ratio: 16 / 9;
+  cursor: pointer;
+  background: #eef4ff;
+}
+
+/* Background image / video */
 .ple-banner-img {
   width: 100%;
   height: 100%;
