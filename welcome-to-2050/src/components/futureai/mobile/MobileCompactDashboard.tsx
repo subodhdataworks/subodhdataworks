@@ -1,19 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import {
-  ArrowRight,
-  Briefcase,
-  BriefcaseBusiness,
-  CheckCircle2,
-  Code2,
-  FileText,
-  Infinity as InfinityIcon,
-  Layers,
-  PlayCircle,
   ChevronRight,
 } from 'lucide-react';
 import { CAREER_COURSES_12, CareerCourseItem } from '../../../data/careerCourses12';
-import { isCourseUnlocked } from '../../../services/courseUnlockService';
 import { MobileLoggedInHero } from './MobileLoggedInHero';
+import { MobileCoursesShowcase, MobileShowcaseCourse } from './MobileCoursesShowcase';
 
 const HIRING_PARTNER_LOGOS = [
   { name: 'Google', logo: '/images/companies/google.svg', h: 18 },
@@ -36,128 +27,9 @@ const HIRING_PARTNER_LOGOS = [
 ];
 
 /**
- * Viewport-aware inline looping course video with poster thumbnail fallback.
- * - Plays automatically when card is visible in viewport.
- * - Pauses when scrolled out of view to save battery/CPU on mobile.
- * - Resumes automatically when scrolled back into view.
- * - Keeps original thumbnail underneath so there is never a black screen or layout shift.
- */
-const MobileCourseThumbnailVideo: React.FC<{
-  video?: string;
-  poster: string;
-  alt: string;
-}> = ({ video, poster, alt }) => {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [videoReady, setVideoReady] = useState(false);
-  const [videoFailed, setVideoFailed] = useState(false);
-
-  useEffect(() => {
-    const vid = videoRef.current;
-    const container = containerRef.current;
-    if (!vid || !container || !video || videoFailed) return;
-
-    // Force muted + inline attributes for Android Chrome & iOS Safari autoplay compliance
-    vid.muted = true;
-    vid.defaultMuted = true;
-    vid.playsInline = true;
-    vid.setAttribute('muted', '');
-    vid.setAttribute('playsinline', '');
-    vid.setAttribute('webkit-playsinline', 'true');
-
-    let isVisible = false;
-
-    const tryPlay = () => {
-      if (!vid || videoFailed) return;
-      vid.muted = true;
-      const playPromise = vid.play();
-      if (playPromise && typeof playPromise.catch === 'function') {
-        playPromise.catch(() => {
-          // If browser blocks autoplay until first touch, keep poster visible
-        });
-      }
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          isVisible = entry.isIntersecting && entry.intersectionRatio >= 0.15;
-          if (isVisible) {
-            tryPlay();
-          } else {
-            try {
-              vid.pause();
-            } catch {
-              // ignore
-            }
-          }
-        }
-      },
-      { threshold: [0, 0.15, 0.5] }
-    );
-
-    observer.observe(container);
-
-    // Retry playback on page visibility restore or first user touch if visible
-    const handleVisibilityOrTouch = () => {
-      if (document.visibilityState === 'visible' && isVisible && vid.paused) {
-        tryPlay();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityOrTouch);
-    window.addEventListener('touchstart', handleVisibilityOrTouch, { passive: true });
-
-    return () => {
-      observer.disconnect();
-      document.removeEventListener('visibilitychange', handleVisibilityOrTouch);
-      window.removeEventListener('touchstart', handleVisibilityOrTouch);
-    };
-  }, [video, videoFailed]);
-
-  return (
-    <div
-      ref={containerRef}
-      className="relative w-[102px] min-[400px]:w-[114px] h-[86px] shrink-0 rounded-xl overflow-hidden bg-slate-100 select-none"
-    >
-      {/* Static course thumbnail always rendered underneath to prevent black frames or layout shift */}
-      <img
-        src={poster}
-        alt={alt}
-        loading="lazy"
-        decoding="async"
-        className="w-full h-full object-cover"
-        draggable={false}
-      />
-
-      {video && !videoFailed && (
-        <video
-          ref={videoRef}
-          src={video}
-          poster={poster}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          controls={false}
-          disablePictureInPicture
-          onLoadedData={() => setVideoReady(true)}
-          onPlaying={() => setVideoReady(true)}
-          onError={() => setVideoFailed(true)}
-          className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-300 ${
-            videoReady ? 'opacity-100' : 'opacity-0'
-          }`}
-        />
-      )}
-    </div>
-  );
-};
-
-/**
  * Mobile-only (below md) compact app-style dashboard content.
- * Renders BELOW the existing header. Uses the same shared course source
- * (CAREER_COURSES_12) and enrollment service (isCourseUnlocked) as desktop.
+ * Renders BELOW the existing header after user login.
+ * Displays the 7-course showcase matching the exact reference UI design.
  */
 export interface MobileCompactDashboardProps {
   onCourseClick: (course: CareerCourseItem) => void;
@@ -168,8 +40,6 @@ export interface MobileCompactDashboardProps {
   playClick?: () => void;
 }
 
-const INITIAL_VISIBLE = 7;
-
 export const MobileCompactDashboard: React.FC<MobileCompactDashboardProps> = ({
   onCourseClick,
   onOpenMyCourses,
@@ -178,20 +48,180 @@ export const MobileCompactDashboard: React.FC<MobileCompactDashboardProps> = ({
   onOpenJobSupport,
   playClick,
 }) => {
-  const [showAll, setShowAll] = useState(false);
   const courses = CAREER_COURSES_12;
-  const visible = showAll ? courses : courses.slice(0, INITIAL_VISIBLE);
 
-  const scrollToCourses = () => {
-    document.getElementById('mobile-courses-list')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
+  // ── 7 Canonical Courses mapped for the Mobile Showcase Design ──
+  const mobileShowcaseCourses: MobileShowcaseCourse[] = [
+    {
+      id: 'data-analyst-genai',
+      courseUnlockKey: 'data_analyst',
+      popularBadge: '🔥 MOST POPULAR',
+      badge: '⭐ Beginner Friendly',
+      badgeBg: 'bg-emerald-500',
+      salaryRange: '₹ 6 - 15 LPA',
+      title: 'Data Analyst with',
+      titleAccent: 'GenAI',
+      titleAccentColor: 'bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent',
+      description: 'Master Python, SQL, Power BI, Excel & GenAI to build automated business solutions.',
+      image: '/images/pot1_sharp_poster.jpg',
+      tools: [{ name: 'Python' }, { name: 'SQL' }, { name: 'Power BI' }, { name: 'Excel' }, { name: 'ChatGPT' }],
+      originalPrice: '₹13,999',
+      sellingPrice: '₹987 Only',
+      discountLabel: '93% OFF',
+      enrollBtnGradient: 'bg-gradient-to-r from-emerald-600 to-teal-500',
+      borderAccent: '#22d3ee',
+      onEnroll: () => {
+        playClick?.();
+        const item = courses.find((c) => c.id === 'data-analyst-genai') || courses[0];
+        onCourseClick(item);
+      },
+    },
+    {
+      id: 'data-science-agentic-ai',
+      courseUnlockKey: 'data_science',
+      badge: '⭐ In-Demand',
+      badgeBg: 'bg-gradient-to-r from-purple-600 to-indigo-600',
+      salaryRange: '₹ 10 - 25 LPA',
+      title: 'Data Science &',
+      titleAccent: 'Agentic AI',
+      titleAccentColor: 'bg-gradient-to-r from-purple-600 to-indigo-500 bg-clip-text text-transparent',
+      description: 'Build Machine Learning models, RAG pipelines and autonomous AI agents.',
+      image: '/images/pot2_sharp_poster.jpg',
+      tools: [{ name: 'Python' }, { name: 'PyTorch' }, { name: 'LangChain' }, { name: 'Vector DB' }, { name: 'RAG' }],
+      originalPrice: '₹14,499',
+      sellingPrice: '₹987 Only',
+      discountLabel: '93% OFF',
+      enrollBtnGradient: 'bg-gradient-to-r from-blue-600 to-indigo-600',
+      borderAccent: '#a855f7',
+      onEnroll: () => {
+        playClick?.();
+        const item = courses.find((c) => c.id === 'data-science-agentic-ai') || courses[1];
+        onCourseClick(item);
+      },
+    },
+    {
+      id: 'ml-engineering',
+      courseUnlockKey: 'ml_engineering',
+      badge: '⭐ For Tech Careers',
+      badgeBg: 'bg-gradient-to-r from-amber-500 to-orange-500',
+      salaryRange: '₹ 12 - 28 LPA',
+      title: 'Machine Learning',
+      titleAccent: 'Engineering',
+      titleAccentColor: 'bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent',
+      description: 'End-to-end ML model development & deployment with industry tools.',
+      image: '/images/pot3_sharp_poster.jpg',
+      tools: [{ name: 'Python' }, { name: 'FastAPI' }, { name: 'Docker' }, { name: 'Kubernetes' }, { name: 'Cloud' }],
+      originalPrice: '₹12,999',
+      sellingPrice: '₹987 Only',
+      discountLabel: '92% OFF',
+      enrollBtnGradient: 'bg-gradient-to-r from-purple-600 to-indigo-600',
+      borderAccent: '#f59e0b',
+      onEnroll: () => {
+        playClick?.();
+        const item = courses.find((c) => c.id === 'ml-engineering') || courses[2];
+        onCourseClick(item);
+      },
+    },
+    {
+      id: 'ai-engineering',
+      courseUnlockKey: 'ai_engineering',
+      badge: '⭐ Flagship 2050',
+      badgeBg: 'bg-gradient-to-r from-emerald-500 to-teal-600',
+      salaryRange: '₹ 14 - 32 LPA',
+      title: 'AI',
+      titleAccent: 'Engineering',
+      titleAccentColor: 'bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent',
+      description: 'Build and deploy enterprise AI products, LLMs and multi-agent solutions.',
+      image: '/images/pot4_sharp_poster.jpg',
+      tools: [{ name: 'OpenAI' }, { name: 'LangChain' }, { name: 'Hugging Face' }, { name: 'Vector DB' }, { name: 'RAG' }],
+      originalPrice: '₹15,999',
+      sellingPrice: '₹987 Only',
+      discountLabel: '94% OFF',
+      enrollBtnGradient: 'bg-gradient-to-r from-emerald-600 to-teal-500',
+      borderAccent: '#10b981',
+      onEnroll: () => {
+        playClick?.();
+        const item = courses.find((c) => c.id === 'ai-engineering') || courses[3];
+        onCourseClick(item);
+      },
+    },
+    {
+      id: 'ai-tools-prompt',
+      courseUnlockKey: 'ai_tools_prompt',
+      badge: '⚡ 10X Productivity',
+      badgeBg: 'bg-gradient-to-r from-amber-500 to-orange-500',
+      salaryRange: '₹ 5 - 14 LPA',
+      title: 'AI Tools &',
+      titleAccent: 'Prompt Engineering',
+      titleAccentColor: 'bg-gradient-to-r from-amber-500 to-orange-400 bg-clip-text text-transparent',
+      description: '10x your productivity with ChatGPT-4o, Claude 3.5, Midjourney & Zapier automations.',
+      image: '/images/cube_genai.jpg',
+      tools: [{ name: 'ChatGPT' }, { name: 'OpenAI' }, { name: 'LangChain' }, { name: 'Python' }, { name: 'Cloud' }],
+      originalPrice: '₹12,999',
+      sellingPrice: '₹987 Only',
+      discountLabel: '92% OFF',
+      enrollBtnGradient: 'bg-gradient-to-r from-amber-500 to-orange-500',
+      borderAccent: '#f59e0b',
+      onEnroll: () => {
+        playClick?.();
+        const item = courses.find((c) => c.id === 'ai-tools-prompt') || courses[4];
+        onCourseClick(item);
+      },
+    },
+    {
+      id: 'ms-office-copilot',
+      courseUnlockKey: 'ms_office_copilot',
+      badge: '📊 Popular • Office AI',
+      badgeBg: 'bg-gradient-to-r from-blue-600 to-sky-600',
+      salaryRange: '₹ 5 - 12 LPA',
+      title: 'Microsoft Office 365',
+      titleAccent: 'with Copilot',
+      titleAccentColor: 'bg-gradient-to-r from-blue-600 to-sky-500 bg-clip-text text-transparent',
+      description: 'Automate executive reporting, decks, financial models & emails with Microsoft Copilot AI.',
+      image: '/images/msoffice_365_copilot_poster.jpg',
+      tools: [{ name: 'Excel' }, { name: 'DAX' }, { name: 'Power Query' }, { name: 'Power BI' }, { name: 'OpenAI' }],
+      originalPrice: '₹14,999',
+      sellingPrice: '₹987 Only',
+      discountLabel: '93% OFF',
+      enrollBtnGradient: 'bg-gradient-to-r from-blue-600 to-sky-500',
+      borderAccent: '#0ea5e9',
+      onEnroll: () => {
+        playClick?.();
+        const item = courses.find((c) => c.id === 'ms-office-copilot') || courses[5];
+        onCourseClick(item);
+      },
+    },
+    {
+      id: 'full-stack-web-dev',
+      courseUnlockKey: 'full_stack',
+      badge: '🌐 High Demand',
+      badgeBg: 'bg-gradient-to-r from-emerald-500 to-cyan-600',
+      salaryRange: '₹ 8 - 22 LPA',
+      title: 'Full Stack',
+      titleAccent: 'Web Development',
+      titleAccentColor: 'bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent',
+      description: 'Build production SaaS apps with React, Node.js, Express, MongoDB & REST APIs.',
+      image: '/images/full_stack_web_development_poster.jpg',
+      tools: [{ name: 'React' }, { name: 'Node.js' }, { name: 'TypeScript' }, { name: 'Docker' }, { name: 'GitHub' }],
+      originalPrice: '₹24,999',
+      sellingPrice: '₹987 Only',
+      discountLabel: '96% OFF',
+      enrollBtnGradient: 'bg-gradient-to-r from-emerald-600 to-cyan-500',
+      borderAccent: '#10b981',
+      onEnroll: () => {
+        playClick?.();
+        const item = courses.find((c) => c.id === 'full-stack-web-dev') || courses[6];
+        onCourseClick(item);
+      },
+    },
+  ];
 
   return (
-    <div className="md:hidden w-full min-w-0 max-w-md mx-auto overflow-x-hidden px-3 pt-2 pb-4 font-sans box-border">
+    <div className="md:hidden w-full min-w-0 max-w-md mx-auto overflow-x-hidden px-3 pt-2 pb-6 font-sans box-border">
       {/* ─── 1. COMPACT ANIMATED HERO (logged-in mobile only) ─── */}
       <MobileLoggedInHero onContinueLearning={onOpenMyCourses} playClick={playClick} />
 
-      {/* ─── 2. CONTINUOUS HIRING PARTNERS INFINITE MARQUEE ("chalta rahega saare company") ─── */}
+      {/* ─── 2. CONTINUOUS HIRING PARTNERS INFINITE MARQUEE ─── */}
       <div
         role="button"
         tabIndex={0}
@@ -218,11 +248,9 @@ export const MobileCompactDashboard: React.FC<MobileCompactDashboardProps> = ({
 
         {/* Continuous Infinite Marquee Ticker */}
         <div className="relative overflow-hidden flex-1 min-w-0">
-          {/* Subtle fade edges */}
           <div className="absolute left-0 top-0 bottom-0 w-3 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-3 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
-          {/* Scrolling Track */}
           <div className="animate-marquee-left flex items-center gap-5">
             {[...HIRING_PARTNER_LOGOS, ...HIRING_PARTNER_LOGOS].map((comp, idx) => (
               <div
@@ -247,79 +275,15 @@ export const MobileCompactDashboard: React.FC<MobileCompactDashboardProps> = ({
         <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-0.5" />
       </div>
 
-      {/* ─── 3. COURSES (LIVE COUNT + HORIZONTAL CARDS WITH AUTOPLAY LOOPING VIDEOS) ─── */}
+      {/* ─── 3. ALL 7 COURSES SHOWCASE (EXACT REFERENCE UI TARGET) ─── */}
       <section id="mobile-courses-list" className="mt-4 scroll-mt-20">
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="w-8 h-8 shrink-0 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center">
-              <Layers className="w-4 h-4 text-blue-600" />
-            </span>
-            <div className="min-w-0">
-              <h2 className="text-[14px] min-[400px]:text-[15px] font-extrabold text-[#0b1a3a] leading-tight whitespace-nowrap">
-                {courses.length} High-Paying Industry Courses
-              </h2>
-              <p className="text-[10.5px] text-slate-500 leading-tight truncate">Job-Ready Skills for a Brighter Tomorrow</p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              playClick?.();
-              if (courses.length > INITIAL_VISIBLE) {
-                setShowAll((v) => !v);
-              } else {
-                scrollToCourses();
-              }
-            }}
-            className="shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full border border-blue-200 bg-white text-blue-600 text-[10.5px] font-bold active:scale-95 shadow-2xs"
-          >
-            {courses.length > INITIAL_VISIBLE && showAll ? 'Show Less' : 'All Courses'} <ArrowRight className="w-3 h-3" />
-          </button>
-        </div>
-
-        <div className="flex flex-col gap-2.5">
-          {visible.map((c) => {
-            const enrolled = isCourseUnlocked(c.id);
-            return (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => onCourseClick(c)}
-                className="w-full flex items-stretch gap-2.5 p-2 rounded-2xl bg-white border border-[#e3ecfb] shadow-[0_3px_14px_rgba(30,80,180,0.06)] text-left active:scale-[0.99] transition-transform"
-              >
-                <MobileCourseThumbnailVideo
-                  video={c.video}
-                  poster={c.holoImage || c.image}
-                  alt={c.title}
-                />
-                <div className="flex-1 min-w-0 flex flex-col justify-center py-0.5">
-                  <h3 className="text-[13.5px] font-extrabold text-[#1a5fe0] leading-tight line-clamp-1">{c.title}</h3>
-                  <p className="mt-0.5 text-[11px] text-slate-600 leading-snug line-clamp-2">{c.shortDesc}</p>
-                  <div className="mt-1 flex items-center gap-1 overflow-hidden">
-                    {c.tools.slice(0, 4).map((t) => (
-                      <span key={t.name} className="shrink-0 px-1.5 py-0.5 rounded-md bg-violet-50 border border-violet-100 text-violet-700 text-[9.5px] font-semibold">
-                        {t.name}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="mt-1 flex items-center gap-2">
-                    {enrolled ? (
-                      <span className="inline-flex items-center gap-1 text-[10.5px] font-bold text-emerald-600">
-                        <CheckCircle2 className="w-3 h-3" /> Enrolled
-                      </span>
-                    ) : (
-                      <span className="text-[11px] font-black text-[#0b1a3a]">{c.price}</span>
-                    )}
-                    {c.salary && <span className="text-[10px] text-slate-400 truncate">• {c.salary}</span>}
-                  </div>
-                </div>
-                <span className="self-center shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-[#1a6bff] to-[#0b5cf0] text-white flex items-center justify-center shadow-[0_4px_10px_rgba(26,107,255,0.35)]">
-                  <ArrowRight className="w-4 h-4" />
-                </span>
-              </button>
-            );
-          })}
-        </div>
+        <MobileCoursesShowcase
+          courses={mobileShowcaseCourses}
+          onAllCourses={() => {
+            const el = document.getElementById('mobile-courses-list');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }}
+        />
       </section>
     </div>
   );
