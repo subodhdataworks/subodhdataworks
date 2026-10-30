@@ -31,10 +31,14 @@ import {
   GraduationCap,
   Building2,
   TrendingUp,
+  BarChart3,
   Briefcase,
   Shield,
   Laptop,
   Mic,
+  BookOpen,
+  Code2,
+  ChevronRight,
   Award,
 } from 'lucide-react';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
@@ -324,7 +328,191 @@ export const RealSuccessStoriesShowcase: React.FC<RealSuccessStoriesShowcaseProp
           SECTION 1: HERO — "Real People. Real Career Growth."
           ═══════════════════════════════════════════════════════════════════════ */}
       <section className="w-full relative">
-        <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-8 lg:gap-10">
+        {/* ─── MOBILE VIEW (< lg): 1:1 Match with Mobile Reference Mockup ─── */}
+        <div className="block lg:hidden space-y-3 sm:space-y-4">
+          
+          {/* Top Banner: Text + Button on Left, Smiling Student with Laptop on Right */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#eef8ff] via-[#f3f9ff] to-[#f8fbff] border border-blue-100/90 p-4 sm:p-5 shadow-[0_4px_20px_rgba(20,50,150,0.04)] min-h-[225px] sm:min-h-[260px] flex items-center">
+            
+            {/* Left Content */}
+            <div className="relative z-10 w-[58%] sm:w-[55%] flex flex-col justify-center pr-1">
+              {/* Eyebrow */}
+              <div className="text-[10px] sm:text-[11px] font-black text-[#0066ff] tracking-[0.2em] uppercase">
+                LEARN • PRACTICE • GET HIRED
+              </div>
+
+              {/* Main Headline */}
+              <h1 className="text-[22px] sm:text-2xl font-black text-slate-900 leading-[1.14] tracking-tight mt-1.5">
+                Real People.<br />
+                Real{' '}
+                <span className="bg-gradient-to-r from-[#0066ff] via-[#1a73e8] to-[#00a3ff] bg-clip-text text-transparent">
+                  Career<br />Growth.
+                </span>
+              </h1>
+
+              {/* Description */}
+              <p className="text-[10px] sm:text-[11px] text-slate-600 font-medium mt-1.5 leading-relaxed line-clamp-3">
+                From learners to professionals — see how Future IT Industry helped thousands build skills, crack interviews and get placed in top companies.
+              </p>
+
+              {/* Explore Courses Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  playClick();
+                  onExploreProgram?.();
+                }}
+                className="mt-3 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-[#0066ff] hover:bg-[#0055dd] text-white font-bold text-[11px] sm:text-xs active:scale-95 transition-all shadow-md shadow-blue-500/25 flex items-center gap-1.5 cursor-pointer w-fit"
+              >
+                <span>Explore Courses</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Right Student Photo Cutout with Doodle */}
+            <div className="absolute right-0 top-0 bottom-0 w-[52%] sm:w-[48%] pointer-events-none overflow-hidden flex items-start justify-end">
+              <img
+                src="/images/dashboard/mobile_hero_student_cutout.png"
+                alt="Real People. Real Career Growth."
+                className="h-full w-full object-contain object-right-top"
+              />
+            </div>
+          </div>
+
+          {/* 4 Feature Cards (2x2 Grid) */}
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+            {/* Card 1: Industry-Relevant Courses */}
+            <div
+              onClick={() => {
+                playClick();
+                onExploreProgram?.();
+              }}
+              className="bg-white rounded-2xl border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-md p-2.5 sm:p-3.5 flex items-center justify-between cursor-pointer transition-all active:scale-[0.98] group"
+            >
+              <div className="flex items-center gap-2 min-w-0 pr-1">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#0066ff] text-white flex items-center justify-center shrink-0 shadow-xs shadow-blue-500/30">
+                  <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-[11.5px] sm:text-[13px] font-black text-slate-900 leading-snug">
+                    Industry-Relevant Courses
+                  </h3>
+                  <p className="text-[9.5px] sm:text-[11px] text-slate-500 font-medium leading-tight mt-0.5 line-clamp-2">
+                    Learn job-ready skills with hands-on projects.
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+            </div>
+
+            {/* Card 2: Real Projects & Practice */}
+            <div
+              onClick={() => {
+                playClick();
+                onExploreProgram?.();
+              }}
+              className="bg-white rounded-2xl border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-md p-2.5 sm:p-3.5 flex items-center justify-between cursor-pointer transition-all active:scale-[0.98] group"
+            >
+              <div className="flex items-center gap-2 min-w-0 pr-1">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#00c07f] text-white flex items-center justify-center shrink-0 shadow-xs shadow-emerald-500/30">
+                  <Code2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-[11.5px] sm:text-[13px] font-black text-slate-900 leading-snug">
+                    Real Projects & Practice
+                  </h3>
+                  <p className="text-[9.5px] sm:text-[11px] text-slate-500 font-medium leading-tight mt-0.5 line-clamp-2">
+                    Work on real-world projects and build a strong portfolio.
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+            </div>
+
+            {/* Card 3: Unlimited Mock Interviews */}
+            <div
+              onClick={() => {
+                playClick();
+                onExploreProgram?.();
+              }}
+              className="bg-white rounded-2xl border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-md p-2.5 sm:p-3.5 flex items-center justify-between cursor-pointer transition-all active:scale-[0.98] group"
+            >
+              <div className="flex items-center gap-2 min-w-0 pr-1">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#8b3dff] text-white flex items-center justify-center shrink-0 shadow-xs shadow-purple-500/30">
+                  <Mic className="w-4 h-4 sm:w-5 sm:h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-[11.5px] sm:text-[13px] font-black text-slate-900 leading-snug">
+                    Unlimited Mock Interviews
+                  </h3>
+                  <p className="text-[9.5px] sm:text-[11px] text-slate-500 font-medium leading-tight mt-0.5 line-clamp-2">
+                    Practice with AI & expert-led mock interviews.
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+            </div>
+
+            {/* Card 4: Placement Support */}
+            <div
+              onClick={() => {
+                playClick();
+                onExploreProgram?.();
+              }}
+              className="bg-white rounded-2xl border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-md p-2.5 sm:p-3.5 flex items-center justify-between cursor-pointer transition-all active:scale-[0.98] group"
+            >
+              <div className="flex items-center gap-2 min-w-0 pr-1">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#ff7a00] text-white flex items-center justify-center shrink-0 shadow-xs shadow-orange-500/30">
+                  <Briefcase className="w-4 h-4 sm:w-5 sm:h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-[11.5px] sm:text-[13px] font-black text-slate-900 leading-snug">
+                    Placement Support
+                  </h3>
+                  <p className="text-[9.5px] sm:text-[11px] text-slate-500 font-medium leading-tight mt-0.5 line-clamp-2">
+                    Get resume building, interview preparation and placement assistance.
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-orange-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+            </div>
+          </div>
+
+          {/* 4 Stats Bar (Single horizontal container with 4 columns) */}
+          <div className="bg-[#f0f6ff]/80 border border-blue-100/90 rounded-2xl p-2.5 sm:p-3.5 grid grid-cols-4 divide-x divide-blue-200/60 shadow-[0_2px_12px_rgba(20,50,150,0.03)] text-center items-center">
+            {/* Stat 1 */}
+            <div className="px-1">
+              <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-[#0066ff] mx-auto mb-1" />
+              <div className="text-xs sm:text-base font-black text-slate-900 leading-none">10,000+</div>
+              <div className="text-[8.5px] sm:text-[11px] font-bold text-slate-500 mt-1 leading-tight truncate">Learners Trained</div>
+            </div>
+
+            {/* Stat 2 */}
+            <div className="px-1">
+              <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#0066ff] mx-auto mb-1" />
+              <div className="text-xs sm:text-base font-black text-slate-900 leading-none">700+</div>
+              <div className="text-[8.5px] sm:text-[11px] font-bold text-slate-500 mt-1 leading-tight truncate">Companies</div>
+            </div>
+
+            {/* Stat 3 */}
+            <div className="px-1">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500 mx-auto mb-1" />
+              <div className="text-xs sm:text-base font-black text-slate-900 leading-none">99%</div>
+              <div className="text-[8.5px] sm:text-[11px] font-bold text-slate-500 mt-1 leading-tight truncate">Placement Success</div>
+            </div>
+
+            {/* Stat 4 */}
+            <div className="px-1">
+              <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mx-auto mb-1" />
+              <div className="text-xs sm:text-base font-black text-slate-900 leading-none">2X</div>
+              <div className="text-[8.5px] sm:text-[11px] font-bold text-slate-500 mt-1 leading-tight truncate">Salary Growth</div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* ─── DESKTOP VIEW (≥ lg): Spacious Layout with Student Arch & Badges ─── */}
+        <div className="hidden lg:grid lg:grid-cols-12 items-center gap-8 lg:gap-10">
           
           {/* ── LEFT: Typography & Verified Stats ── */}
           <div className="lg:col-span-7 flex flex-col justify-center">
