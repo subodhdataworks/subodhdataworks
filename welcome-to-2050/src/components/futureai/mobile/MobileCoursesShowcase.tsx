@@ -1,25 +1,21 @@
 /**
- * MobileCoursesShowcase.tsx
+ * MobileCoursesShowcase.tsx — exact pixel-match to reference screenshot
  *
- * Premium mobile courses section designed to match the reference screenshot exactly:
- * - White/soft-blue background with gradient borders
- * - Full-width stacked course cards
- * - Left thumbnail with play overlay, right info panel
- * - Technology tool icons row with clean tiles
- * - Course feature badges row
- * - Original price, selling price, discount badge
- * - Large gradient "Enroll Now" button
+ * Card anatomy (top→bottom):
+ *   TOP SECTION (flex-row):
+ *     LEFT  ~148px — autoplay video (no play button), MOST POPULAR badge at top
+ *     RIGHT flex-1 — badge pill + salary, title+accent, description, tool icons (icon+name),
+ *                    2×2 feature pill grid
+ *   BOTTOM FULL-WIDTH ROW:
+ *     strikethrough price | ₹987 Only green box | % OFF pill | large Enroll Now button
  *
- * Uses CAREER_COURSES_12 (7 real courses). All click handlers are passed in — no
- * fake buttons, no hardcoded text that isn't from the course data.
- *
- * Desktop UI: untouched (this file only renders inside block md:hidden containers).
+ *  Card border: soft purple/pink glow (matching reference)
+ *  Video: viewport-aware autoplay, muted, loop — NO play button overlay
  */
 
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   ArrowRight,
-  Play,
   Gamepad2,
   Mic,
   Brain,
@@ -36,166 +32,297 @@ import { isCourseUnlocked } from '../../../services/courseUnlockService';
 
 export interface MobileShowcaseCourse {
   id: string;
-  courseUnlockKey: string;   // key used in isCourseUnlocked()
-  popularBadge?: string;     // e.g. "🔥 MOST POPULAR"
-  badge: string;             // e.g. "⭐ Beginner Friendly"
-  badgeBg: string;           // Tailwind bg class for badge
-  salaryRange: string;       // e.g. "₹ 6 - 15 LPA"
-  title: string;             // e.g. "Data Analyst with"
-  titleAccent: string;       // e.g. "GenAI" (rendered in gradient)
-  titleAccentColor: string;  // Tailwind text gradient classes
+  courseUnlockKey: string;
+  /** On-image top badge e.g. "🔥 MOST POPULAR" — omit to hide */
+  popularBadge?: string;
+  /** Right-panel pill badge e.g. "⭐ Beginner Friendly" */
+  badge: string;
+  /** Tailwind bg classes for right-panel badge */
+  badgeBg: string;
+  salaryRange: string;
+  /** Title before the accent word */
+  title: string;
+  /** Coloured accent word (GenAI, Agentic AI, Engineering…) */
+  titleAccent: string;
+  /** Tailwind gradient text classes for accent */
+  titleAccentColor: string;
   description: string;
+  /** Poster / fallback image */
   image: string;
+  /** Autoplay video URL */
+  video?: string;
   tools: Array<{ name: string }>;
-  originalPrice: string;     // e.g. "₹13,999"
-  sellingPrice: string;      // e.g. "₹987 Only"
-  discountLabel: string;     // e.g. "93% OFF"
-  enrollBtnGradient: string; // Tailwind gradient classes for CTA
-  borderAccent: string;      // border accent class
+  originalPrice: string;
+  sellingPrice: string;
+  discountLabel: string;
+  /** Tailwind gradient for Enroll Now button */
+  enrollBtnGradient: string;
   onEnroll: () => void;
 }
 
-interface MobileCoursesShowcaseProps {
+interface Props {
   courses: MobileShowcaseCourse[];
   onAllCourses?: () => void;
 }
 
-// ─── Course Features Row (same for all courses) ────────────────────────────────
-const COURSE_FEATURES = [
-  { icon: <Gamepad2 className="w-3.5 h-3.5 text-purple-600 shrink-0" />, label: 'Coding\nGame' },
-  { icon: <Mic className="w-3.5 h-3.5 text-rose-500 shrink-0" />, label: 'Unlimited\nMock Interview' },
-  { icon: <Brain className="w-3.5 h-3.5 text-orange-500 shrink-0" />, label: 'DSA\nPreparation' },
-  { icon: <Code2 className="w-3.5 h-3.5 text-green-600 shrink-0" />, label: 'Coding\nPractice' },
+// ─── Viewport-aware autoplay video (NO play button) ──────────────────────────
+
+const AutoplayVideo: React.FC<{ video?: string; poster: string; alt: string }> = ({
+  video,
+  poster,
+  alt,
+}) => {
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const vidRef  = useRef<HTMLVideoElement | null>(null);
+  const [ready,  setReady]  = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    const vid = vidRef.current;
+    const wrap = wrapRef.current;
+    if (!vid || !wrap || !video || failed) return;
+
+    vid.muted = true;
+    vid.defaultMuted = true;
+    vid.playsInline = true;
+    vid.setAttribute('muted', '');
+    vid.setAttribute('playsinline', '');
+    vid.setAttribute('webkit-playsinline', 'true');
+
+    let visible = false;
+    const tryPlay = () => {
+      if (!vid || failed) return;
+      vid.muted = true;
+      vid.play().catch(() => {/* blocked until user gesture — poster stays visible */});
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          visible = e.isIntersecting && e.intersectionRatio >= 0.15;
+          visible ? tryPlay() : vid.pause();
+        }
+      },
+      { threshold: [0, 0.15, 0.5] }
+    );
+    observer.observe(wrap);
+
+    const onVis = () => { if (document.visibilityState === 'visible' && visible && vid.paused) tryPlay(); };
+    const onTouch = () => { if (visible && vid.paused) tryPlay(); };
+    document.addEventListener('visibilitychange', onVis);
+    window.addEventListener('touchstart', onTouch, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', onVis);
+      window.removeEventListener('touchstart', onTouch);
+    };
+  }, [video, failed]);
+
+  return (
+    <div ref={wrapRef} className="relative w-full h-full bg-slate-900">
+      {/* Poster always underneath — prevents flash of black */}
+      <img
+        src={poster}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        className="absolute inset-0 w-full h-full object-cover"
+        draggable={false}
+      />
+      {/* Autoplay video crossfades over poster once playing */}
+      {video && !failed && (
+        <video
+          ref={vidRef}
+          src={video}
+          poster={poster}
+          autoPlay loop muted playsInline
+          preload="metadata"
+          controls={false}
+          disablePictureInPicture
+          onLoadedData={() => setReady(true)}
+          onPlaying={() => setReady(true)}
+          onError={() => setFailed(true)}
+          className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-500 ${ready ? 'opacity-100' : 'opacity-0'}`}
+        />
+      )}
+    </div>
+  );
+};
+
+// ─── 4 Feature pills (inside right panel) ────────────────────────────────────
+
+const FEATURES = [
+  {
+    icon: <Gamepad2 className="w-3 h-3 text-purple-600 shrink-0" />,
+    label: 'Coding\nGame',
+    bg: 'bg-purple-50',
+    border: 'border-purple-200',
+  },
+  {
+    icon: <Mic className="w-3 h-3 text-rose-500 shrink-0" />,
+    label: 'Unlimited\nMock Interview',
+    bg: 'bg-rose-50',
+    border: 'border-rose-200',
+  },
+  {
+    icon: <Brain className="w-3 h-3 text-orange-500 shrink-0" />,
+    label: 'DSA\nPreparation',
+    bg: 'bg-orange-50',
+    border: 'border-orange-200',
+  },
+  {
+    icon: <Code2 className="w-3 h-3 text-green-600 shrink-0" />,
+    label: 'Coding\nPractice',
+    bg: 'bg-green-50',
+    border: 'border-green-200',
+  },
 ];
 
-// ─── Single Course Card ────────────────────────────────────────────────────────
-const ShowcaseCourseCard: React.FC<{ course: MobileShowcaseCourse }> = ({ course }) => {
+// ─── Single course card ───────────────────────────────────────────────────────
+
+const Card: React.FC<{ course: MobileShowcaseCourse }> = ({ course }) => {
   const unlocked = isCourseUnlocked(course.courseUnlockKey);
 
   return (
     <article
-      className="w-full rounded-3xl bg-white overflow-hidden select-none border border-slate-200/80 shadow-[0_4px_20px_rgba(20,50,120,0.06)] active:scale-[0.99] transition-transform"
+      className="w-full rounded-2xl bg-white overflow-hidden"
+      style={{
+        border: '1.5px solid #ede9fe',
+        boxShadow: '0 2px 18px rgba(139,92,246,0.08), 0 0 0 1px rgba(221,214,254,0.5)',
+      }}
       onClick={course.onEnroll}
     >
-      {/* ── Top section: thumbnail left + info right ── */}
-      <div className="flex gap-2.5 p-3 relative items-stretch">
+      {/* ── TOP: left image + right info ────────────────────────────────── */}
+      <div className="flex" style={{ minHeight: '195px' }}>
 
-        {/* Left: Thumbnail with play overlay & optional top badge */}
-        <div className="relative w-[130px] min-[375px]:w-[145px] shrink-0 rounded-2xl overflow-hidden bg-slate-900 shadow-xs self-stretch">
+        {/* LEFT — thumbnail / video, fixed 148 px wide */}
+        <div
+          className="relative shrink-0 overflow-hidden rounded-tl-2xl"
+          style={{ width: '148px' }}
+        >
+          <AutoplayVideo video={course.video} poster={course.image} alt={course.title} />
+
+          {/* MOST POPULAR badge pinned to very top of image, full-width stripe */}
           {course.popularBadge && (
-            <div className="absolute top-2 left-2 z-10">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8.5px] font-black text-white bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 shadow-sm uppercase tracking-wide">
+            <div
+              className="absolute top-0 left-0 right-0 z-10 flex items-center justify-center py-1 px-2 gap-1"
+              style={{
+                background: 'linear-gradient(90deg,#dc2626 0%,#ea580c 100%)',
+                borderBottomRightRadius: '10px',
+              }}
+            >
+              <span className="text-[9px] font-black text-white uppercase tracking-wide leading-none">
                 {course.popularBadge}
               </span>
             </div>
           )}
-          <img
-            src={course.image}
-            alt={`${course.title} ${course.titleAccent}`}
-            loading="lazy"
-            decoding="async"
-            className="w-full h-full object-cover min-h-[148px]"
-          />
-          {/* Subtle dark gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />
-
-          {/* Play button */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-xs border border-white/60 flex items-center justify-center shadow-lg">
-              <Play className="w-4 h-4 fill-white text-white ml-0.5" />
-            </div>
-          </div>
         </div>
 
-        {/* Right: Course info */}
-        <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+        {/* RIGHT — info panel */}
+        <div className="flex-1 min-w-0 flex flex-col gap-1.5 px-2.5 pt-2.5 pb-2">
 
-          {/* Badge row + salary */}
+          {/* Row A: badge pill (left) + salary (right) */}
           <div className="flex items-start justify-between gap-1">
             <span
-              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-black text-white whitespace-nowrap shadow-xs ${course.badgeBg}`}
+              className={`inline-flex items-center gap-0.5 px-2 py-[3px] rounded-full text-[9px] font-black text-white shrink-0 ${course.badgeBg}`}
+              style={{ maxWidth: '110px' }}
             >
               {course.badge}
             </span>
 
-            {/* Salary */}
             <div className="flex flex-col items-end shrink-0">
-              <div className="flex items-center gap-1">
-                <svg className="w-3 h-3 text-blue-600 shrink-0" viewBox="0 0 16 16" fill="currentColor">
-                  <rect x="1" y="7" width="3" height="8" rx="0.75" opacity="0.35"/>
-                  <rect x="5.5" y="4" width="3" height="11" rx="0.75" opacity="0.7"/>
-                  <rect x="10" y="1" width="3" height="14" rx="0.75"/>
+              <div className="flex items-center gap-0.5">
+                {/* bar-chart icon matching reference */}
+                <svg className="w-3 h-3 text-blue-600 shrink-0" viewBox="0 0 18 14" fill="currentColor">
+                  <rect x="0"  y="8" width="4" height="6" rx="1" opacity="0.35"/>
+                  <rect x="5"  y="4" width="4" height="10" rx="1" opacity="0.65"/>
+                  <rect x="10" y="0" width="4" height="14" rx="1"/>
+                  <polyline points="2,7 7,3 12,6 16,1" stroke="white" strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.6"/>
                 </svg>
-                <span className="text-[11px] font-black text-slate-900 whitespace-nowrap">{course.salaryRange}</span>
+                <span className="text-[10.5px] font-black text-slate-900 whitespace-nowrap leading-tight">
+                  {course.salaryRange}
+                </span>
               </div>
-              <span className="text-[8px] font-semibold text-slate-400 leading-tight text-right">Potential Career Salary</span>
+              <span className="text-[7.5px] font-medium text-slate-400 text-right leading-tight">
+                Potential Career Salary
+              </span>
             </div>
           </div>
 
-          {/* Title */}
-          <h3 className="text-[13.5px] min-[375px]:text-[14.5px] font-black text-slate-950 leading-snug tracking-tight mt-1">
+          {/* Row B: Title */}
+          <h3 className="text-[14.5px] font-black text-slate-900 leading-tight tracking-tight">
             {course.title}{' '}
-            <span className={`${course.titleAccentColor}`}>{course.titleAccent}</span>
+            <span className={course.titleAccentColor}>{course.titleAccent}</span>
           </h3>
 
-          {/* Description */}
-          <p className="text-[9.5px] min-[375px]:text-[10px] font-medium text-slate-500 leading-snug line-clamp-2 mt-0.5">
+          {/* Row C: Description */}
+          <p className="text-[9.5px] font-medium text-slate-500 leading-snug line-clamp-2">
             {course.description}
           </p>
 
-          {/* Tool icons row */}
-          <div className="flex items-center gap-1.5 mt-1.5 overflow-hidden">
+          {/* Row D: Tool icons (icon image + name below) */}
+          <div className="flex items-end gap-2 overflow-hidden">
             {course.tools.slice(0, 5).map((t) => (
-              <div key={t.name} className="flex flex-col items-center gap-0.5">
-                <div className="w-6 h-6 rounded-md bg-slate-50 border border-slate-200/90 flex items-center justify-center p-0.5 shadow-2xs">
-                  <ToolIcon name={t.name} className="w-3.5 h-3.5 object-contain" />
+              <div key={t.name} className="flex flex-col items-center gap-[2px] shrink-0">
+                <div className="w-[22px] h-[22px] flex items-center justify-center">
+                  <ToolIcon name={t.name} className="w-full h-full object-contain" />
                 </div>
-                <span className="text-[7.5px] font-bold text-slate-600 whitespace-nowrap">{t.name}</span>
+                <span className="text-[7px] font-semibold text-slate-600 whitespace-nowrap leading-none">
+                  {t.name}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Row E: 2×2 feature pill grid */}
+          <div className="grid grid-cols-2 gap-1 mt-auto">
+            {FEATURES.map((f, i) => (
+              <div
+                key={i}
+                className={`flex items-center gap-1 px-1.5 py-1 rounded-md border ${f.border} ${f.bg}`}
+              >
+                {f.icon}
+                <span className="text-[7.5px] font-bold text-slate-700 leading-tight whitespace-pre-line">
+                  {f.label}
+                </span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* ── Feature row ── */}
-      <div className="mx-3 mb-2 rounded-xl bg-slate-50/90 border border-slate-100 px-2 py-1.5">
-        <div className="grid grid-cols-4 gap-1">
-          {COURSE_FEATURES.map((f, i) => (
-            <div key={i} className="flex flex-col items-center text-center gap-0.5">
-              {f.icon}
-              <span className="text-[8px] font-bold text-slate-700 leading-tight whitespace-pre-line text-center">
-                {f.label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Price + CTA row ── */}
-      <div className="flex items-center gap-2 px-3 pb-3 pt-0.5">
-        {/* Original price */}
-        <span className="text-[11.5px] font-bold text-rose-500 line-through whitespace-nowrap">
+      {/* ── BOTTOM: price row + CTA ──────────────────────────────────────── */}
+      <div
+        className="flex items-center gap-1.5 px-3 py-2.5"
+        style={{ borderTop: '1px solid #f1f5f9' }}
+      >
+        {/* original price — red strikethrough, larger */}
+        <span className="text-[13px] font-bold text-rose-500 line-through whitespace-nowrap shrink-0">
           {course.originalPrice}
         </span>
 
-        {/* Selling price */}
-        <span className="px-2 py-0.5 rounded-lg bg-emerald-50 border border-emerald-300 text-[12px] font-black text-emerald-700 whitespace-nowrap">
+        {/* selling price — green bordered box */}
+        <span
+          className="text-[13px] font-black text-emerald-700 whitespace-nowrap shrink-0 px-1.5 py-0.5 rounded-lg border border-emerald-400"
+          style={{ background: 'rgba(209,250,229,0.55)' }}
+        >
           {course.sellingPrice}
         </span>
 
-        {/* Discount badge */}
-        <span className="px-1.5 py-0.5 rounded-full text-[9.5px] font-black text-rose-600 bg-rose-50 border border-rose-200 whitespace-nowrap">
+        {/* discount badge — pink pill */}
+        <span
+          className="text-[9.5px] font-black text-rose-600 whitespace-nowrap shrink-0 px-1.5 py-0.5 rounded-full border border-rose-300"
+          style={{ background: 'rgba(255,228,230,0.6)' }}
+        >
           {course.discountLabel}
         </span>
 
-        {/* Enroll / Resume button */}
+        {/* Enroll Now / Resume Course button */}
         <button
           type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            course.onEnroll();
-          }}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl font-black text-white shadow-md active:scale-95 transition-all cursor-pointer ${
+          onClick={(e) => { e.stopPropagation(); course.onEnroll(); }}
+          className={`flex-1 flex items-center justify-center gap-1 py-[9px] rounded-xl font-black text-white shadow-md active:scale-95 transition-transform cursor-pointer min-w-0 overflow-hidden ${
             unlocked
               ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
               : course.enrollBtnGradient
@@ -203,19 +330,19 @@ const ShowcaseCourseCard: React.FC<{ course: MobileShowcaseCourse }> = ({ course
         >
           {unlocked ? (
             <>
-              <CheckCircle2 className="w-3.5 h-3.5 text-white shrink-0" />
-              <div className="flex flex-col items-start leading-tight">
-                <span className="text-[11px] font-black">Resume Course</span>
-              </div>
+              <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+              <span className="text-[11px] font-black">Resume Course</span>
             </>
           ) : (
-            <>
-              <Rocket className="w-3.5 h-3.5 text-white shrink-0" />
-              <div className="flex flex-col items-start leading-tight">
-                <span className="text-[11px] font-black">Enroll Now →</span>
-                <span className="text-[7.5px] font-medium text-white/90">Start Your Learning Journey</span>
+            <div className="flex flex-col items-center leading-none overflow-hidden">
+              <div className="flex items-center gap-1">
+                <Rocket className="w-3 h-3 shrink-0" />
+                <span className="text-[11px] font-black whitespace-nowrap">Enroll Now →</span>
               </div>
-            </>
+              <span className="text-[7.5px] font-medium text-white/85 whitespace-nowrap">
+                Start Your Learning Journey Today
+              </span>
+            </div>
           )}
         </button>
       </div>
@@ -223,91 +350,72 @@ const ShowcaseCourseCard: React.FC<{ course: MobileShowcaseCourse }> = ({ course
   );
 };
 
-// ─── Section Header ────────────────────────────────────────────────────────────
-interface SectionHeaderProps {
-  courseCount: number;
-  onAllCourses?: () => void;
-}
+// ─── Section header (matches reference exactly) ───────────────────────────────
 
-const ShowcaseSectionHeader: React.FC<SectionHeaderProps> = ({ courseCount, onAllCourses }) => (
+const Header: React.FC<{ count: number; onAllCourses?: () => void }> = ({ count, onAllCourses }) => (
   <div className="mb-4">
-    {/* Top badge row */}
-    <div className="flex items-center justify-between mb-1.5">
-      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm">
+    {/* Badge row */}
+    <div className="flex items-center justify-between mb-2">
+      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600">
         <Rocket className="w-3 h-3 text-white" />
-        <span className="text-[10px] font-black text-white tracking-wide uppercase">Your Career Starts Here</span>
+        <span className="text-[10px] font-black text-white uppercase tracking-wide">Your Career Starts Here</span>
       </div>
       {onAllCourses && (
         <button
           type="button"
           onClick={onAllCourses}
-          className="flex items-center gap-1 px-3 py-1 rounded-full border border-blue-300 text-blue-700 font-bold text-[11px] bg-white hover:bg-blue-50 active:scale-95 transition-all cursor-pointer shadow-2xs"
+          className="flex items-center gap-1 px-3 py-1 rounded-full border border-blue-300 text-blue-700 font-bold text-[11px] bg-white active:scale-95 transition-transform cursor-pointer"
         >
-          <span>All Courses</span>
-          <ArrowRight className="w-3 h-3" />
+          All Courses <ArrowRight className="w-3 h-3" />
         </button>
       )}
     </div>
 
-    {/* Main heading */}
-    <h2 className="text-[20px] min-[375px]:text-[22px] font-black text-slate-950 leading-tight tracking-tight mt-2">
-      Build Skills.{' '}
-      <span className="text-slate-800">Crack Interviews.</span>{' '}
-      <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Get Job-Ready.</span>
+    {/* Headline */}
+    <h2 className="text-[21px] font-black text-slate-950 leading-tight tracking-tight">
+      Build Skills. Crack Interviews.{' '}
+      <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+        Get Job-Ready.
+      </span>
     </h2>
 
     {/* Subtext */}
     <p className="text-[11px] font-medium text-slate-500 mt-1 leading-snug">
-      Explore {courseCount} industry-focused career programs with practical learning and AI-powered training.
+      Explore {count} industry-focused career programs with practical learning and AI-powered training.
     </p>
 
-    {/* Feature highlights strip */}
-    <div className="flex items-center gap-0 mt-3 overflow-x-auto no-scrollbar pb-0.5">
+    {/* 6-pill feature strip */}
+    <div className="flex items-center gap-1.5 mt-3 overflow-x-auto no-scrollbar pb-0.5">
       {[
-        { icon: <Gamepad2 className="w-3.5 h-3.5 text-purple-600 shrink-0" />, label: 'Coding\nGames' },
-        { icon: <Mic className="w-3.5 h-3.5 text-rose-500 shrink-0" />, label: 'Unlimited\nMock Interview' },
-        { icon: <Brain className="w-3.5 h-3.5 text-orange-500 shrink-0" />, label: 'DSA\nPreparation' },
-        { icon: <Code2 className="w-3.5 h-3.5 text-green-600 shrink-0" />, label: 'Coding\nPractice' },
-        { icon: <InfinityIcon className="w-3.5 h-3.5 text-blue-600 shrink-0" />, label: 'Lifetime\nAccess' },
-        { icon: <Briefcase className="w-3.5 h-3.5 text-amber-600 shrink-0" />, label: 'Placement\nSupport' },
+        { icon: <Gamepad2   className="w-4 h-4 text-purple-600" />, label: 'Coding\nGames' },
+        { icon: <Mic        className="w-4 h-4 text-rose-500"   />, label: 'Unlimited\nMock Interview' },
+        { icon: <Brain      className="w-4 h-4 text-orange-500" />, label: 'DSA\nPreparation' },
+        { icon: <Code2      className="w-4 h-4 text-green-600"  />, label: 'Coding\nPractice' },
+        { icon: <InfinityIcon className="w-4 h-4 text-blue-600" />, label: 'Lifetime\nAccess' },
+        { icon: <Briefcase  className="w-4 h-4 text-amber-600"  />, label: 'Placement\nSupport' },
       ].map((f, i) => (
         <div
           key={i}
-          className="flex flex-col items-center text-center gap-0.5 px-2.5 py-2 bg-white rounded-2xl border border-slate-100 shadow-2xs shrink-0 mr-1.5"
-          style={{ minWidth: '56px' }}
+          className="flex flex-col items-center text-center gap-0.5 px-2 py-2 bg-white rounded-xl border border-slate-100 shadow-sm shrink-0"
+          style={{ minWidth: '54px' }}
         >
           {f.icon}
-          <span className="text-[8px] font-bold text-slate-700 leading-tight whitespace-pre-line">{f.label}</span>
+          <span className="text-[7.5px] font-bold text-slate-700 leading-tight whitespace-pre-line">{f.label}</span>
         </div>
       ))}
     </div>
   </div>
 );
 
-// ─── Main Export ────────────────────────────────────────────────────────────────
-export const MobileCoursesShowcase: React.FC<MobileCoursesShowcaseProps> = ({ courses, onAllCourses }) => {
-  const handleAllCourses = () => {
-    if (onAllCourses) {
-      onAllCourses();
-      return;
-    }
-    const el = document.getElementById('mobile-courses-list');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
+// ─── Main export ──────────────────────────────────────────────────────────────
 
-  return (
-    <section className="w-full">
-      {/* Section header */}
-      <ShowcaseSectionHeader courseCount={courses.length} onAllCourses={handleAllCourses} />
-
-      {/* Course cards — vertically stacked */}
-      <div className="space-y-3">
-        {courses.map((course) => (
-          <ShowcaseCourseCard key={course.id} course={course} />
-        ))}
-      </div>
-    </section>
-  );
-};
+export const MobileCoursesShowcase: React.FC<Props> = ({ courses, onAllCourses }) => (
+  <section className="w-full">
+    <Header count={courses.length} onAllCourses={onAllCourses} />
+    <div className="flex flex-col gap-3">
+      {courses.map((c) => <Card key={c.id} course={c} />)}
+    </div>
+  </section>
+);
 
 export default MobileCoursesShowcase;

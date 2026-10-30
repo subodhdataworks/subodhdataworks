@@ -518,7 +518,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       sellingPrice: '₹987 Only',
       discountLabel: '93% OFF',
       enrollBtnGradient: 'bg-gradient-to-r from-emerald-600 to-teal-500',
-      borderAccent: '#22d3ee',
+
       onEnroll: onOpenDataAnalyst || onStartPython || (() => {}),
     },
     {
@@ -537,7 +537,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       sellingPrice: '₹987 Only',
       discountLabel: '93% OFF',
       enrollBtnGradient: 'bg-gradient-to-r from-purple-600 to-indigo-500',
-      borderAccent: '#a855f7',
+
       onEnroll: onOpenDataScience || onOpenGenAi || (() => {}),
     },
     {
@@ -556,7 +556,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       sellingPrice: '₹987 Only',
       discountLabel: '92% OFF',
       enrollBtnGradient: 'bg-gradient-to-r from-amber-500 to-orange-500',
-      borderAccent: '#f59e0b',
+
       onEnroll: onOpenMlEngineering || onOpenPowerBi || (() => {}),
     },
     {
@@ -575,7 +575,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       sellingPrice: '₹987 Only',
       discountLabel: '94% OFF',
       enrollBtnGradient: 'bg-gradient-to-r from-emerald-600 to-teal-500',
-      borderAccent: '#10b981',
+
       onEnroll: onOpenAiEngineering || (() => {}),
     },
     {
@@ -594,7 +594,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       sellingPrice: '₹987 Only',
       discountLabel: '92% OFF',
       enrollBtnGradient: 'bg-gradient-to-r from-amber-500 to-orange-500',
-      borderAccent: '#f59e0b',
+
       onEnroll: onOpenAiToolsPrompt || (() => {}),
     },
     {
@@ -613,7 +613,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       sellingPrice: '₹987 Only',
       discountLabel: '93% OFF',
       enrollBtnGradient: 'bg-gradient-to-r from-blue-600 to-sky-500',
-      borderAccent: '#0ea5e9',
+
       onEnroll: onOpenMsOfficeCopilot || (() => {}),
     },
     {
@@ -632,7 +632,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       sellingPrice: '₹987 Only',
       discountLabel: '96% OFF',
       enrollBtnGradient: 'bg-gradient-to-r from-emerald-600 to-cyan-500',
-      borderAccent: '#10b981',
+
       onEnroll: onOpenFullStackMern || (() => {}),
     },
   ];
