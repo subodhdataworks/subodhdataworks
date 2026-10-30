@@ -37,6 +37,7 @@ import { LearnerTelemetry } from '../../../services/realAuthService';
 import { useThemeAccent } from '../../../context/ThemeAccentContext';
 import { isCourseUnlocked } from '../../../services/courseUnlockService';
 import { MobileLoggedInHero } from './MobileLoggedInHero';
+import { MobileCoursesShowcase, MobileShowcaseCourse } from './MobileCoursesShowcase';
 import '../LearnerHomeHub.css';
 
 interface MobileDashboardHomeProps {
@@ -497,6 +498,145 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
     },
     ];
 
+  // ── MobileCoursesShowcase data (7 canonical courses from CAREER_COURSES_12) ──
+  // Maps to the reference screenshot design: left thumbnail, right info, tool icons,
+  // feature row, original price + selling price + discount badge + Enroll Now CTA.
+  const mobileShowcaseCourses: MobileShowcaseCourse[] = [
+    {
+      id: 'data-analyst-genai',
+      courseUnlockKey: 'data_analyst',
+      badge: '🔥 Most Popular',
+      badgeBg: 'bg-gradient-to-r from-rose-500 to-orange-500',
+      salaryRange: '₹ 6 - 15 LPA',
+      title: 'Data Analyst with',
+      titleAccent: 'GenAI',
+      titleAccentColor: 'bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent',
+      description: 'Master Python, SQL, Power BI, Excel & GenAI to build automated business solutions.',
+      image: '/images/pot1_sharp_poster.jpg',
+      tools: [{ name: 'Python' }, { name: 'SQL' }, { name: 'Power BI' }, { name: 'Excel' }, { name: 'ChatGPT' }],
+      originalPrice: '₹13,999',
+      sellingPrice: '₹987 Only',
+      discountLabel: '93% OFF',
+      enrollBtnGradient: 'bg-gradient-to-r from-emerald-600 to-teal-500',
+      borderAccent: '#22d3ee',
+      onEnroll: onOpenDataAnalyst || onStartPython || (() => {}),
+    },
+    {
+      id: 'data-science-agentic-ai',
+      courseUnlockKey: 'data_science',
+      badge: '⭐ In-Demand',
+      badgeBg: 'bg-gradient-to-r from-purple-600 to-indigo-600',
+      salaryRange: '₹ 10 - 25 LPA',
+      title: 'Data Science &',
+      titleAccent: 'Agentic AI',
+      titleAccentColor: 'bg-gradient-to-r from-purple-600 to-indigo-500 bg-clip-text text-transparent',
+      description: 'Build Machine Learning models, RAG pipelines and autonomous AI agents.',
+      image: '/images/pot2_sharp_poster.jpg',
+      tools: [{ name: 'Python' }, { name: 'PyTorch' }, { name: 'LangChain' }, { name: 'Vector DB' }, { name: 'RAG' }],
+      originalPrice: '₹14,499',
+      sellingPrice: '₹987 Only',
+      discountLabel: '93% OFF',
+      enrollBtnGradient: 'bg-gradient-to-r from-purple-600 to-indigo-500',
+      borderAccent: '#a855f7',
+      onEnroll: onOpenDataScience || onOpenGenAi || (() => {}),
+    },
+    {
+      id: 'ml-engineering',
+      courseUnlockKey: 'ml_engineering',
+      badge: '🚀 For Tech Careers',
+      badgeBg: 'bg-gradient-to-r from-amber-500 to-orange-500',
+      salaryRange: '₹ 12 - 28 LPA',
+      title: 'Machine Learning',
+      titleAccent: 'Engineering',
+      titleAccentColor: 'bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent',
+      description: 'End-to-end ML model development & deployment with industry tools.',
+      image: '/images/pot3_sharp_poster.jpg',
+      tools: [{ name: 'Python' }, { name: 'FastAPI' }, { name: 'Docker' }, { name: 'Kubernetes' }, { name: 'Cloud' }],
+      originalPrice: '₹12,999',
+      sellingPrice: '₹987 Only',
+      discountLabel: '92% OFF',
+      enrollBtnGradient: 'bg-gradient-to-r from-amber-500 to-orange-500',
+      borderAccent: '#f59e0b',
+      onEnroll: onOpenMlEngineering || onOpenPowerBi || (() => {}),
+    },
+    {
+      id: 'ai-engineering',
+      courseUnlockKey: 'ai_engineering',
+      badge: '⭐ Flagship 2050',
+      badgeBg: 'bg-gradient-to-r from-emerald-500 to-teal-600',
+      salaryRange: '₹ 14 - 32 LPA',
+      title: 'AI',
+      titleAccent: 'Engineering',
+      titleAccentColor: 'bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent',
+      description: 'Build and deploy enterprise AI products, LLMs and multi-agent solutions.',
+      image: '/images/pot4_sharp_poster.jpg',
+      tools: [{ name: 'OpenAI' }, { name: 'LangChain' }, { name: 'Hugging Face' }, { name: 'Vector DB' }, { name: 'RAG' }],
+      originalPrice: '₹15,999',
+      sellingPrice: '₹987 Only',
+      discountLabel: '94% OFF',
+      enrollBtnGradient: 'bg-gradient-to-r from-emerald-600 to-teal-500',
+      borderAccent: '#10b981',
+      onEnroll: onOpenAiEngineering || (() => {}),
+    },
+    {
+      id: 'ai-tools-prompt',
+      courseUnlockKey: 'ai_tools_prompt',
+      badge: '⚡ 10X Productivity',
+      badgeBg: 'bg-gradient-to-r from-amber-500 to-orange-500',
+      salaryRange: '₹ 5 - 14 LPA',
+      title: 'AI Tools &',
+      titleAccent: 'Prompt Engineering',
+      titleAccentColor: 'bg-gradient-to-r from-amber-500 to-orange-400 bg-clip-text text-transparent',
+      description: '10x your productivity with ChatGPT-4o, Claude 3.5, Midjourney & Zapier automations.',
+      image: '/images/cube_genai.jpg',
+      tools: [{ name: 'ChatGPT' }, { name: 'OpenAI' }, { name: 'LangChain' }, { name: 'Python' }, { name: 'Cloud' }],
+      originalPrice: '₹12,999',
+      sellingPrice: '₹987 Only',
+      discountLabel: '92% OFF',
+      enrollBtnGradient: 'bg-gradient-to-r from-amber-500 to-orange-500',
+      borderAccent: '#f59e0b',
+      onEnroll: onOpenAiToolsPrompt || (() => {}),
+    },
+    {
+      id: 'ms-office-copilot',
+      courseUnlockKey: 'ms_office_copilot',
+      badge: '📊 Popular • Office AI',
+      badgeBg: 'bg-gradient-to-r from-blue-600 to-sky-600',
+      salaryRange: '₹ 5 - 12 LPA',
+      title: 'Microsoft Office 365',
+      titleAccent: 'with Copilot',
+      titleAccentColor: 'bg-gradient-to-r from-blue-600 to-sky-500 bg-clip-text text-transparent',
+      description: 'Automate executive reporting, decks, financial models & emails with Microsoft Copilot AI.',
+      image: '/images/msoffice_365_copilot_poster.jpg',
+      tools: [{ name: 'Excel' }, { name: 'DAX' }, { name: 'Power Query' }, { name: 'Power BI' }, { name: 'OpenAI' }],
+      originalPrice: '₹14,999',
+      sellingPrice: '₹987 Only',
+      discountLabel: '93% OFF',
+      enrollBtnGradient: 'bg-gradient-to-r from-blue-600 to-sky-500',
+      borderAccent: '#0ea5e9',
+      onEnroll: onOpenMsOfficeCopilot || (() => {}),
+    },
+    {
+      id: 'full-stack-web-dev',
+      courseUnlockKey: 'full_stack',
+      badge: '🌐 High Demand',
+      badgeBg: 'bg-gradient-to-r from-emerald-500 to-cyan-600',
+      salaryRange: '₹ 8 - 22 LPA',
+      title: 'Full Stack',
+      titleAccent: 'Web Development',
+      titleAccentColor: 'bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent',
+      description: 'Build production SaaS apps with React, Node.js, Express, MongoDB & REST APIs.',
+      image: '/images/full_stack_web_development_poster.jpg',
+      tools: [{ name: 'React' }, { name: 'Node.js' }, { name: 'TypeScript' }, { name: 'Docker' }, { name: 'GitHub' }],
+      originalPrice: '₹24,999',
+      sellingPrice: '₹987 Only',
+      discountLabel: '96% OFF',
+      enrollBtnGradient: 'bg-gradient-to-r from-emerald-600 to-cyan-500',
+      borderAccent: '#10b981',
+      onEnroll: onOpenFullStackMern || (() => {}),
+    },
+  ];
+
   const visibleCourses = flagshipCourses.filter((c) => {
     if (filter === 'in-progress') return c.id === 'data-analyst-genai';
     if (filter === 'explore') return c.id !== 'data-analyst-genai';
@@ -556,260 +696,10 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       </div>
 
       {/* =========================================================================
-          4. "4 High-Paying Industry Courses" (Exact Match to User Reference Screenshot)
+          4. COURSES SHOWCASE — premium mobile card design (reference screenshot)
           ========================================================================= */}
       <div className="w-full space-y-3.5">
-        {/* Section Header (Exact Match to Desired Mobile Design) */}
-        <div>
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="w-7 h-7 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100 shadow-2xs">
-                <Layers className="w-4 h-4 text-blue-600" />
-              </div>
-              <div className="min-w-0">
-                <h2 className="text-[14px] min-[375px]:text-[15px] font-black text-[#0B1B3D] tracking-tight leading-tight truncate">
-                  {flagshipCourses.length} High-Paying Industry Courses
-                </h2>
-                <p className="text-[10px] min-[375px]:text-[11px] font-medium text-slate-500 leading-tight truncate mt-0.5">
-                  Job-Ready Skills for a Brighter Tomorrow
-                </p>
-              </div>
-            </div>
-
-            {/* All Courses Button on Right */}
-            <button
-              type="button"
-              onClick={() => {
-                playClick?.();
-                setFilter('all');
-              }}
-              className="px-2.5 py-1 rounded-full border border-blue-200 text-blue-600 font-bold text-[11px] flex items-center gap-1 bg-white hover:bg-blue-50 active:scale-95 transition-all shrink-0 cursor-pointer shadow-2xs"
-            >
-              <span>All Courses</span>
-              <ArrowRight className="w-3 h-3" />
-            </button>
-          </div>
-
-          {/* Filter Pills & View Switcher */}
-          <div className="flex items-center justify-between gap-2 pt-2.5">
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-              <button
-                type="button"
-                onClick={() => {
-                  playClick?.();
-                  setFilter('all');
-                }}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                  filter === 'all'
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'bg-white text-slate-600 border border-slate-200/90 hover:bg-slate-50'
-                }`}
-              >
-                All ({flagshipCourses.length})
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  playClick?.();
-                  setFilter('in-progress');
-                }}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                  filter === 'in-progress'
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'bg-white text-slate-600 border border-slate-200/90 hover:bg-slate-50'
-                }`}
-              >
-                In Progress (1)
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  playClick?.();
-                  setFilter('explore');
-                }}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                  filter === 'explore'
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'bg-white text-slate-600 border border-slate-200/90 hover:bg-slate-50'
-                }`}
-              >
-                Explore ({flagshipCourses.length - 1})
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  playClick?.();
-                  setFilter('completed');
-                }}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                  filter === 'completed'
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'bg-white text-slate-600 border border-slate-200/90 hover:bg-slate-50'
-                }`}
-              >
-                Completed
-              </button>
-            </div>
-
-            {/* View Mode Toggle (Grid / List) */}
-            <div className="flex items-center bg-white border border-slate-200/90 rounded-full p-0.5 shrink-0 shadow-2xs">
-              <button
-                type="button"
-                onClick={() => {
-                  playClick?.();
-                  setViewMode('grid');
-                }}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
-                  viewMode === 'grid'
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <LayoutGrid className="w-3.5 h-3.5" />
-                <span>Grid</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  playClick?.();
-                  setViewMode('list');
-                }}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
-                  viewMode === 'list'
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <List className="w-3.5 h-3.5" />
-                <span>List</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Course Cards List (Vertical Stack of Futuristic Capsule Stage Cards) */}
-        {visibleCourses.length === 0 ? (
-          <div className="p-8 text-center bg-white rounded-3xl border border-slate-200/80 shadow-xs">
-            <GraduationCap className="w-8 h-8 text-blue-500 mx-auto mb-2 opacity-80" />
-            <h4 className="text-sm font-black text-slate-800">No completed courses yet</h4>
-            <p className="text-xs text-slate-500 mt-1">Start learning your active course to unlock completed certification!</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {visibleCourses.map((c) => (
-              <div
-                key={c.id}
-                className={`fii-course-stage-card theme-${c.potTheme}`}
-                onClick={() => {
-                  playClick?.();
-                  c.action?.();
-                }}
-              >
-                <div className="fii-stage-outer-frame">
-                  {/* 1. Upper Card: Media Box + Course Details */}
-                  <div className="fii-stage-upper">
-                    {/* Left Column: Course Video Playing in Loop with Top-Left Badge */}
-                    <div className="fii-stage-media-box">
-                      {/* Top-left Badge over the video */}
-                      <span className={`fii-stage-media-badge bg-gradient-to-r ${c.badgeGradient}`}>
-                        <span>{c.badgeIcon}</span>
-                        <span>{isCourseUnlocked(c.id) ? 'ENROLLED • ACTIVE' : c.statusTag}</span>
-                      </span>
-
-                      {/* Optimized Crisp Course Card Visual */}
-                      <img
-                        src={c.holoImage || c.image}
-                        alt={c.title}
-                        loading="lazy"
-                        decoding="async"
-                        className="fii-stage-video object-cover"
-                      />
-                    </div>
-
-                    {/* Right Column: Course Info, CTC, Description & Skills */}
-                    <div className="fii-stage-info">
-                      {/* Top Right: CTC Salary Range Pill */}
-                      <div className="flex items-center justify-end">
-                        <span className="fii-stage-ctc-pill">
-                          <span className="text-[10px] font-black">₹</span>
-                          <span>{c.salaryRange}</span>
-                        </span>
-                      </div>
-
-                      {/* Course Title (Title in Blue, Subtitle in Purple) */}
-                      <h3 className="fii-stage-title">
-                        <span className="part-primary">{c.title}</span>{' '}
-                        <span className="part-secondary">{c.subtitle}</span>
-                      </h3>
-
-                      {/* Short Description */}
-                      <p className="fii-stage-desc">
-                        {c.shortDesc}
-                      </p>
-
-                      {/* Skills Row */}
-                      <div className="fii-stage-skills">
-                        {c.skillsList.map((skill) => (
-                          <span key={skill} className="fii-stage-skill-pill">
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 2. Bottom 3D Floating Glowing Glass Pedestal / Shelf */}
-                  <div className="fii-stage-pedestal">
-                    {/* Left: 28 Real-World Projects & Coding Games */}
-                    <div className="fii-stage-pedestal-left">
-                      <div className="fii-stage-feature-pill">
-                        <Briefcase className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                        <span>28 Real-World Projects</span>
-                      </div>
-                      <div className="fii-stage-feature-pill">
-                        <Code2 className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                        <span>Hackathon/DSA Practice</span>
-                      </div>
-                    </div>
-
-                    {/* Right: Slashed Fee & Start Learning Button with White Circular Arrow */}
-                    <div className="fii-stage-pedestal-right">
-                      <span className="fii-stage-price-pill">
-                        Rs {c.courseFee.replace('₹', '')}
-                      </span>
-
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          playClick?.();
-                          c.action?.();
-                        }}
-                        className="fii-stage-start-btn"
-                      >
-                        {isCourseUnlocked(c.id) ? (
-                          <>
-                            <span>Resume Course</span>
-                            <span className="fii-stage-arrow-disc">
-                              <ArrowRight className="w-3 h-3 stroke-[3]" />
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            <span>Unlock Course</span>
-                            <span className="fii-stage-arrow-disc">
-                              <ArrowRight className="w-3 h-3 stroke-[3]" />
-                            </span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <MobileCoursesShowcase courses={mobileShowcaseCourses} />
       </div>
 
       {/* =========================================================================
