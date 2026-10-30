@@ -548,9 +548,18 @@ export async function fetchCanonicalReferralProfile(
       email: cleanEmail,
       name: cleanName,
     });
+    const reqHeaders: Record<string, string> = {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+    };
+    if (auth.currentUser) {
+      try {
+        const token = await auth.currentUser.getIdToken();
+        if (token) reqHeaders['Authorization'] = `Bearer ${token}`;
+      } catch {}
+    }
     const res = await fetch(`/api/referral-profile?${params.toString()}`, {
       cache: 'no-store',
-      headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' },
+      headers: reqHeaders,
     });
     if (res.ok) {
       const data = await res.json();
