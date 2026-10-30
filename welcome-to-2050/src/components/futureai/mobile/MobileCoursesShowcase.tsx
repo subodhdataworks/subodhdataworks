@@ -343,11 +343,11 @@ const Header: React.FC<{ count: number; onAllCourses?: () => void }> = ({ count,
       )}
     </div>
 
-    {/* Compact Headline: Complete Placement Preparation */}
+    {/* Compact Headline: Complete Placement Program */}
     <h2 className="text-[17px] min-[375px]:text-[18px] font-black text-slate-950 leading-tight tracking-tight">
       Complete{' '}
       <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-        Placement Preparation
+        Placement Program
       </span>
     </h2>
 
