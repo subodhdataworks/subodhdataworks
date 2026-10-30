@@ -779,7 +779,7 @@ export const MobileDataAnalystHub: React.FC<MobileDataAnalystHubProps> = ({
           </div>
         </div>
 
-        {/* ─── 7. OUR HIRING PARTNERS (Vibrant Authentic Brand Colors & Clear Names) ─── */}
+        {/* ─── 7. Our Placed Students (Vibrant Authentic Brand Colors & Clear Names) ─── */}
         <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 shadow-2xs space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -787,7 +787,7 @@ export const MobileDataAnalystHub: React.FC<MobileDataAnalystHubProps> = ({
                 <Building2 className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-xs font-black text-slate-900 leading-tight">🏢 Our Hiring Partners</h3>
+                <h3 className="text-xs font-black text-slate-900 leading-tight">🏢 Our Placed Students</h3>
                 <p className="text-[9px] text-slate-500 font-medium mt-0.5">
                   150+ Top MNCs & Unicorns Actively Hiring Future.AI Students
                 </p>

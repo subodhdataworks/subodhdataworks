@@ -602,7 +602,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           {/* Label */}
           <div className="text-[11px] sm:text-xs font-black text-slate-800 whitespace-nowrap shrink-0 flex items-center gap-1.5 border-r border-slate-200 pr-3">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Our Hiring Partners</span>
+            <span>Our Placed Students</span>
           </div>
 
           {/* Continuous Right-to-Left Infinite Marquee */}
@@ -624,7 +624,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         </div>
       </div>
 
-      {/* ─── MOBILE ONLY CTAs & RATING (Placed Directly Below "Our Hiring Partners") ─── */}
+      {/* ─── MOBILE ONLY CTAs & RATING (Placed Directly Below "Our Placed Students") ─── */}
       <div className="lg:hidden w-full max-w-[1440px] mx-auto px-3 sm:px-6 py-3 flex flex-col items-center justify-center text-center z-10 shrink-0">
         {/* CTAs Row: Left (Join Today!) & Right (Hackathon/DSA Practice) */}
         <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full max-w-lg">

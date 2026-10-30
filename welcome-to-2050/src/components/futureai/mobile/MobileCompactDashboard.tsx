@@ -198,11 +198,11 @@ export const MobileCompactDashboard: React.FC<MobileCompactDashboardProps> = ({
         onClick={() => { playClick?.(); onOpenJobSupport(); }}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { playClick?.(); onOpenJobSupport(); } }}
         className="mt-2.5 w-full flex items-center gap-2 rounded-xl bg-white border border-[#e3ecfb] px-2.5 py-2 shadow-[0_2px_8px_rgba(30,80,180,0.05)] cursor-pointer overflow-hidden select-none active:scale-[0.99] transition-transform"
-        aria-label="Our Hiring Partners"
+        aria-label="Our Placed Students"
       >
         <div className="shrink-0 flex items-center gap-1.5 border-r border-slate-200 pr-2">
           <span className="w-2 h-2 shrink-0 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-[11px] font-extrabold text-[#0b1a3a] whitespace-nowrap">Our Hiring Partners</span>
+          <span className="text-[11px] font-extrabold text-[#0b1a3a] whitespace-nowrap">Our Placed Students</span>
         </div>
 
         <div className="relative overflow-hidden flex-1 min-w-0">

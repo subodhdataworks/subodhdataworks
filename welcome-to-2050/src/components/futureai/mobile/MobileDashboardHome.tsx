@@ -934,7 +934,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
       </div>
 
       {/* =========================================================================
-          8. "Our Hiring Partners" (Dual Dynamic Flowing Marquee Ribbons)
+          8. "Our Placed Students" (Dual Dynamic Flowing Marquee Ribbons)
           ========================================================================= */}
       <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 shadow-2xs space-y-3">
         <div className="flex items-center justify-between">
@@ -945,7 +945,7 @@ export const MobileDashboardHome: React.FC<MobileDashboardHomeProps> = ({
             <div>
               <div className="flex items-center gap-1.5">
                 <h2 className="text-xs font-black text-slate-900 tracking-tight">
-                  🏢 Our Hiring Partners
+                  🏢 Our Placed Students
                 </h2>
                 <span className="flex items-center gap-1 text-[8px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded-full">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
