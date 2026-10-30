@@ -25,11 +25,9 @@
  *    - Responsive carousel track with smooth navigation arrows and View All Stories action
  */
 
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   ArrowRight,
-  ChevronLeft,
-  ChevronRight,
   GraduationCap,
   Building2,
   TrendingUp,
@@ -282,19 +280,42 @@ export const RealSuccessStoriesShowcase: React.FC<RealSuccessStoriesShowcaseProp
   const { playClick } = useThemeAccent();
   const trackRef = useRef<HTMLDivElement>(null);
 
-  const handlePrev = () => {
-    playClick();
-    if (trackRef.current) {
-      trackRef.current.scrollBy({ left: -260, behavior: 'smooth' });
-    }
-  };
+  // Auto-scroll marquee: continuously moves left, pauses on hover
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    let animFrame: number;
+    let paused = false;
+    const speed = 0.6; // px per frame
 
-  const handleNext = () => {
-    playClick();
-    if (trackRef.current) {
-      trackRef.current.scrollBy({ left: 260, behavior: 'smooth' });
-    }
-  };
+    const step = () => {
+      if (!paused && track) {
+        track.scrollLeft += speed;
+        // Reset scroll to start for infinite loop
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        if (track.scrollLeft >= maxScroll - 2) {
+          track.scrollLeft = 0;
+        }
+      }
+      animFrame = requestAnimationFrame(step);
+    };
+
+    animFrame = requestAnimationFrame(step);
+    const pause = () => { paused = true; };
+    const resume = () => { paused = false; };
+    track.addEventListener('mouseenter', pause);
+    track.addEventListener('mouseleave', resume);
+    track.addEventListener('touchstart', pause, { passive: true });
+    track.addEventListener('touchend', resume);
+
+    return () => {
+      cancelAnimationFrame(animFrame);
+      track.removeEventListener('mouseenter', pause);
+      track.removeEventListener('mouseleave', resume);
+      track.removeEventListener('touchstart', pause);
+      track.removeEventListener('touchend', resume);
+    };
+  }, []);
 
   return (
     <div className="w-full flex flex-col font-sans select-none space-y-10 sm:space-y-14 py-2">
@@ -470,10 +491,10 @@ export const RealSuccessStoriesShowcase: React.FC<RealSuccessStoriesShowcaseProp
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 sm:mb-8">
           <div>
             <div className="text-[10.5px] sm:text-[11px] font-black text-[#1a73e8] tracking-[0.18em] uppercase">
-              TRUSTED BY LEARNERS. RECRUITED BY TOP COMPANIES.
+              OUR PLACEMENT PARTNERS
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-[32px] font-black text-slate-900 leading-tight tracking-tight mt-1.5">
-              Where Ambition Meets Opportunity.
+              Millions of students achieved their dream job at
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">
               Our learners are working in top companies across industries.
@@ -508,25 +529,19 @@ export const RealSuccessStoriesShowcase: React.FC<RealSuccessStoriesShowcaseProp
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          SECTION 3: ALUMNI SUCCESS STORIES — "Real Career Journeys. Real Impact."
+          SECTION 3: SELECTED STUDENTS — Auto-scrolling marquee
           ═══════════════════════════════════════════════════════════════════════ */}
       <section className="w-full">
         
         {/* Header Row */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
-            <div className="text-[10.5px] sm:text-[11px] font-black text-[#1a73e8] tracking-[0.18em] uppercase">
-              OUR LEARNERS. THEIR STORIES.
-            </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-[32px] font-black text-slate-900 leading-tight tracking-tight mt-1.5">
-              Real Career Journeys. Real Impact.
+            <h2 className="text-2xl sm:text-3xl lg:text-[32px] font-black text-slate-900 leading-tight tracking-tight">
+              Our Selected Students
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">
-              Meet our learners who transformed their careers with Future IT Industry.
-            </p>
           </div>
 
-          {/* Right Action & Navigation Arrows */}
+          {/* View All → opens placement page */}
           <div className="flex items-center gap-2.5 self-start sm:self-center shrink-0">
             <button
               type="button"
@@ -534,48 +549,31 @@ export const RealSuccessStoriesShowcase: React.FC<RealSuccessStoriesShowcaseProp
                 playClick();
                 onExploreProgram?.();
               }}
-              className="px-4 py-1.5 rounded-full border border-blue-200 bg-[#eef4ff] text-[#1a73e8] hover:bg-blue-600 hover:text-white font-bold text-xs active:scale-95 transition-all cursor-pointer shadow-2xs"
+              className="px-4 py-1.5 rounded-full border border-blue-200 bg-[#eef4ff] text-[#1a73e8] hover:bg-blue-600 hover:text-white font-bold text-xs active:scale-95 transition-all cursor-pointer shadow-2xs flex items-center gap-1.5"
             >
-              View All Stories
+              View All Students
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
-
-            {/* Carousel Arrows */}
-            <div className="flex items-center gap-1.5 ml-1">
-              <button
-                type="button"
-                onClick={handlePrev}
-                className="w-9 h-9 rounded-full border border-slate-200 bg-white hover:bg-blue-50 hover:border-blue-300 text-slate-700 flex items-center justify-center transition-all active:scale-90 cursor-pointer shadow-2xs"
-                aria-label="Previous story"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                onClick={handleNext}
-                className="w-9 h-9 rounded-full border border-slate-200 bg-white hover:bg-blue-50 hover:border-blue-300 text-slate-700 flex items-center justify-center transition-all active:scale-90 cursor-pointer shadow-2xs"
-                aria-label="Next story"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
           </div>
         </div>
 
-        {/* ── Photo-First Placement Cards Track ── */}
+        {/* ── Auto-Scrolling Photo-First Placement Cards (Marquee) ── */}
         <div
           ref={trackRef}
-          className="flex items-stretch gap-4 sm:gap-5 overflow-x-auto no-scrollbar pb-3 pt-1 scroll-smooth"
+          className="flex items-stretch gap-4 sm:gap-5 overflow-x-auto no-scrollbar pb-3 pt-1"
+          style={{ cursor: 'grab', scrollBehavior: 'auto' }}
         >
-          {PLACEMENT_LEARNERS.map((learner) => (
+          {/* Duplicate cards × 2 for seamless infinite scroll */}
+          {[...PLACEMENT_LEARNERS, ...PLACEMENT_LEARNERS].map((learner, idx) => (
             <div
-              key={learner.id}
-              className="w-[180px] sm:w-[205px] shrink-0 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-3.5 flex flex-col items-center text-center cursor-pointer group"
+              key={`${learner.id}-${idx}`}
+              className="w-[175px] sm:w-[200px] shrink-0 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-3.5 flex flex-col items-center text-center cursor-pointer group"
               onClick={() => {
                 playClick();
                 onExploreProgram?.();
               }}
             >
-              {/* Photo on Top (Rounded Portrait) */}
+              {/* Photo on Top */}
               <div className="w-full aspect-square rounded-xl overflow-hidden bg-slate-100 shadow-xs">
                 <img
                   src={learner.photo}
@@ -590,12 +588,12 @@ export const RealSuccessStoriesShowcase: React.FC<RealSuccessStoriesShowcaseProp
                 {learner.name}
               </h3>
 
-              {/* Company Logo Tile */}
+              {/* Company Logo */}
               <div className="h-7 mt-2 flex items-center justify-center">
                 <CompanyLogo name={learner.companyName} />
               </div>
 
-              {/* Role & Placement Type */}
+              {/* Role & Type */}
               <div className="mt-1 text-[11.5px] font-bold text-slate-700 leading-tight">
                 {learner.role}
               </div>
