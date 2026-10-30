@@ -688,24 +688,55 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
               {/* Notifications Floating Card */}
               {notificationsOpen && (
-                <div className="absolute right-0 top-full mt-2 w-[calc(100vw-24px)] max-w-80 sm:w-80 bg-white rounded-2xl shadow-2xl border-2 border-slate-300 py-3 px-3 z-[999] text-left ring-1 ring-slate-900/10">
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                    <span className="text-xs font-black text-slate-800">Notifications</span>
-                    <span className="text-[10px] font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded-full">2 New</span>
-                  </div>
-
-                  <div className="mt-2 space-y-2">
-                    {notificationItems.map((n) => (
-                      <div key={n.id} className="p-2.5 rounded-xl hover:bg-slate-50 transition border border-slate-100">
-                        <div className="flex items-center justify-between">
-                          <strong className="text-xs font-bold text-slate-800 block truncate">{n.title}</strong>
-                          <span className="text-[10px] text-slate-400 shrink-0">{n.time}</span>
-                        </div>
-                        <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">{n.desc}</p>
+                <>
+                  {/* Backdrop for outside click / tap on mobile */}
+                  <div
+                    className="fixed inset-0 z-[998] bg-slate-900/30 backdrop-blur-[2px] sm:hidden"
+                    onClick={() => setNotificationsOpen(false)}
+                    aria-hidden="true"
+                  />
+                  <div className="fixed sm:absolute inset-x-3 sm:inset-x-auto sm:right-0 top-16 sm:top-full sm:mt-2 sm:w-88 max-w-sm mx-auto sm:mx-0 bg-white rounded-2xl shadow-2xl border-2 border-slate-300/90 p-3.5 z-[999] text-left ring-1 ring-slate-900/10 max-h-[82vh] overflow-y-auto">
+                    <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-black text-slate-900 tracking-tight">Notifications</span>
+                        <span className="text-[10px] font-bold text-sky-700 bg-sky-50 border border-sky-200 px-2 py-0.5 rounded-full">2 New</span>
                       </div>
-                    ))}
+                      <button
+                        type="button"
+                        onClick={() => setNotificationsOpen(false)}
+                        className="text-slate-400 hover:text-slate-700 text-xs font-bold px-2 py-1 rounded-lg hover:bg-slate-100 transition-colors"
+                        aria-label="Close notifications"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <div className="mt-2.5 space-y-2.5">
+                      {notificationItems.map((n) => (
+                        <div
+                          key={n.id}
+                          className={`p-3 rounded-xl transition border text-left ${
+                            n.unread
+                              ? 'bg-blue-50/60 border-blue-200/80 shadow-2xs'
+                              : 'bg-slate-50/70 border-slate-200/70'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <strong className="text-[12.5px] font-bold text-slate-900 leading-snug break-words">
+                              {n.title}
+                            </strong>
+                            <span className="text-[10px] text-slate-400 shrink-0 font-medium whitespace-nowrap mt-0.5">
+                              {n.time}
+                            </span>
+                          </div>
+                          <p className="text-[11.5px] text-slate-600 mt-1 leading-relaxed break-words">
+                            {n.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                </>
               )}
             </div>
 

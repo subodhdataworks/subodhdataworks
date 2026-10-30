@@ -191,27 +191,27 @@ export const MobileCompactDashboard: React.FC<MobileCompactDashboardProps> = ({
   };
 
   return (
-    <div className="md:hidden px-3 pt-2 pb-4 font-sans text-left max-w-md mx-auto">
+    <div className="md:hidden w-full min-w-0 max-w-md mx-auto overflow-x-hidden px-3 pt-2 pb-4 font-sans box-border">
       {/* ─── 1. COMPACT ANIMATED HERO (logged-in mobile only) ─── */}
       <MobileLoggedInHero onContinueLearning={onOpenMyCourses} playClick={playClick} />
 
-      {/* ─── 2. TRUST STATS (same figures as the public homepage) ─── */}
-      <section className="mt-2.5 grid grid-cols-4 gap-1.5">
+      {/* ─── 2. TRUST STATS (2x2 Balanced Grid — No Right Edge Cutoff, Fully Centered) ─── */}
+      <section className="mt-2.5 grid grid-cols-2 gap-2 w-full">
         {[
-          { icon: <Users className="w-3.5 h-3.5" />, cls: 'bg-purple-50 text-purple-600', v: '100K+', l: 'Students' },
-          { icon: <Building2 className="w-3.5 h-3.5" />, cls: 'bg-pink-50 text-pink-600', v: '700+', l: 'Hiring Partners' },
-          { icon: <Trophy className="w-3.5 h-3.5" />, cls: 'bg-amber-50 text-amber-500', v: '99%', l: 'Placement Support' },
-          { icon: <Star className="w-3.5 h-3.5" />, cls: 'bg-yellow-50 text-yellow-500', v: 'Industry', l: 'Aligned Curriculum' },
+          { icon: <Users className="w-4 h-4" />, cls: 'bg-purple-50 text-purple-600 border-purple-100', v: '100K+', l: 'Students' },
+          { icon: <Building2 className="w-4 h-4" />, cls: 'bg-pink-50 text-pink-600 border-pink-100', v: '700+', l: 'Hiring Partners' },
+          { icon: <Trophy className="w-4 h-4" />, cls: 'bg-amber-50 text-amber-500 border-amber-100', v: '99%', l: 'Placement Support' },
+          { icon: <Star className="w-4 h-4" />, cls: 'bg-yellow-50 text-yellow-500 border-yellow-100', v: 'Industry', l: 'Aligned Curriculum' },
         ].map((s) => (
           <div
             key={s.l}
-            className="min-w-0 flex items-center gap-1 rounded-xl bg-white border border-[#e3ecfb] px-1.5 py-1.5 shadow-[0_2px_8px_rgba(30,80,180,0.05)]"
+            className="flex items-center gap-2 rounded-xl bg-white border border-[#e3ecfb] px-3 py-2 shadow-[0_2px_8px_rgba(30,80,180,0.05)]"
           >
-            <span className={`w-6 h-6 shrink-0 rounded-lg flex items-center justify-center ${s.cls}`}>{s.icon}</span>
-            <span className="min-w-0">
-              <span className="block text-[11px] min-[400px]:text-[12px] font-black text-[#0b1a3a] leading-none tracking-tight truncate">{s.v}</span>
-              <span className="block mt-0.5 text-[8px] min-[400px]:text-[8.5px] font-semibold text-slate-500 leading-[1.15]">{s.l}</span>
-            </span>
+            <span className={`w-7 h-7 shrink-0 rounded-lg border flex items-center justify-center ${s.cls}`}>{s.icon}</span>
+            <div className="min-w-0 flex-1">
+              <span className="block text-xs font-black text-[#0b1a3a] leading-tight tracking-tight">{s.v}</span>
+              <span className="block mt-0.5 text-[10px] font-semibold text-slate-500 leading-tight">{s.l}</span>
+            </div>
           </div>
         ))}
       </section>
