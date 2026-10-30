@@ -42,7 +42,8 @@ import {
   Target,
   BadgeCheck,
   Zap,
-  Play
+  Play,
+  ArrowLeftRight,
 } from 'lucide-react';
 
 const YoutubeIcon = () => (
@@ -659,6 +660,90 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
           <span><strong className="text-slate-900 font-bold">4.9/5</strong> rating trusted by 100K+ learners across India</span>
         </div>
       </div>
+
+      {/* ─── For Non-IT, Career Gap & Career Switchers Section (3 Compact Cards) ─── */}
+      <section className="w-full max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 pt-1 pb-2 sm:pb-3">
+        <div className="w-full rounded-2xl sm:rounded-3xl bg-white border border-slate-200/80 shadow-[0_4px_24px_rgba(20,50,150,0.03)] p-3.5 sm:p-6 text-left">
+          {/* Eyebrow Pill */}
+          <span className="inline-block px-3 sm:px-4 py-1 rounded-full text-[11px] sm:text-xs font-black text-slate-900 bg-[#ffedea] border border-[#ffd5cc] tracking-tight">
+            For Non-IT, Career Gap &amp; Career Switchers
+          </span>
+
+          {/* Subtitle */}
+          <p className="text-[11px] sm:text-[13.5px] text-slate-600 font-medium mt-1.5 leading-snug sm:leading-relaxed">
+            Learn industry-relevant skills with hands-on projects and get career ready.
+          </p>
+
+          {/* 3 Compact Cards (3-column layout on Desktop and Mobile) */}
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-3 sm:mt-4">
+            {/* Card 1: Non-IT Background? */}
+            <div
+              onClick={() => {
+                const el = document.getElementById('career-programs') || document.getElementById('learning-modules-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                else promptLogin();
+              }}
+              className="bg-[#ecfdf5] border border-[#d1fae5] rounded-xl sm:rounded-2xl p-2 sm:p-4 flex flex-col min-[520px]:flex-row items-start min-[520px]:items-center gap-1.5 sm:gap-3.5 hover:shadow-md hover:border-emerald-300 transition-all cursor-pointer active:scale-[0.98] group"
+            >
+              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-100/70 text-[#059669] flex items-center justify-center shrink-0">
+                <Users className="w-4 h-4 sm:w-5 sm:h-5 text-[#059669]" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-[10.5px] sm:text-sm font-black text-slate-900 leading-tight">
+                  Non-IT Background?
+                </h3>
+                <p className="text-[9px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5 sm:mt-1">
+                  No Problem! Start from Zero.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 2: Career Gap? */}
+            <div
+              onClick={() => {
+                const el = document.getElementById('career-programs') || document.getElementById('learning-modules-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                else promptLogin();
+              }}
+              className="bg-[#f5f3ff] border border-[#ede9fe] rounded-xl sm:rounded-2xl p-2 sm:p-4 flex flex-col min-[520px]:flex-row items-start min-[520px]:items-center gap-1.5 sm:gap-3.5 hover:shadow-md hover:border-purple-300 transition-all cursor-pointer active:scale-[0.98] group"
+            >
+              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-purple-100/70 text-[#7c3aed] flex items-center justify-center shrink-0">
+                <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-[#7c3aed]" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-[10.5px] sm:text-sm font-black text-slate-900 leading-tight">
+                  Career Gap?
+                </h3>
+                <p className="text-[9px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5 sm:mt-1">
+                  Get Back to Your Career with New Skills.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 3: Career Switch? */}
+            <div
+              onClick={() => {
+                const el = document.getElementById('career-programs') || document.getElementById('learning-modules-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                else promptLogin();
+              }}
+              className="bg-[#fff7ed] border border-[#ffedd5] rounded-xl sm:rounded-2xl p-2 sm:p-4 flex flex-col min-[520px]:flex-row items-start min-[520px]:items-center gap-1.5 sm:gap-3.5 hover:shadow-md hover:border-orange-300 transition-all cursor-pointer active:scale-[0.98] group"
+            >
+              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-orange-100/70 text-[#ea580c] flex items-center justify-center shrink-0">
+                <ArrowLeftRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#ea580c]" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-[10.5px] sm:text-sm font-black text-slate-900 leading-tight">
+                  Career Switch?
+                </h3>
+                <p className="text-[9px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5 sm:mt-1">
+                  Move to a High-Growth IT Career with Confidence.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
           SECTION 1: Explore Our Career Programs (Panoramic 3D Visual Banner + Video Cards)
