@@ -12,8 +12,8 @@ import './MobileLoggedInHero.css';
  * - Zero backend queries, 100% frontend.
  */
 
-const HERO_VIDEO_SRC = '/videos/mobile_hero_ecosystem.mp4';
-const HERO_POSTER_SRC = '/images/dashboard/mobile_hero_ecosystem_poster.jpg';
+const HERO_VIDEO_SRC = '/videos/mobile_hero_banner_v2.mp4';
+const HERO_POSTER_SRC = '/images/dashboard/mobile_hero_banner_v2_poster.jpg';
 
 export interface MobileLoggedInHeroProps {
   onContinueLearning: () => void;
