@@ -464,8 +464,8 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                 </span>
               </h1>   {/* Tagline */}
               <div className="mt-2 sm:mt-2.5 text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-600 leading-snug max-w-lg mx-auto lg:mx-0">
-                <p>Real Practical Courses. Real Projects. Industry Guidance.</p>
-                <p className="text-slate-900 font-bold mt-0.5">From Learning to Earning, We&apos;re With You.</p>
+                <p className="text-slate-900 font-bold">For Non-IT, Career Gap &amp; Career Switchers</p>
+                <p className="mt-0.5">Learn industry-relevant skills with hands-on projects and get career ready.</p>
               </div>
 
               {/* CTAs Row (Desktop: Side-by-side with video) */}
@@ -663,19 +663,9 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
 
       {/* ─── For Non-IT, Career Gap & Career Switchers Section (3 Compact Cards) ─── */}
       <section className="w-full max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 pt-1 pb-2 sm:pb-3">
-        <div className="w-full rounded-2xl sm:rounded-3xl bg-white border border-slate-200/80 shadow-[0_4px_24px_rgba(20,50,150,0.03)] p-3.5 sm:p-6 text-left">
-          {/* Eyebrow Pill */}
-          <span className="inline-block px-3 sm:px-4 py-1 rounded-full text-[11px] sm:text-xs font-black text-slate-900 bg-[#ffedea] border border-[#ffd5cc] tracking-tight">
-            For Non-IT, Career Gap &amp; Career Switchers
-          </span>
-
-          {/* Subtitle */}
-          <p className="text-[11px] sm:text-[13.5px] text-slate-600 font-medium mt-1.5 leading-snug sm:leading-relaxed">
-            Learn industry-relevant skills with hands-on projects and get career ready.
-          </p>
-
+        <div className="w-full">
           {/* 3 Compact Cards (3-column layout on Desktop and Mobile) */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-3 sm:mt-4">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4">
             {/* Card 1: Non-IT Background? */}
             <div
               onClick={() => {
