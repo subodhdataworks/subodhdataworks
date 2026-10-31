@@ -7,17 +7,14 @@ import { auth } from '../../services/firebase';
 import { SessionService } from '../../services/sessionService';
 import { clearActiveCourseSessionCacheOnLogout } from '../../services/courseUnlockService';
 import {
-  House,
   Home,
   BookOpen,
-  CodeXml,
   Code2,
-  Wallet,
   Coins,
+  Wallet,
   Award,
   GraduationCap,
   FileBadge,
-  BriefcaseBusiness,
   Briefcase,
   LogOut,
   Pencil,
@@ -26,33 +23,23 @@ import {
   Search,
   Bell,
   User,
-  ChevronDown,
   ChevronRight,
+  ChevronLeft,
   Menu,
   X,
   ArrowRight,
-  Sparkles,
   CheckCircle2,
-  Lock,
-  FileCheck2,
-  Laptop,
-  Users,
-  Star,
-  FileText,
-  ChevronLeft,
-  Target,
   ShieldCheck,
+  Laptop,
+  FileCheck2,
+  Target,
+  Sparkles,
+  Headphones,
 } from 'lucide-react';
 
 const WA_SUPPORT_PHONE = '917632099528';
 const WA_SUPPORT_MESSAGE = 'Hello Future IT Industry Support Team, I need help regarding my course or student account. Please assist me.';
 const WA_SUPPORT_URL = `https://wa.me/${WA_SUPPORT_PHONE}?text=${encodeURIComponent(WA_SUPPORT_MESSAGE)}`;
-
-const WhatsAppIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
-  <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
-    <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.24-.75-.67-1.26-1.49-1.41-1.74-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.17 0-.44.06-.66.31-.23.25-.88.86-.88 2.09s.9 2.43 1.03 2.6c.13.17 1.77 2.7 4.29 3.78.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.07-.11-.23-.17-.48-.29" />
-  </svg>
-);
 
 export interface FutureAdvancedHeaderProps {
   userName?: string;
@@ -113,7 +100,6 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
   const [editProfileModalOpen, setEditProfileModalOpen] = useState(false);
   const [headerWithdrawModalOpen, setHeaderWithdrawModalOpen] = useState(false);
 
-  const profileRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
 
   // Dynamic student info state from localStorage & props
@@ -204,7 +190,6 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
   const [editNameInput, setEditNameInput] = useState(studentName);
   const [editPhoneInput, setEditPhoneInput] = useState(studentPhone);
 
-  // Sync state if props or localStorage change
   useEffect(() => {
     if (userName && userName !== 'Rahul' && userName !== 'Learner' && userName !== 'Student') {
       setStudentName(userName);
@@ -238,7 +223,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
     };
   }, [hamburgerDrawerOpen]);
 
-  // Close notifications dropdown on outside click (Profile drawer uses its own modal backdrop)
+  // Close notifications dropdown on outside click
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (notificationsRef.current && !notificationsRef.current.contains(e.target as Node)) {
@@ -279,22 +264,19 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
   const handleDrawerNavigate = (target: string) => {
     soundEffects.playClick();
     setHamburgerDrawerOpen(false);
-
     scrollToTop();
 
     if (!isLoggedIn) {
-      if (['dashboard', 'learning', 'practice', 'mock-interview', 'coding-practice', 'internship', 'placement', 'certificate', 'recommendation', 'placement-support'].includes(target)) {
+      if (['dashboard', 'learning', 'practice', 'earning', 'internship', 'placement', 'certificate', 'recommendation'].includes(target)) {
         const redirectMap: Record<string, string> = {
           dashboard: '#dashboard',
           learning: '#data-analyst',
           practice: '#python-challenges',
-          'mock-interview': '#mockinterview',
-          'coding-practice': '#game',
+          earning: '#earnings',
           internship: '#internship',
           placement: '#placement',
           certificate: '#certificates',
           recommendation: '#recommendation',
-          'placement-support': '#placement',
         };
         const targetHash = redirectMap[target] || '#dashboard';
         if (typeof window !== 'undefined') {
@@ -316,15 +298,12 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
         if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
         break;
       case 'practice':
-        onNavigatePractice('python');
+        onNavigatePractice('master');
         if (typeof window !== 'undefined') window.location.hash = '#python-challenges';
         break;
-      case 'mock-interview':
-        if (typeof window !== 'undefined') window.location.hash = '#mockinterview';
-        break;
-      case 'coding-practice':
-        onNavigatePractice('master');
-        if (typeof window !== 'undefined') window.location.hash = '#game';
+      case 'earning':
+        onNavigateEarn();
+        if (typeof window !== 'undefined') window.location.hash = '#earnings';
         break;
       case 'internship':
         onNavigateInternship();
@@ -342,10 +321,6 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
         if (onNavigateRecommendation) onNavigateRecommendation();
         else if (typeof window !== 'undefined') window.location.hash = '#recommendation';
         break;
-      case 'placement-support':
-        onNavigatePlacement();
-        if (typeof window !== 'undefined') window.location.hash = '#placement';
-        break;
       default:
         break;
     }
@@ -361,11 +336,9 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
       case 'learning':
         return activeNavTab === 'learning' || h.includes('#data') || h.includes('#learn') || h.includes('#course');
       case 'practice':
-        return h.includes('#python-challenges') || h.includes('#sql-challenges') || h.includes('#excel-challenges') || h.includes('#dsa') || h.includes('#arena');
-      case 'mock-interview':
-        return h.includes('#interview') || h.includes('#mockinterview');
-      case 'coding-practice':
-        return h.includes('#game') || h === '#practice' || h.includes('#codingpractice');
+        return h.includes('#python-challenges') || h.includes('#sql-challenges') || h.includes('#excel-challenges') || h.includes('#dsa') || h.includes('#arena') || h.includes('#game') || h === '#practice' || h.includes('#codingpractice');
+      case 'earning':
+        return activeNavTab === 'earn' || h.includes('#earn') || h.includes('#wallet') || h.includes('#income') || h.includes('#referral') || h.includes('#withdraw');
       case 'internship':
         return activeNavTab === 'internship' || h.includes('#intern');
       case 'placement':
@@ -374,13 +347,10 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
         return h.includes('#cert');
       case 'recommendation':
         return h.includes('#recom') || h.includes('#lor');
-      case 'placement-support':
-        return h.includes('#placement-support');
       default:
         return false;
     }
   };
-
 
   // Profile save action
   const handleSaveProfile = (e: React.FormEvent) => {
@@ -402,7 +372,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
     if (onOpenProfile) onOpenProfile();
   };
 
-  // Authoritative Sign Out Handler (Terminates session, signs out Firebase auth, purges local storage)
+  // Authoritative Sign Out Handler
   const handleSignOutAction = async (e?: React.MouseEvent | React.TouchEvent) => {
     if (e) {
       e.preventDefault();
@@ -501,11 +471,24 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
     { title: 'Placement & Job Drive Assistance', category: 'Career', action: onNavigatePlacement },
   ].filter((item) => !searchQuery.trim() || item.title.toLowerCase().includes(searchQuery.toLowerCase()) || item.category.toLowerCase().includes(searchQuery.toLowerCase()));
 
+  // 10 HeyGen-Inspired Drawer Navigation Items
+  const drawerNavItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: Home },
+    { id: 'learning', label: 'My Learning', icon: BookOpen },
+    { id: 'practice', label: 'DSA Coding Practice', icon: Code2 },
+    { id: 'earning', label: 'Earning & Wallet', icon: Coins },
+    { id: 'certificate', label: 'Certificate', icon: Award },
+    { id: 'internship', label: 'Internship', icon: GraduationCap },
+    { id: 'recommendation', label: 'Recommendation Letter', icon: FileBadge },
+    { id: 'placement', label: 'Placement', icon: Target },
+  ];
+
   return (
     <>
-      {/* ─── STICKY ULTRA-ADVANCED TOP HEADER BAR ─── */}
-      <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-[0_2px_16px_rgba(0,0,0,0.03)] transition-all shrink-0">
-        <div className="max-w-[1440px] mx-auto px-2.5 sm:px-5 lg:px-7 h-14 sm:h-16 flex items-center justify-between gap-1.5 sm:gap-2 lg:gap-5">
+      {/* ─── HEYGEN-INSPIRED PURE WHITE STICKY TOP HEADER ─── */}
+      <header className="sticky top-0 z-50 w-full bg-[#FFFFFF]/98 backdrop-blur-md border-b border-[#EAECF0] shadow-[0_1px_3px_rgba(16,24,40,0.05)] transition-all shrink-0">
+        <div className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 h-15 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
+          
           {/* LEFT: Future IT Industries Official Brand Logo */}
           <div
             onClick={() => {
@@ -513,14 +496,14 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               scrollToTop();
               onNavigateHome();
             }}
-            className="flex items-center gap-2 select-none cursor-pointer group min-w-0 shrink transition-transform hover:scale-[1.01] active:scale-98"
+            className="flex items-center gap-2 select-none cursor-pointer group min-w-0 shrink transition-opacity hover:opacity-90 active:scale-98"
             title="Future IT Industries - Learn Today, Earn Tomorrow."
           >
             <FutureLogo variant="full" size="md" />
           </div>
 
-          {/* CENTER: Navigation Pill / Tab Bar (Desktop: 1024px and above) */}
-          <nav className="hidden lg:flex items-center gap-1 lg:gap-1.5 shrink-0 text-[13px] font-semibold text-slate-700">
+          {/* CENTER: Navigation Pill / Tab Bar (Desktop: 1024px and above) — HeyGen Soft Cyan Treatment */}
+          <nav className="hidden lg:flex items-center gap-1.5 shrink-0 text-[13px] font-medium text-[#344054]">
             {/* 1. Home */}
             <button
               type="button"
@@ -529,13 +512,13 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 scrollToTop();
                 onNavigateHome();
               }}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
                 activeNavTab === 'home'
-                  ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-xs'
-                  : 'text-slate-700 hover:text-[#1a73e8] hover:bg-slate-50'
+                  ? 'bg-[#E4F5FA] text-[#0e7490] font-semibold border border-[#16C5EA]/25 shadow-2xs'
+                  : 'text-[#344054] hover:text-[#0e7490] hover:bg-[#FAFBFC] border border-transparent'
               }`}
             >
-              <Home className={`w-4 h-4 ${activeNavTab === 'home' ? 'text-[#1a73e8] fill-[#1a73e8]/20' : 'text-slate-500'}`} />
+              <Home className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'home' ? 'text-[#16C5EA]' : 'text-[#667085]'}`} />
               <span>Home</span>
             </button>
 
@@ -547,17 +530,17 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 scrollToTop();
                 onNavigateLearning();
               }}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
                 activeNavTab === 'learning'
-                  ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-xs'
-                  : 'text-slate-700 hover:text-[#1a73e8] hover:bg-slate-50'
+                  ? 'bg-[#E4F5FA] text-[#0e7490] font-semibold border border-[#16C5EA]/25 shadow-2xs'
+                  : 'text-[#344054] hover:text-[#0e7490] hover:bg-[#FAFBFC] border border-transparent'
               }`}
             >
-              <BookOpen className={`w-4 h-4 ${activeNavTab === 'learning' ? 'text-[#1a73e8]' : 'text-slate-500'}`} />
+              <BookOpen className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'learning' ? 'text-[#16C5EA]' : 'text-[#667085]'}`} />
               <span>My Learning</span>
             </button>
 
-            {/* 3. DSA Coding Practice (Single Direct Link - NO dropdown, NO arrow) */}
+            {/* 3. DSA Coding Practice */}
             <button
               type="button"
               onClick={() => {
@@ -565,13 +548,13 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 scrollToTop();
                 onNavigatePractice('master');
               }}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
                 activeNavTab === 'practice'
-                  ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-xs'
-                  : 'text-slate-700 hover:text-[#1a73e8] hover:bg-slate-50'
+                  ? 'bg-[#E4F5FA] text-[#0e7490] font-semibold border border-[#16C5EA]/25 shadow-2xs'
+                  : 'text-[#344054] hover:text-[#0e7490] hover:bg-[#FAFBFC] border border-transparent'
               }`}
             >
-              <Laptop className={`w-4 h-4 ${activeNavTab === 'practice' ? 'text-[#1a73e8]' : 'text-slate-500'}`} />
+              <Laptop className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'practice' ? 'text-[#16C5EA]' : 'text-[#667085]'}`} />
               <span>DSA Coding Practice</span>
             </button>
 
@@ -582,14 +565,14 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 soundEffects.playClick();
                 onOpenAtsResume();
               }}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
                 activeNavTab === 'ats'
-                  ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-xs'
-                  : 'text-slate-700 hover:text-[#1a73e8] hover:bg-slate-50'
+                  ? 'bg-[#E4F5FA] text-[#0e7490] font-semibold border border-[#16C5EA]/25 shadow-2xs'
+                  : 'text-[#344054] hover:text-[#0e7490] hover:bg-[#FAFBFC] border border-transparent'
               }`}
             >
-              <FileCheck2 className={`w-4 h-4 ${activeNavTab === 'ats' ? 'text-[#1a73e8]' : 'text-slate-500'}`} />
-              <span>ATS Resume Checker</span>
+              <FileCheck2 className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'ats' ? 'text-[#16C5EA]' : 'text-[#667085]'}`} />
+              <span>ATS Resume</span>
             </button>
 
             {/* 5. Earn Cash */}
@@ -600,13 +583,13 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 scrollToTop();
                 onNavigateEarn();
               }}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
                 activeNavTab === 'earn'
-                  ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-xs'
-                  : 'text-slate-700 hover:text-[#1a73e8] hover:bg-slate-50'
+                  ? 'bg-[#E4F5FA] text-[#0e7490] font-semibold border border-[#16C5EA]/25 shadow-2xs'
+                  : 'text-[#344054] hover:text-[#0e7490] hover:bg-[#FAFBFC] border border-transparent'
               }`}
             >
-              <Coins className={`w-4 h-4 ${activeNavTab === 'earn' ? 'text-amber-500' : 'text-slate-500'}`} />
+              <Coins className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'earn' ? 'text-[#16C5EA]' : 'text-[#667085]'}`} />
               <span>Earn Cash</span>
             </button>
 
@@ -618,23 +601,23 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 scrollToTop();
                 onNavigateInternship();
               }}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
                 activeNavTab === 'internship'
-                  ? 'bg-[#eef5fe] text-[#1a73e8] font-bold shadow-xs'
-                  : 'text-slate-700 hover:text-[#1a73e8] hover:bg-slate-50'
+                  ? 'bg-[#E4F5FA] text-[#0e7490] font-semibold border border-[#16C5EA]/25 shadow-2xs'
+                  : 'text-[#344054] hover:text-[#0e7490] hover:bg-[#FAFBFC] border border-transparent'
               }`}
             >
-              <GraduationCap className={`w-4 h-4 ${activeNavTab === 'internship' ? 'text-[#1a73e8]' : 'text-slate-500'}`} />
+              <GraduationCap className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'internship' ? 'text-[#16C5EA]' : 'text-[#667085]'}`} />
               <span>Internship</span>
             </button>
           </nav>
 
-          {/* RIGHT: Search → Wallet + Amount → Notification → Profile Picture → Hamburger Menu (☰) */}
+          {/* RIGHT: Search → Wallet → Notifications → Profile → Hamburger (☰) */}
           <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-2.5 shrink-0">
             {/* Subtle Divider (Desktop) */}
-            <div className="hidden lg:block h-6 w-[1px] bg-slate-200/90 mx-0.5" />
+            <div className="hidden lg:block h-6 w-[1px] bg-[#EAECF0] mx-0.5" />
 
-            {/* 1. Search Icon Button (Hidden on small mobile when not logged in to make room for ☰ hamburger) */}
+            {/* 1. Search Icon Button */}
             <button
               type="button"
               onClick={() => {
@@ -642,16 +625,16 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 if (onOpenSearch) onOpenSearch();
                 else setSearchModalOpen(true);
               }}
-              className={`p-2 rounded-xl text-slate-600 hover:text-[#1a73e8] hover:bg-slate-100 transition-colors cursor-pointer ${
-                !isLoggedIn ? 'hidden min-[480px]:block' : ''
+              className={`w-9 h-9 rounded-xl border border-[#EAECF0] bg-[#FFFFFF] hover:bg-[#FAFBFC] hover:border-[#D0D5DD] text-[#667085] hover:text-[#344054] flex items-center justify-center transition-all cursor-pointer shadow-2xs ${
+                !isLoggedIn ? 'hidden min-[480px]:flex' : ''
               }`}
               title="Search topics, challenges & courses (Ctrl+K)"
               aria-label="Search"
             >
-              <Search className="w-5 h-5 text-slate-700" />
+              <Search className="w-4.5 h-4.5 stroke-[1.8]" />
             </button>
 
-            {/* 2. Wallet Icon with Dynamic Balance Amount (Only Shown When Logged In) */}
+            {/* 2. Wallet Icon with Dynamic Balance Amount (When Logged In) */}
             {isLoggedIn && (
               <button
                 type="button"
@@ -663,16 +646,16 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     setHeaderWithdrawModalOpen(true);
                   }
                 }}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100/90 border border-emerald-200/80 text-emerald-700 font-bold text-xs sm:text-[13px] transition-all active:scale-95 cursor-pointer shadow-2xs"
-                title="Withdraw Earnings"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F0FDF9] hover:bg-[#ECFDF5] border border-[#A7F3D0] text-[#065F46] font-bold text-xs sm:text-[13px] transition-all active:scale-95 cursor-pointer shadow-2xs"
+                title="Wallet Balance - Withdraw Earnings"
                 aria-label="Wallet Balance - Withdraw Earnings"
               >
-                <Wallet className="w-4 h-4 text-emerald-600 shrink-0" />
+                <Wallet className="w-4 h-4 text-[#059669] stroke-[2] shrink-0" />
                 <span>₹{walletBalance.toLocaleString('en-IN')}</span>
               </button>
             )}
 
-            {/* 3. Notification Bell with Red Badge Dot (Hidden on small mobile when not logged in to prioritize ☰ hamburger) */}
+            {/* 3. Notification Bell */}
             <div className={`relative ${!isLoggedIn ? 'hidden min-[480px]:block' : ''}`} ref={notificationsRef}>
               <button
                 type="button"
@@ -683,58 +666,57 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                   setHamburgerDrawerOpen(false);
                   if (onOpenNotifications) onOpenNotifications();
                 }}
-                className="relative p-2 rounded-xl text-slate-600 hover:text-[#1a73e8] hover:bg-slate-100 transition-colors cursor-pointer"
+                className="w-9 h-9 rounded-xl border border-[#EAECF0] bg-[#FFFFFF] hover:bg-[#FAFBFC] hover:border-[#D0D5DD] text-[#667085] hover:text-[#344054] flex items-center justify-center relative transition-all cursor-pointer shadow-2xs"
                 title="Notifications"
                 aria-label="Notifications"
               >
-                <Bell className="w-5 h-5 text-slate-700" />
-                <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-rose-500 rounded-full ring-2 ring-white" />
+                <Bell className="w-4.5 h-4.5 stroke-[1.8]" />
+                <span className="absolute top-2 right-2 w-2 h-2 bg-[#F04438] rounded-full ring-2 ring-white" />
               </button>
 
-              {/* Notifications Floating Card */}
+              {/* Notifications Floating Card (HeyGen Clean White Style) */}
               {notificationsOpen && (
                 <>
-                  {/* Backdrop for outside click / tap on mobile */}
                   <div
-                    className="fixed inset-0 z-[998] bg-slate-900/30 backdrop-blur-[2px] sm:hidden"
+                    className="fixed inset-0 z-[998] bg-[#0c111d]/20 backdrop-blur-2xs sm:hidden"
                     onClick={() => setNotificationsOpen(false)}
                     aria-hidden="true"
                   />
-                  <div className="fixed sm:absolute inset-x-3 sm:inset-x-auto sm:right-0 top-16 sm:top-full sm:mt-2 sm:w-88 max-w-sm mx-auto sm:mx-0 bg-white rounded-2xl shadow-2xl border-2 border-slate-300/90 p-3.5 z-[999] text-left ring-1 ring-slate-900/10 max-h-[82vh] overflow-y-auto">
-                    <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
+                  <div className="fixed sm:absolute inset-x-3 sm:inset-x-auto sm:right-0 top-16 sm:top-full sm:mt-2 sm:w-88 max-w-sm mx-auto sm:mx-0 bg-white rounded-2xl shadow-[0_12px_32px_rgba(16,24,40,0.12)] border border-[#EAECF0] p-4 z-[999] text-left max-h-[82vh] overflow-y-auto">
+                    <div className="flex items-center justify-between pb-3 border-b border-[#EAECF0]">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-black text-slate-900 tracking-tight">Notifications</span>
-                        <span className="text-[10px] font-bold text-sky-700 bg-sky-50 border border-sky-200 px-2 py-0.5 rounded-full">2 New</span>
+                        <span className="text-sm font-bold text-[#344054]">Notifications</span>
+                        <span className="text-[10px] font-semibold text-[#0e7490] bg-[#E4F5FA] border border-[#16C5EA]/20 px-2 py-0.5 rounded-full">2 New</span>
                       </div>
                       <button
                         type="button"
                         onClick={() => setNotificationsOpen(false)}
-                        className="text-slate-400 hover:text-slate-700 text-xs font-bold px-2 py-1 rounded-lg hover:bg-slate-100 transition-colors"
+                        className="w-6 h-6 rounded-lg text-[#667085] hover:text-[#344054] hover:bg-[#F2F4F7] flex items-center justify-center transition-colors text-xs font-bold"
                         aria-label="Close notifications"
                       >
                         ✕
                       </button>
                     </div>
 
-                    <div className="mt-2.5 space-y-2.5">
+                    <div className="mt-3 space-y-2.5">
                       {notificationItems.map((n) => (
                         <div
                           key={n.id}
-                          className={`p-3 rounded-xl transition border text-left ${
+                          className={`p-3 rounded-xl transition text-left border ${
                             n.unread
-                              ? 'bg-blue-50/60 border-blue-200/80 shadow-2xs'
-                              : 'bg-slate-50/70 border-slate-200/70'
+                              ? 'bg-[#E4F5FA]/40 border-[#16C5EA]/25'
+                              : 'bg-[#FAFBFC] border-[#EAECF0]'
                           }`}
                         >
                           <div className="flex items-start justify-between gap-2">
-                            <strong className="text-[12.5px] font-bold text-slate-900 leading-snug break-words">
+                            <strong className="text-xs font-bold text-[#344054] leading-snug break-words">
                               {n.title}
                             </strong>
-                            <span className="text-[10px] text-slate-400 shrink-0 font-medium whitespace-nowrap mt-0.5">
+                            <span className="text-[10px] text-[#667085] shrink-0 font-medium whitespace-nowrap mt-0.5">
                               {n.time}
                             </span>
                           </div>
-                          <p className="text-[11.5px] text-slate-600 mt-1 leading-relaxed break-words">
+                          <p className="text-[11.5px] text-[#667085] mt-1 leading-relaxed break-words">
                             {n.desc}
                           </p>
                         </div>
@@ -745,26 +727,45 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               )}
             </div>
 
-            {/* 3. Circular Student Profile Picture / Login Button (Only Free Login button shown pre-login; profile icon removed on desktop as requested) */}
-            {!isLoggedIn && (
-              <div className="flex items-center">
-                <button
-                  type="button"
-                  onClick={() => {
-                    soundEffects.playClick();
-                    if (onOpenSignUp) onOpenSignUp();
-                    else onOpenLogin?.();
-                  }}
-                  className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-95 text-white font-bold text-xs sm:text-sm whitespace-nowrap shadow-xs hover:shadow-md transition-all duration-200 shrink-0"
-                >
-                  <span className="hidden md:inline">Free </span>
-                  <span>Login / Sign Up</span>
-                  <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-                </button>
-              </div>
+            {/* 4. User Profile (HeyGen Compact Avatar Button on Header) */}
+            {isLoggedIn ? (
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playClick();
+                  setProfileDropdownOpen((prev) => !prev);
+                  setHamburgerDrawerOpen(false);
+                  setNotificationsOpen(false);
+                }}
+                className="w-9 h-9 rounded-full border border-[#EAECF0] hover:border-[#16C5EA] ring-2 ring-transparent hover:ring-[#E4F5FA] transition-all overflow-hidden flex items-center justify-center cursor-pointer shadow-2xs relative shrink-0"
+                title="My Profile & Account"
+                aria-label="Student Profile"
+              >
+                {studentAvatar ? (
+                  <img src={studentAvatar} alt={studentName} className="w-full h-full object-cover rounded-full" />
+                ) : (
+                  <div className="w-full h-full rounded-full flex items-center justify-center bg-[#E4F5FA] text-[#0e7490] font-bold text-xs">
+                    {studentName ? studentName.charAt(0).toUpperCase() : 'S'}
+                  </div>
+                )}
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#10B981] border-2 border-white" />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playClick();
+                  if (onOpenSignUp) onOpenSignUp();
+                  else onOpenLogin?.();
+                }}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#16C5EA] hover:bg-[#0ea5e9] active:scale-95 text-white font-semibold text-xs whitespace-nowrap shadow-xs transition-all duration-150 shrink-0"
+              >
+                <span>Login</span>
+                <ArrowRight className="w-3.5 h-3.5 stroke-[2] shrink-0" />
+              </button>
             )}
 
-            {/* 4. Hamburger Menu (☰) immediately to the RIGHT of the profile picture */}
+            {/* 5. HeyGen-Inspired Hamburger Menu Button (☰) */}
             <button
               type="button"
               onClick={() => {
@@ -773,109 +774,119 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 setProfileDropdownOpen(false);
                 setNotificationsOpen(false);
               }}
-              className="w-[42px] h-[42px] rounded-[12px] bg-[#EEF4FF] hover:bg-[#E0ECFF] text-[#10234A] flex items-center justify-center transition-all duration-200 cursor-pointer shadow-xs hover:scale-105 active:scale-95 shrink-0"
-              title="Open Navigation Drawer"
-              aria-label="Open Navigation Drawer"
+              className="w-9 h-9 rounded-xl border border-[#EAECF0] bg-[#FFFFFF] hover:bg-[#E4F5FA] hover:border-[#16C5EA]/40 text-[#344054] hover:text-[#16C5EA] flex items-center justify-center transition-all duration-150 cursor-pointer shadow-2xs shrink-0"
+              title="Open Navigation Menu"
+              aria-label="Open Navigation Menu"
             >
-              <Menu className="w-5 h-5 text-[#10234A]" />
+              <Menu className="w-5 h-5 stroke-[1.8]" />
             </button>
           </div>
         </div>
       </header>
 
-      {/* ─── PREMIUM RIGHT-SIDE NAVIGATION DRAWER (Slide-in From Right) ─── */}
+      {/* ─── HEYGEN-INSPIRED PREMIUM NAVIGATION DRAWER (Slide-in From Right) ─── */}
       {typeof document !== 'undefined' && hamburgerDrawerOpen && createPortal(
         <div className="fixed inset-0 z-[9999] flex justify-end items-stretch animate-fadeIn">
-          {/* Dark Translucent Backdrop */}
+          {/* Subtle Dark Backdrop */}
           <div
-            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-[#0c111d]/30 backdrop-blur-2xs transition-opacity"
             onClick={() => setHamburgerDrawerOpen(false)}
             aria-hidden="true"
           />
 
-          {/* Drawer Container (Full height, rounded-l-[32px], smooth slide-in from right) */}
+          {/* Drawer Container (HeyGen Pure White `#FFFFFF` + `#FAFBFC` Background, Soft Grey Borders `#EAECF0`) */}
           <aside
             onClick={(e) => e.stopPropagation()}
-            className="relative z-10 w-[86vw] max-w-[340px] sm:max-w-[360px] h-full bg-white shadow-[-16px_0_40px_rgba(15,23,42,0.18)] rounded-l-[32px] border-l border-slate-100 flex flex-col justify-between overflow-y-auto no-scrollbar text-left animate-slideInRight"
+            className="relative z-10 w-[88vw] max-w-[340px] sm:max-w-[360px] h-full bg-[#FFFFFF] shadow-[-16px_0_48px_rgba(16,24,40,0.12)] rounded-l-[28px] border-l border-[#EAECF0] flex flex-col justify-between overflow-y-auto no-scrollbar text-left animate-slideInRight font-sans select-none"
             role="dialog"
-            aria-label="Navigation Drawer"
+            aria-label="Navigation Menu"
           >
-            {/* Top Container: Close Button + Profile + Navigation Menu */}
+            {/* Top Container: Header Title + Close Button */}
             <div className="flex flex-col">
-              {/* Top Row: Close (X) Button */}
-              <div className="p-3 pb-0 flex items-center justify-end shrink-0">
+              {/* Drawer Top Header Row */}
+              <div className="px-5 pt-4 pb-3 flex items-center justify-between border-b border-[#EAECF0]">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-[#E4F5FA] flex items-center justify-center text-[#16C5EA]">
+                    <Sparkles className="w-4 h-4 stroke-[2]" />
+                  </div>
+                  <div>
+                    <span className="text-[14px] font-bold text-[#344054] tracking-tight block">
+                      Future IT Industry
+                    </span>
+                    <span className="text-[10px] font-medium text-[#667085] leading-none block">
+                      Learn Today, Earn Tomorrow.
+                    </span>
+                  </div>
+                </div>
+
                 <button
                   type="button"
                   onClick={() => {
                     soundEffects.playClick();
                     setHamburgerDrawerOpen(false);
                   }}
-                  className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer active:scale-90 border border-slate-200/50 shadow-2xs"
+                  className="w-8 h-8 rounded-xl bg-[#F2F4F7] hover:bg-[#EAECF0] text-[#667085] hover:text-[#344054] flex items-center justify-center transition-all cursor-pointer active:scale-90"
                   aria-label="Close navigation drawer"
                 >
-                  <X className="w-3.5 h-3.5" />
+                  <X className="w-4 h-4 stroke-[2]" />
                 </button>
               </div>
 
-              {/* ─── Profile Header Section (Inside Drawer - Compact Slim Layout) ─── */}
-              {isLoggedIn ? (
-                <div className="px-3.5 pt-0.5 pb-2.5 flex items-center gap-2.5 border-b border-slate-100 shrink-0">
-                  {/* Circular Avatar with Online Indicator Dot */}
-                  <div className="relative shrink-0">
-                    <div className="w-10 h-10 rounded-full bg-[#dbeafe]/70 p-0.5 border border-white shadow-2xs flex items-center justify-center overflow-hidden">
-                      {studentAvatar ? (
-                        <img src={studentAvatar} alt={studentName} className="w-full h-full rounded-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full rounded-full flex items-center justify-center bg-[#EEF4FF] text-[#1a73e8] font-black text-sm">
-                          {studentName ? studentName.charAt(0).toUpperCase() : 'S'}
+              {/* ─── Profile Section inside Drawer (HeyGen Compact Card) ─── */}
+              <div className="px-4 py-3 border-b border-[#EAECF0]">
+                {isLoggedIn ? (
+                  <div className="p-3 rounded-2xl bg-[#FAFBFC] border border-[#EAECF0] flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="relative shrink-0">
+                        <div className="w-10 h-10 rounded-full border border-[#EAECF0] overflow-hidden bg-[#E4F5FA] flex items-center justify-center">
+                          {studentAvatar ? (
+                            <img src={studentAvatar} alt={studentName} className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-[#0e7490] font-bold text-sm">
+                              {studentName ? studentName.charAt(0).toUpperCase() : 'S'}
+                            </span>
+                          )}
                         </div>
-                      )}
+                        <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#10B981] border-2 border-white" />
+                      </div>
+
+                      <div className="min-w-0">
+                        <h4 className="text-[13px] font-bold text-[#344054] truncate leading-tight">
+                          {studentName || 'Student'}
+                        </h4>
+                        <div className="flex items-center gap-1.5 mt-1">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9.5px] font-semibold bg-[#E4F5FA] text-[#0e7490] border border-[#16C5EA]/20">
+                            <ShieldCheck className="w-2.5 h-2.5 text-[#16C5EA]" />
+                            <span>{(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_role') : null) || 'Student'}</span>
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#00c07f] border-2 border-white shadow-2xs" />
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        soundEffects.playClick();
+                        setEditNameInput(studentName);
+                        setEditPhoneInput(studentPhone);
+                        setEditEmailInput(studentEmail);
+                        setEditProfileModalOpen(true);
+                        setHamburgerDrawerOpen(false);
+                      }}
+                      className="p-1.5 rounded-lg border border-[#EAECF0] bg-white hover:bg-[#F2F4F7] text-[#667085] hover:text-[#344054] transition cursor-pointer shrink-0"
+                      title="Edit Profile"
+                      aria-label="Edit Profile"
+                    >
+                      <Pencil className="w-3.5 h-3.5 stroke-[1.8]" />
+                    </button>
                   </div>
-
-                  {/* User Info & Actions */}
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-[13.5px] font-black text-slate-900 leading-tight truncate">
-                      Hi, {(studentName || 'Learner').trim().split(' ')[0]} 👋
-                    </h3>
-                    <p className="text-[10.5px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
-                      Keep Learning, Keep Growing!
-                    </p>
-
-                    {/* Badges: Role + Edit */}
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#ecfdf5] text-[#059669] border border-emerald-200/60 leading-none shadow-2xs">
-                        <ShieldCheck className="w-2.5 h-2.5 text-[#059669] shrink-0" />
-                        <span>{(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_role') : null) || 'Student'}</span>
-                      </span>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          soundEffects.playClick();
-                          setEditNameInput(studentName);
-                          setEditPhoneInput(studentPhone);
-                          setEditEmailInput(studentEmail);
-                          setEditProfileModalOpen(true);
-                          setHamburgerDrawerOpen(false);
-                        }}
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#eff6ff] hover:bg-blue-100 text-[#0066ff] border border-blue-200/60 leading-none transition active:scale-95 cursor-pointer shadow-2xs"
-                      >
-                        <Pencil className="w-2.5 h-2.5 shrink-0" />
-                        <span>Edit</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="px-3.5 pt-0.5 pb-2.5 border-b border-slate-100 shrink-0">
-                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 shadow-2xs">
-                    <h3 className="text-[13.5px] font-black text-slate-900">
-                      Welcome to Future IT 👋
-                    </h3>
-                    <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-                      Login to access courses & practice.
+                ) : (
+                  <div className="p-3.5 rounded-2xl bg-[#FAFBFC] border border-[#EAECF0] text-center">
+                    <h4 className="text-[13px] font-bold text-[#344054]">
+                      Welcome to Future IT
+                    </h4>
+                    <p className="text-[11px] text-[#667085] mt-0.5 font-medium">
+                      Login to continue courses and track placement.
                     </p>
                     <button
                       type="button"
@@ -885,315 +896,98 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                         if (onOpenSignUp) onOpenSignUp();
                         else onOpenLogin?.();
                       }}
-                      className="mt-2 w-full py-1.5 px-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-[11px] flex items-center justify-center gap-1 shadow-xs active:scale-98 transition"
+                      className="mt-2.5 w-full py-2 px-3 rounded-xl bg-[#16C5EA] hover:bg-[#0ea5e9] text-white font-semibold text-xs flex items-center justify-center gap-1.5 shadow-xs transition active:scale-98"
                     >
                       <span>Login / Sign Up</span>
-                      <ArrowRight className="w-3 h-3" />
+                      <ArrowRight className="w-3.5 h-3.5 stroke-[2]" />
                     </button>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
 
-              {/* ─── 8 Navigation Menu Rows (Slim Compact Design - No Scrolling Needed) ─── */}
-              <div className="px-2.5 py-1.5 space-y-1 flex-1">
-                {/* 1. Dashboard */}
-                <button
-                  type="button"
-                  onClick={() => handleDrawerNavigate('dashboard')}
-                  className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
-                    isItemActive('dashboard')
-                      ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                      : 'hover:bg-slate-50 border border-transparent'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
-                    <div
-                      className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all ${
-                        isItemActive('dashboard')
-                          ? 'bg-[#0066ff] text-white shadow-xs'
-                          : 'bg-[#e0efff] text-[#0066ff]'
+              {/* ─── 8 Primary Navigation Items (HeyGen Pill Styling: #E4F5FA Active State) ─── */}
+              <div className="px-3 py-2 space-y-1">
+                <span className="px-2 pt-1 pb-1 block text-[10.5px] font-bold uppercase tracking-wider text-[#98A2B3]">
+                  Navigation
+                </span>
+
+                {drawerNavItems.map((item) => {
+                  const ItemIcon = item.icon;
+                  const active = isItemActive(item.id);
+
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => handleDrawerNavigate(item.id)}
+                      className={`w-full rounded-xl py-2 px-3 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
+                        active
+                          ? 'bg-[#E4F5FA] text-[#0e7490] font-semibold border border-[#16C5EA]/25 shadow-2xs'
+                          : 'text-[#344054] hover:bg-[#FAFBFC] hover:text-[#101828] border border-transparent'
                       }`}
                     >
-                      <Home className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 text-left">
-                      <h4
-                        className={`text-[12.5px] font-bold leading-tight truncate ${
-                          isItemActive('dashboard') ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
+                      <div className="flex items-center gap-3 min-w-0">
+                        <ItemIcon
+                          className={`w-4.5 h-4.5 shrink-0 stroke-[1.8] transition-colors ${
+                            active ? 'text-[#16C5EA]' : 'text-[#667085] group-hover:text-[#344054]'
+                          }`}
+                        />
+                        <span
+                          className={`text-[13px] truncate ${
+                            active ? 'font-bold text-[#0e7490]' : 'font-medium text-[#344054] group-hover:text-[#101828]'
+                          }`}
+                        >
+                          {item.label}
+                        </span>
+                      </div>
+                      <ChevronRight
+                        className={`w-3.5 h-3.5 shrink-0 transition-transform ${
+                          active
+                            ? 'text-[#16C5EA]'
+                            : 'text-[#D0D5DD] group-hover:text-[#667085] group-hover:translate-x-0.5'
                         }`}
-                      >
-                        Dashboard
-                      </h4>
-                      <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
-                        Overview &amp; Progress
-                      </p>
-                    </div>
-                  </div>
-                  <ChevronRight
-                    className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
-                      isItemActive('dashboard') ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
-                    }`}
-                  />
-                </button>
+                      />
+                    </button>
+                  );
+                })}
 
-                {/* 2. My Learning */}
-                <button
-                  type="button"
-                  onClick={() => handleDrawerNavigate('learning')}
-                  className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
-                    isItemActive('learning')
-                      ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                      : 'hover:bg-slate-50 border border-transparent'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
-                    <div className="w-8 h-8 rounded-xl bg-[#f3e8ff] text-[#9333ea] flex items-center justify-center shrink-0 shadow-2xs">
-                      <BookOpen className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 text-left">
-                      <h4
-                        className={`text-[12.5px] font-bold leading-tight truncate ${
-                          isItemActive('learning') ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
-                        }`}
-                      >
-                        My Learning
-                      </h4>
-                      <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
-                        Continue Your Courses
-                      </p>
-                    </div>
-                  </div>
-                  <ChevronRight
-                    className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
-                      isItemActive('learning') ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
-                    }`}
-                  />
-                </button>
-
-                {/* 3. DSA Coding Practice */}
-                <button
-                  type="button"
-                  onClick={() => handleDrawerNavigate('practice')}
-                  className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
-                    isItemActive('practice')
-                      ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                      : 'hover:bg-slate-50 border border-transparent'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
-                    <div className="w-8 h-8 rounded-xl bg-[#ffedd5] text-[#ea580c] flex items-center justify-center shrink-0 shadow-2xs">
-                      <Code2 className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 text-left">
-                      <h4
-                        className={`text-[12.5px] font-bold leading-tight truncate ${
-                          isItemActive('practice') ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
-                        }`}
-                      >
-                        DSA Coding Practice
-                      </h4>
-                      <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
-                        Code • Practice • Improve
-                      </p>
-                    </div>
-                  </div>
-                  <ChevronRight
-                    className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
-                      isItemActive('practice') ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
-                    }`}
-                  />
-                </button>
-
-                {/* 4. ATS Resume Analyser */}
+                {/* 9. Help & Support (WhatsApp Integration) */}
                 <button
                   type="button"
                   onClick={() => {
                     soundEffects.playClick();
                     setHamburgerDrawerOpen(false);
-                    if (onOpenAtsResume) onOpenAtsResume();
-                    else if (typeof window !== 'undefined') window.location.hash = '#ats';
+                    if (onOpenHelp) onOpenHelp();
+                    else window.open(WA_SUPPORT_URL, '_blank', 'noopener,noreferrer');
                   }}
-                  className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
-                    isItemActive('ats')
-                      ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                      : 'hover:bg-slate-50 border border-transparent'
-                  }`}
+                  className="w-full rounded-xl py-2 px-3 flex items-center justify-between text-[#344054] hover:bg-[#FAFBFC] hover:text-[#101828] border border-transparent transition-all group cursor-pointer"
                 >
-                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
-                    <div className="w-8 h-8 rounded-xl bg-[#dcfce7] text-[#16a34a] flex items-center justify-center shrink-0 shadow-2xs">
-                      <FileCheck2 className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 text-left">
-                      <h4
-                        className={`text-[12.5px] font-bold leading-tight truncate ${
-                          isItemActive('ats') ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
-                        }`}
-                      >
-                        ATS Resume Analyser
-                      </h4>
-                      <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
-                        Check &amp; Improve Your Resume
-                      </p>
-                    </div>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Headphones className="w-4.5 h-4.5 text-[#10B981] stroke-[1.8] shrink-0" />
+                    <span className="text-[13px] font-medium text-[#344054] group-hover:text-[#101828]">
+                      Help &amp; Support
+                    </span>
                   </div>
-                  <ChevronRight
-                    className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
-                      isItemActive('ats') ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
-                    }`}
-                  />
-                </button>
-
-                {/* 5. Internship */}
-                <button
-                  type="button"
-                  onClick={() => handleDrawerNavigate('internship')}
-                  className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
-                    isItemActive('internship')
-                      ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                      : 'hover:bg-slate-50 border border-transparent'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
-                    <div className="w-8 h-8 rounded-xl bg-[#dbeafe] text-[#2563eb] flex items-center justify-center shrink-0 shadow-2xs">
-                      <GraduationCap className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 text-left">
-                      <h4
-                        className={`text-[12.5px] font-bold leading-tight truncate ${
-                          isItemActive('internship') ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
-                        }`}
-                      >
-                        Internship
-                      </h4>
-                      <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
-                        Hands-on Experience
-                      </p>
-                    </div>
-                  </div>
-                  <ChevronRight
-                    className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
-                      isItemActive('internship') ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
-                    }`}
-                  />
-                </button>
-
-                {/* 6. Certificate */}
-                <button
-                  type="button"
-                  onClick={() => handleDrawerNavigate('certificate')}
-                  className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
-                    isItemActive('certificate')
-                      ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                      : 'hover:bg-slate-50 border border-transparent'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
-                    <div className="w-8 h-8 rounded-xl bg-[#fef3c7] text-[#d97706] flex items-center justify-center shrink-0 shadow-2xs">
-                      <Briefcase className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 text-left">
-                      <h4
-                        className={`text-[12.5px] font-bold leading-tight truncate ${
-                          isItemActive('certificate') ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
-                        }`}
-                      >
-                        Certificate
-                      </h4>
-                      <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
-                        Your Achievements
-                      </p>
-                    </div>
-                  </div>
-                  <ChevronRight
-                    className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
-                      isItemActive('certificate') ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
-                    }`}
-                  />
-                </button>
-
-                {/* 7. Recommendation Letter */}
-                <button
-                  type="button"
-                  onClick={() => handleDrawerNavigate('recommendation')}
-                  className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
-                    isItemActive('recommendation')
-                      ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                      : 'hover:bg-slate-50 border border-transparent'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
-                    <div className="w-8 h-8 rounded-xl bg-[#ede9fe] text-[#7c3aed] flex items-center justify-center shrink-0 shadow-2xs">
-                      <FileBadge className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 text-left">
-                      <h4
-                        className={`text-[12.5px] font-bold leading-tight truncate ${
-                          isItemActive('recommendation') ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
-                        }`}
-                      >
-                        Recommendation Letter
-                      </h4>
-                      <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
-                        Get Your LOR
-                      </p>
-                    </div>
-                  </div>
-                  <ChevronRight
-                    className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
-                      isItemActive('recommendation') ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
-                    }`}
-                  />
-                </button>
-
-                {/* 8. Job & Placement */}
-                <button
-                  type="button"
-                  onClick={() => handleDrawerNavigate('placement')}
-                  className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
-                    isItemActive('placement')
-                      ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                      : 'hover:bg-slate-50 border border-transparent'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
-                    <div className="w-8 h-8 rounded-xl bg-[#ffe4e6] text-[#e11d48] flex items-center justify-center shrink-0 shadow-2xs">
-                      <Target className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 text-left">
-                      <h4
-                        className={`text-[12.5px] font-bold leading-tight truncate ${
-                          isItemActive('placement') ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
-                        }`}
-                      >
-                        Job &amp; Placement
-                      </h4>
-                      <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
-                        Opportunities &amp; Support
-                      </p>
-                    </div>
-                  </div>
-                  <ChevronRight
-                    className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
-                      isItemActive('placement') ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
-                    }`}
-                  />
+                  <span className="text-[10px] font-semibold text-[#059669] bg-[#ECFDF5] border border-[#A7F3D0] px-2 py-0.5 rounded-full">
+                    Live Chat
+                  </span>
                 </button>
               </div>
             </div>
 
-            {/* ─── Bottom Action Row: Logout (or Login) - Compact Slim ─── */}
-            <div className="p-3 pt-1.5 pb-3 border-t border-slate-100 shrink-0">
+            {/* ─── Bottom Action Row: Sign Out (HeyGen Soft Red Treatment) ─── */}
+            <div className="p-3.5 border-t border-[#EAECF0] bg-[#FAFBFC] shrink-0">
               {isLoggedIn ? (
                 <button
                   type="button"
                   onClick={handleSignOutAction}
-                  className="w-full h-10 rounded-xl bg-[#fff1f2] hover:bg-[#ffe4e6] border border-[#ffe4e6] px-3.5 flex items-center justify-between text-[#e11d48] font-bold text-xs transition-all active:scale-[0.98] cursor-pointer shadow-2xs"
+                  className="w-full h-9.5 rounded-xl bg-[#FEF3F2] hover:bg-[#FEE4E2] border border-[#FECDCA] px-3.5 flex items-center justify-between text-[#D92D20] font-semibold text-xs transition-all active:scale-[0.98] cursor-pointer shadow-2xs"
                 >
-                  <div className="flex items-center gap-2">
-                    <LogOut className="w-4 h-4 text-[#e11d48] shrink-0" />
-                    <span>Logout</span>
+                  <div className="flex items-center gap-2.5">
+                    <LogOut className="w-4 h-4 text-[#D92D20] stroke-[1.8] shrink-0" />
+                    <span>Sign Out</span>
                   </div>
-                  <ChevronRight className="w-3.5 h-3.5 text-[#fda4af]" />
+                  <ChevronRight className="w-3.5 h-3.5 text-[#FDA29B]" />
                 </button>
               ) : (
                 <button
@@ -1204,13 +998,13 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     if (onOpenSignUp) onOpenSignUp();
                     else onOpenLogin?.();
                   }}
-                  className="w-full h-10 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs px-3.5 flex items-center justify-between shadow-xs active:scale-[0.98] transition cursor-pointer"
+                  className="w-full h-9.5 rounded-xl bg-[#16C5EA] hover:bg-[#0ea5e9] text-white font-semibold text-xs px-3.5 flex items-center justify-between shadow-xs active:scale-[0.98] transition cursor-pointer"
                 >
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-white shrink-0" />
+                    <User className="w-4 h-4 stroke-[2] text-white shrink-0" />
                     <span>Login / Sign Up</span>
                   </div>
-                  <ArrowRight className="w-3.5 h-3.5 text-white" />
+                  <ArrowRight className="w-3.5 h-3.5 stroke-[2] text-white" />
                 </button>
               )}
             </div>
@@ -1219,67 +1013,48 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
         document.body
       )}
 
-      {/* ─── PREMIUM COMPACT MY PROFILE PANEL ─── */}
+      {/* ─── HEYGEN-INSPIRED COMPACT MY PROFILE PANEL ─── */}
       {typeof document !== 'undefined' && profileDropdownOpen && createPortal(
         <div className="fixed inset-0 z-[9999] flex justify-end items-start animate-fadeIn">
-          {/* Dark Translucent Backdrop */}
+          {/* Subtle Dark Backdrop */}
           <div
-            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-[#0c111d]/25 backdrop-blur-2xs transition-opacity"
             onClick={() => setProfileDropdownOpen(false)}
             aria-hidden="true"
           />
 
-          {/* Profile Drawer Panel (Strictly terminates right at the logout button, absolutely no blank space below) */}
+          {/* Profile Card Modal */}
           <aside
             onClick={(e) => e.stopPropagation()}
-            className="relative z-10 w-[84vw] max-w-[320px] h-auto self-start bg-white shadow-[-12px_12px_40px_rgba(15,23,42,0.22)] rounded-bl-[24px] border-l border-b border-slate-200/90 flex flex-col overflow-hidden text-left animate-slideInRight"
+            className="relative z-10 w-[86vw] max-w-[320px] h-auto self-start bg-white shadow-[0_16px_40px_rgba(16,24,40,0.14)] rounded-2xl border border-[#EAECF0] m-3 sm:mt-18 sm:mr-6 flex flex-col overflow-hidden text-left animate-slideInRight font-sans"
             role="dialog"
             aria-label="My Profile"
           >
-            {/* Header: Back Button + My Profile + Edit Button */}
-            <div className="p-3 px-4 flex items-center justify-between shrink-0 border-b border-slate-100 bg-white">
+            {/* Header: Title + Close Button */}
+            <div className="p-3.5 px-4 flex items-center justify-between border-b border-[#EAECF0] bg-white">
+              <span className="text-sm font-bold text-[#344054]">My Profile</span>
               <button
                 type="button"
-                onClick={() => {
-                  soundEffects.playClick();
-                  setProfileDropdownOpen(false);
-                }}
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer active:scale-95 border border-slate-200/60"
-                aria-label="Back"
+                onClick={() => setProfileDropdownOpen(false)}
+                className="w-7 h-7 rounded-lg bg-[#F2F4F7] hover:bg-[#EAECF0] text-[#667085] hover:text-[#344054] flex items-center justify-center transition-all cursor-pointer"
+                aria-label="Close Profile"
               >
-                <ChevronLeft className="w-5 h-5 text-slate-700 -ml-0.5" />
-              </button>
-
-              <h2 className="text-base font-extrabold text-[#10234A]">My Profile</h2>
-
-              <button
-                type="button"
-                onClick={() => {
-                  soundEffects.playClick();
-                  setEditNameInput(studentName);
-                  setEditPhoneInput(studentPhone);
-                  setEditEmailInput(studentEmail);
-                  setEditProfileModalOpen(true);
-                }}
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer active:scale-95 border border-slate-200/60"
-                aria-label="Edit Profile"
-              >
-                <Pencil className="w-4 h-4 text-slate-700" />
+                <X className="w-3.5 h-3.5 stroke-[2]" />
               </button>
             </div>
 
-            {/* Compact Body - Tightly wraps, ends directly at bottom of logout button with 0 trailing whitespace */}
-            <div className="p-3 pb-3 space-y-2.5">
-              {/* 1. Profile Identity Header */}
+            {/* Profile Content */}
+            <div className="p-4 space-y-3.5">
+              {/* Identity Header */}
               <div className="flex items-center gap-3">
                 <div className="relative shrink-0">
-                  <div className="w-12 h-12 rounded-full border-2 border-blue-200 overflow-hidden bg-gradient-to-tr from-blue-50 to-indigo-100 flex items-center justify-center shadow-xs">
+                  <div className="w-12 h-12 rounded-full border border-[#EAECF0] overflow-hidden bg-[#E4F5FA] flex items-center justify-center shadow-2xs">
                     {studentAvatar ? (
                       <img src={studentAvatar} alt={studentName} className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-[#EEF4FF] text-[#1a73e8] font-black text-xl">
+                      <span className="text-[#0e7490] font-bold text-lg">
                         {studentName ? studentName.charAt(0).toUpperCase() : 'S'}
-                      </div>
+                      </span>
                     )}
                   </div>
                   <button
@@ -1290,7 +1065,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                       setEditEmailInput(studentEmail);
                       setEditProfileModalOpen(true);
                     }}
-                    className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#1a73e8] hover:bg-blue-600 text-white flex items-center justify-center shadow-xs border-2 border-white cursor-pointer"
+                    className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#16C5EA] hover:bg-[#0ea5e9] text-white flex items-center justify-center shadow-xs border-2 border-white cursor-pointer"
                     title="Change Photo"
                     aria-label="Change Photo"
                   >
@@ -1300,21 +1075,21 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
-                    <h3 className="text-[15px] font-extrabold text-[#10234A] truncate leading-tight">
+                    <h3 className="text-[14px] font-bold text-[#344054] truncate leading-tight">
                       {studentName}
                     </h3>
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 fill-emerald-50" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981] shrink-0" />
                   </div>
-                  <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
-                    Student • Data Analyst with GenAI
-                  </p>
+                  <span className="inline-flex items-center px-2 py-0.5 mt-1 rounded-md text-[10px] font-semibold bg-[#E4F5FA] text-[#0e7490] border border-[#16C5EA]/20">
+                    Student
+                  </span>
                 </div>
               </div>
 
-              {/* 2. Personal Information Card containing Sky Color Lighting Log Out Button */}
-              <div className="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-3 pb-2.5">
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-xs font-extrabold text-[#10234A]">Personal Information</span>
+              {/* Personal Information Box */}
+              <div className="bg-[#FAFBFC] border border-[#EAECF0] rounded-xl p-3 space-y-2 text-xs">
+                <div className="flex items-center justify-between pb-1.5 border-b border-[#EAECF0]">
+                  <span className="font-bold text-[#344054]">Personal Details</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -1323,84 +1098,63 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                       setEditPhoneInput(studentPhone);
                       setEditEmailInput(studentEmail);
                       setEditProfileModalOpen(true);
+                      setProfileDropdownOpen(false);
                     }}
-                    className="flex items-center gap-1 text-[11px] font-bold text-[#1a73e8] hover:underline cursor-pointer"
+                    className="flex items-center gap-1 text-[11px] font-semibold text-[#16C5EA] hover:underline cursor-pointer"
                   >
-                    <Pencil className="w-3 h-3" />
+                    <Pencil className="w-3 h-3 stroke-[2]" />
                     <span>Edit</span>
                   </button>
                 </div>
 
-                <div className="space-y-1.5 text-[11px]">
-                  <div className="flex items-center justify-between py-0.5">
-                    <span className="text-slate-500 font-medium">Full Name</span>
-                    <span className="text-[#10234A] font-bold">{studentName}</span>
-                  </div>
-                  <div className="flex items-center justify-between py-0.5">
-                    <span className="text-slate-500 font-medium">Email</span>
-                    <span className="text-[#10234A] font-bold truncate max-w-[170px]">{studentEmail}</span>
-                  </div>
-                  <div className="flex items-center justify-between py-0.5">
-                    <span className="text-slate-500 font-medium">Phone</span>
-                    <span className="text-[#10234A] font-bold">{studentPhone}</span>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[#667085]">Name:</span>
+                  <span className="font-semibold text-[#344054] truncate max-w-[170px]">{studentName}</span>
                 </div>
-
-                {/* Animated Lighting Logout Button in Sky Color (Directly under Phone Number) */}
-                <div className="pt-2.5 mt-2.5 border-t border-slate-200/80">
-                  <button
-                    type="button"
-                    onClick={handleSignOutAction}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    onTouchStart={(e) => e.stopPropagation()}
-                    className="relative group w-full p-[2.5px] rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-[0_0_20px_rgba(14,165,233,0.5)] hover:shadow-[0_0_30px_rgba(14,165,233,0.8)]"
-                    title="Log Out of Account"
-                    aria-label="Log Out of Account"
-                  >
-                    {/* Continuous Rotating Electric Sky Lighting Border Beam */}
-                    <div className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#38bdf8_0%,#0284c7_25%,#38bdf8_50%,#0ea5e9_75%,#38bdf8_100%)] opacity-95 group-hover:opacity-100" />
-
-                    {/* Inner Glowing Body in Vibrant Sky Blue */}
-                    <div className="relative w-full py-2.5 px-4 rounded-[10px] bg-gradient-to-r from-sky-400 via-sky-500 to-sky-600 hover:from-sky-300 hover:via-sky-400 hover:to-sky-500 flex items-center justify-center gap-2 text-white font-black text-sm tracking-wide overflow-hidden border border-sky-200/70 transition-colors">
-                      {/* Shimmer Light Beam Sweep */}
-                      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/35 to-transparent pointer-events-none" />
-
-                      {/* Pulsing Light Aura */}
-                      <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-32 h-10 bg-white/25 blur-lg rounded-full pointer-events-none" />
-
-                      <LogOut className="w-4 h-4 text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] animate-pulse" />
-                      <span className="drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] text-white font-extrabold text-[13.5px]">
-                        Log Out
-                      </span>
-                    </div>
-                  </button>
+                <div className="flex items-center justify-between">
+                  <span className="text-[#667085]">Email:</span>
+                  <span className="font-semibold text-[#344054] truncate max-w-[170px]">{studentEmail}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[#667085]">Mobile:</span>
+                  <span className="font-semibold text-[#344054]">{studentPhone}</span>
                 </div>
               </div>
+
+              {/* Sign Out Button */}
+              <button
+                type="button"
+                onClick={handleSignOutAction}
+                className="w-full py-2 px-3 rounded-xl bg-[#FEF3F2] hover:bg-[#FEE4E2] border border-[#FECDCA] text-[#D92D20] font-semibold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
+              >
+                <LogOut className="w-4 h-4 stroke-[1.8]" />
+                <span>Sign Out</span>
+              </button>
             </div>
           </aside>
         </div>,
         document.body
       )}
 
-      {/* ─── REAL EDIT PROFILE MODAL ─── */}
+      {/* ─── HEYGEN-STYLE EDIT PROFILE MODAL ─── */}
       {editProfileModalOpen && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-[#0c111d]/40 backdrop-blur-2xs animate-fadeIn font-sans">
           <div
-            className="bg-white rounded-3xl border border-slate-200 max-w-md w-full p-6 shadow-2xl relative text-left"
+            className="bg-white rounded-2xl border border-[#EAECF0] max-w-md w-full p-6 shadow-2xl relative text-left"
             role="dialog"
             aria-label="Edit Student Profile"
           >
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-5">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-[#EEF4FF] text-[#1a73e8] flex items-center justify-center font-bold">
-                  <Pencil className="w-4 h-4" />
+            <div className="flex items-center justify-between pb-3.5 border-b border-[#EAECF0] mb-5">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-[#E4F5FA] text-[#16C5EA] flex items-center justify-center">
+                  <Pencil className="w-4 h-4 stroke-[2]" />
                 </div>
-                <h3 className="text-base font-bold text-[#10234A]">Edit Profile</h3>
+                <h3 className="text-base font-bold text-[#344054]">Edit Profile</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setEditProfileModalOpen(false)}
-                className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center cursor-pointer transition"
+                className="w-8 h-8 rounded-lg hover:bg-[#F2F4F7] text-[#667085] hover:text-[#344054] flex items-center justify-center cursor-pointer transition"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1408,7 +1162,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
             <form onSubmit={handleSaveProfile} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-[#10234A] mb-1.5">
+                <label className="block text-xs font-semibold text-[#344054] mb-1.5">
                   Full Name
                 </label>
                 <input
@@ -1417,12 +1171,12 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                   value={editNameInput}
                   onChange={(e) => setEditNameInput(e.target.value)}
                   placeholder="e.g. Rahul Sharma"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-800 outline-none focus:border-[#1a73e8] focus:ring-2 focus:ring-[#1a73e8]/20 transition"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#EAECF0] bg-white text-sm font-medium text-[#344054] outline-none focus:border-[#16C5EA] focus:ring-2 focus:ring-[#16C5EA]/15 transition"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#10234A] mb-1.5">
+                <label className="block text-xs font-semibold text-[#344054] mb-1.5">
                   Mobile Number
                 </label>
                 <input
@@ -1430,24 +1184,24 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                   value={editPhoneInput}
                   onChange={(e) => setEditPhoneInput(e.target.value)}
                   placeholder="e.g. +91 98765 43210"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-800 outline-none focus:border-[#1a73e8] focus:ring-2 focus:ring-[#1a73e8]/20 transition"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#EAECF0] bg-white text-sm font-medium text-[#344054] outline-none focus:border-[#16C5EA] focus:ring-2 focus:ring-[#16C5EA]/15 transition"
                 />
-                <span className="text-[11px] text-slate-400 mt-1 block">
+                <span className="text-[11px] text-[#667085] mt-1 block">
                   Used for internship &amp; certificate verification
                 </span>
               </div>
 
-              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-2.5 pt-3.5 border-t border-[#EAECF0]">
                 <button
                   type="button"
                   onClick={() => setEditProfileModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-[#667085] hover:bg-[#F2F4F7] transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-[#1a73e8] hover:bg-blue-600 shadow-xs transition cursor-pointer"
+                  className="px-5 py-2 rounded-xl text-xs font-semibold text-white bg-[#16C5EA] hover:bg-[#0ea5e9] shadow-xs transition cursor-pointer"
                 >
                   Save Changes
                 </button>
@@ -1459,22 +1213,22 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
       {/* ─── SPOTLIGHT SEARCH MODAL (Ctrl + K) ─── */}
       {searchModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 pt-20 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-3xl border border-slate-200 max-w-xl w-full p-4 sm:p-5 shadow-2xl relative text-left">
-            <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
-              <Search className="w-5 h-5 text-sky-500 shrink-0" />
+        <div className="fixed inset-0 z-[10000] flex items-start justify-center p-4 sm:p-6 pt-20 bg-[#0c111d]/40 backdrop-blur-2xs animate-fadeIn font-sans">
+          <div className="bg-white rounded-2xl border border-[#EAECF0] max-w-xl w-full p-4 sm:p-5 shadow-2xl relative text-left">
+            <div className="flex items-center gap-3 pb-3 border-b border-[#EAECF0]">
+              <Search className="w-5 h-5 text-[#16C5EA] shrink-0 stroke-[2]" />
               <input
                 type="text"
                 autoFocus
                 placeholder="Search challenges, topics, courses or career tools..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full text-sm font-semibold text-slate-800 outline-none placeholder:text-slate-400"
+                className="w-full text-sm font-medium text-[#344054] outline-none placeholder:text-[#98A2B3]"
               />
               <button
                 type="button"
                 onClick={() => setSearchModalOpen(false)}
-                className="p-1 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 cursor-pointer"
+                className="p-1 rounded-lg hover:bg-[#F2F4F7] text-[#667085] hover:text-[#344054] cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1482,7 +1236,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
             <div className="mt-3 max-h-80 overflow-y-auto space-y-1">
               {searchResults.length === 0 ? (
-                <p className="text-center py-6 text-xs text-slate-400">No results found for "{searchQuery}"</p>
+                <p className="text-center py-6 text-xs text-[#667085]">No results found for "{searchQuery}"</p>
               ) : (
                 searchResults.map((item, idx) => (
                   <button
@@ -1493,27 +1247,27 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                       setSearchModalOpen(false);
                       item.action();
                     }}
-                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-slate-50 transition text-left cursor-pointer group"
+                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-[#E4F5FA]/50 transition text-left cursor-pointer group"
                   >
                     <div>
-                      <strong className="text-xs font-bold text-slate-800 group-hover:text-blue-600 block">{item.title}</strong>
-                      <span className="text-[10px] text-slate-400">{item.category}</span>
+                      <strong className="text-xs font-bold text-[#344054] group-hover:text-[#0e7490] block">{item.title}</strong>
+                      <span className="text-[10px] text-[#667085]">{item.category}</span>
                     </div>
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+                    <ArrowRight className="w-3.5 h-3.5 text-[#667085] group-hover:text-[#16C5EA] group-hover:translate-x-1 transition-all" />
                   </button>
                 ))
               )}
             </div>
 
-            <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-              <span>Press <kbd className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-mono text-[10px]">ESC</kbd> to close</span>
-              <span>⚡ Fast AI Search</span>
+            <div className="mt-3 pt-2.5 border-t border-[#EAECF0] flex items-center justify-between text-[11px] text-[#667085]">
+              <span>Press <kbd className="px-1.5 py-0.5 rounded bg-[#F2F4F7] text-[#344054] font-mono text-[10px] border border-[#EAECF0]">ESC</kbd> to close</span>
+              <span className="font-medium text-[#16C5EA]">⚡ Fast AI Search</span>
             </div>
           </div>
         </div>
       )}
 
-      {/* ─── HEADER WALLET WITHDRAW EARNINGS MODAL (Matches Earn Cash Wallet Withdraw) ─── */}
+      {/* ─── HEADER WALLET WITHDRAW EARNINGS MODAL ─── */}
       <WalletWithdrawModal
         isOpen={headerWithdrawModalOpen}
         onClose={() => setHeaderWithdrawModalOpen(false)}
