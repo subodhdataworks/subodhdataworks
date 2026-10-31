@@ -611,14 +611,46 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                 </div>
               </div>
 
-              {/* ── Mobile Placement Banner Card (1:1 Exact Match) ── */}
+              {/* ── Mobile Placement Banner Card (AI-Generated High-Res Image + Crisp Typography) ── */}
               <div className="block md:hidden mb-2.5">
-                <div className="w-full rounded-2xl overflow-hidden shadow-sm border border-slate-200/60 bg-[#02183c]">
-                  <img
-                    src="/images/auth/mobile_placement_banner.jpg"
-                    alt="New Placement Prep Batch - Ultimate Placement Solution"
-                    className="w-full h-auto object-cover select-none"
-                  />
+                <div className="w-full rounded-2xl overflow-hidden shadow-md border border-[#1b3b70]/60 bg-gradient-to-r from-[#02132e] via-[#051c44] to-[#03132e] relative select-none">
+                  {/* Subtle Ambient Light Glow */}
+                  <div className="absolute -top-10 -left-10 w-36 h-36 rounded-full bg-blue-500/25 blur-2xl pointer-events-none" />
+                  
+                  {/* AI Generated Indian Tech Student on the Right */}
+                  <div className="absolute right-0 top-0 bottom-0 w-[46%] xs:w-[48%] pointer-events-none overflow-hidden">
+                    <img
+                      src="/images/auth/mobile_placement_student.jpg"
+                      alt="Student Learning at Future IT"
+                      className="w-full h-full object-cover object-[75%_center] select-none"
+                    />
+                    {/* Gradient Fade to seamlessly merge into the navy background */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#02132e] via-[#02132e]/40 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#02132e]/50 via-transparent to-transparent pointer-events-none" />
+                  </div>
+
+                  {/* Left Content: Razor-Sharp Vector Typography */}
+                  <div className="relative z-10 p-3 xs:p-3.5 pr-[45%] xs:pr-[47%] min-h-[114px] flex flex-col justify-center">
+                    {/* Batch Pill */}
+                    <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-600/90 to-purple-600/90 border border-blue-400/40 text-[9px] xs:text-[9.5px] font-black text-white shadow-2xs w-fit">
+                      <Flame className="w-3 h-3 text-amber-400 fill-amber-400 shrink-0" />
+                      <span className="truncate">New PLACEMENT PREP Batch</span>
+                    </div>
+
+                    {/* Headline */}
+                    <h3 className="mt-1.5 text-[17px] xs:text-[19px] font-black text-white leading-[1.14] tracking-tight">
+                      Ultimate <br />
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-white">
+                        Placement
+                      </span> <br />
+                      Solution
+                    </h3>
+
+                    {/* Subtitle */}
+                    <p className="mt-1 text-[9.5px] xs:text-[10px] text-cyan-200/95 font-medium leading-tight">
+                      Start your placement preparation today!
+                    </p>
+                  </div>
                 </div>
 
                 {/* ── 3 Quick Feature White Cards (Live Classes | Projects & Practice | Placement Support) ── */}
