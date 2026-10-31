@@ -449,14 +449,14 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
             type="button"
             onClick={() => {
               playClick?.();
-              const q = window.prompt('🔍 Search Hackathon/DSA Practice:\n(e.g., Python, SQL, React, GenAI, MLOps)');
+              const q = window.prompt('🔍 Search DSA Coding Practice:\n(e.g., Python, SQL, React, GenAI, MLOps)');
               if (q && q.trim()) {
                 const target = gameCourses.find(c => c.title.toLowerCase().includes(q.toLowerCase()));
                 if (target) handleCardClick(target);
               }
             }}
             className="w-8 h-8 rounded-full border border-slate-200/90 bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-600 transition-colors cursor-pointer"
-            aria-label="Search Hackathon/DSA Practice"
+            aria-label="Search DSA Coding Practice"
           >
             <Search className="w-4 h-4" />
           </button>
@@ -492,10 +492,10 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
       {/* ── 2. HERO BANNER: CODING PRACTICE ── */}
       <section className="px-2.5 pt-2.5 pb-1">
         <div className="relative w-full rounded-2xl overflow-hidden shadow-md border border-indigo-900/30 bg-gradient-to-r from-[#070b1e] via-[#0d163a] to-[#1a134d]">
-          {/* AI-Generated Hackathon/DSA Practice Banner Image */}
+          {/* AI-Generated DSA Coding Practice Banner Image */}
           <img
             src="/images/gamezone/coding_practice_mobile_banner.jpg"
-            alt="Hackathon/DSA Practice: Learn by Doing. Build Real Skills."
+            alt="DSA Coding Practice: Learn by Doing. Build Real Skills."
             className="w-full h-auto block object-cover"
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = 'none';
@@ -547,7 +547,7 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
       <section className="px-2.5 pt-2 pb-1.5 flex items-center justify-between">
         <div>
           <h2 className="text-[15px] sm:text-base font-black text-slate-900 tracking-tight leading-snug">
-            Choose Your <span className="text-blue-600">Hackathon/DSA Practice</span>
+            Choose Your <span className="text-blue-600">DSA Coding Practice</span>
           </h2>
           <p className="text-[9.5px] sm:text-[10px] text-slate-500 font-medium leading-tight">
             Practice course-wise code, complete challenges and level up your skills.
@@ -896,7 +896,7 @@ export const MobileGameArenaHub: React.FC<MobileGameArenaHubProps> = ({
                     className="flex-1 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md active:scale-95 transition-transform cursor-pointer flex items-center justify-center gap-1.5"
                   >
                     <Code2 className="w-3.5 h-3.5" />
-                    <span>Start Hackathon/DSA Practice</span>
+                    <span>Start DSA Coding Practice</span>
                   </button>
 
                   <button

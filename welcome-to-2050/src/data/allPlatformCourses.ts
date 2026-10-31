@@ -45,7 +45,7 @@ export const ALL_PLATFORM_COURSES: PlatformCourseItem[] = [
     fullName: 'Data Analyst with GenAI Flagship Program',
     shortDesc: 'Master Python, SQL, Power BI, Excel & GenAI automated business intelligence.',
     descLine1: 'Python • SQL • Advanced Excel • Power BI • Statistics • GenAI Copilot',
-    descLine2: '28 Real-World Projects • Hackathon/DSA Practice • AI Mock Interviews',
+    descLine2: '28 Real-World Projects • DSA Coding Practice • AI Mock Interviews',
     salaryRange: '₹6 LPA – ₹18 LPA',
     courseFee: 'Rs 4',
     marketPrice: 'Rs 18,987',

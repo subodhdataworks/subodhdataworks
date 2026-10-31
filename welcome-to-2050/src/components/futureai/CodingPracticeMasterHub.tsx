@@ -562,7 +562,7 @@ export const CodingPracticeMasterHub: React.FC<CodingPracticeMasterHubProps> = (
         {/* Top Breadcrumb */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6 flex-wrap gap-3">
           <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 flex-wrap">
-            <span className="text-slate-400">Hackathon/DSA Practice</span>
+            <span className="text-slate-400">DSA Coding Practice</span>
             <span>/</span>
             <span className="text-slate-900 font-bold">{activeBlankCourse.title}</span>
           </div>

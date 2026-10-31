@@ -408,7 +408,7 @@ export const MobilePlacementHub: React.FC<MobilePlacementHubProps> = ({
               },
               {
                 step: '2',
-                title: 'Hackathon/DSA Practice & 8 Projects',
+                title: 'DSA Coding Practice & 8 Projects',
                 desc: 'Build real-world automation, Pandas and SQL projects',
                 status: 'In Progress',
                 color: 'bg-sky-500',
@@ -458,7 +458,7 @@ export const MobilePlacementHub: React.FC<MobilePlacementHubProps> = ({
             className="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all border border-slate-700"
           >
             <Code2 className="w-4 h-4" />
-            <span>Level Up with Hackathon/DSA Practice →</span>
+            <span>Level Up with DSA Coding Practice →</span>
           </button>
         </div>
 

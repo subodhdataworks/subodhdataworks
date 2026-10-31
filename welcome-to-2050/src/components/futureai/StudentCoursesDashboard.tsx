@@ -298,7 +298,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             <span className="scd-future-pill">📜 <strong>Certificates &amp; LOR</strong></span>
             <span className="scd-future-pill">🏭 <strong>Industrial Training</strong></span>
             <span className="scd-future-pill">💻 <strong>28+ Live Projects</strong></span>
-            <span className="scd-future-pill">⌨️ <strong>Hackathon/DSA Practice</strong></span>
+            <span className="scd-future-pill">⌨️ <strong>DSA Coding Practice</strong></span>
             <span className="scd-future-pill">🤖 <strong>AI Mock Interviews</strong></span>
             <span className="scd-future-pill">🚀 <strong>Placement Support</strong></span>
             <span className="scd-future-pill">🤝 <strong>700+ Partners</strong></span>
@@ -331,7 +331,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
       {/* =========================================================================
           2. "YOUR CAREER COURSES (4 FLAGSHIP PROGRAMS)" HEADER & CONTROLS
           ========================================================================= */}
-      <section className="lhh-modules-section scd-transparent-pots-section" id="learning-modules-section">
+      <section className="lhh-modules-section scd-transparent-pots-section mt-8 lg:mt-12 pt-2" id="learning-modules-section">
         <div className="lhh-section-header">
           <div className="lhh-section-left">
             <div className="lhh-layer-icon-box">

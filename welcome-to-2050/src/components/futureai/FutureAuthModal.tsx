@@ -22,6 +22,7 @@ import {
   BarChart3,
   ChevronRight,
   User,
+  Award,
 } from 'lucide-react';
 import { getRedirectResult } from 'firebase/auth';
 import { auth } from '../../services/firebase';
@@ -486,11 +487,11 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
             </div>
 
             {/* Features & Student Image Composite Area */}
-            <div className="relative z-10 my-4 grid grid-cols-12 gap-3 items-center">
+            <div className="relative z-10 my-3.5 grid grid-cols-12 gap-3.5 items-center">
               {/* 4 Feature Points on Left */}
-              <div className="col-span-6 space-y-2.5">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-xl bg-blue-500/20 text-cyan-300 border border-blue-400/30 flex items-center justify-center shrink-0 shadow-2xs">
+              <div className="col-span-5 space-y-2.5">
+                <div className="flex items-center gap-2 group">
+                  <div className="w-7 h-7 rounded-xl bg-blue-500/25 text-cyan-300 border border-blue-400/40 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(59,130,246,0.3)]">
                     <GraduationCap className="w-3.5 h-3.5" />
                   </div>
                   <div className="min-w-0">
@@ -499,8 +500,8 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 flex items-center justify-center shrink-0 shadow-2xs">
+                <div className="flex items-center gap-2 group">
+                  <div className="w-7 h-7 rounded-xl bg-cyan-500/25 text-cyan-300 border border-cyan-400/40 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(6,182,212,0.3)]">
                     <Code className="w-3.5 h-3.5" />
                   </div>
                   <div className="min-w-0">
@@ -509,8 +510,8 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-400/30 flex items-center justify-center shrink-0 shadow-2xs">
+                <div className="flex items-center gap-2 group">
+                  <div className="w-7 h-7 rounded-xl bg-amber-500/25 text-amber-300 border border-amber-400/40 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(245,158,11,0.3)]">
                     <Users className="w-3.5 h-3.5" />
                   </div>
                   <div className="min-w-0">
@@ -519,67 +520,90 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 flex items-center justify-center shrink-0 shadow-2xs">
+                <div className="flex items-center gap-2 group">
+                  <div className="w-7 h-7 rounded-xl bg-indigo-500/25 text-indigo-300 border border-indigo-400/40 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(99,102,241,0.3)]">
                     <Briefcase className="w-3.5 h-3.5" />
                   </div>
                   <div className="min-w-0">
                     <h4 className="text-xs font-bold text-white leading-tight">Placement Support</h4>
-                    <p className="text-[10px] text-slate-300 font-normal leading-tight">Resume & opportunities</p>
+                    <p className="text-[10px] text-slate-300 font-normal leading-tight">Resume & direct hiring</p>
                   </div>
+                </div>
+
+                {/* Explore more button matching reference */}
+                <div className="pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      const target = document.getElementById('curriculum') || document.getElementById('programs');
+                      target?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-600 text-white font-black text-[11px] shadow-[0_4px_16px_rgba(6,182,212,0.4)] hover:shadow-[0_6px_22px_rgba(6,182,212,0.55)] hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+                  >
+                    <span>Explore more</span>
+                    <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+                  </button>
                 </div>
               </div>
 
-              {/* Student Image on Right with Floating UI Badges */}
-              <div className="col-span-6 relative">
-                <div className="relative w-full h-[180px] lg:h-[200px] rounded-2xl overflow-hidden border border-cyan-400/30 shadow-lg bg-slate-900 group">
+              {/* Ultra-Premium AI-Generated Student Visual on Right */}
+              <div className="col-span-7 relative">
+                <div className="relative w-full h-[225px] lg:h-[245px] rounded-2xl overflow-hidden border border-cyan-400/40 shadow-[0_12px_40px_rgba(6,182,212,0.3)] bg-[#03132e] group select-none">
                   <img
-                    src="/images/auth/login_student_banner.jpg"
-                    alt="Placement Ready Student"
-                    className="w-full h-full object-cover object-[center_20%] select-none transition-transform duration-700 group-hover:scale-105"
+                    src="/images/auth/desktop_login_premium_hero.jpg"
+                    alt="Placement Ready Student with Laptop and Tech Books"
+                    className="w-full h-full object-cover object-[center_35%] select-none transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none" />
+                  {/* Subtle Cinematic Vignette */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#02183c]/85 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#02183c]/45 via-transparent to-transparent pointer-events-none" />
 
-                  {/* Floating Badges */}
-                  <div className="absolute top-2 right-2 bg-blue-950/80 backdrop-blur-md border border-cyan-400/50 rounded-xl px-2 py-1 text-[9px] font-bold text-cyan-200 flex items-center gap-1 shadow-md">
-                    <TrendingUp className="w-2.5 h-2.5 text-cyan-300" />
-                    <span>Get Hired</span>
+                  {/* Floating Holographic Glass Badges */}
+                  <div className="absolute top-2.5 right-2.5 bg-[#031b3e]/90 backdrop-blur-md border border-cyan-400/60 rounded-xl px-2.5 py-1 text-[9.5px] font-black text-cyan-200 flex items-center gap-1.5 shadow-[0_4px_16px_rgba(6,182,212,0.4)]">
+                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#22d3ee]" />
+                    <span>Get Hired 🚀</span>
                   </div>
 
-                  <div className="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur-md border border-blue-400/40 rounded-xl px-2 py-1 text-[9px] font-bold text-white flex items-center gap-1 shadow-md">
-                    <Video className="w-2.5 h-2.5 text-blue-400" />
+                  <div className="absolute bottom-2.5 left-2.5 bg-[#031b3e]/90 backdrop-blur-md border border-blue-400/50 rounded-xl px-2.5 py-1 text-[9.5px] font-bold text-white flex items-center gap-1.5 shadow-[0_4px_16px_rgba(37,99,235,0.4)]">
+                    <Video className="w-3 h-3 text-sky-400 shrink-0" />
                     <span>Live Classes</span>
+                  </div>
+
+                  <div className="absolute bottom-2.5 right-2.5 bg-[#031b3e]/90 backdrop-blur-md border border-emerald-400/60 rounded-xl px-2.5 py-1 text-[9.5px] font-black text-emerald-300 flex items-center gap-1.5 shadow-[0_4px_16px_rgba(16,185,129,0.4)]">
+                    <Award className="w-3 h-3 text-emerald-400 shrink-0" />
+                    <span>99% Placement</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Bottom: Explore More + Stats */}
-            <div className="relative z-10 pt-2 border-t border-white/10 space-y-3">
+            {/* Bottom: Stats Row (700+ Hiring Partners, 99% Placement Report) */}
+            <div className="relative z-10 pt-2 border-t border-white/10 space-y-2.5">
               {/* Stats Row */}
               <div className="grid grid-cols-3 gap-2 text-center">
-                <div className="bg-white/5 rounded-xl py-1.5 px-2 border border-white/10">
+                <div className="bg-white/[0.08] hover:bg-white/[0.14] transition-colors rounded-xl py-2 px-2 border border-white/10 backdrop-blur-xs">
                   <div className="flex items-center justify-center gap-1">
-                    <Users className="w-3 h-3 text-cyan-300" />
-                    <span className="text-xs font-black text-white">1L+</span>
+                    <Users className="w-3.5 h-3.5 text-cyan-300" />
+                    <span className="text-[13px] font-black text-white">1L+</span>
                   </div>
-                  <span className="text-[9.5px] text-slate-300">Learners</span>
+                  <span className="text-[10px] font-medium text-slate-300 block">Learners</span>
                 </div>
 
-                <div className="bg-white/5 rounded-xl py-1.5 px-2 border border-white/10">
+                <div className="bg-white/[0.08] hover:bg-white/[0.14] transition-colors rounded-xl py-2 px-2 border border-cyan-400/30 backdrop-blur-xs shadow-[0_0_16px_rgba(6,182,212,0.15)]">
                   <div className="flex items-center justify-center gap-1">
-                    <Building className="w-3 h-3 text-cyan-300" />
-                    <span className="text-xs font-black text-white">500+</span>
+                    <Building className="w-3.5 h-3.5 text-cyan-300" />
+                    <span className="text-[13px] font-black text-cyan-200">700+</span>
                   </div>
-                  <span className="text-[9.5px] text-slate-300">Hiring Partners</span>
+                  <span className="text-[10px] font-bold text-cyan-300 block">Hiring Partners</span>
                 </div>
 
-                <div className="bg-white/5 rounded-xl py-1.5 px-2 border border-white/10">
+                <div className="bg-white/[0.08] hover:bg-white/[0.14] transition-colors rounded-xl py-2 px-2 border border-emerald-400/35 backdrop-blur-xs shadow-[0_0_16px_rgba(16,185,129,0.18)]">
                   <div className="flex items-center justify-center gap-1">
-                    <TrendingUp className="w-3 h-3 text-emerald-400" />
-                    <span className="text-xs font-black text-white">70%+</span>
+                    <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+                    <span className="text-[13px] font-black text-emerald-300">99%</span>
                   </div>
-                  <span className="text-[9.5px] text-slate-300">Placement Support</span>
+                  <span className="text-[10px] font-bold text-emerald-300 block">Placement Report</span>
                 </div>
               </div>
 

@@ -1,3 +1,4 @@
+import { FullFooter } from '../footer';
 import { FutureAdvancedHeader } from '../futureai/FutureAdvancedHeader';
 import React from 'react';
 import {
@@ -292,14 +293,8 @@ export const AboutUsView: React.FC<AboutUsViewProps> = ({ onBack }) => {
           </div>
         </div>
 
-        {/* Footer Note */}
-        <div className="text-center pt-2 pb-8 text-slate-400 text-xs font-medium space-y-1">
-          <p>© 2026 POWER GREEN INDUSTRIES. All rights reserved.</p>
-          <p className="text-[11px] text-slate-400">
-            FUTURE IT INDUSTRY • Learn Today. Earn Tomorrow.
-          </p>
-        </div>
-      </main>
+        </main>
+      <FullFooter />
     </div>
   );
 };

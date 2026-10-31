@@ -356,7 +356,7 @@ export const WhyFutureAiSection: React.FC<WhyFutureAiSectionProps> = ({
                     <Code2 className="w-4 h-4 text-cyan-600" />
                   </div>
                   <div className="comp-item-text">
-                    <strong className="comp-item-title title-navy">Hackathon/DSA Practice & Quizzes</strong>
+                    <strong className="comp-item-title title-navy">DSA Coding Practice & Quizzes</strong>
                     <span className="comp-item-desc">Learn by doing. Make practice<br />fun and engaging.</span>
                   </div>
                   <div className="comp-badge-status badge-tick">
@@ -526,7 +526,7 @@ export const WhyFutureAiSection: React.FC<WhyFutureAiSectionProps> = ({
                 {[
                   { icon: Zap, title: 'AI-Powered Learning', desc: 'Get instant doubt solving, explanations like a personal tutor.' },
                   { icon: Database, title: 'Real Datasets & Projects', desc: 'Work on industry-style projects and build a portfolio.' },
-                  { icon: Code2, title: 'Hackathon/DSA Practice & Quizzes', desc: 'Learn by doing. Make practice hands-on and engaging.' },
+                  { icon: Code2, title: 'DSA Coding Practice & Quizzes', desc: 'Learn by doing. Make practice hands-on and engaging.' },
                   { icon: BarChart3, title: 'In-Demand Skills', desc: 'Python, SQL, Excel, Power BI, GenAI with hands-on practice.' },
                   { icon: Video, title: 'Interview Practice', desc: 'Mock interviews, AI feedback and real questions.' },
                   { icon: Users, title: 'Career Support', desc: 'Resume building, guidance and job preparation.' }

@@ -98,6 +98,7 @@ import { CourseDetailPopupModal } from './CourseDetailPopupModal';
 import { SuccessPlanModal } from './SuccessPlanModal';
 import { FutureAdvancedHeader } from './FutureAdvancedHeader';
 import { AtsResumeCheckerModal } from './AtsResumeCheckerModal';
+import { MinimalFooter } from '../footer';
 
 // =========================================================================
 // 10 AUTHENTIC 3D-STYLE VECTOR ICONS MATCHING media_1790589591068.jpg
@@ -464,12 +465,55 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   const [placementLockOpen, setPlacementLockOpen] = useState(false);
   const [lockedSectionTarget, setLockedSectionTarget] = useState<string>('Internship');
 
+  // Track previous view before opening modal so closing returns user to the exact same page
+  const prevPageStateRef = useRef<{
+    hash: string;
+    dockTab: 'home' | 'game' | 'income' | 'referral' | 'wallet' | 'withdraw' | 'placement';
+    moduleView: any;
+    topicWs: number | null;
+  }>({
+    hash: '#dashboard',
+    dockTab: 'home',
+    moduleView: null,
+    topicWs: null,
+  });
+
+  const openLockedFeatureModal = (target: string) => {
+    // Record current state before opening modal if not already open
+    if (!placementLockOpen) {
+      prevPageStateRef.current = {
+        hash: typeof window !== 'undefined' ? (window.location.hash || '#dashboard') : '#dashboard',
+        dockTab,
+        moduleView: selectedModuleView,
+        topicWs: activeTopicWs,
+      };
+    }
+    setLockedSectionTarget(target);
+    setPlacementLockOpen(true);
+  };
+
+  const handleClosePlacementLockModal = () => {
+    setPlacementLockOpen(false);
+    const prev = prevPageStateRef.current;
+    // Always restore the exact tab, module, and hash where the popup opened so the page is never blank!
+    const fallbackTab = (prev.dockTab && prev.dockTab !== 'placement') ? prev.dockTab : 'home';
+    setDockTab(fallbackTab);
+    setSelectedModuleView(prev.moduleView);
+    setActiveTopicWs(prev.topicWs);
+    if (typeof window !== 'undefined') {
+      const targetHash = prev.hash && !['#placement', '#jobs', '#placements', '#internship', '#internships', '#certificate', '#certificates', '#recommendation', '#recommendations', '#lor'].includes(prev.hash.split('?')[0].toLowerCase())
+        ? prev.hash
+        : (fallbackTab === 'game' ? '#game' : fallbackTab === 'income' ? '#income' : '#dashboard');
+      window.history.replaceState(null, '', targetHash);
+    }
+  };
+
   // Single guard: any route into Placement (dock click, #placement hash, internal links)
   // is intercepted → user stays on Home and sees the "Complete modules first" popup.
   useLayoutEffect(() => {
     if (dockTab === 'placement' && isPlacementLocked) {
       setDockTab('home');
-      setPlacementLockOpen(true);
+      openLockedFeatureModal('Placement');
       if (typeof window !== 'undefined' && window.location.hash !== '#dashboard') {
         window.history.replaceState(null, '', '#dashboard');
       }
@@ -477,7 +521,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   }, [dockTab, isPlacementLocked]);
 
   const goToLearningModules = () => {
-    setPlacementLockOpen(false);
+    handleClosePlacementLockModal();
     setSelectedModuleView(null);
     setActiveTopicWs(null);
     setDockTab('home');
@@ -681,25 +725,13 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         setActiveTopicWs(null);
         setDockTab('income');
       } else if (baseH === '#placement' || baseH === '#jobs' || baseH === '#placements') {
-        setSelectedModuleView(null);
-        setActiveTopicWs(null);
-        setLockedSectionTarget('Placement');
-        setPlacementLockOpen(true);
+        openLockedFeatureModal('Placement');
       } else if (baseH === '#internship' || baseH === '#internships') {
-        setSelectedModuleView(null);
-        setActiveTopicWs(null);
-        setLockedSectionTarget('Internship');
-        setPlacementLockOpen(true);
+        openLockedFeatureModal('Internship');
       } else if (baseH === '#certificate' || baseH === '#certificates') {
-        setSelectedModuleView(null);
-        setActiveTopicWs(null);
-        setLockedSectionTarget('Certificate');
-        setPlacementLockOpen(true);
+        openLockedFeatureModal('Certificate');
       } else if (baseH === '#recommendation' || baseH === '#recommendations' || baseH === '#lor') {
-        setSelectedModuleView(null);
-        setActiveTopicWs(null);
-        setLockedSectionTarget('Recommendation Letter');
-        setPlacementLockOpen(true);
+        openLockedFeatureModal('Recommendation Letter');
       } else if (baseH === '#referral') {
         setSelectedModuleView(null);
         setActiveTopicWs(null);
@@ -791,7 +823,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       title: 'Python for Data Analysis',
       tagline: 'Learn Python from basics to real-world data analysis projects.',
       coverImg: '/images/module_python_dome.jpg',
-      benefits: ['Video Lessons', 'Hands-on Hackathon/DSA Practice', 'Quizzes & Mini Projects', 'Real-world Datasets'],
+      benefits: ['Video Lessons', 'Hands-on DSA Coding Practice', 'Quizzes & Mini Projects', 'Real-world Datasets'],
       ctaText: 'Continue Learning →'
     },
     'mod-2': {
@@ -1223,14 +1255,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setSelectedModuleView('python');
                 if (typeof window !== 'undefined') window.location.hash = '#python';
               } else if (tab === 'internship') {
-                setLockedSectionTarget('Internship');
-                setPlacementLockOpen(true);
+                openLockedFeatureModal('Internship');
               } else if (tab === 'certificate' || tab === 'certificates') {
-                setLockedSectionTarget('Certificate');
-                setPlacementLockOpen(true);
+                openLockedFeatureModal('Certificate');
               } else if (tab === 'placement') {
-                setLockedSectionTarget('Placement');
-                setPlacementLockOpen(true);
+                openLockedFeatureModal('Placement');
               } else {
                 setDockTab(tab as any);
                 if (typeof window !== 'undefined') window.location.hash = '#' + tab;
@@ -1318,31 +1347,16 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               if (typeof window !== 'undefined') window.location.hash = '#income';
             }}
             onNavigateInternship={() => {
-              setLockedSectionTarget('Internship');
-              setPlacementLockOpen(true);
+              openLockedFeatureModal('Internship');
             }}
             onNavigatePlacement={() => {
-              if (isPlacementLocked) {
-                setLockedSectionTarget('Placement');
-                setPlacementLockOpen(true);
-              } else {
-                setSelectedModuleView(null);
-                setActiveTopicWs(null);
-                setDockTab('placement');
-                if (typeof window !== 'undefined') window.location.hash = '#placement';
-              }
+              openLockedFeatureModal('Placement');
             }}
             onNavigateCertificate={() => {
-              setSelectedModuleView(null);
-              setActiveTopicWs(null);
-              setLockedSectionTarget('Certificate');
-              setPlacementLockOpen(true);
+              openLockedFeatureModal('Certificate');
             }}
             onNavigateRecommendation={() => {
-              setSelectedModuleView(null);
-              setActiveTopicWs(null);
-              setLockedSectionTarget('Recommendation Letter');
-              setPlacementLockOpen(true);
+              openLockedFeatureModal('Recommendation Letter');
             }}
             onOpenHelp={() => {
               if (onOpenAdvisor) onOpenAdvisor();
@@ -1574,31 +1588,16 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           if (typeof window !== 'undefined') window.location.hash = '#income';
         }}
         onNavigateInternship={() => {
-          setLockedSectionTarget('Internship');
-          setPlacementLockOpen(true);
+          openLockedFeatureModal('Internship');
         }}
         onNavigatePlacement={() => {
-          if (isPlacementLocked) {
-            setLockedSectionTarget('Placement');
-            setPlacementLockOpen(true);
-          } else {
-            setSelectedModuleView(null);
-            setActiveTopicWs(null);
-            setDockTab('placement');
-            if (typeof window !== 'undefined') window.location.hash = '#placement';
-          }
+          openLockedFeatureModal('Placement');
         }}
         onNavigateCertificate={() => {
-          setSelectedModuleView(null);
-          setActiveTopicWs(null);
-          setLockedSectionTarget('Certificate');
-          setPlacementLockOpen(true);
+          openLockedFeatureModal('Certificate');
         }}
         onNavigateRecommendation={() => {
-          setSelectedModuleView(null);
-          setActiveTopicWs(null);
-          setLockedSectionTarget('Recommendation Letter');
-          setPlacementLockOpen(true);
+          openLockedFeatureModal('Recommendation Letter');
         }}
         onOpenHelp={() => {
           if (onOpenAdvisor) onOpenAdvisor();
@@ -1874,7 +1873,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         )}
 
         {/* ─── TAB 1: TOP-LEVEL 4-COURSE STUDENT DASHBOARD (#dashboard) ─── */}
-        {dockTab === 'home' && selectedModuleView === null && (
+        {(dockTab === 'home' || dockTab === 'placement') && selectedModuleView === null && (
           <div className="col-span-full">
             <StudentCoursesDashboard
                 userName={userName}
@@ -2185,7 +2184,10 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
       </div>
 
-{/* ─── AI ATS RESUME CHECKER MODAL ─── */}
+{/* ─── MINIMAL FOOTER — LOGGED-IN GENERAL DASHBOARD PAGES ─── */}
+      <MinimalFooter />
+
+      {/* ─── AI ATS RESUME CHECKER MODAL ─── */}
       <AtsResumeCheckerModal
         isOpen={isAtsResumeModalOpen}
         onClose={() => setIsAtsResumeModalOpen(false)}
@@ -2234,7 +2236,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       {/* ─── LEARNING MODULES PROGRESS MODAL (1:1 with media_1791557550984.jpg) ─── */}
       <LearningModulesProgressModal
         isOpen={placementLockOpen}
-        onClose={() => setPlacementLockOpen(false)}
+        onClose={handleClosePlacementLockModal}
         targetFeature={lockedSectionTarget}
         onGoToModules={() => {
           goToLearningModules();

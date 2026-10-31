@@ -1,3 +1,4 @@
+import { FullFooter } from '../footer';
 import { FutureAdvancedHeader } from '../futureai/FutureAdvancedHeader';
 import React from 'react';
 import { ArrowLeft, Scale, Clock, CheckCircle2 } from 'lucide-react';
@@ -133,22 +134,8 @@ export const TermsAndConditionsView: React.FC<TermsAndConditionsViewProps> = ({ 
           </a>
         </div>
 
-        {/* Footer */}
-        <div className="text-center pt-2 pb-8 text-slate-400 text-xs font-medium space-y-1">
-          <p>© 2026 POWER GREEN INDUSTRIES. All rights reserved.</p>
-          <div className="flex items-center justify-center gap-3 text-[11px] text-slate-500 pt-1">
-            <a href="#about-us" className="hover:text-blue-600 transition-colors">About Us</a>
-            <span>•</span>
-            <a href="#contact-us" className="hover:text-blue-600 transition-colors">Contact Us</a>
-            <span>•</span>
-            <a href="#terms" className="hover:text-blue-600 transition-colors">Terms</a>
-            <span>•</span>
-            <a href="#privacy" className="hover:text-blue-600 transition-colors">Privacy</a>
-            <span>•</span>
-            <a href="#refund" className="hover:text-blue-600 transition-colors">Refund</a>
-          </div>
-        </div>
-      </main>
+        </main>
+      <FullFooter />
     </div>
   );
 };

@@ -2041,7 +2041,7 @@ export const PythonCourseDetailView: React.FC<PythonCourseDetailViewProps> = ({
                           }}
                         >
                           <Code2 className="w-3 h-3" />
-                          <span>Hackathon/DSA Practice</span>
+                          <span>DSA Coding Practice</span>
                         </button>
 
                         <button 
@@ -2391,7 +2391,7 @@ export const PythonCourseDetailView: React.FC<PythonCourseDetailViewProps> = ({
                 <div className="pcd-tool-icon-sq bg-orange-50 text-orange-600 border border-orange-200">
                   <Gamepad2 className="w-4 h-4" />
                 </div>
-                <span className="pcd-tool-name">Hackathon/DSA Practice</span>
+                <span className="pcd-tool-name">DSA Coding Practice</span>
               </div>
 
               <div 

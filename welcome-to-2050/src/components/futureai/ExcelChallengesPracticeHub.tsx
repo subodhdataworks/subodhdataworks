@@ -323,7 +323,7 @@ export const ExcelChallengesPracticeHub: React.FC<ExcelChallengesPracticeHubProp
           <div className="relative z-10 max-w-2xl min-w-0">
             <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-white/15 backdrop-blur-sm text-emerald-100 text-[10.5px] sm:text-xs font-bold mb-3 border border-white/20 max-w-full">
               <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
-              <span className="truncate">Microsoft Excel &amp; Modern Formulas Hackathon/DSA Practice</span>
+              <span className="truncate">Microsoft Excel &amp; Modern Formulas DSA Coding Practice</span>
             </div>
 
             <h1 className="text-xl min-[375px]:text-2xl sm:text-3xl font-black tracking-tight mb-2 leading-tight">

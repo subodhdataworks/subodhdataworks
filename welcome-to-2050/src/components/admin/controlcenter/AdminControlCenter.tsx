@@ -203,7 +203,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'users', label: 'Users', icon: Users, badge: users.length },
     { id: 'courses', label: 'Courses', icon: BookOpen },
-    { id: 'practice', label: 'Hackathon/DSA Practice', icon: Code2 },
+    { id: 'practice', label: 'DSA Coding Practice', icon: Code2 },
     { id: 'questions', label: 'Questions', icon: HelpCircle },
     { id: 'contests', label: 'Contests', icon: Trophy },
     { id: 'submissions', label: 'Submissions', icon: FileCheck },
@@ -502,7 +502,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
 
           {activeTab === 'practice' && (
             <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-4 text-left">
-              <h3 className="text-lg font-bold text-[#0F172A]">Hackathon/DSA Practice Arena Controls</h3>
+              <h3 className="text-lg font-bold text-[#0F172A]">DSA Coding Practice Arena Controls</h3>
               <p className="text-xs text-[#64748B]">14 Active Coding Tracks • Python, SQL, Excel &amp; GenAI Challenge Systems</p>
               
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">

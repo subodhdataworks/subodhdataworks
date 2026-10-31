@@ -114,7 +114,7 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
           <Code2 className="w-5 h-5 text-indigo-400" />
         </div>
       ),
-      title: 'Hackathon/DSA Practice',
+      title: 'DSA Coding Practice',
       subtitle: 'Learn by Doing'
     },
     {
@@ -202,7 +202,7 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
 
           {/* 2. Main Headline */}
           <h1 className="hero-2050-headline">
-            <span className="headline-gradient">Hackathon/DSA Practice. 💻</span>
+            <span className="headline-gradient">DSA Coding Practice. 💻</span>
             <span className="headline-dark">Build Real Skills. 🚀</span>
             <span className="headline-dream-job-wrap">
               <span className="headline-dream-job-animated">{typedText || '\u00A0'}</span>
@@ -318,7 +318,7 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
             </div>
             <div className="benefit-item">
               <CheckCircle2 className="w-4 h-4 text-blue-600 fill-blue-50" />
-              <span>Hackathon/DSA Practice</span>
+              <span>DSA Coding Practice</span>
             </div>
             <div className="benefit-item">
               <CheckCircle2 className="w-4 h-4 text-blue-600 fill-blue-50" />

@@ -328,7 +328,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
                   className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition cursor-pointer"
                 >
                   <Laptop className="w-3.5 h-3.5 text-slate-500" />
-                  <span>Hackathon/DSA Practice</span>
+                  <span>DSA Coding Practice</span>
                 </button>
 
                 <button

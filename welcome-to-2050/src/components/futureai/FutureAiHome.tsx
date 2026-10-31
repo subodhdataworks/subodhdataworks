@@ -66,7 +66,7 @@ import { MobileCareerProgramsSection } from './MobileCareerProgramsSection';
 import { MobileAtsResumeSection } from './MobileAtsResumeSection';
 import { MobileCareerJourneySection } from './MobileCareerJourneySection';
 import { MobileWhyChooseSection } from './MobileWhyChooseSection';
-import { MobileFooter } from './MobileFooter';
+import { FullFooter } from '../footer';
 
 // ─── Reusable Smooth Typewriter Heading Component ─────────────────────────────
 interface TypewriterHeadingProps {
@@ -482,7 +482,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
                   className="px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-white hover:bg-slate-50 active:scale-95 text-slate-800 font-bold text-xs sm:text-sm border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2"
                 >
                   <Code2 className="w-3.5 h-3.5 text-[#1a73e8] shrink-0" />
-                  <span>Explore Hackathon/DSA Practice</span>
+                  <span>Explore DSA Coding Practice</span>
                 </button>
               </div>
 
@@ -624,7 +624,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
 
       {/* ─── MOBILE ONLY CTAs & RATING (Placed Directly Below "Our Placed Students") ─── */}
       <div className="lg:hidden w-full max-w-[1440px] mx-auto px-3 sm:px-6 py-3 flex flex-col items-center justify-center text-center z-10 shrink-0">
-        {/* CTAs Row: Left (Join Today!) & Right (Hackathon/DSA Practice) */}
+        {/* CTAs Row: Left (Join Today!) & Right (DSA Coding Practice) */}
         <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full max-w-lg">
           {/* Left Side: Join Today! */}
           <button
@@ -636,14 +636,14 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform shrink-0" />
           </button>
 
-          {/* Right Side: Hackathon/DSA Practice */}
+          {/* Right Side: DSA Coding Practice */}
           <button
             type="button"
             onClick={promptLogin}
             className="w-full px-2 min-[375px]:px-3 py-2.5 sm:py-3 rounded-xl bg-white hover:bg-slate-50 active:scale-95 text-slate-800 font-bold text-[11px] min-[375px]:text-xs sm:text-sm border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap"
           >
             <Code2 className="w-3.5 h-3.5 text-[#1a73e8] shrink-0" />
-            <span className="truncate">Hackathon/DSA Practice</span>
+            <span className="truncate">DSA Coding Practice</span>
           </button>
         </div>
 
@@ -975,161 +975,9 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 8: Desktop-Only Footer (>= 768px, 100% Untouched)
+          GLOBAL FULL FOOTER (1:1 Reference Match, Responsive Desktop & Mobile)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <footer
-        className="hidden md:block relative w-full border-t border-slate-700/60 overflow-hidden text-white"
-        style={{
-          backgroundImage: "url('/images/future_ai_campus_footer.png')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center 55%',
-          backgroundRepeat: 'no-repeat',
-        }}
-      >
-        {/* Dark Navy Transparent Overlay: rgba(5, 22, 48, 0.65) */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ backgroundColor: 'rgba(5, 22, 48, 0.65)' }}
-        />
-
-        {/* Top Electric-Blue Subtle Gradient Accent Line */}
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 via-[#00D2FF] to-indigo-500 pointer-events-none" />
-
-        {/* Footer Main Content — Max Height 260–300px including copyright bar */}
-        <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-7 sm:pt-8 pb-5">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-12 items-start pb-5">
-            
-            {/* 1. LEFT — BRAND */}
-            <div className="flex flex-col items-center md:items-start text-center md:text-left">
-              <img
-                src="/images/brand/future_it_logo_white.png"
-                alt="FUTURE IT INDUSTRIES"
-                className="h-8 sm:h-9 w-auto object-contain select-none cursor-pointer transition-transform hover:scale-[1.02]"
-                onClick={() => {
-                  window.location.hash = '#home';
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-              />
-              <p className="text-[15px] text-slate-200 font-medium mt-2.5 tracking-wide leading-snug">
-                Learn Today, Earn Tomorrow.
-              </p>
-            </div>
-
-            {/* 2. CENTER — COMPANY */}
-            <div className="flex flex-col items-center md:items-start text-center md:text-left">
-              <h4 className="text-[18px] font-bold text-white tracking-wide">
-                Company
-              </h4>
-              <div className="w-8 h-[2.5px] bg-[#00D2FF] rounded-full mt-1.5 mb-3" />
-              <ul className="space-y-2 text-[14px] font-medium text-slate-200">
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => { window.location.hash = '#about-us'; }}
-                    className="hover:text-[#00D2FF] transition-colors cursor-pointer"
-                  >
-                    About Us
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => { window.location.hash = '#contact-us'; }}
-                    className="hover:text-[#00D2FF] transition-colors cursor-pointer"
-                  >
-                    Contact Us
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => { window.location.hash = '#privacy-policy'; }}
-                    className="hover:text-[#00D2FF] transition-colors cursor-pointer"
-                  >
-                    Privacy Policy
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => { window.location.hash = '#terms-and-conditions'; }}
-                    className="hover:text-[#00D2FF] transition-colors cursor-pointer"
-                  >
-                    Terms &amp; Conditions
-                  </button>
-                </li>
-              </ul>
-            </div>
-
-            {/* 3. RIGHT — SUPPORT */}
-            <div className="flex flex-col items-center md:items-start text-center md:text-left">
-              <h4 className="text-[18px] font-bold text-white tracking-wide">
-                Support
-              </h4>
-              <div className="w-8 h-[2.5px] bg-[#00D2FF] rounded-full mt-1.5 mb-3" />
-              <ul className="space-y-2 text-[14px] font-medium text-slate-200">
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const msg = 'Hello Future IT Industry Support Team, I need help regarding my course or student account. Please assist me.';
-                      window.open(`https://wa.me/917632099528?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
-                    }}
-                    className="hover:text-[#00D2FF] transition-colors cursor-pointer"
-                  >
-                    Help Center
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => { window.location.hash = '#contact-us'; }}
-                    className="hover:text-[#00D2FF] transition-colors cursor-pointer"
-                  >
-                    FAQs
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => { window.location.hash = '#refund-policy'; }}
-                    className="hover:text-[#00D2FF] transition-colors cursor-pointer"
-                  >
-                    Refund Policy
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => { window.location.hash = '#contact-us'; }}
-                    className="hover:text-[#00D2FF] transition-colors cursor-pointer"
-                  >
-                    Career
-                  </button>
-                </li>
-              </ul>
-            </div>
-
-          </div>
-        </div>
-
-        {/* 7. Slim Copyright Bottom Bar (~40px height, dark navy translucent background, thin top border) */}
-        <div className="relative z-10 w-full min-h-[40px] py-2.5 px-4 sm:px-6 lg:px-8 bg-[#030e20]/80 border-t border-white/10 flex items-center">
-          <div className="max-w-[1440px] w-full mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 text-center sm:text-left text-[12px] sm:text-[13px] text-slate-300">
-            <p>© 2026 Future IT Industry. All rights reserved.</p>
-            <p className="text-slate-400 font-normal">
-              Empowering learners across India to learn, practice, and get placed.
-            </p>
-          </div>
-        </div>
-      </footer>
-
-      {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 9: Mobile-Only Premium Footer (< 768px, 1:1 Match to Approved Reference)
-      ═══════════════════════════════════════════════════════════════════════════ */}
-      <div className="block md:hidden">
-        <MobileFooter />
-      </div>
+      <FullFooter onOpenAuthModal={() => promptLogin()} />
 
       {/* Clean Auth Modal for Sign Up / Full Login Options */}
       <FutureAuthModal

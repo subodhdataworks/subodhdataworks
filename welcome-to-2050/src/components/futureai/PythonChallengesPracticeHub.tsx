@@ -356,7 +356,7 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
               onClick={onBackToPractice}
               className="hover:text-blue-600 transition-colors cursor-pointer bg-transparent border-0 p-0 text-inherit font-inherit"
             >
-              Hackathon/DSA Practice
+              DSA Coding Practice
             </button>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
             <strong>Python</strong>
@@ -420,7 +420,7 @@ export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubPr
               onClick={onBackToPractice}
               className="hover:text-blue-600 transition-colors cursor-pointer"
             >
-              Hackathon/DSA Practice
+              DSA Coding Practice
             </button>
             <ChevronRight className="w-3 h-3 text-slate-400" />
             <span className="text-slate-800 font-semibold">Python</span>

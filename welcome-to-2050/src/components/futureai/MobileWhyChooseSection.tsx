@@ -63,7 +63,7 @@ export const MobileWhyChooseSection: React.FC<MobileWhyChooseSectionProps> = ({
     },
     {
       id: 4,
-      title: 'Unlimited Hackathons & DSA Practice',
+      title: 'Unlimited DSA Coding Practice',
       desc: 'Compete in live coding hackathons & master DSA problems daily',
       Icon: Trophy,
     },

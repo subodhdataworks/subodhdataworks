@@ -557,7 +557,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               <span>My Learning</span>
             </button>
 
-            {/* 3. Hackathon / DSA Practice (Single Direct Link - NO dropdown, NO arrow) */}
+            {/* 3. DSA Coding Practice (Single Direct Link - NO dropdown, NO arrow) */}
             <button
               type="button"
               onClick={() => {
@@ -572,7 +572,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               }`}
             >
               <Laptop className={`w-4 h-4 ${activeNavTab === 'practice' ? 'text-[#1a73e8]' : 'text-slate-500'}`} />
-              <span>Hackathon / DSA Practice</span>
+              <span>DSA Coding Practice</span>
             </button>
 
             {/* 4. ATS Resume Checker */}
@@ -745,8 +745,8 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               )}
             </div>
 
-            {/* 3. Circular Student Profile Picture / Login Button */}
-            {!isLoggedIn ? (
+            {/* 3. Circular Student Profile Picture / Login Button (Only Free Login button shown pre-login; profile icon removed on desktop as requested) */}
+            {!isLoggedIn && (
               <div className="flex items-center">
                 <button
                   type="button"
@@ -760,29 +760,6 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                   <span className="hidden md:inline">Free </span>
                   <span>Login / Sign Up</span>
                   <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-                </button>
-              </div>
-            ) : (
-              <div className="relative hidden sm:block" ref={profileRef}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    soundEffects.playClick();
-                    setProfileDropdownOpen((prev) => !prev);
-                    setHamburgerDrawerOpen(false);
-                    setNotificationsOpen(false);
-                  }}
-                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-[#DCE8FC] bg-gradient-to-tr from-blue-50 to-indigo-100 flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xs cursor-pointer select-none overflow-hidden shrink-0"
-                  title={`Logged in as ${studentName}`}
-                  aria-label="Student Profile"
-                >
-                  {studentAvatar ? (
-                    <img src={studentAvatar} alt={studentName} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-[#EEF4FF] text-[#1a73e8] font-bold text-xs sm:text-sm">
-                      {studentName ? studentName.charAt(0).toUpperCase() : 'S'}
-                    </div>
-                  )}
                 </button>
               </div>
             )}
@@ -826,51 +803,50 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
             {/* Top Container: Close Button + Profile + Navigation Menu */}
             <div className="flex flex-col">
               {/* Top Row: Close (X) Button */}
-              <div className="p-4 pb-1 flex items-center justify-end shrink-0">
+              <div className="p-3 pb-0 flex items-center justify-end shrink-0">
                 <button
                   type="button"
                   onClick={() => {
                     soundEffects.playClick();
                     setHamburgerDrawerOpen(false);
                   }}
-                  className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer active:scale-90 border border-slate-200/50 shadow-2xs"
+                  className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer active:scale-90 border border-slate-200/50 shadow-2xs"
                   aria-label="Close navigation drawer"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-3.5 h-3.5" />
                 </button>
               </div>
 
-              {/* ─── Profile Header Section (Inside Drawer) ─── */}
+              {/* ─── Profile Header Section (Inside Drawer - Compact Slim Layout) ─── */}
               {isLoggedIn ? (
-                <div className="px-5 pt-1 pb-4 flex items-center gap-3.5 border-b border-slate-100/90 shrink-0">
+                <div className="px-3.5 pt-0.5 pb-2.5 flex items-center gap-2.5 border-b border-slate-100 shrink-0">
                   {/* Circular Avatar with Online Indicator Dot */}
                   <div className="relative shrink-0">
-                    <div className="w-14 h-14 rounded-full bg-[#dbeafe]/70 p-0.5 border-2 border-white shadow-sm flex items-center justify-center overflow-hidden">
+                    <div className="w-10 h-10 rounded-full bg-[#dbeafe]/70 p-0.5 border border-white shadow-2xs flex items-center justify-center overflow-hidden">
                       {studentAvatar ? (
                         <img src={studentAvatar} alt={studentName} className="w-full h-full rounded-full object-cover" />
                       ) : (
-                        <div className="w-full h-full rounded-full flex items-center justify-center bg-[#EEF4FF] text-[#1a73e8] font-black text-xl">
+                        <div className="w-full h-full rounded-full flex items-center justify-center bg-[#EEF4FF] text-[#1a73e8] font-black text-sm">
                           {studentName ? studentName.charAt(0).toUpperCase() : 'S'}
                         </div>
                       )}
                     </div>
-                    {/* Active Online Status Dot */}
-                    <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-[#00c07f] border-2 border-white shadow-2xs" />
+                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#00c07f] border-2 border-white shadow-2xs" />
                   </div>
 
                   {/* User Info & Actions */}
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-[16px] sm:text-[17px] font-black text-slate-900 leading-tight truncate">
+                    <h3 className="text-[13.5px] font-black text-slate-900 leading-tight truncate">
                       Hi, {(studentName || 'Learner').trim().split(' ')[0]} 👋
                     </h3>
-                    <p className="text-[11.5px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
+                    <p className="text-[10.5px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
                       Keep Learning, Keep Growing!
                     </p>
 
                     {/* Badges: Role + Edit */}
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-[#ecfdf5] text-[#059669] border border-emerald-200/60 leading-none shadow-2xs">
-                        <ShieldCheck className="w-3 h-3 text-[#059669] shrink-0" />
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#ecfdf5] text-[#059669] border border-emerald-200/60 leading-none shadow-2xs">
+                        <ShieldCheck className="w-2.5 h-2.5 text-[#059669] shrink-0" />
                         <span>{(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_role') : null) || 'Student'}</span>
                       </span>
 
@@ -884,22 +860,22 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                           setEditProfileModalOpen(true);
                           setHamburgerDrawerOpen(false);
                         }}
-                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-[#eff6ff] hover:bg-blue-100 text-[#0066ff] border border-blue-200/60 leading-none transition active:scale-95 cursor-pointer shadow-2xs"
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#eff6ff] hover:bg-blue-100 text-[#0066ff] border border-blue-200/60 leading-none transition active:scale-95 cursor-pointer shadow-2xs"
                       >
-                        <Pencil className="w-3 h-3 shrink-0" />
+                        <Pencil className="w-2.5 h-2.5 shrink-0" />
                         <span>Edit</span>
                       </button>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="px-5 pt-1 pb-4 border-b border-slate-100/90 shrink-0">
-                  <div className="p-3.5 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 shadow-2xs">
-                    <h3 className="text-[15px] font-black text-slate-900">
+                <div className="px-3.5 pt-0.5 pb-2.5 border-b border-slate-100 shrink-0">
+                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 shadow-2xs">
+                    <h3 className="text-[13.5px] font-black text-slate-900">
                       Welcome to Future IT 👋
                     </h3>
-                    <p className="text-xs text-slate-500 font-medium mt-0.5">
-                      Login to access courses, practice arena & earnings.
+                    <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+                      Login to access courses & practice.
                     </p>
                     <button
                       type="button"
@@ -909,52 +885,52 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                         if (onOpenSignUp) onOpenSignUp();
                         else onOpenLogin?.();
                       }}
-                      className="mt-3 w-full py-2 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-98 transition"
+                      className="mt-2 w-full py-1.5 px-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-[11px] flex items-center justify-center gap-1 shadow-xs active:scale-98 transition"
                     >
                       <span>Login / Sign Up</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <ArrowRight className="w-3 h-3" />
                     </button>
                   </div>
                 </div>
               )}
 
-              {/* ─── 8 Navigation Menu Rows ─── */}
-              <div className="px-3.5 py-2.5 space-y-1.5 flex-1">
+              {/* ─── 8 Navigation Menu Rows (Slim Compact Design - No Scrolling Needed) ─── */}
+              <div className="px-2.5 py-1.5 space-y-1 flex-1">
                 {/* 1. Dashboard */}
                 <button
                   type="button"
                   onClick={() => handleDrawerNavigate('dashboard')}
-                  className={`w-full rounded-2xl p-2.5 sm:p-3 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
+                  className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
                     isItemActive('dashboard')
                       ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                      : 'hover:bg-slate-50/90 border border-transparent'
+                      : 'hover:bg-slate-50 border border-transparent'
                   }`}
                 >
-                  <div className="flex items-center gap-3 min-w-0 pr-1">
+                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
                     <div
-                      className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 transition-all ${
+                      className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all ${
                         isItemActive('dashboard')
-                          ? 'bg-[#0066ff] text-white shadow-sm shadow-blue-500/30'
+                          ? 'bg-[#0066ff] text-white shadow-xs'
                           : 'bg-[#e0efff] text-[#0066ff]'
                       }`}
                     >
-                      <Home className="w-5 h-5" />
+                      <Home className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 text-left">
                       <h4
-                        className={`text-[13.5px] sm:text-[14px] font-black leading-snug truncate ${
+                        className={`text-[12.5px] font-bold leading-tight truncate ${
                           isItemActive('dashboard') ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
                         }`}
                       >
                         Dashboard
                       </h4>
-                      <p className="text-[10.5px] sm:text-[11px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
+                      <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
                         Overview &amp; Progress
                       </p>
                     </div>
                   </div>
                   <ChevronRight
-                    className={`w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${
+                    className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
                       isItemActive('dashboard') ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
                     }`}
                   />
@@ -964,31 +940,31 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 <button
                   type="button"
                   onClick={() => handleDrawerNavigate('learning')}
-                  className={`w-full rounded-2xl p-2.5 sm:p-3 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
+                  className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
                     isItemActive('learning')
                       ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                      : 'hover:bg-slate-50/90 border border-transparent'
+                      : 'hover:bg-slate-50 border border-transparent'
                   }`}
                 >
-                  <div className="flex items-center gap-3 min-w-0 pr-1">
-                    <div className="w-11 h-11 rounded-2xl bg-[#f3e8ff] text-[#9333ea] flex items-center justify-center shrink-0 shadow-2xs">
-                      <BookOpen className="w-5 h-5" />
+                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
+                    <div className="w-8 h-8 rounded-xl bg-[#f3e8ff] text-[#9333ea] flex items-center justify-center shrink-0 shadow-2xs">
+                      <BookOpen className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 text-left">
                       <h4
-                        className={`text-[13.5px] sm:text-[14px] font-black leading-snug truncate ${
+                        className={`text-[12.5px] font-bold leading-tight truncate ${
                           isItemActive('learning') ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
                         }`}
                       >
                         My Learning
                       </h4>
-                      <p className="text-[10.5px] sm:text-[11px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
+                      <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
                         Continue Your Courses
                       </p>
                     </div>
                   </div>
                   <ChevronRight
-                    className={`w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${
+                    className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
                       isItemActive('learning') ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
                     }`}
                   />
@@ -998,31 +974,31 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 <button
                   type="button"
                   onClick={() => handleDrawerNavigate('practice')}
-                  className={`w-full rounded-2xl p-2.5 sm:p-3 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
+                  className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
                     isItemActive('practice')
                       ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                      : 'hover:bg-slate-50/90 border border-transparent'
+                      : 'hover:bg-slate-50 border border-transparent'
                   }`}
                 >
-                  <div className="flex items-center gap-3 min-w-0 pr-1">
-                    <div className="w-11 h-11 rounded-2xl bg-[#ffedd5] text-[#ea580c] flex items-center justify-center shrink-0 shadow-2xs">
-                      <Code2 className="w-5 h-5" />
+                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
+                    <div className="w-8 h-8 rounded-xl bg-[#ffedd5] text-[#ea580c] flex items-center justify-center shrink-0 shadow-2xs">
+                      <Code2 className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 text-left">
                       <h4
-                        className={`text-[13.5px] sm:text-[14px] font-black leading-snug truncate ${
+                        className={`text-[12.5px] font-bold leading-tight truncate ${
                           isItemActive('practice') ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
                         }`}
                       >
                         DSA Coding Practice
                       </h4>
-                      <p className="text-[10.5px] sm:text-[11px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
+                      <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
                         Code • Practice • Improve
                       </p>
                     </div>
                   </div>
                   <ChevronRight
-                    className={`w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${
+                    className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
                       isItemActive('practice') ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
                     }`}
                   />
@@ -1037,31 +1013,31 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     if (onOpenAtsResume) onOpenAtsResume();
                     else if (typeof window !== 'undefined') window.location.hash = '#ats';
                   }}
-                  className={`w-full rounded-2xl p-2.5 sm:p-3 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
+                  className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
                     isItemActive('ats')
                       ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                      : 'hover:bg-slate-50/90 border border-transparent'
+                      : 'hover:bg-slate-50 border border-transparent'
                   }`}
                 >
-                  <div className="flex items-center gap-3 min-w-0 pr-1">
-                    <div className="w-11 h-11 rounded-2xl bg-[#dcfce7] text-[#16a34a] flex items-center justify-center shrink-0 shadow-2xs">
-                      <FileCheck2 className="w-5 h-5" />
+                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
+                    <div className="w-8 h-8 rounded-xl bg-[#dcfce7] text-[#16a34a] flex items-center justify-center shrink-0 shadow-2xs">
+                      <FileCheck2 className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 text-left">
                       <h4
-                        className={`text-[13.5px] sm:text-[14px] font-black leading-snug truncate ${
+                        className={`text-[12.5px] font-bold leading-tight truncate ${
                           isItemActive('ats') ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
                         }`}
                       >
                         ATS Resume Analyser
                       </h4>
-                      <p className="text-[10.5px] sm:text-[11px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
+                      <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
                         Check &amp; Improve Your Resume
                       </p>
                     </div>
                   </div>
                   <ChevronRight
-                    className={`w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${
+                    className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
                       isItemActive('ats') ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
                     }`}
                   />
@@ -1071,31 +1047,31 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 <button
                   type="button"
                   onClick={() => handleDrawerNavigate('internship')}
-                  className={`w-full rounded-2xl p-2.5 sm:p-3 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
+                  className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
                     isItemActive('internship')
                       ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                      : 'hover:bg-slate-50/90 border border-transparent'
+                      : 'hover:bg-slate-50 border border-transparent'
                   }`}
                 >
-                  <div className="flex items-center gap-3 min-w-0 pr-1">
-                    <div className="w-11 h-11 rounded-2xl bg-[#dbeafe] text-[#2563eb] flex items-center justify-center shrink-0 shadow-2xs">
-                      <GraduationCap className="w-5 h-5" />
+                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
+                    <div className="w-8 h-8 rounded-xl bg-[#dbeafe] text-[#2563eb] flex items-center justify-center shrink-0 shadow-2xs">
+                      <GraduationCap className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 text-left">
                       <h4
-                        className={`text-[13.5px] sm:text-[14px] font-black leading-snug truncate ${
+                        className={`text-[12.5px] font-bold leading-tight truncate ${
                           isItemActive('internship') ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
                         }`}
                       >
                         Internship
                       </h4>
-                      <p className="text-[10.5px] sm:text-[11px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
+                      <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
                         Hands-on Experience
                       </p>
                     </div>
                   </div>
                   <ChevronRight
-                    className={`w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${
+                    className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
                       isItemActive('internship') ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
                     }`}
                   />
@@ -1105,31 +1081,31 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 <button
                   type="button"
                   onClick={() => handleDrawerNavigate('certificate')}
-                  className={`w-full rounded-2xl p-2.5 sm:p-3 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
+                  className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
                     isItemActive('certificate')
                       ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                      : 'hover:bg-slate-50/90 border border-transparent'
+                      : 'hover:bg-slate-50 border border-transparent'
                   }`}
                 >
-                  <div className="flex items-center gap-3 min-w-0 pr-1">
-                    <div className="w-11 h-11 rounded-2xl bg-[#fef3c7] text-[#d97706] flex items-center justify-center shrink-0 shadow-2xs">
-                      <Briefcase className="w-5 h-5" />
+                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
+                    <div className="w-8 h-8 rounded-xl bg-[#fef3c7] text-[#d97706] flex items-center justify-center shrink-0 shadow-2xs">
+                      <Briefcase className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 text-left">
                       <h4
-                        className={`text-[13.5px] sm:text-[14px] font-black leading-snug truncate ${
+                        className={`text-[12.5px] font-bold leading-tight truncate ${
                           isItemActive('certificate') ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
                         }`}
                       >
                         Certificate
                       </h4>
-                      <p className="text-[10.5px] sm:text-[11px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
+                      <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
                         Your Achievements
                       </p>
                     </div>
                   </div>
                   <ChevronRight
-                    className={`w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${
+                    className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
                       isItemActive('certificate') ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
                     }`}
                   />
@@ -1139,31 +1115,31 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 <button
                   type="button"
                   onClick={() => handleDrawerNavigate('recommendation')}
-                  className={`w-full rounded-2xl p-2.5 sm:p-3 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
+                  className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
                     isItemActive('recommendation')
                       ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                      : 'hover:bg-slate-50/90 border border-transparent'
+                      : 'hover:bg-slate-50 border border-transparent'
                   }`}
                 >
-                  <div className="flex items-center gap-3 min-w-0 pr-1">
-                    <div className="w-11 h-11 rounded-2xl bg-[#ede9fe] text-[#7c3aed] flex items-center justify-center shrink-0 shadow-2xs">
-                      <FileBadge className="w-5 h-5" />
+                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
+                    <div className="w-8 h-8 rounded-xl bg-[#ede9fe] text-[#7c3aed] flex items-center justify-center shrink-0 shadow-2xs">
+                      <FileBadge className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 text-left">
                       <h4
-                        className={`text-[13.5px] sm:text-[14px] font-black leading-snug truncate ${
+                        className={`text-[12.5px] font-bold leading-tight truncate ${
                           isItemActive('recommendation') ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
                         }`}
                       >
                         Recommendation Letter
                       </h4>
-                      <p className="text-[10.5px] sm:text-[11px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
+                      <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
                         Get Your LOR
                       </p>
                     </div>
                   </div>
                   <ChevronRight
-                    className={`w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${
+                    className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
                       isItemActive('recommendation') ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
                     }`}
                   />
@@ -1173,31 +1149,31 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 <button
                   type="button"
                   onClick={() => handleDrawerNavigate('placement')}
-                  className={`w-full rounded-2xl p-2.5 sm:p-3 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
+                  className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
                     isItemActive('placement')
                       ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                      : 'hover:bg-slate-50/90 border border-transparent'
+                      : 'hover:bg-slate-50 border border-transparent'
                   }`}
                 >
-                  <div className="flex items-center gap-3 min-w-0 pr-1">
-                    <div className="w-11 h-11 rounded-2xl bg-[#ffe4e6] text-[#e11d48] flex items-center justify-center shrink-0 shadow-2xs">
-                      <Target className="w-5 h-5" />
+                  <div className="flex items-center gap-2.5 min-w-0 pr-1">
+                    <div className="w-8 h-8 rounded-xl bg-[#ffe4e6] text-[#e11d48] flex items-center justify-center shrink-0 shadow-2xs">
+                      <Target className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 text-left">
                       <h4
-                        className={`text-[13.5px] sm:text-[14px] font-black leading-snug truncate ${
+                        className={`text-[12.5px] font-bold leading-tight truncate ${
                           isItemActive('placement') ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
                         }`}
                       >
                         Job &amp; Placement
                       </h4>
-                      <p className="text-[10.5px] sm:text-[11px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
+                      <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
                         Opportunities &amp; Support
                       </p>
                     </div>
                   </div>
                   <ChevronRight
-                    className={`w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${
+                    className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
                       isItemActive('placement') ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
                     }`}
                   />
@@ -1205,19 +1181,19 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               </div>
             </div>
 
-            {/* ─── Bottom Action Row: Logout (or Login) ─── */}
-            <div className="p-4 pt-2 pb-5 border-t border-slate-100/80 shrink-0">
+            {/* ─── Bottom Action Row: Logout (or Login) - Compact Slim ─── */}
+            <div className="p-3 pt-1.5 pb-3 border-t border-slate-100 shrink-0">
               {isLoggedIn ? (
                 <button
                   type="button"
                   onClick={handleSignOutAction}
-                  className="w-full h-12 rounded-2xl bg-[#fff1f2] hover:bg-[#ffe4e6] border border-[#ffe4e6] px-4 flex items-center justify-between text-[#e11d48] font-bold text-sm transition-all active:scale-[0.98] cursor-pointer shadow-2xs"
+                  className="w-full h-10 rounded-xl bg-[#fff1f2] hover:bg-[#ffe4e6] border border-[#ffe4e6] px-3.5 flex items-center justify-between text-[#e11d48] font-bold text-xs transition-all active:scale-[0.98] cursor-pointer shadow-2xs"
                 >
-                  <div className="flex items-center gap-2.5">
-                    <LogOut className="w-5 h-5 text-[#e11d48] shrink-0" />
+                  <div className="flex items-center gap-2">
+                    <LogOut className="w-4 h-4 text-[#e11d48] shrink-0" />
                     <span>Logout</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-[#fda4af]" />
+                  <ChevronRight className="w-3.5 h-3.5 text-[#fda4af]" />
                 </button>
               ) : (
                 <button
@@ -1228,13 +1204,13 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                     if (onOpenSignUp) onOpenSignUp();
                     else onOpenLogin?.();
                   }}
-                  className="w-full h-12 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-sm px-4 flex items-center justify-between shadow-md shadow-blue-500/25 active:scale-[0.98] transition cursor-pointer"
+                  className="w-full h-10 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs px-3.5 flex items-center justify-between shadow-xs active:scale-[0.98] transition cursor-pointer"
                 >
-                  <div className="flex items-center gap-2.5">
-                    <User className="w-5 h-5 text-white shrink-0" />
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4 text-white shrink-0" />
                     <span>Login / Sign Up</span>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-white" />
+                  <ArrowRight className="w-3.5 h-3.5 text-white" />
                 </button>
               )}
             </div>
