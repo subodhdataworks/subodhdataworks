@@ -465,7 +465,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
               </h1>   {/* Tagline */}
               <div className="mt-2 sm:mt-2.5 text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-600 leading-snug max-w-lg mx-auto lg:mx-0">
                 <p className="inline-block px-3 sm:px-4 py-1 rounded-full text-slate-900 font-black bg-[#ffedea] border border-[#ffd5cc] tracking-tight">For Non-IT, Career Gap &amp; Career Switchers</p>
-                <p className="mt-1.5">Learn industry-relevant skills with hands-on projects and get career ready.</p>
+                <p className="mt-1.5 hidden sm:block">Learn industry-relevant skills with hands-on projects and get career ready.</p>
               </div>
 
               {/* CTAs Row (Desktop: Side-by-side with video) */}
