@@ -97,9 +97,9 @@ export const MobileCareerJourneySection: React.FC<MobileCareerJourneySectionProp
 
         {/* ─── TITLE ABOVE IMAGE ─── */}
         <div className="mb-2.5 sm:mb-3 px-1 sm:px-1.5 relative z-10">
-          <h2 className="text-[13px] sm:text-[15px] md:text-base font-black text-slate-900 tracking-tight leading-snug">
+          <h2 className="text-[15px] sm:text-[17px] md:text-lg font-black text-slate-950 tracking-tight leading-snug">
             A simple path to a successful career with{' '}
-            <span className="text-[#1a73e8] font-black">Future IT Industry.</span>
+            <span className="text-[#1a73e8] font-black drop-shadow-[0_1px_1px_rgba(26,115,232,0.2)]">Future IT Industry.</span>
           </h2>
         </div>
 
