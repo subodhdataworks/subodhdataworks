@@ -956,81 +956,10 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
         />
       </div>
 
-{/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 3: Your Journey From Learning to Earning
+      {/* ═══════════════════════════════════════════════════════════════════════════
+          SECTION 3: 5-Step Progressive Roadmap (Responsive Mobile + Desktop)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      {/* Mobile-Only Career Journey (< 768px) matching reference */}
-      <div className="block md:hidden">
-        <MobileCareerJourneySection onExploreCourses={promptLogin} />
-      </div>
-
-      {/* Desktop-Only Career Journey (>= 768px, 100% Untouched) */}
-      <div className="hidden md:block">
-        <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7">
-        <div className="bg-gradient-to-b from-white via-blue-50/25 to-white rounded-3xl p-5 sm:p-8 border border-slate-200/90 shadow-sm relative overflow-hidden">
-          
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 relative z-10">
-            <div>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
-                Your Journey From{' '}
-                <TypewriterHeading
-                words={['Learning to Earning']}
-                className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent"
-                cursorClassName="text-purple-600"
-              />
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1">
-                A simple path to a successful career with Future IT Industry.
-              </p>
-            </div>
-
-            <div className="self-end md:self-auto">
-              <div className="px-4 py-2 rounded-xl bg-blue-50 border border-blue-200/80 text-blue-700 font-black italic tracking-wide text-xs sm:text-sm flex items-center gap-2 shadow-2xs">
-                <span>Learn • Grow • Get Hired</span>
-                <span className="text-base">↗</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Real Horizontal Strip Career Roadmap Banner */}
-          <div 
-            onClick={promptLogin}
-            className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-slate-200/90 cursor-pointer group bg-slate-950"
-          >
-            <img
-              src="/images/home_sections/journey_roadmap_real_strip.jpg"
-              alt="Your Journey From Learning to Earning: Learn • Grow • Get Hired"
-              className="w-full h-[160px] sm:h-[220px] md:h-[260px] lg:h-[300px] object-cover object-center group-hover:scale-[1.01] transition-transform duration-500 select-none"
-            />
-            {/* Ambient Vignette Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/15 pointer-events-none" />
-
-            {/* Horizontal Progression Strip Indicator */}
-            <div className="absolute bottom-3 left-3 right-3 sm:bottom-5 sm:left-5 sm:right-5 flex flex-wrap items-center justify-between gap-2.5 bg-slate-900/85 backdrop-blur-md px-3.5 sm:px-6 py-2.5 sm:py-3.5 rounded-2xl border border-white/10 text-white shadow-xl">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-pink-500 shadow-sm shadow-pink-500/50 shrink-0" />
-                <span className="text-xs sm:text-sm font-black tracking-wide">01. Learn Skills</span>
-                <span className="text-[11px] text-slate-400 hidden md:inline">• Industry curriculum & practical labs</span>
-              </div>
-              <span className="text-slate-500 hidden sm:inline font-bold">→</span>
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-purple-500 shadow-sm shadow-purple-500/50 shrink-0" />
-                <span className="text-xs sm:text-sm font-black tracking-wide">02. Grow & Build</span>
-                <span className="text-[11px] text-slate-400 hidden md:inline">• Real architecture & mock interviews</span>
-              </div>
-              <span className="text-slate-500 hidden sm:inline font-bold">→</span>
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50 shrink-0" />
-                <span className="text-xs sm:text-sm font-black tracking-wide text-emerald-300">03. Get Hired</span>
-                <span className="text-[11px] text-emerald-400/80 hidden md:inline">• Offer letters & direct placement</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-      </div>
+      <MobileCareerJourneySection onExploreCourses={promptLogin} />
 
       {/* ═══════════════════════════════════════════════════════════════════════════
           SECTION 4: Why Choose Future IT Industry?

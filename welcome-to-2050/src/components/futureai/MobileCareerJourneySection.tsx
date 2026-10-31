@@ -1,11 +1,11 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import {
   Laptop,
   BookOpen,
   Code2,
   UserCheck,
-  Briefcase,
-  ArrowRight,
+  BarChart3,
   Sparkles,
   TrendingUp,
 } from 'lucide-react';
@@ -33,188 +33,187 @@ export const MobileCareerJourneySection: React.FC<MobileCareerJourneySectionProp
       step: 1,
       title: 'Choose a Program',
       desc: 'Pick the course that matches your career goal.',
-      numBg: 'bg-gradient-to-br from-blue-500 to-blue-700',
+      numBg: 'bg-[#0070f3]',
       numShadow: 'shadow-blue-500/25',
-      badgeBorder: 'border-blue-400',
-      iconBg: 'bg-blue-50 text-blue-600 border-blue-200/90',
-      pedestal: 'from-blue-500/30 via-blue-500/10 to-transparent',
+      iconBg: 'bg-[#eff6ff] text-[#2563eb]',
       Icon: Laptop,
+      isFinal: false,
     },
     {
       step: 2,
       title: 'Learn In-Demand Skills',
       desc: 'Expert-led, structured learning.',
-      numBg: 'bg-gradient-to-br from-purple-500 to-purple-700',
+      numBg: 'bg-[#9333ea]',
       numShadow: 'shadow-purple-500/25',
-      badgeBorder: 'border-purple-400',
-      iconBg: 'bg-purple-50 text-purple-600 border-purple-200/90',
-      pedestal: 'from-purple-500/30 via-purple-500/10 to-transparent',
+      iconBg: 'bg-[#faf5ff] text-[#9333ea]',
       Icon: BookOpen,
+      isFinal: false,
     },
     {
       step: 3,
       title: 'Build Real Projects',
       desc: 'Work on industry-relevant projects.',
-      numBg: 'bg-gradient-to-br from-emerald-500 to-teal-700',
+      numBg: 'bg-[#10b981]',
       numShadow: 'shadow-emerald-500/25',
-      badgeBorder: 'border-emerald-400',
-      iconBg: 'bg-emerald-50 text-emerald-600 border-emerald-200/90',
-      pedestal: 'from-emerald-500/30 via-emerald-500/10 to-transparent',
+      iconBg: 'bg-[#ecfdf5] text-[#059669]',
       Icon: Code2,
+      isFinal: false,
     },
     {
       step: 4,
       title: 'Get Job Ready',
       desc: 'Resume, mock interviews & placement support.',
-      numBg: 'bg-gradient-to-br from-amber-500 to-orange-600',
-      numShadow: 'shadow-amber-500/25',
-      badgeBorder: 'border-amber-400',
-      iconBg: 'bg-amber-50 text-amber-600 border-amber-200/90',
-      pedestal: 'from-amber-500/30 via-amber-500/10 to-transparent',
+      numBg: 'bg-[#f97316]',
+      numShadow: 'shadow-orange-500/25',
+      iconBg: 'bg-[#fff7ed] text-[#ea580c]',
       Icon: UserCheck,
+      isFinal: false,
     },
     {
       step: 5,
-      title: 'Start Earning',
+      title: 'Launch Your Career',
       desc: 'Land your dream job and grow your career.',
-      numBg: 'bg-gradient-to-br from-pink-500 to-rose-600',
+      numBg: 'bg-[#f43f5e]',
       numShadow: 'shadow-pink-500/25',
-      badgeBorder: 'border-pink-400',
-      iconBg: 'bg-pink-50 text-pink-600 border-pink-200/90',
-      pedestal: 'from-pink-500/30 via-pink-500/10 to-transparent',
-      Icon: Briefcase,
+      iconBg: 'bg-[#fff1f2] text-[#f43f5e]',
+      Icon: BarChart3,
       isFinal: true,
     },
   ];
 
   return (
-    <section className="w-full px-2.5 sm:px-3.5 py-3.5 select-none box-border overflow-hidden">
-      {/* ─── Premium Light Container (Light Color Theme) ─── */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#EEF4FF] via-white to-[#F0F5FF] border border-blue-200/80 p-3.5 sm:p-4 shadow-sm">
-        {/* Soft Ambient Glows */}
+    <section className="w-full px-3 sm:px-6 lg:px-8 py-4 sm:py-6 select-none box-border">
+      {/* ─── Outer Container with Light Blue-White Background ─── */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-50px' }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="w-full max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto rounded-3xl bg-gradient-to-b from-[#f0f6ff] via-[#f8faff] to-[#eef4ff] border border-blue-100/90 p-3 sm:p-5 md:p-6 shadow-xs relative overflow-hidden"
+      >
+        {/* Soft Ambient Background Glows */}
         <div className="absolute -top-16 -left-16 w-60 h-60 rounded-full bg-blue-400/10 blur-3xl pointer-events-none" />
-        <div className="absolute top-1/3 -right-16 w-64 h-64 rounded-full bg-purple-400/10 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-16 left-1/4 w-72 h-72 rounded-full bg-cyan-400/10 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-16 -right-16 w-60 h-60 rounded-full bg-indigo-400/10 blur-3xl pointer-events-none" />
 
-        {/* ─── 1. HERO HEADER AREA ─── */}
-        <div className="relative z-10">
-          {/* Main Headings */}
-          <h2 className="text-[23px] sm:text-[26px] font-black text-slate-900 tracking-tight leading-tight">
-            Your Journey From{' '}
-            <span className="block mt-0.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Learning to Earning
-            </span>
-          </h2>
+        {/* ─── 1. TOP STUDENT IMAGE (Large Rounded Rectangular with Subtle Shadow) ─── */}
+        <div className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm border border-slate-200/70 bg-slate-900 group">
+          <img
+            src="/images/home_sections/journey_student_hero.png"
+            alt="Indian Student Career Growth"
+            className="w-full h-[180px] sm:h-[230px] md:h-[260px] lg:h-[280px] object-cover object-[center_20%] select-none transition-transform duration-700 group-hover:scale-[1.01]"
+          />
+          {/* Subtle Ambient Vignette */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-black/10 pointer-events-none" />
 
-          <p className="text-[11.5px] sm:text-[12.5px] text-slate-600 font-medium mt-1.5 leading-relaxed max-w-[340px]">
-            Learn in-demand skills, build real projects, get industry ready and start your dream career — all in one place.
-          </p>
-
-          {/* CTA Row */}
-          <div className="mt-3 flex items-center justify-between gap-3">
-            <button
-              type="button"
-              onClick={handleScrollToCourses}
-              className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-full bg-gradient-to-r from-[#0066FF] to-[#4F46E5] text-white font-extrabold text-xs shadow-md shadow-blue-500/25 hover:brightness-110 active:scale-95 transition-all cursor-pointer shrink-0 border border-white/20"
-            >
-              <span>Explore Our Career Programs</span>
-              <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
-            </button>
-          </div>
-
-          {/* Student Banner Artwork Card */}
-          <div className="relative mt-3.5 w-full rounded-2xl overflow-hidden border border-blue-100 shadow-sm bg-slate-950">
-            <img
-              src="/images/home_sections/journey_student_hero.png"
-              alt="Indian Student Career Growth"
-              className="w-full h-[175px] sm:h-[210px] object-cover object-[center_20%] select-none"
-            />
-            {/* Ambient Vignette */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/10 pointer-events-none" />
-
-            {/* Floating Dream Job Badge */}
-            <div className="absolute top-2.5 right-2.5 bg-white/95 backdrop-blur-md border border-blue-200/90 rounded-xl px-2.5 py-1.5 text-right shadow-md flex items-center gap-2">
-              <div className="leading-tight">
-                <span className="block text-[9.5px] font-black tracking-wide text-blue-600 uppercase">Dream Job</span>
-                <span className="block text-[11px] font-black text-slate-900">Higher Salary</span>
-                <span className="block text-[9px] font-bold text-indigo-600">Better Future</span>
+          {/* Floating Dream Job Badge (Top Right) */}
+          <div className="absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 bg-white/95 backdrop-blur-md border border-white/90 rounded-2xl px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-right shadow-md flex items-center gap-2 select-none pointer-events-none">
+            <div className="text-right leading-tight">
+              <span className="block text-[8.5px] sm:text-[9.5px] font-black tracking-wider text-[#1a73e8] uppercase">
+                DREAM JOB
+              </span>
+              <div className="flex items-center justify-end gap-1 mt-0.5">
+                <span className="text-[11px] sm:text-[13px] font-black text-slate-900 tracking-tight">
+                  Higher Salary
+                </span>
+                <div className="w-4.5 h-4.5 sm:w-5 sm:h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-200/70">
+                  <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
+                </div>
               </div>
-              <div className="w-6.5 h-6.5 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shadow-2xs shrink-0">
-                <TrendingUp className="w-3.5 h-3.5 stroke-[2.5]" />
-              </div>
+              <span className="block text-[9px] sm:text-[10px] font-bold text-[#7c3aed] mt-0.5">
+                Better Future
+              </span>
             </div>
           </div>
         </div>
 
-        {/* ─── 2. FIVE-STEP CAREER JOURNEY (Light Vertical Roadmap) ─── */}
-        <div className="relative z-10 mt-5">
-          <div className="flex items-center justify-between mb-2.5 px-0.5">
-            <div className="flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-blue-600" />
-              <span className="text-xs font-black tracking-wider uppercase text-blue-700">
-                5-Step Progressive Roadmap
-              </span>
-            </div>
-            <span className="text-[10px] font-bold text-slate-500">Goal-Oriented</span>
+        {/* ─── 2. HEADING ROW (Just below image) ─── */}
+        <div className="flex items-center justify-between mt-3.5 sm:mt-4 mb-2.5 sm:mb-3 px-1 sm:px-1.5 relative z-10">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <Sparkles className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#1a73e8] fill-[#1a73e8]/20 shrink-0" />
+            <h3 className="text-xs sm:text-[13px] font-black tracking-wider uppercase text-[#1a73e8]">
+              5-STEP PROGRESSIVE ROADMAP
+            </h3>
           </div>
+          <span className="text-[10.5px] sm:text-xs font-bold text-slate-500">
+            Goal-Oriented
+          </span>
+        </div>
 
-          {/* Step Cards Stack connected by Glowing Timeline Path */}
-          <div className="relative space-y-2.5">
-            {/* Glowing Connector Line running behind numbers */}
-            <div className="absolute left-[23px] top-5 bottom-5 w-[2px] bg-gradient-to-b from-blue-500 via-purple-500 via-emerald-500 via-amber-500 to-pink-500 opacity-30 pointer-events-none" />
+        {/* ─── 3. FIVE VERTICALLY CONNECTED ROADMAP CARDS ─── */}
+        <div className="relative z-10 flex flex-col">
+          {steps.map((item, index) => {
+            const StepIcon = item.Icon;
 
-            {steps.map((item) => {
-              const StepIcon = item.Icon;
-
-              return (
-                <div
-                  key={item.step}
-                  className="relative flex items-start gap-2.5 p-2.5 sm:p-3 rounded-2xl bg-white border border-slate-200/80 hover:border-blue-200 transition-all shadow-2xs"
-                >
-                  {/* Step Number Circle Badge */}
+            return (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-20px' }}
+                transition={{ duration: 0.4, ease: 'easeOut', delay: index * 0.06 }}
+                className="relative flex items-stretch gap-2.5 sm:gap-3.5 py-1 sm:py-1.5 group"
+              >
+                {/* Left Column: Vertical Dashed Line & Number Circle */}
+                <div className="relative flex flex-col items-center justify-center shrink-0 w-7 sm:w-8">
+                  {/* Top Dashed Line Segment */}
                   <div
-                    className={`relative z-10 w-7.5 h-7.5 rounded-full ${item.numBg} ${item.numShadow} border border-white flex items-center justify-center text-white font-black text-xs shrink-0 shadow-xs`}
+                    className={`w-0 flex-1 border-l-2 border-dashed ${
+                      index === 4 ? 'border-rose-400' : 'border-sky-400'
+                    } ${index === 0 ? 'opacity-90' : ''}`}
+                  />
+
+                  {/* Number Circle Badge */}
+                  <div
+                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full ${item.numBg} ${item.numShadow} text-white font-black text-xs sm:text-[13px] flex items-center justify-center shrink-0 my-0.5 relative z-10 shadow-xs transition-transform duration-200 group-hover:scale-105`}
                   >
                     {item.step}
                   </div>
 
-                  {/* Step Details & Icon */}
-                  <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <h4 className="text-[13px] sm:text-sm font-black text-slate-900 tracking-tight leading-snug">
-                          {item.title}
-                        </h4>
-                        {item.isFinal && (
-                          <span className="text-[8.5px] font-black px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                            Goal
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[10.5px] sm:text-[11px] text-slate-500 font-medium mt-0.5 leading-snug">
-                        {item.desc}
-                      </p>
-                    </div>
+                  {/* Bottom Dashed Line Segment */}
+                  <div
+                    className={`w-0 flex-1 ${
+                      index < steps.length - 1
+                        ? `border-l-2 border-dashed ${
+                            index === 3 ? 'border-rose-400' : 'border-sky-400'
+                          }`
+                        : ''
+                    }`}
+                  />
+                </div>
 
-                    {/* Pedestal Icon Box */}
-                    <div className="relative flex flex-col items-center shrink-0">
-                      <div
-                        className={`w-8.5 h-8.5 rounded-xl ${item.iconBg} border flex items-center justify-center shadow-2xs relative z-10`}
-                      >
-                        <StepIcon className="w-4 h-4 stroke-[2.2]" />
-                      </div>
-                      {/* Pedestal Platform Glow */}
-                      <div
-                        className={`-mt-1 w-9 h-2 rounded-full bg-gradient-to-b ${item.pedestal} blur-[1px]`}
-                      />
+                {/* Right: The White Rounded Card */}
+                <div
+                  onClick={handleScrollToCourses}
+                  className="flex-1 min-w-0 bg-white rounded-2xl p-2.5 sm:p-3.5 border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-blue-200 transition-all cursor-pointer flex items-center justify-between gap-2.5 sm:gap-3"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                      <h4 className="text-[13px] sm:text-[14.5px] font-black text-[#08152F] tracking-tight leading-snug">
+                        {item.title}
+                      </h4>
+                      {item.isFinal && (
+                        <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-full bg-[#ecfdf5] text-[#059669] text-[9px] sm:text-[10px] font-black border border-[#a7f3d0]">
+                          Goal
+                        </span>
+                      )}
                     </div>
+                    <p className="text-[10.5px] sm:text-[11.5px] text-slate-500 font-medium mt-0.5 leading-snug">
+                      {item.desc}
+                    </p>
+                  </div>
+
+                  {/* Right Icon Box */}
+                  <div
+                    className={`w-8.5 h-8.5 sm:w-10 sm:h-10 rounded-2xl ${item.iconBg} flex items-center justify-center shrink-0 shadow-2xs`}
+                  >
+                    <StepIcon className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
                   </div>
                 </div>
-              );
-            })}
-          </div>
+              </motion.div>
+            );
+          })}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };
