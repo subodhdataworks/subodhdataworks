@@ -95,6 +95,14 @@ export const MobileCareerJourneySection: React.FC<MobileCareerJourneySectionProp
         <div className="absolute -top-16 -left-16 w-60 h-60 rounded-full bg-blue-400/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-16 -right-16 w-60 h-60 rounded-full bg-indigo-400/10 blur-3xl pointer-events-none" />
 
+        {/* ─── TITLE ABOVE IMAGE ─── */}
+        <div className="mb-2.5 sm:mb-3 px-1 sm:px-1.5 relative z-10">
+          <h2 className="text-[13px] sm:text-[15px] md:text-base font-black text-slate-900 tracking-tight leading-snug">
+            A simple path to a successful career with{' '}
+            <span className="text-[#1a73e8] font-black">Future IT Industry.</span>
+          </h2>
+        </div>
+
         {/* ─── 1. TOP STUDENT IMAGE (Large Rounded Rectangular with Subtle Shadow) ─── */}
         <div className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm border border-slate-200/70 bg-slate-900 group">
           <img
