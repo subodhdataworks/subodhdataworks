@@ -611,75 +611,46 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                 </div>
               </div>
 
-              {/* ── Mobile Placement Banner Card (AI-Generated High-Res Image + Crisp Typography) ── */}
-              <div className="block md:hidden mb-2.5">
-                <div className="w-full rounded-2xl overflow-hidden shadow-md border border-[#1b3b70]/60 bg-gradient-to-r from-[#02132e] via-[#051c44] to-[#03132e] relative select-none">
-                  {/* Subtle Ambient Light Glow */}
-                  <div className="absolute -top-10 -left-10 w-36 h-36 rounded-full bg-blue-500/25 blur-2xl pointer-events-none" />
+              {/* ── Mobile Placement Banner Card (Light Theme with AI-Generated Tech Student) ── */}
+              <div className="block md:hidden mb-4">
+                <div className="w-full rounded-2xl overflow-hidden shadow-[0_4px_24px_rgba(37,99,235,0.08)] border border-blue-100 bg-gradient-to-r from-white via-sky-50/70 to-blue-50/40 relative select-none">
+                  {/* Subtle Light Theme Decorative Blobs */}
+                  <div className="absolute -top-12 -left-12 w-36 h-36 rounded-full bg-blue-400/10 blur-2xl pointer-events-none" />
+                  <div className="absolute -bottom-8 left-1/4 w-32 h-32 rounded-full bg-indigo-400/10 blur-xl pointer-events-none" />
                   
-                  {/* AI Generated Indian Tech Student on the Right */}
-                  <div className="absolute right-0 top-0 bottom-0 w-[46%] xs:w-[48%] pointer-events-none overflow-hidden">
+                  {/* AI Generated Indian Tech Student on the Right (Daylight Light Theme) */}
+                  <div className="absolute right-0 top-0 bottom-0 w-[48%] xs:w-[50%] pointer-events-none overflow-hidden">
                     <img
-                      src="/images/auth/mobile_placement_student.jpg"
+                      src="/images/auth/mobile_placement_light_student.jpg"
                       alt="Student Learning at Future IT"
                       className="w-full h-full object-cover object-[75%_center] select-none"
                     />
-                    {/* Gradient Fade to seamlessly merge into the navy background */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#02132e] via-[#02132e]/40 to-transparent pointer-events-none" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#02132e]/50 via-transparent to-transparent pointer-events-none" />
+                    {/* Seamless Light Gradient Fade so left text stays 100% crisp & readable */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 via-25% to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-white/40 via-transparent to-transparent pointer-events-none" />
                   </div>
 
-                  {/* Left Content: Razor-Sharp Vector Typography */}
-                  <div className="relative z-10 p-3 xs:p-3.5 pr-[45%] xs:pr-[47%] min-h-[114px] flex flex-col justify-center">
+                  {/* Left Content: High-Contrast Crisp Typography */}
+                  <div className="relative z-10 p-3.5 xs:p-4 pr-[46%] xs:pr-[48%] min-h-[120px] flex flex-col justify-center">
                     {/* Batch Pill */}
-                    <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-600/90 to-purple-600/90 border border-blue-400/40 text-[9px] xs:text-[9.5px] font-black text-white shadow-2xs w-fit">
-                      <Flame className="w-3 h-3 text-amber-400 fill-amber-400 shrink-0" />
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-[9px] xs:text-[9.5px] font-black text-white shadow-xs w-fit">
+                      <Flame className="w-3 h-3 text-amber-300 fill-amber-300 shrink-0" />
                       <span className="truncate">New PLACEMENT PREP Batch</span>
                     </div>
 
                     {/* Headline */}
-                    <h3 className="mt-1.5 text-[17px] xs:text-[19px] font-black text-white leading-[1.14] tracking-tight">
+                    <h3 className="mt-2 text-[18px] xs:text-[20px] font-black text-slate-900 leading-[1.14] tracking-tight">
                       Ultimate <br />
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-white">
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600">
                         Placement
                       </span> <br />
                       Solution
                     </h3>
 
                     {/* Subtitle */}
-                    <p className="mt-1 text-[9.5px] xs:text-[10px] text-cyan-200/95 font-medium leading-tight">
+                    <p className="mt-1 text-[10px] xs:text-[10.5px] text-slate-600 font-semibold leading-tight">
                       Start your placement preparation today!
                     </p>
-                  </div>
-                </div>
-
-                {/* ── 3 Quick Feature White Cards (Live Classes | Projects & Practice | Placement Support) ── */}
-                <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mt-2.5 select-none">
-                  {/* Pill 1: Live Classes */}
-                  <div className="bg-white rounded-2xl p-1.5 sm:p-2 border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.03)] flex items-center justify-center gap-1.5">
-                    <Video className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#0066FF] fill-[#0066FF]/20 shrink-0" />
-                    <div className="text-left leading-tight">
-                      <span className="block text-[10px] sm:text-[11px] font-bold text-slate-800">Live</span>
-                      <span className="block text-[9.5px] sm:text-[10.5px] font-bold text-slate-700">Classes</span>
-                    </div>
-                  </div>
-
-                  {/* Pill 2: Projects & Practice */}
-                  <div className="bg-white rounded-2xl p-1.5 sm:p-2 border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.03)] flex items-center justify-center gap-1.5">
-                    <Code className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#0066FF] shrink-0 stroke-[2.5]" />
-                    <div className="text-left leading-tight">
-                      <span className="block text-[10px] sm:text-[11px] font-bold text-slate-800">Projects &</span>
-                      <span className="block text-[9.5px] sm:text-[10.5px] font-bold text-slate-700">Practice</span>
-                    </div>
-                  </div>
-
-                  {/* Pill 3: Placement Support */}
-                  <div className="bg-white rounded-2xl p-1.5 sm:p-2 border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.03)] flex items-center justify-center gap-1.5">
-                    <BarChart3 className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#10B981] shrink-0 stroke-[2.5]" />
-                    <div className="text-left leading-tight">
-                      <span className="block text-[10px] sm:text-[11px] font-bold text-slate-800">Placement</span>
-                      <span className="block text-[9.5px] sm:text-[10.5px] font-bold text-slate-700">Support</span>
-                    </div>
                   </div>
                 </div>
               </div>
