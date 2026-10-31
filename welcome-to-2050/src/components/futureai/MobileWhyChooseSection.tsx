@@ -16,6 +16,7 @@ import {
   UserX,
   Folder,
   ArrowRight,
+  TrendingUp,
 } from 'lucide-react';
 
 interface MobileWhyChooseSectionProps {
@@ -161,12 +162,57 @@ export const MobileWhyChooseSection: React.FC<MobileWhyChooseSectionProps> = ({
         </div>
 
         {/* Visual Banner */}
-        <div className="mt-3 sm:mt-3.5 rounded-2xl overflow-hidden border border-emerald-100 shadow-2xs bg-slate-900">
+        <div className="relative mt-3 sm:mt-3.5 rounded-2xl overflow-hidden border border-emerald-100 shadow-2xs bg-slate-900 group">
           <img
             src="/images/why_choose/why_choose_success_desktop.jpg"
             alt="Future IT Industry Student Success"
-            className="w-full h-[155px] sm:h-[185px] lg:h-[195px] object-cover select-none"
+            className="w-full h-[165px] sm:h-[195px] lg:h-[210px] object-cover select-none transition-transform duration-700 group-hover:scale-[1.01]"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-black/10 pointer-events-none" />
+
+          {/* Floating Badge 1: Top-Left (Placed in Top Companies) */}
+          <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 bg-white/95 backdrop-blur-md rounded-xl p-1 sm:p-1.5 shadow-md border border-white/90 flex items-center gap-1.5 pointer-events-none select-none">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
+              <Briefcase className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+            </div>
+            <div className="leading-tight text-left">
+              <span className="block text-[8.5px] sm:text-[9.5px] font-black text-slate-900 leading-none">Placed</span>
+              <span className="block text-[7.5px] sm:text-[8.5px] font-medium text-slate-500 leading-tight">in Top Companies</span>
+            </div>
+          </div>
+
+          {/* Floating Badge 2: Bottom-Left (High Salary Better Future) */}
+          <div className="absolute bottom-2 left-2 sm:bottom-2.5 sm:left-2.5 bg-white/95 backdrop-blur-md rounded-xl p-1 sm:p-1.5 shadow-md border border-white/90 flex items-center gap-1.5 pointer-events-none select-none">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
+              <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+            </div>
+            <div className="leading-tight text-left">
+              <span className="block text-[8.5px] sm:text-[9.5px] font-black text-slate-900 leading-none">High Salary</span>
+              <span className="block text-[7.5px] sm:text-[8.5px] font-medium text-emerald-600 leading-tight">Better Future</span>
+            </div>
+          </div>
+
+          {/* Floating Badge 3: Top-Right (Real Projects Real Skills) */}
+          <div className="absolute top-2 right-2 sm:top-2.5 sm:right-2.5 bg-white/95 backdrop-blur-md rounded-xl p-1 sm:p-1.5 shadow-md border border-white/90 flex items-center gap-1.5 pointer-events-none select-none">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
+              <Code className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+            </div>
+            <div className="leading-tight text-left">
+              <span className="block text-[8.5px] sm:text-[9.5px] font-black text-slate-900 leading-none">Real Projects</span>
+              <span className="block text-[7.5px] sm:text-[8.5px] font-medium text-slate-500 leading-tight">Real Skills</span>
+            </div>
+          </div>
+
+          {/* Floating Badge 4: Bottom-Right (Support Till You Get Placed) */}
+          <div className="absolute bottom-2 right-2 sm:bottom-2.5 sm:right-2.5 bg-white/95 backdrop-blur-md rounded-xl p-1 sm:p-1.5 shadow-md border border-white/90 flex items-center gap-1.5 pointer-events-none select-none">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
+              <Users className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+            </div>
+            <div className="leading-tight text-left">
+              <span className="block text-[8.5px] sm:text-[9.5px] font-black text-slate-900 leading-none">Support</span>
+              <span className="block text-[7.5px] sm:text-[8.5px] font-medium text-slate-500 leading-tight">Till You Get Placed</span>
+            </div>
+          </div>
         </div>
 
         {/* 8 Items List */}
@@ -223,12 +269,13 @@ export const MobileWhyChooseSection: React.FC<MobileWhyChooseSectionProps> = ({
         </div>
 
         {/* Visual Banner */}
-        <div className="mt-3 sm:mt-3.5 rounded-2xl overflow-hidden border border-rose-100 shadow-2xs bg-slate-900">
+        <div className="relative mt-3 sm:mt-3.5 rounded-2xl overflow-hidden border border-rose-100 shadow-2xs bg-slate-900 group">
           <img
             src="/images/why_choose/why_choose_frustrated_desktop.jpg"
             alt="Other Institutes Common Frustrations"
-            className="w-full h-[155px] sm:h-[185px] lg:h-[195px] object-cover select-none"
+            className="w-full h-[165px] sm:h-[195px] lg:h-[210px] object-cover select-none transition-transform duration-700 group-hover:scale-[1.01]"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-black/10 pointer-events-none" />
         </div>
 
         {/* 8 Items List */}
