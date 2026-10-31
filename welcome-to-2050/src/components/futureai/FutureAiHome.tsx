@@ -338,7 +338,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
     <div className="min-h-screen w-full bg-[#F4F8FC] text-slate-800 font-sans flex flex-col justify-between overflow-x-hidden selection:bg-blue-500 selection:text-white">
       
       {/* ─── 1. TOP NAVBAR (Exact Post-Login Header with Pre-Login Guard) ─── */}
-      <div className="shrink-0 sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
+      <div className="shrink-0 z-50">
         <FutureAdvancedHeader
           userName={userName}
           activeNavTab="home"

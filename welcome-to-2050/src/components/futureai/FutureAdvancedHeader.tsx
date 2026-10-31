@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { FutureLogo } from './FutureLogo';
 import { WalletWithdrawModal } from './WalletWithdrawModal';
 import { soundEffects } from '../../services/soundEffects';
@@ -806,8 +807,8 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
       </header>
 
       {/* ─── PREMIUM RIGHT-SIDE NAVIGATION DRAWER (Slide-in From Right) ─── */}
-      {hamburgerDrawerOpen && (
-        <div className="fixed inset-0 z-[100] flex justify-end items-stretch animate-fadeIn">
+      {typeof document !== 'undefined' && hamburgerDrawerOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] flex justify-end items-stretch animate-fadeIn">
           {/* Dark Translucent Backdrop */}
           <div
             className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
@@ -1238,12 +1239,13 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               )}
             </div>
           </aside>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ─── PREMIUM COMPACT MY PROFILE PANEL ─── */}
-      {profileDropdownOpen && (
-        <div className="fixed inset-0 z-[100] flex justify-end items-start animate-fadeIn">
+      {typeof document !== 'undefined' && profileDropdownOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] flex justify-end items-start animate-fadeIn">
           {/* Dark Translucent Backdrop */}
           <div
             className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
@@ -1400,7 +1402,8 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
               </div>
             </div>
           </aside>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ─── REAL EDIT PROFILE MODAL ─── */}
