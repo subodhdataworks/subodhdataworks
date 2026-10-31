@@ -19,6 +19,7 @@ import {
   TrendingUp,
   Building,
   Video,
+  BarChart3,
   ChevronRight,
   User,
 } from 'lucide-react';
@@ -96,7 +97,7 @@ const LoginProcessingLoader: React.FC<{
 
   return (
     <div
-      className="absolute inset-0 z-50 bg-white/95 backdrop-blur-md rounded-3xl flex flex-col items-center justify-center p-5 text-center animate-fadeIn select-none"
+      className="absolute inset-0 z-50 bg-white/95 backdrop-blur-md rounded-[32px] flex flex-col items-center justify-center p-5 text-center animate-fadeIn select-none"
       role="status"
       aria-live="polite"
       aria-busy={!isSuccess}
@@ -420,7 +421,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
   const modalContent = (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2.5 sm:p-4 md:p-6 bg-slate-950/70 backdrop-blur-md animate-fadeIn overflow-y-auto selection:bg-blue-500 selection:text-white">
       {/* ─── MAIN MODAL CARD ─── */}
-      <div className="relative w-full max-w-[420px] md:max-w-[880px] lg:max-w-[960px] bg-white rounded-[28px] sm:rounded-3xl shadow-[0_25px_70px_rgba(0,0,0,0.35)] border border-slate-200/80 my-auto overflow-hidden animate-scaleUp">
+      <div className="relative w-full max-w-[425px] md:max-w-[880px] lg:max-w-[960px] bg-white rounded-[32px] shadow-[0_25px_70px_rgba(0,0,0,0.35)] border border-slate-200/80 my-auto overflow-hidden animate-scaleUp">
         
         {/* Loading Overlay */}
         {loadingStage !== 'idle' && (
@@ -595,60 +596,58 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
             </div>
           </div>
 
-          {/* ═════════ RIGHT COLUMN: AUTH FORM (DESKTOP & MOBILE SHARED) ═════════ */}
-          <div className="w-full md:w-[48%] lg:w-[46%] p-5 sm:p-7 md:p-8 flex flex-col justify-between bg-white relative">
+          {/* ═════════ RIGHT COLUMN: AUTH FORM (EXACT MATCH TO REFERENCE media_1793445829689_1f6f35ce.jpg) ═════════ */}
+          <div className="w-full md:w-[48%] lg:w-[46%] p-4 sm:p-6 md:p-8 flex flex-col justify-between bg-white relative">
             
             <div>
-              {/* ── Mobile-Only Compact Hero Banner (< md) ── */}
-              <div className="block md:hidden mb-4">
-                {/* Mobile Top Header: Brand Logo */}
-                <div className="flex items-center justify-between mb-3 pr-8">
+              {/* ── Mobile Top Header: Official Brand Logo & Tagline (Matching Image) ── */}
+              <div className="flex md:hidden items-center justify-center mb-3 relative pt-1">
+                <div className="flex flex-col items-center select-none">
                   <img
                     src="/images/brand/future_it_logo.png"
-                    alt="FUTURE IT INDUSTRY"
-                    className="h-6 w-auto object-contain"
+                    alt="FUTURE IT INDUSTRY - Learn Today. Earn Tomorrow."
+                    className="h-8 w-auto object-contain"
+                  />
+                </div>
+              </div>
+
+              {/* ── Mobile Placement Banner Card (1:1 Exact Match) ── */}
+              <div className="block md:hidden mb-2.5">
+                <div className="w-full rounded-2xl overflow-hidden shadow-sm border border-slate-200/60 bg-[#02183c]">
+                  <img
+                    src="/images/auth/mobile_placement_banner.jpg"
+                    alt="New Placement Prep Batch - Ultimate Placement Solution"
+                    className="w-full h-auto object-cover select-none"
                   />
                 </div>
 
-                {/* Mobile Compact Placement Banner Card */}
-                <div className="rounded-2xl bg-gradient-to-br from-[#02183c] via-[#072152] to-[#04132e] text-white p-3.5 relative overflow-hidden shadow-xs">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="min-w-0 flex-1">
-                      <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-600/70 to-purple-600/70 border border-blue-400/40 text-[9.5px] font-black text-white mb-1.5">
-                        <Flame className="w-3 h-3 text-amber-400 fill-amber-400 shrink-0" />
-                        <span>New PLACEMENT PREP Batch</span>
-                      </div>
-                      <h3 className="text-sm font-black text-white leading-tight">
-                        Ultimate Placement Solution
-                      </h3>
-                      <p className="text-[10px] text-cyan-200 mt-0.5">
-                        Start your placement prep today!
-                      </p>
-                    </div>
-
-                    <div className="w-18 h-18 rounded-xl overflow-hidden border border-cyan-400/30 shrink-0 bg-slate-900">
-                      <img
-                        src="/images/auth/login_student_banner.jpg"
-                        alt="Student"
-                        className="w-full h-full object-cover"
-                      />
+                {/* ── 3 Quick Feature White Cards (Live Classes | Projects & Practice | Placement Support) ── */}
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mt-2.5 select-none">
+                  {/* Pill 1: Live Classes */}
+                  <div className="bg-white rounded-2xl p-1.5 sm:p-2 border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.03)] flex items-center justify-center gap-1.5">
+                    <Video className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#0066FF] fill-[#0066FF]/20 shrink-0" />
+                    <div className="text-left leading-tight">
+                      <span className="block text-[10px] sm:text-[11px] font-bold text-slate-800">Live</span>
+                      <span className="block text-[9.5px] sm:text-[10.5px] font-bold text-slate-700">Classes</span>
                     </div>
                   </div>
 
-                  {/* 3 Quick Pills */}
-                  <div className="grid grid-cols-3 gap-1.5 mt-2.5 pt-2 border-t border-white/10 text-[9.5px] text-slate-200 font-semibold text-center">
-                    <span className="bg-white/10 rounded-lg py-1 px-1 flex items-center justify-center gap-1">
-                      <Video className="w-2.5 h-2.5 text-cyan-300" />
-                      Live Classes
-                    </span>
-                    <span className="bg-white/10 rounded-lg py-1 px-1 flex items-center justify-center gap-1">
-                      <Code className="w-2.5 h-2.5 text-cyan-300" />
-                      Projects
-                    </span>
-                    <span className="bg-white/10 rounded-lg py-1 px-1 flex items-center justify-center gap-1">
-                      <Briefcase className="w-2.5 h-2.5 text-cyan-300" />
-                      Placement
-                    </span>
+                  {/* Pill 2: Projects & Practice */}
+                  <div className="bg-white rounded-2xl p-1.5 sm:p-2 border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.03)] flex items-center justify-center gap-1.5">
+                    <Code className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#0066FF] shrink-0 stroke-[2.5]" />
+                    <div className="text-left leading-tight">
+                      <span className="block text-[10px] sm:text-[11px] font-bold text-slate-800">Projects &</span>
+                      <span className="block text-[9.5px] sm:text-[10.5px] font-bold text-slate-700">Practice</span>
+                    </div>
+                  </div>
+
+                  {/* Pill 3: Placement Support */}
+                  <div className="bg-white rounded-2xl p-1.5 sm:p-2 border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.03)] flex items-center justify-center gap-1.5">
+                    <BarChart3 className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#10B981] shrink-0 stroke-[2.5]" />
+                    <div className="text-left leading-tight">
+                      <span className="block text-[10px] sm:text-[11px] font-bold text-slate-800">Placement</span>
+                      <span className="block text-[9.5px] sm:text-[10.5px] font-bold text-slate-700">Support</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -662,21 +661,21 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                 />
               </div>
 
-              {/* ── Tab Switcher: Login | Create Account ── */}
-              <div className="flex items-center border-b border-slate-100 mb-4 sm:mb-5">
+              {/* ── Tab Switcher: Login | Create Account (Matching Reference) ── */}
+              <div className="flex items-center justify-center gap-6 border-b border-slate-100 mb-3.5 sm:mb-4 pt-1">
                 <button
                   type="button"
                   onClick={() => {
                     setAuthMode('login');
                     setValidationError(null);
                   }}
-                  className={`flex-1 pb-2.5 text-center text-xs sm:text-sm font-black cursor-pointer transition-colors relative ${
+                  className={`pb-2 px-5 text-center text-sm font-black cursor-pointer transition-colors relative ${
                     authMode === 'login' ? 'text-[#0066FF]' : 'text-slate-400 hover:text-slate-700'
                   }`}
                 >
                   <span>Login</span>
                   {authMode === 'login' && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0066FF] rounded-full" />
+                    <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#0066FF] rounded-full" />
                   )}
                 </button>
 
@@ -686,24 +685,24 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                     setAuthMode('signup');
                     setValidationError(null);
                   }}
-                  className={`flex-1 pb-2.5 text-center text-xs sm:text-sm font-black cursor-pointer transition-colors relative ${
+                  className={`pb-2 px-5 text-center text-sm font-black cursor-pointer transition-colors relative ${
                     authMode === 'signup' ? 'text-[#0066FF]' : 'text-slate-400 hover:text-slate-700'
                   }`}
                 >
                   <span>Create Account</span>
                   {authMode === 'signup' && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0066FF] rounded-full" />
+                    <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#0066FF] rounded-full" />
                   )}
                 </button>
               </div>
 
-              {/* Form Heading */}
-              <div className="text-center mb-4 sm:mb-5">
-                <h2 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 tracking-tight flex items-center justify-center gap-1.5">
+              {/* Form Heading (Welcome Back 👋) */}
+              <div className="text-center mb-3.5 sm:mb-4">
+                <h2 className="text-[20px] sm:text-[22px] font-black text-slate-900 tracking-tight flex items-center justify-center gap-1.5">
                   <span>{authMode === 'login' ? 'Welcome Back' : 'Create Account'}</span>
                   <span>{authMode === 'login' ? '👋' : '🚀'}</span>
                 </h2>
-                <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-1">
+                <p className="text-[11.5px] sm:text-xs text-slate-500 font-medium mt-0.5">
                   {authMode === 'login'
                     ? 'Login to continue your learning journey.'
                     : 'Join 1L+ students and start learning today.'}
@@ -713,7 +712,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
               {/* Validation Alert */}
               {validationError && (
                 <div
-                  className="mb-3.5 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2 text-left"
+                  className="mb-3 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2 text-left"
                   role="alert"
                 >
                   <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-500" />
@@ -721,32 +720,34 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                 </div>
               )}
 
-              {/* 1-Click Google Sign In Button */}
+              {/* 1-Click Google Sign In Button (Exact 1:1 Match) */}
               <button
                 type="button"
                 onClick={handleGoogleSignInClick}
                 disabled={isSubmitting}
-                className="w-full py-2.5 sm:py-3 px-3.5 sm:px-4 rounded-2xl border border-slate-200 hover:border-blue-400 bg-white hover:bg-slate-50 flex items-center justify-between shadow-2xs font-bold text-xs sm:text-[13.5px] text-slate-800 transition-all cursor-pointer active:scale-[0.99] disabled:opacity-50"
+                className="w-full py-2.5 sm:py-3 px-3.5 sm:px-4 rounded-2xl border border-slate-200/90 hover:border-blue-400 bg-white hover:bg-slate-50 flex items-center justify-between shadow-[0_2px_8px_rgba(0,0,0,0.02)] font-bold text-xs sm:text-[13.5px] text-slate-800 transition-all cursor-pointer active:scale-[0.99] disabled:opacity-50"
               >
                 <div className="flex items-center gap-2.5">
-                  <GoogleIcon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
-                  <span>Continue with Google</span>
+                  <GoogleIcon className="w-5 h-5 shrink-0" />
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400" />
+                <span className="font-bold text-[13.5px] text-slate-800 flex-1 text-center pr-3">
+                  Continue with Google
+                </span>
+                <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
               </button>
 
               {/* Or Divider */}
-              <div className="relative my-4 text-center">
+              <div className="relative my-3 sm:my-3.5 text-center">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-slate-200" />
+                  <div className="w-full border-t border-slate-200/80" />
                 </div>
-                <span className="relative bg-white px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                <span className="relative bg-white px-3 text-[11px] font-medium text-slate-400">
                   or continue with email
                 </span>
               </div>
 
               {/* Email/Password Form */}
-              <form onSubmit={handleEmailFormSubmit} className="space-y-3">
+              <form onSubmit={handleEmailFormSubmit} className="space-y-2.5 sm:space-y-3">
                 {/* Full Name (Sign Up only) */}
                 {authMode === 'signup' && (
                   <div className="relative">
@@ -757,7 +758,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                       value={nameInput}
                       onChange={(e) => setNameInput(e.target.value)}
                       disabled={isSubmitting}
-                      className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-slate-200 focus:border-[#0066FF] focus:ring-2 focus:ring-blue-100 text-xs sm:text-sm text-slate-800 placeholder-slate-400 outline-none transition"
+                      className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-2xl border border-slate-200 focus:border-[#0066FF] focus:ring-2 focus:ring-blue-100 text-xs sm:text-sm text-slate-800 placeholder-slate-400 outline-none transition"
                     />
                   </div>
                 )}
@@ -772,7 +773,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                     onChange={(e) => setEmailInput(e.target.value)}
                     disabled={isSubmitting}
                     required
-                    className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-slate-200 focus:border-[#0066FF] focus:ring-2 focus:ring-blue-100 text-xs sm:text-sm text-slate-800 placeholder-slate-400 outline-none transition"
+                    className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-2xl border border-slate-200 focus:border-[#0066FF] focus:ring-2 focus:ring-blue-100 text-xs sm:text-sm text-slate-800 placeholder-slate-400 outline-none transition"
                   />
                 </div>
 
@@ -786,7 +787,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                     onChange={(e) => setPasswordInput(e.target.value)}
                     disabled={isSubmitting}
                     required
-                    className="w-full pl-10 pr-10 py-2.5 rounded-2xl border border-slate-200 focus:border-[#0066FF] focus:ring-2 focus:ring-blue-100 text-xs sm:text-sm text-slate-800 placeholder-slate-400 outline-none transition"
+                    className="w-full pl-10 pr-10 py-2.5 sm:py-3 rounded-2xl border border-slate-200 focus:border-[#0066FF] focus:ring-2 focus:ring-blue-100 text-xs sm:text-sm text-slate-800 placeholder-slate-400 outline-none transition"
                   />
                   <button
                     type="button"
@@ -800,12 +801,12 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
 
                 {/* Keep me signed in + Forgot password */}
                 <div className="flex items-center justify-between text-xs pt-0.5">
-                  <label className="flex items-center gap-1.5 cursor-pointer text-slate-600 font-medium select-none">
+                  <label className="flex items-center gap-1.5 cursor-pointer text-slate-700 font-semibold select-none">
                     <input
                       type="checkbox"
                       checked={keepSignedIn}
                       onChange={(e) => setKeepSignedIn(e.target.checked)}
-                      className="w-3.5 h-3.5 rounded text-[#0066FF] border-slate-300 focus:ring-blue-200"
+                      className="w-4 h-4 rounded text-[#0066FF] border-slate-300 focus:ring-blue-200 cursor-pointer"
                     />
                     <span>Keep me signed in</span>
                   </label>
@@ -816,18 +817,18 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                       onClick={() => {
                         alert('Password reset instructions will be sent to your email.');
                       }}
-                      className="text-[#0066FF] hover:underline font-semibold"
+                      className="text-[#0066FF] hover:underline font-bold text-xs"
                     >
                       Forgot Password?
                     </button>
                   )}
                 </div>
 
-                {/* Submit Gradient Button */}
+                {/* Submit Gradient Button (Matching media_1793445829689_1f6f35ce.jpg) */}
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#0066FF] via-[#4F46E5] to-[#7C3AED] hover:brightness-105 active:scale-[0.99] text-white font-black text-sm shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 cursor-pointer transition disabled:opacity-50 mt-2"
+                  className="w-full py-3 sm:py-3.5 rounded-2xl bg-gradient-to-r from-[#0099FF] via-[#0066FF] to-[#8B5CF6] hover:brightness-105 active:scale-[0.99] text-white font-extrabold text-[15px] shadow-[0_8px_24px_rgba(0,102,255,0.35)] flex items-center justify-center gap-2 cursor-pointer transition disabled:opacity-50 mt-2"
                 >
                   <span>{authMode === 'login' ? 'Login' : 'Create Account'}</span>
                   <ArrowRight className="w-4 h-4 stroke-[2.5]" />
@@ -835,7 +836,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
               </form>
 
               {/* Switch Mode Prompt */}
-              <div className="text-center mt-3 text-xs text-slate-500">
+              <div className="text-center mt-3 text-xs text-slate-600 font-medium">
                 <span>{authMode === 'login' ? 'New here? ' : 'Already have an account? '}</span>
                 <button
                   type="button"
@@ -843,28 +844,29 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                     setAuthMode(authMode === 'login' ? 'signup' : 'login');
                     setValidationError(null);
                   }}
-                  className="text-[#0066FF] font-bold hover:underline cursor-pointer"
+                  className="text-[#0066FF] font-extrabold hover:underline cursor-pointer"
                 >
                   {authMode === 'login' ? 'Create an account' : 'Login'}
                 </button>
               </div>
 
               {/* Terms of Service Note */}
-              <p className="text-[10px] sm:text-[10.5px] text-slate-400 text-center mt-3 leading-snug">
+              <p className="text-[10px] sm:text-[10.5px] text-slate-500 text-center mt-2.5 leading-relaxed">
                 By continuing, you agree to our{' '}
-                <a href="#terms" onClick={onClose} className="underline hover:text-slate-600">
+                <a href="#terms" onClick={onClose} className="text-[#0066FF] hover:underline font-semibold">
                   Terms of Service
                 </a>{' '}
+                <br />
                 and{' '}
-                <a href="#privacy" onClick={onClose} className="underline hover:text-slate-600">
+                <a href="#privacy" onClick={onClose} className="text-[#0066FF] hover:underline font-semibold">
                   Privacy Policy
                 </a>
                 .
               </p>
             </div>
 
-            {/* Trust Badges Row (Bottom) */}
-            <div className="grid grid-cols-3 gap-2 pt-4 mt-4 border-t border-slate-100 text-center text-slate-500 text-[10px] font-semibold">
+            {/* Trust Badges Row (Desktop Only) */}
+            <div className="hidden md:grid grid-cols-3 gap-2 pt-4 mt-4 border-t border-slate-100 text-center text-slate-500 text-[10px] font-semibold">
               <div className="flex flex-col items-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
                 <span>Secure Login</span>
