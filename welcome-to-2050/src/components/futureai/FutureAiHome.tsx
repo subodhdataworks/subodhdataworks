@@ -3,7 +3,6 @@ import {
   BookOpen,
   Code2,
   FileCheck,
-  Coins,
   GraduationCap,
   Briefcase,
   ChevronRight,
@@ -18,9 +17,7 @@ import {
   Database,
   BarChart3,
   FileSpreadsheet,
-  Infinity as InfinityIcon,
   Laptop,
-  FolderGit2,
   Cloud,
   Rocket,
   MessageSquare,
@@ -964,103 +961,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       {/* ═══════════════════════════════════════════════════════════════════════════
           SECTION 4: Why Choose Future IT Industry?
       ═══════════════════════════════════════════════════════════════════════════ */}
-      {/* Mobile-Only Why Choose (< 768px) matching reference */}
-      <div className="block md:hidden">
-        <MobileWhyChooseSection onExploreCourses={promptLogin} />
-      </div>
-
-      {/* Desktop-Only Why Choose (>= 768px, 100% Untouched) */}
-      <div className="hidden md:block">
-        <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-        
-
-        {/* Compact Real Comparison Showcase Banner */}
-        <div 
-          onClick={promptLogin}
-          className="relative max-w-4xl sm:max-w-5xl mx-auto w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-xl border border-slate-200/90 hover:border-blue-300 transition-all duration-300 cursor-pointer group bg-white mb-6 sm:mb-8"
-        >
-          <img
-            src="/images/why_choose/why_choose_comparison_banner_hd.jpg?v=5k"
-            loading="eager"
-            alt="Why Choose Future IT Industry? Real Skills • Real Projects • Career Support"
-            className="w-full h-auto object-contain select-none group-hover:scale-[1.005] transition-transform duration-500"
-          />
-        </div>
-
-
-
-        {/* 4 Core Value Pillars (Matching the High-Impact Trust Bar) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-          <div 
-            onClick={promptLogin}
-            className="group/pillar p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-blue-400 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer flex items-start gap-3.5"
-          >
-            <div className="w-11 h-11 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover/pillar:bg-blue-600 group-hover/pillar:text-white transition-colors duration-300 shadow-2xs">
-              <Coins className="w-5 h-5" />
-            </div>
-            <div className="min-w-0">
-              <h4 className="text-sm font-black text-slate-900 group-hover/pillar:text-blue-600 transition-colors">
-                Affordable Learning
-              </h4>
-              <p className="text-xs text-slate-500 font-medium mt-0.5 leading-relaxed">
-                High-Quality Education at the Right Price. No overpriced fee pressure.
-              </p>
-            </div>
-          </div>
-
-          <div 
-            onClick={promptLogin}
-            className="group/pillar p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-indigo-400 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer flex items-start gap-3.5"
-          >
-            <div className="w-11 h-11 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover/pillar:bg-indigo-600 group-hover/pillar:text-white transition-colors duration-300 shadow-2xs">
-              <InfinityIcon className="w-5 h-5" />
-            </div>
-            <div className="min-w-0">
-              <h4 className="text-sm font-black text-slate-900 group-hover/pillar:text-indigo-600 transition-colors">
-                Lifetime Course Access
-              </h4>
-              <p className="text-xs text-slate-500 font-medium mt-0.5 leading-relaxed">
-                Learn at Your Own Pace, Anytime, Anywhere with future curriculum updates.
-              </p>
-            </div>
-          </div>
-
-          <div 
-            onClick={promptLogin}
-            className="group/pillar p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-cyan-400 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer flex items-start gap-3.5"
-          >
-            <div className="w-11 h-11 rounded-2xl bg-cyan-50 text-cyan-600 flex items-center justify-center shrink-0 group-hover/pillar:bg-cyan-600 group-hover/pillar:text-white transition-colors duration-300 shadow-2xs">
-              <Laptop className="w-5 h-5" />
-            </div>
-            <div className="min-w-0">
-              <h4 className="text-sm font-black text-slate-900 group-hover/pillar:text-cyan-600 transition-colors">
-                Hands-on Practice
-              </h4>
-              <p className="text-xs text-slate-500 font-medium mt-0.5 leading-relaxed">
-                Live In-Browser Coding Sandbox, Real Cloud Tools &amp; Automated Evaluation.
-              </p>
-            </div>
-          </div>
-
-          <div 
-            onClick={promptLogin}
-            className="group/pillar p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-emerald-400 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer flex items-start gap-3.5"
-          >
-            <div className="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover/pillar:bg-emerald-600 group-hover/pillar:text-white transition-colors duration-300 shadow-2xs">
-              <FolderGit2 className="w-5 h-5" />
-            </div>
-            <div className="min-w-0">
-              <h4 className="text-sm font-black text-slate-900 group-hover/pillar:text-emerald-600 transition-colors">
-                Project Portfolio
-              </h4>
-              <p className="text-xs text-slate-500 font-medium mt-0.5 leading-relaxed">
-                Build Real Production Projects to showcase verifiable skills to recruiters.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-      </div>
+      <MobileWhyChooseSection onExploreCourses={promptLogin} />
 
       {/* ═══════════════════════════════════════════════════════════════════════════
           SECTION 5 & 6: Real Success Stories Showcase (Exact Post-Login Experience)
