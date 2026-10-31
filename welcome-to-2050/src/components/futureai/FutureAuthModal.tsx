@@ -18,7 +18,6 @@ import {
   Briefcase,
   TrendingUp,
   Building,
-  Video,
   BarChart3,
   ChevronRight,
   User,
@@ -565,10 +564,7 @@ export const FutureAuthModal: React.FC<FutureAuthModalProps> = ({
                     <span>Get Hired 🚀</span>
                   </div>
 
-                  <div className="absolute bottom-2.5 left-2.5 bg-[#031b3e]/90 backdrop-blur-md border border-blue-400/50 rounded-xl px-2.5 py-1 text-[9.5px] font-bold text-white flex items-center gap-1.5 shadow-[0_4px_16px_rgba(37,99,235,0.4)]">
-                    <Video className="w-3 h-3 text-sky-400 shrink-0" />
-                    <span>Live Classes</span>
-                  </div>
+                  
 
                   <div className="absolute bottom-2.5 right-2.5 bg-[#031b3e]/90 backdrop-blur-md border border-emerald-400/60 rounded-xl px-2.5 py-1 text-[9.5px] font-black text-emerald-300 flex items-center gap-1.5 shadow-[0_4px_16px_rgba(16,185,129,0.4)]">
                     <Award className="w-3 h-3 text-emerald-400 shrink-0" />
