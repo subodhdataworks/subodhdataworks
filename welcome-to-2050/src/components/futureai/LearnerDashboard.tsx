@@ -99,7 +99,7 @@ import { CourseDetailPopupModal } from './CourseDetailPopupModal';
 import { SuccessPlanModal } from './SuccessPlanModal';
 import { FutureAdvancedHeader } from './FutureAdvancedHeader';
 import { AtsResumeCheckerModal } from './AtsResumeCheckerModal';
-import { FullFooter } from '../footer';
+import { FullFooter, SmallFooter } from '../footer';
 
 // =========================================================================
 // 10 AUTHENTIC 3D-STYLE VECTOR ICONS MATCHING media_1790589591068.jpg
@@ -403,6 +403,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
 
 
+  const [currentHash, setCurrentHash] = useState<string>(() => typeof window !== 'undefined' ? window.location.hash : '');
   const [dockTab, setDockTab] = useState<'home' | 'game' | 'income' | 'referral' | 'wallet' | 'withdraw' | 'placement'>(() => {
     if (typeof window !== 'undefined') {
       const h = window.location.hash;
@@ -543,8 +544,16 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   const [selectedModuleView, setSelectedModuleView] = useState<'data_analyst' | 'data_science' | 'ml_engineering' | 'ai_engineering' | 'ai_tools_prompt' | 'ms_office_copilot' | 'full_stack_mern' | 'mockinterview' | 'python' | 'python_intro_game' | 'python_challenges' | 'sql_challenges' | 'excel_challenges' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai' | null>(() => {
     if (typeof window !== 'undefined') {
       const h = window.location.hash;
+      setCurrentHash(h);
       const baseH = h.split('?')[0];
-      if (baseH === '#data-analyst' || baseH === '#data-analytics') {
+      if (!['#placement', '#jobs', '#placements', '#internship', '#internships', '#certificate', '#certificates', '#recommendation', '#recommendations', '#lor'].includes(baseH)) {
+        setPlacementLockOpen(false);
+      }
+      if (baseH === '#learning' || baseH === '#mylearning') {
+        setSelectedModuleView('data_analyst');
+        setActiveTopicWs(null);
+        setDockTab('home');
+      } else if (baseH === '#data-analyst' || baseH === '#data-analytics') {
         return 'data_analyst';
       }
       if (baseH === '#data-science' || baseH === '#data-science-agentic-ai' || baseH === '#datascience') {
@@ -752,6 +761,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         setSelectedModuleView('mockinterview');
         setActiveTopicWs(null);
         setDockTab('home');
+      } else if (baseH === '#login' || baseH === '#signup') {
+        setAuthModalOpen(true);
       } else if (baseH === '#dashboard' || baseH === '#courses' || baseH === '#home' || !baseH) {
         setSelectedModuleView(null);
         setActiveTopicWs(null);
@@ -1323,7 +1334,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               setDockTab('home');
               setSelectedModuleView('data_analyst');
               setActiveTopicWs(null);
-              if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+              if (typeof window !== 'undefined') window.location.hash = '#learning';
             }}
             onNavigatePractice={(track) => {
               if (track === 'python') {
@@ -1455,6 +1466,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           onSuccess={handleAuthSuccess}
         />
 
+        {/* Small Footer per User Specification (My Learning / DSA Practice) */}
+        <SmallFooter />
+
         {/* Preserve exact existing mobile bottom navigation on Android/Mobile (< md) */}
         <div className="md:hidden h-20 shrink-0" aria-hidden="true" />
         <MobileDashboardBottomNav
@@ -1532,6 +1546,114 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
   // (Referral & Earnings now render seamlessly inside the same dashboard container with the 2050 glass theme)
 
+  // ─── DYNAMIC FOOTER RESOLUTION PER SPECIFICATION ───
+  // Page                            Footer Type
+  // Home Page (Before Login)        Full Footer
+  // Dashboard (After Login)         Full Footer
+  // My Learning                     Small Footer
+  // Course Details                  Full Footer
+  // DSA Practice / Hackathon        Small Footer
+  // Earning & Wallet                Small Footer
+  // Certificate                     Small Footer
+  // Internship                      Small Footer
+  // Recommendation Letter           Small Footer
+  // Placement / Get Job             Small Footer
+  // ATS Resume Score                Small Footer
+  // About Us                        Full Footer
+  // Contact Us                      Full Footer
+  // Privacy Policy / Terms          Full Footer
+  // Login / Signup                  No Footer
+  const getDashboardFooterType = (): 'full' | 'small' | 'none' => {
+    const rawHash = (typeof window !== 'undefined' ? window.location.hash : currentHash)
+      .split('?')[0]
+      .toLowerCase();
+
+    // 15. Login / Signup -> No Footer
+    if (['#login', '#signup', '#auth'].includes(rawHash)) {
+      return 'none';
+    }
+
+    // 4. Course Details -> Full Footer
+    if (
+      ['#data-analyst', '#data-analytics', '#data-science', '#data-science-agentic-ai', '#datascience', '#ml-engineering', '#mlengineering', '#ml-eng', '#ml', '#ai-engineering', '#aiengineering', '#ai-eng', '#ai', '#full-stack', '#fullstack', '#fullstack-mern', '#ai-tools-prompt', '#ms-office-copilot', '#sql', '#powerbi', '#stats', '#genai', '#mockinterview', '#mock-interview', '#interview'].includes(rawHash) ||
+      (dockTab === 'home' && selectedModuleView &&
+        ['data_analyst', 'data_science', 'ml_engineering', 'ai_engineering', 'ai_tools_prompt', 'ms_office_copilot', 'full_stack_mern', 'sql', 'excel', 'powerbi', 'stats', 'genai', 'mockinterview'].includes(selectedModuleView))
+    ) {
+      return 'full';
+    }
+
+    // 3. My Learning -> Small Footer
+    if (['#learning', '#mylearning'].includes(rawHash)) {
+      return 'small';
+    }
+
+    // 2. Dashboard (After Login) -> Full Footer
+    if (rawHash === '#dashboard' || (dockTab === 'home' && selectedModuleView === null && !placementLockOpen)) {
+      return 'full';
+    }
+
+    // 11. ATS Resume Score -> Small Footer
+    if (isAtsResumeModalOpen || ['#ats', '#ats-resume', '#ats-resume-checker'].includes(rawHash)) {
+      return 'small';
+    }
+
+    // 10. Placement / Get Job -> Small Footer
+    if (
+      dockTab === 'placement' ||
+      ['#placement', '#jobs', '#placements'].includes(rawHash) ||
+      (placementLockOpen && lockedSectionTarget === 'Placement')
+    ) {
+      return 'small';
+    }
+
+    // 9. Recommendation Letter -> Small Footer
+    if (
+      ['#recommendation', '#recommendations', '#lor'].includes(rawHash) ||
+      (placementLockOpen && (lockedSectionTarget === 'Recommendation Letter' || (lockedSectionTarget as string) === 'Letter of Recommendation'))
+    ) {
+      return 'small';
+    }
+
+    // 8. Internship -> Small Footer
+    if (
+      ['#internship', '#internships'].includes(rawHash) ||
+      (placementLockOpen && lockedSectionTarget === 'Internship')
+    ) {
+      return 'small';
+    }
+
+    // 7. Certificate -> Small Footer
+    if (
+      ['#certificate', '#certificates'].includes(rawHash) ||
+      (placementLockOpen && (lockedSectionTarget === 'Certificate' || (lockedSectionTarget as string) === 'Course Certificate'))
+    ) {
+      return 'small';
+    }
+
+    // 6. Earning & Wallet -> Small Footer
+    if (
+      dockTab === 'income' ||
+      dockTab === 'referral' ||
+      dockTab === 'wallet' ||
+      dockTab === 'withdraw' ||
+      ['#income', '#earnings', '#myearnings', '#myearning', '#earning', '#earn', '#earncash', '#earn-cash', '#wallet', '#withdraw', '#referral'].includes(rawHash)
+    ) {
+      return 'small';
+    }
+
+    // 5. DSA Practice / Hackathon -> Small Footer
+    if (
+      dockTab === 'game' ||
+      activeTopicWs !== null ||
+      ['#game', '#games', '#arena', '#gamearena', '#practice', '#codingpractice', '#coding-practice', '#python-challenges', '#sql-challenges', '#excel-challenges', '#play', '#codequest', '#workspace', '#code', '#codepractice', '#score', '#scorecard'].includes(rawHash)
+    ) {
+      return 'small';
+    }
+
+    // Default -> Full Footer
+    return 'full';
+  };
+
   return (
     <div className="dock-dashboard-page">
       
@@ -1564,7 +1686,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           setDockTab('home');
           setSelectedModuleView('data_analyst');
           setActiveTopicWs(null);
-          if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+          if (typeof window !== 'undefined') window.location.hash = '#learning';
         }}
         onNavigatePractice={(track) => {
           if (track === 'python') {
@@ -2206,8 +2328,13 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
       </div>
 
-{/* ─── MINIMAL FOOTER — LOGGED-IN GENERAL DASHBOARD PAGES ─── */}
-      <FullFooter />
+{/* ─── DYNAMIC FOOTER (FULL / SMALL / NONE) PER SPECIFICATION ─── */}
+      {(() => {
+        const footerType = getDashboardFooterType();
+        if (footerType === 'none') return null;
+        if (footerType === 'small') return <SmallFooter />;
+        return <FullFooter />;
+      })()}
 
       {/* ─── AI ATS RESUME CHECKER MODAL ─── */}
       <AtsResumeCheckerModal

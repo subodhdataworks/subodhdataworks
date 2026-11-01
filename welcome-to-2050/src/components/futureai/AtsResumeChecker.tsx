@@ -1,3 +1,4 @@
+import { SmallFooter } from '../footer';
 import React, { useState, useRef, useEffect } from 'react';
 import {
   UploadCloud,
@@ -2554,6 +2555,8 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
         </div>
       )}
 
+      {/* Small Footer per User Specification */}
+      <SmallFooter />
     </div>
   );
 };

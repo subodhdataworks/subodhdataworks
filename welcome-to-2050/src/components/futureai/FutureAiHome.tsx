@@ -304,6 +304,17 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
   onLoginSuccess,
   onLogout,
 }) => {
+  // Track hash for dynamic footer and navigation rules
+  const [currentHash, setCurrentHash] = useState<string>(() => typeof window !== 'undefined' ? window.location.hash : '');
+  useEffect(() => {
+    const handleHash = () => {
+      if (typeof window !== 'undefined') setCurrentHash(window.location.hash);
+    };
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
+  const isAuthRoute = ['#login', '#signup', '#auth'].includes(currentHash.split('?')[0].toLowerCase());
+
   // Full Auth Modal
   const [authModalOpen, setAuthModalOpen] = useState(initialAuthOpen);
   const [authMessage, setAuthMessage] = useState<string>(initialAuthMessage || 'Please login to continue.');
@@ -977,7 +988,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
       {/* ═══════════════════════════════════════════════════════════════════════════
           GLOBAL FULL FOOTER (1:1 Reference Match, Responsive Desktop & Mobile)
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <FullFooter onOpenAuthModal={() => promptLogin()} />
+      {!isAuthRoute && <FullFooter onOpenAuthModal={() => promptLogin()} />}
 
       {/* Clean Auth Modal for Sign Up / Full Login Options */}
       <FutureAuthModal
