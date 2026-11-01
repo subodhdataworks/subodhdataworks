@@ -98,7 +98,7 @@ import { CourseDetailPopupModal } from './CourseDetailPopupModal';
 import { SuccessPlanModal } from './SuccessPlanModal';
 import { FutureAdvancedHeader } from './FutureAdvancedHeader';
 import { AtsResumeCheckerModal } from './AtsResumeCheckerModal';
-import { MinimalFooter } from '../footer';
+import { FullFooter } from '../footer';
 
 // =========================================================================
 // 10 AUTHENTIC 3D-STYLE VECTOR ICONS MATCHING media_1790589591068.jpg
@@ -2185,7 +2185,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       </div>
 
 {/* ─── MINIMAL FOOTER — LOGGED-IN GENERAL DASHBOARD PAGES ─── */}
-      <MinimalFooter />
+      <FullFooter />
 
       {/* ─── AI ATS RESUME CHECKER MODAL ─── */}
       <AtsResumeCheckerModal

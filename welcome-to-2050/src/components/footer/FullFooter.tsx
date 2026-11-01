@@ -1,30 +1,11 @@
 import React from 'react';
-import {
-  Sparkles,
-  ArrowRight,
-  BookOpen,
-  Code2,
-  Briefcase,
-  GraduationCap,
-  Award,
-  FileCheck2,
-  Phone,
-  ShieldCheck,
-  CheckCircle2,
-  MessageCircle,
-  Laptop,
-  Terminal,
-  Database,
-  Layers,
-  ChevronRight,
-  ExternalLink,
-} from 'lucide-react';
 
 export interface FullFooterProps {
   onOpenAuthModal?: () => void;
+  className?: string;
 }
 
-export const FullFooter: React.FC<FullFooterProps> = ({ onOpenAuthModal }) => {
+export const FullFooter: React.FC<FullFooterProps> = ({ onOpenAuthModal, className = '' }) => {
   const handleNav = (hash: string) => {
     if (typeof window !== 'undefined') {
       window.location.hash = hash;
@@ -32,435 +13,206 @@ export const FullFooter: React.FC<FullFooterProps> = ({ onOpenAuthModal }) => {
     }
   };
 
-  const handleWhatsApp = (context: string) => {
-    const msg = `Hello Future IT Industry Support, I want to inquire about: ${context}. Please guide me.`;
+  const handleHelpCenter = () => {
+    const msg = 'Hello Future IT Industry Support Team, I need help regarding my course or student account. Please assist me.';
     window.open(`https://wa.me/917632099528?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
   };
 
   return (
-    <footer className="relative w-full bg-[#040816] text-white overflow-hidden select-none font-sans border-t border-slate-800/80">
-      {/* ─── AMBIENT BACKGROUND GLOWS (Pure Luxury Gradient Lighting) ─── */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-48 bg-gradient-to-b from-cyan-500/10 via-blue-600/5 to-transparent blur-3xl pointer-events-none" />
-      <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#00D2FF] to-transparent pointer-events-none opacity-80" />
+    <footer
+      className={`relative w-full border-t border-slate-700/60 overflow-hidden text-white select-none font-sans ${className}`}
+      style={{
+        backgroundImage: "url('/images/future_ai_campus_footer.png')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 55%',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      {/* ─── DARK NAVY TRANSPARENT OVERLAY (Graduated to let building on right shine through) ─── */}
+      <div
+        className="absolute inset-0 pointer-events-none bg-gradient-to-r from-[#030c1c]/95 via-[#041226]/80 to-[#041226]/40"
+      />
+
+      {/* ─── TOP ELECTRIC-BLUE SUBTLE ACCENT LINE ─── */}
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 via-[#00D2FF] to-indigo-500 pointer-events-none" />
 
       {/* ─── MAIN FOOTER CONTENT WRAPPER ─── */}
-      <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 pt-12 sm:pt-16 pb-8 sm:pb-12">
+      <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 pb-5">
         
         {/* ═══════════════════════════════════════════════════════════════════
-            ROW 1: BRAND HERO STATEMENT & ADVISOR CTA CARD
+            DIRECTORY GRID: BRAND + QUICK LINKS + COMPANY + SUPPORT
         ═══════════════════════════════════════════════════════════════════ */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center pb-12 border-b border-slate-800/70">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-12 gap-7 lg:gap-8 items-start pb-7">
           
-          {/* Left Brand Summary (Col 1-7) */}
-          <div className="lg:col-span-7 space-y-4 text-left">
-            <div className="flex items-center gap-3">
-              <img
-                src="/images/brand/future_it_logo_dark.png"
-                alt="Future IT Industry"
-                className="h-10 sm:h-12 w-auto object-contain cursor-pointer hover:opacity-95 transition-opacity"
-                onClick={() => handleNav('#home')}
-              />
-              <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-cyan-950/80 text-cyan-300 border border-cyan-400/30">
-                Official EdTech Platform
-              </span>
-            </div>
-
-            <h2 className="text-xl sm:text-2xl lg:text-[28px] font-black text-white tracking-tight leading-snug">
-              Learn Today,{' '}
-              <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
-                Earn Tomorrow.
-              </span>
-            </h2>
-
-            <p className="text-sm sm:text-[15px] text-slate-300 font-medium leading-relaxed max-w-2xl">
-              Future IT Industry empowers passionate engineering students and graduates across India with hands-on coding practice, production-grade portfolio projects, virtual internships, and high-impact career placement pathways.
+          {/* 1. BRAND (LEFT) */}
+          <div className="sm:col-span-2 md:col-span-4 lg:col-span-4 flex flex-col items-start text-left">
+            <img
+              src="/images/brand/future_it_logo_dark.png"
+              alt="FUTURE IT INDUSTRIES"
+              className="h-8 sm:h-9 w-auto object-contain cursor-pointer transition-transform hover:scale-[1.02]"
+              onClick={() => handleNav('#home')}
+            />
+            <p className="text-[13.5px] sm:text-[14px] text-slate-200 font-medium mt-3 leading-relaxed tracking-wide">
+              India&apos;s #1 AI &amp; Data Science Career Accelerator.
+              <br />
+              <span className="text-white font-semibold">Learn Today, Earn Tomorrow.</span>
             </p>
-
-            {/* 3 Quick Value Pillars */}
-            <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-slate-300 font-semibold">
-              <div className="flex items-center gap-1.5 text-cyan-300">
-                <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
-                <span>Job-Ready Industrial Curriculum</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-emerald-300">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Real-Time Code Verification</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-sky-300">
-                <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
-                <span>700+ Hiring Partner Network</span>
-              </div>
-            </div>
           </div>
 
-          {/* Right Fast Support & Advisor Card (Col 8-12) */}
-          <div className="lg:col-span-5 w-full">
-            <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-[#0b142c] via-[#091124] to-[#060c1d] border border-cyan-500/25 shadow-[0_8px_32px_rgba(6,182,212,0.12)] text-left space-y-4">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10.5px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-400/30">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>Counselors Online</span>
-                  </span>
-                  <h3 className="text-base sm:text-lg font-black text-white mt-2">
-                    Need Guidance for Your Tech Career?
-                  </h3>
-                  <p className="text-xs text-slate-300 mt-1">
-                    Connect directly with our senior mentors for curriculum details, roadmap guidance, and scholarship eligibility.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
-                <button
-                  type="button"
-                  onClick={() => handleWhatsApp('General Admission & Career Roadmap')}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  <span>Chat on WhatsApp</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (onOpenAuthModal) onOpenAuthModal();
-                    else handleNav('#courses');
-                  }}
-                  className="py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer"
-                >
-                  <span>Explore Courses</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        {/* ═══════════════════════════════════════════════════════════════════
-            ROW 2: ORGANIZED 4-COLUMN FOOTER DIRECTORY (Sleek Modern Links)
-        ═══════════════════════════════════════════════════════════════════ */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-10 py-12 text-left">
-          
-          {/* Column 1: Career Programs */}
-          <div className="space-y-3.5">
-            <div className="flex items-center gap-2 text-white font-bold text-sm sm:text-base">
-              <BookOpen className="w-4 h-4 text-cyan-400 shrink-0" />
-              <span>Career Programs</span>
-            </div>
-            <div className="w-8 h-[2px] bg-cyan-400 rounded-full" />
-            <ul className="space-y-2 text-xs sm:text-[13px] text-slate-300 font-medium">
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('#data-analyst')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Data Analyst with GenAI</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('#data-science')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Data Science &amp; Agentic AI</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('#ml-engineering')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Machine Learning Engineer</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('#ai-engineering')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Artificial Intelligence Track</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('#full-stack-web-dev')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Full Stack Web Development</span>
-                </button>
-              </li>
+          {/* 2. QUICK LINKS */}
+          <div className="sm:col-span-1 md:col-span-2 lg:col-span-2 flex flex-col items-start text-left">
+            <h4 className="text-[16px] sm:text-[17px] font-bold text-white tracking-wide">
+              Quick Links
+            </h4>
+            <div className="w-8 h-[2.5px] bg-[#00D2FF] rounded-full mt-1.5 mb-3" />
+            <ul className="space-y-2 text-[13.5px] sm:text-[14px] font-medium text-slate-200">
               <li>
                 <button
                   type="button"
                   onClick={() => handleNav('#courses')}
-                  className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors cursor-pointer text-left flex items-center gap-1 pt-1"
+                  className="hover:text-[#00D2FF] transition-colors cursor-pointer text-left"
                 >
-                  <span>View All 7 Tracks</span>
-                  <ArrowRight className="w-3 h-3" />
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Column 2: Hands-on Practice */}
-          <div className="space-y-3.5">
-            <div className="flex items-center gap-2 text-white font-bold text-sm sm:text-base">
-              <Terminal className="w-4 h-4 text-sky-400 shrink-0" />
-              <span>Hands-on Practice</span>
-            </div>
-            <div className="w-8 h-[2px] bg-sky-400 rounded-full" />
-            <ul className="space-y-2 text-xs sm:text-[13px] text-slate-300 font-medium">
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('#python-challenges')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Python Challenges Lab</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('#sql-challenges')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>SQL Query Arena</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('#excel-challenges')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Excel Formula Simulator</span>
+                  Courses
                 </button>
               </li>
               <li>
                 <button
                   type="button"
                   onClick={() => handleNav('#game')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
+                  className="hover:text-[#00D2FF] transition-colors cursor-pointer text-left"
                 >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>DSA Coding Practice</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('#arena')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Master Practice (14 Tracks)</span>
+                  DSA Coding Practice
                 </button>
               </li>
               <li>
                 <button
                   type="button"
                   onClick={() => handleNav('#ats')}
-                  className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors cursor-pointer text-left flex items-center gap-1 pt-1"
+                  className="hover:text-[#00D2FF] transition-colors cursor-pointer text-left"
                 >
-                  <span>AI ATS Resume Checker</span>
-                  <ArrowRight className="w-3 h-3" />
+                  ATS Resume Checker
                 </button>
               </li>
-            </ul>
-          </div>
-
-          {/* Column 3: Career & Growth */}
-          <div className="space-y-3.5">
-            <div className="flex items-center gap-2 text-white font-bold text-sm sm:text-base">
-              <Briefcase className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>Career &amp; Growth</span>
-            </div>
-            <div className="w-8 h-[2px] bg-emerald-400 rounded-full" />
-            <ul className="space-y-2 text-xs sm:text-[13px] text-slate-300 font-medium">
               <li>
                 <button
                   type="button"
                   onClick={() => handleNav('#internship')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
+                  className="hover:text-[#00D2FF] transition-colors cursor-pointer text-left"
                 >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Virtual Internship Program</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('#placement')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Job Placement Assistance</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('#certificates')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Verified Skill Certificate</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('#recommendation')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Letter of Recommendation (LOR)</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('#earnings')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Affiliate Partner Earnings</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('#interview')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Mock Interview Drills</span>
+                  Internship
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Column 4: Company & Trust */}
-          <div className="space-y-3.5">
-            <div className="flex items-center gap-2 text-white font-bold text-sm sm:text-base">
-              <ShieldCheck className="w-4 h-4 text-indigo-400 shrink-0" />
-              <span>Company &amp; Legal</span>
-            </div>
-            <div className="w-8 h-[2px] bg-indigo-400 rounded-full" />
-            <ul className="space-y-2 text-xs sm:text-[13px] text-slate-300 font-medium">
+          {/* 3. COMPANY */}
+          <div className="sm:col-span-1 md:col-span-2 lg:col-span-2 flex flex-col items-start text-left">
+            <h4 className="text-[16px] sm:text-[17px] font-bold text-white tracking-wide">
+              Company
+            </h4>
+            <div className="w-8 h-[2.5px] bg-[#00D2FF] rounded-full mt-1.5 mb-3" />
+            <ul className="space-y-2 text-[13.5px] sm:text-[14px] font-medium text-slate-200">
               <li>
                 <button
                   type="button"
                   onClick={() => handleNav('#about-us')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
+                  className="hover:text-[#00D2FF] transition-colors cursor-pointer text-left"
                 >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>About Us</span>
+                  About Us
                 </button>
               </li>
               <li>
                 <button
                   type="button"
                   onClick={() => handleNav('#contact-us')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
+                  className="hover:text-[#00D2FF] transition-colors cursor-pointer text-left"
                 >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Contact Us</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleWhatsApp('Help Center Inquiry')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Help Center &amp; Support</span>
+                  Contact Us
                 </button>
               </li>
               <li>
                 <button
                   type="button"
                   onClick={() => handleNav('#privacy-policy')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
+                  className="hover:text-[#00D2FF] transition-colors cursor-pointer text-left"
                 >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Privacy Policy</span>
+                  Privacy Policy
                 </button>
               </li>
               <li>
                 <button
                   type="button"
                   onClick={() => handleNav('#terms-and-conditions')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
+                  className="hover:text-[#00D2FF] transition-colors cursor-pointer text-left"
                 >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Terms &amp; Conditions</span>
+                  Terms &amp; Conditions
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* 4. SUPPORT */}
+          <div className="sm:col-span-1 md:col-span-2 lg:col-span-2 flex flex-col items-start text-left">
+            <h4 className="text-[16px] sm:text-[17px] font-bold text-white tracking-wide">
+              Support
+            </h4>
+            <div className="w-8 h-[2.5px] bg-[#00D2FF] rounded-full mt-1.5 mb-3" />
+            <ul className="space-y-2 text-[13.5px] sm:text-[14px] font-medium text-slate-200">
+              <li>
+                <button
+                  type="button"
+                  onClick={handleHelpCenter}
+                  className="hover:text-[#00D2FF] transition-colors cursor-pointer text-left"
+                >
+                  Help Center
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleNav('#contact-us')}
+                  className="hover:text-[#00D2FF] transition-colors cursor-pointer text-left"
+                >
+                  FAQs
                 </button>
               </li>
               <li>
                 <button
                   type="button"
                   onClick={() => handleNav('#refund-policy')}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer text-left flex items-center gap-1.5"
+                  className="hover:text-[#00D2FF] transition-colors cursor-pointer text-left"
                 >
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                  <span>Refund &amp; Cancellation</span>
+                  Refund Policy
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleNav('#placement')}
+                  className="hover:text-[#00D2FF] transition-colors cursor-pointer text-left"
+                >
+                  Career
                 </button>
               </li>
             </ul>
           </div>
 
+          {/* 5. RIGHT SPACER (Col 11-12) — keeps the building & monolith visible */}
+          <div className="hidden lg:block lg:col-span-2 pointer-events-none" />
+
         </div>
 
         {/* ═══════════════════════════════════════════════════════════════════
-            ROW 3: ELEGANT ULTRA-LUXURY BOTTOM BAR (Copyright & Verified Badges)
+            BOTTOM BAR (COPYRIGHT & SLOGAN)
+            Note: pb-20 on mobile ensures bottom nav never hides text
         ═══════════════════════════════════════════════════════════════════ */}
-        <div className="pt-8 border-t border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400 font-medium">
-          
-          {/* Copyright & Tagline */}
-          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
-            <span className="text-slate-300 font-semibold">
-              © 2026 Future IT Industry. All rights reserved.
-            </span>
-            <span className="hidden sm:inline text-slate-600">|</span>
-            <span className="text-slate-400">
-              Building Skills For A Brighter Tomorrow.
-            </span>
-          </div>
-
-          {/* Trust Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-3 text-[11px] text-slate-400">
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800">
-              <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-              <span>100% Secure Platform</span>
-            </span>
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800">
-              <Award className="w-3.5 h-3.5 text-amber-400" />
-              <span>Verified Certificate</span>
-            </span>
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800">
-              <Briefcase className="w-3.5 h-3.5 text-emerald-400" />
-              <span>700+ Hiring Drives</span>
-            </span>
-          </div>
-
+        <div className="border-t border-slate-700/60 pt-4 pb-20 md:pb-1 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-center sm:text-left text-xs sm:text-[13px] text-slate-300">
+          <p className="font-normal text-slate-300">
+            &copy; 2026 Future IT Industry. All rights reserved.
+          </p>
+          <p className="font-normal text-slate-300">
+            Empowering learners across India to learn, practice, and get placed.
+          </p>
         </div>
 
       </div>
