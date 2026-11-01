@@ -167,20 +167,20 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
       />
 
       {/* =========================================================================
-          1. PIXEL-PERFECT DESKTOP DASHBOARD (>= md, MATCHING REFERENCE IMAGE 1)
+          1. PIXEL-PERFECT DESKTOP DASHBOARD (>= md, MATCHING MASTER SPECIFICATION)
           ========================================================================= */}
-      <div className="hidden md:flex flex-col gap-4 w-full">
+      <div className="hidden md:flex flex-col gap-3.5 w-full">
         
-        {/* ─── 1.1 HERO BANNER: "Get Placement Ready" (PIXEL-PERFECT TO REFERENCE) ─── */}
+        {/* ─── 1.1 HERO BANNER: "Get Placement Ready" ─── */}
         <section
-          className="relative w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-md border border-slate-700/30 select-none text-white h-[155px] sm:h-[165px] lg:h-[175px]"
+          className="relative w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-lg border border-slate-700/30 select-none text-white min-h-[160px] sm:h-[170px] lg:h-[185px] transition-all"
           style={{
-            background: 'linear-gradient(90deg, #034ea2 0%, #082d8c 30%, #101c7d 65%, #6a0dad 100%)',
+            background: 'linear-gradient(90deg, #033a82 0%, #082d8c 28%, #101c7d 62%, #58129e 100%)',
           }}
         >
           {/* Subtle Ambient Radial Lighting */}
-          <div className="absolute top-0 left-1/4 w-[350px] h-[350px] bg-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 right-10 w-[300px] h-[300px] bg-purple-500/25 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 left-1/4 w-[380px] h-[380px] bg-cyan-400/20 rounded-full blur-3xl pointer-events-none dash-pulse-glow" />
+          <div className="absolute bottom-0 right-16 w-[320px] h-[320px] bg-purple-500/25 rounded-full blur-3xl pointer-events-none dash-pulse-glow" />
 
           {/* LEFT: Student Portrait Integrated Seamlessly (Edge-to-Edge Flush with Zero Border Box) */}
           <img
@@ -189,13 +189,13 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             className="absolute left-0 top-0 bottom-0 h-full w-auto object-cover object-left pointer-events-none select-none z-10"
           />
 
-          {/* MAIN BANNER CONTENT (Center Journey + Right Checklist) */}
-          <div className="relative z-20 flex items-center justify-between w-full h-full pl-[260px] sm:pl-[290px] lg:pl-[330px] pr-3 sm:pr-4 lg:pr-6">
+          {/* MAIN BANNER CONTENT (Center Journey + Right Checklist & 3D Rocket) */}
+          <div className="relative z-20 flex items-center justify-between w-full h-full pl-[260px] sm:pl-[290px] lg:pl-[330px] pr-3 sm:pr-4 lg:pr-5">
             
             {/* CENTER: Headline + Subtitle + 4-Step Connected Journey */}
             <div className="flex-1 flex flex-col items-center justify-center text-center px-1 min-w-0">
               
-              {/* Prominent Headline with Yellow Celebration Sparks */}
+              {/* Prominent Headline with Cyan Glow and Yellow Celebration Sparks */}
               <div className="relative inline-flex items-center justify-center">
                 <h1 className="text-2xl sm:text-3xl lg:text-[34px] xl:text-[38px] font-black tracking-tight text-white leading-tight">
                   Get Placement{' '}
@@ -206,7 +206,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                       className="absolute -top-3.5 -right-5 pointer-events-none select-none text-[#FFD700]"
                       aria-hidden="true"
                     >
-                      <svg className="w-5 h-5 drop-shadow-[0_2px_4px_rgba(255,215,0,0.6)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                      <svg className="w-5 h-5 drop-shadow-[0_2px_4px_rgba(255,215,0,0.6)] animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                         <line x1="12" y1="2" x2="12" y2="6" />
                         <line x1="19" y1="5" x2="16" y2="8" />
                         <line x1="22" y1="12" x2="18" y2="12" />
@@ -217,57 +217,81 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
               </div>
 
               {/* Subtitle */}
-              <p className="text-xs sm:text-sm lg:text-[14px] text-white/95 font-medium mt-1 tracking-wide">
-                Your complete career preparation journey
+              <p className="text-xs sm:text-sm lg:text-[13.5px] text-white/95 font-medium mt-1 tracking-wide">
+                Learn • Practice • Build Projects • Get Hired
               </p>
 
               {/* Horizontal 4-Step Connected Visual Journey */}
               <div className="flex items-center justify-center gap-1 sm:gap-1.5 lg:gap-2.5 mt-2.5">
                 {/* Step 1: Learn */}
-                <div className="flex flex-col items-center">
-                  <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-md">
+                <div
+                  className="flex flex-col items-center group cursor-pointer"
+                  onClick={() => {
+                    const el = document.getElementById('learning-modules-section');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
                     <GraduationCap className="w-4 h-4 text-blue-600 stroke-[2.5]" />
                   </div>
                   <span className="text-[10px] sm:text-[10.5px] font-bold text-white mt-0.5">Learn</span>
                 </div>
 
                 {/* Connector 1 */}
-                <div className="flex items-center -mt-3.5 text-white/50">
-                  <div className="w-4 sm:w-6 lg:w-7 h-[1.5px] border-t border-dashed border-white/60" />
-                  <ChevronRight className="w-3.5 h-3.5 -ml-1 text-white/70 shrink-0" />
+                <div className="flex items-center -mt-3 text-cyan-300">
+                  <div className="w-3.5 sm:w-5 lg:w-6 h-[1.5px] border-t border-dashed border-cyan-300/80" />
+                  <ChevronRight className="w-3.5 h-3.5 -ml-1 text-cyan-300 shrink-0" />
                 </div>
 
                 {/* Step 2: Practice */}
-                <div className="flex flex-col items-center">
-                  <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-md">
-                    <Code2 className="w-4 h-4 text-blue-600 stroke-[2.5]" />
+                <div
+                  className="flex flex-col items-center group cursor-pointer"
+                  onClick={() => {
+                    if (onOpenCodingPracticeHub) onOpenCodingPracticeHub();
+                    else if (typeof window !== 'undefined') window.location.hash = '#game';
+                  }}
+                >
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white text-indigo-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                    <Code2 className="w-4 h-4 text-indigo-600 stroke-[2.5]" />
                   </div>
                   <span className="text-[10px] sm:text-[10.5px] font-bold text-white mt-0.5">Practice</span>
                 </div>
 
                 {/* Connector 2 */}
-                <div className="flex items-center -mt-3.5 text-white/50">
-                  <div className="w-4 sm:w-6 lg:w-7 h-[1.5px] border-t border-dashed border-white/60" />
-                  <ChevronRight className="w-3.5 h-3.5 -ml-1 text-white/70 shrink-0" />
+                <div className="flex items-center -mt-3 text-cyan-300">
+                  <div className="w-3.5 sm:w-5 lg:w-6 h-[1.5px] border-t border-dashed border-cyan-300/80" />
+                  <ChevronRight className="w-3.5 h-3.5 -ml-1 text-cyan-300 shrink-0" />
                 </div>
 
-                {/* Step 3: Prepare */}
-                <div className="flex flex-col items-center">
-                  <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full bg-white text-purple-600 flex items-center justify-center shadow-md">
-                    <Users className="w-4 h-4 text-purple-600 stroke-[2.5]" />
+                {/* Step 3: Build */}
+                <div
+                  className="flex flex-col items-center group cursor-pointer"
+                  onClick={() => {
+                    const el = document.getElementById('learning-modules-section');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white text-purple-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                    <Laptop className="w-4 h-4 text-purple-600 stroke-[2.5]" />
                   </div>
-                  <span className="text-[10px] sm:text-[10.5px] font-bold text-white mt-0.5">Prepare</span>
+                  <span className="text-[10px] sm:text-[10.5px] font-bold text-white mt-0.5">Build</span>
                 </div>
 
                 {/* Connector 3 */}
-                <div className="flex items-center -mt-3.5 text-white/50">
-                  <div className="w-4 sm:w-6 lg:w-7 h-[1.5px] border-t border-dashed border-white/60" />
-                  <ChevronRight className="w-3.5 h-3.5 -ml-1 text-white/70 shrink-0" />
+                <div className="flex items-center -mt-3 text-cyan-300">
+                  <div className="w-3.5 sm:w-5 lg:w-6 h-[1.5px] border-t border-dashed border-cyan-300/80" />
+                  <ChevronRight className="w-3.5 h-3.5 -ml-1 text-cyan-300 shrink-0" />
                 </div>
 
                 {/* Step 4: Get Placed (Mint Green Pill) */}
-                <div className="flex items-center -mt-3.5">
-                  <div className="px-2.5 sm:px-3 py-1 rounded-full bg-[#d1fae5] border border-[#a7f3d0] flex items-center gap-1.5 shadow-md">
+                <div
+                  className="flex items-center -mt-3 cursor-pointer group"
+                  onClick={() => {
+                    if (onOpenPlacementSupport) onOpenPlacementSupport();
+                    else if (typeof window !== 'undefined') window.location.hash = '#placement';
+                  }}
+                >
+                  <div className="px-2.5 sm:px-3 py-1 rounded-full bg-[#d1fae5] border border-[#a7f3d0] flex items-center gap-1.5 shadow-md group-hover:shadow-emerald-400/50 group-hover:scale-105 transition-all">
                     <Briefcase className="w-3.5 h-3.5 text-[#065f46] stroke-[2.5] shrink-0" />
                     <span className="text-[10.5px] sm:text-xs font-black text-[#065f46] whitespace-nowrap">
                       Get Placed
@@ -278,50 +302,55 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
 
             </div>
 
-            {/* RIGHT: Benefits Checklist + Upward Growth Chart */}
+            {/* RIGHT: Benefits Checklist + 3D Animated Illustration */}
             <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 shrink-0">
-              <div className="flex flex-col gap-1 text-white text-[10.5px] sm:text-[11.5px] font-semibold text-left">
+              <div className="flex flex-col gap-1 text-white text-[10px] sm:text-[11px] lg:text-[11.5px] font-semibold text-left">
                 <div className="flex items-center gap-1.5">
-                  <div className="w-3.5 h-3.5 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[9px] font-black shrink-0">
+                  <div className="w-3.5 h-3.5 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[9px] font-black shrink-0 shadow-sm">
                     ✓
                   </div>
                   <span className="whitespace-nowrap">Industry-Ready Courses</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-3.5 h-3.5 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[9px] font-black shrink-0">
+                  <div className="w-3.5 h-3.5 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[9px] font-black shrink-0 shadow-sm">
                     ✓
                   </div>
-                  <span className="whitespace-nowrap">Real Projects &amp; Practice</span>
+                  <span className="whitespace-nowrap">Real Projects &amp; Case Studies</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-3.5 h-3.5 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[9px] font-black shrink-0">
+                  <div className="w-3.5 h-3.5 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[9px] font-black shrink-0 shadow-sm">
                     ✓
                   </div>
-                  <span className="whitespace-nowrap">Mock Interviews with AI</span>
+                  <span className="whitespace-nowrap">Unlimited Mock Interviews</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-3.5 h-3.5 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[9px] font-black shrink-0">
+                  <div className="w-3.5 h-3.5 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[9px] font-black shrink-0 shadow-sm">
                     ✓
                   </div>
-                  <span className="whitespace-nowrap">Internship &amp; Placement Support</span>
+                  <span className="whitespace-nowrap">Placement Preparation</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3.5 h-3.5 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[9px] font-black shrink-0 shadow-sm">
+                    ✓
+                  </div>
+                  <span className="whitespace-nowrap">Internship &amp; Job Support</span>
                 </div>
               </div>
 
-              {/* Upward Growth Chart */}
-              <div className="hidden xl:flex items-end gap-1 h-14 opacity-85 shrink-0 relative pr-1">
-                <div className="w-2.5 h-4.5 bg-white/25 rounded-t" />
-                <div className="w-2.5 h-7.5 bg-white/35 rounded-t" />
-                <div className="w-2.5 h-10.5 bg-white/50 rounded-t" />
-                <div className="w-2.5 h-13.5 bg-white/70 rounded-t relative">
-                  <TrendingUp className="w-5 h-5 text-white absolute -top-4 -right-2" />
-                </div>
+              {/* 3D Animated Illustration with Rising Career Graph & Rocket */}
+              <div className="hidden xl:flex items-center shrink-0 pl-1">
+                <img
+                  src="/images/dashboard/hero_3d_laptop_rocket.jpg"
+                  alt="Career Launch 3D"
+                  className="w-24 h-24 lg:w-28 lg:h-28 rounded-2xl object-cover shadow-[0_8px_24px_rgba(0,0,0,0.35)] border border-white/20 dash-float-anim"
+                />
               </div>
             </div>
 
           </div>
         </section>
 
-        {/* ─── 1.2 SIX CAREER FEATURE CARDS (EXACT REFERENCE PROPORTIONS & HORIZONTAL HEADER) ─── */}
+        {/* ─── 1.2 SIX CAREER ACTION CARDS (ANIMATED & ELEVATED) ─── */}
         <section className="w-full">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-2.5 w-full">
             
@@ -332,18 +361,18 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 const el = document.getElementById('learning-modules-section');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[92px]"
+              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-lg hover:-translate-y-1 hover:border-blue-400 transition-all duration-300 cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[96px]"
             >
               <div>
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm">
                     <Laptop className="w-4 h-4" />
                   </div>
                   <div className="flex items-center gap-1 min-w-0">
-                    <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-purple-600 transition-colors truncate">
+                    <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-blue-600 transition-colors truncate">
                       Learn Coding
                     </h3>
-                    <ChevronRight className="w-3.5 h-3.5 text-purple-600 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                    <ChevronRight className="w-3.5 h-3.5 text-blue-500 group-hover:translate-x-1 transition-transform shrink-0" />
                   </div>
                 </div>
                 <p className="text-[10px] sm:text-[10.5px] text-slate-500 font-medium leading-tight mt-1.5 text-left line-clamp-2">
@@ -363,18 +392,18 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 else if (onOpenGameArena) onOpenGameArena();
                 else if (typeof window !== 'undefined') window.location.hash = '#game';
               }}
-              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[92px]"
+              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-lg hover:-translate-y-1 hover:border-purple-400 transition-all duration-300 cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[96px]"
             >
               <div>
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm">
                     <Code2 className="w-4 h-4" />
                   </div>
                   <div className="flex items-center gap-1 min-w-0">
                     <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-purple-600 transition-colors truncate">
                       DSA Practice
                     </h3>
-                    <ChevronRight className="w-3.5 h-3.5 text-purple-600 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                    <ChevronRight className="w-3.5 h-3.5 text-purple-500 group-hover:translate-x-1 transition-transform shrink-0" />
                   </div>
                 </div>
                 <p className="text-[10px] sm:text-[10.5px] text-slate-500 font-medium leading-tight mt-1.5 text-left line-clamp-2">
@@ -393,18 +422,18 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 if (onOpenMockInterview) onOpenMockInterview();
                 else if (typeof window !== 'undefined') window.location.hash = '#mockinterview';
               }}
-              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[92px]"
+              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-lg hover:-translate-y-1 hover:border-emerald-400 transition-all duration-300 cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[96px]"
             >
               <div>
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm">
                     <MessageSquare className="w-4 h-4" />
                   </div>
                   <div className="flex items-center gap-1 min-w-0">
-                    <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-purple-600 transition-colors truncate">
+                    <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-emerald-600 transition-colors truncate">
                       Mock Interviews
                     </h3>
-                    <ChevronRight className="w-3.5 h-3.5 text-purple-600 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                    <ChevronRight className="w-3.5 h-3.5 text-emerald-500 group-hover:translate-x-1 transition-transform shrink-0" />
                   </div>
                 </div>
                 <p className="text-[10px] sm:text-[10.5px] text-slate-500 font-medium leading-tight mt-1.5 text-left line-clamp-2">
@@ -422,18 +451,18 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 playClick();
                 if (typeof window !== 'undefined') window.location.hash = '#ats';
               }}
-              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[92px]"
+              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-lg hover:-translate-y-1 hover:border-sky-400 transition-all duration-300 cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[96px]"
             >
               <div>
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm">
                     <FileCheck className="w-4 h-4" />
                   </div>
                   <div className="flex items-center gap-1 min-w-0">
-                    <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-purple-600 transition-colors truncate">
+                    <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-sky-600 transition-colors truncate">
                       ATS Resume Score
                     </h3>
-                    <ChevronRight className="w-3.5 h-3.5 text-purple-600 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                    <ChevronRight className="w-3.5 h-3.5 text-sky-500 group-hover:translate-x-1 transition-transform shrink-0" />
                   </div>
                 </div>
                 <p className="text-[10px] sm:text-[10.5px] text-slate-500 font-medium leading-tight mt-1.5 text-left line-clamp-2">
@@ -451,18 +480,18 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 playClick();
                 if (typeof window !== 'undefined') window.location.hash = '#internship';
               }}
-              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[92px]"
+              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-lg hover:-translate-y-1 hover:border-amber-400 transition-all duration-300 cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[96px]"
             >
               <div>
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm">
                     <Briefcase className="w-4 h-4" />
                   </div>
                   <div className="flex items-center gap-1 min-w-0">
-                    <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-purple-600 transition-colors truncate">
+                    <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-amber-600 transition-colors truncate">
                       Internships
                     </h3>
-                    <ChevronRight className="w-3.5 h-3.5 text-purple-600 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                    <ChevronRight className="w-3.5 h-3.5 text-amber-500 group-hover:translate-x-1 transition-transform shrink-0" />
                   </div>
                 </div>
                 <p className="text-[10px] sm:text-[10.5px] text-slate-500 font-medium leading-tight mt-1.5 text-left line-clamp-2">
@@ -481,18 +510,18 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 if (onOpenPlacementSupport) onOpenPlacementSupport();
                 else if (typeof window !== 'undefined') window.location.hash = '#placement';
               }}
-              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[92px]"
+              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-lg hover:-translate-y-1 hover:border-rose-400 transition-all duration-300 cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[96px]"
             >
               <div>
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm">
                     <Target className="w-4 h-4" />
                   </div>
                   <div className="flex items-center gap-1 min-w-0">
-                    <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-purple-600 transition-colors truncate">
-                      Placement
+                    <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-rose-600 transition-colors truncate">
+                      Get Job
                     </h3>
-                    <ChevronRight className="w-3.5 h-3.5 text-purple-600 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                    <ChevronRight className="w-3.5 h-3.5 text-rose-500 group-hover:translate-x-1 transition-transform shrink-0" />
                   </div>
                 </div>
                 <p className="text-[10px] sm:text-[10.5px] text-slate-500 font-medium leading-tight mt-1.5 text-left line-clamp-2">
@@ -507,9 +536,23 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
           </div>
         </section>
 
-        {/* ─── 1.3 CAREER SUPPORT STRIP (3 PASTEL CARDS — SLIM & COMPACT) ─── */}
-        <section className="w-full">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-2.5">
+        {/* ─── 1.3 CAREER TARGETING SECTION: "Your IT Career, No Matter Your Starting Point" ─── */}
+        <section className="w-full mt-0.5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 px-0.5">
+            <div>
+              <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
+                <span>Your IT Career, No Matter Your Starting Point</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 text-blue-700 border border-blue-200">
+                  Personalized Paths
+                </span>
+              </h2>
+              <p className="text-xs text-slate-500 font-medium mt-0.5">
+                Personalized roadmaps designed for your unique background and goals.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             
             {/* Card 1: Non-IT Background? */}
             <div
@@ -518,18 +561,33 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 const el = document.getElementById('learning-modules-section');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-[#ecfdf5] border border-[#a7f3d0] rounded-xl px-3 py-2 flex items-center gap-2.5 hover:shadow-sm hover:border-emerald-400 transition-all cursor-pointer active:scale-[0.98] group"
+              className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#041a38] via-[#072d63] to-[#0c4a8e] border border-blue-500/30 text-white p-4 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group active:scale-[0.99] flex flex-col justify-between min-h-[145px]"
             >
-              <div className="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center text-[#059669] shrink-0">
-                <GraduationCap className="w-4 h-4 text-[#059669]" />
+              {/* Background 3D Art Overlay on Right */}
+              <div className="absolute right-0 top-0 bottom-0 w-2/5 overflow-hidden pointer-events-none opacity-85 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300">
+                <img
+                  src="/images/dashboard/career_non_it_student.jpg"
+                  alt="Non-IT Background"
+                  className="w-full h-full object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#041a38] via-[#072d63]/70 to-transparent" />
               </div>
-              <div className="min-w-0 flex-1 text-left flex items-center gap-1.5">
-                <h3 className="text-xs sm:text-[12.5px] font-black text-slate-900 whitespace-nowrap">
+
+              <div className="relative z-10 max-w-[65%]">
+                <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-cyan-400/20 text-cyan-300 border border-cyan-400/30 mb-2">
+                  Zero to Tech Pro
+                </span>
+                <h3 className="text-base sm:text-lg font-black text-white leading-tight drop-shadow-sm">
                   Non-IT Background?
                 </h3>
-                <p className="text-[10.5px] sm:text-[11px] text-slate-600 font-medium truncate">
-                  No Problem! Start from Zero.
+                <p className="text-[11px] text-blue-100/90 font-normal mt-1 leading-snug">
+                  No coding experience? Start from basics and build job-ready skills.
                 </p>
+              </div>
+
+              <div className="relative z-10 mt-3 pt-2 flex items-center gap-1.5 text-xs font-bold text-cyan-300 group-hover:text-cyan-200 transition-colors">
+                <span>Start Your IT Journey</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
 
@@ -540,18 +598,33 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 const el = document.getElementById('learning-modules-section');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-[#f5f3ff] border border-[#ddd6fe] rounded-xl px-3 py-2 flex items-center gap-2.5 hover:shadow-sm hover:border-purple-400 transition-all cursor-pointer active:scale-[0.98] group"
+              className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1b0a38] via-[#2f1163] to-[#581c9e] border border-purple-500/30 text-white p-4 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group active:scale-[0.99] flex flex-col justify-between min-h-[145px]"
             >
-              <div className="w-7 h-7 rounded-full bg-purple-100 flex items-center justify-center text-[#7c3aed] shrink-0">
-                <Target className="w-4 h-4 text-[#7c3aed]" />
+              {/* Background 3D Art Overlay on Right */}
+              <div className="absolute right-0 top-0 bottom-0 w-2/5 overflow-hidden pointer-events-none opacity-85 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300">
+                <img
+                  src="/images/dashboard/career_gap_professional.jpg"
+                  alt="Career Gap"
+                  className="w-full h-full object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#1b0a38] via-[#2f1163]/70 to-transparent" />
               </div>
-              <div className="min-w-0 flex-1 text-left flex items-center gap-1.5">
-                <h3 className="text-xs sm:text-[12.5px] font-black text-slate-900 whitespace-nowrap">
+
+              <div className="relative z-10 max-w-[65%]">
+                <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-purple-400/20 text-purple-300 border border-purple-400/30 mb-2">
+                  Confidence Restart
+                </span>
+                <h3 className="text-base sm:text-lg font-black text-white leading-tight drop-shadow-sm">
                   Career Gap?
                 </h3>
-                <p className="text-[10.5px] sm:text-[11px] text-slate-600 font-medium truncate">
-                  Get Back to Your Career with New Skills.
+                <p className="text-[11px] text-purple-100/90 font-normal mt-1 leading-snug">
+                  Ready to return? Refresh your skills and rebuild your career confidence.
                 </p>
+              </div>
+
+              <div className="relative z-10 mt-3 pt-2 flex items-center gap-1.5 text-xs font-bold text-fuchsia-300 group-hover:text-fuchsia-200 transition-colors">
+                <span>Restart Your Career</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
 
@@ -562,23 +635,64 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 const el = document.getElementById('learning-modules-section');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-[#fff7ed] border border-[#fed7aa] rounded-xl px-3 py-2 flex items-center gap-2.5 hover:shadow-sm hover:border-orange-400 transition-all cursor-pointer active:scale-[0.98] group"
+              className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#03291e] via-[#064235] to-[#0c6b54] border border-emerald-500/30 text-white p-4 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group active:scale-[0.99] flex flex-col justify-between min-h-[145px]"
             >
-              <div className="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center text-[#ea580c] shrink-0">
-                <ArrowLeftRight className="w-4 h-4 text-[#ea580c]" />
+              {/* Background 3D Art Overlay on Right */}
+              <div className="absolute right-0 top-0 bottom-0 w-2/5 overflow-hidden pointer-events-none opacity-85 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300">
+                <img
+                  src="/images/dashboard/career_switch_professional.jpg"
+                  alt="Career Switch"
+                  className="w-full h-full object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#03291e] via-[#064235]/70 to-transparent" />
               </div>
-              <div className="min-w-0 flex-1 text-left flex items-center gap-1.5">
-                <h3 className="text-xs sm:text-[12.5px] font-black text-slate-900 whitespace-nowrap">
+
+              <div className="relative z-10 max-w-[65%]">
+                <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 mb-2">
+                  High-Growth Shift
+                </span>
+                <h3 className="text-base sm:text-lg font-black text-white leading-tight drop-shadow-sm">
                   Career Switch?
                 </h3>
-                <p className="text-[10.5px] sm:text-[11px] text-slate-600 font-medium truncate">
-                  Move to a High-Growth IT Career with Confidence.
+                <p className="text-[11px] text-emerald-100/90 font-normal mt-1 leading-snug">
+                  Move toward a career in IT with practical skills, projects and guidance.
                 </p>
+              </div>
+
+              <div className="relative z-10 mt-3 pt-2 flex items-center gap-1.5 text-xs font-bold text-emerald-300 group-hover:text-emerald-200 transition-colors">
+                <span>Make the Switch</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
 
           </div>
         </section>
+
+        {/* ─── 1.4 PROMOTIONAL DISCOVERY STRIP (HIGH CONVERSION) ─── */}
+        <section
+          onClick={() => {
+            playClick();
+            const el = document.getElementById('learning-modules-section');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="w-full rounded-xl p-2.5 sm:px-4 sm:py-2.5 bg-gradient-to-r from-amber-500/10 via-purple-500/10 to-blue-500/10 border border-amber-300/40 hover:border-amber-400/70 shadow-sm hover:shadow transition-all cursor-pointer flex items-center justify-between gap-3 group mt-0.5"
+        >
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="flex h-6 px-2 items-center justify-center rounded-md bg-amber-500 text-slate-950 text-[10.5px] font-black uppercase tracking-wider shrink-0 shadow-sm animate-pulse">
+              🚀 Launch Offer
+            </span>
+            <p className="text-xs sm:text-[13px] font-bold text-slate-800 truncate">
+              Enroll in Any Track Today: Get Free Access to AI Mock Interviews, ATS Resume Score &amp; Internship Support!
+            </p>
+          </div>
+          <div className="flex items-center gap-1 text-xs font-extrabold text-blue-600 group-hover:text-blue-700 shrink-0 whitespace-nowrap">
+            <span>Explore 7 Programs Below</span>
+            <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+          </div>
+        </section>
+
+      </div>
+
 
       {/* =========================================================================
           2. ALL CAREER-FOCUSED INDUSTRY COURSES (7) (EXACT MATCH TO REFERENCE IMAGE 1)
@@ -752,7 +866,6 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
         )}
       </section>
 
-      </div>
 
       {/* ============================================================
           WHAT WILL YOU GET? (Full Certificates, No Blur, No Cut)

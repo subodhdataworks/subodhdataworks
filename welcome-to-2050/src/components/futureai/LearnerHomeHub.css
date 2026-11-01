@@ -6349,3 +6349,32 @@
     gap: 10px !important;
   }
 }
+
+/* Dashboard Premium Hero & Micro-animations */
+@keyframes dashboardFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes dashboardPulseGlow {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
+}
+
+.dash-float-anim {
+  animation: dashboardFloat 4s ease-in-out infinite;
+}
+
+.dash-pulse-glow {
+  animation: dashboardPulseGlow 3s ease-in-out infinite;
+}
