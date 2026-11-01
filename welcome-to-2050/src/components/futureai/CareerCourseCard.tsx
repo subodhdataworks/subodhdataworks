@@ -37,197 +37,170 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
   isUnlocked = false,
   onClick,
 }) => {
-  const themeClass = `scd-pot-${theme}`;
-
-  // Premium color styling according to pot theme + deep black text
-  const themeStyles = {
+  // Theme configuration matching Reference Image 1 exactly
+  const themeConfig = {
     cyan: {
-      titleAccent: 'text-cyan-600',
-      jobRolesLabel: 'text-cyan-700',
-      briefcaseBg: 'bg-cyan-50 text-cyan-700 border border-cyan-200',
-      salaryColor: 'text-emerald-700',
-      buttonBg: 'bg-gradient-to-r from-teal-600 to-cyan-600 text-white shadow-teal-500/25',
-      arrowText: 'text-teal-700',
+      cardBorder: 'border-[1.5px] border-cyan-400 shadow-[0_4px_20px_rgba(6,182,212,0.18)] hover:border-cyan-500 hover:shadow-[0_8px_28px_rgba(6,182,212,0.30)]',
+      briefcaseBox: 'bg-cyan-50 text-cyan-600 border border-cyan-200/90',
+      jobRolesLabel: 'text-cyan-600',
+      salaryColor: 'text-emerald-600',
+      activeBtn: 'bg-cyan-600 hover:bg-cyan-700 text-white',
     },
     purple: {
-      titleAccent: 'text-purple-600',
-      jobRolesLabel: 'text-purple-700',
-      briefcaseBg: 'bg-purple-50 text-purple-700 border border-purple-200',
-      salaryColor: 'text-purple-700',
-      buttonBg: 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-purple-500/25',
-      arrowText: 'text-purple-700',
+      cardBorder: 'border-[1.5px] border-purple-400 shadow-[0_4px_20px_rgba(168,85,247,0.18)] hover:border-purple-500 hover:shadow-[0_8px_28px_rgba(168,85,247,0.30)]',
+      briefcaseBox: 'bg-purple-50 text-purple-600 border border-purple-200/90',
+      jobRolesLabel: 'text-purple-600',
+      salaryColor: 'text-purple-600',
+      activeBtn: 'bg-purple-600 hover:bg-purple-700 text-white',
     },
     blue: {
-      titleAccent: 'text-blue-600',
-      jobRolesLabel: 'text-blue-700',
-      briefcaseBg: 'bg-blue-50 text-blue-700 border border-blue-200',
-      salaryColor: 'text-blue-700',
-      buttonBg: 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-blue-500/25',
-      arrowText: 'text-blue-700',
+      cardBorder: 'border-[1.5px] border-blue-400 shadow-[0_4px_20px_rgba(59,130,246,0.18)] hover:border-blue-500 hover:shadow-[0_8px_28px_rgba(59,130,246,0.30)]',
+      briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-200/90',
+      jobRolesLabel: 'text-blue-600',
+      salaryColor: 'text-blue-600',
+      activeBtn: 'bg-blue-600 hover:bg-blue-700 text-white',
     },
     pink: {
-      titleAccent: 'text-pink-600',
-      jobRolesLabel: 'text-pink-700',
-      briefcaseBg: 'bg-pink-50 text-pink-700 border border-pink-200',
-      salaryColor: 'text-pink-700',
-      buttonBg: 'bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-pink-500/25',
-      arrowText: 'text-pink-700',
+      cardBorder: 'border-[1.5px] border-pink-400 shadow-[0_4px_20px_rgba(236,72,153,0.18)] hover:border-pink-500 hover:shadow-[0_8px_28px_rgba(236,72,153,0.30)]',
+      briefcaseBox: 'bg-pink-50 text-pink-600 border border-pink-200/90',
+      jobRolesLabel: 'text-pink-600',
+      salaryColor: 'text-pink-600',
+      activeBtn: 'bg-pink-600 hover:bg-pink-700 text-white',
     },
-  }[theme];
+  }[theme] || {
+    cardBorder: 'border-[1.5px] border-cyan-400 shadow-[0_4px_20px_rgba(6,182,212,0.18)]',
+    briefcaseBox: 'bg-cyan-50 text-cyan-600 border border-cyan-200/90',
+    jobRolesLabel: 'text-cyan-600',
+    salaryColor: 'text-emerald-600',
+    activeBtn: 'bg-cyan-600 text-white',
+  };
 
   return (
     <article
       onClick={onClick}
-      className={`scd-pot-card ${themeClass} cursor-pointer w-full group`}
+      className={`group relative bg-white rounded-2xl ${themeConfig.cardBorder} flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 cursor-pointer select-none`}
     >
-      {/* 1. TOP 3D HOLOGRAM / VIDEO DOME FLOWING UP OUT OF THE POT */}
-      <div className="scd-pot-flow-stage">
-        <div className="scd-pot-rising-energy" />
-        <div className="scd-pot-particles">
-          <span className="scd-pt p1" />
-          <span className="scd-pt p2" />
-          <span className="scd-pt p3" />
-        </div>
-
-        <div className="scd-pot-holo-dome">
-          {video ? (
-            <video
-              src={video}
-              poster={holoImage || image}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="scd-pot-holo-img w-full h-full object-cover"
-            />
-          ) : (
-            <img
-              src={holoImage || image}
-              alt={title}
-              loading="lazy"
-              decoding="async"
-              className="scd-pot-holo-img w-full h-full object-cover"
-            />
-          )}
-          <div className="scd-pot-holo-glass-frame" />
-        </div>
+      {/* 1. TOP ARTWORK (Holographic Cyber Poster / Video) */}
+      <div className="relative w-full h-[135px] sm:h-[142px] overflow-hidden bg-slate-950 shrink-0">
+        {video ? (
+          <video
+            src={video}
+            poster={holoImage || image}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <img
+            src={holoImage || image}
+            alt={title}
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
       </div>
 
-      {/* 2. 3D CYLINDRICAL POT WRAP (PREMIUM PORCELAIN GLASS & METALLIC SHAPE) */}
-      <div className="scd-pot-cylinder-wrap w-full flex flex-col items-center">
-        {/* Soft Glowing Rim */}
-        <div className="scd-pot-top-rim">
-          <div className="scd-pot-mouth-vortex" />
-          <div className="scd-pot-rim-neon-ring" />
+      {/* 2. CARD CONTENT BODY */}
+      <div className="p-3 sm:p-3.5 flex flex-col flex-1 justify-between gap-2 bg-white">
+        
+        {/* Course Title */}
+        <div className="text-center pt-0.5">
+          <h3 className="font-extrabold text-[14.5px] sm:text-[15px] text-slate-950 tracking-tight leading-snug">
+            {title}
+            {subtitle && <span className="font-bold text-slate-600 ml-1">({subtitle})</span>}
+          </h3>
         </div>
 
-        {/* 3D Cylindrical Pot Body - Ultra Premium Light Porcelain with Black & Pot Themed Text */}
-        <div className="scd-pot-cylinder-body w-full">
-          <span className="scd-pot-side-rib left" />
-          <span className="scd-pot-side-rib right" />
-
-          {/* A. Course Title & Subtitle - Black + Themed Color (NO White Text) */}
-          <div className="text-center px-1">
-            <h3 className="font-black text-sm sm:text-[15.5px] leading-snug tracking-tight text-slate-950">
-              <span>{title}</span>{' '}
-              {subtitle && (
-                <span className={`font-extrabold ${themeStyles.titleAccent}`}>
-                  {subtitle}
-                </span>
-              )}
-            </h3>
-          </div>
-
-          {/* B. 5 Tool Icons DIRECTLY BELOW TITLE WITHOUT BACKGROUND CONTAINER */}
-          <div className="flex items-center justify-between gap-1 py-1 w-full px-1">
-            {tools.slice(0, 5).map((t, idx) => (
-              <div key={idx} className="flex flex-col items-center flex-1 text-center min-w-0">
-                <div className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center hover:scale-120 transition-transform">
-                  <ToolIcon name={t.name} className="w-7 h-7 sm:w-8 sm:h-8 object-contain" />
-                </div>
-                <span className="text-[10px] sm:text-[10.5px] font-black text-slate-900 tracking-tight truncate w-full text-center mt-1">
-                  {t.name}
-                </span>
+        {/* 5 Tool Icons Row */}
+        <div className="flex items-center justify-between w-full px-1 py-0.5">
+          {tools.slice(0, 5).map((t, idx) => (
+            <div key={idx} className="flex flex-col items-center flex-1 text-center min-w-0">
+              <div className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <ToolIcon name={t.name} className="w-5 h-5 sm:w-6 sm:h-6 object-contain" />
               </div>
-            ))}
-          </div>
-
-          {/* C. Job Roles & Salary Package Row - Black & Pot Themed Text */}
-          <div className="flex items-center justify-between w-full pt-2.5 pb-1 border-t border-slate-200/90 px-1">
-            {/* Left: Briefcase + Roles */}
-            <div className="flex items-center gap-1.5 min-w-0">
-              <div className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 ${themeStyles.briefcaseBg}`}>
-                <Briefcase className="w-3.5 h-3.5" />
-              </div>
-              <div className="flex flex-col min-w-0 text-left">
-                <span className={`text-[10.5px] font-black tracking-tight leading-none ${themeStyles.jobRolesLabel}`}>
-                  Job Roles
-                </span>
-                <span className="text-[10px] font-extrabold text-slate-900 truncate max-w-[110px] sm:max-w-[135px] mt-0.5">
-                  {jobRoles}
-                </span>
-              </div>
-            </div>
-
-            {/* Right: Salary & Label */}
-            <div className="flex flex-col items-end text-right shrink-0">
-              <span className={`text-[13.5px] sm:text-sm font-black tracking-tight leading-none ${themeStyles.salaryColor}`}>
-                {salary}
+              <span className="text-[9.5px] sm:text-[10px] font-bold text-slate-700 tracking-tight truncate w-full text-center mt-0.5">
+                {t.name}
               </span>
-              <span className="text-[9px] font-bold text-slate-500 mt-0.5">
-                Average Package
+            </div>
+          ))}
+        </div>
+
+        {/* Subtle Divider Line */}
+        <div className="w-full border-t border-slate-100 my-0.5" />
+
+        {/* Job Roles & CTC Package Row */}
+        <div className="flex items-center justify-between w-full">
+          {/* Left: Job Roles */}
+          <div className="flex items-center gap-1.5 min-w-0">
+            <div className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 ${themeConfig.briefcaseBox}`}>
+              <Briefcase className="w-3.5 h-3.5" />
+            </div>
+            <div className="flex flex-col min-w-0 text-left">
+              <span className={`text-[10px] font-bold tracking-tight leading-none ${themeConfig.jobRolesLabel}`}>
+                Job Roles
+              </span>
+              <span className="text-[10px] font-semibold text-slate-800 truncate max-w-[105px] sm:max-w-[125px] mt-0.5">
+                {jobRoles}
               </span>
             </div>
           </div>
 
-          {/* D. Dual Action Buttons */}
-          <div className="flex items-center gap-2 pt-1 w-full px-1">
-            {/* Left: Status / Price Pill */}
+          {/* Right: Package CTC */}
+          <div className="flex flex-col items-end text-right shrink-0">
+            <span className={`text-[13px] sm:text-[13.5px] font-black tracking-tight leading-none ${themeConfig.salaryColor}`}>
+              {salary}
+            </span>
+            <span className="text-[9px] font-medium text-slate-400 mt-0.5">
+              Average Package
+            </span>
+          </div>
+        </div>
+
+        {/* Bottom Action Row (Price Pill + Unlock/Resume Button) */}
+        <div className="flex items-center gap-2 w-full pt-0.5">
+          {/* Price or Enrolled Badge */}
+          {isUnlocked ? (
+            <div className="w-[30%] py-1.5 rounded-full font-bold text-[10.5px] text-center bg-emerald-50 text-emerald-700 border border-emerald-300 shadow-2xs select-none flex items-center justify-center gap-1">
+              <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+              <span>Enrolled</span>
+            </div>
+          ) : (
+            <div className="w-[30%] py-1.5 rounded-full font-black text-xs sm:text-[13px] text-center bg-[#fffbeb] text-amber-900 border border-amber-300 shadow-2xs select-none">
+              {price}
+            </div>
+          )}
+
+          {/* Unlock / Resume Button */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick();
+            }}
+            className={`flex-1 py-1.5 px-3 rounded-full font-bold text-xs sm:text-[12.5px] flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer ${
+              isUnlocked
+                ? 'bg-slate-900 hover:bg-slate-800 text-white'
+                : 'bg-slate-950 hover:bg-slate-800 text-white'
+            }`}
+          >
             {isUnlocked ? (
-              <div className="flex-1 py-1.5 rounded-full font-black text-[11px] sm:text-xs text-center bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-xs select-none flex items-center justify-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <span>ENROLLED</span>
-              </div>
+              <>
+                <span>Resume Course</span>
+                <ArrowRight className="w-3 h-3 ml-0.5" />
+              </>
             ) : (
-              <div className="flex-1 py-1.5 rounded-full font-black text-xs sm:text-sm text-center bg-amber-50 text-amber-800 border border-amber-300 shadow-xs select-none">
-                {price}
-              </div>
+              <>
+                <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span>Unlock Course</span>
+              </>
             )}
-
-            {/* Right: Action Button */}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onClick();
-              }}
-              className={`flex-[2] py-2 px-3 rounded-full font-black text-xs sm:text-[13px] flex items-center justify-center gap-1.5 shadow-md transition-all active:scale-95 cursor-pointer hover:brightness-105 ${
-                isUnlocked ? themeStyles.buttonBg : 'bg-slate-900 hover:bg-slate-800 text-white shadow-slate-900/20'
-              }`}
-            >
-              {isUnlocked ? (
-                <>
-                  <span>Resume Course</span>
-                  <span className="w-4 h-4 rounded-full bg-white flex items-center justify-center shrink-0 shadow-xs">
-                    <ArrowRight className={`w-2.5 h-2.5 stroke-[3] ${themeStyles.arrowText}`} />
-                  </span>
-                </>
-              ) : (
-                <>
-                  <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span>Unlock Course</span>
-                </>
-              )}
-            </button>
-          </div>
+          </button>
         </div>
 
-        {/* 3. 3D METALLIC PEDESTAL BASE & BOTTOM NEON RING */}
-        <div className="scd-pot-bottom-base">
-          <div className="scd-pot-bottom-neon-ring" />
-          <div className="scd-pot-metallic-plinth" />
-          <div className="scd-pot-floor-glow" />
-        </div>
       </div>
     </article>
   );

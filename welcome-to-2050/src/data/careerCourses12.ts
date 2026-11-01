@@ -100,8 +100,8 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     badgeNum: 5,
     title: 'AI Tools & Prompt Engineering',
     shortDesc: '10x your productivity with ChatGPT-4o, Claude 3.5, Midjourney, Cursor & Zapier automations.',
-    image: '/images/cube_genai.jpg',
-    holoImage: '/images/cube_genai.jpg',
+    image: '/images/pot5_sharp_poster.jpg',
+    holoImage: '/images/pot5_sharp_poster.jpg',
     video: '/videos/card_video_genai.mp4',
     theme: 'purple',
     tools: [
@@ -120,8 +120,8 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     badgeNum: 6,
     title: 'Microsoft Office 365 with Copilot',
     shortDesc: 'Automate executive reporting, decks, financial models, and emails with Microsoft Copilot AI.',
-    image: '/images/msoffice_365_copilot_poster.jpg',
-    holoImage: '/images/msoffice_365_copilot_poster.jpg',
+    image: '/images/pot6_sharp_poster.jpg',
+    holoImage: '/images/pot6_sharp_poster.jpg',
     video: '/videos/card_video_excel.mp4',
     theme: 'blue',
     tools: [
@@ -140,8 +140,8 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     badgeNum: 7,
     title: 'Full Stack Web Development',
     shortDesc: 'Build modern responsive full-stack applications with React, Node.js, Express & PostgreSQL.',
-    image: '/images/full_stack_web_development_poster.jpg',
-    holoImage: '/images/full_stack_web_development_poster.jpg',
+    image: '/images/pot7_sharp_poster.jpg',
+    holoImage: '/images/pot7_sharp_poster.jpg',
     video: '/videos/card_video_python.mp4',
     theme: 'pink',
     tools: [
