@@ -4063,7 +4063,7 @@
   z-index: 1;
   max-width: 1480px;
   margin: 0 auto;
-  padding: 16px 24px 120px;
+  padding: 16px 24px 32px;
   display: grid;
   grid-template-columns: 1fr 340px;
   gap: 18px;
@@ -5186,7 +5186,7 @@
   }
 
   .dock-main-container {
-    padding: 0 !important;
+    padding: 0 0 20px 0 !important;
     margin: 0 auto !important;
     width: 100% !important;
     max-width: 100% !important;

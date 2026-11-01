@@ -322,7 +322,7 @@ export const RealSuccessStoriesShowcase: React.FC<RealSuccessStoriesShowcaseProp
   }, []);
 
   return (
-    <div className="w-full flex flex-col font-sans select-none space-y-10 sm:space-y-14 py-2">
+    <div className="w-full flex flex-col font-sans select-none space-y-8 sm:space-y-12 pt-2 pb-0">
       
       {/* ═══════════════════════════════════════════════════════════════════════
           SECTION 1: HERO — "Real People. Real Career Growth."
@@ -722,10 +722,10 @@ export const RealSuccessStoriesShowcase: React.FC<RealSuccessStoriesShowcaseProp
       <section className="w-full">
         
         {/* Header Row */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-5">
           <div>
             <h2 className="text-2xl sm:text-3xl lg:text-[32px] font-black text-slate-900 leading-tight tracking-tight">
-              Our Selected Students
+              Our Placed Students
             </h2>
           </div>
 
@@ -739,7 +739,7 @@ export const RealSuccessStoriesShowcase: React.FC<RealSuccessStoriesShowcaseProp
               }}
               className="px-4 py-1.5 rounded-full border border-blue-200 bg-[#eef4ff] text-[#1a73e8] hover:bg-blue-600 hover:text-white font-bold text-xs active:scale-95 transition-all cursor-pointer shadow-2xs flex items-center gap-1.5"
             >
-              View All Students
+              View All Placed Students
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
