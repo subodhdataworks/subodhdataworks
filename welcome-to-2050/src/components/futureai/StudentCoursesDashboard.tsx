@@ -653,7 +653,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
 
         {/* ─── 4 COLUMNS ON DESKTOP ROW 1, 3 ON ROW 2 ─── */}
         {viewMode === 'grid' ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5 lg:gap-4 w-full">
             {filteredCareerCourses.map((c) => {
               const unlocked = isCourseUnlocked(c.id);
               return (
