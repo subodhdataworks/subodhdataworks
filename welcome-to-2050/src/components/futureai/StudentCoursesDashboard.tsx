@@ -348,7 +348,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                   Master in-demand skills with 7 industry-ready courses.
                 </p>
               </div>
-              <span className="mt-2 inline-block self-start px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+              <span className="mt-2 inline-block self-start px-2.5 py-0.5 rounded-full text-[9.5px] font-bold bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 border border-blue-200/80 shadow-[0_2px_8px_rgba(59,130,246,0.22)] group-hover:shadow-[0_4px_12px_rgba(59,130,246,0.38)] transition-all">
                 7 Courses
               </span>
             </div>
@@ -379,7 +379,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                   Solve coding problems and build strong logic.
                 </p>
               </div>
-              <span className="mt-2 inline-block self-start px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+              <span className="mt-2 inline-block self-start px-2.5 py-0.5 rounded-full text-[9.5px] font-bold bg-gradient-to-r from-purple-50 to-fuchsia-50 text-purple-700 border border-purple-200/80 shadow-[0_2px_8px_rgba(168,85,247,0.22)] group-hover:shadow-[0_4px_12px_rgba(168,85,247,0.38)] transition-all">
                 Practice &amp; Improve
               </span>
             </div>
@@ -409,7 +409,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                   Practice real interview questions with AI &amp; experts.
                 </p>
               </div>
-              <span className="mt-2 inline-block self-start px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+              <span className="mt-2 inline-block self-start px-2.5 py-0.5 rounded-full text-[9.5px] font-bold bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 border border-emerald-200/80 shadow-[0_2px_8px_rgba(16,185,129,0.22)] group-hover:shadow-[0_4px_12px_rgba(16,185,129,0.38)] transition-all">
                 Unlimited Practice
               </span>
             </div>
@@ -438,7 +438,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                   Check your resume score and get improvement tips.
                 </p>
               </div>
-              <span className="mt-2 inline-block self-start px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+              <span className="mt-2 inline-block self-start px-2.5 py-0.5 rounded-full text-[9.5px] font-bold bg-gradient-to-r from-sky-50 to-cyan-50 text-sky-700 border border-sky-200/80 shadow-[0_2px_8px_rgba(14,165,233,0.22)] group-hover:shadow-[0_4px_12px_rgba(14,165,233,0.38)] transition-all">
                 AI-Powered Analysis
               </span>
             </div>
@@ -467,7 +467,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                   Gain real-world experience and build your profile.
                 </p>
               </div>
-              <span className="mt-2 inline-block self-start px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+              <span className="mt-2 inline-block self-start px-2.5 py-0.5 rounded-full text-[9.5px] font-bold bg-gradient-to-r from-amber-50 to-yellow-50 text-amber-800 border border-amber-200/80 shadow-[0_2px_8px_rgba(245,158,11,0.22)] group-hover:shadow-[0_4px_12px_rgba(245,158,11,0.38)] transition-all">
                 Apply &amp; Build Experience
               </span>
             </div>
@@ -497,7 +497,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                   Complete preparation for your dream job.
                 </p>
               </div>
-              <span className="mt-2 inline-block self-start px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+              <span className="mt-2 inline-block self-start px-2.5 py-0.5 rounded-full text-[9.5px] font-bold bg-gradient-to-r from-rose-50 to-pink-50 text-rose-700 border border-rose-200/80 shadow-[0_2px_8px_rgba(244,63,94,0.22)] group-hover:shadow-[0_4px_12px_rgba(244,63,94,0.38)] transition-all">
                 Get Job Ready
               </span>
             </div>
@@ -751,45 +751,46 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
           </div>
         </div>
 
-        <div className="lhh-wyg-exact-grid">
-          <div className="lhh-wyg-exact-card lhh-wyg-card-intern">
-            <div className="lhh-wyg-exact-cert-box">
-              <img
-                src="/images/dashboard/internship_exact.jpg"
-                alt="Internship Certificate"
-                className="lhh-wyg-cert-full"
-              />
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+          <div className="rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white border border-slate-200/90 group">
+            <img
+              src="/images/dashboard/wyg_card_internship.png"
+              alt="3 Month Internship"
+              className="w-full h-auto object-contain block group-hover:scale-[1.02] transition-transform duration-300"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = '/images/dashboard/internship_exact.jpg';
+              }}
+            />
           </div>
-
-          <div className="lhh-wyg-exact-card lhh-wyg-card-lor">
-            <div className="lhh-wyg-exact-cert-box">
-              <img
-                src="/images/dashboard/lor_exact.jpg"
-                alt="Letter of Recommendation"
-                className="lhh-wyg-cert-full"
-              />
-            </div>
+          <div className="rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white border border-slate-200/90 group">
+            <img
+              src="/images/dashboard/wyg_card_letter_rec.png"
+              alt="Letter of Recommendation"
+              className="w-full h-auto object-contain block group-hover:scale-[1.02] transition-transform duration-300"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = '/images/dashboard/lor_exact.jpg';
+              }}
+            />
           </div>
-
-          <div className="lhh-wyg-exact-card lhh-wyg-card-training">
-            <div className="lhh-wyg-exact-cert-box">
-              <img
-                src="/images/dashboard/training_exact.jpg"
-                alt="Industrial Training Certificate"
-                className="lhh-wyg-cert-full"
-              />
-            </div>
+          <div className="rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white border border-slate-200/90 group">
+            <img
+              src="/images/dashboard/wyg_card_cert_internship.png"
+              alt="Industrial Training Certificate"
+              className="w-full h-auto object-contain block group-hover:scale-[1.02] transition-transform duration-300"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = '/images/dashboard/training_exact.jpg';
+              }}
+            />
           </div>
-
-          <div className="lhh-wyg-exact-card lhh-wyg-card-complete">
-            <div className="lhh-wyg-exact-cert-box">
-              <img
-                src="/images/dashboard/cert_completion_exact.jpg"
-                alt="Course Completion Certificate"
-                className="lhh-wyg-cert-full"
-              />
-            </div>
+          <div className="rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white border border-slate-200/90 group">
+            <img
+              src="/images/dashboard/wyg_card_cert_course.png"
+              alt="Course Completion Certificate"
+              className="w-full h-auto object-contain block group-hover:scale-[1.02] transition-transform duration-300"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = '/images/dashboard/cert_completion_exact.jpg';
+              }}
+            />
           </div>
         </div>
       </section>
