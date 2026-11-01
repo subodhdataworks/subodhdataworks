@@ -6343,3 +6343,9 @@
     background: rgba(255,255,255,0.88) !important;
   }
 }
+
+@media (min-width: 768px) {
+  .lhh-wrapper {
+    gap: 10px !important;
+  }
+}

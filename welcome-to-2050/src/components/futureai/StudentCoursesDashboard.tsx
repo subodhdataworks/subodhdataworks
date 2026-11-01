@@ -169,34 +169,31 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
           ========================================================================= */}
       <div className="hidden md:flex flex-col gap-4 w-full">
         
-        {/* ─── 1.1 HERO BANNER: "Get Placement Ready" ─── */}
+        {/* ─── 1.1 HERO BANNER: "Get Placement Ready" (PIXEL-PERFECT TO REFERENCE) ─── */}
         <section
-          className="relative w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-md border border-slate-700/30 select-none text-white"
+          className="relative w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-md border border-slate-700/30 select-none text-white h-[145px] sm:h-[152px] lg:h-[158px]"
           style={{
-            background: 'linear-gradient(90deg, #0246a3 0%, #082d8c 35%, #101c7d 65%, #6a0dad 100%)',
+            background: 'linear-gradient(90deg, #034ea2 0%, #082d8c 30%, #101c7d 65%, #6a0dad 100%)',
           }}
         >
           {/* Subtle Ambient Radial Lighting */}
           <div className="absolute top-0 left-1/4 w-[350px] h-[350px] bg-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 right-10 w-[300px] h-[300px] bg-purple-500/25 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="relative z-10 flex items-center justify-between w-full h-[155px] lg:h-[165px] px-2 sm:px-4 lg:px-6">
-            
-            {/* LEFT: Celebrating Student with Laptop & Future IT Hoodie */}
-            <div className="relative h-full w-[200px] lg:w-[250px] shrink-0 flex items-end justify-start">
-              {/* Cyan Radiant Aura behind student */}
-              <div className="absolute bottom-2 left-6 w-32 h-32 bg-cyan-400/35 rounded-full blur-xl pointer-events-none" />
-              <img
-                src="/images/dashboard/placement_hero_student_transparent.png"
-                alt="Placement Ready Student"
-                className="relative z-10 h-full max-h-[160px] lg:max-h-[165px] w-auto object-contain object-bottom pointer-events-none select-none drop-shadow-[0_8px_16px_rgba(0,0,0,0.35)]"
-              />
-            </div>
+          {/* LEFT: Student Portrait Integrated Seamlessly (Edge-to-Edge Flush with Zero Border Box) */}
+          <img
+            src="/images/dashboard/placement_student_seamless.png"
+            alt="Placement Ready Student"
+            className="absolute left-0 top-0 bottom-0 h-full w-auto object-cover object-left pointer-events-none select-none z-10"
+          />
 
+          {/* MAIN BANNER CONTENT (Center Journey + Right Checklist) */}
+          <div className="relative z-20 flex items-center justify-between w-full h-full pl-[245px] sm:pl-[265px] lg:pl-[285px] pr-3 sm:pr-4 lg:pr-6">
+            
             {/* CENTER: Headline + Subtitle + 4-Step Connected Journey */}
-            <div className="flex-1 flex flex-col items-center justify-center text-center px-2 min-w-0">
+            <div className="flex-1 flex flex-col items-center justify-center text-center px-1 min-w-0">
               
-              {/* Headline with Yellow Celebration Sparks */}
+              {/* Prominent Headline with Yellow Celebration Sparks */}
               <div className="relative inline-flex items-center justify-center">
                 <h1 className="text-xl sm:text-2xl lg:text-[29px] font-black tracking-tight text-white leading-tight">
                   Get Placement{' '}
@@ -218,57 +215,57 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
               </div>
 
               {/* Subtitle */}
-              <p className="text-xs sm:text-[13px] text-white/90 font-medium mt-0.5 tracking-wide">
+              <p className="text-xs sm:text-[13px] text-white/95 font-medium mt-0.5 tracking-wide">
                 Your complete career preparation journey
               </p>
 
               {/* Horizontal 4-Step Connected Visual Journey */}
-              <div className="flex items-center justify-center gap-1.5 sm:gap-2 lg:gap-3 mt-3">
+              <div className="flex items-center justify-center gap-1 sm:gap-1.5 lg:gap-2.5 mt-2.5">
                 {/* Step 1: Learn */}
                 <div className="flex flex-col items-center">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-md">
+                  <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-md">
                     <GraduationCap className="w-4 h-4 text-blue-600 stroke-[2.5]" />
                   </div>
-                  <span className="text-[10.5px] sm:text-[11px] font-bold text-white mt-1">Learn</span>
+                  <span className="text-[10px] sm:text-[10.5px] font-bold text-white mt-0.5">Learn</span>
                 </div>
 
                 {/* Connector 1 */}
-                <div className="flex items-center -mt-4 text-white/50">
-                  <div className="w-4 sm:w-6 lg:w-8 h-[2px] border-t border-dashed border-white/60" />
+                <div className="flex items-center -mt-3.5 text-white/50">
+                  <div className="w-4 sm:w-6 lg:w-7 h-[1.5px] border-t border-dashed border-white/60" />
                   <ChevronRight className="w-3.5 h-3.5 -ml-1 text-white/70 shrink-0" />
                 </div>
 
                 {/* Step 2: Practice */}
                 <div className="flex flex-col items-center">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-md">
+                  <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-md">
                     <Code2 className="w-4 h-4 text-blue-600 stroke-[2.5]" />
                   </div>
-                  <span className="text-[10.5px] sm:text-[11px] font-bold text-white mt-1">Practice</span>
+                  <span className="text-[10px] sm:text-[10.5px] font-bold text-white mt-0.5">Practice</span>
                 </div>
 
                 {/* Connector 2 */}
-                <div className="flex items-center -mt-4 text-white/50">
-                  <div className="w-4 sm:w-6 lg:w-8 h-[2px] border-t border-dashed border-white/60" />
+                <div className="flex items-center -mt-3.5 text-white/50">
+                  <div className="w-4 sm:w-6 lg:w-7 h-[1.5px] border-t border-dashed border-white/60" />
                   <ChevronRight className="w-3.5 h-3.5 -ml-1 text-white/70 shrink-0" />
                 </div>
 
                 {/* Step 3: Prepare */}
                 <div className="flex flex-col items-center">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white text-purple-600 flex items-center justify-center shadow-md">
+                  <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full bg-white text-purple-600 flex items-center justify-center shadow-md">
                     <Users className="w-4 h-4 text-purple-600 stroke-[2.5]" />
                   </div>
-                  <span className="text-[10.5px] sm:text-[11px] font-bold text-white mt-1">Prepare</span>
+                  <span className="text-[10px] sm:text-[10.5px] font-bold text-white mt-0.5">Prepare</span>
                 </div>
 
                 {/* Connector 3 */}
-                <div className="flex items-center -mt-4 text-white/50">
-                  <div className="w-4 sm:w-6 lg:w-8 h-[2px] border-t border-dashed border-white/60" />
+                <div className="flex items-center -mt-3.5 text-white/50">
+                  <div className="w-4 sm:w-6 lg:w-7 h-[1.5px] border-t border-dashed border-white/60" />
                   <ChevronRight className="w-3.5 h-3.5 -ml-1 text-white/70 shrink-0" />
                 </div>
 
                 {/* Step 4: Get Placed (Mint Green Pill) */}
-                <div className="flex items-center -mt-4">
-                  <div className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-[#d1fae5] border border-[#a7f3d0] flex items-center gap-1.5 shadow-md">
+                <div className="flex items-center -mt-3.5">
+                  <div className="px-2.5 sm:px-3 py-1 rounded-full bg-[#d1fae5] border border-[#a7f3d0] flex items-center gap-1.5 shadow-md">
                     <Briefcase className="w-3.5 h-3.5 text-[#065f46] stroke-[2.5] shrink-0" />
                     <span className="text-[10.5px] sm:text-xs font-black text-[#065f46] whitespace-nowrap">
                       Get Placed
@@ -280,42 +277,41 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             </div>
 
             {/* RIGHT: Benefits Checklist + Upward Growth Chart */}
-            <div className="flex items-center gap-3 lg:gap-5 pr-2 lg:pr-5 shrink-0">
-              {/* Checklist */}
-              <div className="flex flex-col gap-1.5 text-white text-[11px] sm:text-xs font-semibold text-left">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[10px] font-black shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 shrink-0">
+              <div className="flex flex-col gap-1 text-white text-[10.5px] sm:text-[11.5px] font-semibold text-left">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3.5 h-3.5 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[9px] font-black shrink-0">
                     ✓
                   </div>
                   <span className="whitespace-nowrap">Industry-Ready Courses</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[10px] font-black shrink-0">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3.5 h-3.5 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[9px] font-black shrink-0">
                     ✓
                   </div>
                   <span className="whitespace-nowrap">Real Projects &amp; Practice</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[10px] font-black shrink-0">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3.5 h-3.5 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[9px] font-black shrink-0">
                     ✓
                   </div>
                   <span className="whitespace-nowrap">Mock Interviews with AI</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[10px] font-black shrink-0">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3.5 h-3.5 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[9px] font-black shrink-0">
                     ✓
                   </div>
                   <span className="whitespace-nowrap">Internship &amp; Placement Support</span>
                 </div>
               </div>
 
-              {/* Upward Growth Chart Illustration */}
-              <div className="hidden xl:flex items-end gap-1 h-16 pl-2 opacity-85 shrink-0 relative">
-                <div className="w-2.5 h-5 bg-white/25 rounded-t" />
-                <div className="w-2.5 h-8 bg-white/35 rounded-t" />
-                <div className="w-2.5 h-11 bg-white/50 rounded-t" />
-                <div className="w-2.5 h-14 bg-white/70 rounded-t relative">
-                  <TrendingUp className="w-6 h-6 text-white absolute -top-5 -right-3" />
+              {/* Upward Growth Chart */}
+              <div className="hidden xl:flex items-end gap-1 h-14 opacity-85 shrink-0 relative pr-1">
+                <div className="w-2.5 h-4.5 bg-white/25 rounded-t" />
+                <div className="w-2.5 h-7.5 bg-white/35 rounded-t" />
+                <div className="w-2.5 h-10.5 bg-white/50 rounded-t" />
+                <div className="w-2.5 h-13.5 bg-white/70 rounded-t relative">
+                  <TrendingUp className="w-5 h-5 text-white absolute -top-4 -right-2" />
                 </div>
               </div>
             </div>
@@ -323,9 +319,9 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
           </div>
         </section>
 
-        {/* ─── 1.2 SIX CAREER FEATURE CARDS (1 ROW ON DESKTOP) ─── */}
+        {/* ─── 1.2 SIX CAREER FEATURE CARDS (EXACT REFERENCE PROPORTIONS & HORIZONTAL HEADER) ─── */}
         <section className="w-full">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3.5 w-full">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-2.5 w-full">
             
             {/* Card 1: Learn Coding */}
             <div
@@ -334,23 +330,25 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 const el = document.getElementById('learning-modules-section');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98]"
+              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[92px]"
             >
               <div>
-                <div className="flex items-center justify-between">
-                  <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                    <Laptop className="w-5 h-5" />
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                    <Laptop className="w-4 h-4" />
                   </div>
-                  <ChevronRight className="w-4 h-4 text-purple-600 group-hover:translate-x-0.5 transition-transform" />
+                  <div className="flex items-center gap-1 min-w-0">
+                    <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-purple-600 transition-colors truncate">
+                      Learn Coding
+                    </h3>
+                    <ChevronRight className="w-3.5 h-3.5 text-purple-600 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                  </div>
                 </div>
-                <h3 className="text-[13px] sm:text-[13.5px] font-black text-slate-900 mt-2.5 text-left group-hover:text-purple-600 transition-colors">
-                  Learn Coding
-                </h3>
-                <p className="text-[10.5px] sm:text-[11px] text-slate-500 font-medium leading-snug mt-1 text-left">
+                <p className="text-[10px] sm:text-[10.5px] text-slate-500 font-medium leading-tight mt-1.5 text-left line-clamp-2">
                   Master in-demand skills with 7 industry-ready courses.
                 </p>
               </div>
-              <span className="mt-3 inline-block self-start px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+              <span className="mt-2 inline-block self-start px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
                 7 Courses
               </span>
             </div>
@@ -363,23 +361,25 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 else if (onOpenGameArena) onOpenGameArena();
                 else if (typeof window !== 'undefined') window.location.hash = '#game';
               }}
-              className="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98]"
+              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[92px]"
             >
               <div>
-                <div className="flex items-center justify-between">
-                  <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-                    <Code2 className="w-5 h-5" />
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                    <Code2 className="w-4 h-4" />
                   </div>
-                  <ChevronRight className="w-4 h-4 text-purple-600 group-hover:translate-x-0.5 transition-transform" />
+                  <div className="flex items-center gap-1 min-w-0">
+                    <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-purple-600 transition-colors truncate">
+                      DSA Practice
+                    </h3>
+                    <ChevronRight className="w-3.5 h-3.5 text-purple-600 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                  </div>
                 </div>
-                <h3 className="text-[13px] sm:text-[13.5px] font-black text-slate-900 mt-2.5 text-left group-hover:text-purple-600 transition-colors">
-                  DSA Practice
-                </h3>
-                <p className="text-[10.5px] sm:text-[11px] text-slate-500 font-medium leading-snug mt-1 text-left">
+                <p className="text-[10px] sm:text-[10.5px] text-slate-500 font-medium leading-tight mt-1.5 text-left line-clamp-2">
                   Solve coding problems and build strong logic.
                 </p>
               </div>
-              <span className="mt-3 inline-block self-start px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+              <span className="mt-2 inline-block self-start px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
                 Practice &amp; Improve
               </span>
             </div>
@@ -391,23 +391,25 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 if (onOpenMockInterview) onOpenMockInterview();
                 else if (typeof window !== 'undefined') window.location.hash = '#mockinterview';
               }}
-              className="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98]"
+              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[92px]"
             >
               <div>
-                <div className="flex items-center justify-between">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                    <MessageSquare className="w-5 h-5" />
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                    <MessageSquare className="w-4 h-4" />
                   </div>
-                  <ChevronRight className="w-4 h-4 text-purple-600 group-hover:translate-x-0.5 transition-transform" />
+                  <div className="flex items-center gap-1 min-w-0">
+                    <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-purple-600 transition-colors truncate">
+                      Mock Interviews
+                    </h3>
+                    <ChevronRight className="w-3.5 h-3.5 text-purple-600 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                  </div>
                 </div>
-                <h3 className="text-[13px] sm:text-[13.5px] font-black text-slate-900 mt-2.5 text-left group-hover:text-purple-600 transition-colors">
-                  Mock Interviews
-                </h3>
-                <p className="text-[10.5px] sm:text-[11px] text-slate-500 font-medium leading-snug mt-1 text-left">
+                <p className="text-[10px] sm:text-[10.5px] text-slate-500 font-medium leading-tight mt-1.5 text-left line-clamp-2">
                   Practice real interview questions with AI &amp; experts.
                 </p>
               </div>
-              <span className="mt-3 inline-block self-start px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+              <span className="mt-2 inline-block self-start px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
                 Unlimited Practice
               </span>
             </div>
@@ -418,23 +420,25 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 playClick();
                 if (typeof window !== 'undefined') window.location.hash = '#ats';
               }}
-              className="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98]"
+              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[92px]"
             >
               <div>
-                <div className="flex items-center justify-between">
-                  <div className="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
-                    <FileCheck className="w-5 h-5" />
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+                    <FileCheck className="w-4 h-4" />
                   </div>
-                  <ChevronRight className="w-4 h-4 text-purple-600 group-hover:translate-x-0.5 transition-transform" />
+                  <div className="flex items-center gap-1 min-w-0">
+                    <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-purple-600 transition-colors truncate">
+                      ATS Resume Score
+                    </h3>
+                    <ChevronRight className="w-3.5 h-3.5 text-purple-600 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                  </div>
                 </div>
-                <h3 className="text-[13px] sm:text-[13.5px] font-black text-slate-900 mt-2.5 text-left group-hover:text-purple-600 transition-colors">
-                  ATS Resume Score
-                </h3>
-                <p className="text-[10.5px] sm:text-[11px] text-slate-500 font-medium leading-snug mt-1 text-left">
+                <p className="text-[10px] sm:text-[10.5px] text-slate-500 font-medium leading-tight mt-1.5 text-left line-clamp-2">
                   Check your resume score and get improvement tips.
                 </p>
               </div>
-              <span className="mt-3 inline-block self-start px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+              <span className="mt-2 inline-block self-start px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
                 AI-Powered Analysis
               </span>
             </div>
@@ -445,23 +449,25 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 playClick();
                 if (typeof window !== 'undefined') window.location.hash = '#internship';
               }}
-              className="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98]"
+              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[92px]"
             >
               <div>
-                <div className="flex items-center justify-between">
-                  <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-                    <Briefcase className="w-5 h-5" />
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                    <Briefcase className="w-4 h-4" />
                   </div>
-                  <ChevronRight className="w-4 h-4 text-purple-600 group-hover:translate-x-0.5 transition-transform" />
+                  <div className="flex items-center gap-1 min-w-0">
+                    <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-purple-600 transition-colors truncate">
+                      Internships
+                    </h3>
+                    <ChevronRight className="w-3.5 h-3.5 text-purple-600 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                  </div>
                 </div>
-                <h3 className="text-[13px] sm:text-[13.5px] font-black text-slate-900 mt-2.5 text-left group-hover:text-purple-600 transition-colors">
-                  Internships
-                </h3>
-                <p className="text-[10.5px] sm:text-[11px] text-slate-500 font-medium leading-snug mt-1 text-left">
+                <p className="text-[10px] sm:text-[10.5px] text-slate-500 font-medium leading-tight mt-1.5 text-left line-clamp-2">
                   Gain real-world experience and build your profile.
                 </p>
               </div>
-              <span className="mt-3 inline-block self-start px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+              <span className="mt-2 inline-block self-start px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
                 Apply &amp; Build Experience
               </span>
             </div>
@@ -473,23 +479,25 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 if (onOpenPlacementSupport) onOpenPlacementSupport();
                 else if (typeof window !== 'undefined') window.location.hash = '#placement';
               }}
-              className="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98]"
+              className="bg-white rounded-xl p-2.5 sm:p-3 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98] min-h-[92px]"
             >
               <div>
-                <div className="flex items-center justify-between">
-                  <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
-                    <Target className="w-5 h-5" />
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                    <Target className="w-4 h-4" />
                   </div>
-                  <ChevronRight className="w-4 h-4 text-purple-600 group-hover:translate-x-0.5 transition-transform" />
+                  <div className="flex items-center gap-1 min-w-0">
+                    <h3 className="text-[12.5px] sm:text-[13px] font-black text-slate-900 group-hover:text-purple-600 transition-colors truncate">
+                      Placement
+                    </h3>
+                    <ChevronRight className="w-3.5 h-3.5 text-purple-600 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                  </div>
                 </div>
-                <h3 className="text-[13px] sm:text-[13.5px] font-black text-slate-900 mt-2.5 text-left group-hover:text-purple-600 transition-colors">
-                  Placement
-                </h3>
-                <p className="text-[10.5px] sm:text-[11px] text-slate-500 font-medium leading-snug mt-1 text-left">
+                <p className="text-[10px] sm:text-[10.5px] text-slate-500 font-medium leading-tight mt-1.5 text-left line-clamp-2">
                   Complete preparation for your dream job.
                 </p>
               </div>
-              <span className="mt-3 inline-block self-start px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+              <span className="mt-2 inline-block self-start px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
                 Get Job Ready
               </span>
             </div>
@@ -497,9 +505,9 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
           </div>
         </section>
 
-        {/* ─── 1.3 CAREER SUPPORT STRIP (3 PASTEL CARDS) ─── */}
+        {/* ─── 1.3 CAREER SUPPORT STRIP (3 PASTEL CARDS — SLIM & COMPACT) ─── */}
         <section className="w-full">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-2.5">
             
             {/* Card 1: Non-IT Background? */}
             <div
@@ -508,16 +516,16 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 const el = document.getElementById('learning-modules-section');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-[#ecfdf5] border border-[#a7f3d0] rounded-2xl p-3 sm:p-3.5 flex items-center gap-3.5 hover:shadow-md hover:border-emerald-400 transition-all cursor-pointer active:scale-[0.98] group"
+              className="bg-[#ecfdf5] border border-[#a7f3d0] rounded-xl px-3 py-2 flex items-center gap-2.5 hover:shadow-sm hover:border-emerald-400 transition-all cursor-pointer active:scale-[0.98] group"
             >
-              <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-[#059669] shrink-0">
-                <GraduationCap className="w-5 h-5 text-[#059669]" />
+              <div className="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center text-[#059669] shrink-0">
+                <GraduationCap className="w-4 h-4 text-[#059669]" />
               </div>
-              <div className="min-w-0 flex-1 text-left">
-                <h3 className="text-[13.5px] sm:text-sm font-black text-slate-900 leading-tight">
+              <div className="min-w-0 flex-1 text-left flex items-center gap-1.5">
+                <h3 className="text-xs sm:text-[12.5px] font-black text-slate-900 whitespace-nowrap">
                   Non-IT Background?
                 </h3>
-                <p className="text-[11px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5">
+                <p className="text-[10.5px] sm:text-[11px] text-slate-600 font-medium truncate">
                   No Problem! Start from Zero.
                 </p>
               </div>
@@ -530,16 +538,16 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 const el = document.getElementById('learning-modules-section');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-[#f5f3ff] border border-[#ddd6fe] rounded-2xl p-3 sm:p-3.5 flex items-center gap-3.5 hover:shadow-md hover:border-purple-400 transition-all cursor-pointer active:scale-[0.98] group"
+              className="bg-[#f5f3ff] border border-[#ddd6fe] rounded-xl px-3 py-2 flex items-center gap-2.5 hover:shadow-sm hover:border-purple-400 transition-all cursor-pointer active:scale-[0.98] group"
             >
-              <div className="w-9 h-9 rounded-full bg-purple-100 flex items-center justify-center text-[#7c3aed] shrink-0">
-                <Target className="w-5 h-5 text-[#7c3aed]" />
+              <div className="w-7 h-7 rounded-full bg-purple-100 flex items-center justify-center text-[#7c3aed] shrink-0">
+                <Target className="w-4 h-4 text-[#7c3aed]" />
               </div>
-              <div className="min-w-0 flex-1 text-left">
-                <h3 className="text-[13.5px] sm:text-sm font-black text-slate-900 leading-tight">
+              <div className="min-w-0 flex-1 text-left flex items-center gap-1.5">
+                <h3 className="text-xs sm:text-[12.5px] font-black text-slate-900 whitespace-nowrap">
                   Career Gap?
                 </h3>
-                <p className="text-[11px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5">
+                <p className="text-[10.5px] sm:text-[11px] text-slate-600 font-medium truncate">
                   Get Back to Your Career with New Skills.
                 </p>
               </div>
@@ -552,16 +560,16 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 const el = document.getElementById('learning-modules-section');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-[#fff7ed] border border-[#fed7aa] rounded-2xl p-3 sm:p-3.5 flex items-center gap-3.5 hover:shadow-md hover:border-orange-400 transition-all cursor-pointer active:scale-[0.98] group"
+              className="bg-[#fff7ed] border border-[#fed7aa] rounded-xl px-3 py-2 flex items-center gap-2.5 hover:shadow-sm hover:border-orange-400 transition-all cursor-pointer active:scale-[0.98] group"
             >
-              <div className="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center text-[#ea580c] shrink-0">
-                <ArrowLeftRight className="w-5 h-5 text-[#ea580c]" />
+              <div className="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center text-[#ea580c] shrink-0">
+                <ArrowLeftRight className="w-4 h-4 text-[#ea580c]" />
               </div>
-              <div className="min-w-0 flex-1 text-left">
-                <h3 className="text-[13.5px] sm:text-sm font-black text-slate-900 leading-tight">
+              <div className="min-w-0 flex-1 text-left flex items-center gap-1.5">
+                <h3 className="text-xs sm:text-[12.5px] font-black text-slate-900 whitespace-nowrap">
                   Career Switch?
                 </h3>
-                <p className="text-[11px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5">
+                <p className="text-[10.5px] sm:text-[11px] text-slate-600 font-medium truncate">
                   Move to a High-Growth IT Career with Confidence.
                 </p>
               </div>
@@ -575,7 +583,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
       {/* =========================================================================
           2. ALL CAREER-FOCUSED INDUSTRY COURSES (7) (EXACT MATCH TO REFERENCE IMAGE 1)
           ========================================================================= */}
-      <section className="lhh-modules-section scd-transparent-pots-section mt-4 lg:mt-6 pt-2" id="learning-modules-section">
+      <section className="lhh-modules-section scd-transparent-pots-section mt-2 lg:mt-3 pt-0" id="learning-modules-section">
         <div className="lhh-section-header">
           <div className="lhh-section-left">
             <div className="lhh-layer-icon-box">
