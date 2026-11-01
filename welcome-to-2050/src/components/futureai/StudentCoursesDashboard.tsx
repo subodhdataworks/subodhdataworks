@@ -575,6 +575,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
       {/* =========================================================================
           2. ALL CAREER-FOCUSED INDUSTRY COURSES (7) (EXACT MATCH TO REFERENCE IMAGE)
           ========================================================================= */}
+      <div className="hidden md:block w-full">
       <section className="lhh-modules-section scd-transparent-pots-section mt-2 lg:mt-3 pt-0" id="learning-modules-section">
         <div className="lhh-section-header">
           <div className="lhh-section-left flex items-center gap-2.5">
@@ -583,8 +584,11 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             </div>
             <div className="lhh-section-title-wrap">
               <h2 className="text-base sm:text-lg lg:text-[19px] font-black text-slate-900 tracking-tight">
-                All Career-Focused Industry Courses (7)
+                Your Future Starts Here.
               </h2>
+              <p className="text-xs sm:text-[13px] text-slate-500 font-medium mt-0.5">
+                Explore 7 industry-focused courses designed to help you build real-world tech skills.
+              </p>
             </div>
           </div>
 
@@ -754,6 +758,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
           </div>
         )}
       </section>
+      </div>
 
 
       {/* ============================================================

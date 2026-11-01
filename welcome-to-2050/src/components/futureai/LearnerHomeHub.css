@@ -6378,3 +6378,11 @@
 .dash-pulse-glow {
   animation: dashboardPulseGlow 3s ease-in-out infinite;
 }
+
+/* Strictly hide desktop courses on mobile (< 768px) */
+@media (max-width: 767px) {
+  #learning-modules-section,
+  .lhh-modules-section#learning-modules-section {
+    display: none !important;
+  }
+}
