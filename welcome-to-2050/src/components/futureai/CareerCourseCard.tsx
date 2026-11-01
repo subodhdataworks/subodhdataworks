@@ -37,51 +37,74 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
   isUnlocked = false,
   onClick,
 }) => {
-  // Theme configuration matching Reference Image 1 exactly
+  // Exact visual theme configuration matching reference image
   const themeConfig = {
     cyan: {
-      cardBorder: 'border-[1.5px] border-cyan-400 shadow-[0_4px_20px_rgba(6,182,212,0.18)] hover:border-cyan-500 hover:shadow-[0_8px_28px_rgba(6,182,212,0.30)]',
-      briefcaseBox: 'bg-cyan-50 text-cyan-600 border border-cyan-200/90',
+      cardBorder: 'border-2 border-[#16d5f7]',
+      cardShadow: '0 4px 22px rgba(22, 213, 247, 0.28), 0 0 10px rgba(22, 213, 247, 0.16)',
+      cardShadowHover: '0 8px 30px rgba(22, 213, 247, 0.38), 0 0 16px rgba(22, 213, 247, 0.24)',
+      neonDivider: 'linear-gradient(90deg, rgba(22,213,247,0.1) 0%, #16d5f7 50%, rgba(22,213,247,0.1) 100%)',
+      neonDividerGlow: '0 0 8px #16d5f7',
+      bodyBg: 'bg-gradient-to-b from-[#f2faff] via-[#f8fcff] to-white',
+      briefcaseBox: 'bg-cyan-50 text-cyan-600 border border-cyan-200',
       jobRolesLabel: 'text-cyan-600',
       salaryColor: 'text-emerald-600',
-      activeBtn: 'bg-cyan-600 hover:bg-cyan-700 text-white',
     },
     purple: {
-      cardBorder: 'border-[1.5px] border-purple-400 shadow-[0_4px_20px_rgba(168,85,247,0.18)] hover:border-purple-500 hover:shadow-[0_8px_28px_rgba(168,85,247,0.30)]',
-      briefcaseBox: 'bg-purple-50 text-purple-600 border border-purple-200/90',
+      cardBorder: 'border-2 border-[#b845ff]',
+      cardShadow: '0 4px 22px rgba(184, 69, 255, 0.28), 0 0 10px rgba(184, 69, 255, 0.16)',
+      cardShadowHover: '0 8px 30px rgba(184, 69, 255, 0.38), 0 0 16px rgba(184, 69, 255, 0.24)',
+      neonDivider: 'linear-gradient(90deg, rgba(184,69,255,0.1) 0%, #b845ff 50%, rgba(184,69,255,0.1) 100%)',
+      neonDividerGlow: '0 0 8px #b845ff',
+      bodyBg: 'bg-gradient-to-b from-[#fcf6ff] via-[#fbf8ff] to-white',
+      briefcaseBox: 'bg-purple-50 text-purple-600 border border-purple-200',
       jobRolesLabel: 'text-purple-600',
       salaryColor: 'text-purple-600',
-      activeBtn: 'bg-purple-600 hover:bg-purple-700 text-white',
     },
     blue: {
-      cardBorder: 'border-[1.5px] border-blue-400 shadow-[0_4px_20px_rgba(59,130,246,0.18)] hover:border-blue-500 hover:shadow-[0_8px_28px_rgba(59,130,246,0.30)]',
-      briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-200/90',
+      cardBorder: 'border-2 border-[#2f80ed]',
+      cardShadow: '0 4px 22px rgba(47, 128, 237, 0.28), 0 0 10px rgba(47, 128, 237, 0.16)',
+      cardShadowHover: '0 8px 30px rgba(47, 128, 237, 0.38), 0 0 16px rgba(47, 128, 237, 0.24)',
+      neonDivider: 'linear-gradient(90deg, rgba(47,128,237,0.1) 0%, #2f80ed 50%, rgba(47,128,237,0.1) 100%)',
+      neonDividerGlow: '0 0 8px #2f80ed',
+      bodyBg: 'bg-gradient-to-b from-[#f2f7ff] via-[#f7faff] to-white',
+      briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-200',
       jobRolesLabel: 'text-blue-600',
       salaryColor: 'text-blue-600',
-      activeBtn: 'bg-blue-600 hover:bg-blue-700 text-white',
     },
     pink: {
-      cardBorder: 'border-[1.5px] border-pink-400 shadow-[0_4px_20px_rgba(236,72,153,0.18)] hover:border-pink-500 hover:shadow-[0_8px_28px_rgba(236,72,153,0.30)]',
-      briefcaseBox: 'bg-pink-50 text-pink-600 border border-pink-200/90',
+      cardBorder: 'border-2 border-[#ff4d94]',
+      cardShadow: '0 4px 22px rgba(255, 77, 148, 0.28), 0 0 10px rgba(255, 77, 148, 0.16)',
+      cardShadowHover: '0 8px 30px rgba(255, 77, 148, 0.38), 0 0 16px rgba(255, 77, 148, 0.24)',
+      neonDivider: 'linear-gradient(90deg, rgba(255,77,148,0.1) 0%, #ff4d94 50%, rgba(255,77,148,0.1) 100%)',
+      neonDividerGlow: '0 0 8px #ff4d94',
+      bodyBg: 'bg-gradient-to-b from-[#fff3f8] via-[#fff9fc] to-white',
+      briefcaseBox: 'bg-pink-50 text-pink-600 border border-pink-200',
       jobRolesLabel: 'text-pink-600',
       salaryColor: 'text-pink-600',
-      activeBtn: 'bg-pink-600 hover:bg-pink-700 text-white',
     },
   }[theme] || {
-    cardBorder: 'border-[1.5px] border-cyan-400 shadow-[0_4px_20px_rgba(6,182,212,0.18)]',
-    briefcaseBox: 'bg-cyan-50 text-cyan-600 border border-cyan-200/90',
+    cardBorder: 'border-2 border-[#16d5f7]',
+    cardShadow: '0 4px 22px rgba(22, 213, 247, 0.28)',
+    cardShadowHover: '0 8px 30px rgba(22, 213, 247, 0.38)',
+    neonDivider: 'linear-gradient(90deg, rgba(22,213,247,0.1) 0%, #16d5f7 50%, rgba(22,213,247,0.1) 100%)',
+    neonDividerGlow: '0 0 8px #16d5f7',
+    bodyBg: 'bg-gradient-to-b from-[#f2faff] via-[#f8fcff] to-white',
+    briefcaseBox: 'bg-cyan-50 text-cyan-600 border border-cyan-200',
     jobRolesLabel: 'text-cyan-600',
     salaryColor: 'text-emerald-600',
-    activeBtn: 'bg-cyan-600 text-white',
   };
 
   return (
     <article
       onClick={onClick}
-      className={`group relative bg-white rounded-2xl ${themeConfig.cardBorder} flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 cursor-pointer select-none`}
+      className={`group relative rounded-2xl ${themeConfig.cardBorder} flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 cursor-pointer select-none`}
+      style={{
+        boxShadow: themeConfig.cardShadow,
+      }}
     >
-      {/* 1. TOP ARTWORK (Holographic Cyber Poster / Video) */}
-      <div className="relative w-full h-[135px] sm:h-[142px] overflow-hidden bg-slate-950 shrink-0">
+      {/* 1. TOP ARTWORK (Futuristic Hologram Poster / Video across the top) */}
+      <div className="relative w-full h-[126px] sm:h-[132px] overflow-hidden bg-slate-950 shrink-0">
         {video ? (
           <video
             src={video}
@@ -101,38 +124,46 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
       </div>
 
-      {/* 2. CARD CONTENT BODY */}
-      <div className="p-3 sm:p-3.5 flex flex-col flex-1 justify-between gap-2 bg-white">
+      {/* Thin Neon Glow Separating Artwork from Card Information */}
+      <div
+        className="w-full h-[2px] relative z-10 shrink-0"
+        style={{
+          background: themeConfig.neonDivider,
+          boxShadow: themeConfig.neonDividerGlow,
+        }}
+      />
+
+      {/* 2. SOFT TRANSLUCENT WHITE / LIGHT-BLUE CARD BODY */}
+      <div className={`p-3 sm:p-3.5 flex flex-col flex-1 justify-between gap-2 ${themeConfig.bodyBg}`}>
         
-        {/* Course Title */}
+        {/* Compact, Bold Course Title */}
         <div className="text-center pt-0.5">
-          <h3 className="font-extrabold text-[14.5px] sm:text-[15px] text-slate-950 tracking-tight leading-snug">
+          <h3 className="font-black text-[14px] sm:text-[14.5px] text-slate-950 tracking-tight leading-snug">
             {title}
             {subtitle && <span className="font-bold text-slate-600 ml-1">({subtitle})</span>}
           </h3>
         </div>
 
-        {/* 5 Tool Icons Row */}
-        <div className="flex items-center justify-between w-full px-1 py-0.5">
+        {/* One Horizontal Row of Technology Icons and Labels */}
+        <div className="flex items-center justify-between w-full px-0.5 py-0.5">
           {tools.slice(0, 5).map((t, idx) => (
             <div key={idx} className="flex flex-col items-center flex-1 text-center min-w-0">
-              <div className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <ToolIcon name={t.name} className="w-5 h-5 sm:w-6 sm:h-6 object-contain" />
+              <div className="w-6 h-6 sm:w-6.5 sm:h-6.5 flex items-center justify-center group-hover:scale-115 transition-transform">
+                <ToolIcon name={t.name} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
               </div>
-              <span className="text-[9.5px] sm:text-[10px] font-bold text-slate-700 tracking-tight truncate w-full text-center mt-0.5">
+              <span className="text-[9.5px] font-bold text-slate-700 tracking-tight truncate w-full text-center mt-0.5">
                 {t.name}
               </span>
             </div>
           ))}
         </div>
 
-        {/* Subtle Divider Line */}
-        <div className="w-full border-t border-slate-100 my-0.5" />
+        {/* Thin Divider Above the Job-Role Section */}
+        <div className="w-full border-t border-slate-200/70 my-0.5" />
 
-        {/* Job Roles & CTC Package Row */}
+        {/* Job-Role Information on Left, Salary Information on Right */}
         <div className="flex items-center justify-between w-full">
           {/* Left: Job Roles */}
           <div className="flex items-center gap-1.5 min-w-0">
@@ -149,7 +180,7 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
             </div>
           </div>
 
-          {/* Right: Package CTC */}
+          {/* Right: Salary CTC */}
           <div className="flex flex-col items-end text-right shrink-0">
             <span className={`text-[13px] sm:text-[13.5px] font-black tracking-tight leading-none ${themeConfig.salaryColor}`}>
               {salary}
@@ -160,7 +191,7 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
           </div>
         </div>
 
-        {/* Bottom Action Row (Price Pill + Unlock/Resume Button) */}
+        {/* Rounded Price Pill at Bottom-Left & Dark Navy Unlock Course Button at Bottom-Right */}
         <div className="flex items-center gap-2 w-full pt-0.5">
           {/* Price or Enrolled Badge */}
           {isUnlocked ? (
@@ -169,12 +200,12 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
               <span>Enrolled</span>
             </div>
           ) : (
-            <div className="w-[30%] py-1.5 rounded-full font-black text-xs sm:text-[13px] text-center bg-[#fffbeb] text-amber-900 border border-amber-300 shadow-2xs select-none">
+            <div className="w-[30%] py-1.5 rounded-full font-black text-xs sm:text-[13px] text-center bg-[#fffdeb] text-amber-900 border border-amber-300/90 shadow-2xs select-none">
               {price}
             </div>
           )}
 
-          {/* Unlock / Resume Button */}
+          {/* Dark Navy Unlock Course Button */}
           <button
             type="button"
             onClick={(e) => {
@@ -183,8 +214,8 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
             }}
             className={`flex-1 py-1.5 px-3 rounded-full font-bold text-xs sm:text-[12.5px] flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer ${
               isUnlocked
-                ? 'bg-slate-900 hover:bg-slate-800 text-white'
-                : 'bg-slate-950 hover:bg-slate-800 text-white'
+                ? 'bg-[#0c1527] hover:bg-slate-800 text-white'
+                : 'bg-[#0c1527] hover:bg-[#16223b] text-white'
             }`}
           >
             {isUnlocked ? (
