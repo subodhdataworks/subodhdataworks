@@ -1,43 +1,28 @@
-import { IndiasMostAffordableBanner } from './IndiasMostAffordableBanner';
 import React, { useState, useEffect } from 'react';
 import {
   Layers,
   LayoutGrid,
   List,
-  Play,
-  Gamepad2,
-  FileText,
-  Folder,
-  BookOpen,
-  Gift,
-  Award,
-  Scroll,
-  ShieldCheck,
+  Laptop,
+  Code2,
+  MessageSquare,
   FileCheck,
+  Briefcase,
+  Target,
+  ChevronRight,
+  GraduationCap,
+  ArrowLeftRight,
   Sparkles,
   TrendingUp,
-  CheckCircle2,
-  ArrowRight,
-  Cpu,
-  Brain,
-  BarChart3,
-  Bot,
-  Lock,
-  Briefcase,
-  GraduationCap,
-  Users,
-  Star,
-  Building2,
-  Trophy,
-  Clock,
-  ArrowLeftRight,
-  Code2
+  Gift,
+  Award,
+  Users
 } from 'lucide-react';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
 import { RealSuccessStoriesShowcase } from './RealSuccessStoriesShowcase';
 import { ALL_PLATFORM_COURSES, PlatformCourseItem } from '../../data/allPlatformCourses';
 import { CareerCourseCard } from './CareerCourseCard';
-import { CAREER_COURSES_12 } from '../../data/careerCourses12';
+import { CAREER_COURSES_12, CareerCourseItem } from '../../data/careerCourses12';
 import { isCourseUnlocked, syncUserEnrollmentsFromServer } from '../../services/courseUnlockService';
 import { MobileCompactDashboard } from './mobile/MobileCompactDashboard';
 import './LearnerHomeHub.css';
@@ -64,188 +49,6 @@ export interface StudentCoursesDashboardProps {
 
 export type CourseFilterType = 'all' | 'in-progress' | 'not-started' | 'completed';
 export type CourseViewModeType = 'grid' | 'list';
-
-interface FlagshipCourseItem {
-  id: string;
-  badgeNum: number;
-  statusTag: string;
-  title: string;
-  fullName: string;
-  descLine1: string;
-  descLine2: string;
-  salaryRange: string;
-  courseFee: string;
-  marketPrice?: string;
-  payAfterJob?: string;
-  modulesCount: string;
-  lessonsText: string;
-  image: string;
-  video?: string;
-  progress: number;
-  btnText: string;
-  isUnlocked: boolean;
-  themeColor: string;
-  btnGradient: string;
-  badgeBg: string;
-  skillsList: string[];
-}
-
-// ─── Dual-Gradient Typewriter for "Playing Games" in Hero Line 3 ───────────────
-const HeroPlayingGamesTypewriter: React.FC = () => {
-  const fullText = 'Playing Games';
-  const [displayText, setDisplayText] = useState(fullText);
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>;
-
-    if (!isDeleting) {
-      if (displayText.length < fullText.length) {
-        timeout = setTimeout(() => {
-          setDisplayText(fullText.slice(0, displayText.length + 1));
-        }, 95);
-      } else {
-        timeout = setTimeout(() => {
-          setIsDeleting(true);
-        }, 2600);
-      }
-    } else {
-      if (displayText.length > 0) {
-        timeout = setTimeout(() => {
-          setDisplayText(fullText.slice(0, displayText.length - 1));
-        }, 45);
-      } else {
-        timeout = setTimeout(() => {
-          setIsDeleting(false);
-        }, 450);
-      }
-    }
-
-    return () => clearTimeout(timeout);
-  }, [displayText, isDeleting]);
-
-  const playingPart = displayText.slice(0, 7);
-  const hasSpace = displayText.length > 7;
-  const gamesPart = displayText.slice(8);
-
-  return (
-    <span className="inline-flex items-baseline">
-      {playingPart && (
-        <span className="bg-gradient-to-r from-[#0866FF] to-[#A100E8] bg-clip-text text-transparent">
-          {playingPart}
-        </span>
-      )}
-      {hasSpace && (
-        <span className="inline-block select-none whitespace-pre">
-          {'\u00A0'}
-        </span>
-      )}
-      {gamesPart && (
-        <span className="bg-gradient-to-r from-[#F02C62] to-[#FF8A00] bg-clip-text text-transparent">
-          {gamesPart}
-        </span>
-      )}
-      <span className="inline-block ml-0.5 text-[#F02C62] font-light animate-pulse select-none">
-        |
-      </span>
-    </span>
-  );
-};
-
-// Hiring Partners list for continuous marquee
-const HIRING_PARTNERS = [
-  {
-    id: 'tcs',
-    name: 'TCS',
-    node: <span className="text-rose-600 font-black text-xs sm:text-sm tracking-tighter">tcs</span>
-  },
-  {
-    id: 'infosys',
-    name: 'Infosys',
-    node: <span className="text-[#007cc3] font-black text-xs sm:text-sm tracking-tight">Infosys</span>
-  },
-  {
-    id: 'accenture',
-    name: 'Accenture',
-    node: (
-      <span className="text-purple-800 font-extrabold text-xs sm:text-sm tracking-tight flex items-center gap-0.5">
-        accenture <span className="text-[#a100ff]">&gt;</span>
-      </span>
-    )
-  },
-  {
-    id: 'wipro',
-    name: 'Wipro',
-    node: (
-      <span className="text-slate-800 font-black text-xs sm:text-sm tracking-normal flex items-center gap-1">
-        <span className="inline-block w-2 h-2 rounded-full bg-gradient-to-r from-red-500 via-amber-400 to-blue-500" />
-        wipro
-      </span>
-    )
-  },
-  {
-    id: 'google',
-    name: 'Google',
-    node: (
-      <span className="font-extrabold text-xs sm:text-sm tracking-tight flex items-center">
-        <span className="text-[#4285F4]">G</span>
-        <span className="text-[#EA4335]">o</span>
-        <span className="text-[#FBBC05]">o</span>
-        <span className="text-[#4285F4]">g</span>
-        <span className="text-[#34A853]">l</span>
-        <span className="text-[#EA4335]">e</span>
-      </span>
-    )
-  },
-  {
-    id: 'microsoft',
-    name: 'Microsoft',
-    node: (
-      <span className="text-slate-700 font-bold text-xs sm:text-sm tracking-tight flex items-center gap-1">
-        <span className="grid grid-cols-2 gap-0.5 w-2.5 h-2.5">
-          <span className="bg-[#f25022]" />
-          <span className="bg-[#7fba00]" />
-          <span className="bg-[#00a4ef]" />
-          <span className="bg-[#ffb900]" />
-        </span>
-        Microsoft
-      </span>
-    )
-  },
-  {
-    id: 'amazon',
-    name: 'Amazon',
-    node: <span className="text-slate-900 font-black text-xs sm:text-sm tracking-tight">amazon</span>
-  },
-  {
-    id: 'deloitte',
-    name: 'Deloitte',
-    node: (
-      <span className="text-slate-900 font-black text-xs sm:text-sm tracking-tight">
-        Deloitte<span className="text-emerald-500">.</span>
-      </span>
-    )
-  },
-  {
-    id: 'capgemini',
-    name: 'Capgemini',
-    node: (
-      <span className="text-[#0070ad] font-bold text-xs sm:text-sm tracking-tight flex items-center gap-0.5">
-        Capgemini <span className="text-[#0070ad] text-[10px]">♠</span>
-      </span>
-    )
-  },
-  {
-    id: 'ibm',
-    name: 'IBM',
-    node: <span className="text-[#1f70c1] font-black text-xs sm:text-sm tracking-widest font-mono">IBM</span>
-  },
-  {
-    id: 'more',
-    name: '700+ More',
-    node: <span className="text-slate-400 font-semibold text-[11px] whitespace-nowrap">and 700+ more...</span>
-  }
-];
 
 export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = ({
   userName = 'Rahul Sharma',
@@ -284,44 +87,6 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
     };
   }, [userName]);
 
-  // Continuous Typewriter effect for "Get Career-Ready."
-  const careerReadyTargetText = 'Get Career-Ready.';
-  const [typewriterText, setTypewriterText] = useState(careerReadyTargetText);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [charIndex, setCharIndex] = useState(careerReadyTargetText.length);
-
-  useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>;
-    if (!isDeleting && charIndex < careerReadyTargetText.length) {
-      timeout = setTimeout(() => {
-        setTypewriterText(careerReadyTargetText.slice(0, charIndex + 1));
-        setCharIndex((prev) => prev + 1);
-      }, 100);
-    } else if (!isDeleting && charIndex === careerReadyTargetText.length) {
-      timeout = setTimeout(() => {
-        setIsDeleting(true);
-      }, 2400);
-    } else if (isDeleting && charIndex > 0) {
-      timeout = setTimeout(() => {
-        setTypewriterText(careerReadyTargetText.slice(0, charIndex - 1));
-        setCharIndex((prev) => prev - 1);
-      }, 50);
-    } else if (isDeleting && charIndex === 0) {
-      timeout = setTimeout(() => {
-        setIsDeleting(false);
-      }, 450);
-    }
-    return () => clearTimeout(timeout);
-  }, [charIndex, isDeleting, careerReadyTargetText]);
-
-  const visibleCourses = ALL_PLATFORM_COURSES.filter((c) => {
-    if (categoryTab !== 'all' && c.category !== categoryTab) return false;
-    if (filter === 'in-progress') return c.progress > 0;
-    if (filter === 'not-started') return c.progress === 0;
-    if (filter === 'completed') return c.progress === 100;
-    return true;
-  });
-
   const handleCourseClick = (c: { id: string; title?: string; fullName?: string }) => {
     playClick();
 
@@ -350,43 +115,25 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
     }
   };
 
-  const handleSubAction = (
-    c: PlatformCourseItem,
-    type: 'modules' | 'games' | 'interview' | 'project'
-  ) => {
-    playClick();
-    if (c.id === 'data-analyst-genai') {
-      if (type === 'modules') onOpenDataAnalystCourse();
-      else if (type === 'games') onOpenGameArena ? onOpenGameArena() : onOpenDataAnalystCourse();
-      else if (type === 'interview') onOpenMockInterview ? onOpenMockInterview() : onOpenDataAnalystCourse();
-      else if (type === 'project') onOpenDataAnalystCourse();
-    } else if (c.id === 'data-science-agentic-ai') {
-      if (onOpenDataScienceCourse) onOpenDataScienceCourse();
-      else onOpenDataAnalystCourse();
-    } else if (c.id === 'ml-engineering') {
-      if (onOpenMlEngineeringCourse) onOpenMlEngineeringCourse();
-      else onOpenDataAnalystCourse();
-    } else if (c.id === 'ai-engineering') {
-      if (onOpenAiEngineeringCourse) onOpenAiEngineeringCourse();
-      else onOpenDataAnalystCourse();
-    } else if (c.id === 'ai-tools-prompt' || c.id === 'ai-tools-prompt-mastery' || c.id === 'ai-tool-and-prompt') {
-      if (onOpenAiToolsPromptCourse) onOpenAiToolsPromptCourse();
-      else onOpenDataAnalystCourse();
-    } else if (c.id === 'ms-office-copilot' || c.id === 'msoffice-365-copilot') {
-      if (onOpenMsOfficeCopilotCourse) onOpenMsOfficeCopilotCourse();
-      else onOpenDataAnalystCourse();
-    } else if (c.id === 'full-stack-web-dev' || c.id === 'full-stack' || c.id === 'mern') {
-      if (onOpenFullStackMernCourse) onOpenFullStackMernCourse();
-      else onOpenDataAnalystCourse();
-    } else {
-      onOpenDataAnalystCourse();
+  // Filter 7 career courses according to category tab
+  const filteredCareerCourses = CAREER_COURSES_12.filter((c) => {
+    if (categoryTab === 'flagship') {
+      return ['data-analyst-genai', 'data-science-agentic-ai', 'ml-engineering', 'ai-engineering', 'full-stack-web-dev'].includes(c.id);
     }
-  };
+    if (categoryTab === 'core') {
+      return c.id === 'data-analyst-genai';
+    }
+    if (categoryTab === 'ai') {
+      return c.id === 'ai-engineering';
+    }
+    return true;
+  });
 
   return (
     <div className="lhh-wrapper">
       {/* =========================================================================
           0. MOBILE APP-STYLE DASHBOARD BELOW HEADER (Mobile Only: < md)
+          (100% PRESERVED PER STRICT SPECIFICATION)
           ========================================================================= */}
       <MobileCompactDashboard
         playClick={playClick}
@@ -418,245 +165,157 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
       />
 
       {/* =========================================================================
-          1. PRE-LOGIN EXACT HERO SECTION + STATS + MARQUEE + 3 CARDS (Desktop Only: >= md)
+          1. PIXEL-PERFECT DESKTOP DASHBOARD (>= md, MATCHING REFERENCE IMAGE 1)
           ========================================================================= */}
       <div className="hidden md:flex flex-col gap-4 w-full">
         
-        {/* ─── 1.1 MAIN HERO SECTION (Color-Matched to Video Studio Background) ─── */}
-        <section className="relative w-full px-4 sm:px-6 lg:px-8 py-5 sm:py-7 overflow-hidden bg-gradient-to-r from-[#dce7f2] via-[#e5eef7] to-[#edf4fb] rounded-2xl md:rounded-3xl border border-slate-200/80 shadow-xs">
-          
-          {/* Soft Ambient Aurora Lights */}
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-300/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute top-10 right-1/4 w-[500px] h-[500px] bg-cyan-300/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-b from-transparent to-[#F4F8FC] pointer-events-none" />
+        {/* ─── 1.1 HERO BANNER: "Get Placement Ready" ─── */}
+        <section
+          className="relative w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-md border border-slate-700/30 select-none text-white"
+          style={{
+            background: 'linear-gradient(90deg, #0246a3 0%, #082d8c 35%, #101c7d 65%, #6a0dad 100%)',
+          }}
+        >
+          {/* Subtle Ambient Radial Lighting */}
+          <div className="absolute top-0 left-1/4 w-[350px] h-[350px] bg-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 right-10 w-[300px] h-[300px] bg-purple-500/25 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="max-w-[1440px] w-full mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center w-full">
+          <div className="relative z-10 flex items-center justify-between w-full h-[155px] lg:h-[165px] px-2 sm:px-4 lg:px-6">
+            
+            {/* LEFT: Celebrating Student with Laptop & Future IT Hoodie */}
+            <div className="relative h-full w-[200px] lg:w-[250px] shrink-0 flex items-end justify-start">
+              {/* Cyan Radiant Aura behind student */}
+              <div className="absolute bottom-2 left-6 w-32 h-32 bg-cyan-400/35 rounded-full blur-xl pointer-events-none" />
+              <img
+                src="/images/dashboard/placement_hero_student_transparent.png"
+                alt="Placement Ready Student"
+                className="relative z-10 h-full max-h-[160px] lg:max-h-[165px] w-auto object-contain object-bottom pointer-events-none select-none drop-shadow-[0_8px_16px_rgba(0,0,0,0.35)]"
+              />
+            </div>
+
+            {/* CENTER: Headline + Subtitle + 4-Step Connected Journey */}
+            <div className="flex-1 flex flex-col items-center justify-center text-center px-2 min-w-0">
               
-              {/* LEFT COLUMN: Punchy Headline & CTAs */}
-              <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center text-left z-10 pl-0 lg:pl-3 min-w-0">
-                
-                {/* Main Headline */}
-                <h1 className="flex flex-col items-start text-left font-poppins">
-                  
-                  {/* Line 1: Your Ultimate (with Crown, Cyan Accents & Curved Underline) */}
-                  <div className="relative inline-block mt-2 sm:mt-3 mb-1">
-                    
-                    {/* Golden Crown */}
+              {/* Headline with Yellow Celebration Sparks */}
+              <div className="relative inline-flex items-center justify-center">
+                <h1 className="text-xl sm:text-2xl lg:text-[29px] font-black tracking-tight text-white leading-tight">
+                  Get Placement{' '}
+                  <span className="relative inline-block text-[#00D2FF]">
+                    Ready
+                    {/* Yellow Celebration Sparks / Flares */}
                     <span
-                      className="absolute -top-3.5 sm:-top-4 left-0.5 -rotate-12 z-20 pointer-events-none select-none"
+                      className="absolute -top-3.5 -right-5 pointer-events-none select-none text-[#FFD700]"
                       aria-hidden="true"
                     >
-                      <svg
-                        className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFB800] drop-shadow-[0_2px_4px_rgba(255,184,0,0.45)]"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                      >
-                        <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" />
-                        <circle cx="3" cy="5" r="1.2" fill="#FFE580" />
-                        <circle cx="12" cy="4" r="1.4" fill="#FFE580" />
-                        <circle cx="21" cy="5" r="1.2" fill="#FFE580" />
+                      <svg className="w-5 h-5 drop-shadow-[0_2px_4px_rgba(255,215,0,0.6)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                        <line x1="12" y1="2" x2="12" y2="6" />
+                        <line x1="19" y1="5" x2="16" y2="8" />
+                        <line x1="22" y1="12" x2="18" y2="12" />
                       </svg>
-                    </span>
-
-                    {/* Three small cyan accent strokes */}
-                    <span
-                      className="absolute -top-1 sm:-top-1.5 -right-4 sm:-right-5 pointer-events-none select-none"
-                      aria-hidden="true"
-                    >
-                      <svg
-                        className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#00D2FF]"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.2"
-                        strokeLinecap="round"
-                      >
-                        <line x1="10" y1="2" x2="10" y2="7" />
-                        <line x1="17" y1="6" x2="13" y2="9.5" />
-                        <line x1="17" y1="15" x2="13" y2="12.5" />
-                      </svg>
-                    </span>
-
-                    {/* Line 1 Text */}
-                    <span className="text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px] xl:text-[46px] font-black tracking-[-1.5px] leading-[1.08] bg-gradient-to-r from-[#0866FF] to-[#5727E8] bg-clip-text text-transparent block select-text">
-                      Your Ultimate
-                    </span>
-
-                    {/* Thin curved blue-purple underline */}
-                    <svg
-                      className="absolute -bottom-1 sm:-bottom-1.5 left-0 w-full h-2 sm:h-2.5 overflow-visible pointer-events-none select-none"
-                      viewBox="0 0 300 16"
-                      fill="none"
-                      preserveAspectRatio="none"
-                      aria-hidden="true"
-                    >
-                      <defs>
-                        <linearGradient id="heroCurvedUnderlineDashboard" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#0866FF" />
-                          <stop offset="100%" stopColor="#5727E8" />
-                        </linearGradient>
-                      </defs>
-                      <path
-                        d="M 4,12 Q 150,2 296,10"
-                        stroke="url(#heroCurvedUnderlineDashboard)"
-                        strokeWidth="2.2"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </div>
-
-                  {/* Line 2: Placement Solution */}
-                  <span className="text-[34px] sm:text-[38px] md:text-[44px] lg:text-[48px] xl:text-[54px] font-black text-[#08152F] leading-[1.08] tracking-[-1.5px] block mt-1 text-left select-text">
-                    Placement{' '}
-                    <span className="bg-gradient-to-r from-[#00A3FF] via-[#0866FF] to-[#7C3AED] bg-clip-text text-transparent">
-                      Solution
                     </span>
                   </span>
                 </h1>
+              </div>
 
-                {/* Tagline */}
-                <div className="mt-2 sm:mt-2.5 text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-600 leading-snug max-w-lg mx-auto lg:mx-0">
-                  <p className="inline-block px-3 sm:px-4 py-1 rounded-full text-slate-900 font-black bg-[#ffedea] border border-[#ffd5cc] tracking-tight">
-                    For Non-IT, Career Gap &amp; Career Switchers
-                  </p>
-                  <p className="mt-1.5 hidden sm:block">
-                    Learn industry-relevant skills with hands-on projects and get career ready.
-                  </p>
-                </div>
+              {/* Subtitle */}
+              <p className="text-xs sm:text-[13px] text-white/90 font-medium mt-0.5 tracking-wide">
+                Your complete career preparation journey
+              </p>
 
-                {/* CTAs Row */}
-                <div className="flex mt-3.5 flex-wrap items-center justify-start gap-2 sm:gap-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      playClick();
-                      const el = document.getElementById('learning-modules-section');
-                      if (el) el.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="px-4 min-[375px]:px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2 group"
-                  >
-                    <span>Start Learning Free</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform shrink-0" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      playClick();
-                      if (onOpenCodingPracticeHub) onOpenCodingPracticeHub();
-                      else if (onOpenGameArena) onOpenGameArena();
-                      else if (typeof window !== 'undefined') window.location.hash = '#game';
-                    }}
-                    className="px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-white hover:bg-slate-50 active:scale-95 text-slate-800 font-bold text-xs sm:text-sm border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2"
-                  >
-                    <Code2 className="w-3.5 h-3.5 text-[#1a73e8] shrink-0" />
-                    <span>Explore DSA Coding Practice</span>
-                  </button>
-                </div>
-
-                {/* Rating */}
-                <div className="flex mt-2.5 flex-wrap items-center justify-start gap-1.5 sm:gap-2 text-[11px] text-slate-500 font-medium">
-                  <div className="flex items-center text-amber-400 shrink-0">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
-                    ))}
+              {/* Horizontal 4-Step Connected Visual Journey */}
+              <div className="flex items-center justify-center gap-1.5 sm:gap-2 lg:gap-3 mt-3">
+                {/* Step 1: Learn */}
+                <div className="flex flex-col items-center">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-md">
+                    <GraduationCap className="w-4 h-4 text-blue-600 stroke-[2.5]" />
                   </div>
-                  <span>
-                    <strong className="text-slate-900 font-bold">4.9/5</strong> rating trusted by 100K+ learners across India
-                  </span>
+                  <span className="text-[10.5px] sm:text-[11px] font-bold text-white mt-1">Learn</span>
                 </div>
 
-              </div>
+                {/* Connector 1 */}
+                <div className="flex items-center -mt-4 text-white/50">
+                  <div className="w-4 sm:w-6 lg:w-8 h-[2px] border-t border-dashed border-white/60" />
+                  <ChevronRight className="w-3.5 h-3.5 -ml-1 text-white/70 shrink-0" />
+                </div>
 
-              {/* RIGHT COLUMN: Transparent Video */}
-              <div className="lg:col-span-6 xl:col-span-6 flex items-center justify-center relative z-10">
-                <div className="relative w-full max-w-[540px] lg:max-w-[600px] flex items-center justify-center">
-                  
-                  {/* Glowing Radiant Backing Aura */}
-                  <div className="absolute inset-0 bg-radial from-cyan-400/25 via-blue-500/15 to-transparent rounded-full blur-2xl scale-110 pointer-events-none" />
-                  
-                  {/* Transparent Video */}
-                  <div className="relative z-10 w-full flex items-center justify-center pointer-events-none select-none">
-                    <video
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="w-full h-auto max-h-[250px] min-[390px]:max-h-[290px] sm:max-h-[420px] lg:max-h-[460px] object-contain pointer-events-none select-none drop-shadow-[0_20px_40px_rgba(26,115,232,0.22)]"
-                    >
-                      <source src="/videos/header_hero_transparent.webm" type="video/webm" />
-                      <source src="/videos/header_transparent_video.mp4" type="video/mp4" />
-                    </video>
+                {/* Step 2: Practice */}
+                <div className="flex flex-col items-center">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-md">
+                    <Code2 className="w-4 h-4 text-blue-600 stroke-[2.5]" />
                   </div>
+                  <span className="text-[10.5px] sm:text-[11px] font-bold text-white mt-1">Practice</span>
+                </div>
 
+                {/* Connector 2 */}
+                <div className="flex items-center -mt-4 text-white/50">
+                  <div className="w-4 sm:w-6 lg:w-8 h-[2px] border-t border-dashed border-white/60" />
+                  <ChevronRight className="w-3.5 h-3.5 -ml-1 text-white/70 shrink-0" />
+                </div>
+
+                {/* Step 3: Prepare */}
+                <div className="flex flex-col items-center">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white text-purple-600 flex items-center justify-center shadow-md">
+                    <Users className="w-4 h-4 text-purple-600 stroke-[2.5]" />
+                  </div>
+                  <span className="text-[10.5px] sm:text-[11px] font-bold text-white mt-1">Prepare</span>
+                </div>
+
+                {/* Connector 3 */}
+                <div className="flex items-center -mt-4 text-white/50">
+                  <div className="w-4 sm:w-6 lg:w-8 h-[2px] border-t border-dashed border-white/60" />
+                  <ChevronRight className="w-3.5 h-3.5 -ml-1 text-white/70 shrink-0" />
+                </div>
+
+                {/* Step 4: Get Placed (Mint Green Pill) */}
+                <div className="flex items-center -mt-4">
+                  <div className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-[#d1fae5] border border-[#a7f3d0] flex items-center gap-1.5 shadow-md">
+                    <Briefcase className="w-3.5 h-3.5 text-[#065f46] stroke-[2.5] shrink-0" />
+                    <span className="text-[10.5px] sm:text-xs font-black text-[#065f46] whitespace-nowrap">
+                      Get Placed
+                    </span>
+                  </div>
                 </div>
               </div>
 
             </div>
-          </div>
-        </section>
 
-        {/* ─── 1.2 METRICS / TRUST STAT BADGES (Row of 4 Compact Badges) ─── */}
-        <section className="w-full max-w-[1440px] mx-auto px-1 sm:px-2 relative z-20 shrink-0">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
-            
-            {/* Card 1: 100K+ Students */}
-            <div className="bg-white rounded-xl py-2.5 px-3.5 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
-              <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-                <Users className="w-4 h-4 stroke-[2.2]" />
-              </div>
-              <div>
-                <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
-                  100K+
+            {/* RIGHT: Benefits Checklist + Upward Growth Chart */}
+            <div className="flex items-center gap-3 lg:gap-5 pr-2 lg:pr-5 shrink-0">
+              {/* Checklist */}
+              <div className="flex flex-col gap-1.5 text-white text-[11px] sm:text-xs font-semibold text-left">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[10px] font-black shrink-0">
+                    ✓
+                  </div>
+                  <span className="whitespace-nowrap">Industry-Ready Courses</span>
                 </div>
-                <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
-                  Students
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[10px] font-black shrink-0">
+                    ✓
+                  </div>
+                  <span className="whitespace-nowrap">Real Projects &amp; Practice</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[10px] font-black shrink-0">
+                    ✓
+                  </div>
+                  <span className="whitespace-nowrap">Mock Interviews with AI</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-emerald-400 text-slate-900 flex items-center justify-center text-[10px] font-black shrink-0">
+                    ✓
+                  </div>
+                  <span className="whitespace-nowrap">Internship &amp; Placement Support</span>
                 </div>
               </div>
-            </div>
 
-            {/* Card 2: 700+ Hiring Partners */}
-            <div className="bg-white rounded-xl py-2.5 px-3.5 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
-              <div className="w-8 h-8 rounded-lg bg-pink-50 text-pink-600 flex items-center justify-center shrink-0">
-                <Building2 className="w-4 h-4 stroke-[2.2]" />
-              </div>
-              <div>
-                <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
-                  700+
-                </div>
-                <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
-                  Hiring Partners
-                </div>
-              </div>
-            </div>
-
-            {/* Card 3: 99% Placement Support */}
-            <div className="bg-white rounded-xl py-2.5 px-3.5 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
-              <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
-                <Trophy className="w-4 h-4 stroke-[2.2]" />
-              </div>
-              <div>
-                <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
-                  99%
-                </div>
-                <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
-                  Placement Support
-                </div>
-              </div>
-            </div>
-
-            {/* Card 4: Industry Aligned Curriculum */}
-            <div className="bg-white rounded-xl py-2.5 px-3.5 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
-              <div className="w-8 h-8 rounded-lg bg-yellow-50 text-yellow-500 flex items-center justify-center shrink-0">
-                <Star className="w-4 h-4 stroke-[2.2]" />
-              </div>
-              <div>
-                <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
-                  Industry
-                </div>
-                <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
-                  Aligned Curriculum
+              {/* Upward Growth Chart Illustration */}
+              <div className="hidden xl:flex items-end gap-1 h-16 pl-2 opacity-85 shrink-0 relative">
+                <div className="w-2.5 h-5 bg-white/25 rounded-t" />
+                <div className="w-2.5 h-8 bg-white/35 rounded-t" />
+                <div className="w-2.5 h-11 bg-white/50 rounded-t" />
+                <div className="w-2.5 h-14 bg-white/70 rounded-t relative">
+                  <TrendingUp className="w-6 h-6 text-white absolute -top-5 -right-3" />
                 </div>
               </div>
             </div>
@@ -664,132 +323,277 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
           </div>
         </section>
 
-        {/* ─── 1.3 HIRING PARTNERS CONTINUOUS TICKER ROW (Right to Left Scrolling Marquee) ─── */}
-        <div className="w-full max-w-[1440px] mx-auto px-1 sm:px-2 py-1 shrink-0">
-          <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2 bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+        {/* ─── 1.2 SIX CAREER FEATURE CARDS (1 ROW ON DESKTOP) ─── */}
+        <section className="w-full">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3.5 w-full">
             
-            {/* Label */}
-            <div className="text-[11px] sm:text-xs font-black text-slate-800 whitespace-nowrap shrink-0 flex items-center gap-1.5 border-r border-slate-200 pr-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Our Placed Students</span>
+            {/* Card 1: Learn Coding */}
+            <div
+              onClick={() => {
+                playClick();
+                const el = document.getElementById('learning-modules-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98]"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                    <Laptop className="w-5 h-5" />
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-purple-600 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+                <h3 className="text-[13px] sm:text-[13.5px] font-black text-slate-900 mt-2.5 text-left group-hover:text-purple-600 transition-colors">
+                  Learn Coding
+                </h3>
+                <p className="text-[10.5px] sm:text-[11px] text-slate-500 font-medium leading-snug mt-1 text-left">
+                  Master in-demand skills with 7 industry-ready courses.
+                </p>
+              </div>
+              <span className="mt-3 inline-block self-start px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+                7 Courses
+              </span>
             </div>
 
-            {/* Continuous Right-to-Left Infinite Marquee */}
-            <div className="relative overflow-hidden flex-1 select-none">
-              <div className="absolute left-0 top-0 bottom-0 w-6 sm:w-10 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-              <div className="absolute right-0 top-0 bottom-0 w-6 sm:w-10 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-
-              <div className="animate-marquee-left flex items-center gap-7 sm:gap-9 text-xs font-bold text-slate-600">
-                {[...HIRING_PARTNERS, ...HIRING_PARTNERS].map((partner, index) => (
-                  <div key={partner.id + '-' + index} className="shrink-0 flex items-center">
-                    {partner.node}
+            {/* Card 2: DSA Practice */}
+            <div
+              onClick={() => {
+                playClick();
+                if (onOpenCodingPracticeHub) onOpenCodingPracticeHub();
+                else if (onOpenGameArena) onOpenGameArena();
+                else if (typeof window !== 'undefined') window.location.hash = '#game';
+              }}
+              className="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98]"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                    <Code2 className="w-5 h-5" />
                   </div>
-                ))}
+                  <ChevronRight className="w-4 h-4 text-purple-600 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+                <h3 className="text-[13px] sm:text-[13.5px] font-black text-slate-900 mt-2.5 text-left group-hover:text-purple-600 transition-colors">
+                  DSA Practice
+                </h3>
+                <p className="text-[10.5px] sm:text-[11px] text-slate-500 font-medium leading-snug mt-1 text-left">
+                  Solve coding problems and build strong logic.
+                </p>
               </div>
+              <span className="mt-3 inline-block self-start px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+                Practice &amp; Improve
+              </span>
+            </div>
+
+            {/* Card 3: Mock Interviews */}
+            <div
+              onClick={() => {
+                playClick();
+                if (onOpenMockInterview) onOpenMockInterview();
+                else if (typeof window !== 'undefined') window.location.hash = '#mockinterview';
+              }}
+              className="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98]"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                    <MessageSquare className="w-5 h-5" />
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-purple-600 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+                <h3 className="text-[13px] sm:text-[13.5px] font-black text-slate-900 mt-2.5 text-left group-hover:text-purple-600 transition-colors">
+                  Mock Interviews
+                </h3>
+                <p className="text-[10.5px] sm:text-[11px] text-slate-500 font-medium leading-snug mt-1 text-left">
+                  Practice real interview questions with AI &amp; experts.
+                </p>
+              </div>
+              <span className="mt-3 inline-block self-start px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+                Unlimited Practice
+              </span>
+            </div>
+
+            {/* Card 4: ATS Resume Score */}
+            <div
+              onClick={() => {
+                playClick();
+                if (typeof window !== 'undefined') window.location.hash = '#ats';
+              }}
+              className="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98]"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+                    <FileCheck className="w-5 h-5" />
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-purple-600 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+                <h3 className="text-[13px] sm:text-[13.5px] font-black text-slate-900 mt-2.5 text-left group-hover:text-purple-600 transition-colors">
+                  ATS Resume Score
+                </h3>
+                <p className="text-[10.5px] sm:text-[11px] text-slate-500 font-medium leading-snug mt-1 text-left">
+                  Check your resume score and get improvement tips.
+                </p>
+              </div>
+              <span className="mt-3 inline-block self-start px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+                AI-Powered Analysis
+              </span>
+            </div>
+
+            {/* Card 5: Internships */}
+            <div
+              onClick={() => {
+                playClick();
+                if (typeof window !== 'undefined') window.location.hash = '#internship';
+              }}
+              className="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98]"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                    <Briefcase className="w-5 h-5" />
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-purple-600 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+                <h3 className="text-[13px] sm:text-[13.5px] font-black text-slate-900 mt-2.5 text-left group-hover:text-purple-600 transition-colors">
+                  Internships
+                </h3>
+                <p className="text-[10.5px] sm:text-[11px] text-slate-500 font-medium leading-snug mt-1 text-left">
+                  Gain real-world experience and build your profile.
+                </p>
+              </div>
+              <span className="mt-3 inline-block self-start px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+                Apply &amp; Build Experience
+              </span>
+            </div>
+
+            {/* Card 6: Placement */}
+            <div
+              onClick={() => {
+                playClick();
+                if (onOpenPlacementSupport) onOpenPlacementSupport();
+                else if (typeof window !== 'undefined') window.location.hash = '#placement';
+              }}
+              className="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200/90 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-purple-300 transition-all cursor-pointer flex flex-col justify-between group active:scale-[0.98]"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                    <Target className="w-5 h-5" />
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-purple-600 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+                <h3 className="text-[13px] sm:text-[13.5px] font-black text-slate-900 mt-2.5 text-left group-hover:text-purple-600 transition-colors">
+                  Placement
+                </h3>
+                <p className="text-[10.5px] sm:text-[11px] text-slate-500 font-medium leading-snug mt-1 text-left">
+                  Complete preparation for your dream job.
+                </p>
+              </div>
+              <span className="mt-3 inline-block self-start px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+                Get Job Ready
+              </span>
             </div>
 
           </div>
-        </div>
+        </section>
 
-        {/* ─── 1.4 For Non-IT, Career Gap & Career Switchers Section (3 Compact Cards) ─── */}
-        <section className="w-full max-w-[1440px] mx-auto px-1 sm:px-2 pt-1 pb-1">
-          <div className="w-full">
-            <div className="grid grid-cols-3 gap-2.5 sm:gap-4">
-              
-              {/* Card 1: Non-IT Background? */}
-              <div
-                onClick={() => {
-                  playClick();
-                  const el = document.getElementById('learning-modules-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="bg-[#ecfdf5] border border-[#d1fae5] rounded-xl sm:rounded-2xl p-2.5 sm:p-4 flex flex-col min-[520px]:flex-row items-start min-[520px]:items-center gap-2 sm:gap-3.5 hover:shadow-md hover:border-emerald-300 transition-all cursor-pointer active:scale-[0.98] group"
-              >
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-100/70 text-[#059669] flex items-center justify-center shrink-0">
-                  <Users className="w-4 h-4 sm:w-5 sm:h-5 text-[#059669]" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-[11px] sm:text-sm font-black text-slate-900 leading-tight">
-                    Non-IT Background?
-                  </h3>
-                  <p className="text-[9.5px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5 sm:mt-1">
-                    No Problem! Start from Zero.
-                  </p>
-                </div>
+        {/* ─── 1.3 CAREER SUPPORT STRIP (3 PASTEL CARDS) ─── */}
+        <section className="w-full">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+            
+            {/* Card 1: Non-IT Background? */}
+            <div
+              onClick={() => {
+                playClick();
+                const el = document.getElementById('learning-modules-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="bg-[#ecfdf5] border border-[#a7f3d0] rounded-2xl p-3 sm:p-3.5 flex items-center gap-3.5 hover:shadow-md hover:border-emerald-400 transition-all cursor-pointer active:scale-[0.98] group"
+            >
+              <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-[#059669] shrink-0">
+                <GraduationCap className="w-5 h-5 text-[#059669]" />
               </div>
-
-              {/* Card 2: Career Gap? */}
-              <div
-                onClick={() => {
-                  playClick();
-                  const el = document.getElementById('learning-modules-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="bg-[#f5f3ff] border border-[#ede9fe] rounded-xl sm:rounded-2xl p-2.5 sm:p-4 flex flex-col min-[520px]:flex-row items-start min-[520px]:items-center gap-2 sm:gap-3.5 hover:shadow-md hover:border-purple-300 transition-all cursor-pointer active:scale-[0.98] group"
-              >
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-purple-100/70 text-[#7c3aed] flex items-center justify-center shrink-0">
-                  <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-[#7c3aed]" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-[11px] sm:text-sm font-black text-slate-900 leading-tight">
-                    Career Gap?
-                  </h3>
-                  <p className="text-[9.5px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5 sm:mt-1">
-                    Get Back to Your Career with New Skills.
-                  </p>
-                </div>
+              <div className="min-w-0 flex-1 text-left">
+                <h3 className="text-[13.5px] sm:text-sm font-black text-slate-900 leading-tight">
+                  Non-IT Background?
+                </h3>
+                <p className="text-[11px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5">
+                  No Problem! Start from Zero.
+                </p>
               </div>
-
-              {/* Card 3: Career Switch? */}
-              <div
-                onClick={() => {
-                  playClick();
-                  const el = document.getElementById('learning-modules-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="bg-[#fff7ed] border border-[#ffedd5] rounded-xl sm:rounded-2xl p-2.5 sm:p-4 flex flex-col min-[520px]:flex-row items-start min-[520px]:items-center gap-2 sm:gap-3.5 hover:shadow-md hover:border-orange-300 transition-all cursor-pointer active:scale-[0.98] group"
-              >
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-orange-100/70 text-[#ea580c] flex items-center justify-center shrink-0">
-                  <ArrowLeftRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#ea580c]" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-[11px] sm:text-sm font-black text-slate-900 leading-tight">
-                    Career Switch?
-                  </h3>
-                  <p className="text-[9.5px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5 sm:mt-1">
-                    Move to a High-Growth IT Career with Confidence.
-                  </p>
-                </div>
-              </div>
-
             </div>
+
+            {/* Card 2: Career Gap? */}
+            <div
+              onClick={() => {
+                playClick();
+                const el = document.getElementById('learning-modules-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="bg-[#f5f3ff] border border-[#ddd6fe] rounded-2xl p-3 sm:p-3.5 flex items-center gap-3.5 hover:shadow-md hover:border-purple-400 transition-all cursor-pointer active:scale-[0.98] group"
+            >
+              <div className="w-9 h-9 rounded-full bg-purple-100 flex items-center justify-center text-[#7c3aed] shrink-0">
+                <Target className="w-5 h-5 text-[#7c3aed]" />
+              </div>
+              <div className="min-w-0 flex-1 text-left">
+                <h3 className="text-[13.5px] sm:text-sm font-black text-slate-900 leading-tight">
+                  Career Gap?
+                </h3>
+                <p className="text-[11px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5">
+                  Get Back to Your Career with New Skills.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 3: Career Switch? */}
+            <div
+              onClick={() => {
+                playClick();
+                const el = document.getElementById('learning-modules-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="bg-[#fff7ed] border border-[#fed7aa] rounded-2xl p-3 sm:p-3.5 flex items-center gap-3.5 hover:shadow-md hover:border-orange-400 transition-all cursor-pointer active:scale-[0.98] group"
+            >
+              <div className="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center text-[#ea580c] shrink-0">
+                <ArrowLeftRight className="w-5 h-5 text-[#ea580c]" />
+              </div>
+              <div className="min-w-0 flex-1 text-left">
+                <h3 className="text-[13.5px] sm:text-sm font-black text-slate-900 leading-tight">
+                  Career Switch?
+                </h3>
+                <p className="text-[11px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5">
+                  Move to a High-Growth IT Career with Confidence.
+                </p>
+              </div>
+            </div>
+
           </div>
         </section>
 
       </div>
 
       {/* =========================================================================
-          2. "YOUR CAREER COURSES (4 FLAGSHIP PROGRAMS)" HEADER & CONTROLS
+          2. ALL CAREER-FOCUSED INDUSTRY COURSES (7) (EXACT MATCH TO REFERENCE IMAGE 1)
           ========================================================================= */}
-      <section className="lhh-modules-section scd-transparent-pots-section mt-8 lg:mt-12 pt-2" id="learning-modules-section">
+      <section className="lhh-modules-section scd-transparent-pots-section mt-4 lg:mt-6 pt-2" id="learning-modules-section">
         <div className="lhh-section-header">
           <div className="lhh-section-left">
             <div className="lhh-layer-icon-box">
               <Layers className="w-5 h-5 text-blue-600" />
             </div>
             <div className="lhh-section-title-wrap">
-              <h2 className="lhh-section-title">All Career-Focused Industry Courses ({visibleCourses.length})</h2>
-
+              <h2 className="lhh-section-title">All Career-Focused Industry Courses (7)</h2>
             </div>
           </div>
 
           <div className="lhh-controls-group">
+            {/* Category Filter Pills */}
             <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-1">
               {[
-                { id: 'all', label: `All (${ALL_PLATFORM_COURSES.length})` },
-                { id: 'flagship', label: `Flagship Tracks (${ALL_PLATFORM_COURSES.filter(c => c.category === 'flagship').length})` },
-                { id: 'core', label: `Core Analytics (${ALL_PLATFORM_COURSES.filter(c => c.category === 'core').length})` },
-                { id: 'ai', label: `AI & Next-Gen (${ALL_PLATFORM_COURSES.filter(c => c.category === 'ai').length})` },
+                { id: 'all', label: 'All (7)' },
+                { id: 'flagship', label: 'Flagship Tracks (5)' },
+                { id: 'core', label: 'Core Analytics (1)' },
+                { id: 'ai', label: 'AI & Next-Gen (1)' },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -800,7 +604,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                   }}
                   className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                     categoryTab === tab.id
-                      ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white shadow-sm shadow-blue-500/25 scale-[1.02]'
+                      ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/25 scale-[1.02]'
                       : 'bg-white text-slate-700 border border-slate-200 hover:border-slate-300'
                   }`}
                 >
@@ -809,6 +613,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
               ))}
             </div>
 
+            {/* Grid / List View Toggle */}
             <div className="lhh-view-toggle-capsule">
               <button
                 type="button"
@@ -838,12 +643,10 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
           </div>
         </div>
 
-        {/* =========================================================================
-            3. 4 FLAGSHIP COURSES — 3D CYLINDRICAL GLOWING NEON POTS (NO WHITE BG)
-            ========================================================================= */}
+        {/* ─── 4 COLUMNS ON DESKTOP ROW 1, 3 ON ROW 2 ─── */}
         {viewMode === 'grid' ? (
-          <div className="scd-pots-4grid">
-            {CAREER_COURSES_12.map((c) => {
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 w-full">
+            {filteredCareerCourses.map((c) => {
               const unlocked = isCourseUnlocked(c.id);
               return (
                 <CareerCourseCard
@@ -858,7 +661,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
         ) : (
           /* List View */
           <div className="lhh-modules-list">
-            {visibleCourses.map((c) => (
+            {filteredCareerCourses.map((c) => (
               <div
                 key={c.id}
                 className="lhh-list-card"
@@ -893,23 +696,19 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 <div className="lhh-list-info">
                   <h3 className="lhh-list-title">{c.title}</h3>
                   <p className="lhh-list-desc">
-                    {c.descLine1} • {c.descLine2}
+                    {c.shortDesc}
                   </p>
                   <div className="lhh-list-meta flex flex-wrap items-center gap-2">
-                    <span style={{ color: c.themeColor }}>
-                      {c.modulesCount} ({c.lessonsText})
+                    <span className="text-emerald-600 font-black text-xs bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      Now: {c.price}
                     </span>
                     <span>•</span>
-                    <span className="line-through text-slate-400 font-semibold text-xs">{c.marketPrice}</span>
+                    <span className="text-slate-600 font-semibold text-xs">
+                      CTC: {c.salary}
+                    </span>
                     <span>•</span>
-                    <span className="text-orange-500 font-semibold text-xs">PAJ: {c.payAfterJob}</span>
-                    <span>•</span>
-                    <span className="text-emerald-600 font-black text-xs bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Now: {c.courseFee}</span>
-                    <span>•</span>
-                    <span className="text-slate-600 font-semibold text-xs">CTC: {c.salaryRange}</span>
-                    <span>•</span>
-                    <span style={{ color: c.progress > 0 ? c.themeColor : '#94a3b8' }}>
-                      Progress: {c.progress}%
+                    <span className="text-slate-500 font-medium text-xs">
+                      Roles: {c.jobRoles}
                     </span>
                   </div>
                 </div>
@@ -917,7 +716,6 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                   <button
                     type="button"
                     className="lhh-action-btn lhh-list-btn"
-                    style={{ background: c.btnGradient }}
                     onClick={() => handleCourseClick(c)}
                   >
                     {isCourseUnlocked(c.id) ? 'Resume Course →' : 'Unlock Course'}
@@ -927,8 +725,6 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
             ))}
           </div>
         )}
-
-        
       </section>
 
       {/* ============================================================
@@ -949,73 +745,36 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
 
         <div className="lhh-wyg-exact-grid">
           <div className="lhh-wyg-exact-card lhh-wyg-card-intern">
-            <div className="lhh-wyg-exact-info">
-              <div className="lhh-wyg-icon-tag lhh-tag-blue">
-                <Award size={18} />
-                <span>3 Month Internship</span>
-              </div>
-              <p className="lhh-wyg-exact-desc">
-                Work on real projects, gain industry experience and learn from mentors.
-              </p>
-              <div className="lhh-wyg-pill-badge lhh-pill-blue">3 Months</div>
-            </div>
-            <div className="lhh-wyg-exact-img-box">
-              <img
-                src="/images/dashboard/internship_student.jpg"
-                alt="3 Month Internship"
-                className="lhh-wyg-photo"
-              />
-            </div>
-          </div>
-
-          <div className="lhh-wyg-exact-card lhh-wyg-card-cert-green">
-            <div className="lhh-wyg-exact-info">
-              <div className="lhh-wyg-icon-tag lhh-tag-green">
-                <FileCheck size={18} />
-                <span>Internship Certificate</span>
-              </div>
-              <p className="lhh-wyg-exact-desc">
-                Receive an official internship certificate from Future IT Industry after successful completion.
-              </p>
-            </div>
             <div className="lhh-wyg-exact-cert-box">
               <img
-                src="/images/dashboard/cert_internship_exact.jpg"
+                src="/images/dashboard/internship_exact.jpg"
                 alt="Internship Certificate"
                 className="lhh-wyg-cert-full"
               />
             </div>
           </div>
 
-          <div className="lhh-wyg-exact-card lhh-wyg-card-letter-purple">
-            <div className="lhh-wyg-exact-info">
-              <div className="lhh-wyg-icon-tag lhh-tag-purple">
-                <Scroll size={18} />
-                <span>Recommendation Letter</span>
-              </div>
-              <p className="lhh-wyg-exact-desc">
-                Get a professional recommendation letter based on your performance during the internship.
-              </p>
-            </div>
+          <div className="lhh-wyg-exact-card lhh-wyg-card-lor">
             <div className="lhh-wyg-exact-cert-box">
               <img
-                src="/images/dashboard/letter_recommendation_exact.jpg"
-                alt="Recommendation Letter"
+                src="/images/dashboard/lor_exact.jpg"
+                alt="Letter of Recommendation"
                 className="lhh-wyg-cert-full"
               />
             </div>
           </div>
 
-          <div className="lhh-wyg-exact-card lhh-wyg-card-cert-gold">
-            <div className="lhh-wyg-exact-info">
-              <div className="lhh-wyg-icon-tag lhh-tag-gold">
-                <ShieldCheck size={18} />
-                <span>Course Completion Certificate</span>
-              </div>
-              <p className="lhh-wyg-exact-desc">
-                Complete the course successfully and receive a verified certificate from Future IT Industry.
-              </p>
+          <div className="lhh-wyg-exact-card lhh-wyg-card-training">
+            <div className="lhh-wyg-exact-cert-box">
+              <img
+                src="/images/dashboard/training_exact.jpg"
+                alt="Industrial Training Certificate"
+                className="lhh-wyg-cert-full"
+              />
             </div>
+          </div>
+
+          <div className="lhh-wyg-exact-card lhh-wyg-card-complete">
             <div className="lhh-wyg-exact-cert-box">
               <img
                 src="/images/dashboard/cert_completion_exact.jpg"
