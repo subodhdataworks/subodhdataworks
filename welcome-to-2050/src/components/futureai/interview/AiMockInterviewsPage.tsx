@@ -50,7 +50,7 @@ export type InterviewTrackId =
   | 'full-stack'
   | 'general';
 
-export type InterviewModeId = 'ai' | 'video' | 'text' | 'custom';
+export type InterviewModeId = 'ai' | 'video';
 
 export interface InterviewTrack {
   id: InterviewTrackId;
@@ -472,9 +472,7 @@ export const AiMockInterviewsPage: React.FC<AiMockInterviewsPageProps> = ({
   // Active mode selection
   const [selectedMode, setSelectedMode] = useState<InterviewModeId>('ai');
 
-  // Custom configuration modal state
-  const [customQuestionsCount, setCustomQuestionsCount] = useState<number>(4);
-  const [customTimerMinutes, setCustomTimerMinutes] = useState<number>(2);
+
 
   // Active interview state
   const [isInterviewActive, setIsInterviewActive] = useState<boolean>(false);
@@ -547,12 +545,8 @@ export const AiMockInterviewsPage: React.FC<AiMockInterviewsPageProps> = ({
   );
 
   const activeQuestions = useMemo(() => {
-    const questions = TRACK_QUESTIONS[selectedTrack] || TRACK_QUESTIONS['data-analyst'];
-    if (selectedMode === 'custom') {
-      return questions.slice(0, customQuestionsCount);
-    }
-    return questions;
-  }, [selectedTrack, selectedMode, customQuestionsCount]);
+    return TRACK_QUESTIONS[selectedTrack] || TRACK_QUESTIONS['data-analyst'];
+  }, [selectedTrack]);
 
   const currentQuestion = activeQuestions[currentQuestionIndex] || activeQuestions[0];
 
@@ -612,7 +606,7 @@ export const AiMockInterviewsPage: React.FC<AiMockInterviewsPageProps> = ({
     setCurrentQuestionIndex(0);
     setUserAnswers({});
     setCurrentAnswerText('');
-    setSecondsRemaining(selectedMode === 'custom' ? customTimerMinutes * 60 : 120);
+    setSecondsRemaining(120);
     setIsInterviewActive(true);
 
     // Speak initial question if in AI mode
@@ -725,7 +719,7 @@ export const AiMockInterviewsPage: React.FC<AiMockInterviewsPageProps> = ({
       const nextIdx = currentQuestionIndex + 1;
       setCurrentQuestionIndex(nextIdx);
       setCurrentAnswerText(updatedAnswers[nextIdx] || '');
-      setSecondsRemaining(selectedMode === 'custom' ? customTimerMinutes * 60 : 120);
+      setSecondsRemaining(120);
       if (selectedMode === 'ai') {
         speakQuestionText(activeQuestions[nextIdx].question);
       }
@@ -1047,13 +1041,11 @@ export const AiMockInterviewsPage: React.FC<AiMockInterviewsPageProps> = ({
               </div>
             </div>
 
-            {/* 4 Selectable Interview Modes */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {/* 2 Selectable Interview Modes (AI & Video) */}
+            <div className="grid grid-cols-2 gap-2.5">
               {[
                 { id: 'ai' as InterviewModeId, label: 'AI Interview', sub: '(Recommended)', icon: Bot },
                 { id: 'video' as InterviewModeId, label: 'Video Interview', icon: Video },
-                { id: 'text' as InterviewModeId, label: 'Text Interview', icon: FileText },
-                { id: 'custom' as InterviewModeId, label: 'Custom Interview', icon: Sliders },
               ].map((mode) => {
                 const isSelected = selectedMode === mode.id;
                 const IconComp = mode.icon;
@@ -1099,11 +1091,11 @@ export const AiMockInterviewsPage: React.FC<AiMockInterviewsPageProps> = ({
                 {/* Left: Video Call Screen Preview Image */}
                 <div className="md:col-span-6 rounded-xl overflow-hidden border border-slate-300/80 shadow-md bg-slate-900 relative group aspect-[16/10] flex items-center justify-center">
                   <img
-                    src="/images/dashboard/mock_interviewer_screen.png"
+                    src="/images/dashboard/generated_mock_interview_screen.png"
                     alt="AI Interviewer Call"
                     className="w-full h-full object-cover block"
                     onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = '/images/dashboard/mock_video_preview.png';
+                      (e.currentTarget as HTMLImageElement).src = '/images/dashboard/mock_interviewer_screen.png';
                     }}
                   />
                   {/* Subtle video overlay pill */}
@@ -1149,7 +1141,7 @@ export const AiMockInterviewsPage: React.FC<AiMockInterviewsPageProps> = ({
                   >
                     <Play className="w-3.5 h-3.5 fill-current" />
                     <span>
-                      Start {selectedMode === 'video' ? 'Video' : selectedMode === 'text' ? 'Text' : 'AI'} Interview →
+                      Start {selectedMode === 'video' ? 'Video' : 'AI'} Interview →
                     </span>
                   </button>
                 </div>
