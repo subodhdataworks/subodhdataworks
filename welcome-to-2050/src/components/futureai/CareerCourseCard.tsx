@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Briefcase, Lock, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Briefcase, Rocket, CheckCircle2 } from 'lucide-react';
 import { ToolIcon } from './CourseToolIcons';
 
 export interface CourseCardTool {
@@ -37,7 +37,7 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
   isUnlocked = false,
   onClick,
 }) => {
-  // Exact visual theme configuration matching reference image with subtle glow and 2-3px lift
+  // Theme configuration with vibrant colorful button gradients matching each card
   const themeConfig = {
     cyan: {
       cardBorder: 'border-[1.5px] border-[#16d5f7] hover:border-[#38e1fd]',
@@ -49,6 +49,7 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
       briefcaseBox: 'bg-cyan-50 text-cyan-600 border border-cyan-200',
       jobRolesLabel: 'text-cyan-600',
       salaryColor: 'text-emerald-600',
+      unlockBtn: 'bg-gradient-to-r from-[#06b6d4] via-[#0ea5e9] to-[#2563eb] hover:from-[#0891b2] hover:to-[#1d4ed8] text-white shadow-[0_2px_8px_rgba(6,182,212,0.35)]',
     },
     purple: {
       cardBorder: 'border-[1.5px] border-[#b845ff] hover:border-[#cf6fff]',
@@ -60,6 +61,7 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
       briefcaseBox: 'bg-purple-50 text-purple-600 border border-purple-200',
       jobRolesLabel: 'text-purple-600',
       salaryColor: 'text-purple-600',
+      unlockBtn: 'bg-gradient-to-r from-[#9333ea] via-[#a855f7] to-[#ec4899] hover:from-[#7e22ce] hover:to-[#db2777] text-white shadow-[0_2px_8px_rgba(168,85,247,0.35)]',
     },
     blue: {
       cardBorder: 'border-[1.5px] border-[#2f80ed] hover:border-[#4d97ff]',
@@ -71,6 +73,7 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
       briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-200',
       jobRolesLabel: 'text-blue-600',
       salaryColor: 'text-blue-600',
+      unlockBtn: 'bg-gradient-to-r from-[#2563eb] via-[#4f46e5] to-[#7c3aed] hover:from-[#1d4ed8] hover:to-[#6d28d9] text-white shadow-[0_2px_8px_rgba(59,130,246,0.35)]',
     },
     pink: {
       cardBorder: 'border-[1.5px] border-[#ff4d94] hover:border-[#ff6fa8]',
@@ -82,6 +85,7 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
       briefcaseBox: 'bg-pink-50 text-pink-600 border border-pink-200',
       jobRolesLabel: 'text-pink-600',
       salaryColor: 'text-pink-600',
+      unlockBtn: 'bg-gradient-to-r from-[#ec4899] via-[#f43f5e] to-[#f97316] hover:from-[#db2777] hover:to-[#ea580c] text-white shadow-[0_2px_8px_rgba(236,72,153,0.35)]',
     },
   }[theme] || {
     cardBorder: 'border-[1.5px] border-[#16d5f7] hover:border-[#38e1fd]',
@@ -93,6 +97,7 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
     briefcaseBox: 'bg-cyan-50 text-cyan-600 border border-cyan-200',
     jobRolesLabel: 'text-cyan-600',
     salaryColor: 'text-emerald-600',
+    unlockBtn: 'bg-gradient-to-r from-[#06b6d4] via-[#0ea5e9] to-[#2563eb] text-white',
   };
 
   return (
@@ -103,7 +108,7 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
         boxShadow: themeConfig.cardShadow,
       }}
     >
-      {/* 1. TOP ARTWORK (Futuristic Hologram Poster / Video across the top - slightly compact) */}
+      {/* 1. TOP ARTWORK (Futuristic Hologram Poster / Video across the top - compact) */}
       <div className="relative w-full h-[114px] sm:h-[120px] overflow-hidden bg-slate-950 shrink-0">
         {video ? (
           <video
@@ -191,7 +196,7 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
           </div>
         </div>
 
-        {/* Rounded Price Pill at Bottom-Left & Dark Navy Unlock Course Button at Bottom-Right */}
+        {/* Rounded Price Pill at Bottom-Left & Compact Colorful Unlock Button with Rocket Icon */}
         <div className="flex items-center gap-1.5 w-full pt-0.5">
           {/* Price or Enrolled Badge */}
           {isUnlocked ? (
@@ -200,23 +205,19 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
               <span>Enrolled</span>
             </div>
           ) : (
-            <div className="w-[30%] py-1 rounded-full font-black text-xs sm:text-[12.5px] text-center bg-[#fffdeb] text-amber-900 border border-amber-300/90 shadow-2xs select-none">
+            <div className="w-[30%] py-1 rounded-full font-black text-xs sm:text-[12px] text-center bg-[#fffdeb] text-amber-900 border border-amber-300/90 shadow-2xs select-none">
               {price}
             </div>
           )}
 
-          {/* Dark Navy Unlock Course Button */}
+          {/* Compact, Colorful Unlock Course Button with Rocket Icon */}
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
               onClick();
             }}
-            className={`flex-1 py-1 px-3 rounded-full font-bold text-[11.5px] sm:text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer ${
-              isUnlocked
-                ? 'bg-[#0c1527] hover:bg-slate-800 text-white'
-                : 'bg-[#0c1527] hover:bg-[#16223b] text-white'
-            }`}
+            className={`flex-1 py-1 px-2.5 rounded-full font-bold text-[11px] sm:text-[11.5px] flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer ${themeConfig.unlockBtn}`}
           >
             {isUnlocked ? (
               <>
@@ -225,7 +226,7 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
               </>
             ) : (
               <>
-                <Lock className="w-3 h-3 text-amber-400 shrink-0" />
+                <Rocket className="w-3.5 h-3.5 text-white stroke-[2.2] shrink-0" />
                 <span>Unlock Course</span>
               </>
             )}
