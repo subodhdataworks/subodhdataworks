@@ -439,8 +439,8 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 {/* Main Headline */}
                 <h1 className="flex flex-col items-start text-left font-poppins">
                   
-                  {/* Line 1: World's First */}
-                  <div className="relative inline-block mt-2 sm:mt-3 mb-0.5">
+                  {/* Line 1: Your Ultimate (with Crown, Cyan Accents & Curved Underline) */}
+                  <div className="relative inline-block mt-2 sm:mt-3 mb-1">
                     
                     {/* Golden Crown */}
                     <span
@@ -479,8 +479,8 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                     </span>
 
                     {/* Line 1 Text */}
-                    <span className="text-[28px] sm:text-[32px] md:text-[36px] lg:text-[38px] xl:text-[42px] font-black tracking-[-1.5px] leading-[1.08] bg-gradient-to-r from-[#0866FF] to-[#5727E8] bg-clip-text text-transparent block select-text">
-                      World&apos;s First
+                    <span className="text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px] xl:text-[46px] font-black tracking-[-1.5px] leading-[1.08] bg-gradient-to-r from-[#0866FF] to-[#5727E8] bg-clip-text text-transparent block select-text">
+                      Your Ultimate
                     </span>
 
                     {/* Thin curved blue-purple underline */}
@@ -506,15 +506,12 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                     </svg>
                   </div>
 
-                  {/* Line 2: Learn Coding */}
-                  <span className="text-[34px] sm:text-[38px] md:text-[42px] lg:text-[46px] xl:text-[52px] font-black text-[#08152F] leading-[1.08] tracking-[-1.5px] block mt-1.5 text-left select-text">
-                    Learn Coding
-                  </span>
-
-                  {/* Line 3: by Playing Games (Animated Typewriter) */}
-                  <span className="text-[30px] sm:text-[34px] md:text-[38px] lg:text-[42px] xl:text-[48px] font-black leading-[1.08] tracking-[-1.5px] block mt-1 text-left select-text whitespace-normal lg:whitespace-nowrap min-h-[1.15em]">
-                    <span className="text-[#08152F]">by</span>{' '}
-                    <HeroPlayingGamesTypewriter />
+                  {/* Line 2: Placement Solution */}
+                  <span className="text-[34px] sm:text-[38px] md:text-[44px] lg:text-[48px] xl:text-[54px] font-black text-[#08152F] leading-[1.08] tracking-[-1.5px] block mt-1 text-left select-text">
+                    Placement{' '}
+                    <span className="bg-gradient-to-r from-[#00A3FF] via-[#0866FF] to-[#7C3AED] bg-clip-text text-transparent">
+                      Solution
+                    </span>
                   </span>
                 </h1>
 
