@@ -754,7 +754,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
           <div className="rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white border border-slate-200/90 group">
             <img
-              src="/images/dashboard/wyg_card_internship.png"
+              src="/images/dashboard/wyg_card_internship.png?v=3"
               alt="3 Month Internship"
               className="w-full h-auto object-contain block group-hover:scale-[1.02] transition-transform duration-300"
               onError={(e) => {
@@ -764,7 +764,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
           </div>
           <div className="rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white border border-slate-200/90 group">
             <img
-              src="/images/dashboard/wyg_card_letter_rec.png"
+              src="/images/dashboard/wyg_card_letter_rec.png?v=3"
               alt="Letter of Recommendation"
               className="w-full h-auto object-contain block group-hover:scale-[1.02] transition-transform duration-300"
               onError={(e) => {
@@ -774,7 +774,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
           </div>
           <div className="rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white border border-slate-200/90 group">
             <img
-              src="/images/dashboard/wyg_card_cert_internship.png"
+              src="/images/dashboard/wyg_card_cert_internship.png?v=3"
               alt="Industrial Training Certificate"
               className="w-full h-auto object-contain block group-hover:scale-[1.02] transition-transform duration-300"
               onError={(e) => {
@@ -784,7 +784,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
           </div>
           <div className="rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white border border-slate-200/90 group">
             <img
-              src="/images/dashboard/wyg_card_cert_course.png"
+              src="/images/dashboard/wyg_card_cert_course.png?v=3"
               alt="Course Completion Certificate"
               className="w-full h-auto object-contain block group-hover:scale-[1.02] transition-transform duration-300"
               onError={(e) => {

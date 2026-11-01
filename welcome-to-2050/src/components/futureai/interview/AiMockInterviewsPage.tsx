@@ -38,6 +38,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { useThemeAccent } from '../../../context/ThemeAccentContext';
+import { LiveAiInterviewRoom } from './LiveAiInterviewRoom';
 
 // ─── TYPES & INTERFACES ───────────────────────────────────────────────────────
 
@@ -847,6 +848,29 @@ export const AiMockInterviewsPage: React.FC<AiMockInterviewsPageProps> = ({
     const s = secs % 60;
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
+
+  // When interview is active, render the dedicated Live AI Interview Room
+  if (isInterviewActive) {
+    return (
+      <LiveAiInterviewRoom
+        userName={userName}
+        trackId={selectedTrack}
+        mode={selectedMode}
+        onExit={() => setIsInterviewActive(false)}
+        onComplete={(record) => {
+          setIsInterviewActive(false);
+          setActiveReport(record);
+          setIsReportOpen(true);
+          try {
+            const saved = localStorage.getItem(`futureai_mock_interviews_${userName}`);
+            if (saved) setInterviewHistory(JSON.parse(saved));
+          } catch (e) {
+            console.warn('Failed to refresh history:', e);
+          }
+        }}
+      />
+    );
+  }
 
   return (
     <div className="w-full min-h-screen bg-[#f8faff] text-slate-900 pb-16">

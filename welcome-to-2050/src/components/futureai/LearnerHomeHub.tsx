@@ -701,7 +701,7 @@ export const LearnerHomeHub: React.FC<LearnerHomeHubProps> = ({
             </div>
             <div className="lhh-wyg-exact-img-box">
               <img
-                src="/images/dashboard/internship_student.jpg"
+                src="/images/dashboard/internship_student.jpg?v=3"
                 alt="3 Month Internship"
                 className="lhh-wyg-photo"
               />
@@ -719,7 +719,7 @@ export const LearnerHomeHub: React.FC<LearnerHomeHubProps> = ({
             </div>
             <div className="lhh-wyg-exact-cert-box">
               <img
-                src="/images/dashboard/cert_internship_exact.jpg"
+                src="/images/dashboard/cert_internship_exact.jpg?v=3"
                 alt="Internship Certificate"
                 className="lhh-wyg-cert-full"
               />
@@ -737,7 +737,7 @@ export const LearnerHomeHub: React.FC<LearnerHomeHubProps> = ({
             </div>
             <div className="lhh-wyg-exact-cert-box">
               <img
-                src="/images/dashboard/letter_recommendation_exact.jpg"
+                src="/images/dashboard/letter_recommendation_exact.jpg?v=3"
                 alt="Recommendation Letter"
                 className="lhh-wyg-cert-full"
               />
@@ -755,7 +755,7 @@ export const LearnerHomeHub: React.FC<LearnerHomeHubProps> = ({
             </div>
             <div className="lhh-wyg-exact-cert-box">
               <img
-                src="/images/dashboard/cert_completion_exact.jpg"
+                src="/images/dashboard/cert_completion_exact.jpg?v=3"
                 alt="Course Completion Certificate"
                 className="lhh-wyg-cert-full"
               />
