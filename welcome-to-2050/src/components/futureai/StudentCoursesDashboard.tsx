@@ -25,7 +25,13 @@ import {
   Lock,
   Briefcase,
   GraduationCap,
-  Users
+  Users,
+  Star,
+  Building2,
+  Trophy,
+  Clock,
+  ArrowLeftRight,
+  Code2
 } from 'lucide-react';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
 import { RealSuccessStoriesShowcase } from './RealSuccessStoriesShowcase';
@@ -83,6 +89,163 @@ interface FlagshipCourseItem {
   badgeBg: string;
   skillsList: string[];
 }
+
+// ─── Dual-Gradient Typewriter for "Playing Games" in Hero Line 3 ───────────────
+const HeroPlayingGamesTypewriter: React.FC = () => {
+  const fullText = 'Playing Games';
+  const [displayText, setDisplayText] = useState(fullText);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!isDeleting) {
+      if (displayText.length < fullText.length) {
+        timeout = setTimeout(() => {
+          setDisplayText(fullText.slice(0, displayText.length + 1));
+        }, 95);
+      } else {
+        timeout = setTimeout(() => {
+          setIsDeleting(true);
+        }, 2600);
+      }
+    } else {
+      if (displayText.length > 0) {
+        timeout = setTimeout(() => {
+          setDisplayText(fullText.slice(0, displayText.length - 1));
+        }, 45);
+      } else {
+        timeout = setTimeout(() => {
+          setIsDeleting(false);
+        }, 450);
+      }
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayText, isDeleting]);
+
+  const playingPart = displayText.slice(0, 7);
+  const hasSpace = displayText.length > 7;
+  const gamesPart = displayText.slice(8);
+
+  return (
+    <span className="inline-flex items-baseline">
+      {playingPart && (
+        <span className="bg-gradient-to-r from-[#0866FF] to-[#A100E8] bg-clip-text text-transparent">
+          {playingPart}
+        </span>
+      )}
+      {hasSpace && (
+        <span className="inline-block select-none whitespace-pre">
+          {'\u00A0'}
+        </span>
+      )}
+      {gamesPart && (
+        <span className="bg-gradient-to-r from-[#F02C62] to-[#FF8A00] bg-clip-text text-transparent">
+          {gamesPart}
+        </span>
+      )}
+      <span className="inline-block ml-0.5 text-[#F02C62] font-light animate-pulse select-none">
+        |
+      </span>
+    </span>
+  );
+};
+
+// Hiring Partners list for continuous marquee
+const HIRING_PARTNERS = [
+  {
+    id: 'tcs',
+    name: 'TCS',
+    node: <span className="text-rose-600 font-black text-xs sm:text-sm tracking-tighter">tcs</span>
+  },
+  {
+    id: 'infosys',
+    name: 'Infosys',
+    node: <span className="text-[#007cc3] font-black text-xs sm:text-sm tracking-tight">Infosys</span>
+  },
+  {
+    id: 'accenture',
+    name: 'Accenture',
+    node: (
+      <span className="text-purple-800 font-extrabold text-xs sm:text-sm tracking-tight flex items-center gap-0.5">
+        accenture <span className="text-[#a100ff]">&gt;</span>
+      </span>
+    )
+  },
+  {
+    id: 'wipro',
+    name: 'Wipro',
+    node: (
+      <span className="text-slate-800 font-black text-xs sm:text-sm tracking-normal flex items-center gap-1">
+        <span className="inline-block w-2 h-2 rounded-full bg-gradient-to-r from-red-500 via-amber-400 to-blue-500" />
+        wipro
+      </span>
+    )
+  },
+  {
+    id: 'google',
+    name: 'Google',
+    node: (
+      <span className="font-extrabold text-xs sm:text-sm tracking-tight flex items-center">
+        <span className="text-[#4285F4]">G</span>
+        <span className="text-[#EA4335]">o</span>
+        <span className="text-[#FBBC05]">o</span>
+        <span className="text-[#4285F4]">g</span>
+        <span className="text-[#34A853]">l</span>
+        <span className="text-[#EA4335]">e</span>
+      </span>
+    )
+  },
+  {
+    id: 'microsoft',
+    name: 'Microsoft',
+    node: (
+      <span className="text-slate-700 font-bold text-xs sm:text-sm tracking-tight flex items-center gap-1">
+        <span className="grid grid-cols-2 gap-0.5 w-2.5 h-2.5">
+          <span className="bg-[#f25022]" />
+          <span className="bg-[#7fba00]" />
+          <span className="bg-[#00a4ef]" />
+          <span className="bg-[#ffb900]" />
+        </span>
+        Microsoft
+      </span>
+    )
+  },
+  {
+    id: 'amazon',
+    name: 'Amazon',
+    node: <span className="text-slate-900 font-black text-xs sm:text-sm tracking-tight">amazon</span>
+  },
+  {
+    id: 'deloitte',
+    name: 'Deloitte',
+    node: (
+      <span className="text-slate-900 font-black text-xs sm:text-sm tracking-tight">
+        Deloitte<span className="text-emerald-500">.</span>
+      </span>
+    )
+  },
+  {
+    id: 'capgemini',
+    name: 'Capgemini',
+    node: (
+      <span className="text-[#0070ad] font-bold text-xs sm:text-sm tracking-tight flex items-center gap-0.5">
+        Capgemini <span className="text-[#0070ad] text-[10px]">♠</span>
+      </span>
+    )
+  },
+  {
+    id: 'ibm',
+    name: 'IBM',
+    node: <span className="text-[#1f70c1] font-black text-xs sm:text-sm tracking-widest font-mono">IBM</span>
+  },
+  {
+    id: 'more',
+    name: '700+ More',
+    node: <span className="text-slate-400 font-semibold text-[11px] whitespace-nowrap">and 700+ more...</span>
+  }
+];
 
 export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = ({
   userName = 'Rahul Sharma',
@@ -255,78 +418,358 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
       />
 
       {/* =========================================================================
-          1. NATIVE 1:1 GENERATED TOP HERO BANNER (Desktop Only: >= md)
+          1. PRE-LOGIN EXACT HERO SECTION + STATS + MARQUEE + 3 CARDS (Desktop Only: >= md)
           ========================================================================= */}
-      <div className="hidden md:block">
-      <section className="scd-native-hero-banner">
-        {/* Background Image: Future IT Industries Campus Zoomed Out */}
-        <img
-          src="/images/future_it_industries_campus_zoomed_out.jpg"
-          alt="Future IT Industries Campus"
-          className="scd-nhb-bg-img"
-        />
+      <div className="hidden md:flex flex-col gap-4 w-full">
+        
+        {/* ─── 1.1 MAIN HERO SECTION (Color-Matched to Video Studio Background) ─── */}
+        <section className="relative w-full px-4 sm:px-6 lg:px-8 py-5 sm:py-7 overflow-hidden bg-gradient-to-r from-[#dce7f2] via-[#e5eef7] to-[#edf4fb] rounded-2xl md:rounded-3xl border border-slate-200/80 shadow-xs">
+          
+          {/* Soft Ambient Aurora Lights */}
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-300/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-10 right-1/4 w-[500px] h-[500px] bg-cyan-300/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-b from-transparent to-[#F4F8FC] pointer-events-none" />
 
-        {/* Soft Glass / Light Gradient Overlay */}
-        <div className="scd-nhb-gradient-overlay" />
+          <div className="max-w-[1440px] w-full mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center w-full">
+              
+              {/* LEFT COLUMN: Punchy Headline & CTAs */}
+              <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center text-left z-10 pl-0 lg:pl-3 min-w-0">
+                
+                {/* Main Headline */}
+                <h1 className="flex flex-col items-start text-left font-poppins">
+                  
+                  {/* Line 1: World's First */}
+                  <div className="relative inline-block mt-2 sm:mt-3 mb-0.5">
+                    
+                    {/* Golden Crown */}
+                    <span
+                      className="absolute -top-3.5 sm:-top-4 left-0.5 -rotate-12 z-20 pointer-events-none select-none"
+                      aria-hidden="true"
+                    >
+                      <svg
+                        className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFB800] drop-shadow-[0_2px_4px_rgba(255,184,0,0.45)]"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" />
+                        <circle cx="3" cy="5" r="1.2" fill="#FFE580" />
+                        <circle cx="12" cy="4" r="1.4" fill="#FFE580" />
+                        <circle cx="21" cy="5" r="1.2" fill="#FFE580" />
+                      </svg>
+                    </span>
 
-        {/* Left Native Interactive Content */}
-        <div className="scd-nhb-content">
-          {/* Eyebrow Pill */}
-          <div className="scd-future-eyebrow-pill">
-            <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-            <span>YOUR FUTURE IN AI STARTS HERE</span>
+                    {/* Three small cyan accent strokes */}
+                    <span
+                      className="absolute -top-1 sm:-top-1.5 -right-4 sm:-right-5 pointer-events-none select-none"
+                      aria-hidden="true"
+                    >
+                      <svg
+                        className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#00D2FF]"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                      >
+                        <line x1="10" y1="2" x2="10" y2="7" />
+                        <line x1="17" y1="6" x2="13" y2="9.5" />
+                        <line x1="17" y1="15" x2="13" y2="12.5" />
+                      </svg>
+                    </span>
+
+                    {/* Line 1 Text */}
+                    <span className="text-[28px] sm:text-[32px] md:text-[36px] lg:text-[38px] xl:text-[42px] font-black tracking-[-1.5px] leading-[1.08] bg-gradient-to-r from-[#0866FF] to-[#5727E8] bg-clip-text text-transparent block select-text">
+                      World&apos;s First
+                    </span>
+
+                    {/* Thin curved blue-purple underline */}
+                    <svg
+                      className="absolute -bottom-1 sm:-bottom-1.5 left-0 w-full h-2 sm:h-2.5 overflow-visible pointer-events-none select-none"
+                      viewBox="0 0 300 16"
+                      fill="none"
+                      preserveAspectRatio="none"
+                      aria-hidden="true"
+                    >
+                      <defs>
+                        <linearGradient id="heroCurvedUnderlineDashboard" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#0866FF" />
+                          <stop offset="100%" stopColor="#5727E8" />
+                        </linearGradient>
+                      </defs>
+                      <path
+                        d="M 4,12 Q 150,2 296,10"
+                        stroke="url(#heroCurvedUnderlineDashboard)"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </div>
+
+                  {/* Line 2: Learn Coding */}
+                  <span className="text-[34px] sm:text-[38px] md:text-[42px] lg:text-[46px] xl:text-[52px] font-black text-[#08152F] leading-[1.08] tracking-[-1.5px] block mt-1.5 text-left select-text">
+                    Learn Coding
+                  </span>
+
+                  {/* Line 3: by Playing Games (Animated Typewriter) */}
+                  <span className="text-[30px] sm:text-[34px] md:text-[38px] lg:text-[42px] xl:text-[48px] font-black leading-[1.08] tracking-[-1.5px] block mt-1 text-left select-text whitespace-normal lg:whitespace-nowrap min-h-[1.15em]">
+                    <span className="text-[#08152F]">by</span>{' '}
+                    <HeroPlayingGamesTypewriter />
+                  </span>
+                </h1>
+
+                {/* Tagline */}
+                <div className="mt-2 sm:mt-2.5 text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-600 leading-snug max-w-lg mx-auto lg:mx-0">
+                  <p className="inline-block px-3 sm:px-4 py-1 rounded-full text-slate-900 font-black bg-[#ffedea] border border-[#ffd5cc] tracking-tight">
+                    For Non-IT, Career Gap &amp; Career Switchers
+                  </p>
+                  <p className="mt-1.5 hidden sm:block">
+                    Learn industry-relevant skills with hands-on projects and get career ready.
+                  </p>
+                </div>
+
+                {/* CTAs Row */}
+                <div className="flex mt-3.5 flex-wrap items-center justify-start gap-2 sm:gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playClick();
+                      const el = document.getElementById('learning-modules-section');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="px-4 min-[375px]:px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2 group"
+                  >
+                    <span>Start Learning Free</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform shrink-0" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playClick();
+                      if (onOpenCodingPracticeHub) onOpenCodingPracticeHub();
+                      else if (onOpenGameArena) onOpenGameArena();
+                      else if (typeof window !== 'undefined') window.location.hash = '#game';
+                    }}
+                    className="px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-white hover:bg-slate-50 active:scale-95 text-slate-800 font-bold text-xs sm:text-sm border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2"
+                  >
+                    <Code2 className="w-3.5 h-3.5 text-[#1a73e8] shrink-0" />
+                    <span>Explore DSA Coding Practice</span>
+                  </button>
+                </div>
+
+                {/* Rating */}
+                <div className="flex mt-2.5 flex-wrap items-center justify-start gap-1.5 sm:gap-2 text-[11px] text-slate-500 font-medium">
+                  <div className="flex items-center text-amber-400 shrink-0">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
+                    ))}
+                  </div>
+                  <span>
+                    <strong className="text-slate-900 font-bold">4.9/5</strong> rating trusted by 100K+ learners across India
+                  </span>
+                </div>
+
+              </div>
+
+              {/* RIGHT COLUMN: Transparent Video */}
+              <div className="lg:col-span-6 xl:col-span-6 flex items-center justify-center relative z-10">
+                <div className="relative w-full max-w-[540px] lg:max-w-[600px] flex items-center justify-center">
+                  
+                  {/* Glowing Radiant Backing Aura */}
+                  <div className="absolute inset-0 bg-radial from-cyan-400/25 via-blue-500/15 to-transparent rounded-full blur-2xl scale-110 pointer-events-none" />
+                  
+                  {/* Transparent Video */}
+                  <div className="relative z-10 w-full flex items-center justify-center pointer-events-none select-none">
+                    <video
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-auto max-h-[250px] min-[390px]:max-h-[290px] sm:max-h-[420px] lg:max-h-[460px] object-contain pointer-events-none select-none drop-shadow-[0_20px_40px_rgba(26,115,232,0.22)]"
+                    >
+                      <source src="/videos/header_hero_transparent.webm" type="video/webm" />
+                      <source src="/videos/header_transparent_video.mp4" type="video/mp4" />
+                    </video>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
           </div>
+        </section>
 
-          {/* Main Headline - Short, Bold, High-Impact */}
-          <h1 className="scd-future-hero-hl">
-            Learn AI. Build Real Skills.{' '}
-            <span className="scd-future-hero-hl-gradient inline-block">
-              {typewriterText}
-              <span className="inline-block w-[3px] h-[0.82em] ml-1 bg-gradient-to-b from-[#0284c7] via-[#4f46e5] to-[#9333ea] align-middle animate-pulse rounded-full" />
-            </span>{' '}
-            <span className="inline-block hover:scale-125 transition-transform duration-300">🚀</span>
-          </h1>
+        {/* ─── 1.2 METRICS / TRUST STAT BADGES (Row of 4 Compact Badges) ─── */}
+        <section className="w-full max-w-[1440px] mx-auto px-1 sm:px-2 relative z-20 shrink-0">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
+            
+            {/* Card 1: 100K+ Students */}
+            <div className="bg-white rounded-xl py-2.5 px-3.5 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
+              <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                <Users className="w-4 h-4 stroke-[2.2]" />
+              </div>
+              <div>
+                <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
+                  100K+
+                </div>
+                <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
+                  Students
+                </div>
+              </div>
+            </div>
 
-          {/* Subtitle - One Punchy Line */}
-          <p className="scd-future-hero-sub">
-            Master Analytics, Data Science, ML &amp; AI Engineering through practical industry tracks.
-          </p>
+            {/* Card 2: 700+ Hiring Partners */}
+            <div className="bg-white rounded-xl py-2.5 px-3.5 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
+              <div className="w-8 h-8 rounded-lg bg-pink-50 text-pink-600 flex items-center justify-center shrink-0">
+                <Building2 className="w-4 h-4 stroke-[2.2]" />
+              </div>
+              <div>
+                <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
+                  700+
+                </div>
+                <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
+                  Hiring Partners
+                </div>
+              </div>
+            </div>
 
-          {/* Luxury Floating Feature Pills - Short & Crisp */}
-          <div className="scd-future-pills-row">
-            <span className="scd-future-pill">🎯 <strong>Internships</strong></span>
-            <span className="scd-future-pill">📜 <strong>Certificates &amp; LOR</strong></span>
-            <span className="scd-future-pill">🏭 <strong>Industrial Training</strong></span>
-            <span className="scd-future-pill">💻 <strong>28+ Live Projects</strong></span>
-            <span className="scd-future-pill">⌨️ <strong>DSA Coding Practice</strong></span>
-            <span className="scd-future-pill">🤖 <strong>AI Mock Interviews</strong></span>
-            <span className="scd-future-pill">🚀 <strong>Placement Support</strong></span>
-            <span className="scd-future-pill">🤝 <strong>700+ Partners</strong></span>
+            {/* Card 3: 99% Placement Support */}
+            <div className="bg-white rounded-xl py-2.5 px-3.5 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
+              <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
+                <Trophy className="w-4 h-4 stroke-[2.2]" />
+              </div>
+              <div>
+                <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
+                  99%
+                </div>
+                <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
+                  Placement Support
+                </div>
+              </div>
+            </div>
+
+            {/* Card 4: Industry Aligned Curriculum */}
+            <div className="bg-white rounded-xl py-2.5 px-3.5 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
+              <div className="w-8 h-8 rounded-lg bg-yellow-50 text-yellow-500 flex items-center justify-center shrink-0">
+                <Star className="w-4 h-4 stroke-[2.2]" />
+              </div>
+              <div>
+                <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
+                  Industry
+                </div>
+                <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
+                  Aligned Curriculum
+                </div>
+              </div>
+            </div>
+
           </div>
+        </section>
 
-          {/* CTA Row */}
-          <div className="scd-future-cta-row">
-            <button
-              type="button"
-              onClick={() => {
-                playClick();
-                const el = document.getElementById('learning-modules-section');
-                if (el) {
-                  el.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
-              className="scd-future-explore-btn"
-            >
-              <span>Explore Programs</span>
-              <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
-            </button>
+        {/* ─── 1.3 HIRING PARTNERS CONTINUOUS TICKER ROW (Right to Left Scrolling Marquee) ─── */}
+        <div className="w-full max-w-[1440px] mx-auto px-1 sm:px-2 py-1 shrink-0">
+          <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2 bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+            
+            {/* Label */}
+            <div className="text-[11px] sm:text-xs font-black text-slate-800 whitespace-nowrap shrink-0 flex items-center gap-1.5 border-r border-slate-200 pr-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Our Placed Students</span>
+            </div>
 
-            <span className="scd-future-tagline">
-              *Learn Today. Earn Tomorrow.*
-            </span>
+            {/* Continuous Right-to-Left Infinite Marquee */}
+            <div className="relative overflow-hidden flex-1 select-none">
+              <div className="absolute left-0 top-0 bottom-0 w-6 sm:w-10 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+              <div className="absolute right-0 top-0 bottom-0 w-6 sm:w-10 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+              <div className="animate-marquee-left flex items-center gap-7 sm:gap-9 text-xs font-bold text-slate-600">
+                {[...HIRING_PARTNERS, ...HIRING_PARTNERS].map((partner, index) => (
+                  <div key={partner.id + '-' + index} className="shrink-0 flex items-center">
+                    {partner.node}
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
         </div>
-      </section>
+
+        {/* ─── 1.4 For Non-IT, Career Gap & Career Switchers Section (3 Compact Cards) ─── */}
+        <section className="w-full max-w-[1440px] mx-auto px-1 sm:px-2 pt-1 pb-1">
+          <div className="w-full">
+            <div className="grid grid-cols-3 gap-2.5 sm:gap-4">
+              
+              {/* Card 1: Non-IT Background? */}
+              <div
+                onClick={() => {
+                  playClick();
+                  const el = document.getElementById('learning-modules-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="bg-[#ecfdf5] border border-[#d1fae5] rounded-xl sm:rounded-2xl p-2.5 sm:p-4 flex flex-col min-[520px]:flex-row items-start min-[520px]:items-center gap-2 sm:gap-3.5 hover:shadow-md hover:border-emerald-300 transition-all cursor-pointer active:scale-[0.98] group"
+              >
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-100/70 text-[#059669] flex items-center justify-center shrink-0">
+                  <Users className="w-4 h-4 sm:w-5 sm:h-5 text-[#059669]" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-[11px] sm:text-sm font-black text-slate-900 leading-tight">
+                    Non-IT Background?
+                  </h3>
+                  <p className="text-[9.5px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5 sm:mt-1">
+                    No Problem! Start from Zero.
+                  </p>
+                </div>
+              </div>
+
+              {/* Card 2: Career Gap? */}
+              <div
+                onClick={() => {
+                  playClick();
+                  const el = document.getElementById('learning-modules-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="bg-[#f5f3ff] border border-[#ede9fe] rounded-xl sm:rounded-2xl p-2.5 sm:p-4 flex flex-col min-[520px]:flex-row items-start min-[520px]:items-center gap-2 sm:gap-3.5 hover:shadow-md hover:border-purple-300 transition-all cursor-pointer active:scale-[0.98] group"
+              >
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-purple-100/70 text-[#7c3aed] flex items-center justify-center shrink-0">
+                  <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-[#7c3aed]" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-[11px] sm:text-sm font-black text-slate-900 leading-tight">
+                    Career Gap?
+                  </h3>
+                  <p className="text-[9.5px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5 sm:mt-1">
+                    Get Back to Your Career with New Skills.
+                  </p>
+                </div>
+              </div>
+
+              {/* Card 3: Career Switch? */}
+              <div
+                onClick={() => {
+                  playClick();
+                  const el = document.getElementById('learning-modules-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="bg-[#fff7ed] border border-[#ffedd5] rounded-xl sm:rounded-2xl p-2.5 sm:p-4 flex flex-col min-[520px]:flex-row items-start min-[520px]:items-center gap-2 sm:gap-3.5 hover:shadow-md hover:border-orange-300 transition-all cursor-pointer active:scale-[0.98] group"
+              >
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-orange-100/70 text-[#ea580c] flex items-center justify-center shrink-0">
+                  <ArrowLeftRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#ea580c]" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-[11px] sm:text-sm font-black text-slate-900 leading-tight">
+                    Career Switch?
+                  </h3>
+                  <p className="text-[9.5px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5 sm:mt-1">
+                    Move to a High-Growth IT Career with Confidence.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+      </div>
 
       {/* =========================================================================
           2. "YOUR CAREER COURSES (4 FLAGSHIP PROGRAMS)" HEADER & CONTROLS
@@ -490,7 +933,6 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
 
         
       </section>
-      </div>
 
       {/* ============================================================
           WHAT WILL YOU GET? (Full Certificates, No Blur, No Cut)
