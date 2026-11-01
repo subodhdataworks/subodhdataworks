@@ -908,7 +908,7 @@ export const AiMockInterviewsPage: React.FC<AiMockInterviewsPageProps> = ({
           {/* RIGHT: Cute AI Interviewer Robot (From reference image) */}
           <div className="absolute right-0 bottom-0 top-0 w-[160px] sm:w-[200px] lg:w-[240px] pointer-events-none select-none z-10 flex items-center justify-end pr-2 sm:pr-4">
             <img
-              src="/images/dashboard/mock_robot_exact.png"
+              src="/images/dashboard/generated_mock_robot_hd.png"
               alt="AI Interviewer Robot"
               className="h-[85%] sm:h-[92%] w-auto object-contain filter drop-shadow-[0_8px_24px_rgba(30,58,138,0.6)]"
               onError={(e) => {
