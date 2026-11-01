@@ -14,12 +14,17 @@ export interface CareerCourseCardProps {
   image: string;
   holoImage?: string;
   video?: string;
-  theme: 'cyan' | 'purple' | 'blue' | 'pink';
+  theme: 'emerald' | 'purple' | 'blue' | 'orange' | 'dark' | 'teal' | 'pink' | 'cyan';
+  topBadge?: {
+    icon: string;
+    text: string;
+  };
   tools: CourseCardTool[];
   jobRoles: string;
   salary: string;
   price?: string;
   originalPrice?: string;
+  discountBadge?: string;
   isUnlocked?: boolean;
   onClick: () => void;
 }
@@ -31,11 +36,13 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
   holoImage,
   video,
   theme,
+  topBadge,
   tools,
   jobRoles,
   salary,
   price = '₹987',
   originalPrice = '₹12,999',
+  discountBadge,
   isUnlocked = false,
   onClick,
 }) => {
@@ -48,80 +55,89 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
     const pct = c > 0 && rawPct >= 100 ? 99 : rawPct;
     return `${pct}% OFF`;
   };
-  const discountPct = calculateDiscount(origPrice, price);
-  // Theme configuration with vibrant colorful button gradients matching each card
+  const finalDiscount = discountBadge || calculateDiscount(origPrice, price);
+
+  // Theme configuration matching reference image 1:1
   const themeConfig = {
-    cyan: {
-      cardBorder: 'border-[1.5px] border-[#16d5f7] hover:border-[#38e1fd]',
-      cardShadow: '0 2px 10px rgba(22, 213, 247, 0.16)',
-      hoverClass: 'hover:shadow-[0_6px_20px_rgba(22,213,247,0.30),0_0_10px_rgba(22,213,247,0.18)]',
-      neonDivider: 'linear-gradient(90deg, rgba(22,213,247,0.15) 0%, #16d5f7 50%, rgba(22,213,247,0.15) 100%)',
-      neonDividerGlow: '0 0 6px #16d5f7',
-      bodyBg: 'bg-gradient-to-b from-[#f2faff] via-[#f8fcff] to-white',
-      briefcaseBox: 'bg-cyan-50 text-cyan-600 border border-cyan-200',
-      jobRolesLabel: 'text-cyan-600',
-      salaryColor: 'text-emerald-600',
-      unlockBtn: 'bg-gradient-to-r from-[#06b6d4] via-[#0284c7] to-[#1d4ed8] hover:from-[#0891b2] hover:to-[#1e40af] text-white border border-white/30 shadow-[0_2px_8px_rgba(6,182,212,0.32)] hover:shadow-[0_4px_12px_rgba(6,182,212,0.48)]',
+    emerald: {
+      shadowClass: 'shadow-[0_8px_24px_rgba(16,185,129,0.18)] hover:shadow-[0_12px_28px_rgba(16,185,129,0.30)]',
+      borderClass: 'border-slate-200/90 hover:border-emerald-300',
+      briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-100',
+      salaryPill: 'bg-emerald-50 border border-emerald-100 text-emerald-700',
+      unlockBtn: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-[0_2px_8px_rgba(16,185,129,0.35)]',
     },
     purple: {
-      cardBorder: 'border-[1.5px] border-[#b845ff] hover:border-[#cf6fff]',
-      cardShadow: '0 2px 10px rgba(184, 69, 255, 0.16)',
-      hoverClass: 'hover:shadow-[0_6px_20px_rgba(184,69,255,0.30),0_0_10px_rgba(184,69,255,0.18)]',
-      neonDivider: 'linear-gradient(90deg, rgba(184,69,255,0.15) 0%, #b845ff 50%, rgba(184,69,255,0.15) 100%)',
-      neonDividerGlow: '0 0 6px #b845ff',
-      bodyBg: 'bg-gradient-to-b from-[#fcf6ff] via-[#fbf8ff] to-white',
-      briefcaseBox: 'bg-purple-50 text-purple-600 border border-purple-200',
-      jobRolesLabel: 'text-purple-600',
-      salaryColor: 'text-purple-600',
-      unlockBtn: 'bg-gradient-to-r from-[#9333ea] via-[#a855f7] to-[#d946ef] hover:from-[#7e22ce] hover:to-[#c026d3] text-white border border-white/30 shadow-[0_2px_8px_rgba(168,85,247,0.32)] hover:shadow-[0_4px_12px_rgba(168,85,247,0.48)]',
+      shadowClass: 'shadow-[0_8px_24px_rgba(168,85,247,0.18)] hover:shadow-[0_12px_28px_rgba(168,85,247,0.30)]',
+      borderClass: 'border-slate-200/90 hover:border-purple-300',
+      briefcaseBox: 'bg-purple-50 text-purple-600 border border-purple-100',
+      salaryPill: 'bg-purple-50 border border-purple-100 text-purple-700',
+      unlockBtn: 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-[0_2px_8px_rgba(168,85,247,0.35)]',
     },
     blue: {
-      cardBorder: 'border-[1.5px] border-[#2f80ed] hover:border-[#4d97ff]',
-      cardShadow: '0 2px 10px rgba(47, 128, 237, 0.16)',
-      hoverClass: 'hover:shadow-[0_6px_20px_rgba(47,128,237,0.30),0_0_10px_rgba(47,128,237,0.18)]',
-      neonDivider: 'linear-gradient(90deg, rgba(47,128,237,0.15) 0%, #2f80ed 50%, rgba(47,128,237,0.15) 100%)',
-      neonDividerGlow: '0 0 6px #2f80ed',
-      bodyBg: 'bg-gradient-to-b from-[#f2f7ff] via-[#f7faff] to-white',
-      briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-200',
-      jobRolesLabel: 'text-blue-600',
-      salaryColor: 'text-blue-600',
-      unlockBtn: 'bg-gradient-to-r from-[#2563eb] via-[#3b82f6] to-[#6366f1] hover:from-[#1d4ed8] hover:to-[#4f46e5] text-white border border-white/30 shadow-[0_2px_8px_rgba(59,130,246,0.32)] hover:shadow-[0_4px_12px_rgba(59,130,246,0.48)]',
+      shadowClass: 'shadow-[0_8px_24px_rgba(37,99,235,0.18)] hover:shadow-[0_12px_28px_rgba(37,99,235,0.30)]',
+      borderClass: 'border-slate-200/90 hover:border-blue-300',
+      briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-100',
+      salaryPill: 'bg-emerald-50 border border-emerald-100 text-emerald-700',
+      unlockBtn: 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-[0_2px_8px_rgba(37,99,235,0.35)]',
+    },
+    orange: {
+      shadowClass: 'shadow-[0_8px_24px_rgba(249,115,22,0.18)] hover:shadow-[0_12px_28px_rgba(249,115,22,0.30)]',
+      borderClass: 'border-slate-200/90 hover:border-orange-300',
+      briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-100',
+      salaryPill: 'bg-emerald-50 border border-emerald-100 text-emerald-700',
+      unlockBtn: 'bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white shadow-[0_2px_8px_rgba(249,115,22,0.35)]',
+    },
+    dark: {
+      shadowClass: 'shadow-[0_8px_24px_rgba(15,23,42,0.16)] hover:shadow-[0_12px_28px_rgba(15,23,42,0.26)]',
+      borderClass: 'border-slate-200/90 hover:border-slate-400',
+      briefcaseBox: 'bg-purple-50 text-purple-600 border border-purple-100',
+      salaryPill: 'bg-purple-50 border border-purple-100 text-purple-700',
+      unlockBtn: 'bg-slate-900 hover:bg-slate-800 text-white shadow-[0_2px_8px_rgba(15,23,42,0.35)]',
+    },
+    teal: {
+      shadowClass: 'shadow-[0_8px_24px_rgba(13,148,136,0.18)] hover:shadow-[0_12px_28px_rgba(13,148,136,0.30)]',
+      borderClass: 'border-slate-200/90 hover:border-teal-300',
+      briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-100',
+      salaryPill: 'bg-teal-50 border border-teal-100 text-teal-700',
+      unlockBtn: 'bg-gradient-to-r from-teal-700 to-cyan-700 hover:from-teal-800 hover:to-cyan-800 text-white shadow-[0_2px_8px_rgba(13,148,136,0.35)]',
     },
     pink: {
-      cardBorder: 'border-[1.5px] border-[#ff4d94] hover:border-[#ff6fa8]',
-      cardShadow: '0 2px 10px rgba(255, 77, 148, 0.16)',
-      hoverClass: 'hover:shadow-[0_6px_20px_rgba(255,77,148,0.30),0_0_10px_rgba(255,77,148,0.18)]',
-      neonDivider: 'linear-gradient(90deg, rgba(255,77,148,0.15) 0%, #ff4d94 50%, rgba(255,77,148,0.15) 100%)',
-      neonDividerGlow: '0 0 6px #ff4d94',
-      bodyBg: 'bg-gradient-to-b from-[#fff3f8] via-[#fff9fc] to-white',
-      briefcaseBox: 'bg-pink-50 text-pink-600 border border-pink-200',
-      jobRolesLabel: 'text-pink-600',
-      salaryColor: 'text-pink-600',
-      unlockBtn: 'bg-gradient-to-r from-[#e11d48] via-[#ec4899] to-[#f43f5e] hover:from-[#be123c] hover:to-[#e11d48] text-white border border-white/30 shadow-[0_2px_8px_rgba(244,63,94,0.32)] hover:shadow-[0_4px_12px_rgba(244,63,94,0.48)]',
+      shadowClass: 'shadow-[0_8px_24px_rgba(225,29,72,0.18)] hover:shadow-[0_12px_28px_rgba(225,29,72,0.30)]',
+      borderClass: 'border-slate-200/90 hover:border-pink-300',
+      briefcaseBox: 'bg-pink-50 text-pink-600 border border-pink-100',
+      salaryPill: 'bg-rose-50 border border-rose-100 text-rose-700',
+      unlockBtn: 'bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white shadow-[0_2px_8px_rgba(225,29,72,0.35)]',
+    },
+    cyan: {
+      shadowClass: 'shadow-[0_8px_24px_rgba(16,185,129,0.18)] hover:shadow-[0_12px_28px_rgba(16,185,129,0.30)]',
+      borderClass: 'border-slate-200/90 hover:border-emerald-300',
+      briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-100',
+      salaryPill: 'bg-emerald-50 border border-emerald-100 text-emerald-700',
+      unlockBtn: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-[0_2px_8px_rgba(16,185,129,0.35)]',
     },
   }[theme] || {
-    cardBorder: 'border-[1.5px] border-[#16d5f7] hover:border-[#38e1fd]',
-    cardShadow: '0 2px 10px rgba(22, 213, 247, 0.16)',
-    hoverClass: 'hover:shadow-[0_6px_20px_rgba(22,213,247,0.30)]',
-    neonDivider: 'linear-gradient(90deg, rgba(22,213,247,0.15) 0%, #16d5f7 50%, rgba(22,213,247,0.15) 100%)',
-    neonDividerGlow: '0 0 6px #16d5f7',
-    bodyBg: 'bg-gradient-to-b from-[#f2faff] via-[#f8fcff] to-white',
-    briefcaseBox: 'bg-cyan-50 text-cyan-600 border border-cyan-200',
-    jobRolesLabel: 'text-cyan-600',
-    salaryColor: 'text-emerald-600',
-    unlockBtn: 'bg-gradient-to-r from-[#06b6d4] via-[#0ea5e9] to-[#2563eb] text-white',
+    shadowClass: 'shadow-[0_8px_24px_rgba(16,185,129,0.18)] hover:shadow-[0_12px_28px_rgba(16,185,129,0.30)]',
+    borderClass: 'border-slate-200/90 hover:border-emerald-300',
+    briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-100',
+    salaryPill: 'bg-emerald-50 border border-emerald-100 text-emerald-700',
+    unlockBtn: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-[0_2px_8px_rgba(16,185,129,0.35)]',
   };
 
   return (
     <article
       onClick={onClick}
-      className={`group relative rounded-2xl ${themeConfig.cardBorder} flex flex-col overflow-hidden transition-all duration-200 ease-out hover:-translate-y-[2.5px] ${themeConfig.hoverClass} cursor-pointer select-none`}
-      style={{
-        boxShadow: themeConfig.cardShadow,
-      }}
+      className={`group relative rounded-2xl bg-white border ${themeConfig.borderClass} ${themeConfig.shadowClass} flex flex-col overflow-hidden transition-all duration-200 ease-out hover:-translate-y-1 cursor-pointer select-none`}
     >
-      {/* 1. TOP ARTWORK (Futuristic Hologram Poster / Video across the top - compact) */}
-      <div className="relative w-full h-[114px] sm:h-[120px] overflow-hidden bg-slate-950 shrink-0">
+      {/* 1. TOP ARTWORK */}
+      <div className="relative w-full h-[115px] sm:h-[122px] overflow-hidden bg-slate-950 shrink-0">
+        {/* Top-Left Category Badge */}
+        {topBadge && (
+          <div className="absolute top-2.5 left-2.5 z-20 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/95 backdrop-blur-xs text-slate-800 text-[10px] font-black shadow-sm border border-slate-100">
+            <span>{topBadge.icon}</span>
+            <span>{topBadge.text}</span>
+          </div>
+        )}
+
         {video ? (
           <video
             src={video}
@@ -143,27 +159,18 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
         )}
       </div>
 
-      {/* Thin Neon Glow Separating Artwork from Card Information */}
-      <div
-        className="w-full h-[2px] relative z-10 shrink-0"
-        style={{
-          background: themeConfig.neonDivider,
-          boxShadow: themeConfig.neonDividerGlow,
-        }}
-      />
-
-      {/* 2. SOFT TRANSLUCENT WHITE / LIGHT-BLUE CARD BODY (Compact & Elegant Spacing) */}
-      <div className={`p-2.5 sm:p-3 flex flex-col flex-1 justify-between gap-1.5 ${themeConfig.bodyBg}`}>
+      {/* 2. CARD BODY */}
+      <div className="p-2.5 sm:p-3 flex flex-col flex-1 justify-between gap-1.5 bg-white">
         
-        {/* Compact, Bold Course Title */}
+        {/* Course Title */}
         <div className="text-center pt-0.5">
-          <h3 className="font-black text-[13.5px] sm:text-[14px] text-slate-950 tracking-tight leading-snug">
+          <h3 className="font-black text-[13.5px] sm:text-[14.5px] text-slate-950 tracking-tight leading-snug">
             {title}
             {subtitle && <span className="font-bold text-slate-600 ml-1">({subtitle})</span>}
           </h3>
         </div>
 
-        {/* One Horizontal Row of Technology Icons and Labels */}
+        {/* 5 Technology Icons & Labels */}
         <div className="flex items-center justify-between w-full px-0.5 py-0.5">
           {tools.slice(0, 5).map((t, idx) => (
             <div key={idx} className="flex flex-col items-center flex-1 text-center min-w-0">
@@ -177,84 +184,77 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
           ))}
         </div>
 
-        {/* Thin Divider Above the Job-Role Section */}
-        <div className="w-full border-t border-slate-200/60 my-0.5" />
+        {/* Thin Divider */}
+        <div className="w-full border-t border-slate-100 my-0.5" />
 
-        {/* Job-Role Information on Left, Salary Information on Right */}
-        <div className="flex items-center justify-between w-full">
+        {/* Job Roles (Left) & Salary Package (Right) */}
+        <div className="flex items-center justify-between w-full gap-1.5">
           {/* Left: Job Roles */}
-          <div className="flex items-center gap-1.5 min-w-0">
+          <div className="flex items-center gap-1.5 min-w-0 flex-1">
             <div className={`w-5.5 h-5.5 rounded-md flex items-center justify-center shrink-0 ${themeConfig.briefcaseBox}`}>
               <Briefcase className="w-3 h-3" />
             </div>
             <div className="flex flex-col min-w-0 text-left">
-              <span className={`text-[9.5px] font-bold tracking-tight leading-none ${themeConfig.jobRolesLabel}`}>
+              <span className="text-[9px] font-bold tracking-tight text-slate-700 leading-none">
                 Job Roles
               </span>
-              <span className="text-[9.5px] font-semibold text-slate-800 truncate max-w-[100px] sm:max-w-[120px] mt-0.5">
+              <span className="text-[9.5px] font-semibold text-slate-800 truncate max-w-[105px] sm:max-w-[125px] mt-0.5">
                 {jobRoles}
               </span>
             </div>
           </div>
 
-          {/* Right: Salary CTC */}
-          <div className="flex flex-col items-end text-right shrink-0">
-            <span className={`text-[12.5px] sm:text-[13px] font-black tracking-tight leading-none ${themeConfig.salaryColor}`}>
+          {/* Right: Salary Pill Container */}
+          <div className={`flex flex-col items-end text-right shrink-0 px-2 py-0.5 rounded-lg ${themeConfig.salaryPill}`}>
+            <span className="text-[11.5px] sm:text-[12px] font-black tracking-tight leading-none">
               {salary}
             </span>
-            <span className="text-[8.5px] font-medium text-slate-400 mt-0.5">
+            <span className="text-[8px] font-medium text-slate-500 mt-0.5">
               Average Package
             </span>
           </div>
         </div>
 
-        {/* Bottom Row: Price with Strikethrough & % Off on Left, Compact Premium Unlock Button on Right */}
-        <div className="flex items-center justify-between gap-1.5 w-full pt-1 mt-0.5">
-          {/* Price or Enrolled Badge */}
-          {isUnlocked ? (
-            <div className="py-1 px-2.5 rounded-full font-bold text-[10px] text-center bg-emerald-50 text-emerald-700 border border-emerald-300 shadow-2xs select-none flex items-center gap-1">
-              <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600 shrink-0" />
-              <span>Enrolled</span>
-            </div>
-          ) : (
-            <div className="flex flex-col items-start leading-none min-w-0">
-              <div className="flex items-center gap-1 leading-none">
-                <span className="text-[10px] sm:text-[10.5px] font-bold text-slate-400 line-through tracking-tight">
-                  {origPrice}
-                </span>
-                <span className="text-[8px] sm:text-[8.5px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200/90 px-1 py-0.5 rounded tracking-tight">
-                  {discountPct}
-                </span>
-              </div>
-              <div className="mt-1 flex items-baseline leading-none">
-                <span className="text-[14px] sm:text-[15px] font-black text-slate-950 tracking-tight">
-                  {price}
-                </span>
-              </div>
-            </div>
-          )}
+        {/* 3. BOTTOM ROW: Strikethrough & % Off (Left) | Unlock Course Button (Center) | Bold Green Price (Right) */}
+        <div className="flex items-center justify-between gap-1 w-full pt-1.5 border-t border-slate-50">
+          {/* Left: Original Price & Discount Badge */}
+          <div className="flex items-center gap-1 shrink-0">
+            <span className="text-[10px] sm:text-[10.5px] font-bold text-slate-700 line-through tracking-tight">
+              {origPrice}
+            </span>
+            <span className="text-[8px] sm:text-[8.5px] font-black text-emerald-700 bg-emerald-50 border border-emerald-200/90 px-1 py-0.5 rounded tracking-tight">
+              {finalDiscount}
+            </span>
+          </div>
 
-          {/* Compact, Premium Unlock Course Button with Rocket Icon */}
+          {/* Center: Premium Unlock Course Pill Button */}
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
               onClick();
             }}
-            className={`shrink-0 ml-auto py-1 px-2.5 sm:px-3 rounded-full font-extrabold text-[10.5px] sm:text-[11px] flex items-center justify-center gap-1.5 shadow-sm transition-all duration-150 active:scale-95 cursor-pointer ${themeConfig.unlockBtn}`}
+            className={`shrink-0 py-1 px-2.5 sm:px-3 rounded-full font-bold text-[10px] sm:text-[10.5px] flex items-center justify-center gap-1 shadow-sm transition-all duration-150 active:scale-95 cursor-pointer whitespace-nowrap ${themeConfig.unlockBtn}`}
           >
             {isUnlocked ? (
               <>
+                <CheckCircle2 className="w-3 h-3 text-white shrink-0" />
                 <span>Resume</span>
-                <ArrowRight className="w-3 h-3 ml-0.5" />
+                <ArrowRight className="w-2.5 h-2.5 ml-0.5" />
               </>
             ) : (
               <>
-                <Rocket className="w-3 h-3 text-white stroke-[2.3] shrink-0" />
+                <Rocket className="w-3 h-3 text-white stroke-[2.2] shrink-0" />
                 <span>Unlock Course</span>
+                <ArrowRight className="w-2.5 h-2.5 text-white stroke-[2.2] shrink-0" />
               </>
             )}
           </button>
+
+          {/* Right: Bold Green Current Price */}
+          <span className="text-[15px] sm:text-[16px] font-black text-emerald-600 tracking-tight shrink-0 text-right">
+            {price}
+          </span>
         </div>
 
       </div>

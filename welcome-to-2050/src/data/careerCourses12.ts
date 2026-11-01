@@ -7,12 +7,17 @@ export interface CareerCourseItem {
   image: string;
   holoImage?: string;
   video?: string;
-  theme: 'cyan' | 'purple' | 'blue' | 'pink';
+  theme: 'emerald' | 'purple' | 'blue' | 'orange' | 'dark' | 'teal' | 'pink' | 'cyan';
+  topBadge?: {
+    icon: string;
+    text: string;
+  };
   tools: Array<{ name: string }>;
   jobRoles: string;
   salary: string;
   price: string;
   originalPrice?: string;
+  discountBadge?: string;
 }
 
 export const CAREER_COURSES_12: CareerCourseItem[] = [
@@ -20,11 +25,12 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     id: 'data-analyst-genai',
     badgeNum: 1,
     title: 'Data Analyst with GenAI',
+    topBadge: { icon: '🔥', text: 'Popular' },
     shortDesc: 'Master Python, SQL, Power BI, Excel & GenAI to build automated business dashboards.',
     image: '/images/pot1_sharp_poster.jpg',
     holoImage: '/images/pot1_sharp_poster.jpg',
     video: '/videos/data_analyst_genai_v2.mp4',
-    theme: 'cyan',
+    theme: 'emerald',
     tools: [
       { name: 'Python' },
       { name: 'SQL' },
@@ -34,13 +40,15 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     ],
     jobRoles: 'Data Analyst | BI Consultant',
     salary: '₹6 - 15 LPA',
-    price: '₹4',
+    price: '₹987',
     originalPrice: '₹12,999',
+    discountBadge: '99% OFF',
   },
   {
     id: 'data-science-agentic-ai',
     badgeNum: 2,
     title: 'Data Science & Agentic AI',
+    topBadge: { icon: '⚡', text: 'Trending' },
     shortDesc: 'Build Machine Learning models, RAG pipelines, and autonomous AI Agent systems.',
     image: '/images/pot2_sharp_poster.jpg',
     holoImage: '/images/pot2_sharp_poster.jpg',
@@ -57,11 +65,13 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     salary: '₹10 - 25 LPA',
     price: '₹987',
     originalPrice: '₹12,999',
+    discountBadge: '92% OFF',
   },
   {
     id: 'ml-engineering',
     badgeNum: 3,
     title: 'Machine Learning Engineering',
+    topBadge: { icon: '🎯', text: 'High Demand' },
     shortDesc: 'Build, train, and deploy production-scale ML pipelines with MLOps and Docker.',
     image: '/images/pot3_sharp_poster.jpg',
     holoImage: '/images/pot3_sharp_poster.jpg',
@@ -78,16 +88,18 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     salary: '₹12 - 28 LPA',
     price: '₹987',
     originalPrice: '₹12,999',
+    discountBadge: '92% OFF',
   },
   {
     id: 'ai-engineering',
     badgeNum: 4,
     title: 'AI Engineering',
+    topBadge: { icon: '🚀', text: 'Future Ready' },
     shortDesc: 'Build and deploy end-to-end enterprise AI products, LLMs, and multi-agent solutions.',
     image: '/images/pot4_sharp_poster.jpg',
     holoImage: '/images/pot4_sharp_poster.jpg',
     video: '/videos/ai_engineering_course.mp4',
-    theme: 'cyan',
+    theme: 'orange',
     tools: [
       { name: 'OpenAI' },
       { name: 'LangChain' },
@@ -99,16 +111,18 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     salary: '₹14 - 32 LPA',
     price: '₹987',
     originalPrice: '₹12,999',
+    discountBadge: '92% OFF',
   },
   {
     id: 'ai-tools-prompt',
     badgeNum: 5,
     title: 'AI Tools & Prompt Engineering',
+    topBadge: { icon: '⭐', text: 'Top Rated' },
     shortDesc: '10x your productivity with ChatGPT-4o, Claude 3.5, Midjourney, Cursor & Zapier automations.',
     image: '/images/pot5_sharp_poster.jpg',
     holoImage: '/images/pot5_sharp_poster.jpg',
     video: '/videos/card_video_genai.mp4',
-    theme: 'purple',
+    theme: 'dark',
     tools: [
       { name: 'ChatGPT' },
       { name: 'OpenAI' },
@@ -120,16 +134,18 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     salary: '₹5 - 14 LPA',
     price: '₹987',
     originalPrice: '₹12,999',
+    discountBadge: '92% OFF',
   },
   {
     id: 'ms-office-copilot',
     badgeNum: 6,
     title: 'Microsoft Office 365 with Copilot',
+    topBadge: { icon: '⭐', text: 'Microsoft Certified' },
     shortDesc: 'Automate executive reporting, decks, financial models, and emails with Microsoft Copilot AI.',
     image: '/images/pot6_sharp_poster.jpg',
     holoImage: '/images/pot6_sharp_poster.jpg',
     video: '/videos/card_video_excel.mp4',
-    theme: 'blue',
+    theme: 'teal',
     tools: [
       { name: 'Excel' },
       { name: 'DAX' },
@@ -141,11 +157,13 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     salary: '₹5 - 12 LPA',
     price: '₹987',
     originalPrice: '₹12,999',
+    discountBadge: '92% OFF',
   },
   {
     id: 'full-stack-web-dev',
     badgeNum: 7,
     title: 'Full Stack Web Development',
+    topBadge: { icon: '💻', text: 'Full Stack' },
     shortDesc: 'Build modern responsive full-stack applications with React, Node.js, Express & PostgreSQL.',
     image: '/images/pot7_sharp_poster.jpg',
     holoImage: '/images/pot7_sharp_poster.jpg',
@@ -162,5 +180,6 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     salary: '₹8 - 22 LPA',
     price: '₹987',
     originalPrice: '₹12,999',
+    discountBadge: '92% OFF',
   },
 ];

@@ -590,7 +590,8 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
               <Layers className="w-5 h-5 text-blue-600" />
             </div>
             <div className="lhh-section-title-wrap">
-              <h2 className="lhh-section-title">All Career-Focused Industry Courses (7)</h2>
+              <h2 className="lhh-section-title">Your Future Starts Here.</h2>
+              <p className="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Explore 7 industry-focused courses designed to help you build real-world tech skills.</p>
             </div>
           </div>
 
