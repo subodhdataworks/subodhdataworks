@@ -1568,69 +1568,26 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       .split('?')[0]
       .toLowerCase();
 
-    // 15. Login / Signup -> No Footer
+    // 1. Login / Signup -> No Footer
     if (['#login', '#signup', '#auth'].includes(rawHash)) {
       return 'none';
     }
 
-    // 4. Course Details -> Full Footer
-    if (
-      ['#data-analyst', '#data-analytics', '#data-science', '#data-science-agentic-ai', '#datascience', '#ml-engineering', '#mlengineering', '#ml-eng', '#ml', '#ai-engineering', '#aiengineering', '#ai-eng', '#ai', '#full-stack', '#fullstack', '#fullstack-mern', '#ai-tools-prompt', '#ms-office-copilot', '#sql', '#powerbi', '#stats', '#genai', '#mockinterview', '#mock-interview', '#interview'].includes(rawHash) ||
-      (dockTab === 'home' && selectedModuleView &&
-        ['data_analyst', 'data_science', 'ml_engineering', 'ai_engineering', 'ai_tools_prompt', 'ms_office_copilot', 'full_stack_mern', 'sql', 'excel', 'powerbi', 'stats', 'genai', 'mockinterview'].includes(selectedModuleView))
-    ) {
-      return 'full';
-    }
-
-    // 3. My Learning -> Small Footer
+    // 2. My Learning -> Small Footer
     if (['#learning', '#mylearning'].includes(rawHash)) {
       return 'small';
     }
 
-    // 2. Dashboard (After Login) -> Full Footer
-    if (rawHash === '#dashboard' || (dockTab === 'home' && selectedModuleView === null && !placementLockOpen)) {
-      return 'full';
-    }
-
-    // 11. ATS Resume Score -> Small Footer
-    if (isAtsResumeModalOpen || ['#ats', '#ats-resume', '#ats-resume-checker'].includes(rawHash)) {
-      return 'small';
-    }
-
-    // 10. Placement / Get Job -> Small Footer
+    // 3. DSA Practice / Hackathon -> Small Footer
     if (
-      dockTab === 'placement' ||
-      ['#placement', '#jobs', '#placements'].includes(rawHash) ||
-      (placementLockOpen && lockedSectionTarget === 'Placement')
+      dockTab === 'game' ||
+      activeTopicWs !== null ||
+      ['#game', '#games', '#arena', '#gamearena', '#practice', '#codingpractice', '#coding-practice', '#python-challenges', '#sql-challenges', '#excel-challenges', '#play', '#codequest', '#workspace', '#code', '#codepractice', '#score', '#scorecard'].includes(rawHash)
     ) {
       return 'small';
     }
 
-    // 9. Recommendation Letter -> Small Footer
-    if (
-      ['#recommendation', '#recommendations', '#lor'].includes(rawHash) ||
-      (placementLockOpen && (lockedSectionTarget === 'Recommendation Letter' || (lockedSectionTarget as string) === 'Letter of Recommendation'))
-    ) {
-      return 'small';
-    }
-
-    // 8. Internship -> Small Footer
-    if (
-      ['#internship', '#internships'].includes(rawHash) ||
-      (placementLockOpen && lockedSectionTarget === 'Internship')
-    ) {
-      return 'small';
-    }
-
-    // 7. Certificate -> Small Footer
-    if (
-      ['#certificate', '#certificates'].includes(rawHash) ||
-      (placementLockOpen && (lockedSectionTarget === 'Certificate' || (lockedSectionTarget as string) === 'Course Certificate'))
-    ) {
-      return 'small';
-    }
-
-    // 6. Earning & Wallet -> Small Footer
+    // 4. Earning & Wallet -> Small Footer
     if (
       dockTab === 'income' ||
       dockTab === 'referral' ||
@@ -1641,13 +1598,56 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       return 'small';
     }
 
-    // 5. DSA Practice / Hackathon -> Small Footer
+    // 5. Certificate -> Small Footer
     if (
-      dockTab === 'game' ||
-      activeTopicWs !== null ||
-      ['#game', '#games', '#arena', '#gamearena', '#practice', '#codingpractice', '#coding-practice', '#python-challenges', '#sql-challenges', '#excel-challenges', '#play', '#codequest', '#workspace', '#code', '#codepractice', '#score', '#scorecard'].includes(rawHash)
+      ['#certificate', '#certificates'].includes(rawHash) ||
+      (placementLockOpen && (lockedSectionTarget === 'Certificate' || (lockedSectionTarget as string) === 'Course Certificate'))
     ) {
       return 'small';
+    }
+
+    // 6. Internship -> Small Footer
+    if (
+      ['#internship', '#internships'].includes(rawHash) ||
+      (placementLockOpen && lockedSectionTarget === 'Internship')
+    ) {
+      return 'small';
+    }
+
+    // 7. Recommendation Letter -> Small Footer
+    if (
+      ['#recommendation', '#recommendations', '#lor'].includes(rawHash) ||
+      (placementLockOpen && (lockedSectionTarget === 'Recommendation Letter' || (lockedSectionTarget as string) === 'Letter of Recommendation'))
+    ) {
+      return 'small';
+    }
+
+    // 8. Placement / Get Job -> Small Footer
+    if (
+      dockTab === 'placement' ||
+      ['#placement', '#jobs', '#placements'].includes(rawHash) ||
+      (placementLockOpen && lockedSectionTarget === 'Placement')
+    ) {
+      return 'small';
+    }
+
+    // 9. ATS Resume Score -> Small Footer
+    if (isAtsResumeModalOpen || ['#ats', '#ats-resume', '#ats-resume-checker'].includes(rawHash)) {
+      return 'small';
+    }
+
+    // 10. Course Details -> Full Footer
+    if (
+      ['#data-analyst', '#data-analytics', '#data-science', '#data-science-agentic-ai', '#datascience', '#ml-engineering', '#mlengineering', '#ml-eng', '#ml', '#ai-engineering', '#aiengineering', '#ai-eng', '#ai', '#full-stack', '#fullstack', '#fullstack-mern', '#ai-tools-prompt', '#ms-office-copilot', '#sql', '#powerbi', '#stats', '#genai', '#mockinterview', '#mock-interview', '#interview'].includes(rawHash) ||
+      (dockTab === 'home' && selectedModuleView &&
+        ['data_analyst', 'data_science', 'ml_engineering', 'ai_engineering', 'ai_tools_prompt', 'ms_office_copilot', 'full_stack_mern', 'sql', 'excel', 'powerbi', 'stats', 'genai', 'mockinterview'].includes(selectedModuleView))
+    ) {
+      return 'full';
+    }
+
+    // 11. Dashboard (After Login) -> Full Footer
+    if (rawHash === '#dashboard' || (dockTab === 'home' && selectedModuleView === null && !placementLockOpen)) {
+      return 'full';
     }
 
     // Default -> Full Footer
