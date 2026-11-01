@@ -16,7 +16,9 @@ import {
   TrendingUp,
   Gift,
   Award,
-  Users
+  Users,
+  Rocket,
+  ArrowRight
 } from 'lucide-react';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
 import { RealSuccessStoriesShowcase } from './RealSuccessStoriesShowcase';
@@ -705,7 +707,13 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                     {c.shortDesc}
                   </p>
                   <div className="lhh-list-meta flex flex-wrap items-center gap-2">
-                    <span className="text-emerald-600 font-black text-xs bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                    <span className="text-slate-400 font-bold text-xs line-through">
+                      ₹12,999
+                    </span>
+                    <span className="text-emerald-700 font-extrabold text-[10px] bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                      {c.price === '₹4' ? '99% OFF' : '92% OFF'}
+                    </span>
+                    <span className="text-slate-900 font-black text-xs bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
                       Now: {c.price}
                     </span>
                     <span>•</span>
@@ -721,10 +729,20 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
                 <div className="lhh-list-actions">
                   <button
                     type="button"
-                    className="lhh-action-btn lhh-list-btn"
+                    className="py-1.5 px-3.5 rounded-full font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all duration-150 active:scale-95 cursor-pointer bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white hover:from-blue-700 hover:to-indigo-700 border border-white/25"
                     onClick={() => handleCourseClick(c)}
                   >
-                    {isCourseUnlocked(c.id) ? 'Resume Course →' : 'Unlock Course'}
+                    {isCourseUnlocked(c.id) ? (
+                      <>
+                        <span>Resume Course</span>
+                        <ArrowRight className="w-3.5 h-3.5 ml-0.5" />
+                      </>
+                    ) : (
+                      <>
+                        <Rocket className="w-3.5 h-3.5 text-white stroke-[2.3]" />
+                        <span>Unlock Course</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>

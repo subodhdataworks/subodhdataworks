@@ -12,6 +12,7 @@ export interface CareerCourseItem {
   jobRoles: string;
   salary: string;
   price: string;
+  originalPrice?: string;
 }
 
 export const CAREER_COURSES_12: CareerCourseItem[] = [
@@ -34,6 +35,7 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     jobRoles: 'Data Analyst | BI Consultant',
     salary: '₹6 - 15 LPA',
     price: '₹4',
+    originalPrice: '₹12,999',
   },
   {
     id: 'data-science-agentic-ai',
@@ -54,6 +56,7 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     jobRoles: 'Data Scientist | AI Agent Developer',
     salary: '₹10 - 25 LPA',
     price: '₹987',
+    originalPrice: '₹12,999',
   },
   {
     id: 'ml-engineering',
@@ -74,6 +77,7 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     jobRoles: 'ML Engineer | MLOps Specialist',
     salary: '₹12 - 28 LPA',
     price: '₹987',
+    originalPrice: '₹12,999',
   },
   {
     id: 'ai-engineering',
@@ -94,6 +98,7 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     jobRoles: 'AI Engineer | Full Stack AI Engineer',
     salary: '₹14 - 32 LPA',
     price: '₹987',
+    originalPrice: '₹12,999',
   },
   {
     id: 'ai-tools-prompt',
@@ -114,6 +119,7 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     jobRoles: 'AI Automation Lead | Prompt Engineer',
     salary: '₹5 - 14 LPA',
     price: '₹987',
+    originalPrice: '₹12,999',
   },
   {
     id: 'ms-office-copilot',
@@ -134,6 +140,7 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     jobRoles: 'Business Analyst | Operations Manager',
     salary: '₹5 - 12 LPA',
     price: '₹987',
+    originalPrice: '₹12,999',
   },
   {
     id: 'full-stack-web-dev',
@@ -154,5 +161,6 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     jobRoles: 'Full Stack Developer | Web Architect',
     salary: '₹8 - 22 LPA',
     price: '₹987',
+    originalPrice: '₹12,999',
   },
 ];
