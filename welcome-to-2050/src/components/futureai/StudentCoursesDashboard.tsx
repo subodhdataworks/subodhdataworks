@@ -171,7 +171,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
         
         {/* ─── 1.1 HERO BANNER: "Get Placement Ready" (PIXEL-PERFECT TO REFERENCE) ─── */}
         <section
-          className="relative w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-md border border-slate-700/30 select-none text-white h-[145px] sm:h-[152px] lg:h-[158px]"
+          className="relative w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-md border border-slate-700/30 select-none text-white h-[155px] sm:h-[165px] lg:h-[175px]"
           style={{
             background: 'linear-gradient(90deg, #034ea2 0%, #082d8c 30%, #101c7d 65%, #6a0dad 100%)',
           }}
@@ -188,14 +188,14 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
           />
 
           {/* MAIN BANNER CONTENT (Center Journey + Right Checklist) */}
-          <div className="relative z-20 flex items-center justify-between w-full h-full pl-[245px] sm:pl-[265px] lg:pl-[285px] pr-3 sm:pr-4 lg:pr-6">
+          <div className="relative z-20 flex items-center justify-between w-full h-full pl-[260px] sm:pl-[290px] lg:pl-[330px] pr-3 sm:pr-4 lg:pr-6">
             
             {/* CENTER: Headline + Subtitle + 4-Step Connected Journey */}
             <div className="flex-1 flex flex-col items-center justify-center text-center px-1 min-w-0">
               
               {/* Prominent Headline with Yellow Celebration Sparks */}
               <div className="relative inline-flex items-center justify-center">
-                <h1 className="text-xl sm:text-2xl lg:text-[29px] font-black tracking-tight text-white leading-tight">
+                <h1 className="text-2xl sm:text-3xl lg:text-[34px] xl:text-[38px] font-black tracking-tight text-white leading-tight">
                   Get Placement{' '}
                   <span className="relative inline-block text-[#00D2FF]">
                     Ready
@@ -215,7 +215,7 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
               </div>
 
               {/* Subtitle */}
-              <p className="text-xs sm:text-[13px] text-white/95 font-medium mt-0.5 tracking-wide">
+              <p className="text-xs sm:text-sm lg:text-[14px] text-white/95 font-medium mt-1 tracking-wide">
                 Your complete career preparation journey
               </p>
 
@@ -578,8 +578,6 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
           </div>
         </section>
 
-      </div>
-
       {/* =========================================================================
           2. ALL CAREER-FOCUSED INDUSTRY COURSES (7) (EXACT MATCH TO REFERENCE IMAGE 1)
           ========================================================================= */}
@@ -734,6 +732,8 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
           </div>
         )}
       </section>
+
+      </div>
 
       {/* ============================================================
           WHAT WILL YOU GET? (Full Certificates, No Blur, No Cut)
