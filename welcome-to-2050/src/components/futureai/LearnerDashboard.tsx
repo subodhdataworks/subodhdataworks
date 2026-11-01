@@ -86,6 +86,7 @@ import { AiEngineeringHub } from './AiEngineeringHub';
 import { AiToolsPromptHub } from './AiToolsPromptHub';
 import { MsOfficeCopilotHub } from './MsOfficeCopilotHub';
 import { FullStackMernHub } from './FullStackMernHub';
+import { AiMockInterviewsPage } from './interview/AiMockInterviewsPage';
 import { StudentCoursesDashboard } from './StudentCoursesDashboard';
 import { MobileDashboardBottomNav } from './mobile/MobileDashboardBottomNav';
 import { PythonIntroGameWorkspace } from './PythonIntroGameWorkspace';
@@ -539,7 +540,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   };
 
   // Sub-view: null = 4-Course Student Dashboard (#dashboard), 'data_analyst' = Data Analyst with GenAI 6-Module Hub (#data-analyst), 'python' = Python Module Detail Page, 'python_intro_game' = Python Introduction & Setup Game Workspace, 'sql' = SQL Chapter View, 'excel' = Excel Chapter View, 'powerbi' = Power BI Chapter View, 'stats' = Statistics Chapter View, 'genai' = GenAI Chapter View
-  const [selectedModuleView, setSelectedModuleView] = useState<'data_analyst' | 'data_science' | 'ml_engineering' | 'ai_engineering' | 'ai_tools_prompt' | 'ms_office_copilot' | 'full_stack_mern' | 'python' | 'python_intro_game' | 'python_challenges' | 'sql_challenges' | 'excel_challenges' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai' | null>(() => {
+  const [selectedModuleView, setSelectedModuleView] = useState<'data_analyst' | 'data_science' | 'ml_engineering' | 'ai_engineering' | 'ai_tools_prompt' | 'ms_office_copilot' | 'full_stack_mern' | 'mockinterview' | 'python' | 'python_intro_game' | 'python_challenges' | 'sql_challenges' | 'excel_challenges' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai' | null>(() => {
     if (typeof window !== 'undefined') {
       const h = window.location.hash;
       const baseH = h.split('?')[0];
@@ -578,6 +579,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       }
       if (baseH === '#stats') {
         return 'stats';
+      }
+      if (baseH === '#mockinterview' || baseH === '#mock-interview' || (baseH === '#interview' && !h.includes('topic='))) {
+        return 'mockinterview';
       }
       if (baseH === '#genai') {
         return 'genai';
@@ -744,6 +748,10 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         setSelectedModuleView(null);
         setActiveTopicWs(null);
         setDockTab('withdraw');
+      } else if (baseH === '#mockinterview' || baseH === '#mock-interview' || (baseH === '#interview' && !h.includes('topic='))) {
+        setSelectedModuleView('mockinterview');
+        setActiveTopicWs(null);
+        setDockTab('home');
       } else if (baseH === '#dashboard' || baseH === '#courses' || baseH === '#home' || !baseH) {
         setSelectedModuleView(null);
         setActiveTopicWs(null);
@@ -1872,6 +1880,21 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           </div>
         )}
 
+        {/* ─── AI-POWERED MOCK INTERVIEWS PAGE (#mockinterview) ─── */}
+        {selectedModuleView === 'mockinterview' && (
+          <div className="col-span-full">
+            <AiMockInterviewsPage
+              userName={currentUserName || userName}
+              onBack={() => {
+                playClick();
+                setSelectedModuleView(null);
+                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+              }}
+              onOpenLogin={onOpenLogin}
+            />
+          </div>
+        )}
+
         {/* ─── TAB 1: TOP-LEVEL 4-COURSE STUDENT DASHBOARD (#dashboard) ─── */}
         {(dockTab === 'home' || dockTab === 'placement') && selectedModuleView === null && (
           <div className="col-span-full">
@@ -1933,10 +1956,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 }}
                 onOpenMockInterview={() => {
                   playClick();
-                  setSelectedModuleView('python');
-                  setActiveTopicWs(1);
-                  setTargetStep('interview');
-                  if (typeof window !== 'undefined') window.location.hash = '#interview?topic=1';
+                  setSelectedModuleView('mockinterview');
+                  setActiveTopicWs(null);
+                  if (typeof window !== 'undefined') window.location.hash = '#mockinterview';
                 }}
                 onOpenAdvisor={onOpenAdvisor}
                 onOpenGameArena={() => {
