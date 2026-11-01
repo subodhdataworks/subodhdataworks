@@ -77,7 +77,7 @@ export const FullFooter: React.FC<FullFooterProps> = ({ onOpenAuthModal, classNa
         </div>
 
         {/* Accordion Cards Container */}
-        <div className="relative z-10 w-full px-3.5 sm:px-4 pt-2.5 pb-20 space-y-2.5">
+        <div className="relative z-10 w-full px-3.5 sm:px-4 pt-2.5 pb-3 sm:pb-4 space-y-2.5">
           
           {/* ??? ACCORDION 1: QUICK LINKS ??? */}
           <div className="rounded-2xl bg-white border border-blue-100/90 shadow-[0_2px_8px_rgba(0,102,255,0.04)] overflow-hidden transition-all">

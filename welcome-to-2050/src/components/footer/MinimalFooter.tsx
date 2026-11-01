@@ -21,47 +21,23 @@ export const MinimalFooter: React.FC<MinimalFooterProps> = ({ className = '', on
   return (
     <>
       {/* =========================================================================
-          1. MOBILE MINIMAL FOOTER (< md) (EXACT MATCH TO REFERENCE media_1793571609467_e0939037.jpg)
+          1. COMPACT MOBILE FOOTER (< md) (P0 ULTRA-MINIMAL SINGLE ROW, ZERO EXCESS WHITESPACE)
           ========================================================================= */}
-      <footer className={`block md:hidden relative w-full bg-white text-slate-800 overflow-hidden select-none font-sans ${className}`}>
-        {/* Subtle Ambient Top Border */}
-        <div className="w-full h-[1px] bg-slate-100" />
-
-        {/* Content Container (pb-20 ensures mobile bottom dock navigation never overlaps) */}
-        <div className="relative z-10 w-full px-4 pt-4 pb-20">
-          <div className="flex items-center justify-center gap-3.5 text-left">
-            {/* Logo Left */}
-            <img
-              src="/images/brand/future_it_logo.png"
-              alt="Future IT Industry"
-              className="h-7 w-auto object-contain cursor-pointer shrink-0"
-              onClick={() => handleNav('#dashboard')}
-            />
-            {/* Vertical Divider */}
-            <div className="w-[1px] h-6 bg-slate-300 shrink-0" />
-            {/* Copyright Text Right */}
-            <div className="flex flex-col text-[11px] leading-tight text-slate-700 font-medium">
-              <span className="font-semibold text-slate-800">© 2026 Future IT Industry.</span>
-              <span className="text-slate-500 mt-0.5">All rights reserved.</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Flowing Curved Bottom Gradient Wave (Blue -> Cyan -> Emerald) */}
-        <div className="w-full overflow-hidden leading-none -mt-1 pointer-events-none">
-          <svg viewBox="0 0 400 18" className="w-full h-3.5" preserveAspectRatio="none" fill="none">
-            <defs>
-              <linearGradient id="minWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#0066FF" />
-                <stop offset="45%" stopColor="#00D2FF" />
-                <stop offset="100%" stopColor="#00E599" />
-              </linearGradient>
-            </defs>
-            <path
-              d="M0,14 C110,4 260,16 400,2 L400,18 L0,18 Z"
-              fill="url(#minWaveGrad)"
-            />
-          </svg>
+      <footer className={`block md:hidden relative w-full bg-white/95 text-slate-700 select-none font-sans py-2.5 px-3 border-t border-slate-100 ${className}`}>
+        <div className="flex items-center justify-center gap-2 text-center flex-nowrap">
+          {/* Proportionate small brand logo */}
+          <img
+            src="/images/brand/future_it_logo.png"
+            alt="Future IT Industry"
+            className="h-[18px] sm:h-5 w-auto object-contain cursor-pointer shrink-0"
+            onClick={() => handleNav('#dashboard')}
+          />
+          {/* Subtle vertical divider */}
+          <span className="text-slate-300 font-light select-none text-[11px]">|</span>
+          {/* Copyright notice & all rights reserved on single clean horizontal line */}
+          <p className="text-[10px] sm:text-[10.5px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
+            &copy; 2026 Future IT Industry. <span className="text-slate-500">All rights reserved.</span>
+          </p>
         </div>
       </footer>
 

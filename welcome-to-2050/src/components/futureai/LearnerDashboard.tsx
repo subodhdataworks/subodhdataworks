@@ -1470,7 +1470,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         <SmallFooter />
 
         {/* Preserve exact existing mobile bottom navigation on Android/Mobile (< md) */}
-        <div className="md:hidden h-20 shrink-0" aria-hidden="true" />
+        <div className="md:hidden h-[64px] shrink-0 pointer-events-none" aria-hidden="true" />
         <MobileDashboardBottomNav
           active="learning"
           onHome={() => {
@@ -2411,7 +2411,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       <div className="hidden md:block dock-floating-sphere-bl" />
 
       {/* ─── FIXED MOBILE BOTTOM NAVIGATION (Mobile Only: < md) ─── */}
-      <div className="md:hidden h-20 shrink-0" aria-hidden="true" />
+      <div className="md:hidden h-[64px] shrink-0 pointer-events-none" aria-hidden="true" />
       <MobileDashboardBottomNav
         active={
           dockTab === 'placement'
