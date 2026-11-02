@@ -27,6 +27,7 @@ import { CareerCourseCard } from './CareerCourseCard';
 import { CAREER_COURSES_12, CareerCourseItem } from '../../data/careerCourses12';
 import { isCourseUnlocked, syncUserEnrollmentsFromServer } from '../../services/courseUnlockService';
 import { MobileCompactDashboard } from './mobile/MobileCompactDashboard';
+import { DesktopLoggedInHero } from './DesktopLoggedInHero';
 import './LearnerHomeHub.css';
 
 export interface StudentCoursesDashboardProps {
@@ -171,144 +172,11 @@ export const StudentCoursesDashboard: React.FC<StudentCoursesDashboardProps> = (
           ========================================================================= */}
       <div className="hidden md:flex flex-col gap-3 w-full">
         
-        {/* ─── 1.1 HERO BANNER: "Get Placement Ready" (EXACT 1:1 TO REFERENCE) ─── */}
-        <section
-          className="relative w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-md border border-slate-700/30 select-none text-white h-[155px] sm:h-[165px] lg:h-[175px]"
-          style={{
-            background: 'linear-gradient(90deg, #024da1 0%, #072e8e 32%, #111e7e 62%, #600fad 100%)',
-          }}
-        >
-          {/* Subtle Ambient Radial Lighting */}
-          <div className="absolute top-0 left-1/4 w-[350px] h-[350px] bg-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 right-10 w-[300px] h-[300px] bg-purple-500/25 rounded-full blur-3xl pointer-events-none" />
-
-          {/* LEFT: Student Portrait Integrated Seamlessly */}
-          <img
-            src="/images/dashboard/placement_student_seamless.png"
-            alt="Placement Ready Student"
-            className="absolute left-0 top-0 bottom-0 h-full w-auto object-cover object-left pointer-events-none select-none z-10"
-          />
-
-          {/* RIGHT: Complete Checklist + Growth Chart & Soaring Arrow (Exact Match 1:1) */}
-          <img
-            src="/images/dashboard/hero_right_complete_exact.png"
-            alt="Checklist and Career Growth"
-            className="absolute right-0 top-0 bottom-0 h-full w-auto object-cover object-right pointer-events-none select-none z-10"
-          />
-
-          {/* CENTER: Headline + Subtitle + 4-Step Connected Journey */}
-          <div className="relative z-20 flex items-center justify-center w-full h-full pl-[260px] sm:pl-[280px] lg:pl-[315px] pr-[290px] sm:pr-[310px] lg:pr-[335px]">
-            <div className="flex flex-col items-center justify-center text-center px-1 min-w-0">
-              
-              {/* Prominent Headline with Yellow Celebration Sparks */}
-              <div className="relative inline-flex items-center justify-center">
-                <h1 className="text-2xl sm:text-3xl lg:text-[34px] xl:text-[38px] font-black tracking-tight text-white leading-tight">
-                  Get Placement{' '}
-                  <span className="relative inline-block text-[#00E5FF]">
-                    Ready
-                    {/* Yellow Celebration Sparks / Flares */}
-                    <span
-                      className="absolute -top-3.5 -right-5 pointer-events-none select-none text-[#FFD700]"
-                      aria-hidden="true"
-                    >
-                      <svg className="w-5 h-5 drop-shadow-[0_2px_4px_rgba(255,215,0,0.6)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                        <line x1="12" y1="2" x2="12" y2="6" />
-                        <line x1="19" y1="5" x2="16" y2="8" />
-                        <line x1="22" y1="12" x2="18" y2="12" />
-                      </svg>
-                    </span>
-                  </span>
-                </h1>
-              </div>
-
-              {/* Subtitle */}
-              <p className="text-xs sm:text-sm lg:text-[14px] text-white/95 font-medium mt-1 tracking-wide">
-                Your complete career preparation journey
-              </p>
-
-              {/* Horizontal 4-Step Connected Visual Journey */}
-              <div className="flex items-center justify-center gap-1 sm:gap-1.5 lg:gap-2.5 mt-2.5">
-                {/* Step 1: Learn */}
-                <div
-                  className="flex flex-col items-center group cursor-pointer"
-                  onClick={() => {
-                    const el = document.getElementById('learning-modules-section');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                >
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                    <GraduationCap className="w-4 h-4 text-blue-600 stroke-[2.5]" />
-                  </div>
-                  <span className="text-[10px] sm:text-[10.5px] font-bold text-white mt-0.5">Learn</span>
-                </div>
-
-                {/* Connector 1 */}
-                <div className="flex items-center -mt-3.5 text-white/60">
-                  <div className="w-4 sm:w-6 lg:w-7 h-[1.5px] border-t border-dashed border-white/60" />
-                  <ChevronRight className="w-3.5 h-3.5 -ml-1 text-white/70 shrink-0" />
-                </div>
-
-                {/* Step 2: Practice */}
-                <div
-                  className="flex flex-col items-center group cursor-pointer"
-                  onClick={() => {
-                    if (onOpenCodingPracticeHub) onOpenCodingPracticeHub();
-                    else if (typeof window !== 'undefined') window.location.hash = '#game';
-                  }}
-                >
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                    <Code2 className="w-4 h-4 text-blue-600 stroke-[2.5]" />
-                  </div>
-                  <span className="text-[10px] sm:text-[10.5px] font-bold text-white mt-0.5">Practice</span>
-                </div>
-
-                {/* Connector 2 */}
-                <div className="flex items-center -mt-3.5 text-white/60">
-                  <div className="w-4 sm:w-6 lg:w-7 h-[1.5px] border-t border-dashed border-white/60" />
-                  <ChevronRight className="w-3.5 h-3.5 -ml-1 text-white/70 shrink-0" />
-                </div>
-
-                {/* Step 3: Prepare */}
-                <div
-                  className="flex flex-col items-center group cursor-pointer"
-                  onClick={() => {
-                    if (onOpenMockInterview) onOpenMockInterview();
-                    else if (typeof window !== 'undefined') window.location.hash = '#mockinterview';
-                  }}
-                >
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white text-purple-600 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                    <Users className="w-4 h-4 text-purple-600 stroke-[2.5]" />
-                  </div>
-                  <span className="text-[10px] sm:text-[10.5px] font-bold text-white mt-0.5">Prepare</span>
-                </div>
-
-                {/* Connector 3 */}
-                <div className="flex items-center -mt-3.5 text-white/60">
-                  <div className="w-4 sm:w-6 lg:w-7 h-[1.5px] border-t border-dashed border-white/60" />
-                  <ChevronRight className="w-3.5 h-3.5 -ml-1 text-white/70 shrink-0" />
-                </div>
-
-                {/* Step 4: Get Placed (Mint Green Pill) */}
-                <div
-                  className="flex items-center -mt-3.5 cursor-pointer group"
-                  onClick={() => {
-                    if (onOpenPlacementSupport) onOpenPlacementSupport();
-                    else if (typeof window !== 'undefined') window.location.hash = '#placement';
-                  }}
-                >
-                  <div className="px-2.5 sm:px-3 py-1 rounded-full bg-[#d1fae5] border border-[#a7f3d0] flex items-center gap-1.5 shadow-md group-hover:scale-105 transition-transform">
-                    <Briefcase className="w-3.5 h-3.5 text-[#065f46] stroke-[2.5] shrink-0" />
-                    <span className="text-[10.5px] sm:text-xs font-black text-[#065f46] whitespace-nowrap">
-                      Get Placed
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </section>
-
+        {/* ─── 1.1 HERO BANNER: Desktop Video Hero Banner (Matches Mobile Practical Learning Ecosystem) ─── */}
+        <DesktopLoggedInHero
+          onContinueLearning={onOpenDataAnalystCourse}
+          playClick={playClick}
+        />
 
         {/* ─── 1.2 SIX CAREER FEATURE CARDS (EXACT MATCH 1:1 TO REFERENCE) ─── */}
         <section className="w-full">
