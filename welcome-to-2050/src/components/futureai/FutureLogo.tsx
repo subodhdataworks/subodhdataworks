@@ -37,7 +37,7 @@ export const FutureLogo: React.FC<FutureLogoProps> = ({
       <img
         src={BRAND.logo}
         alt={`${BRAND.name} — ${BRAND.tagline}`}
-        className={`${sizeMap[size]} w-auto max-w-[132px] min-[375px]:max-w-[162px] min-[410px]:max-w-[190px] sm:max-w-[280px] object-contain transition-transform duration-200 group-hover:scale-[1.02]`}
+        className={`${sizeMap[size]} w-auto max-w-[132px] min-[375px]:max-w-[162px] min-[410px]:max-w-[190px] sm:max-w-[280px] object-contain mix-blend-multiply transition-transform duration-200 group-hover:scale-[1.02]`}
         loading="eager"
       />
     </div>

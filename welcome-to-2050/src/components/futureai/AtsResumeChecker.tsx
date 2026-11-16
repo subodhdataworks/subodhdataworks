@@ -818,13 +818,13 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F8FC] text-slate-800 font-sans antialiased flex flex-col selection:bg-blue-100 selection:text-blue-900 relative overflow-hidden">
+    <div className="dock-dashboard-page min-h-screen text-slate-800 font-sans antialiased flex flex-col selection:bg-blue-100 selection:text-blue-900 relative overflow-hidden">
       
       {/* ─────────────────────────────────────────────────────────────
           1. EXACT HOMEPAGE HEADER NAVIGATION (FutureNavbar)
           ───────────────────────────────────────────────────────────── */}
             {/* Standardized Ultra-Advanced Header Matching All Pages */}
-      <FutureAdvancedHeader
+      <FutureAdvancedHeader showDesktopDock={true}
         userName={userName}
         isLoggedIn={isLoggedIn}
         activeNavTab="ats"
@@ -858,13 +858,13 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
       {/* ─────────────────────────────────────────────────────────────
           2. HERO SECTION & 3-STEP LAYOUT (Clean Aesthetic Background)
           ───────────────────────────────────────────────────────────── */}
-      <div className="relative w-full overflow-hidden bg-[#F4F8FC] pt-4 sm:pt-6">
+      <div className="relative w-full overflow-hidden">
 
         {/* Content Container */}
-        <main className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-2.5 pb-8 space-y-4">
+        <main className="relative z-10 max-w-[1480px] w-full mx-auto px-3 sm:px-6 pt-[1px] pb-8 space-y-3">
           
           {/* ── HERO BANNER: DASHBOARD SIZE MATCH (~210px HEIGHT) ── */}
-          <div className="relative w-full rounded-[18px] overflow-hidden shadow-[0_6px_24px_rgba(0,80,220,0.06)] border border-blue-100/90 min-h-[195px] h-auto sm:h-[210px] md:h-[220px] flex items-center bg-[#E6F3FC]">
+          <div className="relative w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-[0_6px_24px_rgba(0,80,220,0.06)] border border-slate-200/90 min-h-[195px] h-auto sm:h-[220px] md:h-[275px] md:min-h-[275px] md:max-h-[275px] flex items-center bg-[#E6F3FC]">
             {/* Base Seamless Wave Backdrop (matches Frame 0 of video palette) */}
             <img
               src="/images/ats/ats_top_banner_wave_bg.jpg"
@@ -1094,7 +1094,7 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
                 </div>
               </div>
             ) : (
-              <div className="max-w-6xl mx-auto space-y-6 ats-dedicated-result-view">
+              <div className="w-full space-y-6 ats-dedicated-result-view">
               {/* Top Navigation & Action Bar */}
               <div className="ats-result-top-action-bar">
                 <div className="flex items-center gap-3">
@@ -1838,7 +1838,7 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
             /* ══════════════════════════════════════════════════════════
                INPUT MODE: 3-STEP RESUME OPTIMIZER (Exact Reference Image 1:1)
                ══════════════════════════════════════════════════════════ */
-            <div className="max-w-6xl mx-auto my-3">
+            <div className="w-full my-3">
               <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr_auto_1fr] items-stretch gap-4 lg:gap-2.5">
                 
                 {/* ── CARD 1: UPLOAD RESUME (Exact Reference Match) ── */}

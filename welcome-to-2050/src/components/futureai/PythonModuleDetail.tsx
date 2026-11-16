@@ -149,7 +149,8 @@ export const PythonModuleDetail: React.FC<PythonModuleDetailProps> = ({
   if (activeTopicWs !== null) {
     return <PythonTopicWorkspace userName={userName} topicId={activeTopicWs} initialStep={targetStep}
       onBack={() => { setActiveTopicWs(null); window.location.hash = '#python'; }}
-      onOpenUnlockModal={onOpenUnlockModal} />;
+      onOpenUnlockModal={onOpenUnlockModal}
+      onOpenAdvisor={onOpenAdvisor} />;
   }
 
   const sidebarNav = [

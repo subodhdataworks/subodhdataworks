@@ -30,6 +30,9 @@ const CANONICAL_COURSE_PRICES_INR = {
   ai_tools_prompt: 499,
   ms_office_copilot: 499,
   full_stack_mern: 987,
+  ai_website_dev: 2999,
+  ai_android_dev: 2499,
+  ai_video_creation: 999,
 };
 
 export async function onRequestPost(context) {

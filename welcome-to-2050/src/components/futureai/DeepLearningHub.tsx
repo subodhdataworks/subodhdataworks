@@ -132,7 +132,7 @@ export const DeepLearningHub: React.FC<DeepLearningHubProps> = ({
       {/* =========================================================================
           MAIN CONTAINER: STREAMLINED COMPACT TOP SPACING
           ========================================================================= */}
-      <main className="max-w-[1520px] mx-auto px-4 sm:px-6 pt-2 sm:pt-3 space-y-3">
+      <main className="max-w-[1520px] mx-auto px-4 sm:px-6 pt-0.5 sm:pt-1 space-y-3">
 
         {/* =========================================================================
             1. TOP HERO BANNER: LIGHT EXECUTIVE THEME (HIGH-CONTRAST TECH BACKDROP)
@@ -214,7 +214,7 @@ export const DeepLearningHub: React.FC<DeepLearningHubProps> = ({
                   className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-purple-500/25 active:scale-95 transition-all cursor-pointer"
                 >
                   <Play className="w-3.5 h-3.5 fill-white shrink-0" />
-                  <span>Resume Learning</span>
+                  <span>Learning</span>
                 </button>
                 <button
                   type="button"

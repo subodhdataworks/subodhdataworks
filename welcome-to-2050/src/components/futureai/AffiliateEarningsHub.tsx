@@ -354,7 +354,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
     } catch {
       // fallback
     }
-    showToast('Affiliate invite link copied! Share to earn Flat ₹100 per student.', 'success');
+    showToast('Affiliate invite link copied! Share to earn Flat ₹300 per student.', 'success');
     setTimeout(() => setCopiedLink(false), 2500);
   };
 
@@ -518,8 +518,8 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       badgeTag: '🔥 EARN CASH • CREATOR & STUDENT PARTNER PROGRAM',
       badgeClass: 'badge-emerald',
       titleLine1: 'Share & Earn',
-      titleLine2: '₹100 Per Student.',
-      subtitle: 'Invite friends & classmates. When they enroll in any course, you get flat ₹100 instant payout.',
+      titleLine2: '₹300 Per Student.',
+      subtitle: 'Invite friends & classmates. When they enroll in any course, you get flat ₹300 instant payout.',
       steps: [
         { num: '1', icon: '👤+', label: 'Share Link' },
         { num: '2', icon: '👥', label: 'Students Join' },
@@ -527,7 +527,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
         { num: '4', icon: '💰', label: 'Earn Commission' },
       ],
       featurePills: [
-        { icon: '🪙', label: 'Flat ₹100 / Enrollment' },
+        { icon: '🪙', label: 'Flat ₹300 / Enrollment' },
         { icon: '👥', label: 'Zero Purchase Needed' },
         { icon: '🎁', label: 'Real-Time Tracking' },
         { icon: '⚡', label: 'Unlimited Earnings' },
@@ -589,11 +589,11 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
   const mobilePromoBanners = useMemo(() => [
     {
       id: 'mob-banner-1',
-      badge: '⚡ FLAT ₹100 / STUDENT',
+      badge: '⚡ FLAT ₹300 / STUDENT',
       image: '/images/affiliate/mobile_banner_refer_friends_blue.png',
-      alt: 'Earn ₹100 Per Referral - Share your link with students & friends. Earn ₹100 on every verified enrollment.',
-      title: 'Earn ₹100 Per Referral',
-      subtitle: 'Share your link with students & friends. Earn flat ₹100 on every verified enrollment.',
+      alt: 'Earn ₹300 Per Referral - Share your link with students & friends. Earn ₹300 on every verified enrollment.',
+      title: 'Earn ₹300 Per Referral',
+      subtitle: 'Share your link with students & friends. Earn flat ₹300 on every verified enrollment.',
       ctaText: 'Share Link',
       ctaType: 'invite' as const,
       theme: 'blue',
@@ -602,9 +602,9 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       id: 'mob-banner-2',
       badge: '🔥 UNLIMITED CASH REWARDS',
       image: '/images/affiliate/mobile_banner_friends_learn_green.png',
-      alt: 'Your Friends Learn. You Earn ₹100. - When they enroll in any course, you get ₹100 commission instantly.',
-      title: 'Your Friends Learn. You Earn ₹100.',
-      subtitle: 'When they enroll in any course, you get ₹100 commission credited directly.',
+      alt: 'Your Friends Learn. You Earn ₹300. - When they enroll in any course, you get ₹300 commission instantly.',
+      title: 'Your Friends Learn. You Earn ₹300.',
+      subtitle: 'When they enroll in any course, you get ₹300 commission credited directly.',
       ctaText: 'Copy Referral Link',
       ctaType: 'earn' as const,
       theme: 'green',
@@ -780,7 +780,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
       });
 
       if (res.success) {
-        showToast('🎉 Verified! ₹100 referral commission credited to your wallet!', 'success');
+        showToast('🎉 Verified! ₹300 referral commission credited to your wallet!', 'success');
         try {
           const fresh = await fetchAffiliateRealData(cleanRefCode);
           if (fresh) {
@@ -1211,7 +1211,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                     </div>
                     <div className="ath-fws-text-col">
                       <span className="ath-fws-sub">Instant Payouts</span>
-                      <strong className="ath-fws-title">{availableBalance > 0 ? `₹${availableBalance.toLocaleString('en-IN')} Available` : 'Flat ₹100 / Student'}</strong>
+                      <strong className="ath-fws-title">{availableBalance > 0 ? `₹${availableBalance.toLocaleString('en-IN')} Available` : 'Flat ₹300 / Student'}</strong>
                     </div>
                     <div className="ath-fws-bank-chip">Direct to Bank ✓</div>
                   </div>
@@ -1252,14 +1252,14 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   </div>
                   <div
                     className="ath-fss-pill cursor-pointer hover:scale-105 active:scale-95 transition-transform"
-                    title="Earn Flat ₹100 / Friend"
+                    title="Earn Flat ₹300 / Friend"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleCopyLink();
                     }}
                   >
                     <Sparkles className="w-3 h-3 text-amber-500" />
-                    <span>Earn <strong>₹100</strong> / Friend</span>
+                    <span>Earn <strong>₹300</strong> / Friend</span>
                   </div>
                 </div>
               )}
@@ -1477,7 +1477,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="aff-card-title">My Affiliate Link</h3>
-                <p className="aff-card-sub">Share across social channels to earn ₹100 / student</p>
+                <p className="aff-card-sub">Share across social channels to earn ₹300 / student</p>
               </div>
             </div>
 
@@ -1815,7 +1815,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               </div>
               <div className="grid grid-cols-2 gap-1.5 text-[10px] font-semibold text-slate-600 pt-0.5">
                 <div>• Free Signup: <strong className="text-slate-900">₹0</strong></div>
-                <div>• Paid Enrollment: <strong className="text-emerald-600">₹100</strong></div>
+                <div>• Paid Enrollment: <strong className="text-emerald-600">₹300</strong></div>
                 <div>• Failed Payment: <strong className="text-rose-600">₹0</strong></div>
                 <div>• Unique Email &amp; Verified Only</div>
               </div>
@@ -1960,7 +1960,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 </div>
                 <strong className="text-xs font-bold text-slate-800 block">Season Leaderboard Open</strong>
                 <p className="text-[11px] text-slate-500 mt-1 max-w-[220px] mx-auto leading-relaxed">
-                  Be the first to claim Rank #1! Share your referral link and earn Flat ₹100 per student enrollment.
+                  Be the first to claim Rank #1! Share your referral link and earn Flat ₹300 per student enrollment.
                 </p>
                 <button
                   type="button"
@@ -2218,7 +2218,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                   </div>
                   <strong className="text-sm font-bold text-slate-800 block mb-1">No Referrals Recorded Yet</strong>
                   <p className="text-xs text-slate-500 max-w-sm mx-auto mb-4 leading-relaxed">
-                    Share your unique referral link to earn Flat ₹100 cash commission for every student who enrolls!
+                    Share your unique referral link to earn Flat ₹300 cash commission for every student who enrolls!
                   </p>
                   <button
                     type="button"
@@ -2316,7 +2316,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                     <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                     <div>
                       <strong className="block font-bold">Minimum Balance: ₹{minWithdrawal}</strong>
-                      <span>You need at least ₹{minWithdrawal} in your wallet to withdraw. Share your referral link with students and friends to earn Flat ₹100 per enrollment!</span>
+                      <span>You need at least ₹{minWithdrawal} in your wallet to withdraw. Share your referral link with students and friends to earn Flat ₹300 per enrollment!</span>
                     </div>
                   </div>
                 )}
@@ -2838,7 +2838,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
                 <div className="flex justify-between">
                   <span className="text-slate-400 font-medium">Affiliate Commission:</span>
                   <strong className="text-emerald-600 text-sm font-black">
-                    ₹{selectedReferralDetail.commission || 100}
+                    ₹{selectedReferralDetail.commission || 300}
                   </strong>
                 </div>
                 <div className="flex justify-between">
@@ -2860,7 +2860,7 @@ export const AffiliateEarningsHub: React.FC<AffiliateEarningsHubProps> = ({
               </div>
 
               <div className="text-[11px] text-slate-400 leading-relaxed bg-sky-50/50 p-2.5 rounded-lg border border-sky-100">
-                Rule: Flat ₹100 per successful enrollment for all affiliate partners. Eligible commissions are credited directly to your Available Balance.
+                Rule: Flat ₹300 per successful enrollment for all affiliate partners. Eligible commissions are credited directly to your Available Balance.
               </div>
             </div>
           </div>

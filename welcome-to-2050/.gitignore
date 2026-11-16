@@ -31,8 +31,12 @@ dist-ssr
 /test_*.mjs
 /test_*.cjs
 /verify_*.cjs
-/test-results/
+/test_results/
 /.playwright-mcp/
+/scratch/
+/screenshots/
+/*.cjs
+/*.py
 
 # Environment files with secrets
 .env

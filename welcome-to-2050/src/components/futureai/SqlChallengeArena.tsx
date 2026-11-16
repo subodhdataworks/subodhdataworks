@@ -1,4 +1,5 @@
 import { IndianVoiceProblemStatement } from './IndianVoiceProblemStatement';
+import { SqlVisualExplanationEngine } from './SqlVisualExplanationEngine';
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { soundEffects } from '../../services/soundEffects';
@@ -866,11 +867,16 @@ export const SqlChallengeArena: React.FC<SqlChallengeArenaProps> = ({
         </div>
 
         {/* =========================================================================
-            COLUMN 3: TEST CASES (Top) + CHALLENGE PROGRESS (Bottom) (Right 3 cols)
+            COLUMN 3: VISUAL EXPLANATION (Top) + TEST CASES (Middle) + CHALLENGE PROGRESS (Bottom) (Right 3 cols)
            ========================================================================= */}
-        <div className="lg:col-span-3 space-y-5 flex flex-col">
+        <div className="lg:col-span-3 space-y-4 flex flex-col">
           
-          {/* UPPER CARD: Test Cases & Result */}
+          {/* 1. VISUAL EXPLANATION (Topic 1: SELECT Basics Only) */}
+          {(topicId === 1 || (topicTitle && topicTitle.toLowerCase().includes('select basics')) || (task && (task as any).topicId === 1)) && task && (
+            <SqlVisualExplanationEngine task={task} />
+          )}
+
+          {/* 2. UPPER CARD: Test Cases & Result */}
           <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs flex flex-col overflow-hidden text-left">
             {/* Tabs Header */}
             <div className="flex items-center gap-6 px-5 pt-3.5 border-b border-slate-200/80 bg-slate-50/50">

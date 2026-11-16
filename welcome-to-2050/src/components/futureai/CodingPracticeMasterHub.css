@@ -219,7 +219,8 @@
   }
 
   .cpm-tab-pill:not(.is-active) {
-    background: #ffffff !important;
+    position: relative !important;
+    overflow: hidden !important;
     color: #475569 !important;
     border-color: #dbeafe !important;
     box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03) !important;
@@ -268,7 +269,8 @@
     flex-direction: row !important;
     align-items: center !important;
     gap: 4px !important;
-    background: #ffffff !important;
+    position: relative !important;
+    overflow: hidden !important;
     border: 1px solid #dbeafe !important;
     border-radius: 11px !important;
     padding: 5px 9px !important;
@@ -283,24 +285,30 @@
   /* ── 4. PREMIUM TWO-COLUMN COURSE GRID ── */
   .cpm-cards-grid {
     display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 8px !important;
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    gap: 12px !important;
     margin-bottom: 14px !important;
   }
 
+  @media (min-width: 520px) {
+    .cpm-cards-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 10px !important;
+    }
+  }
+
   .cpm-course-card {
-    background: #ffffff !important;
-    border-radius: 16px !important;
-    border: 1.5px solid #e2e8f0 !important;
-    padding: 9px 9px 8px 9px !important;
-    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.03) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    border-radius: 18px !important;
+    padding: 12px 12px 0 12px !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
     text-align: left !important;
     cursor: pointer !important;
     transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease !important;
-    min-height: 106px !important;
+    min-height: auto !important;
   }
 
   .cpm-course-card:active {
@@ -447,5 +455,32 @@
 
   .cpm-card-subtitle {
     font-size: 8px !important;
+  }
+}
+
+
+/* 5x3 Desktop Grid for Coding Practice + DSA */
+.cpm-cards-grid-5x3 {
+  display: grid !important;
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+@media (min-width: 640px) {
+  .cpm-cards-grid-5x3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (min-width: 900px) {
+  .cpm-cards-grid-5x3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (min-width: 1100px) {
+  .cpm-cards-grid-5x3 {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 12px !important;
   }
 }

@@ -77,17 +77,17 @@ export class PowerGreenReasoningProvider implements AIProvider {
     // High-speed intent classifier executed directly in client JavaScript
     let actionIntent: AIProviderResponse['actionIntent'] = 'GENERAL';
 
-    if (cleanPrompt.includes('start python') || cleanPrompt.includes('पायथन शुरू') || cleanPrompt.includes('python shuru')) {
+    if (cleanPrompt.includes('start python') || cleanPrompt.includes('Python शुरू') || cleanPrompt.includes('python shuru')) {
       actionIntent = 'START_PYTHON';
-    } else if (cleanPrompt.includes('explain variable') || cleanPrompt.includes('वेरिएबल समझाएं') || cleanPrompt.includes('what is a variable') || cleanPrompt.includes('variables')) {
+    } else if (cleanPrompt.includes('explain variable') || cleanPrompt.includes('Variable समझाएं') || cleanPrompt.includes('what is a variable') || cleanPrompt.includes('variables')) {
       actionIntent = 'EXPLAIN_VARIABLES';
-    } else if (cleanPrompt.includes('loop') || cleanPrompt.includes('for loop') || cleanPrompt.includes('while loop') || cleanPrompt.includes('लूप')) {
+    } else if (cleanPrompt.includes('loop') || cleanPrompt.includes('for loop') || cleanPrompt.includes('while loop') || cleanPrompt.includes('Loop')) {
       actionIntent = 'EXPLAIN_LOOPS';
-    } else if (cleanPrompt.includes('function') || cleanPrompt.includes('def ') || cleanPrompt.includes('फ़ंक्शन')) {
+    } else if (cleanPrompt.includes('function') || cleanPrompt.includes('def ') || cleanPrompt.includes('Function')) {
       actionIntent = 'EXPLAIN_FUNCTIONS';
     } else if (cleanPrompt.includes('start mcq') || cleanPrompt.includes('एमसीक्यू') || cleanPrompt.includes('quiz') || cleanPrompt.includes('practice question')) {
       actionIntent = 'START_MCQ';
-    } else if (cleanPrompt.includes('play practice game') || cleanPrompt.includes('practice game') || cleanPrompt.includes('coding game') || cleanPrompt.includes('codequest') || cleanPrompt.includes('कोडिंग प्रैक्टिस')) {
+    } else if (cleanPrompt.includes('play practice game') || cleanPrompt.includes('practice game') || cleanPrompt.includes('coding game') || cleanPrompt.includes('codequest') || cleanPrompt.includes('Coding प्रैक्टिस')) {
       actionIntent = 'PLAY_GAME';
     } else if (cleanPrompt.includes('start interview') || cleanPrompt.includes('mock interview') || cleanPrompt.includes('voice interview') || cleanPrompt.includes('इंटरव्यू शुरू')) {
       actionIntent = 'START_INTERVIEW';
@@ -119,34 +119,34 @@ export class PowerGreenReasoningProvider implements AIProvider {
     if (lang === 'hi') {
       switch (intent) {
         case 'EXPLAIN_VARIABLES':
-          return 'वेरिएबल एक नामित कंटेनर है जिसका उपयोग प्रोग्राम में डेटा को संगृहीत करने के लिए किया जाता है। उदाहरण के लिए, पायथन में आयु बराबर पच्चीस लिखने पर पच्चीस संख्या आयु नामक वेरिएबल में सुरक्षित हो जाती है।';
+          return 'Variable एक नामित कंटेनर है जिसका उपयोग Program में Data को संगृहीत करने के लिए किया जाता है। उदाहरण के लिए, Python में आयु बराबर पच्चीस लिखने पर पच्चीस संख्या आयु नामक Variable में सुरक्षित हो जाती है।';
         case 'EXPLAIN_LOOPS':
-          return 'पायथन में लूप का उपयोग कोड के एक ब्लॉक को कई बार दोहराने के लिए किया जाता है। For Loop का उपयोग किसी सूची के तत्वों पर पुनरावृत्ति करने के लिए और While Loop का उपयोग किसी शर्त के सत्य रहने तक किया जाता है।';
+          return 'Python में Loop का उपयोग Code के एक ब्लॉक को कई बार दोहराने के लिए किया जाता है। For Loop का उपयोग किसी List के तत्वों पर Loop करने के लिए और While Loop का उपयोग किसी शर्त के सत्य रहने तक किया जाता है।';
         case 'EXPLAIN_FUNCTIONS':
-          return 'फ़ंक्शन कोड का एक पुन: प्रयोज्य ब्लॉक होता है जो केवल तभी चलता है जब उसे कॉल किया जाता है। पायथन में इसे def कीवर्ड द्वारा परिभाषित किया जाता है।';
+          return 'Function Code का एक पुन: प्रयोज्य ब्लॉक होता है जो केवल तभी चलता है जब उसे कॉल किया जाता है। Python में इसे def Keyword द्वारा परिभाषित किया जाता है।';
         case 'START_PYTHON':
-          return 'पायथन फाउंडेशन मॉड्यूल प्रारंभ किया जा रहा है। हम सिंटैक्स, डेटा प्रकार और ऑपरेटरों से शुरुआत करेंगे।';
+          return 'Python फाउंडेशन Module प्रारंभ किया जा रहा है। हम Syntax, Data Type और ऑपरेटरों से शुरुआत करेंगे।';
         case 'START_MCQ':
-          return 'पायथन मूल्यांकन क्विज़ लोड हो रहा है। आपके सामने पहला प्रश्न प्रस्तुत किया जा रहा है।';
+          return 'Python मूल्यांकन क्विज़ लोड हो रहा है। आपके सामने पहला प्रश्न प्रस्तुत किया जा रहा है।';
         case 'PLAY_GAME':
-          return '2050 कोडिंग सिमुलेशन मिशन लोड हो रहा है। आपका कार्य कोड को सही क्रम में व्यवस्थित करना है।';
+          return '2050 Coding सिमुलेशन मिशन लोड हो रहा है। आपका कार्य Code को सही क्रम में व्यवस्थित करना है।';
         case 'START_INTERVIEW':
           return 'एआई वॉइस इंटरव्यूअर प्रारंभ हो रहा है। कृपया अपने माइक्रोफ़ोन को सक्रिय रखें और स्पष्ट आवाज़ में उत्तर दें।';
         case 'CAREER_ADVICE':
-          return 'फ्यूचर.एआई के 700 से अधिक हायरिंग पार्टनर्स हैं। डेटा एनालिस्ट पद के लिए 6 से 15 लाख का पैकेज मिलता है। आप पे आफ्टर प्लेसमेंट मॉडल से सीख सकते हैं।';
+          return 'फ्यूचर.एआई के 700 से अधिक हायरिंग पार्टनर्स हैं। Data Analyst पद के लिए 6 से 15 लाख का Package मिलता है। आप पे आफ्टर प्लेसमेंट Model से सीख सकते हैं।';
         case 'CONTINUE_STOPPED':
-          return 'स्वागत है! आपने पायथन लर्निंग मिशन पर विराम लिया था। आइए इसे वहीं से आगे बढ़ाते हैं।';
+          return 'स्वागत है! आपने Python लर्निंग मिशन पर विराम लिया था। आइए इसे वहीं से आगे बढ़ाते हैं।';
         default:
           if (prompt.includes('sql')) {
-            return 'एसक्यूएल यानी स्ट्रक्चर्ड क्वेरी लैंग्वेज डेटाबेस से डेटा निकालने और उसका विश्लेषण करने का मानक माध्यम है।';
+            return 'SQL यानी स्ट्रक्चर्ड Query लैंग्वेज Database से Data निकालने और उसका विश्लेषण करने का मानक माध्यम है।';
           }
           if (prompt.includes('power bi')) {
-            return 'पावर बीआई एक उन्नत बिजनेस इंटेलिजेंस टूल है जो जटिल डेटा को इंटरैक्टिव विजुअल्स और डैशबोर्ड में बदलता है।';
+            return 'Power BI एक उन्नत बिजनेस इंटेलिजेंस टूल है जो जटिल Data को इंटरैक्टिव विजुअल्स और Dashboard में बदलता है।';
           }
           if (prompt.includes('genai') || prompt.includes('generative ai')) {
-            return 'जेनेरेटिव एआई एनालिस्ट्स को स्वचालित अंतर्दृष्टि प्राप्त करने और पायथन कोड को तीव्र गति से तैयार करने में सक्षम बनाता है।';
+            return 'जेनेरेटिव एआई Analysts को स्वचालित अंतर्दृष्टि प्राप्त करने और Python Code को तीव्र गति से तैयार करने में सक्षम बनाता है।';
           }
-          return 'नमस्ते! मैं पावरग्रीन एआई हूँ, आपका 100% क्लाइंट-साइड लर्निंग कम्पैनियन। डेटा एनालिटिक्स, पायथन, एसक्यूएल या इंटरव्यू की तैयारी के विषय में आप कुछ भी पूछ सकते हैं।';
+          return 'नमस्ते! मैं पावरग्रीन एआई हूँ, आपका 100% Client-साइड लर्निंग कम्पैनियन। Data Analytics, Python, SQL या इंटरव्यू की तैयारी के विषय में आप कुछ भी पूछ सकते हैं।';
       }
     }
 

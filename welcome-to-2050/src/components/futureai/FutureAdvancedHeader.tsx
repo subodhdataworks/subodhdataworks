@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { FutureLogo } from './FutureLogo';
 import { WalletWithdrawModal } from './WalletWithdrawModal';
+import { DesktopAppleTopNav } from './navigation/DesktopAppleTopNav';
 import { soundEffects } from '../../services/soundEffects';
 import { auth } from '../../services/firebase';
 import { SessionService } from '../../services/sessionService';
@@ -66,6 +67,7 @@ export interface FutureAdvancedHeaderProps {
   onOpenSearch?: () => void;
   onLogout?: () => void;
   isLoggedIn?: boolean;
+  showDesktopDock?: boolean;
   onOpenLogin?: () => void;
   onOpenSignUp?: () => void;
 }
@@ -92,6 +94,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
   onOpenSearch,
   onLogout,
   isLoggedIn = false,
+  showDesktopDock,
   onOpenLogin,
   onOpenSignUp,
 }) => {
@@ -104,40 +107,75 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
   const [headerWithdrawModalOpen, setHeaderWithdrawModalOpen] = useState(false);
 
   const notificationsRef = useRef<HTMLDivElement>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
-  // Dynamic student info state from localStorage & props
+  // Dynamic student info state from localStorage, Firebase Auth & props
   const [studentName, setStudentName] = useState<string>(() => {
     if (typeof window !== 'undefined') {
+      const isUserLogged = isLoggedIn || localStorage.getItem('futureai_logged_in') === 'true';
+      if (!isUserLogged) return '';
       const stored = localStorage.getItem('futureai_user_name');
-      if (stored && stored !== 'Learner' && stored !== 'Rahul' && stored !== 'Rahul Sharma' && stored !== 'Student') {
+      if (stored && stored !== 'Learner' && stored !== 'Rahul' && stored !== 'Student' && stored !== 'Rahul Sharma') {
         return stored;
       }
-      return userName && userName !== 'Learner' && userName !== 'Rahul' && userName !== 'Rahul Sharma' && userName !== 'Subodh Kumar' && userName !== 'Student' ? userName : 'Rahul Sharma';
+      if (auth.currentUser?.displayName) {
+        return auth.currentUser.displayName;
+      }
+      return userName && userName !== 'Learner' && userName !== 'Rahul' && userName !== 'Student' && userName !== 'Rahul Sharma' ? userName : '';
     }
-    return userName && userName !== 'Learner' && userName !== 'Rahul' && userName !== 'Rahul Sharma' && userName !== 'Subodh Kumar' && userName !== 'Student' ? userName : '';
+    return isLoggedIn && userName && userName !== 'Learner' && userName !== 'Rahul' && userName !== 'Student' && userName !== 'Rahul Sharma' ? userName : '';
   });
 
   const [studentEmail, setStudentEmail] = useState<string>(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('futureai_user_email') || 'rahul.sharma@example.com';
+      const isUserLogged = isLoggedIn || localStorage.getItem('futureai_logged_in') === 'true';
+      if (!isUserLogged) return '';
+      const stored = localStorage.getItem('futureai_user_email');
+      if (stored && stored !== 'rahul.sharma@example.com') return stored;
+      return auth.currentUser?.email || '';
     }
-    return 'rahul.sharma@example.com';
+    return '';
   });
   const [editEmailInput, setEditEmailInput] = useState<string>(studentEmail);
 
   const [studentPhone, setStudentPhone] = useState<string>(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('futureai_user_phone') || userPhone || '+91 98765 43210';
+      const isUserLogged = isLoggedIn || localStorage.getItem('futureai_logged_in') === 'true';
+      if (!isUserLogged) return '';
+      return localStorage.getItem('futureai_user_phone') || auth.currentUser?.phoneNumber || userPhone || '';
     }
     return userPhone || '';
   });
 
   const [studentAvatar, setStudentAvatar] = useState<string>(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('futureai_user_avatar') || userAvatar || '/images/avatar-rahul-sharma.jpg';
+      const isUserLogged = isLoggedIn || localStorage.getItem('futureai_logged_in') === 'true';
+      if (!isUserLogged) return '';
+      const stored = localStorage.getItem('futureai_user_avatar');
+      if (stored && !stored.includes('avatar-rahul-sharma.jpg')) return stored;
+      return auth.currentUser?.photoURL || (userAvatar && !userAvatar.includes('avatar-rahul-sharma.jpg') ? userAvatar : '');
     }
-    return userAvatar || '';
+    return userAvatar && !userAvatar.includes('avatar-rahul-sharma.jpg') ? userAvatar : '';
   });
+
+  // Handle profile picture file upload
+  const handleAvatarFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === 'string' ? reader.result : '';
+      if (result) {
+        setStudentAvatar(result);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('futureai_user_avatar', result);
+        }
+        soundEffects.playCelebration();
+      }
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
 
   // Dynamic Wallet Balance State
   const readWalletBalance = (): number => {
@@ -194,21 +232,49 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
   const [editPhoneInput, setEditPhoneInput] = useState(studentPhone);
 
   useEffect(() => {
-    if (userName && userName !== 'Rahul' && userName !== 'Learner' && userName !== 'Student') {
-      setStudentName(userName);
+    if (!isLoggedIn) {
+      setStudentName('');
+      setStudentAvatar('');
+      setStudentEmail('');
+      setStudentPhone('');
+      setProfileDropdownOpen(false);
+    } else {
+      if (typeof window !== 'undefined') {
+        const storedName = localStorage.getItem('futureai_user_name');
+        const storedPhone = localStorage.getItem('futureai_user_phone');
+        const storedAvatar = localStorage.getItem('futureai_user_avatar');
+        const storedEmail = localStorage.getItem('futureai_user_email');
+        if (storedName && storedName !== 'Rahul Sharma' && storedName !== 'Learner' && storedName !== 'Student') {
+          setStudentName(storedName);
+        } else if (userName && userName !== 'Rahul' && userName !== 'Learner' && userName !== 'Student') {
+          setStudentName(userName);
+        }
+        if (storedPhone) setStudentPhone(storedPhone);
+        if (storedAvatar && !storedAvatar.includes('avatar-rahul-sharma.jpg')) setStudentAvatar(storedAvatar);
+        if (storedEmail && storedEmail !== 'rahul.sharma@example.com') setStudentEmail(storedEmail);
+      }
     }
-  }, [userName]);
+  }, [isLoggedIn, userName]);
 
   useEffect(() => {
     if (profileDropdownOpen && typeof window !== 'undefined') {
+      const isUserLogged = isLoggedIn || localStorage.getItem('futureai_logged_in') === 'true';
+      if (!isUserLogged) {
+        setStudentName('');
+        setStudentAvatar('');
+        setStudentEmail('');
+        setStudentPhone('');
+        setProfileDropdownOpen(false);
+        return;
+      }
       const storedName = localStorage.getItem('futureai_user_name');
       const storedPhone = localStorage.getItem('futureai_user_phone');
       const storedAvatar = localStorage.getItem('futureai_user_avatar');
-      if (storedName) setStudentName(storedName);
+      if (storedName && storedName !== 'Rahul Sharma') setStudentName(storedName);
       if (storedPhone) setStudentPhone(storedPhone);
-      if (storedAvatar) setStudentAvatar(storedAvatar);
+      if (storedAvatar && !storedAvatar.includes('avatar-rahul-sharma.jpg')) setStudentAvatar(storedAvatar);
     }
-  }, [profileDropdownOpen]);
+  }, [profileDropdownOpen, isLoggedIn]);
 
   // Lock body scroll when drawer is open
   useEffect(() => {
@@ -226,10 +292,14 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
     };
   }, [hamburgerDrawerOpen]);
 
-  // Close notifications dropdown on outside click
+  // Close mobile notifications dropdown on outside click (only when mobile container is visible)
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
-      if (notificationsRef.current && !notificationsRef.current.contains(e.target as Node)) {
+      if (
+        notificationsRef.current &&
+        notificationsRef.current.offsetParent !== null &&
+        !notificationsRef.current.contains(e.target as Node)
+      ) {
         setNotificationsOpen(false);
       }
     };
@@ -298,7 +368,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
         break;
       case 'learning':
         onNavigateLearning();
-        if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+        if (typeof window !== 'undefined') window.location.hash = '#learning';
         break;
       case 'practice':
         onNavigatePractice('master');
@@ -407,6 +477,12 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
       console.warn('Firebase signout error:', e);
     }
 
+    setStudentName('');
+    setStudentAvatar('');
+    setStudentEmail('');
+    setStudentPhone('');
+    setProfileDropdownOpen(false);
+
     try {
       if (onLogout) {
         await onLogout();
@@ -439,8 +515,8 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
     }
   };
 
-  // Notification items
-  const notificationItems = [
+  // Notification items state (preserving unread count, read/unread status, and actions)
+  const [notificationState, setNotificationState] = useState([
     {
       id: 1,
       title: 'Topic 1 Free Challenges Unlocked!',
@@ -462,7 +538,33 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
       time: '1 day ago',
       unread: false,
     },
-  ];
+  ]);
+
+  const markNotificationRead = (id: number) => {
+    setNotificationState((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, unread: false } : item))
+    );
+  };
+
+  const markAllNotificationsRead = () => {
+    setNotificationState((prev) => prev.map((item) => ({ ...item, unread: false })));
+  };
+
+  const notificationItems = notificationState.map((item) => ({
+    ...item,
+    action:
+      item.id === 1
+        ? () => {
+            scrollToTop();
+            onNavigatePractice('python');
+          }
+        : item.id === 3
+        ? () => {
+            scrollToTop();
+            onNavigateEarn();
+          }
+        : undefined,
+  }));
 
   // Quick search suggestions
   const searchResults = [
@@ -558,8 +660,97 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
   return (
     <>
-      {/* ─── STICKY TOP HEADER BAR ─── */}
-      <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-[0_2px_16px_rgba(0,0,0,0.03)] transition-all shrink-0">
+      {/* ─── PREMIUM APPLE-STYLE FLOATING TOP NAVIGATION (Desktop >= md) ─── */}
+      {(showDesktopDock ?? true) && (
+        <DesktopAppleTopNav
+          isLoggedIn={isLoggedIn}
+          onOpenLogin={onOpenLogin}
+          onOpenSignUp={onOpenSignUp}
+          activeNavTab={activeNavTab}
+          walletBalance={walletBalance}
+          studentName={studentName}
+          studentAvatar={studentAvatar}
+          notificationsOpen={notificationsOpen}
+          notificationItems={notificationItems}
+          onToggleNotifications={() => {
+            setNotificationsOpen((prev) => !prev);
+            setProfileDropdownOpen(false);
+            setHamburgerDrawerOpen(false);
+            if (onOpenNotifications) onOpenNotifications();
+          }}
+          onCloseNotifications={() => setNotificationsOpen(false)}
+          onMarkNotificationRead={markNotificationRead}
+          onMarkAllNotificationsRead={markAllNotificationsRead}
+          onNavigateHome={() => {
+            scrollToTop();
+            onNavigateHome();
+          }}
+          onNavigateLearning={() => {
+            scrollToTop();
+            onNavigateLearning();
+          }}
+          onNavigatePractice={(track) => {
+            scrollToTop();
+            onNavigatePractice(track);
+          }}
+          onOpenAtsResume={() => {
+            scrollToTop();
+            onOpenAtsResume();
+          }}
+          onNavigateEarn={() => {
+            scrollToTop();
+            onNavigateEarn();
+          }}
+          onOpenWallet={() => {
+            if (onOpenWallet) onOpenWallet();
+            else setHeaderWithdrawModalOpen(true);
+          }}
+          onNavigateInternship={() => {
+            scrollToTop();
+            onNavigateInternship();
+          }}
+          onNavigatePlacement={() => {
+            scrollToTop();
+            onNavigatePlacement();
+          }}
+          onNavigateCertificate={() => {
+            scrollToTop();
+            if (onNavigateCertificate) onNavigateCertificate();
+            else if (typeof window !== 'undefined') window.location.hash = '#certificates';
+          }}
+          onNavigateRecommendation={() => {
+            scrollToTop();
+            if (onNavigateRecommendation) onNavigateRecommendation();
+            else if (typeof window !== 'undefined') window.location.hash = '#recommendation';
+          }}
+          onOpenHelp={() => {
+            if (onOpenHelp) onOpenHelp();
+            else window.open(WA_SUPPORT_URL, '_blank', 'noopener,noreferrer');
+          }}
+          onOpenSearch={() => {
+            if (onOpenSearch) onOpenSearch();
+            else setSearchModalOpen(true);
+          }}
+          onToggleProfile={() => {
+            if (!isLoggedIn) {
+              if (onOpenLogin) onOpenLogin();
+              else if (onOpenSignUp) onOpenSignUp();
+              return;
+            }
+            setProfileDropdownOpen((prev) => !prev);
+            setHamburgerDrawerOpen(false);
+            setNotificationsOpen(false);
+          }}
+          onToggleHamburger={() => {
+            setHamburgerDrawerOpen((prev) => !prev);
+            setProfileDropdownOpen(false);
+            setNotificationsOpen(false);
+          }}
+        />
+      )}
+
+      {/* ─── STICKY TOP HEADER BAR (Mobile < md when Desktop Apple Top Nav is active) ─── */}
+      <header className={`${(showDesktopDock ?? true) ? 'md:hidden' : ''} sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-[#DDD6FE]/70 shadow-[0_2px_14px_rgba(109,40,217,0.04)] transition-all shrink-0`}>
         <div className="max-w-[1440px] mx-auto px-2.5 sm:px-5 lg:px-7 h-14 sm:h-16 flex items-center justify-between gap-1.5 sm:gap-2 lg:gap-5">
           
           {/* LEFT: Future IT Industries Official Brand Logo */}
@@ -575,8 +766,8 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
             <FutureLogo variant="full" size="md" />
           </div>
 
-          {/* ══════════ CENTER: DESKTOP ONLY HEYGEN-INSPIRED PILL NAV (>= 1024px) ══════════ */}
-          <nav className="hidden lg:flex items-center gap-1 lg:gap-1.5 shrink-0 text-[13px] font-semibold text-slate-700">
+          {/* ══════════ CENTER: DESKTOP ONLY HEYGEN-INSPIRED PILL NAV (>= 1024px, hidden when macOS Bottom Dock is active) ══════════ */}
+          <nav className={`${(showDesktopDock ?? true) ? 'hidden' : 'hidden lg:flex'} items-center gap-1 lg:gap-1.5 shrink-0 text-[13px] font-semibold text-slate-700`}>
             {/* 1. Home */}
             <button
               type="button"
@@ -585,13 +776,13 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 scrollToTop();
                 onNavigateHome();
               }}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
+              className={`flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
                 activeNavTab === 'home'
-                  ? 'bg-[#E4F5FA] text-[#0891b2] font-bold border border-[#16C5EA]/30 shadow-2xs'
-                  : 'text-[#344054] hover:text-[#0891b2] hover:bg-[#FAFBFC] border border-transparent'
+                  ? 'bg-[#F5F3FF] text-[#6D28D9] font-bold border border-[#DDD6FE] shadow-2xs'
+                  : 'text-[#344054] hover:text-[#6D28D9] hover:bg-[#F5F3FF]/70 border border-transparent'
               }`}
             >
-              <Home className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'home' ? 'text-[#16C5EA]' : 'text-[#667085]'}`} />
+              <Home className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'home' ? 'text-[#6D28D9]' : 'text-[#667085]'}`} />
               <span>Home</span>
             </button>
 
@@ -603,13 +794,13 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 scrollToTop();
                 onNavigateLearning();
               }}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
+              className={`flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
                 activeNavTab === 'learning'
-                  ? 'bg-[#E4F5FA] text-[#0891b2] font-bold border border-[#16C5EA]/30 shadow-2xs'
-                  : 'text-[#344054] hover:text-[#0891b2] hover:bg-[#FAFBFC] border border-transparent'
+                  ? 'bg-[#F5F3FF] text-[#6D28D9] font-bold border border-[#DDD6FE] shadow-2xs'
+                  : 'text-[#344054] hover:text-[#6D28D9] hover:bg-[#F5F3FF]/70 border border-transparent'
               }`}
             >
-              <BookOpen className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'learning' ? 'text-[#16C5EA]' : 'text-[#667085]'}`} />
+              <BookOpen className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'learning' ? 'text-[#6D28D9]' : 'text-[#667085]'}`} />
               <span>My Learning</span>
             </button>
 
@@ -621,13 +812,13 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 scrollToTop();
                 onNavigatePractice('master');
               }}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
+              className={`flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
                 activeNavTab === 'practice'
-                  ? 'bg-[#E4F5FA] text-[#0891b2] font-bold border border-[#16C5EA]/30 shadow-2xs'
-                  : 'text-[#344054] hover:text-[#0891b2] hover:bg-[#FAFBFC] border border-transparent'
+                  ? 'bg-[#F5F3FF] text-[#6D28D9] font-bold border border-[#DDD6FE] shadow-2xs'
+                  : 'text-[#344054] hover:text-[#6D28D9] hover:bg-[#F5F3FF]/70 border border-transparent'
               }`}
             >
-              <Laptop className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'practice' ? 'text-[#16C5EA]' : 'text-[#667085]'}`} />
+              <Laptop className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'practice' ? 'text-[#6D28D9]' : 'text-[#667085]'}`} />
               <span>DSA Coding Practice</span>
             </button>
 
@@ -638,13 +829,13 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 soundEffects.playClick();
                 onOpenAtsResume();
               }}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
+              className={`flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
                 activeNavTab === 'ats'
-                  ? 'bg-[#E4F5FA] text-[#0891b2] font-bold border border-[#16C5EA]/30 shadow-2xs'
-                  : 'text-[#344054] hover:text-[#0891b2] hover:bg-[#FAFBFC] border border-transparent'
+                  ? 'bg-[#F5F3FF] text-[#6D28D9] font-bold border border-[#DDD6FE] shadow-2xs'
+                  : 'text-[#344054] hover:text-[#6D28D9] hover:bg-[#F5F3FF]/70 border border-transparent'
               }`}
             >
-              <FileCheck2 className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'ats' ? 'text-[#16C5EA]' : 'text-[#667085]'}`} />
+              <FileCheck2 className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'ats' ? 'text-[#6D28D9]' : 'text-[#667085]'}`} />
               <span>ATS Resume</span>
             </button>
 
@@ -656,13 +847,13 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 scrollToTop();
                 onNavigateEarn();
               }}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
+              className={`flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
                 activeNavTab === 'earn'
-                  ? 'bg-[#E4F5FA] text-[#0891b2] font-bold border border-[#16C5EA]/30 shadow-2xs'
-                  : 'text-[#344054] hover:text-[#0891b2] hover:bg-[#FAFBFC] border border-transparent'
+                  ? 'bg-[#F5F3FF] text-[#6D28D9] font-bold border border-[#DDD6FE] shadow-2xs'
+                  : 'text-[#344054] hover:text-[#6D28D9] hover:bg-[#F5F3FF]/70 border border-transparent'
               }`}
             >
-              <Coins className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'earn' ? 'text-[#16C5EA]' : 'text-[#667085]'}`} />
+              <Coins className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'earn' ? 'text-[#6D28D9]' : 'text-[#667085]'}`} />
               <span>Earn Cash</span>
             </button>
 
@@ -674,13 +865,13 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 scrollToTop();
                 onNavigateInternship();
               }}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
+              className={`flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
                 activeNavTab === 'internship'
-                  ? 'bg-[#E4F5FA] text-[#0891b2] font-bold border border-[#16C5EA]/30 shadow-2xs'
-                  : 'text-[#344054] hover:text-[#0891b2] hover:bg-[#FAFBFC] border border-transparent'
+                  ? 'bg-[#F5F3FF] text-[#6D28D9] font-bold border border-[#DDD6FE] shadow-2xs'
+                  : 'text-[#344054] hover:text-[#6D28D9] hover:bg-[#F5F3FF]/70 border border-transparent'
               }`}
             >
-              <GraduationCap className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'internship' ? 'text-[#16C5EA]' : 'text-[#667085]'}`} />
+              <GraduationCap className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'internship' ? 'text-[#6D28D9]' : 'text-[#667085]'}`} />
               <span>Internship</span>
             </button>
           </nav>
@@ -850,7 +1041,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                   if (onOpenSignUp) onOpenSignUp();
                   else onOpenLogin?.();
                 }}
-                className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-95 text-white font-bold text-xs sm:text-sm whitespace-nowrap shadow-xs hover:shadow-md transition-all duration-200 shrink-0"
+                className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] hover:from-[#5B21B6] hover:to-[#7C3AED] active:scale-95 text-white font-bold text-xs sm:text-sm whitespace-nowrap shadow-xs hover:shadow-md transition-all duration-200 shrink-0"
               >
                 <span className="hidden md:inline">Free </span>
                 <span>Login / Sign Up</span>
@@ -1170,203 +1361,330 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
           </aside>
 
           {/* ═════════════════════════════════════════════════════════════════
-              B. MOBILE ONLY: 100% EXACT ORIGINAL MOBILE NAVIGATION DRAWER (< lg)
-              (User requested: "mobile ka pahle jaisa rahne do")
+              B. MOBILE ONLY: SLEEK HEYGEN DUAL-RAIL NAVIGATION DOCK (< lg)
+              (Mobile-friendly 1:1 match to Desktop HeyGen Navigation Dock)
           ═════════════════════════════════════════════════════════════════ */}
           <aside
             onClick={(e) => e.stopPropagation()}
-            className="lg:hidden relative z-10 w-[86vw] max-w-[340px] sm:max-w-[360px] h-full bg-white shadow-[-16px_0_40px_rgba(15,23,42,0.18)] rounded-l-[32px] border-l border-slate-100 flex flex-col justify-between overflow-y-auto no-scrollbar text-left animate-slideInRight"
+            className="lg:hidden relative z-10 w-[92vw] max-w-[365px] h-full bg-white shadow-[-16px_0_40px_rgba(15,23,42,0.18)] rounded-l-[28px] border-l border-slate-100 flex overflow-hidden text-left animate-slideInRight font-sans select-none"
             role="dialog"
             aria-label="Navigation Drawer"
           >
-            {/* Top Container: Close Button + Profile + Navigation Menu */}
-            <div className="flex flex-col">
-              {/* Top Row: Close (X) Button */}
-              <div className="p-3 pb-0 flex items-center justify-end shrink-0">
-                <button
-                  type="button"
-                  onClick={() => {
-                    soundEffects.playClick();
-                    setHamburgerDrawerOpen(false);
-                  }}
-                  className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all cursor-pointer active:scale-90 border border-slate-200/50 shadow-2xs"
-                  aria-label="Close navigation drawer"
+            {/* 1. LEFT NARROW ICON RAIL (HeyGen Mobile Rail ~62px wide) */}
+            <div className="w-[62px] bg-[#FAFBFC] border-r border-[#EAECF0] flex flex-col justify-between items-center py-3.5 px-1 shrink-0">
+              {/* Top: Colorful diamond symbol */}
+              <div className="flex flex-col items-center gap-3">
+                <div
+                  onClick={() => handleDrawerNavigate('dashboard')}
+                  className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-cyan-400 via-sky-500 to-indigo-500 flex items-center justify-center text-white shadow-xs cursor-pointer hover:scale-105 active:scale-95 transition-transform"
+                  title="Future IT Home"
                 >
-                  <X className="w-3.5 h-3.5" />
-                </button>
+                  <Sparkles className="w-4.5 h-4.5 fill-white/30 stroke-[2]" />
+                </div>
+
+                {/* Vertical Stacked Icon Tiles */}
+                <div className="flex flex-col items-center gap-2.5 pt-1">
+                  {/* Home Tile */}
+                  <button
+                    type="button"
+                    onClick={() => handleDrawerNavigate('dashboard')}
+                    className={`flex flex-col items-center gap-0.5 p-1 rounded-xl cursor-pointer transition-all ${
+                      isItemActive('dashboard') ? 'text-[#0891b2]' : 'text-[#667085] hover:text-[#344054]'
+                    }`}
+                    title="Dashboard"
+                  >
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${
+                      isItemActive('dashboard') ? 'bg-[#E4F5FA] text-[#0891b2]' : 'hover:bg-[#F2F4F7]'
+                    }`}>
+                      <Home className="w-4 h-4 stroke-[2]" />
+                    </div>
+                    <span className="text-[9.5px] font-bold">Home</span>
+                  </button>
+
+                  {/* Learning Tile */}
+                  <button
+                    type="button"
+                    onClick={() => handleDrawerNavigate('learning')}
+                    className="flex flex-col items-center gap-0.5 p-1 rounded-xl cursor-pointer transition-all"
+                    title="My Learning"
+                  >
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all shadow-xs ${
+                      isItemActive('learning')
+                        ? 'bg-[#00D2FF] text-white shadow-[0_4px_12px_rgba(0,210,255,0.35)]'
+                        : 'bg-[#E4F5FA] text-[#0891b2] hover:bg-[#d0f0fa]'
+                    }`}>
+                      <BookOpen className="w-4 h-4 stroke-[2]" />
+                    </div>
+                    <span className={`text-[9.5px] font-bold ${isItemActive('learning') ? 'text-[#00B4DB]' : 'text-[#667085]'}`}>
+                      Learn
+                    </span>
+                  </button>
+
+                  {/* Practice Tile */}
+                  <button
+                    type="button"
+                    onClick={() => handleDrawerNavigate('practice')}
+                    className={`flex flex-col items-center gap-0.5 p-1 rounded-xl cursor-pointer transition-all ${
+                      isItemActive('practice') ? 'text-[#0891b2]' : 'text-[#667085] hover:text-[#344054]'
+                    }`}
+                    title="DSA Coding Practice"
+                  >
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${
+                      isItemActive('practice') ? 'bg-[#E4F5FA] text-[#0891b2]' : 'hover:bg-[#F2F4F7]'
+                    }`}>
+                      <Code2 className="w-4 h-4 stroke-[2]" />
+                    </div>
+                    <span className="text-[9.5px] font-bold">Practice</span>
+                  </button>
+
+                  {/* Wallet Tile */}
+                  <button
+                    type="button"
+                    onClick={() => handleDrawerNavigate('earning')}
+                    className={`flex flex-col items-center gap-0.5 p-1 rounded-xl cursor-pointer transition-all ${
+                      isItemActive('earning') ? 'text-[#0891b2]' : 'text-[#667085] hover:text-[#344054]'
+                    }`}
+                    title="Earning & Wallet"
+                  >
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${
+                      isItemActive('earning') ? 'bg-[#E4F5FA] text-[#0891b2]' : 'hover:bg-[#F2F4F7]'
+                    }`}>
+                      <Coins className="w-4 h-4 stroke-[2]" />
+                    </div>
+                    <span className="text-[9.5px] font-bold">Wallet</span>
+                  </button>
+                </div>
               </div>
 
-              {/* Profile Header Section (Original Mobile Layout) */}
-              {isLoggedIn ? (
-                <div className="px-3.5 pt-0.5 pb-2.5 flex items-center gap-2.5 border-b border-slate-100 shrink-0">
-                  <div className="relative shrink-0">
-                    <div className="w-10 h-10 rounded-full bg-[#dbeafe]/70 p-0.5 border border-white shadow-2xs flex items-center justify-center overflow-hidden">
-                      {studentAvatar ? (
-                        <img src={studentAvatar} alt={studentName} className="w-full h-full rounded-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full rounded-full flex items-center justify-center bg-[#EEF4FF] text-[#1a73e8] font-black text-sm">
-                          {studentName ? studentName.charAt(0).toUpperCase() : 'S'}
-                        </div>
-                      )}
-                    </div>
-                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#00c07f] border-2 border-white shadow-2xs" />
+              {/* Bottom of Rail: Crown + Student Avatar */}
+              <div className="flex flex-col items-center gap-2.5 pt-3 border-t border-[#EAECF0]/80 w-full">
+                <div className="w-7 h-7 rounded-full border border-cyan-400 p-0.5 flex items-center justify-center text-amber-500 shadow-2xs" title="Super 30 Pro">
+                  <Crown className="w-3.5 h-3.5" />
+                </div>
+
+                <div
+                  onClick={() => {
+                    if (isLoggedIn) {
+                      soundEffects.playClick();
+                      setEditNameInput(studentName);
+                      setEditPhoneInput(studentPhone);
+                      setEditEmailInput(studentEmail);
+                      setEditProfileModalOpen(true);
+                      setHamburgerDrawerOpen(false);
+                    } else {
+                      soundEffects.playClick();
+                      setHamburgerDrawerOpen(false);
+                      if (onOpenSignUp) onOpenSignUp();
+                      else onOpenLogin?.();
+                    }
+                  }}
+                  className="relative cursor-pointer hover:scale-105 active:scale-95 transition-transform"
+                  title={isLoggedIn ? "Edit Profile" : "Login / Sign Up"}
+                >
+                  <div className="w-8 h-8 rounded-full border border-[#EAECF0] overflow-hidden bg-[#E4F5FA] flex items-center justify-center">
+                    {studentAvatar ? (
+                      <img src={studentAvatar} alt={studentName} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-[#0891b2] font-bold text-xs">{studentName ? studentName.charAt(0).toUpperCase() : 'S'}</span>
+                    )}
                   </div>
+                  <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-[#10B981] border border-white" />
+                </div>
+              </div>
+            </div>
 
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-[13.5px] font-black text-slate-900 leading-tight truncate">
-                      Hi, {(studentName || 'Learner').trim().split(' ')[0]} 👋
-                    </h3>
-                    <p className="text-[10.5px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
-                      Keep Learning, Keep Growing!
-                    </p>
+            {/* 2. RIGHT MAIN PANEL (HeyGen Pill Items & Actions) */}
+            <div className="flex-1 bg-white flex flex-col justify-between p-3 min-w-0 overflow-y-auto no-scrollbar">
+              <div className="min-w-0">
+                {/* Header: Title + Close Button */}
+                <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#EAECF0]">
+                  <h3 className="text-[13.5px] font-bold text-[#101828] truncate">
+                    Future IT Modules
+                  </h3>
 
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#ecfdf5] text-[#059669] border border-emerald-200/60 leading-none shadow-2xs">
-                        <ShieldCheck className="w-2.5 h-2.5 text-[#059669] shrink-0" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundEffects.playClick();
+                      setHamburgerDrawerOpen(false);
+                    }}
+                    className="w-7 h-7 rounded-lg text-[#667085] hover:text-[#344054] hover:bg-[#F2F4F7] active:scale-90 flex items-center justify-center transition-colors cursor-pointer"
+                    aria-label="Close navigation"
+                  >
+                    <X className="w-4 h-4 stroke-[2]" />
+                  </button>
+                </div>
+
+                {/* If Logged In: Student Badge with Edit Button */}
+                {isLoggedIn && (
+                  <div className="mb-2 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-50/70 to-indigo-50/70 border border-blue-100/70 flex items-center justify-between gap-1.5">
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-bold text-slate-800 truncate">
+                        Hi, {(studentName || 'Learner').trim().split(' ')[0]} 👋
+                      </p>
+                      <span className="inline-flex items-center gap-1 text-[9px] font-semibold text-emerald-700 leading-none">
+                        <ShieldCheck className="w-2.5 h-2.5 text-emerald-600 shrink-0" />
                         <span>{(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_role') : null) || 'Student'}</span>
                       </span>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          soundEffects.playClick();
-                          setEditNameInput(studentName);
-                          setEditPhoneInput(studentPhone);
-                          setEditEmailInput(studentEmail);
-                          setEditProfileModalOpen(true);
-                          setHamburgerDrawerOpen(false);
-                        }}
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-[#eff6ff] hover:bg-blue-100 text-[#0066ff] border border-blue-200/60 leading-none transition active:scale-95 cursor-pointer shadow-2xs"
-                      >
-                        <Pencil className="w-2.5 h-2.5 shrink-0" />
-                        <span>Edit</span>
-                      </button>
                     </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="px-3.5 pt-0.5 pb-2.5 border-b border-slate-100 shrink-0">
-                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 shadow-2xs">
-                    <h3 className="text-[13.5px] font-black text-slate-900">
-                      Welcome to Future IT 👋
-                    </h3>
-                    <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-                      Login to access courses &amp; practice.
-                    </p>
                     <button
                       type="button"
                       onClick={() => {
                         soundEffects.playClick();
+                        setEditNameInput(studentName);
+                        setEditPhoneInput(studentPhone);
+                        setEditEmailInput(studentEmail);
+                        setEditProfileModalOpen(true);
                         setHamburgerDrawerOpen(false);
-                        if (onOpenSignUp) onOpenSignUp();
-                        else onOpenLogin?.();
                       }}
-                      className="mt-2 w-full py-1.5 px-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-[11px] flex items-center justify-center gap-1 shadow-xs active:scale-98 transition"
+                      className="px-2 py-0.5 rounded-lg text-[9.5px] font-bold bg-white hover:bg-blue-50 text-[#0066ff] border border-blue-200/80 shadow-2xs transition active:scale-95 cursor-pointer shrink-0"
                     >
-                      <span>Login / Sign Up</span>
-                      <ArrowRight className="w-3 h-3" />
+                      Edit
                     </button>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* 8 Original Colorful Navigation Menu Rows (Exact Original Mobile) */}
-              <div className="px-2.5 py-1.5 space-y-1 flex-1">
-                {mobileDrawerRows.map((row) => {
-                  const RowIcon = row.icon;
-                  const active = isItemActive(row.id);
+                {/* Section Header */}
+                <span className="block text-[9.5px] font-bold uppercase tracking-wider text-[#98A2B3] px-1 mb-1">
+                  Navigation
+                </span>
 
-                  return (
-                    <button
-                      key={row.id}
-                      type="button"
-                      onClick={() => {
-                        if (row.id === 'ats') {
-                          soundEffects.playClick();
-                          setHamburgerDrawerOpen(false);
-                          if (onOpenAtsResume) onOpenAtsResume();
-                          else if (typeof window !== 'undefined') window.location.hash = '#ats';
-                        } else {
-                          handleDrawerNavigate(row.id);
-                        }
-                      }}
-                      className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
-                        active
-                          ? 'bg-[#eff6ff] border border-blue-100/90 shadow-2xs'
-                          : 'hover:bg-slate-50 border border-transparent'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0 pr-1">
-                        <div
-                          className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all ${
-                            active
-                              ? 'bg-[#0066ff] text-white shadow-xs'
-                              : `${row.iconBg} ${row.iconColor} shadow-2xs`
-                          }`}
-                        >
-                          <RowIcon className="w-4 h-4" />
-                        </div>
-                        <div className="min-w-0 text-left">
-                          <h4
-                            className={`text-[12.5px] font-bold leading-tight truncate ${
-                              active ? 'text-[#0066ff]' : 'text-slate-900 group-hover:text-[#0066ff]'
+                {/* HeyGen Wide Pills List */}
+                <div className="space-y-1">
+                  {heygenDesktopItems.map((item) => {
+                    const ItemIcon = item.icon;
+                    const active = isItemActive(item.id);
+
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => handleDrawerNavigate(item.id)}
+                        className={`w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between transition-all duration-150 cursor-pointer group ${
+                          active
+                            ? 'bg-[#EBF8FE] text-[#101828] font-semibold border border-[#16C5EA]/25 shadow-2xs'
+                            : 'text-[#344054] hover:bg-[#FAFBFC] hover:text-[#101828] border border-transparent'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <ItemIcon
+                            className={`w-4 h-4 shrink-0 stroke-[1.8] transition-colors ${
+                              active ? 'text-[#00D2FF]' : 'text-[#667085] group-hover:text-[#344054]'
+                            }`}
+                          />
+                          <span
+                            className={`text-[12.5px] truncate ${
+                              active ? 'font-bold text-[#101828]' : 'font-medium text-[#344054] group-hover:text-[#101828]'
                             }`}
                           >
-                            {row.title}
-                          </h4>
-                          <p className="text-[10px] font-medium text-slate-500 leading-tight mt-0.5 truncate">
-                            {row.subtitle}
-                          </p>
+                            {item.label}
+                          </span>
                         </div>
-                      </div>
-                      <ChevronRight
-                        className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 ${
-                          active ? 'text-[#0066ff]' : 'text-slate-400 group-hover:text-slate-600'
-                        }`}
-                      />
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+                        <ChevronRight
+                          className={`w-3.5 h-3.5 shrink-0 transition-transform ${
+                            active
+                              ? 'text-[#00D2FF]'
+                              : 'text-[#D0D5DD] group-hover:text-[#667085] group-hover:translate-x-0.5'
+                          }`}
+                        />
+                      </button>
+                    );
+                  })}
 
-            {/* Bottom Action Row: Original Mobile Logout Button */}
-            <div className="p-3 pt-1.5 pb-3 border-t border-slate-100 shrink-0">
-              {isLoggedIn ? (
-                <button
-                  type="button"
-                  onClick={handleSignOutAction}
-                  className="w-full h-10 rounded-xl bg-[#fff1f2] hover:bg-[#ffe4e6] border border-[#ffe4e6] px-3.5 flex items-center justify-between text-[#e11d48] font-bold text-xs transition-all active:scale-[0.98] cursor-pointer shadow-2xs"
-                >
-                  <div className="flex items-center gap-2">
-                    <LogOut className="w-4 h-4 text-[#e11d48] shrink-0" />
-                    <span>Logout</span>
-                  </div>
-                  <ChevronRight className="w-3.5 h-3.5 text-[#fda4af]" />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    soundEffects.playClick();
-                    setHamburgerDrawerOpen(false);
-                    if (onOpenSignUp) onOpenSignUp();
-                    else onOpenLogin?.();
-                  }}
-                  className="w-full h-10 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs px-3.5 flex items-center justify-between shadow-xs active:scale-[0.98] transition cursor-pointer"
-                >
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-white shrink-0" />
-                    <span>Login / Sign Up</span>
-                  </div>
-                  <ArrowRight className="w-3.5 h-3.5 text-white" />
-                </button>
-              )}
+                  {/* ATS Resume Analyser Pill */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundEffects.playClick();
+                      setHamburgerDrawerOpen(false);
+                      if (onOpenAtsResume) onOpenAtsResume();
+                      else if (typeof window !== 'undefined') window.location.hash = '#ats';
+                    }}
+                    className="w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between text-[#344054] hover:bg-[#FAFBFC] hover:text-[#101828] border border-transparent transition-all group cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <FileCheck2 className="w-4 h-4 text-[#16a34a] stroke-[1.8] shrink-0" />
+                      <span className="text-[12.5px] font-medium text-[#344054] group-hover:text-[#101828] truncate">
+                        ATS Resume Analyser
+                      </span>
+                    </div>
+                    <span className="text-[9px] font-semibold text-[#16a34a] bg-[#DCFCE7] border border-[#BBF7D0] px-1.5 py-0.5 rounded-full shrink-0">
+                      AI Tool
+                    </span>
+                  </button>
+
+                  {/* Help & Support (WhatsApp) */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundEffects.playClick();
+                      setHamburgerDrawerOpen(false);
+                      if (onOpenHelp) onOpenHelp();
+                      else window.open(WA_SUPPORT_URL, '_blank', 'noopener,noreferrer');
+                    }}
+                    className="w-full rounded-xl py-1.5 px-2.5 flex items-center justify-between text-[#344054] hover:bg-[#FAFBFC] hover:text-[#101828] border border-transparent transition-all group cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Headphones className="w-4 h-4 text-[#10B981] stroke-[1.8] shrink-0" />
+                      <span className="text-[12.5px] font-medium text-[#344054] group-hover:text-[#101828] truncate">
+                        Help &amp; Support
+                      </span>
+                    </div>
+                    <span className="text-[9.5px] font-semibold text-[#059669] bg-[#ECFDF5] border border-[#A7F3D0] px-2 py-0.5 rounded-full shrink-0">
+                      WhatsApp
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Bottom: Sign Out Action / Login Button */}
+              <div className="pt-2 mt-2 border-t border-[#EAECF0] shrink-0">
+                {isLoggedIn ? (
+                  <button
+                    type="button"
+                    onClick={handleSignOutAction}
+                    className="w-full h-9 rounded-xl bg-[#FEF3F2] hover:bg-[#FEE4E2] border border-[#FECDCA] px-3 flex items-center justify-between text-[#D92D20] font-semibold text-xs transition-all active:scale-[0.98] cursor-pointer shadow-2xs"
+                  >
+                    <div className="flex items-center gap-2">
+                      <LogOut className="w-3.5 h-3.5 text-[#D92D20] stroke-[1.8] shrink-0" />
+                      <span>Sign Out</span>
+                    </div>
+                    <ChevronRight className="w-3.5 h-3.5 text-[#FDA29B]" />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundEffects.playClick();
+                      setHamburgerDrawerOpen(false);
+                      if (onOpenSignUp) onOpenSignUp();
+                      else onOpenLogin?.();
+                    }}
+                    className="w-full h-9 rounded-xl bg-[#16C5EA] hover:bg-[#0ea5e9] text-white font-semibold text-xs px-3 flex items-center justify-between shadow-xs active:scale-[0.98] transition cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2">
+                      <User className="w-3.5 h-3.5 stroke-[2] text-white shrink-0" />
+                      <span>Login / Sign Up</span>
+                    </div>
+                    <ArrowRight className="w-3.5 h-3.5 stroke-[2] text-white" />
+                  </button>
+                )}
+              </div>
             </div>
           </aside>
         </div>,
         document.body
       )}
+
+      {/* Hidden File Input for Change Profile Picture */}
+      <input
+        ref={avatarInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleAvatarFileChange}
+        aria-label="Upload Profile Picture"
+      />
 
       {/* ─── HEYGEN-INSPIRED COMPACT MY PROFILE PANEL ─── */}
       {typeof document !== 'undefined' && profileDropdownOpen && createPortal(
@@ -1410,14 +1728,12 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                   <button
                     type="button"
                     onClick={() => {
-                      setEditNameInput(studentName);
-                      setEditPhoneInput(studentPhone);
-                      setEditEmailInput(studentEmail);
-                      setEditProfileModalOpen(true);
+                      soundEffects.playClick();
+                      avatarInputRef.current?.click();
                     }}
                     className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#16C5EA] hover:bg-[#0ea5e9] text-white flex items-center justify-center shadow-xs border-2 border-white cursor-pointer"
-                    title="Change Photo"
-                    aria-label="Change Photo"
+                    title="Change Profile Picture"
+                    aria-label="Change Profile Picture"
                   >
                     <Camera className="w-2.5 h-2.5" />
                   </button>
@@ -1470,6 +1786,36 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
                 </div>
               </div>
 
+              {/* Quick Profile Actions: Change Profile Picture & Edit Profile */}
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEffects.playClick();
+                    avatarInputRef.current?.click();
+                  }}
+                  className="py-2 px-2.5 rounded-xl bg-[#F8FAFC] hover:bg-[#EBF8FE] border border-[#EAECF0] hover:border-[#16C5EA]/40 text-[#344054] hover:text-[#0891b2] font-semibold text-[11.5px] flex items-center justify-center gap-1.5 transition cursor-pointer"
+                >
+                  <Camera className="w-3.5 h-3.5 text-[#16C5EA] shrink-0" />
+                  <span className="truncate">Change Photo</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEffects.playClick();
+                    setEditNameInput(studentName);
+                    setEditPhoneInput(studentPhone);
+                    setEditEmailInput(studentEmail);
+                    setEditProfileModalOpen(true);
+                    setProfileDropdownOpen(false);
+                  }}
+                  className="py-2 px-2.5 rounded-xl bg-[#F8FAFC] hover:bg-[#EBF8FE] border border-[#EAECF0] hover:border-[#16C5EA]/40 text-[#344054] hover:text-[#0891b2] font-semibold text-[11.5px] flex items-center justify-center gap-1.5 transition cursor-pointer"
+                >
+                  <Pencil className="w-3.5 h-3.5 text-[#16C5EA] shrink-0" />
+                  <span className="truncate">Edit Profile</span>
+                </button>
+              </div>
+
               <button
                 type="button"
                 onClick={handleSignOutAction}
@@ -1486,8 +1832,12 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
       {/* ─── REAL EDIT PROFILE MODAL ─── */}
       {editProfileModalOpen && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-[#0c111d]/40 backdrop-blur-2xs animate-fadeIn font-sans">
+        <div
+          className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-[#0c111d]/40 backdrop-blur-2xs animate-fadeIn font-sans"
+          onClick={() => setEditProfileModalOpen(false)}
+        >
           <div
+            onClick={(e) => e.stopPropagation()}
             className="bg-white rounded-2xl border border-[#EAECF0] max-w-md w-full p-6 shadow-2xl relative text-left"
             role="dialog"
             aria-label="Edit Student Profile"
@@ -1509,6 +1859,26 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
             </div>
 
             <form onSubmit={handleSaveProfile} className="space-y-4">
+              <div className="flex items-center gap-3 pb-2">
+                <div className="w-12 h-12 rounded-full border border-[#EAECF0] overflow-hidden bg-[#E4F5FA] flex items-center justify-center shrink-0">
+                  {studentAvatar ? (
+                    <img src={studentAvatar} alt={studentName} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-[#0891b2] font-bold text-lg">
+                      {studentName ? studentName.charAt(0).toUpperCase() : 'S'}
+                    </span>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => avatarInputRef.current?.click()}
+                  className="px-3 py-1.5 rounded-xl border border-[#EAECF0] hover:border-[#16C5EA] bg-[#FAFBFC] hover:bg-[#EBF8FE] text-xs font-semibold text-[#344054] hover:text-[#0891b2] flex items-center gap-1.5 transition cursor-pointer"
+                >
+                  <Camera className="w-3.5 h-3.5 text-[#16C5EA]" />
+                  <span>Change Profile Picture</span>
+                </button>
+              </div>
+
               <div>
                 <label className="block text-xs font-semibold text-[#344054] mb-1.5">
                   Full Name
@@ -1561,8 +1931,14 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
 
       {/* ─── SPOTLIGHT SEARCH MODAL (Ctrl + K) ─── */}
       {searchModalOpen && (
-        <div className="fixed inset-0 z-[10000] flex items-start justify-center p-4 sm:p-6 pt-20 bg-[#0c111d]/40 backdrop-blur-2xs animate-fadeIn font-sans">
-          <div className="bg-white rounded-2xl border border-[#EAECF0] max-w-xl w-full p-4 sm:p-5 shadow-2xl relative text-left">
+        <div
+          className="fixed inset-0 z-[10000] flex items-start justify-center p-4 sm:p-6 pt-20 bg-[#0c111d]/40 backdrop-blur-2xs animate-fadeIn font-sans"
+          onClick={() => setSearchModalOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-2xl border border-[#EAECF0] max-w-xl w-full p-4 sm:p-5 shadow-2xl relative text-left"
+          >
             <div className="flex items-center gap-3 pb-3 border-b border-[#EAECF0]">
               <Search className="w-5 h-5 text-[#16C5EA] shrink-0 stroke-[2]" />
               <input

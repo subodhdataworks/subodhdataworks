@@ -60,7 +60,7 @@ export const PaymentsManagement: React.FC<PaymentsManagementProps> = ({ payments
         setCreditReferralModal((prev) => ({
           ...prev,
           isSubmitting: false,
-          message: `Success! ₹100 referral commission credited to affiliate ${prev.code.trim()}`,
+          message: `Success! ₹300 referral commission credited to affiliate ${prev.code.trim()}`,
         }));
         setTimeout(() => {
           setCreditReferralModal({ open: false, payment: null, code: '', isSubmitting: false, message: null });
@@ -321,10 +321,10 @@ export const PaymentsManagement: React.FC<PaymentsManagementProps> = ({ payments
                           })
                         }
                         className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#EFF6FF] hover:bg-[#DBEAFE] text-[#2563EB] border border-[#BFDBFE] transition-all cursor-pointer"
-                        title="Credit ₹100 Referral Commission to an affiliate"
+                        title="Credit ₹300 Referral Commission to an affiliate"
                       >
                         <IndianRupee className="w-3 h-3" />
-                        <span>Credit ₹100</span>
+                        <span>Credit ₹300</span>
                       </button>
                     </td>
                   </tr>
@@ -442,7 +442,7 @@ export const PaymentsManagement: React.FC<PaymentsManagementProps> = ({ payments
               <span>Affiliate Commission Dispatch</span>
             </div>
 
-            <h3 className="text-base font-bold text-[#0F172A] mb-1">Credit ₹100 Referral Commission</h3>
+            <h3 className="text-base font-bold text-[#0F172A] mb-1">Credit ₹300 Referral Commission</h3>
             <p className="text-xs text-[#64748B] mb-4 leading-relaxed">
               Assign this payment of <strong className="text-[#0F172A] font-mono">₹{creditReferralModal.payment.amount}</strong> from <strong className="text-[#0F172A]">{creditReferralModal.payment.userName}</strong> to an affiliate partner.
             </p>
@@ -468,7 +468,7 @@ export const PaymentsManagement: React.FC<PaymentsManagementProps> = ({ payments
                   className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:border-[#2563EB] font-mono text-sm uppercase"
                 />
                 <span className="text-[10px] text-[#64748B] mt-1 block">
-                  The ₹100 will immediately reflect in the partner's Available Balance and Total Earned.
+                  The ₹300 will immediately reflect in the partner's Available Balance and Total Earned.
                 </span>
               </div>
 
@@ -485,7 +485,7 @@ export const PaymentsManagement: React.FC<PaymentsManagementProps> = ({ payments
                   disabled={creditReferralModal.isSubmitting}
                   className="flex-1 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow-sm transition-colors cursor-pointer disabled:opacity-50"
                 >
-                  {creditReferralModal.isSubmitting ? 'Crediting...' : 'Confirm Credit ₹100 ➔'}
+                  {creditReferralModal.isSubmitting ? 'Crediting...' : 'Confirm Credit ₹300 ➔'}
                 </button>
               </div>
             </form>

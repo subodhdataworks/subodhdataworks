@@ -43,8 +43,8 @@ export interface UserSupportNote {
 }
 
 export interface SystemBusinessSettings {
-  studentReferralCommission: number; // default 125
-  influencerReferralCommission: number; // default 100
+  studentReferralCommission: number; // default 300
+  influencerReferralCommission: number; // default 300
   enrollmentFee: number; // default 987 or 999
   minimumWithdrawalAmount: number; // default 500
   withdrawalFeePercentage: number; // default 0
@@ -56,8 +56,8 @@ export interface SystemBusinessSettings {
 }
 
 const DEFAULT_SETTINGS: SystemBusinessSettings = {
-  studentReferralCommission: 125,
-  influencerReferralCommission: 100,
+  studentReferralCommission: 300,
+  influencerReferralCommission: 300,
   enrollmentFee: 987,
   minimumWithdrawalAmount: 500,
   withdrawalFeePercentage: 0,

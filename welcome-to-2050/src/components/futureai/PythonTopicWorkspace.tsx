@@ -4,7 +4,7 @@ import {
   getTopicListForTab,
   revalidateQuestionBankFromBackend,
 } from './data/questionBankRegistry';
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import {
   Play,
   Pause,
@@ -85,7 +85,97 @@ import { StableMouthLipSyncAvatar } from './interview/StableMouthLipSyncAvatar';
 import { ZeroCostMockInterviewRoom } from './interview/ZeroCostMockInterviewRoom';
 import { AdminHrSettingsModal } from '../admin/AdminHrSettingsModal';
 import { awardLearnerTelemetry, markTopicComplete } from '../../services/realAuthService';
+import { PythonTypeVisualLesson } from './visualNotes/PythonTypeVisualLesson';
+import { ExcelVisualLessonViewer } from './visualNotes/ExcelVisualLessonViewer';
+import { DataAnalyticsVisualLesson } from './visualNotes/DataAnalyticsVisualLesson';
+import { Topic2WhyBusinessesNeedLesson } from './visualNotes/Topic2WhyBusinessesNeedLesson';
+import { Topic3RealLifeExamplesLesson } from './visualNotes/Topic3RealLifeExamplesLesson';
+import { Topic4DataVsInfoVsInsightLesson } from './visualNotes/Topic4DataVsInfoVsInsightLesson';
+import { Topic5DataDecisionMakingLesson } from './visualNotes/Topic5DataDecisionMakingLesson';
+import { Topic6RolesAndRespLesson } from './visualNotes/Topic6RolesAndRespLesson';
+import { Topic7AnalystVsScientistVsEngineerLesson } from './visualNotes/Topic7AnalystVsScientistVsEngineerLesson';
+import { Topic8TypesOfAnalyticsLesson } from './visualNotes/Topic8TypesOfAnalyticsLesson';
+import { Topic9DataTypesSourcesQualityLesson } from './visualNotes/Topic9DataTypesSourcesQualityLesson';
+import { Topic10AnalyticsWorkflowLesson } from './visualNotes/Topic10AnalyticsWorkflowLesson';
+import { Topic11WhatIsProgrammingLesson } from './visualNotes/Topic11WhatIsProgrammingLesson';
+import { Topic12HowComputersFollowInstructionsLesson } from './visualNotes/Topic12HowComputersFollowInstructionsLesson';
+import { Topic13WhatIsPythonLesson } from './visualNotes/Topic13WhatIsPythonLesson';
+import { Topic14PythonInAnalyticsLesson } from './visualNotes/Topic14PythonInAnalyticsLesson';
+import { Topic15PythonEnvironmentSetupLesson } from './visualNotes/Topic15PythonEnvironmentSetupLesson';
+import { Topic16FirstPythonProgramLesson } from './visualNotes/Topic16FirstPythonProgramLesson';
+import { Topic17SyntaxIndentationCommentsLesson } from './visualNotes/Topic17SyntaxIndentationCommentsLesson';
+import { Topic18PrintAndOutputLesson } from './visualNotes/Topic18PrintAndOutputLesson';
+import { Topic19VariablesAndStorageLesson } from './visualNotes/Topic19VariablesAndStorageLesson';
+import { Topic20DataTypesAndTypeLesson } from './visualNotes/Topic20DataTypesAndTypeLesson';
+import { Topic21TypeConversionLesson } from './visualNotes/Topic21TypeConversionLesson';
+import { Topic22InputAndUserInputLesson } from './visualNotes/Topic22InputAndUserInputLesson';
+import { Topic23OperatorsAndExpressionsLesson } from './visualNotes/Topic23OperatorsAndExpressionsLesson';
+import { Topic24ComparisonLogicalOperatorsLesson } from './visualNotes/Topic24ComparisonLogicalOperatorsLesson';
+import { Topic25IfStatementsLesson } from './visualNotes/Topic25IfStatementsLesson';
+import { Topic26IfElseElifLesson } from './visualNotes/Topic26IfElseElifLesson';
+import { Topic27NestedConditionsLesson } from './visualNotes/Topic27NestedConditionsLesson';
+import { Topic28ForLoopsRangeLesson } from './visualNotes/Topic28ForLoopsRangeLesson';
+import { Topic29WhileLoopsLesson } from './visualNotes/Topic29WhileLoopsLesson';
+import { Topic30BreakContinuePassLesson } from './visualNotes/Topic30BreakContinuePassLesson';
+import { Topic31ErrorsAndDebuggingLesson } from './visualNotes/Topic31ErrorsAndDebuggingLesson';
+import { Topic32ProblemSolvingProjectsLesson } from './visualNotes/Topic32ProblemSolvingProjectsLesson';
+import { Topic33StringsIndexingSlicingLesson } from './visualNotes/Topic33StringsIndexingSlicingLesson';
+import { Topic34StringMethodsLesson } from './visualNotes/Topic34StringMethodsLesson';
+import { Topic35ListsIndexingSlicingLesson } from './visualNotes/Topic35ListsIndexingSlicingLesson';
+import { Topic36ListMethodsOperationsLesson } from './visualNotes/Topic36ListMethodsOperationsLesson';
+import { Topic37TuplesAndSetsLesson } from './visualNotes/Topic37TuplesAndSetsLesson';
+import { Topic38DictionariesKeyValueLesson } from './visualNotes/Topic38DictionariesKeyValueLesson';
+import { Topic39LoopingCollectionsLesson } from './visualNotes/Topic39LoopingCollectionsLesson';
+import { Topic40NestedCollectionsProjectLesson } from './visualNotes/Topic40NestedCollectionsProjectLesson';
+import { Topic41IntroToFunctionsLesson } from './visualNotes/Topic41IntroToFunctionsLesson';
+import { Topic42ParametersReturnValuesLesson } from './visualNotes/Topic42ParametersReturnValuesLesson';
+import { Topic43DefaultKeywordArgsLesson } from './visualNotes/Topic43DefaultKeywordArgsLesson';
+import { Topic44ScopeBuiltinFunctionsLesson } from './visualNotes/Topic44ScopeBuiltinFunctionsLesson';
+import { Topic45ModulesAndImportsLesson } from './visualNotes/Topic45ModulesAndImportsLesson';
+import { Topic46DatesAndTimeLesson } from './visualNotes/Topic46DatesAndTimeLesson';
+import { Topic47ReadWriteFilesCsvLesson } from './visualNotes/Topic47ReadWriteFilesCsvLesson';
+import { Topic48ExceptionHandlingLesson } from './visualNotes/Topic48ExceptionHandlingLesson';
+import { Topic49ReusableCodeProjectsLesson } from './visualNotes/Topic49ReusableCodeProjectsLesson';
+import { Topic50WhatIsNumpyLesson } from './visualNotes/Topic50WhatIsNumpyLesson';
+import { Topic51CreatingNumpyArraysLesson } from './visualNotes/Topic51CreatingNumpyArraysLesson';
+import { Topic52ArrayShapesDimensionsLesson } from './visualNotes/Topic52ArrayShapesDimensionsLesson';
+import { Topic53IndexingSlicingLesson } from './visualNotes/Topic53IndexingSlicingLesson';
+import { Topic54VectorizedOperationsLesson } from './visualNotes/Topic54VectorizedOperationsLesson';
+import { Topic55AggregationStatisticsLesson } from './visualNotes/Topic55AggregationStatisticsLesson';
+import { Topic56BooleanMasksFilteringLesson } from './visualNotes/Topic56BooleanMasksFilteringLesson';
+import { Topic57ReshapingCombiningProjectsLesson } from './visualNotes/Topic57ReshapingCombiningProjectsLesson';
+import { Topic58WhatIsPandasLesson } from './visualNotes/Topic58WhatIsPandasLesson';
+import { Topic59SeriesAndDataFramesLesson } from './visualNotes/Topic59SeriesAndDataFramesLesson';
+import { Topic60ReadingCsvExcelLesson } from './visualNotes/Topic60ReadingCsvExcelLesson';
+import { Topic61InspectingDataLesson } from './visualNotes/Topic61InspectingDataLesson';
+import { Topic62SelectingColumnsRowsLesson } from './visualNotes/Topic62SelectingColumnsRowsLesson';
+import { Topic63FilteringSortingLesson } from './visualNotes/Topic63FilteringSortingLesson';
+import { Topic64CreatingRenamingColumnsLesson } from './visualNotes/Topic64CreatingRenamingColumnsLesson';
+import { Topic65HandlingMissingValuesLesson } from './visualNotes/Topic65HandlingMissingValuesLesson';
+import { Topic66RemovingDuplicatesLesson } from './visualNotes/Topic66RemovingDuplicatesLesson';
+import { Topic67GroupByAggregationLesson } from './visualNotes/Topic67GroupByAggregationLesson';
+import { Topic68MergeJoinConcatLesson } from './visualNotes/Topic68MergeJoinConcatLesson';
+import { Topic69DatesAndTextLesson } from './visualNotes/Topic69DatesAndTextLesson';
+import { Topic70ExportingCleanDataProjectLesson } from './visualNotes/Topic70ExportingCleanDataProjectLesson';
+import { Topic71WhyDataVizMattersLesson } from './visualNotes/Topic71WhyDataVizMattersLesson';
+import { Topic72MatplotlibBasicsLesson } from './visualNotes/Topic72MatplotlibBasicsLesson';
+import { Topic73BarColumnChartsLesson } from './visualNotes/Topic73BarColumnChartsLesson';
+import { Topic74LineChartsTrendsLesson } from './visualNotes/Topic74LineChartsTrendsLesson';
+import { Topic75HistogramsDistributionsLesson } from './visualNotes/Topic75HistogramsDistributionsLesson';
+import { Topic76ScatterPlotsRelationshipsLesson } from './visualNotes/Topic76ScatterPlotsRelationshipsLesson';
+import { Topic77LabelsLegendsTitlesLesson } from './visualNotes/Topic77LabelsLegendsTitlesLesson';
+import { Topic78ChoosingRightChartLesson } from './visualNotes/Topic78ChoosingRightChartLesson';
+import { Topic79EdaPandasLesson } from './visualNotes/Topic79EdaPandasLesson';
+import { Topic80RetailSalesMiniProjectLesson } from './visualNotes/Topic80RetailSalesMiniProjectLesson';
+import { PdfVisualNotesViewer, SectionRectInfo } from './visualNotes/PdfVisualNotesViewer';
+import { FutureITMentor } from './mentor/FutureITMentor';
+import { MentorLessonSection } from './mentor/mentorLessonRegistry';
 import './PythonTopicWorkspace.css';
+
+// Dynamic Visual Notes Image Registry per Topic/Lesson
+export const TOPIC_VISUAL_NOTES_IMAGE_MAP: Record<number, string> = {
+  1: '/images/visual_notes/topic_1_what_is_data_analytics.jpg',
+};
 
 export type WorkspaceStepId = 'learn' | 'practice' | 'play' | 'code' | 'interview' | 'score';
 
@@ -93,10 +183,10 @@ interface PythonTopicWorkspaceProps {
   userName?: string;
   topicId?: number;
   initialStep?: WorkspaceStepId;
-  onBack: () => void;
+  onBack: (lastTopicId?: number, preferredTabId?: string | number) => void;
   onOpenUnlockModal?: (moduleName?: string) => void;
   onOpenAdvisor?: () => void;
-  onNavigateNextTopic?: () => void;
+  onNavigateNextTopic?: (nextTopicId?: number) => void;
   onNavigateDock?: (tab: 'home' | 'game' | 'income' | 'earning' | 'placement' | 'referral' | 'wallet' | 'withdraw' | 'learn' | 'internship' | 'certificate' | 'dashboard' | string) => void;
 }
 
@@ -124,6 +214,15 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
 
   // Video Source Toggle for Topic 1.1 ('drive' | 'local')
   const [topic1VideoSource, setTopic1VideoSource] = useState<'drive' | 'local'>('local');
+  const lessonVideoRef = useRef<HTMLVideoElement>(null);
+
+  // Future IT Mentor active section & manual scroll sync
+  const [activeMentorSection, setActiveMentorSection] = useState<MentorLessonSection | null>(null);
+  const [mentorUserScrolled, setMentorUserScrolled] = useState(false);
+  const [mentorSectionRect, setMentorSectionRect] = useState<SectionRectInfo | null>(null);
+  const [mentorScrollSettled, setMentorScrollSettled] = useState(true);
+  const [mentorLanguage, setMentorLanguage] = useState<'hindi' | 'english'>('english');
+  const visualNotesScrollRef = useRef<HTMLDivElement>(null);
 
   const handleSelectActivityLang = (lang: 'en' | 'hi') => {
     soundEffects.playClick();
@@ -193,10 +292,21 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
   const effectiveTopicId = internalTopicId;
   const setEffectiveTopicId = (newId: number) => {
     setInternalTopicId(newId);
+    try {
+      sessionStorage.setItem('futureai_active_curriculum_topic', `t-${newId}`);
+    } catch {}
     if (typeof window !== 'undefined') {
-      window.location.hash = `#${activeStep}?topic=${newId}${urlTabId > 1 ? `&tab=${urlTabId}` : ''}`;
+      const tabParam = isExcelTrack ? 'tab=3' : (urlTabId > 1 ? `tab=${urlTabId}` : '');
+      const query = [`topic=${newId}`, tabParam].filter(Boolean).join('&');
+      window.location.hash = `#${activeStep}?${query}`;
     }
   };
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem('futureai_active_curriculum_topic', `t-${effectiveTopicId}`);
+    } catch {}
+  }, [effectiveTopicId]);
 
   useEffect(() => {
     if (typeof topicId === 'number' && topicId !== internalTopicId) {
@@ -223,10 +333,44 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
   }, [urlTabId, effectiveTopicId]);
 
   const isTab1Topic = useMemo(() => {
-    return !!getTopicQuestionBank(urlTabId, effectiveTopicId) || (effectiveTopicId >= 1 && effectiveTopicId <= 26);
+    return !!getTopicQuestionBank(urlTabId, effectiveTopicId) || (effectiveTopicId >= 1 && effectiveTopicId <= 80);
   }, [urlTabId, effectiveTopicId, questionBankRev]);
   const isTopicWithoutCoding = isTab1Topic;
   const isTopicWithoutMcq = isTab1Topic;
+
+  const isExcelTrack = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      const h = window.location.hash;
+      if (h.includes('tab=3') || h.includes('tab=tab-3') || h.includes('track=excel') || h.includes('excel')) {
+        return true;
+      }
+    }
+    if (urlTabId === 3) return true;
+    try {
+      if (sessionStorage.getItem('futureai_active_curriculum_tab') === 'tab-3') return true;
+    } catch {}
+    if (effectiveTopicId >= 27 && effectiveTopicId <= 76) {
+      try {
+        const cur = sessionStorage.getItem('futureai_active_curriculum_tab');
+        if (cur === 'tab-3') return true;
+      } catch {}
+    }
+    return false;
+  }, [urlTabId, effectiveTopicId]);
+
+  const handleBackToCourse = useCallback(() => {
+    soundEffects.playClick();
+    (() => { try { document.querySelectorAll('video,audio').forEach((m: any) => { try { m.pause(); } catch {} }); if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch {} })();
+    const effectiveTab = isExcelTrack ? 'tab-3' : (urlTabId ? `tab-${urlTabId}` : 'tab-1');
+    onBack(effectiveTopicId, effectiveTab);
+  }, [effectiveTopicId, isExcelTrack, urlTabId, onBack]);
+
+  // Guaranteed cleanup of media, speech synthesis, and timers when leaving the workspace
+  useEffect(() => {
+    return () => {
+      (() => { try { document.querySelectorAll('video,audio').forEach((m: any) => { try { m.pause(); } catch {} }); if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch {} })();
+    };
+  }, []);
 
   // Auto-redirect if skipped steps are selected on Topic 1
   useEffect(() => {
@@ -303,6 +447,8 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
   // ─────────────────────────────────────────────────────────────────────────────
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isVideoCompleted, setIsVideoCompleted] = useState(false);
+  const [lessonMode, setLessonMode] = useState<'video' | 'notes'>('video');
+  const [notesPage, setNotesPage] = useState<number>(1);
 
   const [notesTab, setNotesTab] = useState<'notes' | 'homework'>('notes');
   const [userNotes, setUserNotes] = useState(() => {
@@ -1382,7 +1528,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
             prev
               ? prev
               : activityLang === 'hi'
-              ? "प्रोग्रामिंग का मतलब है कंप्यूटर को स्पष्ट, क्रमिक और तार्किक निर्देश देना ताकि वह किसी विशिष्ट कार्य या समस्या का समाधान कर सके।"
+              ? "Programming का मतलब है Computer को स्पष्ट, क्रमिक और Logical निर्देश देना ताकि वह किसी विशिष्ट कार्य या समस्या का समाधान कर सके।"
               : "Programming is the art of giving clear, step-by-step instructions to a computer in an orderly sequence so it can execute tasks accurately and efficiently."
           );
         }, 2200);
@@ -2091,389 +2237,955 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
 
   return (
     <div className="ptw-root-container">
-      {/* ── 1. Top Navbar (Identical Global Navbar on Desktop; Mobile uses FutureAdvancedHeader) ── */}
-      <header className="ptw-top-navbar hidden md:flex">
-        <div className="ptw-nav-brand-wrap" onClick={onBack}>
-          <FutureLogo />
-        </div>
-
-        <div className="ptw-nav-search-capsule">
-          <Search className="w-4 h-4 text-slate-400 shrink-0" />
-          <input
-            type="text"
-            placeholder="Search for topics, modules, projects, interview questions or anything..."
-            className="ptw-search-input"
-          />
-          <span className="ptw-ctrlk-chip">Ctrl K</span>
-        </div>
-
-        <div className="ptw-nav-actions-right">
+      {/* ── Sub-header Navigation Row: Clean, Single Active Pill, No Redundant Video Tab ── */}
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+        {/* Left: Back button & Active Visual Learning pill */}
+        <div className="flex items-center gap-2.5">
           <button
-            className="ptw-ask-ai-button"
-            onClick={() => {
-              soundEffects.playClick();
-              onOpenAdvisor?.();
-            }}
-          >
-            <Bot className="w-4 h-4" />
-            <span>Ask AI Mentor</span>
-          </button>
-
-          <div className="ptw-bell-wrap">
-            <Bell className="w-5 h-5 text-slate-600" />
-            <span className="ptw-bell-badge">3</span>
-          </div>
-
-          <div className="ptw-user-profile-chip select-none">
-            <img
-              src={(typeof window !== 'undefined' ? localStorage.getItem('futureai_user_avatar') : null) || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"}
-              alt={userName}
-              className="ptw-user-avatar"
-            />
-            <div className="hidden sm:flex flex-col text-left">
-              <strong className="text-xs font-black text-slate-800 leading-tight">{userName}</strong>
-              <span className="text-[10px] text-slate-500 font-semibold">Learner</span>
-            </div>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-          </div>
-        </div>
-      </header>
-
-      {/* ── 1. UNIFIED TOP BAR: Exact Match to media_1792847065914_f68382f0.png ── */}
-      <div className={`plw-top-unified-bar ${(activeStep === 'play' && isTab1Topic) || activeStep === 'interview' ? 'ppa-hide-unified-on-mobile' : ''}`}>
-        {/* Left: Back button & Breadcrumbs */}
-        <div className="plw-top-crumbs-group">
-          <button
-            className="plw-back-pill"
-            onClick={onBack}
+            type="button"
+            onClick={handleBackToCourse}
+            className="px-4 py-1.5 rounded-full text-xs font-bold border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-800 flex items-center gap-1.5 transition shadow-2xs cursor-pointer"
             title="Back to Course"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
             <span>Back</span>
           </button>
 
-          <div className="plw-crumbs flex items-center gap-1.5 text-xs">
-            <span className="crumb-link text-slate-600 hover:text-blue-600 cursor-pointer" onClick={() => onNavigateDock?.('home')}>Home</span>
-            <ChevronRight className="w-3 h-3 text-slate-400" />
-            <span className="crumb-link text-slate-600 hover:text-blue-600 cursor-pointer" onClick={onBack}>
-              {getTopicQuestionBank(urlTabId, effectiveTopicId)?.tabName?.replace(' Foundations', '') || 'Data Analytics'}
-            </span>
-            <ChevronRight className="w-3 h-3 text-slate-400" />
-            <span className="crumb-link text-slate-600 hover:text-blue-600 cursor-pointer" onClick={onBack}>
-              {getTopicQuestionBank(urlTabId, effectiveTopicId)?.moduleName || topicHierarchy.moduleTitle}
-            </span>
-            <ChevronRight className="w-3 h-3 text-slate-400" />
-            {/* Quick Interactive Topic Switcher for All Published Topics */}
-            <select
-              className="bg-blue-50 border border-blue-200 text-blue-700 font-bold rounded-lg px-2 py-0.5 text-xs cursor-pointer hover:bg-blue-100 transition-colors shadow-xs"
-              value={effectiveTopicId}
-              onChange={(e) => setEffectiveTopicId(Number(e.target.value))}
-              title={`Switch Topic in ${getTopicQuestionBank(urlTabId, effectiveTopicId)?.tabName || 'Data Analytics Foundations'}`}
-            >
-              {getTopicListForTab(urlTabId).map((t) => (
-                <option key={t.topicKey} value={t.id}>
-                  Topic {t.topicKey}: {t.topicTitle} (Module {t.moduleId})
-                </option>
-              ))}
-            </select>
+          <div className="px-5 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white shadow-xs select-none">
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Visual Learning</span>
           </div>
         </div>
 
-        {/* Right: Activity Steps matching media_1792847065914_f68382f0.png */}
-        <div className="plw-top-steps-inline">
-          {/* Step 1: Video */}
+        {/* Right: Coding Game & Mock Interview buttons (inactive/outlined by default) */}
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
-            className={`plw-inline-step-pill ${activeStep === 'learn' ? 'active' : 'completed'}`}
-            onClick={() => handleSelectTab('learn')}
-          >
-            <span className="pill-num">{activeStep !== 'learn' ? '✓' : '1'}</span>
-            <span className="pill-label">Video</span>
-          </button>
-
-          {/* Step 2: Coding Game */}
-          <button
-            type="button"
-            className={`plw-inline-step-pill ${activeStep === 'play' ? 'active' : ''} ${['interview', 'score'].includes(activeStep) ? 'completed' : ''}`}
             onClick={() => handleSelectTab('play')}
+            className={`px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition border cursor-pointer ${
+              activeStep === 'play'
+                ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white shadow-sm ring-2 ring-purple-400/40'
+                : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200/90 shadow-2xs'
+            }`}
+            title="Launch Coding Game"
           >
-            <span className="pill-num">{['interview', 'score'].includes(activeStep) ? '✓' : '2'}</span>
-            <span className="pill-label">Coding Game</span>
+            <Gamepad2 className="w-3.5 h-3.5 text-purple-600" />
+            <span>Coding Game</span>
           </button>
 
-          {/* Step 3: Mock Interview */}
           <button
             type="button"
-            className={`plw-inline-step-pill ${activeStep === 'interview' ? 'active' : ''} ${activeStep === 'score' ? 'completed' : ''}`}
             onClick={() => handleSelectTab('interview')}
+            className={`px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition border cursor-pointer ${
+              activeStep === 'interview'
+                ? 'bg-purple-100 text-purple-950 border-purple-400 font-black shadow-xs ring-2 ring-purple-300'
+                : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200/90 shadow-2xs'
+            }`}
+            title="Launch Mock Interview"
           >
-            <span className="pill-num">{activeStep === 'score' ? '✓' : '3'}</span>
-            <span className="pill-label">Mock Interview</span>
+            <MessageSquare className="w-3.5 h-3.5 text-purple-600" />
+            <span>Mock Interview</span>
           </button>
         </div>
       </div>
 
       {/* ── 3. Main Content Area ── */}
-      <div className={`ptw-main-grid-layout ${activeStep === 'practice' ? 'is-mcq-step' : ''} ${activeStep === 'play' ? 'is-game-step' : ''} ${activeStep === 'play' && isTab1Topic ? 'is-topic1-game' : ''} ${activeStep === 'interview' ? 'is-interview-step' : ''} ${activeStep === 'code' ? 'is-code-step' : ''} ${activeStep === 'score' ? 'is-score-step' : ''}`}>
+      <div className={`ptw-main-grid-layout ${activeStep === 'learn' ? 'is-learn-step' : ''} ${activeStep === 'practice' ? 'is-mcq-step' : ''} ${activeStep === 'play' ? 'is-game-step' : ''} ${activeStep === 'play' && isTab1Topic ? 'is-topic1-game' : ''} ${activeStep === 'interview' ? 'is-interview-step' : ''} ${activeStep === 'code' ? 'is-code-step' : ''} ${activeStep === 'score' ? 'is-score-step' : ''}`}>
         {/* ═════════════════════════════════════════════════════════════════
-            TAB 1: VIDEO (Exact match to media_1791213637074.jpg)
+            TAB 1: VISUAL LEARNING (approx. 60%) & VIDEO LESSON (approx. 40%)
+            Full available desktop width, zero trailing empty space!
             ═════════════════════════════════════════════════════════════════ */}
         {activeStep === 'learn' && (
           <>
-            {/* Left Column (~65%) */}
-            <div className="plw-col-left">
-              {/* Video Player Card */}
-              <div className="plw-video-player-card">
-                {isCurrentTopicLocked ? (
-                  <div className="plw-video-screen flex flex-col items-center justify-center bg-slate-950 text-white p-6 text-center rounded-2xl relative overflow-hidden min-h-[340px] border border-amber-500/30">
-                    <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-3 shadow-lg shadow-amber-500/10">
-                      <Lock className="w-7 h-7" />
-                    </div>
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 mb-2">
-                      🔒 Locked Course Content
-                    </span>
-                    <h2 className="text-base font-black text-white mb-1">
-                      {urlTabId > 1 ? `Course Tab ${urlTabId} is Locked` : `Topic ${effectiveTopicId} is Locked`}
-                    </h2>
-                    <p className="text-xs text-slate-400 max-w-sm mb-4">
-                      Only Tab 1 (Data Analyst with GenAI) Topic 1.1 is free to preview. Unlock this course to access all video lectures and interactive labs!
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => onOpenUnlockModal?.(urlTabId > 1 ? `Course Tab ${urlTabId}` : `Topic ${effectiveTopicId}`)}
-                      className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/25 active:scale-95 transition-all cursor-pointer flex items-center gap-2"
-                    >
-                      <Lock className="w-3.5 h-3.5 text-slate-950" />
-                      <span>Enroll to Unlock Full Access</span>
-                    </button>
-                  </div>
-                ) : (
-                  <div className="plw-video-screen plw-video-screen-embedded" style={{ position: 'relative' }}>
-                    {topic1VideoSource === 'drive' ? (
-                      <iframe
-                        src="https://drive.google.com/file/d/1lpQ_5Imk74nnE2YueuEBidHpXkKGIT9H/preview"
-                        title="1.1 What Is Programming? - Video Lesson"
-                        className="plw-embed-video-iframe"
-                        allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-                        allowFullScreen
-                      />
-                    ) : (
-                      <video
-                        src="/videos/what_is_programming_lesson.mp4"
-                        poster="/images/topic_learn/what_is_programming_poster.jpg"
-                        controls
-                        autoPlay
-                        playsInline
-                        className="plw-embed-video-iframe"
-                        style={{ objectFit: 'contain', width: '100%', height: '100%', aspectRatio: '16/9' }}
-                        onEnded={() => {
-                          setIsVideoCompleted(true);
-                        }}
-                      />
-                    )}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: 10,
-                        right: 12,
-                        zIndex: 30,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        background: 'rgba(15, 23, 42, 0.85)',
-                        backdropFilter: 'blur(8px)',
-                        padding: '4px 10px',
-                        borderRadius: '20px',
-                        border: '1px solid rgba(255, 255, 255, 0.2)',
-                      }}
-                    >
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setTopic1VideoSource((prev) => (prev === 'drive' ? 'local' : 'drive'));
-                        }}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          color: '#38bdf8',
-                          fontSize: '11px',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                        }}
-                        title="Switch between Google Drive Stream and Direct HD Video"
-                      >
-                        <span>{topic1VideoSource === 'drive' ? '🌐 Google Drive' : '⚡ Fast HD Player'}</span>
-                        <span style={{ color: '#94a3b8', fontSize: '10px' }}>
-                          ({topic1VideoSource === 'drive' ? 'Switch to HD' : 'Switch to Drive'})
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-{/* Auto Progression banner removed per user preference */}
-
-
-            </div>
-
-            {/* Right Column (~35%): 3 Cards matching media_1791213637074.jpg */}
-            <div className="plw-col-right">
-              {/* Card 1: Lesson Overview */}
-              <div className="plw-card plw-overview-card">
-                <div className="plw-card-header-row">
-                  <div className="flex items-center gap-2">
-                    <div className="plw-icon-circle blue">
-                      <Play className="w-2.5 h-2.5 fill-current" />
-                    </div>
-                    <strong className="plw-card-title">Lesson Overview</strong>
-                  </div>
-                  <span className="plw-time-pill">
-                    <Clock className="w-3 h-3 text-sky-600" />
-                    08:00 min
-                  </span>
-                </div>
-
-                <h3 className="plw-lesson-headline">{currentTopicData.topicTitle}</h3>
-                <p className="plw-lesson-desc">
-                  In this video, you will learn what Python is, why it is popular, its key features, real-world applications, and why it is a great choice for a career in data analytics, AI, and more.
-                </p>
-
-                <div className="plw-tags-row">
-                  <span className="plw-tag tag-green">🌱 Beginner Friendly</span>
-                  <span className="plw-tag tag-purple">⚡ Concept Based</span>
-                  <span className="plw-tag tag-amber">💼 Real World Examples</span>
-                </div>
-              </div>
-
-              {/* Card 2: What You Will Learn */}
-              <div className="plw-card plw-learn-card">
-                <div className="plw-learn-content">
-                  <div className="flex items-center gap-2 mb-2">
-                    <CheckCircle2 className="w-4 h-4 text-sky-600" />
-                    <strong className="plw-card-title">What You Will Learn</strong>
-                  </div>
-                  <ul className="plw-check-list">
-                    <li>
-                      <div className="plw-check-dot">✓</div>
-                      <span>What is Python?</span>
-                    </li>
-                    <li>
-                      <div className="plw-check-dot">✓</div>
-                      <span>History and evolution</span>
-                    </li>
-                    <li>
-                      <div className="plw-check-dot">✓</div>
-                      <span>Key features of Python</span>
-                    </li>
-                    <li>
-                      <div className="plw-check-dot">✓</div>
-                      <span>Real-world applications</span>
-                    </li>
-                    <li>
-                      <div className="plw-check-dot">✓</div>
-                      <span>Why learn Python for data analytics and GenAI</span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="plw-target-graphic-wrap">
-                  <img
-                    src="/images/target_bullseye_3d.jpg"
-                    alt="Target Bullseye"
-                    className="plw-target-img"
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full items-start">
+            {/* ── LEFT PANEL: SCROLLABLE VISUAL NOTES (approx. 60% width) ── */}
+            <div className="lg:col-span-7 bg-white rounded-3xl border border-purple-100/90 p-2 sm:p-4 shadow-2xs overflow-hidden h-[calc(100vh-140px)] min-h-[620px] flex flex-col relative">
+              {isExcelTrack ? (
+                <div
+                  className="w-full h-full overflow-y-auto p-1 sm:p-3 select-text rounded-2xl relative"
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: '#d8b4fe #faf5ff' }}
+                >
+                  <ExcelVisualLessonViewer
+                    topicId={effectiveTopicId}
+                    activeSectionId={activeMentorSection?.id}
+                    onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                    onScrollSettled={() => setMentorScrollSettled(true)}
+                    language={mentorLanguage}
+                    onLanguageChange={setMentorLanguage}
+                    onSelectTopic={(newId) => setEffectiveTopicId(newId)}
+                    onBackToCurriculum={handleBackToCourse}
                   />
                 </div>
+              ) : (effectiveTopicId >= 1 && effectiveTopicId <= 80) ? (
+                <div
+                  className="w-full h-full overflow-y-auto p-1 sm:p-3 select-text rounded-2xl relative"
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: '#d8b4fe #faf5ff' }}
+                >
+                  {effectiveTopicId === 1 && (
+                    <DataAnalyticsVisualLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 2 && (
+                    <Topic2WhyBusinessesNeedLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 3 && (
+                    <Topic3RealLifeExamplesLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 4 && (
+                    <Topic4DataVsInfoVsInsightLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 5 && (
+                    <Topic5DataDecisionMakingLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 6 && (
+                    <Topic6RolesAndRespLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 7 && (
+                    <Topic7AnalystVsScientistVsEngineerLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 8 && (
+                    <Topic8TypesOfAnalyticsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 9 && (
+                    <Topic9DataTypesSourcesQualityLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 10 && (
+                    <Topic10AnalyticsWorkflowLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 11 && (
+                    <Topic11WhatIsProgrammingLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 12 && (
+                    <Topic12HowComputersFollowInstructionsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 13 && (
+                    <Topic13WhatIsPythonLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 14 && (
+                    <Topic14PythonInAnalyticsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 15 && (
+                    <Topic15PythonEnvironmentSetupLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 16 && (
+                    <Topic16FirstPythonProgramLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 17 && (
+                    <Topic17SyntaxIndentationCommentsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 18 && (
+                    <Topic18PrintAndOutputLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 19 && (
+                    <Topic19VariablesAndStorageLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 20 && (
+                    <Topic20DataTypesAndTypeLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 21 && (
+                    <Topic21TypeConversionLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 22 && (
+                    <Topic22InputAndUserInputLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 23 && (
+                    <Topic23OperatorsAndExpressionsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 24 && (
+                    <Topic24ComparisonLogicalOperatorsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 25 && (
+                    <Topic25IfStatementsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 26 && (
+                    <Topic26IfElseElifLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 27 && (
+                    <Topic27NestedConditionsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 28 && (
+                    <Topic28ForLoopsRangeLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 29 && (
+                    <Topic29WhileLoopsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 30 && (
+                    <Topic30BreakContinuePassLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 31 && (
+                    <Topic31ErrorsAndDebuggingLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 32 && (
+                    <Topic32ProblemSolvingProjectsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 33 && (
+                    <Topic33StringsIndexingSlicingLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 34 && (
+                    <Topic34StringMethodsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 35 && (
+                    <Topic35ListsIndexingSlicingLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 36 && (
+                    <Topic36ListMethodsOperationsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 37 && (
+                    <Topic37TuplesAndSetsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 38 && (
+                    <Topic38DictionariesKeyValueLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 39 && (
+                    <Topic39LoopingCollectionsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 40 && (
+                    <Topic40NestedCollectionsProjectLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 41 && (
+                    <Topic41IntroToFunctionsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 42 && (
+                    <Topic42ParametersReturnValuesLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 43 && (
+                    <Topic43DefaultKeywordArgsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 44 && (
+                    <Topic44ScopeBuiltinFunctionsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 45 && (
+                    <Topic45ModulesAndImportsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 46 && (
+                    <Topic46DatesAndTimeLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 47 && (
+                    <Topic47ReadWriteFilesCsvLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 48 && (
+                    <Topic48ExceptionHandlingLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 49 && (
+                    <Topic49ReusableCodeProjectsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 50 && (
+                    <Topic50WhatIsNumpyLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 51 && (
+                    <Topic51CreatingNumpyArraysLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 52 && (
+                    <Topic52ArrayShapesDimensionsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 53 && (
+                    <Topic53IndexingSlicingLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 54 && (
+                    <Topic54VectorizedOperationsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 55 && (
+                    <Topic55AggregationStatisticsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 56 && (
+                    <Topic56BooleanMasksFilteringLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 57 && (
+                    <Topic57ReshapingCombiningProjectsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 58 && (
+                    <Topic58WhatIsPandasLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 59 && (
+                    <Topic59SeriesAndDataFramesLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 60 && (
+                    <Topic60ReadingCsvExcelLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 61 && (
+                    <Topic61InspectingDataLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 62 && (
+                    <Topic62SelectingColumnsRowsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 63 && (
+                    <Topic63FilteringSortingLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 64 && (
+                    <Topic64CreatingRenamingColumnsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 65 && (
+                    <Topic65HandlingMissingValuesLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 66 && (
+                    <Topic66RemovingDuplicatesLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 67 && (
+                    <Topic67GroupByAggregationLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 68 && (
+                    <Topic68MergeJoinConcatLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 69 && (
+                    <Topic69DatesAndTextLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 70 && (
+                    <Topic70ExportingCleanDataProjectLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 71 && (
+                    <Topic71WhyDataVizMattersLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 72 && (
+                    <Topic72MatplotlibBasicsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 73 && (
+                    <Topic73BarColumnChartsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 74 && (
+                    <Topic74LineChartsTrendsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 75 && (
+                    <Topic75HistogramsDistributionsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 76 && (
+                    <Topic76ScatterPlotsRelationshipsLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 77 && (
+                    <Topic77LabelsLegendsTitlesLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 78 && (
+                    <Topic78ChoosingRightChartLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 79 && (
+                    <Topic79EdaPandasLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                  {effectiveTopicId === 80 && (
+                    <Topic80RetailSalesMiniProjectLesson
+                      activeSectionId={activeMentorSection?.id}
+                      onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                      onScrollSettled={() => setMentorScrollSettled(true)}
+                      language={mentorLanguage}
+                      onLanguageChange={setMentorLanguage}
+                    />
+                  )}
+                </div>
+              ) : (
+                <PythonTypeVisualLesson onOpenCodingGame={() => handleSelectTab('play')} />
+              )}
+            </div>
+
+            {/* ── RIGHT PANEL: VIDEO LESSON & ACTIONS (approx. 40% width) ── */}
+            <div className="lg:col-span-5 bg-white rounded-3xl border border-purple-100/90 p-5 sm:p-6 shadow-2xs space-y-4">
+              {/* Header */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-purple-950 font-black text-sm">
+                  <div className="w-6 h-6 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center">
+                    <Play className="w-2.5 h-2.5 fill-current" />
+                  </div>
+                  <span>Video Lesson (Optional)</span>
+                </div>
+                <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-700 border border-purple-200/60 flex items-center gap-1">
+                  <Clock className="w-3 h-3 text-purple-600" />
+                  <span>10:24 min</span>
+                </span>
               </div>
 
-              {/* Card 3: Resources */}
-              <div className="plw-card plw-resources-card">
-                <div className="plw-card-header-row mb-1.5">
-                  <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-sky-600" />
-                    <strong className="plw-card-title">Resources</strong>
+              {/* Video Screen: Large, full width of column, NO AUTOPLAY */}
+              <div className="rounded-2xl overflow-hidden border border-slate-200/90 relative bg-slate-950 aspect-video shadow-xs w-full">
+                {isCurrentTopicLocked ? (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-slate-950 text-white p-4 text-center">
+                    <Lock className="w-6 h-6 text-amber-400 mb-2" />
+                    <span className="text-xs font-bold text-amber-300">Locked Video Lesson</span>
                   </div>
-                  <button className="plw-download-all-btn">
-                    Download All
+                ) : topic1VideoSource === 'drive' ? (
+                  <iframe
+                    src="https://drive.google.com/file/d/1lpQ_5Imk74nnE2YueuEBidHpXkKGIT9H/preview"
+                    title="1.1 What Is Data Analytics? - Video Lesson"
+                    className="w-full h-full border-none"
+                    allow="fullscreen; encrypted-media; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <video
+                    ref={lessonVideoRef}
+                    src="/videos/what_is_programming_lesson.mp4"
+                    poster="/images/topic_learn/what_is_programming_poster.jpg"
+                    controls
+                    autoPlay={false}
+                    playsInline
+                    className="w-full h-full object-contain"
+                    onPlay={() => setIsVideoPlaying(true)}
+                    onPause={() => setIsVideoPlaying(false)}
+                    onEnded={() => {
+                      setIsVideoPlaying(false);
+                      setIsVideoCompleted(true);
+                    }}
+                  />
+                )}
+                {/* Switch source pill */}
+                <div className="absolute top-2.5 right-2.5 z-20 bg-slate-900/85 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setTopic1VideoSource((prev) => (prev === 'drive' ? 'local' : 'drive'));
+                    }}
+                    className="text-[10px] font-bold text-sky-400 hover:text-sky-300 flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>{topic1VideoSource === 'drive' ? '🌐 Google Drive' : '⚡ Fast HD'}</span>
                   </button>
                 </div>
+              </div>
 
-                <div className="plw-resources-grid">
-                  <div className="plw-res-tile tile-red">
-                    <span className="plw-res-badge red">PDF</span>
-                    <strong className="plw-res-name">Lecture Notes</strong>
-                    <span className="plw-res-ext">(PDF)</span>
-                  </div>
-                  <div className="plw-res-tile tile-blue">
-                    <span className="plw-res-badge blue">&lt;/&gt;</span>
-                    <strong className="plw-res-name">Example Code</strong>
-                    <span className="plw-res-ext">(.py)</span>
-                  </div>
-                  <div className="plw-res-tile tile-purple">
-                    <span className="plw-res-badge purple">🔗</span>
-                    <strong className="plw-res-name">Cheat Sheet</strong>
-                    <span className="plw-res-ext">(PDF)</span>
-                  </div>
-                  <div className="plw-res-tile tile-green">
-                    <span className="plw-res-badge green">▶</span>
-                    <strong className="plw-res-name">Additional Resources</strong>
-                  </div>
-                </div>
+              {/* Primary CTA: Start Coding Game (Full Width) */}
+              <button
+                type="button"
+                onClick={() => {
+                  soundEffects.playClick();
+                  handleSelectTab('play');
+                }}
+                className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-[0.99]"
+              >
+                <Gamepad2 className="w-4 h-4" />
+                <span>{isExcelTrack ? 'Practice in Excel / Quiz' : 'Start Coding Game'}</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
 
-                {/* Video Progress Bar */}
-                <div className="plw-prog-row">
-                  <span className="plw-prog-label">Video Progress</span>
-                  <div className="plw-prog-track">
-                    <div
-                      className="plw-prog-fill"
-                      style={{
-                        width: isVideoCompleted ? '100%' : '65%',
-                        background: isVideoCompleted
-                          ? 'linear-gradient(90deg, #10b981, #059669)'
-                          : 'linear-gradient(90deg, #0284c7, #38bdf8)'
-                      }}
-                    />
-                  </div>
-                  <span className="plw-prog-pct" style={isVideoCompleted ? { color: '#059669' } : {}}>
-                    {isVideoCompleted ? '100% Complete' : '65%'}
-                  </span>
-                </div>
-
-                {/* Direct CTA to Next Step */}
+              {/* Bottom Lesson Navigation Buttons Side-by-Side */}
+              <div className="grid grid-cols-2 gap-3 pt-1">
                 <button
-                  className="plw-video-proceed-btn"
+                  type="button"
                   onClick={() => {
                     soundEffects.playClick();
-                    setIsVideoCompleted(true);
-                    handleSelectTab(isTab1Topic ? 'play' : 'practice');
+                    const minTopic = isExcelTrack ? 27 : 1;
+                    const prevId = Math.max(minTopic, effectiveTopicId - 1);
+                    if (prevId !== effectiveTopicId) {
+                      setEffectiveTopicId(prevId);
+                    }
                   }}
-                  style={{
-                    width: '100%',
-                    marginTop: '12px',
-                    padding: '10px 14px',
-                    background: 'linear-gradient(135deg, #0284c7, #0369a1)',
-                    color: '#ffffff',
-                    border: 'none',
-                    borderRadius: '10px',
-                    fontWeight: 800,
-                    fontSize: '13px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 12px rgba(2, 132, 199, 0.25)',
-                    transition: 'all 0.2s ease',
-                  }}
+                  disabled={isExcelTrack ? effectiveTopicId <= 27 : effectiveTopicId <= 1}
+                  className="py-2.5 px-4 rounded-xl bg-white border border-slate-200/90 hover:bg-slate-50 text-slate-700 text-xs font-bold transition disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  <span>{isTab1Topic ? 'Start Gamified Practice (4 Games) 🎮' : 'Proceed to MCQ Practice →'}</span>
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span>Previous Lesson</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEffects.playClick();
+                    const maxTopic = isExcelTrack ? 76 : 80;
+                    const nextId = Math.min(maxTopic, effectiveTopicId + 1);
+                    if (nextId !== effectiveTopicId) {
+                      setEffectiveTopicId(nextId);
+                      if (onNavigateNextTopic) onNavigateNextTopic(nextId);
+                    }
+                  }}
+                  disabled={isExcelTrack ? effectiveTopicId >= 76 : effectiveTopicId >= 80}
+                  className="py-2.5 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-bold transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <span>Next Lesson</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
+          </div>
+
+            {/* Future IT Mentor: Flying AI Robot Mascot & Auto-Scroll Controller */}
+            <FutureITMentor
+              topicId={effectiveTopicId}
+              isExcelTrack={isExcelTrack}
+              sectionRect={mentorSectionRect}
+              scrollSettled={mentorScrollSettled}
+              language={mentorLanguage}
+              onLanguageChange={setMentorLanguage}
+              isVideoPlaying={isVideoPlaying}
+              onPlayMentor={() => {
+                if (lessonVideoRef.current && !lessonVideoRef.current.paused) {
+                  lessonVideoRef.current.pause();
+                }
+                setIsVideoPlaying(false);
+              }}
+              onActiveSectionChange={(section) => {
+                setActiveMentorSection(section);
+                setMentorUserScrolled(false);
+              }}
+              onUserManualScrollDetected={mentorUserScrolled}
+              onResetUserManualScroll={() => setMentorUserScrolled(false)}
+            />
           </>
         )}
 
@@ -3215,7 +3927,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                 tabId={urlTabId}
                 topicId={effectiveTopicId}
                 onSelectTopic={(newId) => setEffectiveTopicId(newId)}
-                onBackToCourse={onBack}
+                onBackToCourse={handleBackToCourse}
                 onBackToVideo={() => handleSelectTab('learn')}
                 onNextToInterview={() => handleSelectTab('interview')}
                 onNavigateDock={onNavigateDock}
@@ -3292,11 +4004,11 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                 {/* ── 5 MINI-GAMES LEVEL NAVIGATOR ── */}
                 <div className="game-level-pills-bar">
                   {[
-                    { lvl: 1, label: activityLang === 'hi' ? 'वॉर्म अप' : 'Warm Up', sub: activityLang === 'hi' ? 'कोड पहेली' : 'Code Puzzle', icon: '🧩' },
-                    { lvl: 2, label: activityLang === 'hi' ? 'सोचो' : 'Think', sub: activityLang === 'hi' ? 'आउटपुट पहचानें' : 'Predict Output', icon: '🧠' },
-                    { lvl: 3, label: activityLang === 'hi' ? 'डीबग' : 'Debug', sub: activityLang === 'hi' ? 'बग हंटर' : 'Bug Hunter', icon: '🐞' },
+                    { lvl: 1, label: activityLang === 'hi' ? 'वॉर्म अप' : 'Warm Up', sub: activityLang === 'hi' ? 'Code पहेली' : 'Code Puzzle', icon: '🧩' },
+                    { lvl: 2, label: activityLang === 'hi' ? 'सोचो' : 'Think', sub: activityLang === 'hi' ? 'Output पहचानें' : 'Predict Output', icon: '🧠' },
+                    { lvl: 3, label: activityLang === 'hi' ? 'Debug' : 'Debug', sub: activityLang === 'hi' ? 'बग हंटर' : 'Bug Hunter', icon: '🐞' },
                     { lvl: 4, label: activityLang === 'hi' ? 'बिल्ड' : 'Build', sub: activityLang === 'hi' ? 'बिल्ड और रन' : 'Build & Run', icon: '⚙️' },
-                    { lvl: 5, label: activityLang === 'hi' ? 'बॉस फाइट' : 'Boss Fight', sub: activityLang === 'hi' ? 'रियल कोडिंग' : 'Real Coding', icon: '⚔️' },
+                    { lvl: 5, label: activityLang === 'hi' ? 'बॉस फाइट' : 'Boss Fight', sub: activityLang === 'hi' ? 'रियल Coding' : 'Real Coding', icon: '⚔️' },
                   ].map((item) => {
                     const isUnlocked = unlockedGameLevels.includes(item.lvl);
                     const isActive = activeGameLevel === item.lvl;
@@ -3348,12 +4060,12 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                           <div>
                             <h3 className="stage-title">
                               {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l1Title || 'लेवल 1 — कोड पहेली: सही सिंटैक्स जोड़ें')
+                                ? (currentHindiActivity.game.l1Title || 'लेवल 1 — Code पहेली: सही Syntax जोड़ें')
                                 : 'Level 1 — Code Puzzle: Syntax Assembler'}
                             </h3>
                             <p className="stage-sub">
                               {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l1Desc || 'ब्लॉक्स पर क्लिक करके पायथन का सही print कमांड बनाएं।')
+                                ? (currentHindiActivity.game.l1Desc || 'ब्लॉक्स पर क्लिक करके Python का सही print कमांड बनाएं।')
                                 : 'Click the magnetic code blocks to assemble a valid Python print command.'}
                             </p>
                           </div>
@@ -3509,12 +4221,12 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                           <div>
                             <h3 className="stage-title">
                               {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l2Title || 'लेवल 2 — सोचें: आउटपुट का सटीक अनुमान')
+                                ? (currentHindiActivity.game.l2Title || 'लेवल 2 — सोचें: Output का सटीक अनुमान')
                                 : 'Level 2 — Think: Quantum Output Predictor'}
                             </h3>
                             <p className="stage-sub">
                               {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l2Question || 'पायथन कोड को लाइन-दर-लाइन समझें और तय करें कि क्या आउटपुट आएगा।')
+                                ? (currentHindiActivity.game.l2Question || 'Python Code को लाइन-दर-लाइन समझें और तय करें कि क्या Output आएगा।')
                                 : 'Trace the Python code line-by-line and predict what the interpreter outputs.'}
                             </p>
                           </div>
@@ -3566,7 +4278,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                         {/* Right: Prediction Cards */}
                         <div className="l2-options-card">
                           <strong className="l2-options-header">
-                            {activityLang === 'hi' ? 'सटीक आउटपुट चुनें:' : 'Select the Exact Output:'}
+                            {activityLang === 'hi' ? 'सटीक Output चुनें:' : 'Select the Exact Output:'}
                           </strong>
                           <div className="l2-options-stack">
                             {l2Options.map((opt) => {
@@ -3638,12 +4350,12 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                           <div>
                             <h3 className="stage-title">
                               {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l3Title || 'लेवल 3 — डीबग: साइबर बग हंटर')
+                                ? (currentHindiActivity.game.l3Title || 'लेवल 3 — Debug: साइबर बग हंटर')
                                 : 'Level 3 — Debug: Cyber Bug Hunter'}
                             </h3>
                             <p className="stage-sub">
                               {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l3Question || 'कोड में छिपे बग की पहचान करें और सही पैच लगाकर फिक्स करें!')
+                                ? (currentHindiActivity.game.l3Question || 'Code में छिपे बग की पहचान करें और सही पैच लगाकर फिक्स करें!')
                                 : 'A rogue bug drone is sabotaging line 2. Lock the laser crosshair and deploy the patch!'}
                             </p>
                           </div>
@@ -3783,12 +4495,12 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                           <div>
                             <h3 className="stage-title">
                               {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l4Title || 'लेवल 4 — निर्माण: कोड ब्लूप्रिंट मशीन')
+                                ? (currentHindiActivity.game.l4Title || 'लेवल 4 — निर्माण: Code ब्लूप्रिंट मशीन')
                                 : 'Level 4 — Build: Component Blueprint Machine'}
                             </h3>
                             <p className="stage-sub">
                               {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l4Question || 'आवश्यक टोकन्स जोड़कर सही कोड बनाएं और टेस्ट रनर चलाएं।')
+                                ? (currentHindiActivity.game.l4Question || 'आवश्यक टोकन्स जोड़कर सही Code बनाएं और टेस्ट रनर चलाएं।')
                                 : 'Construct the XP calculation function and execute the automated test runner.'}
                             </p>
                           </div>
@@ -3961,7 +4673,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                             </h3>
                             <p className="stage-sub">
                               {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l5Question || 'असली पायथन मुकाबला! शील्ड को तोड़ें और सही पायथन कमांड से बॉस को हराएं।')
+                                ? (currentHindiActivity.game.l5Question || 'असली Python मुकाबला! शील्ड को तोड़ें और सही Python कमांड से बॉस को हराएं।')
                                 : "Real Python combat! Breach Giga-Glitch's shield and fire the ultimate Python strike."}
                             </p>
                           </div>
@@ -4742,7 +5454,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
               onLanguageChange={handleSelectActivityLang}
               hrSettings={hrSettings}
               onOpenHrSettings={() => setAdminHrModalOpen(true)}
-              onBackToCourse={onBack}
+              onBackToCourse={handleBackToCourse}
               onSelectTopic={(nextId) => setEffectiveTopicId(nextId)}
               onEndInterview={(finalAveragePercent) => {
                 if (typeof finalAveragePercent === 'number') {
@@ -5303,7 +6015,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                                 ? 'अगला प्रश्न (Next Question) →'
                                 : 'Next Question →'
                               : activityLang === 'hi'
-                              ? 'इंटरव्यू रिपोर्ट देखें →'
+                              ? 'इंटरव्यू Report देखें →'
                               : 'Complete & View Report →'}
                           </span>
                           <ChevronRight className="w-4 h-4" />
@@ -5515,7 +6227,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                             ? `अगला प्रश्न (${hrName}) →`
                             : `Next Question from ${hrName} →`
                           : activityLang === 'hi'
-                          ? 'इंटरव्यू पूरा करें और रिपोर्ट देखें →'
+                          ? 'इंटरव्यू पूरा करें और Report देखें →'
                           : 'Complete Interview & View Report →'}
                       </span>
                       <ChevronRight className="w-4 h-4" />
@@ -5855,8 +6567,8 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                     } catch (e) {
                       console.warn(e);
                     }
-                    if (onNavigateNextTopic) onNavigateNextTopic();
-                    else onBack();
+                    if (onNavigateNextTopic) onNavigateNextTopic(effectiveTopicId + 1);
+                    else handleBackToCourse();
                   }}
                 >
                   <span>Next Topic →</span>

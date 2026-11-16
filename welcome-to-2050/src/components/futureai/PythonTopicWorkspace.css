@@ -12,16 +12,20 @@ html, body {
   overflow-x: hidden;
 }
 
-body:has(.ptw-root-container) {
+body:has(.ptw-root-container),
+html:has(.ptw-root-container),
+#root:has(.ptw-root-container) {
   min-height: 100vh;
   overflow-x: hidden;
+  background: #ffffff !important;
+  background-image: none !important;
 }
 
 .ptw-root-container {
   min-height: 100vh;
   position: relative;
-  background: url('/images/bg_ethereal_2050.png') no-repeat center center fixed;
-  background-size: cover;
+  background: #ffffff !important;
+  background-image: none !important;
   padding: 0.4rem 1.25rem 1.25rem 1.25rem;
   display: flex;
   flex-direction: column;
@@ -398,6 +402,15 @@ body:has(.ptw-root-container) {
   grid-template-columns: minmax(0, 1.75fr) minmax(320px, 1fr);
   gap: 0.85rem;
   box-sizing: border-box;
+}
+
+.ptw-main-grid-layout.is-learn-step {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
 }
 
 .ptw-col-left {
@@ -10183,8 +10196,20 @@ body:has(.ptw-root-container) {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   UNIFIED TOP BAR: Breadcrumbs (Left) + Activity Steps (Right) Single Line
+   TOP TABS ACTION BAR: Notes | Video (Left) + Coding Game & Mock Interview (Right)
    ───────────────────────────────────────────────────────────────────────── */
+.plw-top-tabs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 0 6px 0;
+  background: #ffffff;
+  margin-top: 2px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
 .plw-top-unified-bar {
   display: flex;
   align-items: center;
@@ -10668,3 +10693,160 @@ body:has(.ptw-root-container) {
     text-overflow: ellipsis !important;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FUTURE IT MENTOR - ARTICULATED HAND GESTURING ANIMATION
+   Natural pivot around the elbow ball joint (x: 50%, y: 45.45%)
+   ───────────────────────────────────────────────────────────────────────────── */
+@keyframes mentorHandGestureFloat {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-1.5deg);
+  }
+}
+
+@keyframes mentorHandGestureSpeaking {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  35% {
+    transform: rotate(-2.2deg);
+  }
+  70% {
+    transform: rotate(0.8deg);
+  }
+}
+
+.animate-mentor-hand-float {
+  transform-origin: 50% 45.45% !important;
+  animation: mentorHandGestureFloat 3.4s ease-in-out infinite !important;
+  will-change: transform;
+}
+
+.animate-mentor-hand-speaking {
+  transform-origin: 50% 45.45% !important;
+  animation: mentorHandGestureSpeaking 2.2s ease-in-out infinite !important;
+  will-change: transform;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GOOGLE AI / GEMINI MULTI-COLOR ROTATING BORDER ANIMATION
+   Smooth 360-degree rotation of Google Blue, Red, Yellow, Green, Cyan, Purple
+   ───────────────────────────────────────────────────────────────────────────── */
+@keyframes googleColorRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-google-spin {
+  animation: googleColorRotate 4s linear infinite;
+  will-change: transform;
+}
+
+.animate-google-spin-fast {
+  animation: googleColorRotate 2.6s linear infinite;
+  will-change: transform;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TOP-LEVEL ADVANCED ACTIVE SECTION VISUALIZATION (AI MENTOR EXPLAINING)
+   Smooth neon glow, micro-elevation, and doodle icon spotlight animations
+   ───────────────────────────────────────────────────────────────────────────── */
+@keyframes activeCardGlowPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.9), 0 0 22px rgba(168, 85, 247, 0.45), 0 10px 25px -5px rgba(79, 70, 229, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 3.5px rgba(99, 102, 241, 1), 0 0 34px rgba(147, 51, 234, 0.65), 0 14px 35px -5px rgba(99, 102, 241, 0.4);
+  }
+}
+
+@keyframes activeStepGlowPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 2.5px rgba(147, 51, 234, 0.9), 0 0 16px rgba(168, 85, 247, 0.5);
+    transform: scale(1.05);
+  }
+  50% {
+    box-shadow: 0 0 0 3.5px rgba(59, 130, 246, 1), 0 0 24px rgba(99, 102, 241, 0.7);
+    transform: scale(1.07);
+  }
+}
+
+@keyframes activeBulbGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.4));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(245, 158, 11, 0.95)) drop-shadow(0 0 25px rgba(251, 191, 36, 0.7));
+    transform: scale(1.08);
+  }
+}
+
+@keyframes activeBroomWiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-10deg) scale(1.05);
+  }
+  75% {
+    transform: rotate(8deg) scale(1.05);
+  }
+}
+
+@keyframes activeTargetPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 4px rgba(244, 63, 94, 0.4));
+  }
+  50% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 16px rgba(244, 63, 94, 0.85));
+  }
+}
+
+.lesson-section-active {
+  position: relative !important;
+  z-index: 20 !important;
+  transform: scale(1.025) !important;
+  animation: activeCardGlowPulse 2.4s ease-in-out infinite !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(245, 243, 255, 0.95)) !important;
+  border-color: #9333ea !important;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.lesson-step-active {
+  position: relative !important;
+  z-index: 25 !important;
+  animation: activeStepGlowPulse 2.2s ease-in-out infinite !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%) !important;
+  border-radius: 1rem !important;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.lesson-section-inactive {
+  opacity: 0.82;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-active-bulb {
+  animation: activeBulbGlow 1.8s ease-in-out infinite;
+}
+
+.animate-active-broom {
+  animation: activeBroomWiggle 1.5s ease-in-out infinite;
+}
+
+.animate-active-target {
+  animation: activeTargetPulse 1.6s ease-in-out infinite;
+}
+
+
+

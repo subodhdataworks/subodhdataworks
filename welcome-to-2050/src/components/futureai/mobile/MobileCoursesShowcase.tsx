@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { ToolIcon } from '../CourseToolIcons';
 import { isCourseUnlocked } from '../../../services/courseUnlockService';
+import { CourseSocialProof } from '../CourseSocialProof';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -66,82 +67,46 @@ interface Props {
 // ─── Viewport-aware autoplay video (NO play button, compact) ─────────────────
 
 const AutoplayVideo: React.FC<{ video?: string; poster: string; alt: string }> = ({
-  video,
   poster,
   alt,
 }) => {
-  const wrapRef = useRef<HTMLDivElement | null>(null);
-  const vidRef  = useRef<HTMLVideoElement | null>(null);
-  const [ready,  setReady]  = useState(false);
-  const [failed, setFailed] = useState(false);
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [imgSrc, setImgSrc] = useState(poster);
+  const fallbackJpg = poster.endsWith('.webp') ? poster.replace(/\.webp$/, '.jpg') : poster;
 
   useEffect(() => {
-    const vid = vidRef.current;
-    const wrap = wrapRef.current;
-    if (!vid || !wrap || !video || failed) return;
-
-    vid.muted = true;
-    vid.defaultMuted = true;
-    vid.playsInline = true;
-    vid.setAttribute('muted', '');
-    vid.setAttribute('playsinline', '');
-    vid.setAttribute('webkit-playsinline', 'true');
-
-    let visible = false;
-    const tryPlay = () => {
-      if (!vid || failed) return;
-      vid.muted = true;
-      vid.play().catch(() => {/* blocked until user gesture — poster stays visible */});
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          visible = e.isIntersecting && e.intersectionRatio >= 0.15;
-          visible ? tryPlay() : vid.pause();
-        }
-      },
-      { threshold: [0, 0.15, 0.5] }
-    );
-    observer.observe(wrap);
-
-    const onVis = () => { if (document.visibilityState === 'visible' && visible && vid.paused) tryPlay(); };
-    const onTouch = () => { if (visible && vid.paused) tryPlay(); };
-    document.addEventListener('visibilitychange', onVis);
-    window.addEventListener('touchstart', onTouch, { passive: true });
-
-    return () => {
-      observer.disconnect();
-      document.removeEventListener('visibilitychange', onVis);
-      window.removeEventListener('touchstart', onTouch);
-    };
-  }, [video, failed]);
+    setImgSrc(poster);
+    if (imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth > 0) {
+      setLoaded(true);
+    }
+  }, [poster]);
 
   return (
-    <div ref={wrapRef} className="relative w-full h-full bg-slate-900 overflow-hidden">
-      {/* Poster always underneath — prevents flash of black */}
-      <img
-        src={poster}
-        alt={alt}
-        loading="lazy"
-        decoding="async"
-        className="absolute inset-0 w-full h-full object-cover"
-        draggable={false}
+    <div className="relative w-full h-full bg-slate-900 overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-r from-slate-800 via-slate-700/80 to-slate-800"
       />
-      {/* Autoplay video crossfades over poster once playing */}
-      {video && !failed && (
-        <video
-          ref={vidRef}
-          src={video}
-          poster={poster}
-          autoPlay loop muted playsInline
-          preload="metadata"
-          controls={false}
-          disablePictureInPicture
-          onLoadedData={() => setReady(true)}
-          onPlaying={() => setReady(true)}
-          onError={() => setFailed(true)}
-          className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-500 ${ready ? 'opacity-100' : 'opacity-0'}`}
+      {imgSrc && (
+        <img
+          ref={imgRef}
+          src={imgSrc}
+          alt={alt}
+          width={800}
+          height={450}
+          loading="lazy"
+          decoding="async"
+          onLoad={() => setLoaded(true)}
+          onError={() => {
+            if (imgSrc !== fallbackJpg && fallbackJpg) {
+              setImgSrc(fallbackJpg);
+            } else {
+              setLoaded(true);
+            }
+          }}
+          className="relative z-10 w-full h-full object-cover"
+          draggable={false}
         />
       )}
     </div>
@@ -258,6 +223,8 @@ const Card: React.FC<{ course: MobileShowcaseCourse }> = ({ course }) => {
               </div>
             ))}
           </div>
+          {/* Row 5: Animated Student Social Proof (4 Avatars + Enrolled Count + Star Rating) */}
+          <CourseSocialProof courseId={course.id} visibleCount={4} compact className="mt-1" />
         </div>
       </div>
 
@@ -267,9 +234,11 @@ const Card: React.FC<{ course: MobileShowcaseCourse }> = ({ course }) => {
         style={{ borderTop: '1px solid rgba(226, 232, 240, 0.8)' }}
       >
         {/* Original price (strikethrough) */}
-        <span className="text-[11.5px] font-bold text-rose-500 line-through whitespace-nowrap shrink-0">
-          {course.originalPrice}
-        </span>
+        {course.originalPrice ? (
+          <span className="text-[11.5px] font-bold text-rose-500 line-through whitespace-nowrap shrink-0">
+            {course.originalPrice}
+          </span>
+        ) : null}
 
         {/* Selling price (Luminous green box) */}
         <span
@@ -283,12 +252,14 @@ const Card: React.FC<{ course: MobileShowcaseCourse }> = ({ course }) => {
         </span>
 
         {/* Discount badge */}
-        <span
-          className="text-[9px] font-black text-rose-600 whitespace-nowrap shrink-0 px-1.5 py-0.5 rounded-full border border-rose-300"
-          style={{ background: 'rgba(255,228,230,0.7)' }}
-        >
-          {course.discountLabel}
-        </span>
+        {course.discountLabel ? (
+          <span
+            className="text-[9px] font-black text-rose-600 whitespace-nowrap shrink-0 px-1.5 py-0.5 rounded-full border border-rose-300"
+            style={{ background: 'rgba(255,228,230,0.7)' }}
+          >
+            {course.discountLabel}
+          </span>
+        ) : null}
 
         {/* Enroll Now button (Compact, clean & glowing) */}
         <button

@@ -89,6 +89,15 @@ export const ContactUsView: React.FC<ContactUsViewProps> = ({ onBack }) => {
 
       {/* ─── Main Content Container ─── */}
       <main className="max-w-4xl mx-auto px-4 pt-6 sm:pt-10 space-y-6 text-left">
+        <button
+          type="button"
+          onClick={handleBack}
+          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200/90 transition shadow-2xs cursor-pointer"
+          title="Back"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Back</span>
+        </button>
         
         {/* Page Header */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm relative overflow-hidden">

@@ -130,7 +130,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
     if (onOpenNotifications) {
       onOpenNotifications();
     } else {
-      alert('🔔 Welcome to FUTURE IT INDUSTRY!\nYou have 3 unread updates:\n1. 🐍 Python Chapter 1 Unlocked!\n2. 💼 24 New Hiring Drives Live today!\n3. 💰 Refer & Earn ₹100 per signup.');
+      alert('🔔 Welcome to FUTURE IT INDUSTRY!\nYou have 3 unread updates:\n1. 🐍 Python Chapter 1 Unlocked!\n2. 💼 24 New Hiring Drives Live today!\n3. 💰 Refer & Earn ₹300 per signup.');
     }
   };
 
@@ -341,7 +341,7 @@ export const MobileTopBar: React.FC<MobileTopBarProps> = ({
                   className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition cursor-pointer"
                 >
                   <Coins className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Refer &amp; Earn (₹100)</span>
+                  <span>Refer &amp; Earn (₹300)</span>
                 </button>
 
                 <button

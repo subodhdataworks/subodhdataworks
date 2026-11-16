@@ -291,7 +291,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
               <span className="text-[#64748B] font-bold uppercase text-[10px] block">New-System Commission Rules</span>
               <strong className="text-[#059669] font-black text-sm mt-0.5 block">
-                Free Signup: ₹0 • Paid Enrollment: ₹100
+                Free Signup: ₹0 • Paid Enrollment: ₹300
               </strong>
               <span className="text-[#64748B] font-semibold text-[11px]">
                 Failed Payment: ₹0 • Unique Email &amp; No Self-Referral

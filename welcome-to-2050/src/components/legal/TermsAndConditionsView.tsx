@@ -56,7 +56,7 @@ export const TermsAndConditionsView: React.FC<TermsAndConditionsViewProps> = ({ 
     if (onBack) {
       onBack();
     } else if (typeof window !== 'undefined') {
-      window.history.length > 1 ? window.history.back() : (window.location.hash = '#dashboard');
+      window.location.hash = '#home';
     }
   };
 

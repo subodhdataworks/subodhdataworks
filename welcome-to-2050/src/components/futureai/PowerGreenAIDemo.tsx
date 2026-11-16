@@ -39,13 +39,13 @@ export const PowerGreenAIDemo: React.FC<PowerGreenAIDemoProps> = ({
   const [conversation, setConversation] = useState<Array<{ role: 'student' | 'ai'; text: string; lang: SupportedLanguage }>>([
     {
       role: 'student',
-      text: currentLanguage === 'hi' ? 'पायथन वेरिएबल क्या है?' : 'What is a Python variable?',
+      text: currentLanguage === 'hi' ? 'Python Variable क्या है?' : 'What is a Python variable?',
       lang: currentLanguage,
     },
     {
       role: 'ai',
       text: currentLanguage === 'hi' 
-        ? 'वेरिएबल एक नामित कंटेनर है जिसका उपयोग प्रोग्राम में डेटा को संगृहीत करने के लिए किया जाता है।'
+        ? 'Variable एक नामित कंटेनर है जिसका उपयोग Program में Data को संगृहीत करने के लिए किया जाता है।'
         : 'A variable is a named container used to store data in a program.',
       lang: currentLanguage,
     },
@@ -97,13 +97,13 @@ export const PowerGreenAIDemo: React.FC<PowerGreenAIDemoProps> = ({
   const handleQuickPrompt = async (action: string) => {
     let studentText = '';
     if (action === 'ask') {
-      studentText = currentLanguage === 'hi' ? 'वेरिएबल के विभिन्न प्रकार क्या हैं?' : 'What are the main types of variables in Python?';
+      studentText = currentLanguage === 'hi' ? 'Variable के विभिन्न प्रकार क्या हैं?' : 'What are the main types of variables in Python?';
     } else if (action === 'explain_again') {
       studentText = currentLanguage === 'hi' ? 'कृपया इसे दोबारा विस्तार से समझाएं।' : 'Can you explain variables again simply?';
     } else if (action === 'example') {
       studentText = currentLanguage === 'hi' ? 'मुझे इसका एक उदाहरण दीजिए।' : 'Give me an example of declaring variables.';
     } else if (action === 'practice') {
-      studentText = currentLanguage === 'hi' ? 'वेरिएबल का अभ्यास शुरू करें।' : 'Start practice question on variables.';
+      studentText = currentLanguage === 'hi' ? 'Variable का अभ्यास शुरू करें।' : 'Start practice question on variables.';
     }
 
     setConversation((prev) => [...prev, { role: 'student', text: studentText, lang: currentLanguage }]);
@@ -120,10 +120,10 @@ export const PowerGreenAIDemo: React.FC<PowerGreenAIDemoProps> = ({
   const handleVoiceCommandPill = async (command: string) => {
     let query = command;
     if (currentLanguage === 'hi') {
-      if (command === 'Start Python') query = 'पायथन शुरू करें';
-      else if (command === 'Explain variables') query = 'वेरिएबल समझाएं';
+      if (command === 'Start Python') query = 'Python शुरू करें';
+      else if (command === 'Explain variables') query = 'Variable समझाएं';
       else if (command === 'Start MCQ') query = 'एमसीक्यू शुरू करें';
-      else if (command === 'Start coding practice') query = 'कोडिंग प्रैक्टिस शुरू करें';
+      else if (command === 'Start coding practice') query = 'Coding प्रैक्टिस शुरू करें';
       else if (command === 'Start interview') query = 'इंटरव्यू शुरू करें';
       else if (command === 'Continue where I stopped') query = 'जहाँ रुका था वहीं से जारी रखें';
     }
@@ -413,7 +413,7 @@ export const PowerGreenAIDemo: React.FC<PowerGreenAIDemoProps> = ({
               onChange={(e) => setTypedInput(e.target.value)}
               placeholder={
                 currentLanguage === 'hi'
-                  ? 'पावरग्रीन एआई से कुछ भी पूछें (उदा. पायथन, एसक्यूएल, इंटरव्यू)...'
+                  ? 'पावरग्रीन एआई से कुछ भी पूछें (उदा. Python, SQL, इंटरव्यू)...'
                   : 'Ask PowerGreen AI anything or type voice commands...'
               }
               className="flex-1 px-4 py-3 rounded-2xl bg-white border border-slate-200 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-sm"

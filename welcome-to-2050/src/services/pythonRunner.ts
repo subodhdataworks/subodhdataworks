@@ -340,3 +340,152 @@ export async function executePythonCode(code: string, timeoutMs: number = 3000):
     isRealPython: false,
   };
 }
+
+
+export async function executePythonCodeLocally(code: string, mockInput?: string): Promise<PythonExecutionResult> {
+  if (!pyodideInstance) {
+    try {
+      const hasOOPOps =
+        /(\bclass\s+[a-zA-Z_]\w*|\bfrom\s+abc\s+import\b|\b(isinstance|issubclass|super)\(|@(classmethod|staticmethod|property|abstractmethod))/.test(
+          code
+        );
+      if (hasOOPOps) {
+        const { runOOPPythonSandbox } = await import('../components/futureai/oopVisualEngine');
+        const oopRes = runOOPPythonSandbox(code, mockInput || '');
+        if (!oopRes.error && oopRes.stdout) {
+          return {
+            stdout: oopRes.stdout,
+            stderr: '',
+            error: null,
+            executionTimeMs: 1,
+            isRealPython: false,
+          };
+        }
+      }
+      const hasProblemSolvingOps =
+        /(\bdef\s+\w+\s*\(|\b(all|any|next|round|enumerate)\(|\bfor\s+\w+\s+in\b.*?\bif\b|\bwhile\b)/.test(
+          code
+        );
+      if (hasProblemSolvingOps) {
+        const { runProblemSolvingPythonSandbox } = await import('../components/futureai/problemSolvingVisualEngine');
+        const psRes = runProblemSolvingPythonSandbox(code, mockInput || '');
+        if (!psRes.error && psRes.stdout) {
+          return {
+            stdout: psRes.stdout,
+            stderr: '',
+            error: null,
+            executionTimeMs: 1,
+            isRealPython: false,
+          };
+        }
+      }
+      const hasSetsDictsOps =
+        /(\b(set|dict|frozenset)\(|\.(add|discard|issubset|issuperset|isdisjoint|intersection|union|difference|symmetric_difference|intersection_update|difference_update|keys|values|items|get|popitem|setdefault|update)\(|\b__name__\b|\bdel\s+\w+\[|\{\s*\}|\{[^}]*:[^}]*\})/.test(
+          code
+        );
+      if (hasSetsDictsOps) {
+        const { runSetsDictsPythonSandbox } = await import('../components/futureai/setsDictsVisualEngine');
+        const sdRes = runSetsDictsPythonSandbox(code, mockInput || '');
+        if (!sdRes.error) {
+          return {
+            stdout: sdRes.stdout,
+            stderr: '',
+            error: null,
+            executionTimeMs: 1,
+            isRealPython: false,
+          };
+        }
+      }
+      const hasListsTuplesOps =
+        /(\.(append|insert|extend|remove|pop|clear|sort|reverse)\(|\b(sorted|list|tuple|enumerate|zip|map|min|max|range)\(|\[\s*[^\]]*\bfor\b[^\]]*\]|\[\s*\]|\(\s*\))/.test(
+          code
+        );
+      if (hasListsTuplesOps) {
+        const { runListsTuplesPythonSandbox } = await import('../components/futureai/listsTuplesVisualEngine');
+        const ltRes = runListsTuplesPythonSandbox(code, mockInput || '');
+        if (!ltRes.error) {
+          return {
+            stdout: ltRes.stdout,
+            stderr: '',
+            error: null,
+            executionTimeMs: 1,
+            isRealPython: false,
+          };
+        }
+      }
+      const hasStringsOps =
+        /(\b(ord|chr|len|str|sum)\b|\.(upper|lower|title|capitalize|casefold|strip|lstrip|rstrip|replace|find|rfind|index|count|startswith|endswith|split|rsplit|splitlines|join|isalpha|isdigit|isalnum|isspace)\(|\[.*:.*\]|"""|'''|r"|r'|\\[ntrb\\"']|\bfor\s+\w+\s+in\b)/.test(
+          code
+        );
+      if (hasStringsOps) {
+        const { runStringsPythonSandbox } = await import('../components/futureai/stringsVisualEngine');
+        const strRes = runStringsPythonSandbox(code, mockInput || '');
+        if (!strRes.error) {
+          return {
+            stdout: strRes.stdout,
+            stderr: '',
+            error: null,
+            executionTimeMs: 1,
+            isRealPython: false,
+          };
+        }
+      }
+      const { runListsTuplesPythonSandbox } = await import('../components/futureai/listsTuplesVisualEngine');
+      const fallbackLtRes = runListsTuplesPythonSandbox(code, mockInput || '');
+      if (fallbackLtRes.stdout && !fallbackLtRes.error) {
+        return {
+          stdout: fallbackLtRes.stdout,
+          stderr: '',
+          error: null,
+          executionTimeMs: 1,
+          isRealPython: false,
+        };
+      }
+      const hasConditionals =
+        /\b(if|elif|else|match|case|bool|any)\b/.test(code) ||
+        code.includes('f"') ||
+        code.includes("f'");
+      if (hasConditionals) {
+        const { runConditionalsPythonSandbox } = await import('../components/futureai/conditionalsVisualEngine');
+        const condRes = runConditionalsPythonSandbox(code, mockInput || '');
+        if (!condRes.error) {
+          return {
+            stdout: condRes.stdout,
+            stderr: '',
+            error: null,
+            executionTimeMs: 1,
+            isRealPython: false,
+          };
+        }
+      }
+      const { runStringsPythonSandbox } = await import('../components/futureai/stringsVisualEngine');
+      const fallbackStrRes = runStringsPythonSandbox(code, mockInput || '');
+      if (fallbackStrRes.stdout && !fallbackStrRes.error) {
+        return {
+          stdout: fallbackStrRes.stdout,
+          stderr: '',
+          error: null,
+          executionTimeMs: 1,
+          isRealPython: false,
+        };
+      }
+      const { runOperatorsPythonSandbox } = await import('../components/futureai/operatorsVisualEngine');
+      const opRes = runOperatorsPythonSandbox(code, mockInput || '');
+      if (opRes.stdout && !opRes.error) {
+        return {
+          stdout: opRes.stdout,
+          stderr: '',
+          error: null,
+          executionTimeMs: 1,
+          isRealPython: false,
+        };
+      }
+    } catch {}
+  }
+  let wrappedCode = code;
+  if (mockInput !== undefined) {
+    const inputs = mockInput.split('\n').map((s) => JSON.stringify(s)).join(', ');
+    wrappedCode = '_sys_inputs = [' + inputs + ']\n_orig_input = input\ndef input(prompt=""):\n    import sys\n    if prompt:\n        sys.stdout.write(str(prompt))\n        sys.stdout.flush()\n    if _sys_inputs:\n        val = str(_sys_inputs.pop(0))\n        if prompt:\n            sys.stdout.write(val + "\\n")\n            sys.stdout.flush()\n        return val\n    if prompt:\n        sys.stdout.write("\\n")\n        sys.stdout.flush()\n    return ""\n' + code;
+  }
+  return executePythonCode(wrappedCode);
+}

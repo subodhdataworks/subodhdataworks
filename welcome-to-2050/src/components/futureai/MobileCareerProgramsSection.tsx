@@ -6,6 +6,7 @@ import {
   Lock,
 } from 'lucide-react';
 import { ToolIcon } from './CourseToolIcons';
+import { CourseSocialProof } from './CourseSocialProof';
 
 export interface MobileCareerProgram {
   id: string;
@@ -30,8 +31,8 @@ export const MOBILE_CAREER_PROGRAMS: MobileCareerProgram[] = [
     desc: 'Master Python, SQL, Power BI, Excel & GenAI Analytics.',
     salary: '₹ 6 LPA - ₹15 LPA',
     price: '₹13,999',
-    video: '/videos/data_analyst_genai_v2.mp4',
-    image: '/images/pot1_sharp_poster.jpg',
+    video: '/videos/data_analyst_genai_v3.mp4',
+    image: '/images/courses/final_data_analyst_genai.webp',
     route: '#data-analyst',
     tools: ['Python', 'SQL', 'Power BI', 'Excel', 'ChatGPT'],
   },
@@ -44,7 +45,7 @@ export const MOBILE_CAREER_PROGRAMS: MobileCareerProgram[] = [
     salary: '₹ 10 LPA - ₹25 LPA',
     price: '₹14,499',
     video: '/videos/data_science_agentic_ai_course.mp4',
-    image: '/images/pot2_sharp_poster.jpg',
+    image: '/images/courses/final_data_science_agentic_ai.webp',
     route: '#data-science',
     tools: ['Python', 'PyTorch', 'LangChain', 'Vector DB', 'RAG'],
   },
@@ -57,7 +58,7 @@ export const MOBILE_CAREER_PROGRAMS: MobileCareerProgram[] = [
     salary: '₹ 12 LPA - ₹28 LPA',
     price: '₹12,999',
     video: '/videos/ml_engineering_course.mp4',
-    image: '/images/pot3_sharp_poster.jpg',
+    image: '/images/courses/final_ml_engineering.webp',
     route: '#ml-engineering',
     tools: ['Python', 'FastAPI', 'Docker', 'Kubernetes', 'Cloud'],
   },
@@ -69,8 +70,8 @@ export const MOBILE_CAREER_PROGRAMS: MobileCareerProgram[] = [
     desc: 'Build, deploy and scale AI applications with industry tools.',
     salary: '₹ 14 LPA - ₹32 LPA',
     price: '₹14,999',
-    video: '/videos/ai_engineering_course.mp4',
-    image: '/images/pot4_sharp_poster.jpg',
+    video: '/videos/ai_engineering_course_v2.mp4',
+    image: '/images/courses/final_ai_engineering.webp',
     route: '#ai-engineering',
     tools: ['OpenAI', 'LangChain', 'Hugging Face', 'Vector DB', 'RAG'],
   },
@@ -82,8 +83,8 @@ export const MOBILE_CAREER_PROGRAMS: MobileCareerProgram[] = [
     desc: 'Master AI tools, automations and prompt engineering.',
     salary: '₹ 5 LPA - ₹14 LPA',
     price: '₹11,999',
-    video: '/videos/card_video_genai.mp4',
-    image: '/images/cube_genai.jpg',
+    video: '/videos/ai_tools_prompt_engineering.mp4',
+    image: '/images/courses/final_ai_tools_prompt.webp',
     route: '#ai-tools-prompt',
     tools: ['ChatGPT', 'OpenAI', 'LangChain', 'Python', 'Cloud'],
   },
@@ -96,7 +97,7 @@ export const MOBILE_CAREER_PROGRAMS: MobileCareerProgram[] = [
     salary: '₹ 5 LPA - ₹12 LPA',
     price: '₹11,499',
     video: '/videos/card_video_excel.mp4',
-    image: '/images/msoffice_365_copilot_poster.jpg',
+    image: '/images/courses/final_ms_office_copilot.webp',
     route: '#ms-office-copilot',
     tools: ['Excel', 'DAX', 'Power Query', 'Power BI', 'Copilot'],
   },
@@ -109,9 +110,48 @@ export const MOBILE_CAREER_PROGRAMS: MobileCareerProgram[] = [
     salary: '₹ 8 LPA - ₹22 LPA',
     price: '₹12,499',
     video: '/videos/card_video_python.mp4',
-    image: '/images/full_stack_web_development_poster.jpg',
+    image: '/images/courses/final_full_stack_web_dev.webp',
     route: '#full-stack',
     tools: ['React', 'Node.js', 'TypeScript', 'Docker', 'GitHub'],
+  },
+  {
+    id: 'ai-website-dev',
+    category: 'ai',
+    titlePrefix: 'AI Website Builder ',
+    titleHighlight: 'Pro',
+    desc: 'LIVE Instructor-Led Class • E-Commerce Website with AI, Backend & Payments.',
+    salary: 'LIVE CLASSES',
+    price: '₹2,999',
+    video: '/videos/ai_website_builder_pro.mp4',
+    image: '/images/courses/final_ai_website_dev.webp',
+    route: '#ai-website-dev',
+    tools: ['AI Builder', 'React', 'Node.js', 'SQL', 'Payments'],
+  },
+  {
+    id: 'ai-android-dev',
+    category: 'ai',
+    titlePrefix: 'AI App Builder ',
+    titleHighlight: 'Pro',
+    desc: 'LIVE Instructor-Led Class • Functional Android App with AI & Firebase.',
+    salary: 'LIVE CLASSES',
+    price: '₹2,499',
+    video: '/videos/ai_app_builder_pro.mp4',
+    image: '/images/courses/final_ai_android_dev.webp',
+    route: '#ai-android-dev',
+    tools: ['Android', 'AI Builder', 'Firebase', 'REST API', 'Play Store'],
+  },
+  {
+    id: 'ai-video-creation',
+    category: 'ai',
+    titlePrefix: 'AI Video Creator ',
+    titleHighlight: 'Pro',
+    desc: 'LIVE Instructor-Led Class • Realistic AI Videos for Ads, Reels & YouTube.',
+    salary: 'LIVE CLASSES',
+    price: '₹999',
+    video: '/videos/ai_video_creator_pro.mp4',
+    image: '/images/courses/final_ai_video_creation.webp',
+    route: '#ai-video-creation',
+    tools: ['AI Video', 'Lip Sync', 'AI Voice', 'Cinema 4K', 'Ads & Reels'],
   },
 ];
 
@@ -418,17 +458,13 @@ export const MobileCareerProgramsSection: React.FC<MobileCareerProgramsSectionPr
                   >
                     {/* Top glass reflection light */}
                     <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-white/70 via-cyan-300/80 to-transparent pointer-events-none z-10" />
-                    <video
-                      ref={(el) => {
-                        videoRefs.current[course.id] = el;
-                      }}
-                      src={course.video}
-                      poster={course.image}
-                      muted
-                      playsInline
-                      loop
-                      autoPlay={isPlaying}
-                      preload="metadata"
+                    <img
+                      src={course.image}
+                      alt={`${course.titlePrefix}${course.titleHighlight}`}
+                      width={800}
+                      height={450}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover select-none pointer-events-none"
                     />
                   </div>
@@ -477,6 +513,9 @@ export const MobileCareerProgramsSection: React.FC<MobileCareerProgramsSectionPr
                       ))}
                     </div>
                   </div>
+
+                  {/* Animated Student Social Proof Row */}
+                  <CourseSocialProof courseId={course.id} visibleCount={4} compact className="mb-1" />
 
                   {/* Bottom Row: Crossed-Out Price & Unlock Course Button with Glow Accent */}
                   <div className="flex flex-wrap items-center justify-between gap-1 pt-1 border-t border-slate-100 min-w-0 w-full">

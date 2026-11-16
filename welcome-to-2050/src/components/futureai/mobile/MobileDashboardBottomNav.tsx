@@ -14,7 +14,7 @@ export interface MobileDashboardBottomNavProps {
 }
 
 /**
- * 3D Embossed Metallic Gold Coin with ₹ symbol & live earning status indicator
+ * Official 3D Earn Cash Logo with live earning status indicator
  */
 const EarnCashIcon: React.FC<{ isActive: boolean }> = ({ isActive }) => (
   <div className="relative flex items-center justify-center my-0.5">
@@ -22,19 +22,14 @@ const EarnCashIcon: React.FC<{ isActive: boolean }> = ({ isActive }) => (
     {isActive && (
       <span className="absolute -inset-1 rounded-full bg-amber-400/35 blur-xs animate-pulse" />
     )}
-    {/* 3D Embossed Metallic Gold Rupee Coin */}
-    <div
-      className={`relative w-[23px] h-[23px] rounded-full bg-gradient-to-br from-[#ffe57f] via-[#f59e0b] to-[#b45309] flex items-center justify-center border border-amber-200/90 shadow-[0_2px_6px_rgba(217,119,6,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.9),inset_0_-1.5px_2px_rgba(146,64,14,0.6)] transition-transform duration-200 ${
+    {/* Official 3D Earn Cash Logo */}
+    <img
+      src="/images/earn_cash_logo_transparent.png"
+      alt="Earn Cash"
+      className={`relative w-[24px] h-[24px] object-contain rounded-[6px] drop-shadow-[0_1px_3px_rgba(245,158,11,0.35)] transition-transform duration-200 ${
         isActive ? 'scale-110 ring-2 ring-amber-400/60' : ''
       }`}
-    >
-      {/* Specular gloss curved highlight */}
-      <span className="absolute top-0.5 inset-x-1 h-2 bg-gradient-to-b from-white/70 to-transparent rounded-t-full pointer-events-none" />
-      {/* ₹ Indian Rupee Symbol */}
-      <span className="text-[12px] font-black leading-none text-[#451a03] drop-shadow-[0_0.5px_0.5px_rgba(255,255,255,0.7)] select-none">
-        ₹
-      </span>
-    </div>
+    />
     {/* Live emerald green earning badge */}
     <span className="absolute -top-0.5 -right-1 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white animate-pulse shadow-xs" />
   </div>

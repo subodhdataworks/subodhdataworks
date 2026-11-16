@@ -248,6 +248,76 @@ export const ToolIcon: React.FC<{ name: string; className?: string }> = ({ name,
     );
   }
 
+  // Android
+  if (norm.includes('android')) {
+    return (
+      <svg viewBox="0 0 36 36" className={className}>
+        <rect width="36" height="36" rx="8" fill="#16A34A" />
+        <path d="M10 18a8 8 0 0116 0v7a2 2 0 01-2 2H12a2 2 0 01-2-2v-7z" fill="#FFFFFF" />
+        <line x1="13" y1="11" x2="11" y2="8" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
+        <line x1="23" y1="11" x2="25" y2="8" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
+        <circle cx="15" cy="16" r="1.3" fill="#16A34A" />
+        <circle cx="21" cy="16" r="1.3" fill="#16A34A" />
+      </svg>
+    );
+  }
+
+  // Firebase
+  if (norm.includes('firebase')) {
+    return (
+      <svg viewBox="0 0 36 36" className={className}>
+        <rect width="36" height="36" rx="8" fill="#FFFBEB" />
+        <path d="M10 27L14 9l5 9 4-6 3 15-8 4-8-4z" fill="#F59E0B" />
+        <path d="M10 27l9-12 7 12-8 4-8-4z" fill="#EA580C" />
+      </svg>
+    );
+  }
+
+  // Play Store
+  if (norm.includes('play store')) {
+    return (
+      <svg viewBox="0 0 36 36" className={className}>
+        <rect width="36" height="36" rx="8" fill="#0F172A" />
+        <polygon points="11,8 27,18 11,28" fill="#38BDF8" />
+        <polygon points="11,8 21,18 11,28" fill="#34D399" />
+      </svg>
+    );
+  }
+
+  // Payments / Checkout
+  if (norm.includes('payment')) {
+    return (
+      <svg viewBox="0 0 36 36" className={className}>
+        <rect width="36" height="36" rx="8" fill="#2563EB" />
+        <rect x="7" y="11" width="22" height="14" rx="2.5" fill="none" stroke="#FFFFFF" strokeWidth="2.2" />
+        <line x1="7" y1="16" x2="29" y2="16" stroke="#93C5FD" strokeWidth="2.5" />
+        <rect x="10" y="20" width="6" height="2" rx="1" fill="#FFFFFF" />
+      </svg>
+    );
+  }
+
+  // AI Video / Cinema 4K / Lip Sync / AI Voice / Ads & Reels
+  if (norm.includes('video') || norm.includes('cinema') || norm.includes('reels') || norm.includes('lip sync') || norm.includes('voice')) {
+    return (
+      <svg viewBox="0 0 36 36" className={className}>
+        <rect width="36" height="36" rx="8" fill="#E11D48" />
+        <rect x="7" y="10" width="16" height="16" rx="3" fill="#FFFFFF" />
+        <polygon points="13,14 20,18 13,22" fill="#E11D48" />
+        <polygon points="24,15 30,11 30,25 24,21" fill="#FDA4AF" />
+      </svg>
+    );
+  }
+
+  // AI Builder / REST API
+  if (norm.includes('builder') || norm.includes('rest api')) {
+    return (
+      <svg viewBox="0 0 36 36" className={className}>
+        <rect width="36" height="36" rx="8" fill="#7C3AED" />
+        <path d="M18 8l2.5 6.5L27 17l-6.5 2.5L18 26l-2.5-6.5L9 17l6.5-2.5L18 8z" fill="#FFFFFF" />
+      </svg>
+    );
+  }
+
   // Default fallback icon
   return (
     <svg viewBox="0 0 36 36" className={className}>

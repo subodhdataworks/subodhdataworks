@@ -43,7 +43,7 @@ export const ReferralSection: React.FC<ReferralSectionProps> = ({ currentLanguag
                 </h3>
 
                 <p className="text-base font-bold text-emerald-700">
-                  ₹100 for every successful enrollment
+                  ₹300 for every successful enrollment
                 </p>
 
                 <p className="text-xs sm:text-sm text-slate-600 max-w-xl font-normal leading-relaxed">
@@ -98,7 +98,7 @@ export const ReferralSection: React.FC<ReferralSectionProps> = ({ currentLanguag
 
             <div className="text-xs text-slate-600 space-y-2.5 leading-relaxed">
               <p>
-                <strong>Reward Amount:</strong> You receive a flat reward of ₹100 for each individual who enrolls into a paid program using your unique invite link.
+                <strong>Reward Amount:</strong> You receive a flat reward of ₹300 for each individual who enrolls into a paid program using your unique invite link.
               </p>
               <p>
                 <strong>Qualification:</strong> A successful enrollment is validated once the referee completes program onboarding.

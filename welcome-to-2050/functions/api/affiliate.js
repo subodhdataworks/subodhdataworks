@@ -223,7 +223,7 @@ export async function onRequestGet(context) {
       totalAffiliatesTracked: Object.keys(store.affiliates).length,
       rules: {
         freeSignupCommission: 0,
-        paidEnrollmentCommission: 100,
+        paidEnrollmentCommission: 300,
         failedPaymentCommission: 0,
         uniqueEmailEnforced: true,
         selfReferralBlocked: true,
@@ -311,15 +311,15 @@ export async function onRequestGet(context) {
               record.referrals[existingIdx].status = 'Reversed';
               record.referrals[existingIdx].commission = 0;
               record.paidEnrollments = Math.max(0, record.paidEnrollments - 1);
-              record.totalEarned = Math.max(0, record.totalEarned - 100);
-              record.reversedBalance = (record.reversedBalance || 0) + 100;
+              record.totalEarned = Math.max(0, record.totalEarned - 300);
+              record.reversedBalance = (record.reversedBalance || 0) + 300;
               recalculateAffiliateBalances(record);
               record.walletLedger.unshift({
                 id: `led_rev_${p.id}`,
                 paymentId: p.id,
                 userId: cleanCode,
                 type: 'COMMISSION_REVERSED',
-                amount: -100,
+                amount: -300,
                 balanceBefore,
                 balanceAfter: record.availableBalance,
                 status: 'Reversed',
@@ -334,12 +334,12 @@ export async function onRequestGet(context) {
           if (p.status !== 'captured') continue;
           if (isTestTransaction(p)) continue;
 
-          // Rule 4 & 6: Idempotent ₹100 credit for verified captured payment
+          // Rule 4 & 6: Idempotent ₹300 credit for verified captured payment
           if (!store.processedPaymentIds.has(p.id)) {
             store.processedPaymentIds.add(p.id);
             const balanceBefore = record.availableBalance;
             record.paidEnrollments += 1;
-            record.totalEarned += 100;
+            record.totalEarned += 300;
             recalculateAffiliateBalances(record);
             record.referrals.unshift({
               id: `ref_rzp_${p.id}`,
@@ -349,7 +349,7 @@ export async function onRequestGet(context) {
               date: new Date(p.created_at * 1000).toISOString().slice(0, 10),
               status: 'Paid',
               amount: p.amount / 100,
-              commission: 100,
+              commission: 300,
               course: p.notes?.courseTitle || 'Data Analyst with GenAI',
               paymentId: p.id,
               referralId: `RF-${p.id.slice(-4).toUpperCase()}`,
@@ -360,7 +360,7 @@ export async function onRequestGet(context) {
               paymentId: p.id,
               userId: cleanCode,
               type: 'COMMISSION_CREDITED',
-              amount: 100,
+              amount: 300,
               balanceBefore,
               balanceAfter: record.availableBalance,
               status: 'Credited',
@@ -502,7 +502,7 @@ export async function onRequestGet(context) {
               date: (e.enrolledAt || e.createdAt || '').slice(0, 10) || new Date().toISOString().slice(0, 10),
               status: 'Paid',
               amount: Number(e.amount) || 4,
-              commission: 100,
+              commission: 300,
               course: e.courseId || 'Data Analyst with GenAI',
               paymentId: pid,
               referralId: `RF-${String(pid).slice(-4).toUpperCase()}`,
@@ -526,7 +526,7 @@ export async function onRequestGet(context) {
             date: p.creditedAt ? p.creditedAt.slice(0, 10) : new Date().toISOString().slice(0, 10),
             status: 'Paid',
             amount: Number(p.amount) || 4,
-            commission: Number(p.commission) || 100,
+            commission: Number(p.commission) || 300,
             course: p.courseId || 'Data Analyst with GenAI',
             paymentId: p.paymentId,
             referralId: `RF-${p.paymentId.slice(-4).toUpperCase()}`,
@@ -551,7 +551,7 @@ export async function onRequestGet(context) {
               date: (p.verifiedAt || p.createdAt || '').slice(0, 10) || new Date().toISOString().slice(0, 10),
               status: 'Paid',
               amount: Number(p.amount) || 4,
-              commission: 100,
+              commission: 300,
               course: p.courseId || 'Data Analyst with GenAI',
               paymentId: pid,
               referralId: `RF-${String(pid).slice(-4).toUpperCase()}`,
@@ -564,7 +564,7 @@ export async function onRequestGet(context) {
       // Calculate authoritative paid enrollments & lifetime earnings
       const verifiedPaidCount = uniquePaymentIds.size;
       record.paidEnrollments = verifiedPaidCount > 0 ? verifiedPaidCount : (Number(fsDoc?.paidEnrollments) || 0);
-      record.totalEarned = record.paidEnrollments * 100;
+      record.totalEarned = record.paidEnrollments * 300;
 
       // 5. Filter real cloud withdrawal requests from Firestore
       const userWithdrawals = allWithdrawalDocs
@@ -1273,7 +1273,7 @@ export async function onRequestPost(context) {
       date: new Date().toISOString().slice(0, 10),
       status: 'Paid',
       amount: Number(body.amount) || 999,
-      commission: 100, // Rule 4: Fixed ₹100 Commission
+      commission: 300, // Rule 4: Fixed ₹300 Commission
       course: body.courseTitle || 'Data Analyst with GenAI',
       paymentId,
       referralId: `RF-${paymentId.slice(-4).toUpperCase() || '8821'}`,
@@ -1295,7 +1295,7 @@ export async function onRequestPost(context) {
     }
 
     record.paidEnrollments += 1;
-    record.totalEarned = record.paidEnrollments * 100;
+    record.totalEarned = record.paidEnrollments * 300;
     recalculateAffiliateBalances(record);
 
     record.walletLedger.unshift({
@@ -1303,7 +1303,7 @@ export async function onRequestPost(context) {
       paymentId,
       userId: cleanRef,
       type: 'COMMISSION_CREDITED',
-      amount: 100,
+      amount: 300,
       balanceBefore,
       balanceAfter: record.availableBalance,
       status: 'Credited',
@@ -1320,7 +1320,7 @@ export async function onRequestPost(context) {
           if (processed) return;
 
           const affiliateDoc = (await tx.get('affiliate_stats', cleanRef)) || {};
-          const totalEarned = (Number(affiliateDoc.totalEarned) || 0) + 100;
+          const totalEarned = (Number(affiliateDoc.totalEarned) || 0) + 300;
           const totalPaid = Number(affiliateDoc.totalPaid) || 0;
           const pendingBalance = Number(affiliateDoc.pendingBalance) || 0;
           const availableBalance = Math.max(0, totalEarned - totalPaid - pendingBalance);
@@ -1345,7 +1345,7 @@ export async function onRequestPost(context) {
             payerUserId: payerEmail || cleanRef,
             payerEmail,
             courseId: body.courseTitle || 'data_analyst',
-            commission: 100,
+            commission: 300,
             creditedAt: nowIso,
           });
 
@@ -1355,7 +1355,7 @@ export async function onRequestPost(context) {
             paymentId,
             userId: cleanRef,
             type: 'COMMISSION_CREDITED',
-            amount: 100,
+            amount: 300,
             balanceBefore: Number(affiliateDoc.availableBalance) || 0,
             balanceAfter: availableBalance,
             status: 'Credited',
@@ -1370,9 +1370,9 @@ export async function onRequestPost(context) {
 
     return json({
       success: true,
-      message: `₹100 commission credited to ${cleanRef}`,
+      message: `₹300 commission credited to ${cleanRef}`,
       creditedTo: cleanRef,
-      commission: 100,
+      commission: 300,
       paidEnrollments: record.paidEnrollments,
       availableBalance: record.availableBalance,
       availableToPayout: record.availableToPayout,

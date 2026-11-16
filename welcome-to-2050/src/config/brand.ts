@@ -2,7 +2,7 @@ export const BRAND = {
   name: 'FUTURE IT INDUSTRY',
   shortName: 'Future IT',
   tagline: 'Learn Today. Earn Tomorrow.',
-  logo: '/images/brand/future_it_logo.png',
+  logo: '/images/brand/future_it_logo_purple.jpg?v=2',
   logoWhite: '/images/brand/future_it_logo_white.png',
   emblem: '/images/brand/future_it_emblem.png',
   favicon: '/images/brand/future_it_emblem.png',

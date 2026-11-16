@@ -13,6 +13,7 @@ import {
 import { AdminDataService } from '../../../services/adminDataService';
 import { AdminAuthService } from '../../../services/adminAuthService';
 import { CourseModule } from '../../../types';
+import { AdminCourseDemoReelsManager } from './AdminCourseDemoReelsManager';
 
 interface CourseManagementProps {
   courses: CourseModule[];
@@ -248,6 +249,9 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courses, onR
           })}
         </div>
       </div>
+
+      {/* ── AI Live Courses Demo Reels Management (Firestore Isolated) ── */}
+      <AdminCourseDemoReelsManager />
     </div>
   );
 };

@@ -2,8 +2,8 @@
  * Future.AI Production-Ready Referral & Earnings Engine
  * 
  * Rules:
- * - Student Commission: ₹125 (active only after ₹999 enrollment)
- * - Influencer Commission: ₹100 (free registration, instant active)
+ * - Student Commission: ₹300 (active only after ₹999 enrollment)
+ * - Influencer Commission: ₹300 (free registration, instant active)
  * - Fixed commission only. No levels, no tiers, no changing rates.
  * - Single common engine, ledger-based wallet, idempotency, fraud detection.
  */
@@ -26,7 +26,7 @@ export interface ReferrerProfile {
   referralCode: string;
   referralStatus: ReferralStatus;
   hasPaidEnrollment: boolean;
-  commissionRate: number; // 125 for student, 100 for influencer
+  commissionRate: number; // 300 flat commission
   createdAt: string;
   activatedAt: string;
 }
@@ -56,7 +56,7 @@ export interface ReferralRecord {
   paymentStatus: PaymentStatus;
   validationStatus: ValidationStatus;
   validationDaysLeft: number;
-  commissionAmount: number; // 125 or 100, or 0 if failed
+  commissionAmount: number; // 300, or 0 if failed
   commissionStatus: CommissionStatus;
   timeline: {
     event: string;
@@ -140,7 +140,7 @@ export class ReferralEngine {
       referralCode: 'PARTNER100',
       referralStatus: 'ACTIVE',
       hasPaidEnrollment: false,
-      commissionRate: 100,
+      commissionRate: 300,
       createdAt: new Date().toISOString(),
       activatedAt: new Date().toISOString()
     };
@@ -203,11 +203,11 @@ export class ReferralEngine {
     const state = this.getState();
 
     state.profile.referrerType = type;
-    state.profile.commissionRate = 100;
+    state.profile.commissionRate = 300;
     state.profile.referralStatus = 'ACTIVE';
 
-    // Recalculate balances based on flat ₹100 commission rate
-    const rate = 100;
+    // Recalculate balances based on flat ₹300 commission rate
+    const rate = 300;
     state.availableCommission = state.successfulEnrollmentsCount * rate;
     state.pendingCommission = 0;
 

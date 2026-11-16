@@ -2,15 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary-purple: #6D28D9;
+  --secondary-violet: #8B5CF6;
+  --deep-purple: #4C1D95;
+  --soft-lavender: #F5F3FF;
+  --light-purple-border: #DDD6FE;
+  --main-bg: #FAFBFF;
+  --card-bg: #FFFFFF;
+  --primary-text: #111827;
+  --secondary-text: #64748B;
+  --primary-gradient: linear-gradient(135deg, #6D28D9, #8B5CF6);
+}
+
 @layer base {
   body {
-    background-color: #FAFCFE;
-    color: #0F172A;
+    background-color: #FAFBFF;
+    background:
+      radial-gradient(1200px 800px at 15% 5%, rgba(139, 92, 246, 0.035) 0%, transparent 60%),
+      radial-gradient(1000px 700px at 85% 15%, rgba(109, 40, 217, 0.025) 0%, transparent 60%),
+      radial-gradient(1100px 700px at 50% 90%, rgba(139, 92, 246, 0.02) 0%, transparent 65%),
+      #FAFBFF;
+    background-attachment: fixed;
+    color: #111827;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
   }
+}
+
+/* Premium Primary & Secondary SaaS Buttons */
+.btn-saas-primary {
+  background: linear-gradient(135deg, #6D28D9, #8B5CF6);
+  color: #FFFFFF;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 14px rgba(109, 40, 217, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-saas-primary:hover {
+  background: linear-gradient(135deg, #5B21B6, #7C3AED);
+  box-shadow: 0 6px 20px rgba(109, 40, 217, 0.35);
+  transform: translateY(-1px);
+}
+.btn-saas-secondary {
+  background: #F5F3FF;
+  color: #6D28D9;
+  border: 1px solid #DDD6FE;
+  border-radius: 0.75rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-saas-secondary:hover {
+  background: #EDE9FE;
+  border-color: #C4B5FD;
 }
 
 /* =========================================================================
@@ -342,3 +386,169 @@ html {
 .animate-slideInRight {
   animation: slideInRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* =========================================================================
+   FUTURE AI 2050 PYTHON CLASSROOM - ACTIVE VISUAL GLOWING BORDER
+   ========================================================================= */
+@keyframes perimeterGlowBreathe {
+  0%, 100% {
+    box-shadow: 0 0 16px -2px rgba(6, 182, 212, 0.45), 0 0 8px 0px rgba(168, 85, 247, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 24px 2px rgba(6, 182, 212, 0.65), 0 0 14px 1px rgba(168, 85, 247, 0.55);
+  }
+}
+
+@keyframes perimeterGlowFlash {
+  0% {
+    box-shadow: 0 0 32px 6px rgba(34, 211, 238, 0.85), 0 0 18px 3px rgba(192, 132, 252, 0.75);
+  }
+  100% {
+    box-shadow: 0 0 16px -2px rgba(6, 182, 212, 0.45), 0 0 8px 0px rgba(168, 85, 247, 0.35);
+  }
+}
+
+[data-active-glow="primary"] {
+  position: relative !important;
+  animation: perimeterGlowBreathe 2.4s ease-in-out infinite !important;
+  border-color: #38bdf8 !important;
+  z-index: 10;
+}
+
+[data-active-glow="primary"][data-glow-result="true"] {
+  animation: perimeterGlowFlash 1.4s ease-out infinite alternate !important;
+  border-color: #22d3ee !important;
+}
+
+/* Normal standard system arrow & hand cursor */
+html,
+body {
+  cursor: default;
+}
+
+a,
+button,
+[role="button"],
+.cursor-pointer,
+input[type="submit"],
+input[type="button"],
+label[for],
+select,
+summary {
+  cursor: pointer;
+}
+
+
+/* =========================================================================
+   OUR PLACED STUDENTS — CONTINUOUS ANIMATED COMPANY LOGO MARQUEE
+   ========================================================================= */
+@keyframes logoMarqueeLeft {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes logoMarqueeRight {
+  0% { transform: translate3d(-50%, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+.animate-logo-marquee-left {
+  display: flex;
+  width: max-content;
+  animation: logoMarqueeLeft 30s linear infinite;
+  will-change: transform;
+}
+.animate-logo-marquee-right {
+  display: flex;
+  width: max-content;
+  animation: logoMarqueeRight 30s linear infinite;
+  will-change: transform;
+}
+.logo-marquee-container:hover .animate-logo-marquee-left,
+.logo-marquee-container:hover .animate-logo-marquee-right,
+.animate-logo-marquee-left:hover,
+.animate-logo-marquee-right:hover {
+  animation-play-state: paused !important;
+}
+
+/* Glass Card for Top Navigation Stats */
+.glass-card {
+  background: linear-gradient(135deg, rgba(30, 27, 75, 0.88) 0%, rgba(15, 23, 42, 0.94) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 20px 45px -10px rgba(88, 22, 207, 0.35), 0 1px 2px rgba(255, 255, 255, 0.1) inset;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(168, 85, 247, 0.45);
+  box-shadow: 0 25px 50px -10px rgba(124, 58, 237, 0.45), 0 0 20px rgba(168, 85, 247, 0.25);
+}
+
+/* =========================================================================
+   GOOGLE MULTICOLOR ROTATING BORDER BEAM (Light running continuously around button)
+   ========================================================================= */
+@keyframes googleSpinRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.google-border-beam-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 650px;
+  height: 650px;
+  margin-top: -325px;
+  margin-left: -325px;
+  background: conic-gradient(
+    from 0deg,
+    #4285F4 0deg,     /* Google Blue */
+    #8B5CF6 55deg,    /* Gemini Violet */
+    #EA4335 120deg,   /* Google Red */
+    #FBBC05 185deg,   /* Google Yellow */
+    #34A853 250deg,   /* Google Green */
+    #06B6D4 310deg,   /* Google Cyan */
+    #4285F4 360deg    /* Google Blue */
+  );
+  animation: googleSpinRotate 2.4s linear infinite;
+  will-change: transform;
+}
+
+.google-border-beam-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 650px;
+  height: 650px;
+  margin-top: -325px;
+  margin-left: -325px;
+  background: conic-gradient(
+    from 0deg,
+    #4285F4 0deg,
+    #8B5CF6 55deg,
+    #EA4335 120deg,
+    #FBBC05 185deg,
+    #34A853 250deg,
+    #06B6D4 310deg,
+    #4285F4 360deg
+  );
+  filter: blur(6px);
+  opacity: 0.85;
+  animation: googleSpinRotate 2.4s linear infinite;
+  will-change: transform;
+}
+
+@keyframes subtle-sway {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-1.5px) rotate(0.4deg);
+  }
+}
+
+

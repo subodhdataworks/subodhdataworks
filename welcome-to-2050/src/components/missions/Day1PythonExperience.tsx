@@ -130,19 +130,19 @@ export const Day1PythonExperience: React.FC<Day1PythonExperienceProps> = ({
     if (step.stepNumber === 1) {
       setPulseState('ai-speaking');
       const intro = lang === 'hindi'
-        ? "नमस्ते! पायथन में आपका स्वागत है। हम कंप्यूटर को सीधे निर्देश देना सीखेंगे।"
+        ? "नमस्ते! Python में आपका स्वागत है। हम Computer को सीधे निर्देश देना सीखेंगे।"
         : "Welcome to 2050. Jaise kisi ko exact steps dete ho kaam karne ke liye, waise hi Python computer ko instructions deta hai.";
       Voice.speak(intro, lang, () => setPulseState('idle'));
     } else if (step.stepNumber === 5) {
       setPulseState('ai-speaking');
       const intro = lang === 'hindi'
-        ? "अब कंप्यूटर को कुछ याद रखना सिखाते हैं। स्कूल ऐप को आरव का नाम याद रखना है।"
+        ? "अब Computer को कुछ याद रखना सिखाते हैं। स्कूल ऐप को आरव का नाम याद रखना है।"
         : "Ab computer ko kuch yaad rakhwana hai. School app ko Aarav ka naam yaad rakhna hai. Iske liye variable chahiye.";
       Voice.speak(intro, lang, () => setPulseState('idle'));
     } else if (step.stepNumber === 7) {
       setPulseState('ai-speaking');
       const intro = lang === 'hindi'
-        ? "कोड चलाने से पहले दिमाग में अनुमान लगाएं: 20 में 1 जोड़ने पर क्या आएगा?"
+        ? "Code चलाने से पहले दिमाग में अनुमान लगाएं: 20 में 1 जोड़ने पर क्या आएगा?"
         : "Pehle dimaag mein chalao: 20 mein 1 jodne par memory mein kya store hoga?";
       Voice.speak(intro, lang, () => setPulseState('idle'));
     }
@@ -203,7 +203,7 @@ export const Day1PythonExperience: React.FC<Day1PythonExperienceProps> = ({
     if (wasCorrect) {
       setPredictionFeedback(
         lang === 'hindi'
-          ? '«“शानदार! आपका मेंटल मॉडल मजबूत हो रहा है।”» 20 + 1 = 21। अब RUN दबाकर जांचें।'
+          ? '«“शानदार! आपका मेंटल Model मजबूत हो रहा है।”» 20 + 1 = 21। अब RUN दबाकर जांचें।'
           : '«“Your mental model is getting stronger.”» 20 + 1 = 21. Click RUN to confirm.'
       );
       Voice.speak("Your mental model is getting stronger. Let's test your prediction.", lang);
@@ -331,11 +331,11 @@ export const Day1PythonExperience: React.FC<Day1PythonExperienceProps> = ({
         <AiCompanionOrb
           message={
             step.stepNumber === 1
-              ? (lang === 'hindi' ? "पायथन से हम कंप्यूटर को सीधे निर्देश देते हैं।" : "Python = instructions for computers.")
+              ? (lang === 'hindi' ? "Python से हम Computer को सीधे निर्देश देते हैं।" : "Python = instructions for computers.")
               : step.stepNumber === 5
               ? (lang === 'hindi' ? "स्कूल ऐप को आरव का नाम याद रखना है।" : "School app needs to remember Aarav's name.")
               : step.stepNumber === 7
-              ? (lang === 'hindi' ? "कोड चलाने से पहले दिमाग में अनुमान लगाएं।" : "Predict what will appear before clicking RUN.")
+              ? (lang === 'hindi' ? "Code चलाने से पहले दिमाग में अनुमान लगाएं।" : "Predict what will appear before clicking RUN.")
               : step.conceptContext.doNow
           }
         />

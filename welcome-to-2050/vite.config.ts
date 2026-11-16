@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
-import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts'
+import { spawn } from 'child_process'
+import path from 'path'
 
 const ttsMemoryCache = new Map<string, Buffer>()
 
@@ -12,6 +13,7 @@ function humanNeuralTtsPlugin(): Plugin {
         try {
           const url = new URL(req.url || '', 'http://localhost')
           const lang = url.searchParams.get('lang') === 'hi' ? 'hi' : 'en'
+          const requestedVoice = url.searchParams.get('voice')
           const text = (url.searchParams.get('text') || '').trim()
 
           if (!text) {
@@ -20,10 +22,8 @@ function humanNeuralTtsPlugin(): Plugin {
             return
           }
 
-          // Natural Indian Human Neural Voices:
-          // Hindi (Female HR Aditi Sharma): hi-IN-SwaraNeural
-          // English (Male HR Subodh Kumar): en-IN-PrabhatNeural
-          const voiceName = lang === 'hi' ? 'hi-IN-SwaraNeural' : 'en-IN-PrabhatNeural'
+          // Default to hi-IN-SwaraNeural (exact Indian Female Teacher voice used in Classroom Explanation)
+          const voiceName = requestedVoice || (lang === 'hi' ? 'hi-IN-SwaraNeural' : 'hi-IN-SwaraNeural')
           const cacheKey = `${voiceName}::${text}`
 
           const cached = ttsMemoryCache.get(cacheKey)
@@ -35,41 +35,34 @@ function humanNeuralTtsPlugin(): Plugin {
             return
           }
 
-          const tts = new MsEdgeTTS()
-          await tts.setMetadata(voiceName, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3)
-          const { audioStream } = tts.toStream(text)
+          const scriptPath = path.resolve(process.cwd(), 'scripts/edge_tts_stream.py')
+          const py = spawn('python', [scriptPath, voiceName, text])
 
           const chunks: Buffer[] = []
-          audioStream.on('data', (chunk: Buffer) => {
+          py.stdout.on('data', (chunk: Buffer) => {
             chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
           })
-          audioStream.on('end', () => {
-            try {
-              tts.close()
-            } catch {
-              // ignore close errors
-            }
+
+          py.on('close', (code) => {
             const audioBuffer = Buffer.concat(chunks)
-            if (audioBuffer.length > 0) {
+            if (code === 0 && audioBuffer.length > 0) {
               ttsMemoryCache.set(cacheKey, audioBuffer)
               res.setHeader('Content-Type', 'audio/mpeg')
               res.setHeader('Content-Length', audioBuffer.length)
               res.setHeader('Cache-Control', 'public, max-age=86400')
               res.end(audioBuffer)
             } else {
-              res.statusCode = 502
-              res.end('Empty TTS stream')
+              if (!res.headersSent) {
+                res.statusCode = 502
+                res.end('Empty TTS stream')
+              }
             }
           })
-          audioStream.on('error', (err: Error) => {
-            try {
-              tts.close()
-            } catch {
-              // ignore
-            }
+
+          py.on('error', (err) => {
             if (!res.headersSent) {
               res.statusCode = 500
-              res.end(err.message || 'TTS stream error')
+              res.end(err.message || 'TTS process error')
             }
           })
         } catch (err: any) {
@@ -87,4 +80,3 @@ function humanNeuralTtsPlugin(): Plugin {
 export default defineConfig({
   plugins: [react(), humanNeuralTtsPlugin()],
 })
-

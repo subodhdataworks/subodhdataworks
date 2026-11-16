@@ -873,8 +873,8 @@ export const AiMockInterviewsPage: React.FC<AiMockInterviewsPageProps> = ({
   }
 
   return (
-    <div className="w-full min-h-screen bg-[#f8faff] text-slate-900 pb-16">
-      <div className="max-w-[1520px] mx-auto px-3 sm:px-4 lg:px-6 pt-3 space-y-4">
+    <div className="w-full min-h-screen bg-transparent text-slate-900 pb-16">
+      <div className="w-full px-3 sm:px-4 md:px-0 pt-1 space-y-3">
         
         {/* ─── BREADCRUMB / TOP BAR ─── */}
         <div className="flex items-center justify-between py-1">
@@ -909,7 +909,7 @@ export const AiMockInterviewsPage: React.FC<AiMockInterviewsPageProps> = ({
         </div>
 
         {/* ─── 1. HERO BANNER (MATCHING REFERENCE IMAGE 1:1) ─── */}
-        <section className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-indigo-900/30 bg-gradient-to-r from-[#031b4e] via-[#092570] to-[#451282] min-h-[140px] sm:min-h-[160px] lg:min-h-[175px] flex items-center">
+        <section className="relative w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-lg border border-indigo-900/30 bg-gradient-to-r from-[#031b4e] via-[#092570] to-[#451282] min-h-[140px] sm:min-h-[160px] md:h-[275px] md:min-h-[275px] md:max-h-[275px] flex items-center">
           
           {/* Ambient Glows */}
           <div className="absolute top-0 left-1/4 w-72 h-72 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />

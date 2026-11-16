@@ -15,6 +15,7 @@ export interface VideoLessonLabProps {
   userName?: string;
   onBack?: () => void;
   onUnlockNextStage?: () => void;
+  onOpenAdvisor?: () => void;
 }
 
 const TOTAL_SECONDS = 388; // 6:28
@@ -182,7 +183,7 @@ export const VideoLessonLab: React.FC<VideoLessonLabProps> = ({
             {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
             <span>{soundEnabled ? 'Sound ON' : 'Sound OFF'}</span>
           </button>
-          <button className="vll2-ai-mentor-btn">
+          <button className="vll2-ai-mentor-btn" onClick={() => onOpenAdvisor?.()}>
             <Bot className="w-3.5 h-3.5" />
             <span>Ask AI Mentor</span>
           </button>

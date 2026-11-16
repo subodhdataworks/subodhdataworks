@@ -34,6 +34,9 @@ export const ALL_7_CANONICAL_COURSES = [
   'ai_tools_prompt',
   'ms_office_copilot',
   'full_stack_mern',
+  'ai_website_dev',
+  'ai_android_dev',
+  'ai_video_creation',
 ];
 
 export function normalizeCourseKey(rawId = '') {
@@ -47,6 +50,9 @@ export function normalizeCourseKey(rawId = '') {
   if (s === 'ai_tools_prompt' || s.includes('prompt') || s.includes('ai_tools') || s.includes('ai-tools') || s.includes('tab-5')) return 'ai_tools_prompt';
   if (s === 'ms_office_copilot' || s.includes('office') || s.includes('copilot') || s.includes('365') || s.includes('tab-6')) return 'ms_office_copilot';
   if (s === 'full_stack_mern' || s.includes('mern') || s.includes('full_stack') || s.includes('full-stack') || s.includes('web dev') || s.includes('tab-7')) return 'full_stack_mern';
+  if (s === 'ai_website_dev' || s.includes('ai-website') || s.includes('website with ai') || s.includes('ai website') || s.includes('tab-8')) return 'ai_website_dev';
+  if (s === 'ai_android_dev' || s.includes('ai-android') || s.includes('android app with ai') || s.includes('ai android') || s.includes('tab-9')) return 'ai_android_dev';
+  if (s === 'ai_video_creation' || s.includes('ai-video') || s.includes('realistic videos with ai') || s.includes('ai video') || s.includes('tab-10')) return 'ai_video_creation';
   return '';
 }
 

@@ -5,6 +5,7 @@ import {
   Lock,
   ChevronDown,
   ChevronUp,
+  ChevronRight,
   Search,
   Sparkles,
   BarChart3,
@@ -19,7 +20,7 @@ import {
   Code2,
   Mic
 } from 'lucide-react';
-import { DATA_ANALYST_CURRICULUM, TabItem } from '../../data/dataAnalystCurriculum';
+import { DATA_ANALYST_CURRICULUM, TabItem, findTabAndChapterForTopic } from '../../data/dataAnalystCurriculum';
 import { ToolIcon } from './CourseToolIcons';
 import { SuccessPlanModal } from './SuccessPlanModal';
 import { isCourseUnlocked, isTopicUnlocked } from '../../services/courseUnlockService';
@@ -29,22 +30,146 @@ import './UniversalMobileCourseView.css';
 interface DataAnalystGenAiHubProps {
   userName?: string;
   onBack?: () => void;
-  onStartTopic?: (topicId: string, title: string, step?: 'learn' | 'play' | 'interview') => void;
+  onStartTopic?: (topicId: string, title: string, step?: 'learn' | 'play' | 'interview', tabId?: string) => void;
+  initialTabId?: string;
+  initialTopicId?: string;
+  onTabChange?: (tabId: string) => void;
 }
 
 export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
   userName = 'RAHUL SHARMA',
   onBack,
   onStartTopic,
+  initialTabId,
+  initialTopicId,
+  onTabChange,
 }) => {
   const tabButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-  const [activeTabId, setActiveTabId] = useState<string>('tab-1');
-  const [expandedChapters, setExpandedChapters] = useState<Record<string, boolean>>({
-    'mod-1': true,
+
+  // Restore exact tab from props, URL hash, or sessionStorage
+  const [activeTabId, setActiveTabId] = useState<string>(() => {
+    if (initialTabId) return initialTabId;
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash;
+      if (hash.includes('?')) {
+        const params = new URLSearchParams(hash.split('?')[1]);
+        const tabParam = params.get('tab');
+        if (tabParam) return tabParam;
+        const topicParam = params.get('topic');
+        if (topicParam) {
+          const found = findTabAndChapterForTopic(topicParam);
+          if (found) return found.tabId;
+        }
+      }
+      try {
+        const savedTab = sessionStorage.getItem('futureai_active_curriculum_tab');
+        if (savedTab) return savedTab;
+      } catch {}
+    }
+    return 'tab-1';
   });
+
+  // Restore and expand exact chapter/module containing the active topic
+  const [expandedChapters, setExpandedChapters] = useState<Record<string, boolean>>(() => {
+    const defaultState: Record<string, boolean> = { 'mod-1': true };
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash;
+      let targetTopic = initialTopicId;
+      if (!targetTopic && hash.includes('?')) {
+        const params = new URLSearchParams(hash.split('?')[1]);
+        targetTopic = params.get('topic') || undefined;
+      }
+      if (!targetTopic) {
+        try {
+          targetTopic = sessionStorage.getItem('futureai_active_curriculum_topic') || undefined;
+        } catch {}
+      }
+      if (targetTopic) {
+        const found = findTabAndChapterForTopic(targetTopic);
+        if (found) {
+          return { ...defaultState, [found.chapterId]: true };
+        }
+      }
+    }
+    return defaultState;
+  });
+
+  // Highlight exact topic returned from
+  const [highlightedTopicId, setHighlightedTopicId] = useState<string | null>(() => {
+    if (initialTopicId) return initialTopicId.startsWith('t-') ? initialTopicId : `t-${initialTopicId}`;
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash;
+      if (hash.includes('?')) {
+        const params = new URLSearchParams(hash.split('?')[1]);
+        const t = params.get('topic');
+        if (t) return t.startsWith('t-') ? t : `t-${t}`;
+      }
+      try {
+        const saved = sessionStorage.getItem('futureai_active_curriculum_topic');
+        if (saved) return saved.startsWith('t-') ? saved : `t-${saved}`;
+      } catch {}
+    }
+    return null;
+  });
+
   const [isSuccessPlanOpen, setIsSuccessPlanOpen] = useState<boolean>(false);
   const [selectedTargetTitle, setSelectedTargetTitle] = useState<string>('');
   const [isCoursePaid, setIsCoursePaid] = useState<boolean>(() => isCourseUnlocked('data_analyst'));
+
+  // Sync state if initialTabId or initialTopicId prop updates
+  useEffect(() => {
+    if (initialTabId && initialTabId !== activeTabId) {
+      setActiveTabId(initialTabId);
+    }
+  }, [initialTabId]);
+
+  useEffect(() => {
+    if (initialTopicId) {
+      const formatted = initialTopicId.startsWith('t-') ? initialTopicId : `t-${initialTopicId}`;
+      setHighlightedTopicId(formatted);
+      const found = findTabAndChapterForTopic(formatted);
+      if (found) {
+        setActiveTabId(found.tabId);
+        setExpandedChapters((prev) => ({ ...prev, [found.chapterId]: true }));
+      }
+    }
+  }, [initialTopicId]);
+
+  // Auto-scroll to restored topic and center active tab button
+  useEffect(() => {
+    if (highlightedTopicId) {
+      const found = findTabAndChapterForTopic(highlightedTopicId);
+      if (found) {
+        if (found.tabId !== activeTabId) {
+          setActiveTabId(found.tabId);
+        }
+        setExpandedChapters((prev) => ({ ...prev, [found.chapterId]: true }));
+      }
+
+      const timer = setTimeout(() => {
+        const targetEl = document.getElementById(`topic-row-${highlightedTopicId}`);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        if (found?.tabId && tabButtonRefs.current[found.tabId]) {
+          tabButtonRefs.current[found.tabId]?.scrollIntoView({
+            behavior: 'smooth',
+            inline: 'center',
+            block: 'nearest',
+          });
+        }
+      }, 350);
+
+      const fadeTimer = setTimeout(() => {
+        setHighlightedTopicId(null);
+      }, 4000);
+
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(fadeTimer);
+      };
+    }
+  }, [highlightedTopicId]);
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -70,12 +195,17 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
     topic: { id: string; title: string; topicNum?: number; status?: string },
     chapterNum: number = 1
   ) => {
+    try {
+      sessionStorage.setItem('futureai_active_curriculum_tab', activeTabId);
+      sessionStorage.setItem('futureai_active_curriculum_topic', topic.id);
+    } catch {}
+
     const isTopicFree = isTopicUnlocked('data_analyst', chapterNum, topic.topicNum || 1, activeTabId);
 
     if (!isTopicFree) {
       handleOpenSuccessPlan(topic.title);
     } else if (onStartTopic) {
-      onStartTopic(topic.id, topic.title);
+      onStartTopic(topic.id, topic.title, 'learn', activeTabId);
     }
   };
 
@@ -85,6 +215,10 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
 
   const handleSelectTab = (tabId: string) => {
     setActiveTabId(tabId);
+    try {
+      sessionStorage.setItem('futureai_active_curriculum_tab', tabId);
+    } catch {}
+    if (onTabChange) onTabChange(tabId);
     const targetTab = DATA_ANALYST_CURRICULUM.find((t) => t.id === tabId);
     if (targetTab && targetTab.chapters.length > 0) {
       setExpandedChapters((prev) => ({
@@ -112,16 +246,25 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
   };
 
   // Helper to get real 3D high-resolution icon for each tab
-  const getTabRealIcon = (tabNum: number) => {
+  const getTabRealIcon = (tabNum: number, iconName?: string) => {
+    if (iconName === 'python') return '/images/icons3d/icon_01_python.png';
+    if (iconName === 'excel') return '/images/icons3d/icon_03_excel.png';
+    if (iconName === 'sql') return '/images/icons3d/icon_02_sql.png';
+    if (iconName === 'powerbi') return '/images/icons3d/icon_04_powerbi.png';
+    if (iconName === 'genai') return '/images/icons3d/icon_06_genai.png';
+    if (iconName === 'chart') return '/images/icons3d/icon_08_bizanalytics.png';
+    if (iconName === 'target') return '/images/icons3d/icon_goal_target.png';
+    if (iconName === 'project') return '/images/icons3d/icon_10_capstone.png';
+
     switch (tabNum) {
       case 1:
         return '/images/icons3d/icon_08_bizanalytics.png';
       case 2:
-        return '/images/icons3d/icon_03_excel.png';
-      case 3:
-        return '/images/icons3d/icon_02_sql.png';
-      case 4:
         return '/images/icons3d/icon_01_python.png';
+      case 3:
+        return '/images/icons3d/icon_03_excel.png';
+      case 4:
+        return '/images/icons3d/icon_02_sql.png';
       case 5:
         return '/images/icons3d/icon_04_powerbi.png';
       case 6:
@@ -160,7 +303,7 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#f3f7fd] text-slate-900 font-sans pb-16">
+    <div className="min-h-screen bg-transparent text-slate-900 font-sans pb-16">
       
       {/* =========================================================================
           MAIN CONTAINER: STREAMLINED COMPACT TOP SPACING
@@ -202,19 +345,19 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
             certificatesCount: 1,
             jobReadySkillsCount: 'Job Ready Skills'
           }}
-          techStackTags={['Excel', 'SQL', 'Python', 'Power BI', 'GenAI']}
+          techStackTags={['Python', 'Excel', 'SQL', 'Power BI', 'GenAI']}
           courseHighlightTag="GLOBAL OPPORTUNITIES"
         />
       </div>
 
       {/* DESKTOP VIEW (>=768px) - 100% UNCHANGED */}
       <div className="course-desktop-only">
-        <main className="max-w-[1520px] mx-auto px-4 sm:px-6 pt-2 sm:pt-3 space-y-3">
+        <main className="w-full pt-0 space-y-3">
 
         {/* =========================================================================
             1. TOP HERO BANNER: LIGHT EXECUTIVE THEME (HIGH-CONTRAST DAYLIGHT TECH CAMPUS)
             ========================================================================= */}
-        <section className="w-full relative rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm bg-white text-slate-900">
+        <section className="w-full relative rounded-2xl lg:rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm bg-white text-slate-900 md:h-[275px] md:min-h-[275px] md:max-h-[275px]">
           {/* Full Background Daylight Tech Campus Photo */}
           <img
             src="/images/data_analyst_light_banner.jpg"
@@ -228,10 +371,10 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
           <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 md:via-white/80 to-transparent pointer-events-none w-full md:w-[58%] lg:w-[52%]" />
           <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent pointer-events-none md:hidden" />
 
-          <div className="relative z-10 p-4 sm:p-6 lg:p-7 flex flex-col justify-between min-h-[220px] sm:min-h-[240px]">
+          <div className="relative z-10 px-4 py-2.5 sm:px-6 lg:px-7 lg:py-2.5 flex flex-col justify-between h-full">
             
             {/* Left Content Zone (Right side remains completely open so image is 100% visible) */}
-            <div className="max-w-2xl space-y-2.5 min-w-0">
+            <div className="max-w-3xl space-y-1 min-w-0">
               {/* Back Arrow + Eyebrow Pill */}
               <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
                 {onBack && (
@@ -252,7 +395,7 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
               </div>
 
               {/* Headline */}
-              <h1 className="text-xl min-[375px]:text-2xl sm:text-3xl lg:text-[34px] font-black tracking-tight text-slate-950 leading-tight">
+              <h1 className="text-xl min-[375px]:text-2xl sm:text-2xl lg:text-[28px] font-black tracking-tight text-slate-950 leading-tight">
                 Data Analyst with{' '}
                 <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
                   GenAI
@@ -284,14 +427,14 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1.5">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-0.5">
                 <button
                   type="button"
                   onClick={() => onStartTopic && onStartTopic('t-1', 'What Is Data Analytics?')}
                   className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-blue-500/25 active:scale-95 transition-all cursor-pointer"
                 >
                   <Play className="w-3.5 h-3.5 fill-white shrink-0" />
-                  <span>Resume Learning</span>
+                  <span>Learning</span>
                 </button>
                 <button
                   type="button"
@@ -316,7 +459,7 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
             </div>
 
             {/* Bottom Stats Bar inside Hero (Translucent glass footer anchored at bottom) */}
-            <div className="mt-5 pt-3 border-t border-slate-200/70 bg-white/75 backdrop-blur-sm -mx-4 sm:-mx-6 lg:-mx-7 -mb-4 sm:-mb-6 lg:-mb-7 px-4 sm:px-6 lg:px-7 py-3 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 text-[11px] sm:text-xs font-black text-slate-800 rounded-b-3xl">
+            <div className="mt-1 pt-1.5 border-t border-slate-200/70 bg-white/75 backdrop-blur-sm -mx-4 sm:-mx-6 lg:-mx-7 -mb-2.5 px-4 sm:px-6 lg:px-7 py-1.5 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 text-[11px] sm:text-xs font-black text-slate-800 rounded-b-2xl lg:rounded-b-3xl">
               <div className="flex items-center gap-1.5">
                 <span className="w-6 h-6 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center font-black text-[11px]">43</span>
                 <span>Modules</span>
@@ -360,8 +503,8 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                   onClick={() => handleSelectTab(tab.id)}
                   className={`group relative py-2 px-3 sm:py-2 sm:px-3 rounded-xl flex items-center gap-2.5 text-left transition-all duration-200 hover:-translate-y-0.5 active:scale-95 cursor-pointer border ${
                     isActive
-                      ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white border-blue-500 shadow-md shadow-blue-500/25 z-10'
-                      : 'bg-white hover:bg-slate-50/90 text-slate-800 border-slate-200 hover:border-blue-300 hover:shadow-sm shadow-2xs'
+                      ? 'bg-gradient-to-r from-[#7045E8] to-[#4C2A9A] text-white border-[#7045E8] shadow-md shadow-[#7045E8]/25 z-10'
+                      : 'bg-white hover:bg-[#F6F2FF] text-[#202033] border-[#EAE5F5] hover:border-[#7045E8]/30 hover:shadow-2xs shadow-2xs'
                   }`}
                 >
                   {/* Real 3D High-Definition Icon Tile */}
@@ -369,11 +512,11 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                     className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0 p-1 transition-all duration-200 ${
                       isActive
                         ? 'bg-white/20 backdrop-blur-xs border border-white/30'
-                        : 'bg-slate-100/80 border border-slate-200/70 group-hover:border-blue-200'
+                        : 'bg-[#F6F2FF] border border-[#EAE5F5] group-hover:border-[#7045E8]/30'
                     }`}
                   >
                     <img
-                      src={getTabRealIcon(tab.tabNum)}
+                      src={getTabRealIcon(tab.tabNum, tab.iconName)}
                       alt={tab.title}
                       className="w-7 h-7 sm:w-7.5 sm:h-7.5 object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-200"
                       onError={(e) => {
@@ -388,19 +531,19 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                       <span className={`text-[10px] font-black w-4 h-4 rounded-md flex items-center justify-center shrink-0 ${
                         isActive
                           ? 'bg-white/25 text-white border border-white/30'
-                          : 'bg-blue-50 text-blue-700 border border-blue-200/80'
+                          : 'bg-[#F6F2FF] text-[#7045E8] border border-[#EAE5F5]'
                       }`}>
                         {tab.tabNum}
                       </span>
                       <span className={`text-xs sm:text-[13px] font-bold truncate leading-tight tracking-tight ${
-                        isActive ? 'text-white' : 'text-slate-900'
+                        isActive ? 'text-white' : 'text-[#202033]'
                       }`}>
                         {tab.shortTitle}
                       </span>
                     </div>
 
                     <span className={`text-[10px] sm:text-[10.5px] font-medium leading-none mt-1 flex items-center gap-1 ${
-                      isActive ? 'text-blue-100' : 'text-slate-500'
+                      isActive ? 'text-white/80' : 'text-[#77758A]'
                     }`}>
                       <span>{moduleCount} Modules</span>
                       <span className="opacity-40">•</span>
@@ -424,8 +567,8 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
           <div className="lg:col-span-8 xl:col-span-9 space-y-4">
 
             {/* 3. ACTIVE TAB MAIN ACCORDION CONTAINER */}
-            <section className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-sm space-y-3">
-              {/* Chapters List (3 Chapters in current active tab) */}
+            <section className="bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-5 border border-[#EAE5F5] shadow-xs space-y-3">
+              {/* Chapters List */}
               <div className="space-y-3">
                 {activeTab.chapters.map((chapter) => {
                   const isExpanded = expandedChapters[chapter.id] ?? false;
@@ -436,214 +579,201 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                   return (
                     <div
                       key={chapter.id}
-                      className={`rounded-2xl border overflow-hidden transition-all duration-300 ${
+                      className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
                         isExpanded
-                          ? 'border-blue-300/90 bg-white shadow-md shadow-blue-500/5 ring-1 ring-blue-500/10'
-                          : 'border-slate-200/90 bg-slate-50/40 hover:bg-white hover:border-slate-300 hover:shadow-xs'
+                          ? 'border-[#7045E8]/40 bg-white shadow-xs ring-1 ring-[#7045E8]/10'
+                          : 'border-[#EAE5F5] bg-white hover:border-[#7045E8]/30 hover:shadow-xs'
                       }`}
                     >
                       {/* Chapter / Module Accordion Header */}
                       <button
                         type="button"
                         onClick={() => handleModuleHeaderClick(chapter)}
-                        className="group w-full p-4 sm:p-4.5 flex items-center justify-between gap-4 text-left transition-all duration-200 cursor-pointer"
+                        className="group w-full p-3.5 sm:p-4.5 flex items-center justify-between gap-3 text-left transition-colors duration-200 cursor-pointer hover:bg-[#F6F2FF]/40"
                       >
                         <div className="flex items-center gap-3 min-w-0">
-                          {/* Circle Number */}
-                          <div className={`w-8 h-8 rounded-full font-black text-xs flex items-center justify-center shrink-0 shadow-2xs transition-transform duration-200 group-hover:scale-105 ${
-                            chapter.chapterNum <= 4 ? 'bg-blue-600 text-white' : 'bg-purple-600 text-white'
-                          }`}>
+                          {/* Module Number in small light-purple circle */}
+                          <div className="w-8 h-8 rounded-full bg-[#F6F2FF] text-[#7045E8] font-bold text-xs flex items-center justify-center shrink-0 border border-[#EAE5F5] group-hover:border-[#7045E8]/30 transition-colors duration-200">
                             {chapter.chapterNum}
-                          </div>
-
-                          {/* Doc/Code Icon */}
-                          <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105">
-                            <FileText className="w-4 h-4" />
                           </div>
 
                           {/* Title & Description */}
                           <div className="flex flex-col min-w-0">
-                            <h3 className="text-xs sm:text-sm font-black text-slate-900 truncate group-hover:text-blue-600 transition-colors">
+                            <h3 className="text-sm sm:text-[15px] font-bold text-[#202033] truncate group-hover:text-[#7045E8] transition-colors duration-200">
                               {chapter.title}
                             </h3>
-                            <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
-                              {chapter.subtitle}
-                            </p>
+                            {chapter.subtitle && (
+                              <p className="text-xs text-[#77758A] font-normal truncate mt-0.5">
+                                {chapter.subtitle}
+                              </p>
+                            )}
                           </div>
                         </div>
 
-                        {/* Chapter Stats & Animated Chevron */}
-                        <div className="flex items-center gap-3 shrink-0">
-                          <span className="text-[11px] font-bold text-slate-500 hidden sm:inline">
+                        {/* Chapter Stats & Animated Small Purple Chevron */}
+                        <div className="flex items-center gap-2.5 sm:gap-3.5 shrink-0">
+                          <span className="text-xs font-medium text-[#77758A] hidden sm:inline">
                             {totalCount} Topics
                           </span>
-                          <div className="w-20 h-1.5 rounded-full bg-slate-200 overflow-hidden hidden sm:block">
+                          <div className="w-16 sm:w-20 h-1.5 rounded-full bg-[#F6F2FF] border border-[#EAE5F5] overflow-hidden hidden sm:block">
                             <div
-                              className="h-full bg-emerald-500 rounded-full transition-all duration-500 ease-out"
+                              className="h-full bg-[#7045E8] rounded-full transition-all duration-300 ease-out"
                               style={{ width: `${percent}%` }}
                             />
                           </div>
-                          <span className="text-[11px] font-black text-slate-700 hidden sm:inline">
-                            {completedCount} / {totalCount} completed
+                          <span className="text-xs font-medium text-[#77758A] hidden sm:inline">
+                            {completedCount}/{totalCount}
                           </span>
-                          <span className="text-xs font-black text-emerald-600">
+                          <span className="text-xs font-semibold text-[#7045E8]">
                             {percent}%
                           </span>
-                          <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 ${
-                            isExpanded
-                              ? 'bg-blue-50 text-blue-600 rotate-180 shadow-2xs'
-                              : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200 group-hover:text-slate-600'
-                          }`}>
-                            <ChevronDown className="w-4 h-4 transition-transform duration-300" />
+                          <div
+                            className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 ${
+                              isExpanded
+                                ? 'bg-[#F6F2FF] text-[#7045E8] rotate-180'
+                                : 'bg-transparent text-[#77758A] group-hover:bg-[#F6F2FF] group-hover:text-[#7045E8]'
+                            }`}
+                          >
+                            <ChevronDown className="w-4 h-4 transition-transform duration-200" />
                           </div>
                         </div>
                       </button>
 
                       {/* Smooth animated accordion collapse/expand container */}
                       <div
-                        className={`grid transition-all duration-300 ease-in-out ${
+                        className={`grid transition-all duration-250 ease-in-out ${
                           isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
                         }`}
                       >
-                        <div className="overflow-hidden divide-y divide-slate-100 border-t border-slate-200/80 bg-white">
+                        <div className="overflow-hidden divide-y divide-[#EAE5F5] border-t border-[#EAE5F5] bg-white">
                           {chapter.topics.map((topic, tIdx) => {
                             const isTopicFree = isTopicUnlocked('data_analyst', chapter.chapterNum, topic.topicNum || tIdx + 1, activeTabId);
                             const isLocked = !isTopicFree;
-                            const isDone = false;
+                            const isDone = topic.status === 'completed';
                             const isCurrent = isTopicFree && !isDone;
+                            const isRowHighlighted = highlightedTopicId === topic.id;
 
                             return (
                               <div
                                 key={topic.id}
+                                id={`topic-row-${topic.id}`}
                                 onClick={() => handleTopicClick(topic, chapter.chapterNum)}
-                                className={`group/topic p-3 sm:px-4 sm:py-3.5 flex items-center justify-between gap-3 text-xs transition-all duration-200 cursor-pointer ${
-                                  isCurrent ? 'bg-blue-50/60' : 'hover:bg-slate-50/90'
+                                className={`group/topic px-4 sm:px-5 py-3 sm:py-3.5 flex items-center justify-between gap-3 transition-all duration-300 cursor-pointer ${
+                                  isRowHighlighted
+                                    ? 'ring-2 ring-[#7045E8] bg-[#F6F2FF] shadow-md rounded-xl'
+                                    : isCurrent
+                                    ? 'bg-[#F6F2FF]/40 hover:bg-[#F6F2FF]'
+                                    : 'bg-white hover:bg-[#F6F2FF]'
                                 }`}
                               >
-                                {/* Left: Number + Status Icon + Title */}
-                                <div className="flex items-center gap-2.5 min-w-0">
-                                  <span className="text-[11px] sm:text-xs font-black text-slate-400 w-7 sm:w-8 shrink-0 text-left group-hover/topic:text-slate-600 transition-colors">
-                                    {topic.topicNum}.
-                                  </span>
+                                {/* LEFT: Small Numbered Circle + Topic Title */}
+                                <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
+                                  <div
+                                    className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-semibold shrink-0 transition-colors duration-200 ${
+                                      isDone
+                                        ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                                        : isRowHighlighted || isCurrent
+                                        ? 'bg-[#7045E8] text-white shadow-2xs'
+                                        : 'bg-[#F6F2FF] text-[#77758A] border border-[#EAE5F5] group-hover/topic:text-[#7045E8] group-hover/topic:border-[#7045E8]/30'
+                                    }`}
+                                  >
+                                    {isDone ? (
+                                      <Check className="w-3 h-3 stroke-[2.5]" />
+                                    ) : (
+                                      topic.topicNum || tIdx + 1
+                                    )}
+                                  </div>
 
-                                  {isDone && (
-                                    <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs group-hover/topic:scale-110 transition-transform duration-200">
-                                      <Check className="w-3 h-3 stroke-[3]" />
-                                    </div>
-                                  )}
-                                  {isCurrent && (
-                                    <span className="relative flex h-5 w-5 shrink-0">
-                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-60"></span>
-                                      <span className="relative inline-flex rounded-full h-5 w-5 bg-blue-600 text-white items-center justify-center shadow-xs">
-                                        <Play className="w-2.5 h-2.5 fill-white ml-0.5" />
-                                      </span>
-                                    </span>
-                                  )}
-                                  {isLocked && (
-                                    <div className="w-5 h-5 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 group-hover/topic:scale-110 transition-transform">
-                                      <Lock className="w-2.5 h-2.5" />
-                                    </div>
-                                  )}
-
-                                  <span className={`font-bold truncate transition-colors duration-150 ${
-                                    isCurrent
-                                      ? 'text-blue-900 font-extrabold'
-                                      : isLocked
-                                      ? 'text-slate-700 group-hover/topic:text-blue-600'
-                                      : 'text-slate-800 group-hover/topic:text-blue-600'
-                                  }`}>
+                                  <span
+                                    className={`text-[13px] sm:text-sm truncate transition-colors duration-200 ${
+                                      isRowHighlighted
+                                        ? 'text-[#7045E8] font-bold'
+                                        : isCurrent
+                                        ? 'text-[#202033] font-semibold'
+                                        : 'text-[#202033] font-normal group-hover/topic:text-[#7045E8]'
+                                    }`}
+                                  >
                                     {topic.title}
                                   </span>
-                                </div>
 
-                                {/* Right: Duration + Status Pill + Action Button (Desktop Only: hidden on mobile so topic title is fully visible) */}
-                                <div className="hidden sm:flex items-center gap-2.5 shrink-0">
-                                  <span className="text-[11px] font-medium text-slate-400 hidden sm:inline">
-                                    {topic.duration}
-                                  </span>
-
-                                  {/* Status Icon (Green Tick only - no Completed text) */}
-                                  {isDone && (
-                                    <span className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs" title="Completed">
-                                      <Check className="w-3 h-3 stroke-[3]" />
+                                  {activeTabId === 'tab-3' && (
+                                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/90 shrink-0 hidden sm:inline-flex items-center gap-1 shadow-2xs">
+                                      <span>📖</span>
+                                      <span>Visual Notes</span>
                                     </span>
                                   )}
+
+                                  {isRowHighlighted && (
+                                    <span className="text-[10px] font-black text-[#7045E8] bg-[#ede6ff] px-2 py-0.5 rounded-full border border-purple-300 animate-pulse shrink-0">
+                                      📍 Current
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* RIGHT: Actual lesson duration, Current learning status, Small purple chevron or Continue action */}
+                                <div className="flex items-center gap-2.5 sm:gap-3.5 shrink-0">
+                                  {topic.duration && (
+                                    <span className="text-xs text-[#77758A] font-normal hidden sm:inline whitespace-nowrap">
+                                      {topic.duration.replace(/^Video\s*•\s*/i, '')}
+                                    </span>
+                                  )}
+
+                                  {isDone && (
+                                    <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/80 hidden md:inline">
+                                      Completed
+                                    </span>
+                                  )}
+
                                   {isCurrent && (
-                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 transition-colors">
+                                    <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-[#F6F2FF] text-[#7045E8] border border-[#EAE5F5] hidden sm:inline">
                                       In Progress
                                     </span>
                                   )}
+
                                   {isLocked && (
-                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-50 text-amber-800 border border-amber-200">
-                                      Enroll to Unlock
+                                    <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-200/60 flex items-center gap-1 hidden sm:inline-flex">
+                                      <Lock className="w-2.5 h-2.5" />
+                                      <span>Locked</span>
                                     </span>
                                   )}
 
-                                  {/* 3 Action Buttons: Video, Practice Code, Mock Interview */}
-                                  {isDone && (
-                                    <div className="flex items-center gap-1.5">
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          onStartTopic && onStartTopic(topic.id, topic.title, 'learn');
-                                        }}
-                                        className="px-2.5 py-1 rounded-lg text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-600 hover:text-white border border-blue-200 hover:border-blue-600 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1"
-                                        title="Watch Video"
-                                      >
-                                        <Play className="w-3 h-3 fill-current" />
-                                        <span>Video</span>
-                                      </button>
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          onStartTopic && onStartTopic(topic.id, topic.title, 'play');
-                                        }}
-                                        className="px-2.5 py-1 rounded-lg text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-600 hover:text-white border border-emerald-200 hover:border-emerald-600 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1"
-                                        title="Practice Code"
-                                      >
-                                        <Code2 className="w-3 h-3" />
-                                        <span>Practice Code</span>
-                                      </button>
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          onStartTopic && onStartTopic(topic.id, topic.title, 'interview');
-                                        }}
-                                        className="px-2.5 py-1 rounded-lg text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-600 hover:text-white border border-purple-200 hover:border-purple-600 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1"
-                                        title="Mock Interview"
-                                      >
-                                        <Mic className="w-3 h-3" />
-                                        <span>Mock Interview</span>
-                                      </button>
-                                    </div>
-                                  )}
-                                  {isCurrent && (
+                                  {/* Minimal Action: Continue button or purple chevron */}
+                                  {isCurrent ? (
                                     <button
                                       type="button"
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        onStartTopic && onStartTopic(topic.id, topic.title);
+                                        onStartTopic && onStartTopic(topic.id, topic.title, 'learn', activeTabId);
                                       }}
-                                      className="group/btn px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 hover:shadow-md hover:shadow-blue-500/30 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1.5"
+                                      className="px-3 py-1 rounded-lg text-xs font-semibold text-white bg-[#7045E8] hover:bg-[#4C2A9A] transition-colors duration-200 cursor-pointer flex items-center gap-1 shadow-2xs shrink-0"
+                                      title="Continue Lesson"
                                     >
                                       <span>Continue</span>
-                                      <Play className="w-2.5 h-2.5 fill-white group-hover/btn:translate-x-0.5 transition-transform duration-200" />
+                                      <Play className="w-2.5 h-2.5 fill-white ml-0.5" />
                                     </button>
-                                  )}
-                                  {isLocked && (
+                                  ) : isLocked ? (
                                     <button
                                       type="button"
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        handleTopicClick(topic);
+                                        handleTopicClick(topic, chapter.chapterNum);
                                       }}
-                                      className="group/btn px-3.5 py-1.5 rounded-lg text-xs font-black text-white bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 hover:shadow-md hover:shadow-amber-500/30 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1.5 shadow-xs"
+                                      className="w-7 h-7 rounded-full flex items-center justify-center text-[#77758A] hover:text-[#7045E8] hover:bg-[#F6F2FF] transition-colors duration-200 cursor-pointer shrink-0"
+                                      title="Enroll to Unlock"
                                     >
-                                      <Lock className="w-3 h-3" />
-                                      <span>Unlock</span>
+                                      <Lock className="w-3.5 h-3.5" />
+                                    </button>
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        onStartTopic && onStartTopic(topic.id, topic.title, 'learn', activeTabId);
+                                      }}
+                                      className="w-7 h-7 rounded-full flex items-center justify-center text-[#77758A] hover:text-[#7045E8] hover:bg-[#F6F2FF] transition-colors duration-200 cursor-pointer shrink-0"
+                                      title="Start Topic"
+                                    >
+                                      <ChevronRight className="w-4 h-4 text-[#7045E8]" />
                                     </button>
                                   )}
                                 </div>
@@ -656,7 +786,6 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                   );
                 })}
               </div>
-
             </section>
 
           </div>

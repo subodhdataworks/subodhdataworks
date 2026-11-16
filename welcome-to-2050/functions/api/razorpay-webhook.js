@@ -312,7 +312,7 @@ export async function onRequestPost(context) {
             true
           );
 
-          // 3. Referral Commission Crediting (Flat ₹100, Idempotent, Self-Referral Protected)
+          // 3. Referral Commission Crediting (Flat ₹300, Idempotent, Self-Referral Protected)
           const rawRef = String(notes?.refCode || notes?.ref || '').trim();
           const cleanRef = rawRef.toUpperCase().replace(/100$/, '').replace(/[^A-Z0-9]/g, '');
 
@@ -330,7 +330,7 @@ export async function onRequestPost(context) {
 
               // Get existing affiliate stats
               const affiliateDoc = await tx.get('affiliate_stats', cleanRef);
-              const totalEarned = (affiliateDoc?.totalEarned || 0) + 100;
+              const totalEarned = (affiliateDoc?.totalEarned || 0) + 300;
               const totalPaid = affiliateDoc?.totalPaid || 0;
               const pendingBalance = affiliateDoc?.pendingBalance || 0;
               const availableBalance = Math.max(0, totalEarned - totalPaid - pendingBalance);
@@ -353,7 +353,7 @@ export async function onRequestPost(context) {
                 refCode: cleanRef,
                 payerUserId: cleanUserId,
                 courseId,
-                commission: 100,
+                commission: 300,
                 creditedAt: nowIso,
               });
             }, env);

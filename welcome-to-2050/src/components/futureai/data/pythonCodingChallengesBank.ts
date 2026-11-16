@@ -2,6 +2,7 @@
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../../services/firebase';
 import { awardLearnerTelemetry } from '../../../services/realAuthService';
+import { getVerifiedSolutionForTask } from './challengeSolutionsBank';
 
 export interface ChallengeTask {
   id: number;
@@ -100,16 +101,22 @@ function makeTask(
 // TOPIC 1: Say Hello, World! With Python
 // ─────────────────────────────────────────────────────────────
 const TOPIC_1_QUESTIONS: ChallengeTask[] = [
-  makeTask(1, 1, 'Print Hello, World!', 'Easy', 'Python Basics', 5, '96.1%', 'Write a Python program to print the message', 'Hello, World!', 'Hello, World!', 'Use print("Hello, World!")', 'print("Hello, World!")'),
-  makeTask(1, 2, 'Print your name.', 'Easy', 'Python Basics', 5, '95.4%', 'Write a Python program to print your name to the output.', 'Your Name', 'Rahul', 'print("Rahul")', 'print("Rahul")'),
-  makeTask(1, 3, 'Print Welcome to Future IT Industry.', 'Easy', 'Python Basics', 5, '94.2%', 'Write a Python program that prints the welcome message', 'Welcome to Future IT Industry', 'Welcome to Future IT Industry', 'print("Welcome to Future IT Industry")', 'print("Welcome to Future IT Industry")'),
-  makeTask(1, 4, 'Print three different messages on separate lines.', 'Easy', 'Python Basics', 5, '92.8%', 'Print three different messages on separate lines using multiple print() statements.', 'separate lines', 'Line 1: Python is fun\nLine 2: Data Science is powerful\nLine 3: AI is the future', 'Use three print statements', 'print("Line 1")\nprint("Line 2")\nprint("Line 3")'),
-  makeTask(1, 5, 'Print a sentence containing your name and age.', 'Easy', 'Python Basics', 5, '91.5%', 'Print a sentence that includes your name and numeric age using string formatting.', 'name and age', 'My name is Rahul and I am 21 years old.', 'name = "Rahul"\nage = 21\nprint(f"My name is {name} and I am {age} years old.")', 'name = "Rahul"\nage = 21\nprint(f"My name is {name} and I am {age} years old.")'),
-  makeTask(1, 6, 'Print a number and a text message on separate lines.', 'Easy', 'Python Basics', 5, '93.0%', 'Print a numeric value on the first line, and a text message on the second line.', 'number and text', '2050\nWelcome to Future IT Industry', 'print(2050)\nprint("Welcome to Future IT Industry")', 'print(2050)\nprint("Welcome to Future IT Industry")'),
-  makeTask(1, 7, 'Print a message using two separate print() statements.', 'Easy', 'Python Basics', 5, '94.6%', 'Display an output message using exactly two separate print() statements.', 'two separate print()', 'Learning Python\nis the foundation of AI.', 'print("Learning Python")\nprint("is the foundation of AI.")', 'print("Learning Python")\nprint("is the foundation of AI.")'),
-  makeTask(1, 8, 'Print a sentence using a newline character.', 'Easy', 'Python Basics', 5, '89.7%', 'Print two lines of text using a single print() statement and the newline character \\n.', '\\n', 'Line One\nLine Two', 'print("Line One\\nLine Two")', 'print("Line One\\nLine Two")'),
-  makeTask(1, 9, 'Print Python is easy to learn exactly as given.', 'Easy', 'Python Basics', 5, '95.0%', 'Print the sentence "Python is easy to learn" exactly as given.', 'Python is easy to learn', 'Python is easy to learn', 'print("Python is easy to learn")', 'print("Python is easy to learn")'),
-  makeTask(1, 10, 'Print a three-line welcome message using one print() statement.', 'Easy', 'Python Basics', 5, '88.3%', 'Print a three-line welcome message using only one print() statement (with \\n).', 'one print() statement', 'Welcome to Future IT!\nExplore Python & Data Science\nBuild Real AI Solutions', 'print("Line 1\\nLine 2\\nLine 3")', 'print("Line 1\\nLine 2\\nLine 3")')
+  makeTask(1, 1, 'Print Hello, World!', 'Easy', 'Python Basics', 5, '96.1%', 'Write a Python program to print the message "Hello, World!".', 'print', 'Hello, World!', 'Use print("Hello, World!")', 'print("Hello, World!")'),
+  makeTask(1, 2, 'Print Your Name', 'Easy', 'Python Basics', 5, '95.4%', 'Write a Python program to print your name to the output.', 'print', 'Rahul', 'print("Rahul")', 'print("Rahul")'),
+  makeTask(1, 3, 'Print Multiple Lines', 'Easy', 'Python Basics', 5, '94.2%', 'Print two different messages on separate lines using multiple print() statements.', 'print', 'Good Morning\nWelcome to Python', 'print("Good Morning")\nprint("Welcome to Python")', 'print("Good Morning")\nprint("Welcome to Python")'),
+  makeTask(1, 4, 'Print Text and Numbers', 'Easy', 'Python Basics', 5, '92.8%', 'Print text and a number together separated by a comma.', 'print', 'Age: 20', 'print("Age:", 20)', 'print("Age:", 20)'),
+  makeTask(1, 5, 'Print Using \\n', 'Easy', 'Python Basics', 5, '94.6%', 'Print two lines of text using a single print statement and the \\n escape character.', '\\n', 'Hello\nPython', 'print("Hello\\nPython")', 'print("Hello\\nPython")'),
+  makeTask(1, 6, 'Print a Mini Introduction', 'Easy', 'Python Basics', 5, '94.0%', 'Write a Python program to display your name, age and city on separate lines.', 'print', 'Name: Rahul\nAge: 20\nCity: Patna', 'print("Name:", "Rahul")\nprint("Age:", 20)\nprint("City:", "Patna")', 'print("Name:", "Rahul")\nprint("Age:", 20)\nprint("City:", "Patna")')
+];
+
+// ─────────────────────────────────────────────────────────────
+// ARCHIVED TOPIC 1 QUESTIONS (SAFELY PRESERVED FOR HISTORICAL RECORDS)
+// ─────────────────────────────────────────────────────────────
+export const ARCHIVED_TOPIC_1_QUESTIONS: ChallengeTask[] = [
+  makeTask(1, 7, 'Single vs Double Quotes', 'Easy', 'Python Basics', 5, '93.0%', 'Demonstrate printing strings with double and single quotes.', 'print', 'Python\nCoding', 'print("Python")\nprint(\'Coding\')', 'print("Python")\nprint(\'Coding\')'),
+  makeTask(1, 8, 'Print Without a Newline', 'Easy', 'Python Basics', 5, '89.7%', 'Print two messages on the same line using the end parameter.', 'end=" "', 'Hello Python', 'print("Hello", end=" ")\nprint("Python")', 'print("Hello", end=" ")\nprint("Python")'),
+  makeTask(1, 9, 'Print a Simple Pattern', 'Easy', 'Python Basics', 5, '95.0%', 'Print a star pyramid pattern using sequential print statements.', 'pattern', '*\n**\n***', 'print("*")\nprint("**")\nprint("***")', 'print("*")\nprint("**")\nprint("***")'),
+  makeTask(1, 10, 'Print a Mini Student Profile', 'Easy', 'Python Basics', 5, '88.3%', 'Print a formatted student profile containing title, name, age, and learning track.', 'profile', 'MY PROFILE\nName: Rahul\nAge: 20\nLearning: Python', 'print("MY PROFILE")\nprint("Name:", "Rahul")\nprint("Age:", 20)\nprint("Learning:", "Python")', 'print("MY PROFILE")\nprint("Name:", "Rahul")\nprint("Age:", 20)\nprint("Learning:", "Python")')
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -129,19 +136,184 @@ const TOPIC_2_QUESTIONS: ChallengeTask[] = [
 ];
 
 // ─────────────────────────────────────────────────────────────
-// TOPIC 3: Arithmetic Operators
+// TOPIC 3: Arithmetic Operators / Python Operators (Topic 4 in syllabus)
 // ─────────────────────────────────────────────────────────────
+const TOPIC_3_CURATED_TASKS: ChallengeTask[] = [
+  makeTask(
+    3,
+    1,
+    'Add Two Numbers',
+    'Easy',
+    'Python Basics',
+    5,
+    '97.2%',
+    'Add two numbers using the + operator.',
+    '+',
+    '15',
+    'Create variables a = 10, b = 5, calculate result = a + b, and print(result).',
+    'a = 10\nb = 5\nresult = a + b\nprint(result)'
+  ),
+  makeTask(
+    3,
+    2,
+    'Arithmetic Operators',
+    'Easy',
+    'Python Basics',
+    5,
+    '96.5%',
+    'Perform addition, subtraction, multiplication and division.',
+    '+, -, *, /',
+    '24\n16\n80\n5.0',
+    'Create a = 20, b = 4, then print a + b, a - b, a * b, and a / b on separate lines.',
+    'a = 20\nb = 4\n\nprint(a + b)\nprint(a - b)\nprint(a * b)\nprint(a / b)'
+  ),
+  makeTask(
+    3,
+    3,
+    'Division, Floor Division and Modulus',
+    'Easy',
+    'Python Basics',
+    5,
+    '96.0%',
+    'Understand /, // and % operators.',
+    '/, //, %',
+    '3.4\n3\n2',
+    'Create a = 17, b = 5, then print(a / b), print(a // b), and print(a % b).',
+    'a = 17\nb = 5\n\nprint(a / b)\nprint(a // b)\nprint(a % b)'
+  ),
+  makeTask(
+    3,
+    4,
+    'Power Operator',
+    'Easy',
+    'Python Basics',
+    5,
+    '95.5%',
+    'Calculate the square and cube of a number using **.',
+    '**',
+    'Square: 9\nCube: 27',
+    'num = 3\nsquare = num ** 2\ncube = num ** 3\n\nprint("Square:", square)\nprint("Cube:", cube)',
+    'num = 3\nsquare = num ** 2\ncube = num ** 3\n\nprint("Square:", square)\nprint("Cube:", cube)'
+  ),
+  makeTask(
+    3,
+    5,
+    'Operator Precedence',
+    'Easy',
+    'Python Basics',
+    5,
+    '94.8%',
+    'Understand how Python evaluates mathematical expressions.',
+    'Precedence',
+    '20\n30\n12',
+    'a = 10 + 5 * 2\nb = (10 + 5) * 2\nc = 2 ** 3 + 4\n\nprint(a)\nprint(b)\nprint(c)',
+    'a = 10 + 5 * 2\nb = (10 + 5) * 2\nc = 2 ** 3 + 4\n\nprint(a)\nprint(b)\nprint(c)'
+  ),
+  makeTask(
+    3,
+    6,
+    'Comparison Operators',
+    'Easy',
+    'Python Basics',
+    5,
+    '95.2%',
+    'Compare two numbers using Python Comparison Operators.',
+    '==, !=, >, <, >=, <=',
+    'False\nTrue\nTrue\nFalse\nTrue\nFalse',
+    'a = 10\nb = 5\n\nprint(a == b)\nprint(a != b)\nprint(a > b)\nprint(a < b)\nprint(a >= b)\nprint(a <= b)',
+    'a = 10\nb = 5\n\nprint(a == b)\nprint(a != b)\nprint(a > b)\nprint(a < b)\nprint(a >= b)\nprint(a <= b)'
+  ),
+  makeTask(
+    3,
+    7,
+    'Logical AND Operator',
+    'Easy',
+    'Python Basics',
+    5,
+    '94.5%',
+    'Check whether a student meets both eligibility conditions using and.',
+    'and',
+    'True',
+    'age = 20\nmarks = 75\n\neligible = age >= 18 and marks >= 60\nprint(eligible)',
+    'age = 20\nmarks = 75\n\neligible = age >= 18 and marks >= 60\nprint(eligible)'
+  ),
+  makeTask(
+    3,
+    8,
+    'Logical OR and NOT Operators',
+    'Easy',
+    'Python Basics',
+    5,
+    '93.8%',
+    'Understand or and not using Boolean conditions.',
+    'or, not',
+    'True\nTrue\nFalse',
+    'has_id = False\nhas_pass = True\n\nprint(has_id or has_pass)\nprint(not has_id)\nprint(has_id and has_pass)',
+    'has_id = False\nhas_pass = True\n\nprint(has_id or has_pass)\nprint(not has_id)\nprint(has_id and has_pass)'
+  ),
+  makeTask(
+    3,
+    9,
+    'Assignment Operators',
+    'Easy',
+    'Python Basics',
+    5,
+    '94.2%',
+    'Update a variable using Assignment Operators.',
+    '+=, -=, *=, /=',
+    '15\n12\n24\n6.0',
+    'score = 10\n\nscore += 5\nprint(score)\n\nscore -= 3\nprint(score)\n\nscore *= 2\nprint(score)\n\nscore /= 4\nprint(score)',
+    'score = 10\n\nscore += 5\nprint(score)\n\nscore -= 3\nprint(score)\n\nscore *= 2\nprint(score)\n\nscore /= 4\nprint(score)'
+  ),
+  makeTask(
+    3,
+    10,
+    'Membership Operators',
+    'Easy',
+    'Python Basics',
+    5,
+    '95.4%',
+    'Check whether an item exists in a list using in and not in.',
+    'in, not in',
+    'True\nTrue',
+    'fruits = ["apple", "banana", "mango"]\n\nprint("apple" in fruits)\nprint("grapes" not in fruits)',
+    'fruits = ["apple", "banana", "mango"]\n\nprint("apple" in fruits)\nprint("grapes" not in fruits)'
+  ),
+  makeTask(
+    3,
+    11,
+    'Identity Operators',
+    'Easy',
+    'Python Basics',
+    5,
+    '94.8%',
+    'Compare variables using identity operators is and is not.',
+    'is, is not',
+    'True\nFalse\nTrue\nTrue',
+    'a = [10, 20]\nb = [10, 20]\nc = a\n\nprint(a == b)\nprint(a is b)\nprint(a is c)\nprint(a is not b)',
+    'a = [10, 20]\nb = [10, 20]\nc = a\n\nprint(a == b)\nprint(a is b)\nprint(a is c)\nprint(a is not b)'
+  ),
+  makeTask(
+    3,
+    12,
+    'Python Operators Master Challenge',
+    'Medium',
+    'Python Basics',
+    10,
+    '92.5%',
+    'Build a complete shopping bill and wallet balance checker using arithmetic, assignment, comparison and logical operators.',
+    'arithmetic, assignment, comparison, logical',
+    'Final Bill: 550\nCan Buy: True\nRemaining: 150',
+    'price = 200\nquantity = 3\nwallet = 700\n\ntotal = price * quantity\ndiscount = 50\ntotal -= discount\n\ncan_buy = wallet >= total and total > 0\n\nprint("Final Bill:", total)\nprint("Can Buy:", can_buy)\nprint("Remaining:", wallet - total)',
+    'price = 200\nquantity = 3\nwallet = 700\n\ntotal = price * quantity\ndiscount = 50\ntotal -= discount\n\ncan_buy = wallet >= total and total > 0\n\nprint("Final Bill:", total)\nprint("Can Buy:", can_buy)\nprint("Remaining:", wallet - total)'
+  ),
+];
+
+const TOPIC_3_REMAINING_TASKS: ChallengeTask[] = [];
+
 const TOPIC_3_QUESTIONS: ChallengeTask[] = [
-  makeTask(3, 1, 'Add two integers.', 'Easy', 'Python Basics', 5, '97.2%', 'Add two integers and print the sum.', 'Add two integers', 'Sum: 30', 'a = 10; b = 20; print(f"Sum: {a+b}")', 'a = 10\nb = 20\nprint(f"Sum: {a + b}")'),
-  makeTask(3, 2, 'Subtract one number from another.', 'Easy', 'Python Basics', 5, '96.5%', 'Subtract b from a and print the difference.', 'Subtract', 'Difference: 15', 'print(f"Difference: {a-b}")', 'a = 25\nb = 10\nprint(f"Difference: {a - b}")'),
-  makeTask(3, 3, 'Multiply two numbers.', 'Easy', 'Python Basics', 5, '96.0%', 'Multiply two numbers and print the product.', 'Multiply', 'Product: 50', 'print(f"Product: {a*b}")', 'a = 5\nb = 10\nprint(f"Product: {a * b}")'),
-  makeTask(3, 4, 'Calculate quotient and remainder.', 'Easy', 'Python Basics', 5, '92.4%', 'Compute integer division // and remainder %.', 'quotient and remainder', 'Quotient: 3, Remainder: 2', 'q = a // b; r = a % b', 'a, b = 17, 5\nprint(f"Quotient: {a // b}, Remainder: {a % b}")'),
-  makeTask(3, 5, 'Calculate the square of a number.', 'Easy', 'Python Basics', 5, '95.1%', 'Calculate num ** 2 and print the square.', 'square of a number', 'Square: 49', 'num ** 2', 'num = 7\nprint(f"Square: {num ** 2}")'),
-  makeTask(3, 6, 'Calculate the cube of a number.', 'Easy', 'Python Basics', 5, '94.8%', 'Calculate num ** 3 and print the cube.', 'cube of a number', 'Cube: 64', 'num ** 3', 'num = 4\nprint(f"Cube: {num ** 3}")'),
-  makeTask(3, 7, 'Calculate the area of a rectangle.', 'Easy', 'Python Basics', 5, '94.0%', 'Multiply length by width to compute the rectangle area.', 'area of a rectangle', 'Area: 50', 'length * width', 'length, width = 10, 5\nprint(f"Area: {length * width}")'),
-  makeTask(3, 8, 'Calculate the area of a circle.', 'Easy', 'Python Basics', 5, '91.2%', 'Compute circle area: 3.14159 * r * r.', 'area of a circle', 'Area: 153.94', '3.14159 * r ** 2', 'r = 7\narea = round(3.14159 * r ** 2, 2)\nprint(f"Area: {area}")'),
-  makeTask(3, 9, 'Calculate simple interest using principal, rate and time.', 'Easy', 'Python Basics', 5, '90.6%', 'Calculate (P * R * T) / 100.', 'simple interest', 'Interest: 500.0', '(p * r * t) / 100', 'p, r, t = 5000, 5, 2\nsi = (p * r * t) / 100\nprint(f"Interest: {si}")'),
-  makeTask(3, 10, 'Calculate total price after applying a percentage discount.', 'Easy', 'Python Basics', 5, '89.9%', 'Compute price - (price * discount / 100).', 'percentage discount', 'Final Price: 80.0', 'price * (1 - discount/100)', 'price = 100\ndiscount = 20\nfinal_price = price - (price * discount / 100)\nprint(f"Final Price: {final_price}")')
+  ...TOPIC_3_CURATED_TASKS,
+  ...TOPIC_3_REMAINING_TASKS,
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -160,7 +332,7 @@ const TOPIC_4_QUESTIONS: ChallengeTask[] = [
   makeTask(4, 10, 'Handle division by zero by printing an appropriate error message.', 'Easy', 'Python Basics', 5, '88.5%', 'Check if divisor == 0 before dividing or use try-except.', 'division by zero', 'Error: Cannot divide by zero', 'if b == 0: print("Error: Cannot divide by zero")', 'a, b = 10, 0\nif b == 0:\n    print("Error: Cannot divide by zero")\nelse:\n    print(a / b)')
 ];
 
-// Helper to generate remaining 21 topics quickly with accurate questions
+// Helper to generate topics with accurate questions and verified solutions
 function generateTopicTasks(
   topicId: number,
   topicTitle: string,
@@ -170,6 +342,15 @@ function generateTopicTasks(
 ): ChallengeTask[] {
   return questionTitles.map((qTitle, idx) => {
     const taskNum = idx + 1;
+    const verified = getVerifiedSolutionForTask(topicId, taskNum);
+    const solutionCode = verified?.solution || '';
+    const sampleOutput = verified?.sampleOutput || '';
+    const hint = verified?.hint || `Write clean Python 3 code to solve: ${qTitle}`;
+
+    if (!solutionCode) {
+      console.error(`[Data Integrity Error] Missing verified solution for Topic ${topicId} Task ${taskNum}: "${qTitle}"`);
+    }
+
     return makeTask(
       topicId,
       taskNum,
@@ -180,9 +361,9 @@ function generateTopicTasks(
       `${Math.floor(88 + ((taskNum * 7) % 10))}.${taskNum % 9}%`,
       `Implement Python solution for: ${qTitle}`,
       qTitle.split(' ').slice(0, 3).join(' '),
-      `Executed ${qTitle}`,
-      `Review standard Python approach for ${qTitle}`,
-      `# Solution for ${qTitle}\nprint("Executed ${qTitle}")`
+      sampleOutput,
+      hint,
+      solutionCode
     );
   });
 }
@@ -204,36 +385,187 @@ const TOPIC_5_QUESTIONS = generateTopicTasks(5, 'Loops', 'Easy', 'Python Basics'
 ]);
 
 // ─────────────────────────────────────────────────────────────
-// TOPIC 6: Variables and Data Types
+// TOPIC 6: Variables and Data Types (EXACTLY 9 ACTIVE CHALLENGES)
 // ─────────────────────────────────────────────────────────────
-const TOPIC_6_QUESTIONS = generateTopicTasks(6, 'Variables and Data Types', 'Easy', 'Python Basics', [
-  'Create variables for name, age and city, then print them.',
-  'Store two integers and print their sum.',
-  'Convert an integer input into a floating-point number.',
-  'Convert a numeric string into an integer.',
-  'Swap two variables using a temporary variable.',
-  'Swap two variables without a temporary variable.',
-  'Display the data type of five different values.',
-  'Calculate the total price using quantity and unit price.',
-  'Convert a temperature from Celsius to Fahrenheit.',
-  "Read a student's name and marks, then display a formatted result."
-]);
+const TOPIC_6_QUESTIONS: ChallengeTask[] = [
+  makeTask(6, 1, 'Create and Print a Variable', 'Easy', 'Python Basics', 5, '96.5%', 'Create a variable named name, assign a string to it and print its value.', 'name', 'Rahul', 'name = "Rahul"\nprint(name)', 'name = "Rahul"\nprint(name)'),
+  makeTask(6, 2, "Update a Variable's Value", 'Easy', 'Python Basics', 5, '95.1%', 'Create a variable, print its value, change the value and print it again.', 'score', '10\n25', 'score = 10\nprint(score)\nscore = 25\nprint(score)', 'score = 10\nprint(score)\nscore = 25\nprint(score)'),
+  makeTask(6, 3, 'Explore Basic Data Types', 'Easy', 'Python Basics', 5, '93.8%', 'Create variables containing a string, integer, float and boolean, then print their values.', 'types', 'Rahul\n20\n5.8\nTrue', 'name = "Rahul"\nage = 20\nheight = 5.8\nis_student = True\n\nprint(name)\nprint(age)\nprint(height)\nprint(is_student)', 'name = "Rahul"\nage = 20\nheight = 5.8\nis_student = True\n\nprint(name)\nprint(age)\nprint(height)\nprint(is_student)'),
+  makeTask(6, 4, 'Identify Data Types Using type()', 'Easy', 'Python Basics', 5, '94.2%', 'Create variables and identify their data types using type().', 'type()', "<class 'str'>\n<class 'int'>\n<class 'float'>\n<class 'bool'>", 'name = "Rahul"\nage = 20\nheight = 5.8\nis_student = True\n\nprint(type(name))\nprint(type(age))\nprint(type(height))\nprint(type(is_student))', 'name = "Rahul"\nage = 20\nheight = 5.8\nis_student = True\n\nprint(type(name))\nprint(type(age))\nprint(type(height))\nprint(type(is_student))'),
+  makeTask(6, 5, 'Convert String to Integer', 'Easy', 'Python Basics', 5, '92.8%', 'Convert a numeric string into an integer and add 5.', 'int()', '25', 'number = "20"\nconverted = int(number)\nresult = converted + 5\nprint(result)', 'number = "20"\nconverted = int(number)\nresult = converted + 5\nprint(result)'),
+  makeTask(6, 6, 'Build a Student Profile', 'Easy', 'Python Basics', 5, '91.5%', 'Create a student profile using variables, different data types and type conversion.', 'Student Profile', 'Name: Rahul\nAge: 20\nHeight: 5.8\nStudent: True', 'name = "Rahul"\nage_text = "20"\nheight = 5.8\nis_student = True\n\nage = int(age_text)\n\nprint("Name:", name)\nprint("Age:", age)\nprint("Height:", height)\nprint("Student:", is_student)', 'name = "Rahul"\nage_text = "20"\nheight = 5.8\nis_student = True\n\nage = int(age_text)\n\nprint("Name:", name)\nprint("Age:", age)\nprint("Height:", height)\nprint("Student:", is_student)'),
+  makeTask(6, 7, 'Python Variable Naming Rules', 'Easy', 'Python Basics', 5, '95.0%', 'Create valid Python variables and print their values.', 'naming rules', 'Rahul\n20\n500', 'student_name = "Rahul"\nage2 = 20\n_total = 500\n\nprint(student_name)\nprint(age2)\nprint(_total)', 'student_name = "Rahul"\nage2 = 20\n_total = 500\n\nprint(student_name)\nprint(age2)\nprint(_total)'),
+  makeTask(6, 8, 'Convert Between Data Types', 'Easy', 'Python Basics', 5, '93.4%', 'Convert an integer into a string and a numeric string into a float.', 'str() & float()', "20\n99.5\n<class 'str'>\n<class 'float'>", 'age = 20\nage_text = str(age)\n\nprice_text = "99.5"\nprice = float(price_text)\n\nprint(age_text)\nprint(price)\nprint(type(age_text))\nprint(type(price))', 'age = 20\nage_text = str(age)\n\nprice_text = "99.5"\nprice = float(price_text)\n\nprint(age_text)\nprint(price)\nprint(type(age_text))\nprint(type(price))'),
+  makeTask(6, 9, 'Understanding None Data Type', 'Easy', 'Python Basics', 5, '92.1%', 'Create a variable with None, check its type and then assign a value.', 'None', "None\n<class 'NoneType'>\n100", 'result = None\nprint(result)\nprint(type(result))\n\nresult = 100\nprint(result)', 'result = None\nprint(result)\nprint(type(result))\n\nresult = 100\nprint(result)')
+];
+
+// ARCHIVED TOPIC 6 QUESTIONS (SAFELY PRESERVED FOR HISTORICAL RECORDS)
+export const ARCHIVED_TOPIC_6_QUESTIONS: ChallengeTask[] = generateTopicTasks(6, 'Variables and Data Types', 'Easy', 'Python Basics', [
+  'Swap two variables using a temporary variable.'
+]).map((t, idx) => ({ ...t, taskNumber: idx + 10, id: 610 + idx }));
 
 // ─────────────────────────────────────────────────────────────
-// TOPIC 7: Input and Output
+// TOPIC 7: Input and Output (Batch 1: Q1-Q3 Curated)
 // ─────────────────────────────────────────────────────────────
-const TOPIC_7_QUESTIONS = generateTopicTasks(7, 'Input and Output', 'Easy', 'Python Basics', [
-  'Read a name and print a greeting.',
-  'Read two integers and print their sum.',
-  'Read three numbers and print their average.',
-  "Read a length and width and print the rectangle's area.",
-  'Read a birth year and estimate age using a supplied current year.',
-  'Read a number and print its square and cube.',
-  'Read first and last names and print the full name.',
-  'Read a price and quantity and print the total bill.',
-  'Read hours and an hourly rate and calculate gross pay.',
-  'Read five subject marks and print the total and percentage.'
-]);
+const TOPIC_7_CURATED_TASKS: ChallengeTask[] = [
+  {
+    ...makeTask(
+      7,
+      1,
+      'Take Your Name as Input',
+      'Easy',
+      'Python Basics',
+      5,
+      '97.2%',
+      'Ask the user to enter their name and display it.',
+      'input()',
+      'Rahul',
+      'Use input("Enter your name: ") to read user input, then print(name).',
+      'name = input("Enter your name: ")\nprint(name)'
+    ),
+    sampleInput: 'Rahul',
+  },
+  {
+    ...makeTask(
+      7,
+      2,
+      'Greet the User',
+      'Easy',
+      'Python Basics',
+      5,
+      '96.4%',
+      'Ask the user to enter their name and print a personalized greeting.',
+      'print() with input',
+      'Hello, Rahul',
+      'Use input() to take name, then print("Hello,", name).',
+      'name = input("Enter your name: ")\nprint("Hello,", name)'
+    ),
+    sampleInput: 'Rahul',
+  },
+  {
+    ...makeTask(
+      7,
+      3,
+      'Take Age as Input',
+      'Easy',
+      'Python Basics',
+      5,
+      '95.0%',
+      'Ask the user for their age, display it and print its data type using type().',
+      'type() with input',
+      "Your age is: 20\n<class 'str'>",
+      'Read age with input(), print it with label, and print type(age).',
+      'age = input("Enter your age: ")\nprint("Your age is:", age)\nprint(type(age))'
+    ),
+    sampleInput: '20',
+  },
+  {
+    ...makeTask(
+      7,
+      4,
+      'Add Two Numbers Using Input',
+      'Easy',
+      'Python Basics',
+      5,
+      '94.5%',
+      'Take two integer inputs and print their sum.',
+      'int(input())',
+      'Sum: 30',
+      'Use int(input()) for both numbers and calculate total = num1 + num2.',
+      'num1 = int(input("First number: "))\nnum2 = int(input("Second number: "))\ntotal = num1 + num2\nprint("Sum:", total)'
+    ),
+    sampleInput: '10\n20',
+  },
+  {
+    ...makeTask(
+      7,
+      5,
+      'Calculate Total Price',
+      'Easy',
+      'Python Basics',
+      5,
+      '93.8%',
+      'Take product price and quantity as input, then calculate total price.',
+      'float() & int()',
+      'Total Price: 298.5',
+      'Use float(input()) for price and int(input()) for quantity, then total = price * quantity.',
+      'price = float(input("Enter price: "))\nquantity = int(input("Enter quantity: "))\ntotal = price * quantity\nprint("Total Price:", total)'
+    ),
+    sampleInput: '99.5\n3',
+  },
+  {
+    ...makeTask(
+      7,
+      6,
+      'Display Student Details',
+      'Easy',
+      'Python Basics',
+      5,
+      '95.2%',
+      "Take a student's name, age and city as input and display their details.",
+      'input() & print()',
+      'Name: Rahul\nAge: 20\nCity: Patna',
+      'Take inputs for name, age and city, then print each on a separate line.',
+      'name = input("Enter name: ")\nage = int(input("Enter age: "))\ncity = input("Enter city: ")\n\nprint("Name:", name)\nprint("Age:", age)\nprint("City:", city)'
+    ),
+    sampleInput: 'Rahul\n20\nPatna',
+  },
+  {
+    ...makeTask(
+      7,
+      7,
+      'Format Output Using f-Strings',
+      'Easy',
+      'Python Basics',
+      5,
+      '95.8%',
+      'Take a name and age as input, then display a personalized introduction using an f-string.',
+      'f-string',
+      'My name is Rahul and I am 20 years old.',
+      'Take name with input(), age with int(input()), then print(f"My name is {name} and I am {age} years old.").',
+      'name = input("Enter your name: ")\nage = int(input("Enter your age: "))\n\nprint(f"My name is {name} and I am {age} years old.")'
+    ),
+    sampleInput: 'Rahul\n20',
+  },
+  {
+    ...makeTask(
+      7,
+      8,
+      'Format Numbers to Two Decimals',
+      'Easy',
+      'Python Basics',
+      5,
+      '94.6%',
+      'Take a product price as input and display it with exactly two decimal places.',
+      '{price:.2f}',
+      'Price: 99.50',
+      'Take price with float(input("Enter price: ")), then print(f"Price: {price:.2f}").',
+      'price = float(input("Enter price: "))\nprint(f"Price: {price:.2f}")'
+    ),
+    sampleInput: '99.5',
+  },
+  {
+    ...makeTask(
+      7,
+      9,
+      'Build an Interactive Student Profile',
+      'Easy',
+      'Python Basics',
+      5,
+      '96.2%',
+      'Create a student profile using name, age, course and marks. Display a formatted introduction and marks with two decimal places.',
+      'Student Profile',
+      '--- Student Profile ---\nName: Rahul\nAge: 20\nCourse: Python\nMarks: 87.50',
+      'Collect name, int age, course, float marks, then print header and f-string formatted lines.',
+      'name = input("Enter name: ")\nage = int(input("Enter age: "))\ncourse = input("Enter course: ")\nmarks = float(input("Enter marks: "))\n\nprint("\\n--- Student Profile ---")\nprint(f"Name: {name}")\nprint(f"Age: {age}")\nprint(f"Course: {course}")\nprint(f"Marks: {marks:.2f}")'
+    ),
+    sampleInput: 'Rahul\n20\nPython\n87.5',
+  },
+];
+
+const TOPIC_7_QUESTIONS: ChallengeTask[] = [
+  ...TOPIC_7_CURATED_TASKS,
+];
 
 // ─────────────────────────────────────────────────────────────
 // TOPIC 8: Comparison Operators
@@ -636,10 +968,69 @@ const TOPIC_32_QUESTIONS = generateTopicTasks(32, 'Find Largest Number', 'Easy',
 ]);
 
 // ─────────────────────────────────────────────────────────────
-// MASTER TOPICS DIRECTORY (ALL 25 TOPICS + INTERMEDIATE + POPULAR)
+// CONFIGURABLE MASTER DISPLAY ORDER (BEGINNER → INTERMEDIATE → ADVANCED)
+// ─────────────────────────────────────────────────────────────
+export const PYTHON_TOPIC_DISPLAY_ORDER: number[] = [
+  // Beginner Topics (1 - 14)
+  1,  // 1. Say Hello, World! With Python
+  6,  // 2. Variables and Data Types
+  7,  // 3. Input and Output
+  3,  // 4. Arithmetic Operators
+  4,  // 5. Python: Division
+  8,  // 6. Comparison Operators
+  2,  // 7. Python If-Else
+  5,  // 8. Loops
+  9,  // 9. For and While Loops
+  10, // 10. Functions
+  11, // 11. Strings
+  12, // 12. Lists
+  13, // 13. Tuples and Sets
+  14, // 14. Dictionaries
+
+  // Intermediate Topics (15 - 22)
+  15, // 15. List Operations
+  16, // 16. Dictionary Operations
+  17, // 17. String Manipulation
+  18, // 18. List Comprehension
+  26, // 19. Lambda and Map Functions
+  20, // 20. Exception Handling
+  19, // 21. File Handling
+  27, // 22. Sorting and Searching Basics
+
+  // Advanced Topics (23 - 27)
+  21, // 23. Recursion Basics
+  22, // 24. Sorting Algorithms
+  23, // 25. Search Algorithms
+  24, // 26. Problem Solving with Functions
+  25, // 27. Advanced Data Structures
+
+  // Popular Challenges (28 - 32)
+  28,
+  29,
+  30,
+  31,
+  32,
+];
+
+export function sortPythonTopicsByDisplayOrder(topics: PythonTopicDefinition[]): PythonTopicDefinition[] {
+  const orderMap = new Map<number, number>();
+  PYTHON_TOPIC_DISPLAY_ORDER.forEach((id, index) => {
+    orderMap.set(id, index);
+  });
+
+  return [...topics].sort((a, b) => {
+    const orderA = orderMap.has(a.id) ? orderMap.get(a.id)! : 9999 + a.id;
+    const orderB = orderMap.has(b.id) ? orderMap.get(b.id)! : 9999 + b.id;
+    return orderA - orderB;
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
+// MASTER TOPICS DIRECTORY (ALL 27 TOPICS + POPULAR)
+// Reordered in exact Beginner → Intermediate → Advanced sequence
 // ─────────────────────────────────────────────────────────────
 export const ALL_PYTHON_TOPICS: PythonTopicDefinition[] = [
-  // ─── Basic Topics (1 - 10) ───
+  // ─── Beginner Topics (1 - 14) ───
   {
     id: 1,
     title: 'Say Hello, World! With Python',
@@ -649,46 +1040,6 @@ export const ALL_PYTHON_TOPICS: PythonTopicDefinition[] = [
     description: 'Get started with Python by printing to output.',
     tabs: ['all', 'basic'],
     questions: TOPIC_1_QUESTIONS
-  },
-  {
-    id: 2,
-    title: 'Python If-Else',
-    difficulty: 'Easy',
-    maxScore: 5,
-    skill: 'Python Basics',
-    description: 'Learn how to use if-else statements to make decisions in Python.',
-    tabs: ['all', 'basic'],
-    questions: TOPIC_2_QUESTIONS
-  },
-  {
-    id: 3,
-    title: 'Arithmetic Operators',
-    difficulty: 'Easy',
-    maxScore: 5,
-    skill: 'Python Basics',
-    description: 'Practice using arithmetic operators like +, -, *, / and %.',
-    tabs: ['all', 'basic'],
-    questions: TOPIC_3_QUESTIONS
-  },
-  {
-    id: 4,
-    title: 'Python: Division',
-    difficulty: 'Easy',
-    maxScore: 5,
-    skill: 'Python Basics',
-    description: 'Perform division operations and understand integer and float division.',
-    tabs: ['all', 'basic'],
-    questions: TOPIC_4_QUESTIONS
-  },
-  {
-    id: 5,
-    title: 'Loops',
-    difficulty: 'Easy',
-    maxScore: 5,
-    skill: 'Python Basics',
-    description: 'Use for and while loops to repeat instructions and iterate over ranges.',
-    tabs: ['all'],
-    questions: TOPIC_5_QUESTIONS
   },
   {
     id: 6,
@@ -711,6 +1062,26 @@ export const ALL_PYTHON_TOPICS: PythonTopicDefinition[] = [
     questions: TOPIC_7_QUESTIONS
   },
   {
+    id: 3,
+    title: 'Arithmetic Operators',
+    difficulty: 'Easy',
+    maxScore: 5,
+    skill: 'Python Basics',
+    description: 'Practice using arithmetic operators like +, -, *, / and %.',
+    tabs: ['all', 'basic'],
+    questions: TOPIC_3_QUESTIONS
+  },
+  {
+    id: 4,
+    title: 'Python: Division',
+    difficulty: 'Easy',
+    maxScore: 5,
+    skill: 'Python Basics',
+    description: 'Perform division operations and understand integer and float division.',
+    tabs: ['all', 'basic'],
+    questions: TOPIC_4_QUESTIONS
+  },
+  {
     id: 8,
     title: 'Comparison Operators',
     difficulty: 'Easy',
@@ -719,6 +1090,26 @@ export const ALL_PYTHON_TOPICS: PythonTopicDefinition[] = [
     description: 'Compare values using ==, !=, <, >, <=, and >=.',
     tabs: ['all'],
     questions: TOPIC_8_QUESTIONS
+  },
+  {
+    id: 2,
+    title: 'Python If-Else',
+    difficulty: 'Easy',
+    maxScore: 5,
+    skill: 'Python Basics',
+    description: 'Learn how to use if-else statements to make decisions in Python.',
+    tabs: ['all', 'basic'],
+    questions: TOPIC_2_QUESTIONS
+  },
+  {
+    id: 5,
+    title: 'Loops',
+    difficulty: 'Easy',
+    maxScore: 5,
+    skill: 'Python Basics',
+    description: 'Use for and while loops to repeat instructions and iterate over ranges.',
+    tabs: ['all'],
+    questions: TOPIC_5_QUESTIONS
   },
   {
     id: 9,
@@ -781,7 +1172,7 @@ export const ALL_PYTHON_TOPICS: PythonTopicDefinition[] = [
     questions: TOPIC_14_QUESTIONS
   },
 
-  // ─── Intermediate Topics (15 - 20, 26, 27) ───
+  // ─── Intermediate Topics (15 - 22) ───
   {
     id: 15,
     title: 'List Operations',
@@ -823,14 +1214,14 @@ export const ALL_PYTHON_TOPICS: PythonTopicDefinition[] = [
     questions: TOPIC_18_QUESTIONS
   },
   {
-    id: 19,
-    title: 'File Handling',
+    id: 26,
+    title: 'Lambda and Map Functions',
     difficulty: 'Medium',
     maxScore: 10,
     skill: 'Python Intermediate',
-    description: 'Read, write, CSV, line counts, and word search.',
+    description: 'Functional programming using map(), filter(), and lambda expressions.',
     tabs: ['all', 'intermediate'],
-    questions: TOPIC_19_QUESTIONS
+    questions: TOPIC_26_QUESTIONS
   },
   {
     id: 20,
@@ -843,14 +1234,14 @@ export const ALL_PYTHON_TOPICS: PythonTopicDefinition[] = [
     questions: TOPIC_20_QUESTIONS
   },
   {
-    id: 26,
-    title: 'Lambda and Map Functions',
+    id: 19,
+    title: 'File Handling',
     difficulty: 'Medium',
     maxScore: 10,
     skill: 'Python Intermediate',
-    description: 'Functional programming using map(), filter(), and lambda expressions.',
+    description: 'Read, write, CSV, line counts, and word search.',
     tabs: ['all', 'intermediate'],
-    questions: TOPIC_26_QUESTIONS
+    questions: TOPIC_19_QUESTIONS
   },
   {
     id: 27,
@@ -863,7 +1254,7 @@ export const ALL_PYTHON_TOPICS: PythonTopicDefinition[] = [
     questions: TOPIC_27_QUESTIONS
   },
 
-  // ─── Advanced Topics (21 - 25) ───
+  // ─── Advanced Topics (23 - 27) ───
   {
     id: 21,
     title: 'Recursion Basics',
@@ -1228,19 +1619,21 @@ export function getSyncedPythonChallengesTopics(): PythonTopicDefinition[] {
     }
   }
 
-  return topics
-    .filter((t) => !t.deleted && t.published !== false)
-    .map((t) => {
-      const validQuestions = (t.questions || []).filter((q) => !q.deleted && q.published !== false);
-      TOPIC_QUESTIONS_MAP[t.id] = validQuestions;
-      const hasAnySolvedTask = validQuestions.some((q) => solvedTaskSet.has(q.id));
-      return {
-        ...t,
-        questions: validQuestions,
-        solved: Boolean(t.solved || solvedTopicSet.has(t.id) || hasAnySolvedTask),
-        bookmarked: Boolean(t.bookmarked || bookmarkedSet.has(t.id)),
-      };
-    });
+  return sortPythonTopicsByDisplayOrder(
+    topics
+      .filter((t) => !t.deleted && t.published !== false)
+      .map((t) => {
+        const validQuestions = (t.questions || []).filter((q) => !q.deleted && q.published !== false);
+        TOPIC_QUESTIONS_MAP[t.id] = validQuestions;
+        const hasAnySolvedTask = validQuestions.some((q) => solvedTaskSet.has(q.id));
+        return {
+          ...t,
+          questions: validQuestions,
+          solved: Boolean(t.solved || solvedTopicSet.has(t.id) || hasAnySolvedTask),
+          bookmarked: Boolean(t.bookmarked || bookmarkedSet.has(t.id)),
+        };
+      })
+  );
 }
 
 export async function revalidatePythonChallengesFromBackend(): Promise<PythonTopicDefinition[]> {

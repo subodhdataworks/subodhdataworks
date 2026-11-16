@@ -253,10 +253,10 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
     {
       id: 0,
       image: '/images/affiliate/real_banner_1_referral.jpg',
-      badge: '✨ REFER & EARN ₹100',
+      badge: '✨ REFER & EARN ₹300',
       badgeColor: 'bg-blue-600/90 text-white',
-      title: 'Earn ₹100 Per Referral',
-      desc: 'Share your link with students & friends. Earn ₹100 instant cash on every verified enrollment!',
+      title: 'Earn ₹300 Per Referral',
+      desc: 'Share your link with students & friends. Earn ₹300 instant cash on every verified enrollment!',
       ctaText: 'Share Link ↗',
       action: () => handleNativeShare(),
     },
@@ -452,7 +452,7 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
               </div>
               <div className="min-w-0">
                 <div className="text-[9px] font-black text-slate-900 truncate leading-none">3. You Earn</div>
-                <div className="text-[8px] text-emerald-600 font-bold leading-none mt-0.5 truncate">₹100 (Instant)</div>
+                <div className="text-[8px] text-emerald-600 font-bold leading-none mt-0.5 truncate">₹300 (Instant)</div>
               </div>
             </div>
           </div>
@@ -527,7 +527,7 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
                 Available Payout
               </div>
               <div className="text-[8px] text-emerald-600 font-bold leading-none mt-0.5 truncate">
-                ₹100 / enroll
+                ₹300 / enroll
               </div>
             </div>
           </div>
@@ -546,7 +546,7 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
                   Your Affiliate Link
                 </h3>
                 <p className="text-[10px] text-slate-500 font-semibold leading-tight">
-                  Share this link to earn ₹100 per verified enrollment
+                  Share this link to earn ₹300 per verified enrollment
                 </p>
               </div>
             </div>
@@ -953,7 +953,7 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
                   </div>
                   <div className="text-xs font-black text-slate-900">Leaderboard Reset — Season Open</div>
                   <p className="text-[10px] text-slate-500 mt-1 leading-relaxed">
-                    Rankings populate automatically as new verified ₹100 enrollments are recorded.
+                    Rankings populate automatically as new verified ₹300 enrollments are recorded.
                   </p>
                 </div>
               ) : topEarners.map((u) => (
@@ -1063,7 +1063,7 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
                   No Referrals Recorded Yet
                 </h5>
                 <p className="text-[10px] font-semibold text-slate-500 max-w-[210px] mt-1 leading-snug">
-                  Share your unique referral link to earn Flat ₹100 per verified enrollment!
+                  Share your unique referral link to earn Flat ₹300 per verified enrollment!
                 </p>
               </div>
             </div>
@@ -1104,7 +1104,7 @@ export const MobileAffiliateEarningsHub: React.FC<MobileAffiliateEarningsHubProp
           <div className="space-y-1 text-[9px] font-bold text-slate-700 shrink-0">
             <div className="flex items-center gap-1">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>₹100 per verified enrollment</span>
+              <span>₹300 per verified enrollment</span>
             </div>
             <div className="flex items-center gap-1">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />

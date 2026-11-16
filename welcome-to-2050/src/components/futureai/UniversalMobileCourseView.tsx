@@ -117,12 +117,12 @@ export interface CourseDetailConfig {
   price: number;
 }
 
-export const COURSES_CONFIG: Record<CanonicalCourseId, CourseDetailConfig> = {
+export const COURSES_CONFIG: Record<string, CourseDetailConfig> = {
   data_analyst: {
     id: 'data_analyst',
     title: 'Data Analyst with GenAI',
     shortDesc: 'Master Python, SQL, Power BI, Advanced Excel & Generative AI to build automated enterprise dashboards and launch high-paying analytics careers.',
-    poster: '/images/pot1_sharp_poster.jpg',
+    poster: '/images/courses/final_data_analyst_genai.webp',
     topBadgeLeft: 'Most Popular Program',
     topBadgeRight: '50+ Hours Live & Hands-on',
     toolBadges: ['Python & SQL', 'Power BI & DAX', 'Advanced Excel', 'GenAI Automation'],
@@ -143,7 +143,7 @@ export const COURSES_CONFIG: Record<CanonicalCourseId, CourseDetailConfig> = {
     id: 'data_science',
     title: 'Data Science & Agentic AI',
     shortDesc: 'Build Machine Learning models, RAG pipelines, and autonomous AI Agent systems with PyTorch, LangChain, and vector databases.',
-    poster: '/images/pot2_sharp_poster.jpg',
+    poster: '/images/courses/final_data_science_agentic_ai.webp',
     topBadgeLeft: 'Most Popular Program',
     topBadgeRight: '50+ Hours Live & Hands-on',
     toolBadges: ['Data Science', 'Machine Learning', 'Agentic AI', 'RAG & Vector DB'],
@@ -164,7 +164,7 @@ export const COURSES_CONFIG: Record<CanonicalCourseId, CourseDetailConfig> = {
     id: 'ml_engineering',
     title: 'Machine Learning Engineering',
     shortDesc: 'Train, fine-tune, optimize, and deploy industrial-grade Machine Learning and Deep Learning models at scale.',
-    poster: '/images/pot3_sharp_poster.jpg',
+    poster: '/images/courses/final_ml_engineering.webp',
     topBadgeLeft: 'Most Popular Program',
     topBadgeRight: '60+ Hours Live & Hands-on',
     toolBadges: ['Machine Learning', 'PyTorch', 'MLOps', 'Cloud Serving'],
@@ -185,7 +185,7 @@ export const COURSES_CONFIG: Record<CanonicalCourseId, CourseDetailConfig> = {
     id: 'ai_engineering',
     title: 'AI Engineering',
     shortDesc: 'Architect production GenAI applications, LangGraph workflows, fine-tuning, and scalable LLM inference pipelines.',
-    poster: '/images/pot4_sharp_poster.jpg',
+    poster: '/images/courses/final_ai_engineering.webp',
     topBadgeLeft: 'Most Popular Program',
     topBadgeRight: '55+ Hours Live & Hands-on',
     toolBadges: ['AI Engineering', 'LangGraph', 'Fine-Tuning', 'LLMOps'],
@@ -206,7 +206,7 @@ export const COURSES_CONFIG: Record<CanonicalCourseId, CourseDetailConfig> = {
     id: 'ai_tools_prompt',
     title: 'AI Tools & Prompt Engineering',
     shortDesc: 'Supercharge productivity and workflow automation using 50+ cutting-edge AI tools and expert prompt engineering techniques.',
-    poster: '/images/pot5_sharp_poster.jpg',
+    poster: '/images/courses/final_ai_tools_prompt.webp',
     topBadgeLeft: 'Most Popular Program',
     topBadgeRight: '40+ Hours Live & Hands-on',
     toolBadges: ['AI Tools', 'Prompt Engineering', 'Automation', 'Productivity'],
@@ -227,7 +227,7 @@ export const COURSES_CONFIG: Record<CanonicalCourseId, CourseDetailConfig> = {
     id: 'ms_office_copilot',
     title: 'Microsoft Office 365 with Copilot',
     shortDesc: 'Transform Excel, Word, PowerPoint, and Outlook into AI-powered productivity engines with Copilot and business intelligence.',
-    poster: '/images/pot6_sharp_poster.jpg',
+    poster: '/images/courses/final_ms_office_copilot.webp',
     topBadgeLeft: 'Most Popular Program',
     topBadgeRight: '45+ Hours Live & Hands-on',
     toolBadges: ['MS Office 365', 'Copilot AI', 'Advanced Excel', 'Executive BI'],
@@ -248,7 +248,7 @@ export const COURSES_CONFIG: Record<CanonicalCourseId, CourseDetailConfig> = {
     id: 'full_stack_mern',
     title: 'Full Stack Web Development',
     shortDesc: 'Build modern high-speed web apps with React 18, Node.js, Express, MongoDB, and integrate intelligent AI capabilities.',
-    poster: '/images/pot7_sharp_poster.jpg',
+    poster: '/images/courses/final_full_stack_web_dev.webp',
     topBadgeLeft: 'Most Popular Program',
     topBadgeRight: '70+ Hours Live & Hands-on',
     toolBadges: ['React 18', 'Node.js', 'MongoDB', 'AI Integration'],
@@ -269,7 +269,7 @@ export const COURSES_CONFIG: Record<CanonicalCourseId, CourseDetailConfig> = {
     id: 'deep_learning',
     title: 'Deep Learning & Neural Networks',
     shortDesc: 'Master Convolutional Networks, Transformers, GANs, and PyTorch deep learning architectures.',
-    poster: '/images/pot3_sharp_poster.jpg',
+    poster: '/images/courses/final_ml_engineering.webp',
     topBadgeLeft: 'Most Popular Program',
     topBadgeRight: '50+ Hours Live & Hands-on',
     toolBadges: ['Deep Learning', 'PyTorch', 'Transformers', 'Computer Vision'],
@@ -285,6 +285,83 @@ export const COURSES_CONFIG: Record<CanonicalCourseId, CourseDetailConfig> = {
     ],
     salary: '10 – 26 LPA*',
     price: 987
+  },
+  ai_website_dev: {
+    id: 'ai_website_dev',
+    title: 'AI Website Builder Pro',
+    shortDesc: 'Students learn how to build and launch a functional e-commerce website with AI assistance, including real backend and payment integrations.',
+    poster: '/images/courses/final_ai_website_dev.webp',
+    topBadgeLeft: 'LIVE CLASSES',
+    topBadgeRight: 'LIVE Instructor-Led Class',
+    toolBadges: ['AI Website Builder', 'Full Database', 'Payment Gateway', 'Live Deployment'],
+    skills: [
+      'AI Website Builder & Prompt Engineering',
+      'Responsive Frontend & Backend Development',
+      'Full Database Integration & User Authentication',
+      'Product Management, Shopping Cart & Checkout',
+      'Payment Gateway Integration, Verification & Webhooks',
+      'Admin Dashboard, Order Management & Email Alerts',
+      'REST API Integration & Custom Domain Connection',
+      'Hosting, Live Deployment, Security & Maintenance'
+    ],
+    salary: 'Live Project Track',
+    price: 2999
+  },
+  ai_android_dev: {
+    id: 'ai_android_dev',
+    title: 'AI App Builder Pro',
+    shortDesc: 'Students learn how to create a functional Android application using AI, integrate backend services and prepare the application for release.',
+    poster: '/images/courses/final_ai_android_dev.webp',
+    topBadgeLeft: 'LIVE CLASSES',
+    topBadgeRight: 'LIVE Instructor-Led Class',
+    toolBadges: ['AI App Builder', 'Firebase Auth', 'Backend API', 'Play Store Workflow'],
+    skills: [
+      'AI App Builder & Prompt Engineering',
+      'Professional Android UI/UX & App Navigation',
+      'User Registration, Login & Firebase Authentication',
+      'Database & Backend API Integration',
+      'User Profile Management & File/Image Upload',
+      'Push Notifications & Payment Gateway Integration',
+      'App Security, Testing, Debugging & APK/AAB Generation',
+      'App Signing, Google Play Store Publishing & Updates'
+    ],
+    salary: 'Live Project Track',
+    price: 2499
+  },
+  ai_video_creation: {
+    id: 'ai_video_creation',
+    title: 'AI Video Creator Pro',
+    shortDesc: 'Students learn to create realistic AI-generated videos for advertising, education and content creation.',
+    poster: '/images/courses/final_ai_video_creation.webp',
+    topBadgeLeft: 'LIVE CLASSES',
+    topBadgeRight: 'LIVE Instructor-Led Class',
+    toolBadges: ['Text-to-Video', 'Realistic AI Characters', 'Voice & Lip Sync', '4K Export'],
+    skills: [
+      'Text-to-Video & Image-to-Video Generation',
+      'Realistic AI Characters & Character Consistency',
+      'Cinematic Camera Movements & AI Script Writing',
+      'AI Voice Generation & Realistic Lip Sync',
+      'Background Music, Sound Effects & AI Video Editing',
+      'Product Advertisement Videos & Social Media Reels',
+      'Educational Videos & YouTube Video Creation',
+      'High-Quality Video Export & Commercial Usage Basics'
+    ],
+    salary: 'Live Creator Track',
+    price: 999
+  },
+  _deep_learning_legacy: {
+    id: 'deep_learning',
+    title: 'Deep Learning & Neural Networks',
+    shortDesc: 'Master Convolutional Networks, Transformers, GANs, and PyTorch deep learning architectures.',
+    poster: '/images/courses/final_ml_engineering.webp',
+    topBadgeLeft: 'Most Popular Program',
+    topBadgeRight: '50+ Hours Live & Hands-on',
+    toolBadges: ['Deep Learning', 'PyTorch', 'Transformers', 'Computer Vision'],
+    skills: [
+      'End-to-End Enterprise Deep Learning Projects'
+    ],
+    salary: '10 – 26 LPA*',
+    price: 987
   }
 };
 
@@ -293,7 +370,7 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
   courseTitle,
   courseDescription,
   courseBannerImage,
-  courseBannerFallback = '/images/pot1_sharp_poster.jpg',
+  courseBannerFallback = '/images/courses/final_data_analyst_genai.webp',
   isCoursePaid,
   onEnroll,
   onResumeLearning,
@@ -786,18 +863,18 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
           <button
             type="button"
             onClick={() => setShowCurriculum((prev) => !prev)}
-            className="w-full py-2 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-between transition-colors cursor-pointer"
+            className="w-full py-2 px-3 rounded-xl bg-[#F6F2FF] hover:bg-[#ece4ff] text-[#7045E8] text-xs font-bold flex items-center justify-between transition-colors cursor-pointer border border-[#EAE5F5]"
           >
             <div className="flex items-center gap-1.5">
-              <BookOpen className="w-3.5 h-3.5 text-blue-600" />
+              <BookOpen className="w-3.5 h-3.5 text-[#7045E8]" />
               <span>
                 {showCurriculum ? 'Hide Curriculum Modules' : 'View Full Curriculum & Topics'}
               </span>
             </div>
             {showCurriculum ? (
-              <ChevronUp className="w-4 h-4 text-slate-400" />
+              <ChevronUp className="w-4 h-4 text-[#7045E8]" />
             ) : (
-              <ChevronDown className="w-4 h-4 text-slate-400" />
+              <ChevronDown className="w-4 h-4 text-[#7045E8]" />
             )}
           </button>
 
@@ -805,40 +882,42 @@ export const UniversalMobileCourseView: React.FC<UniversalMobileCourseViewProps>
             <div className="mt-2.5 space-y-2">
               {tabs.map((tab) => (
                 <div key={tab.id} className="space-y-1.5">
-                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider block px-1">
+                  <span className="text-[10px] font-black text-[#77758A] uppercase tracking-wider block px-1">
                     {tab.title}
                   </span>
                   {tab.chapters.map((chapter) => (
                     <div
                       key={chapter.id}
-                      className="rounded-xl border border-slate-200/80 bg-white overflow-hidden text-xs"
+                      className="rounded-xl border border-[#EAE5F5] bg-white overflow-hidden text-xs shadow-2xs"
                     >
                       <button
                         type="button"
                         onClick={() => onToggleChapter && onToggleChapter(chapter.id)}
-                        className="w-full p-2.5 flex items-center justify-between font-bold text-slate-800 text-left hover:bg-slate-50 cursor-pointer"
+                        className="w-full p-2.5 flex items-center justify-between font-bold text-[#202033] text-left hover:bg-[#F6F2FF] cursor-pointer transition-colors"
                       >
                         <span className="truncate pr-2">
-                          Ch {chapter.chapterNum}: {chapter.title}
+                          {chapter.title.toLowerCase().startsWith('module')
+                            ? chapter.title
+                            : `Ch ${chapter.chapterNum}: ${chapter.title}`}
                         </span>
                         {expandedChapters[chapter.id] ? (
-                          <ChevronUp className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <ChevronUp className="w-3.5 h-3.5 text-[#7045E8] shrink-0" />
                         ) : (
-                          <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <ChevronDown className="w-3.5 h-3.5 text-[#77758A] shrink-0" />
                         )}
                       </button>
 
                       {expandedChapters[chapter.id] && (
-                        <div className="border-t border-slate-100 divide-y divide-slate-100 bg-slate-50/50">
+                        <div className="border-t border-[#EAE5F5] divide-y divide-[#EAE5F5] bg-[#F6F2FF]/30">
                           {chapter.topics.map((t) => (
                             <button
                               key={t.id}
                               type="button"
                               onClick={() => onSelectTopic && onSelectTopic(t, chapter.chapterNum)}
-                              className="w-full px-3 py-2 text-left text-[11px] font-medium text-slate-600 hover:text-blue-600 flex items-center justify-between cursor-pointer"
+                              className="w-full px-3 py-2 text-left text-[11px] font-medium text-[#202033] hover:text-[#7045E8] hover:bg-[#F6F2FF] flex items-center justify-between cursor-pointer transition-colors"
                             >
                               <span className="truncate pr-2">{t.title}</span>
-                              <Play className="w-2.5 h-2.5 text-blue-500 shrink-0" />
+                              <Play className="w-2.5 h-2.5 text-[#7045E8] shrink-0" />
                             </button>
                           ))}
                         </div>

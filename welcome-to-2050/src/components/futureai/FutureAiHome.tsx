@@ -1,1007 +1,1957 @@
 import React, { useState, useEffect } from 'react';
+
 import {
+
   BookOpen,
+
   Code2,
+
   FileCheck,
+
   GraduationCap,
+
   Briefcase,
+
   ChevronRight,
+
   Users,
+
   Building2,
+
   Trophy,
+
   Star,
+
   ArrowRight,
+
   Layers,
+
   Cpu,
+
   Brain,
+
   Database,
+
   BarChart3,
+
   FileSpreadsheet,
+
   Laptop,
+
   Cloud,
+
   Rocket,
+
   MessageSquare,
+
   Flame,
+
   Check,
+
   X,
+
   CreditCard,
+
   Frown,
+
   Video as VideoIcon,
+
   Clock,
+
   UserX,
+
   Gamepad2,
+
   Award,
+
   Sparkles,
+
   HelpCircle,
+
   Phone,
+
   ShieldCheck,
+
   Quote,
+
   Target,
+
   BadgeCheck,
+
   Zap,
+
   Play,
+
   ArrowLeftRight,
+
+  LayoutGrid,
+  List,
 } from 'lucide-react';
+import { CareerCourseCard } from './CareerCourseCard';
+import { CAREER_COURSES_12 } from '../../data/careerCourses12';
+
+
 
 const YoutubeIcon = () => (
+
   <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+
 );
+
 const LinkedinIcon = () => (
+
   <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+
 );
+
 const InstagramIcon = () => (
+
   <svg className="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+
 );
+
 const TwitterIcon = () => (
+
   <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+
 );
+
 const FacebookIcon = () => (
+
   <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M9 8H6v4h3v12h5V12h3.642L18 8h-4V6.333C14 5.374 14.5 5 15.5 5H18V0h-3.808C10.595 0 9 1.583 9 4.615V8z"/></svg>
+
 );
+
 import { soundEffects } from '../../services/soundEffects';
+
 import { FutureAdvancedHeader } from './FutureAdvancedHeader';
+
 import { FutureAuthModal } from './FutureAuthModal';
+
 import { RealSuccessStoriesShowcase } from './RealSuccessStoriesShowcase';
+
 import { MobileCareerProgramsSection } from './MobileCareerProgramsSection';
+
 import { MobileAtsResumeSection } from './MobileAtsResumeSection';
+
 import { MobileCareerJourneySection } from './MobileCareerJourneySection';
+
 import { MobileWhyChooseSection } from './MobileWhyChooseSection';
+
 import { FullFooter } from '../footer';
 
+
+
 // ─── Reusable Smooth Typewriter Heading Component ─────────────────────────────
+
 interface TypewriterHeadingProps {
+
   words: string[];
+
   className?: string;
+
   cursorClassName?: string;
+
   typingSpeed?: number;
+
   deletingSpeed?: number;
+
   pauseTime?: number;
+
 }
+
+
 
 export const TypewriterHeading: React.FC<TypewriterHeadingProps> = ({
+
   words,
+
   className = '',
+
   cursorClassName = 'text-blue-600',
+
   typingSpeed = 80,
+
   deletingSpeed = 38,
+
   pauseTime = 2200,
+
 }) => {
+
   const [wordIdx, setWordIdx] = useState(0);
+
   const [typedText, setTypedText] = useState(words[0] || '');
+
   const [isDeleting, setIsDeleting] = useState(false);
 
+
+
   useEffect(() => {
+
     if (!words || words.length === 0) return;
+
     const currentWord = words[wordIdx];
+
     const speed = isDeleting ? deletingSpeed : typingSpeed;
 
+
+
     const timeout = setTimeout(() => {
+
       if (!isDeleting) {
+
         if (typedText.length < currentWord.length) {
+
           setTypedText(currentWord.slice(0, typedText.length + 1));
+
         } else {
+
           setTimeout(() => setIsDeleting(true), pauseTime);
+
         }
+
       } else {
+
         if (typedText.length > 0) {
+
           setTypedText(currentWord.slice(0, typedText.length - 1));
+
         } else {
+
           setIsDeleting(false);
+
           setWordIdx((prev) => (prev + 1) % words.length);
+
         }
+
       }
+
     }, speed);
 
+
+
     return () => clearTimeout(timeout);
+
   }, [typedText, isDeleting, wordIdx, words, typingSpeed, deletingSpeed, pauseTime]);
 
+
+
   return (
+
     <span className={`inline-flex items-center ${className}`}>
+
       <span>{typedText}</span>
+
       <span className={`inline-block ml-0.5 font-light animate-pulse ${cursorClassName}`}>|</span>
+
     </span>
+
   );
+
 };
+
+
 
 // ─── Dual-Gradient Typewriter for "Playing Games" in Hero Line 3 ───────────────
+
 const HeroPlayingGamesTypewriter: React.FC = () => {
+
   const fullText = 'Playing Games';
+
   const [displayText, setDisplayText] = useState(fullText);
+
   const [isDeleting, setIsDeleting] = useState(false);
 
+
+
   useEffect(() => {
+
     let timeout: ReturnType<typeof setTimeout>;
 
+
+
     if (!isDeleting) {
+
       if (displayText.length < fullText.length) {
+
         timeout = setTimeout(() => {
+
           setDisplayText(fullText.slice(0, displayText.length + 1));
+
         }, 95);
+
       } else {
+
         timeout = setTimeout(() => {
+
           setIsDeleting(true);
+
         }, 2600);
+
       }
+
     } else {
+
       if (displayText.length > 0) {
+
         timeout = setTimeout(() => {
+
           setDisplayText(fullText.slice(0, displayText.length - 1));
+
         }, 45);
+
       } else {
+
         timeout = setTimeout(() => {
+
           setIsDeleting(false);
+
         }, 450);
+
       }
+
     }
+
+
 
     return () => clearTimeout(timeout);
+
   }, [displayText, isDeleting]);
 
+
+
   const playingPart = displayText.slice(0, 7);
+
   const hasSpace = displayText.length > 7;
+
   const gamesPart = displayText.slice(8);
 
+
+
   return (
+
     <span className="inline-flex items-baseline">
+
       {playingPart && (
+
         <span className="bg-gradient-to-r from-[#0866FF] to-[#A100E8] bg-clip-text text-transparent">
+
           {playingPart}
+
         </span>
+
       )}
+
       {hasSpace && (
+
         <span className="inline-block select-none whitespace-pre">
+
           {'\u00A0'}
+
         </span>
+
       )}
+
       {gamesPart && (
+
         <span className="bg-gradient-to-r from-[#F02C62] to-[#FF8A00] bg-clip-text text-transparent">
+
           {gamesPart}
+
         </span>
+
       )}
+
       <span className="inline-block ml-0.5 text-[#F02C62] font-light animate-pulse select-none">
+
         |
+
       </span>
+
     </span>
+
   );
+
 };
 
+
+
 interface FutureAiHomeProps {
+
   profile?: any;
+
   theme?: 'dark' | 'light';
+
   onToggleTheme?: () => void;
+
   onStartLearning?: () => void;
+
   isLoggedIn?: boolean;
+
   userName?: string;
+
   initialAuthOpen?: boolean;
+
   initialAuthMessage?: string;
+
   initialAuthRedirect?: string;
+
   onLoginSuccess?: (name: string, email?: string, avatar?: string, role?: 'student' | 'influencer') => void;
+
   onOpenDashboard?: () => void;
+
   onLogout?: () => void;
+
 }
 
+
+
 // Hiring Partners list for continuous right-to-left marquee
+
 const HIRING_PARTNERS = [
+
   {
+
     id: 'tcs',
+
     name: 'TCS',
+
     node: <span className="text-rose-600 font-black text-xs sm:text-sm tracking-tighter">tcs</span>
+
   },
+
   {
+
     id: 'infosys',
+
     name: 'Infosys',
+
     node: <span className="text-[#007cc3] font-black text-xs sm:text-sm tracking-tight">Infosys</span>
+
   },
+
   {
+
     id: 'accenture',
+
     name: 'Accenture',
+
     node: (
+
       <span className="text-purple-800 font-extrabold text-xs sm:text-sm tracking-tight flex items-center gap-0.5">
+
         accenture <span className="text-[#a100ff]">&gt;</span>
+
       </span>
+
     )
+
   },
+
   {
+
     id: 'wipro',
+
     name: 'Wipro',
+
     node: (
+
       <span className="text-slate-800 font-black text-xs sm:text-sm tracking-normal flex items-center gap-1">
+
         <span className="inline-block w-2 h-2 rounded-full bg-gradient-to-r from-red-500 via-amber-400 to-blue-500" />
+
         wipro
+
       </span>
+
     )
+
   },
+
   {
+
     id: 'google',
+
     name: 'Google',
+
     node: (
+
       <span className="font-extrabold text-xs sm:text-sm tracking-tight flex items-center">
+
         <span className="text-[#4285F4]">G</span>
+
         <span className="text-[#EA4335]">o</span>
+
         <span className="text-[#FBBC05]">o</span>
+
         <span className="text-[#4285F4]">g</span>
+
         <span className="text-[#34A853]">l</span>
+
         <span className="text-[#EA4335]">e</span>
+
       </span>
+
     )
+
   },
+
   {
+
     id: 'microsoft',
+
     name: 'Microsoft',
+
     node: (
+
       <span className="text-slate-700 font-bold text-xs sm:text-sm tracking-tight flex items-center gap-1">
+
         <span className="grid grid-cols-2 gap-0.5 w-2.5 h-2.5">
+
           <span className="bg-[#f25022]" />
+
           <span className="bg-[#7fba00]" />
+
           <span className="bg-[#00a4ef]" />
+
           <span className="bg-[#ffb900]" />
+
         </span>
+
         Microsoft
+
       </span>
+
     )
+
   },
+
   {
+
     id: 'amazon',
+
     name: 'Amazon',
+
     node: <span className="text-slate-900 font-black text-xs sm:text-sm tracking-tight">amazon</span>
+
   },
+
   {
+
     id: 'deloitte',
+
     name: 'Deloitte',
+
     node: (
+
       <span className="text-slate-900 font-black text-xs sm:text-sm tracking-tight">
+
         Deloitte<span className="text-emerald-500">.</span>
+
       </span>
+
     )
+
   },
+
   {
+
     id: 'capgemini',
+
     name: 'Capgemini',
+
     node: (
+
       <span className="text-[#0070ad] font-bold text-xs sm:text-sm tracking-tight flex items-center gap-0.5">
+
         Capgemini <span className="text-[#0070ad] text-[10px]">♠</span>
+
       </span>
+
     )
+
   },
+
   {
+
     id: 'ibm',
+
     name: 'IBM',
+
     node: <span className="text-[#1f70c1] font-black text-xs sm:text-sm tracking-widest font-mono">IBM</span>
+
   },
+
   {
+
     id: 'more',
+
     name: '700+ More',
+
     node: <span className="text-slate-400 font-semibold text-[11px] whitespace-nowrap">and 700+ more...</span>
+
   }
+
 ];
 
+
+
 export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
+
   isLoggedIn = false,
+
   userName = '',
+
   initialAuthOpen = false,
+
   initialAuthMessage = '',
+
   initialAuthRedirect = '',
+
   onLoginSuccess,
+
   onLogout,
+
 }) => {
+
   // Track hash for dynamic footer and navigation rules
+
   const [currentHash, setCurrentHash] = useState<string>(() => typeof window !== 'undefined' ? window.location.hash : '');
+
   useEffect(() => {
+
     const handleHash = () => {
+
       if (typeof window !== 'undefined') setCurrentHash(window.location.hash);
+
     };
+
     window.addEventListener('hashchange', handleHash);
+
     return () => window.removeEventListener('hashchange', handleHash);
+
   }, []);
+
   const isAuthRoute = ['#login', '#signup', '#auth'].includes(currentHash.split('?')[0].toLowerCase());
 
+
+
   // Full Auth Modal
+
   const [authModalOpen, setAuthModalOpen] = useState(initialAuthOpen);
+
   const [authMessage, setAuthMessage] = useState<string>(initialAuthMessage || 'Please login to continue.');
+  const [homeCategoryTab, setHomeCategoryTab] = useState<'all' | 'flagship' | 'core' | 'ai'>('all');
+  const [homeCourseViewMode, setHomeCourseViewMode] = useState<'grid' | 'list'>('grid');
+
+  const filteredHomeCourses = CAREER_COURSES_12.filter((c) => {
+    if (homeCategoryTab === 'flagship') {
+      return ['data-analyst-genai', 'data-science-agentic-ai', 'ml-engineering', 'ai-engineering', 'full-stack-web-dev'].includes(c.id);
+    }
+    if (homeCategoryTab === 'core') {
+      return c.id === 'data-analyst-genai' || c.id === 'ms-office-copilot';
+    }
+    if (homeCategoryTab === 'ai') {
+      return ['ai-engineering', 'ai-tools-prompt', 'ai-website-dev', 'ai-android-dev', 'ai-video-creation'].includes(c.id);
+    }
+    return true;
+  });
+
   const [authRedirect, setAuthRedirect] = useState<string>(initialAuthRedirect || '');
 
+
+
   useEffect(() => {
+
     if (initialAuthOpen) {
+
       setAuthModalOpen(true);
+
       if (initialAuthMessage) setAuthMessage(initialAuthMessage);
+
       if (initialAuthRedirect) setAuthRedirect(initialAuthRedirect);
+
     }
+
   }, [initialAuthOpen, initialAuthMessage, initialAuthRedirect]);
 
+
+
   // Prompt Login helper for any unauthenticated action
+
   const promptLogin = (customMessage?: string | React.MouseEvent, redirectHash?: string) => {
+
     soundEffects.playClick();
+
     const msg = typeof customMessage === 'string' && customMessage.trim().length > 0
+
       ? customMessage
+
       : 'Please login to continue.';
+
     setAuthMessage(msg);
+
     if (typeof redirectHash === 'string' && redirectHash.trim().length > 0) {
+
       setAuthRedirect(redirectHash);
+
       if (typeof window !== 'undefined') {
+
         sessionStorage.setItem('futureai_auth_redirect', redirectHash);
+
         localStorage.setItem('futureai_auth_redirect', redirectHash);
+
       }
+
     }
+
     setAuthModalOpen(true);
+
   };
 
+
+
   return (
+
     <div className="min-h-screen w-full bg-[#F4F8FC] text-slate-800 font-sans flex flex-col justify-between overflow-x-hidden selection:bg-blue-500 selection:text-white">
+
       
+
       {/* ─── 1. TOP NAVBAR (Exact Post-Login Header with Pre-Login Guard) ─── */}
+
       <div className="shrink-0 z-50">
+
         <FutureAdvancedHeader
+
           userName={userName}
+
           activeNavTab="home"
+
           isLoggedIn={isLoggedIn}
+
           onLogout={onLogout}
+
           onNavigateHome={() => {
+
             if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+
           }}
+
           onNavigateLearning={() => promptLogin('Please login to continue.', '#data-analyst')}
+
           onNavigatePractice={(track) => {
+
             const hash = track === 'python' ? '#python-challenges' : track === 'sql' ? '#sql-challenges' : track === 'excel' ? '#excel-challenges' : '#practice';
+
             promptLogin('Please login to continue.', hash);
+
           }}
+
           onOpenAtsResume={() => promptLogin('Please login to continue.', '#ats')}
+
           onNavigateEarn={() => promptLogin('Please login to continue.', '#income')}
+
           onNavigateInternship={() => promptLogin('Please login to continue.', '#internship')}
+
           onNavigatePlacement={() => promptLogin('Please login to continue.', '#placement')}
+
           onNavigateCertificate={() => promptLogin('Please login to continue.', '#certificates')}
+
           onNavigateRecommendation={() => promptLogin('Please login to continue.', '#recommendation')}
+
           onOpenHelp={() => { window.location.hash = '#contact-us'; }}
+
           onOpenContact={() => { window.location.hash = '#contact-us'; }}
+
           onOpenLogin={promptLogin}
+
           onOpenSignUp={promptLogin}
+
         />
+
       </div>
 
+
+
       {/* ─── 2. MAIN HERO SECTION (Color-Matched to Video Studio Background) ─── */}
+
       <section className="relative w-full px-3.5 sm:px-6 lg:px-8 py-4 sm:py-8 overflow-hidden bg-gradient-to-r from-[#dce7f2] via-[#e5eef7] to-[#edf4fb]">
+
         
+
         {/* Soft Ambient Aurora Lights */}
+
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-300/20 rounded-full blur-3xl pointer-events-none" />
+
         <div className="absolute top-10 right-1/4 w-[500px] h-[500px] bg-cyan-300/20 rounded-full blur-3xl pointer-events-none" />
+
         <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-b from-transparent to-[#F4F8FC] pointer-events-none" />
 
+
+
         <div className="max-w-[1440px] w-full mx-auto">
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center w-full">
+
             
+
             {/* LEFT COLUMN: Punchy Headline & CTAs (lg:col-span-6) */}
+
             <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center text-left z-10 pl-0 lg:pl-3 min-w-0">
+
               
+
               {/* Main Headline — Exact Responsive Poppins Black (900) */}
+
               <h1 className="flex flex-col items-start text-left font-poppins">
+
                 
+
                 {/* Line 1: World's First (Desktop: 42px, Laptop: 38px, Mobile: 28px | Line Height: 1.08 | Letter Spacing: -1.5px) */}
+
                 <div className="relative inline-block mt-2 sm:mt-3 mb-0.5">
+
                   
+
                   {/* Golden Crown */}
+
                   <span
+
                     className="absolute -top-3.5 sm:-top-4 left-0.5 -rotate-12 z-20 pointer-events-none select-none"
+
                     aria-hidden="true"
+
                   >
+
                     <svg
+
                       className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFB800] drop-shadow-[0_2px_4px_rgba(255,184,0,0.45)]"
+
                       viewBox="0 0 24 24"
+
                       fill="currentColor"
+
                     >
+
                       <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" />
+
                       <circle cx="3" cy="5" r="1.2" fill="#FFE580" />
+
                       <circle cx="12" cy="4" r="1.4" fill="#FFE580" />
+
                       <circle cx="21" cy="5" r="1.2" fill="#FFE580" />
+
                     </svg>
+
                   </span>
+
+
 
                   {/* Three small cyan accent strokes */}
+
                   <span
+
                     className="absolute -top-1 sm:-top-1.5 -right-4 sm:-right-5 pointer-events-none select-none"
+
                     aria-hidden="true"
+
                   >
+
                     <svg
+
                       className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#00D2FF]"
+
                       viewBox="0 0 20 20"
+
                       fill="none"
+
                       stroke="currentColor"
+
                       strokeWidth="2.2"
+
                       strokeLinecap="round"
+
                     >
+
                       <line x1="10" y1="2" x2="10" y2="7" />
+
                       <line x1="17" y1="6" x2="13" y2="9.5" />
+
                       <line x1="17" y1="15" x2="13" y2="12.5" />
+
                     </svg>
+
                   </span>
+
+
 
                   {/* Line 1 Text */}
+
                   <span className="text-[28px] sm:text-[32px] md:text-[36px] lg:text-[38px] xl:text-[42px] font-black tracking-[-1.5px] leading-[1.08] bg-gradient-to-r from-[#0866FF] to-[#5727E8] bg-clip-text text-transparent block select-text">
+
                     World&apos;s First
+
                   </span>
 
+
+
                   {/* Thin curved blue-purple underline */}
+
                   <svg
+
                     className="absolute -bottom-1 sm:-bottom-1.5 left-0 w-full h-2 sm:h-2.5 overflow-visible pointer-events-none select-none"
+
                     viewBox="0 0 300 16"
+
                     fill="none"
+
                     preserveAspectRatio="none"
+
                     aria-hidden="true"
+
                   >
+
                     <defs>
+
                       <linearGradient id="heroCurvedUnderline" x1="0%" y1="0%" x2="100%" y2="0%">
+
                         <stop offset="0%" stopColor="#0866FF" />
+
                         <stop offset="100%" stopColor="#5727E8" />
+
                       </linearGradient>
+
                     </defs>
+
                     <path
+
                       d="M 4,12 Q 150,2 296,10"
+
                       stroke="url(#heroCurvedUnderline)"
+
                       strokeWidth="2.2"
+
                       strokeLinecap="round"
+
                     />
+
                   </svg>
+
                 </div>
+
+
 
                 {/* Line 2: Learn Coding (Desktop: 52px, Laptop: 46px, Mobile: 34px | Line Height: 1.08 | Letter Spacing: -1.5px) */}
+
                 <span className="text-[34px] sm:text-[38px] md:text-[42px] lg:text-[46px] xl:text-[52px] font-black text-[#08152F] leading-[1.08] tracking-[-1.5px] block mt-1.5 text-left select-text">
+
                   Learn Coding
+
                 </span>
+
+
 
                 {/* Line 3: by Playing Games (Desktop: 48px, Laptop: 42px, Mobile: 30px | Line Height: 1.08 | Letter Spacing: -1.5px | Animated Typewriter) */}
+
                 <span className="text-[30px] sm:text-[34px] md:text-[38px] lg:text-[42px] xl:text-[48px] font-black leading-[1.08] tracking-[-1.5px] block mt-1 text-left select-text whitespace-normal lg:whitespace-nowrap min-h-[1.15em]">
+
                   <span className="text-[#08152F]">by</span>{' '}
+
                   <HeroPlayingGamesTypewriter />
+
                 </span>
+
               </h1>   {/* Tagline */}
+
               <div className="mt-2 sm:mt-2.5 text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-600 leading-snug max-w-lg mx-auto lg:mx-0">
+
                 <p className="inline-block px-3 sm:px-4 py-1 rounded-full text-slate-900 font-black bg-[#ffedea] border border-[#ffd5cc] tracking-tight">For Non-IT, Career Gap &amp; Career Switchers</p>
+
                 <p className="mt-1.5 hidden sm:block">Learn industry-relevant skills with hands-on projects and get career ready.</p>
+
               </div>
+
+
 
               {/* CTAs Row (Desktop: Side-by-side with video) */}
+
               <div className="hidden lg:flex mt-3.5 flex-wrap items-center justify-start gap-2 sm:gap-3">
-                <button
-                  type="button"
-                  onClick={promptLogin}
-                  className="px-4 min-[375px]:px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2 group"
-                >
-                  <span>Start Learning Free</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform shrink-0" />
-                </button>
 
                 <button
+
                   type="button"
+
                   onClick={promptLogin}
-                  className="px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-white hover:bg-slate-50 active:scale-95 text-slate-800 font-bold text-xs sm:text-sm border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2"
+
+                  className="px-4 min-[375px]:px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] hover:from-[#5B21B6] hover:to-[#7C3AED] active:scale-95 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-purple-500/25 transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2 group"
+
                 >
-                  <Code2 className="w-3.5 h-3.5 text-[#1a73e8] shrink-0" />
-                  <span>Explore DSA Coding Practice</span>
+
+                  <span>Start Learning Free</span>
+
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform shrink-0" />
+
                 </button>
+
+
+
+                <button
+
+                  type="button"
+
+                  onClick={promptLogin}
+
+                  className="px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-white hover:bg-[#F5F3FF] active:scale-95 text-[#6D28D9] font-bold text-xs sm:text-sm border border-[#DDD6FE] shadow-2xs hover:border-[#8B5CF6] transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2"
+
+                >
+
+                  <Code2 className="w-3.5 h-3.5 text-[#6D28D9] shrink-0" />
+
+                  <span>Explore DSA Coding Practice</span>
+
+                </button>
+
               </div>
+
+
 
               {/* Rating (Desktop View) */}
+
               <div className="hidden lg:flex mt-2.5 flex-wrap items-center justify-start gap-1.5 sm:gap-2 text-[11px] text-slate-500 font-medium">
+
                 <div className="flex items-center text-amber-400 shrink-0">
+
                   {[...Array(5)].map((_, i) => (
+
                     <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
+
                   ))}
+
                 </div>
+
                 <span><strong className="text-slate-900 font-bold">4.9/5</strong> rating trusted by 100K+ learners across India</span>
+
               </div>
 
+
+
             </div>
+
+
 
             {/* RIGHT COLUMN: Transparent Video without Black Background */}
+
             <div className="lg:col-span-6 xl:col-span-6 flex items-center justify-center relative z-10">
+
               <div className="relative w-full max-w-[540px] lg:max-w-[600px] flex items-center justify-center">
+
                 
+
                 {/* Glowing Radiant Backing Aura */}
+
                 <div className="absolute inset-0 bg-radial from-cyan-400/25 via-blue-500/15 to-transparent rounded-full blur-2xl scale-110 pointer-events-none" />
+
                 
+
                 {/* Transparent Video (No Black Background, True Alpha WebM/MP4) */}
+
                 <div className="relative z-10 w-full flex items-center justify-center pointer-events-none select-none">
+
                   <video
+
                     autoPlay
+
                     loop
+
                     muted
+
                     playsInline
+
                     className="w-full h-auto max-h-[250px] min-[390px]:max-h-[290px] sm:max-h-[440px] lg:max-h-[480px] xl:max-h-[520px] object-contain pointer-events-none select-none drop-shadow-[0_20px_40px_rgba(26,115,232,0.22)]"
+
                   >
+
                     <source src="/videos/header_hero_transparent.webm" type="video/webm" />
+
                     <source src="/videos/header_transparent_video.mp4" type="video/mp4" />
+
                   </video>
+
+                </div>
+
+
+
+              </div>
+
+            </div>
+
+
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      {/* ─── 3. METRICS / TRUST STAT BADGES (Row of 4 Compact Badges - Shifted Up Higher) ─── */}
+
+      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-8 relative z-20 shrink-0">
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
+
+          
+
+          {/* Card 1: 100K+ Students */}
+
+          <div className="bg-white rounded-lg py-2 px-3 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
+
+            <div className="w-7 h-7 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+
+              <Users className="w-3.5 h-3.5 stroke-[2.2]" />
+
+            </div>
+
+            <div>
+
+              <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
+
+                100K+
+
+              </div>
+
+              <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
+
+                Students
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+
+          {/* Card 2: 700+ Hiring Partners */}
+
+          <div className="bg-white rounded-lg py-2 px-3 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
+
+            <div className="w-7 h-7 rounded-md bg-pink-50 text-pink-600 flex items-center justify-center shrink-0">
+
+              <Building2 className="w-3.5 h-3.5 stroke-[2.2]" />
+
+            </div>
+
+            <div>
+
+              <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
+
+                700+
+
+              </div>
+
+              <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
+
+                Hiring Partners
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+
+          {/* Card 3: 99% Placement Support */}
+
+          <div className="bg-white rounded-lg py-2 px-3 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
+
+            <div className="w-7 h-7 rounded-md bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
+
+              <Trophy className="w-3.5 h-3.5 stroke-[2.2]" />
+
+            </div>
+
+            <div>
+
+              <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
+
+                99%
+
+              </div>
+
+              <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
+
+                Placement Support
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+
+          {/* Card 4: Industry Aligned Curriculum */}
+
+          <div className="bg-white rounded-lg py-2 px-3 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
+
+            <div className="w-7 h-7 rounded-md bg-yellow-50 text-yellow-500 flex items-center justify-center shrink-0">
+
+              <Star className="w-3.5 h-3.5 stroke-[2.2]" />
+
+            </div>
+
+            <div>
+
+              <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
+
+                Industry
+
+              </div>
+
+              <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
+
+                Aligned Curriculum
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+
+        </div>
+
+      </section>
+
+
+
+      {/* ─── 4. HIRING PARTNERS CONTINUOUS TICKER ROW (Right to Left Scrolling Marquee) ─── */}
+
+      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-2 shrink-0">
+
+        <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2 bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+
+          
+
+          {/* Label */}
+
+          <div className="text-[11px] sm:text-xs font-black text-slate-800 whitespace-nowrap shrink-0 flex items-center gap-1.5 border-r border-slate-200 pr-3">
+
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+
+            <span>Our Placed Students</span>
+
+          </div>
+
+
+
+          {/* Continuous Right-to-Left Infinite Marquee */}
+
+          <div className="relative overflow-hidden flex-1 select-none">
+
+            {/* Fade gradients at edges */}
+
+            <div className="absolute left-0 top-0 bottom-0 w-6 sm:w-10 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+
+            <div className="absolute right-0 top-0 bottom-0 w-6 sm:w-10 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+
+
+            {/* Scrolling Track */}
+
+            <div className="animate-marquee-left flex items-center gap-7 sm:gap-9 text-xs font-bold text-slate-600">
+
+              {[...HIRING_PARTNERS, ...HIRING_PARTNERS].map((partner, index) => (
+
+                <div key={partner.id + '-' + index} className="shrink-0 flex items-center">
+
+                  {partner.node}
+
+                </div>
+
+              ))}
+
+            </div>
+
+          </div>
+
+
+
+        </div>
+
+      </div>
+
+
+
+      {/* ─── MOBILE ONLY CTAs & RATING (Placed Directly Below "Our Placed Students") ─── */}
+
+      <div className="lg:hidden w-full max-w-[1440px] mx-auto px-3 sm:px-6 py-3 flex flex-col items-center justify-center text-center z-10 shrink-0">
+
+        {/* CTAs Row: Left (Join Today!) & Right (DSA Coding Practice) */}
+
+        <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full max-w-lg">
+
+          {/* Left Side: Join Today! */}
+
+          <button
+
+            type="button"
+
+            onClick={promptLogin}
+
+            className="w-full px-2.5 min-[375px]:px-4 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] hover:from-[#5B21B6] hover:to-[#7C3AED] active:scale-95 text-white font-extrabold text-xs min-[375px]:text-sm shadow-md shadow-purple-500/25 transition-all cursor-pointer flex items-center justify-center gap-1.5 group whitespace-nowrap"
+
+          >
+
+            <span>Join Today!</span>
+
+            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform shrink-0" />
+
+          </button>
+
+
+
+          {/* Right Side: DSA Coding Practice */}
+
+          <button
+
+            type="button"
+
+            onClick={promptLogin}
+
+            className="w-full px-2 min-[375px]:px-3 py-2.5 sm:py-3 rounded-xl bg-white hover:bg-[#F5F3FF] active:scale-95 text-[#6D28D9] font-bold text-[11px] min-[375px]:text-xs sm:text-sm border border-[#DDD6FE] shadow-2xs hover:border-[#8B5CF6] transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap"
+
+          >
+
+            <Code2 className="w-3.5 h-3.5 text-[#6D28D9] shrink-0" />
+
+            <span className="truncate">DSA Coding Practice</span>
+
+          </button>
+
+        </div>
+
+
+
+        {/* Rating */}
+
+        <div className="mt-2.5 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-[11px] text-slate-500 font-medium">
+
+          <div className="flex items-center text-amber-400 shrink-0">
+
+            {[...Array(5)].map((_, i) => (
+
+              <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
+
+            ))}
+
+          </div>
+
+          <span><strong className="text-slate-900 font-bold">4.9/5</strong> rating trusted by 100K+ learners across India</span>
+
+        </div>
+
+      </div>
+
+
+
+      {/* ─── For Non-IT, Career Gap & Career Switchers Section (3 Compact Cards) ─── */}
+
+      <section className="w-full max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 pt-1 pb-2 sm:pb-3">
+
+        <div className="w-full">
+
+          {/* 3 Compact Cards (3-column layout on Desktop and Mobile) */}
+
+          <div className="grid grid-cols-3 gap-2 sm:gap-4">
+
+            {/* Card 1: Non-IT Background? */}
+
+            <div
+
+              onClick={() => {
+
+                const el = document.getElementById('career-programs') || document.getElementById('learning-modules-section');
+
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+
+                else promptLogin();
+
+              }}
+
+              className="bg-[#ecfdf5] border border-[#d1fae5] rounded-xl sm:rounded-2xl p-2 sm:p-4 flex flex-col min-[520px]:flex-row items-start min-[520px]:items-center gap-1.5 sm:gap-3.5 hover:shadow-md hover:border-emerald-300 transition-all cursor-pointer active:scale-[0.98] group"
+
+            >
+
+              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-100/70 text-[#059669] flex items-center justify-center shrink-0">
+
+                <Users className="w-4 h-4 sm:w-5 sm:h-5 text-[#059669]" />
+
+              </div>
+
+              <div className="min-w-0 flex-1">
+
+                <h3 className="text-[10.5px] sm:text-sm font-black text-slate-900 leading-tight">
+
+                  Non-IT Background?
+
+                </h3>
+
+                <p className="text-[9px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5 sm:mt-1">
+
+                  No Problem! Start from Zero.
+
+                </p>
+
+              </div>
+
+            </div>
+
+
+
+            {/* Card 2: Career Gap? */}
+
+            <div
+
+              onClick={() => {
+
+                const el = document.getElementById('career-programs') || document.getElementById('learning-modules-section');
+
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+
+                else promptLogin();
+
+              }}
+
+              className="bg-[#f5f3ff] border border-[#ede9fe] rounded-xl sm:rounded-2xl p-2 sm:p-4 flex flex-col min-[520px]:flex-row items-start min-[520px]:items-center gap-1.5 sm:gap-3.5 hover:shadow-md hover:border-purple-300 transition-all cursor-pointer active:scale-[0.98] group"
+
+            >
+
+              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-purple-100/70 text-[#7c3aed] flex items-center justify-center shrink-0">
+
+                <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-[#7c3aed]" />
+
+              </div>
+
+              <div className="min-w-0 flex-1">
+
+                <h3 className="text-[10.5px] sm:text-sm font-black text-slate-900 leading-tight">
+
+                  Career Gap?
+
+                </h3>
+
+                <p className="text-[9px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5 sm:mt-1">
+
+                  Get Back to Your Career with New Skills.
+
+                </p>
+
+              </div>
+
+            </div>
+
+
+
+            {/* Card 3: Career Switch? */}
+
+            <div
+
+              onClick={() => {
+
+                const el = document.getElementById('career-programs') || document.getElementById('learning-modules-section');
+
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+
+                else promptLogin();
+
+              }}
+
+              className="bg-[#fff7ed] border border-[#ffedd5] rounded-xl sm:rounded-2xl p-2 sm:p-4 flex flex-col min-[520px]:flex-row items-start min-[520px]:items-center gap-1.5 sm:gap-3.5 hover:shadow-md hover:border-orange-300 transition-all cursor-pointer active:scale-[0.98] group"
+
+            >
+
+              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-orange-100/70 text-[#ea580c] flex items-center justify-center shrink-0">
+
+                <ArrowLeftRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#ea580c]" />
+
+              </div>
+
+              <div className="min-w-0 flex-1">
+
+                <h3 className="text-[10.5px] sm:text-sm font-black text-slate-900 leading-tight">
+
+                  Career Switch?
+
+                </h3>
+
+                <p className="text-[9px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5 sm:mt-1">
+
+                  Move to a High-Growth IT Career with Confidence.
+
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      {/* ═══════════════════════════════════════════════════════════════════════════
+
+          SECTION 1: Explore Our Career Programs (Panoramic 3D Visual Banner + Video Cards)
+
+      ═══════════════════════════════════════════════════════════════════════════ */}
+
+      <section id="courses" className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-1 pb-6 sm:pt-2 sm:pb-8">
+
+        
+
+        {/* MOBILE VIEW (< 768px): 7-Course Stacked Cards with Autoplay (Exact 1:1 Reference Design) */}
+
+        <div className="block md:hidden">
+
+          <MobileCareerProgramsSection
+
+            onUnlockCourse={(course) =>
+
+              promptLogin('Please login to unlock ' + course.titlePrefix + course.titleHighlight, course.route)
+
+            }
+
+          />
+
+        </div>
+
+
+
+        {/* DESKTOP VIEW (>= 768px): Existing Panoramic 3D Banner + 4 Video Cards (100% Unchanged) */}
+
+        <div className="hidden md:block">
+
+        {/* Panoramic 3D Showcase Banner (Matching Reference Visual Style) */}
+
+        <div className="relative mb-3.5 rounded-2xl overflow-hidden bg-gradient-to-r from-[#eaf2fb] via-[#f1f6fd] to-[#e4eef9] border border-blue-200/80 shadow-xs">
+
+          
+
+          {/* Subtle Ambient Aurora Light */}
+
+          <div className="absolute top-0 right-1/4 w-72 h-72 bg-cyan-400/15 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="absolute bottom-0 left-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+
+
+
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 items-center">
+
+            
+
+            {/* Left Content (lg:col-span-7) */}
+
+            <div className="lg:col-span-7 p-3.5 sm:p-5 lg:py-4 lg:px-6 flex flex-col justify-center">
+
+              
+
+              {/* Main Headline */}
+
+              <h2 className="text-xl sm:text-2xl lg:text-[26px] font-black text-slate-900 tracking-tight leading-snug">
+
+                Explore{' '}
+
+<TypewriterHeading
+
+                  words={['Career-Focused Courses', 'Industry Career Tracks']}
+
+                  className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent"
+
+                  cursorClassName="text-purple-600"
+
+                />
+
+              </h2>
+
+
+
+              {/* Subtitle with High-End Formatting */}
+
+              <p className="text-xs sm:text-[12.5px] lg:text-[13px] text-slate-600 font-medium mt-1 leading-normal max-w-xl">
+
+                Choose an industry-curated program designed to take you from{' '}
+
+                <span className="text-slate-900 font-bold underline decoration-blue-400 decoration-2 underline-offset-4">foundational basics</span>{' '}
+
+                to{' '}
+
+                <span className="text-blue-600 font-black">high-paying tech placements</span>.
+
+              </p>
+
+
+
+              {/* 4 Feature Badges Row */}
+
+              <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[10.5px] font-bold">
+
+                <span className="px-2.5 py-0.5 rounded-md bg-white/90 border border-slate-200/90 shadow-2xs flex items-center gap-1.5 text-slate-800">
+
+                  <Flame className="w-3.5 h-3.5 text-amber-500" />
+
+                  <span>Data Analyst with Gen AI</span>
+
+                </span>
+
+                <span className="px-2.5 py-0.5 rounded-md bg-white/90 border border-slate-200/90 shadow-2xs flex items-center gap-1.5 text-slate-800">
+
+                  <Brain className="w-3.5 h-3.5 text-purple-600" />
+
+                  <span>Data Science &amp; Agentic AI</span>
+
+                </span>
+
+                <span className="px-2.5 py-0.5 rounded-md bg-white/90 border border-slate-200/90 shadow-2xs flex items-center gap-1.5 text-slate-800">
+
+                  <Cpu className="w-3.5 h-3.5 text-cyan-600" />
+
+                  <span>AI Engineering</span>
+
+                </span>
+
+                <span className="px-2.5 py-0.5 rounded-md bg-white/90 border border-slate-200/90 shadow-2xs flex items-center gap-1.5 text-slate-800">
+
+                  <Rocket className="w-3.5 h-3.5 text-pink-600" />
+
+                  <span>ML Engineering</span>
+
+                </span>
+
+              </div>
+
+
+
+              {/* CTA Row */}
+
+              <div className="mt-3 flex flex-wrap items-center gap-2.5">
+
+                <button
+
+                  type="button"
+
+                  onClick={promptLogin}
+
+                  className="px-4.5 py-2 rounded-xl bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] hover:from-[#5B21B6] hover:to-[#7C3AED] text-white font-bold text-xs sm:text-[13px] shadow-sm shadow-purple-500/25 transition-all cursor-pointer flex items-center gap-1.5 group active:scale-95"
+
+                >
+
+                  <span>View All Courses</span>
+
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+
+                </button>
+
+
+
+                <div className="flex items-center gap-1.5 text-[10.5px] font-bold text-slate-500 px-2.5 py-1.5 rounded-lg bg-white/80 border border-slate-200/80 shadow-2xs">
+
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+
+                  <span>100% Placement Support Guard</span>
+
                 </div>
 
               </div>
+
+
+
             </div>
 
-          </div>
-        </div>
-      </section>
 
-      {/* ─── 3. METRICS / TRUST STAT BADGES (Row of 4 Compact Badges - Shifted Up Higher) ─── */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-8 relative z-20 shrink-0">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
-          
-          {/* Card 1: 100K+ Students */}
-          <div className="bg-white rounded-lg py-2 px-3 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
-            <div className="w-7 h-7 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-              <Users className="w-3.5 h-3.5 stroke-[2.2]" />
-            </div>
-            <div>
-              <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
-                100K+
-              </div>
-              <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
-                Students
-              </div>
-            </div>
-          </div>
 
-          {/* Card 2: 700+ Hiring Partners */}
-          <div className="bg-white rounded-lg py-2 px-3 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
-            <div className="w-7 h-7 rounded-md bg-pink-50 text-pink-600 flex items-center justify-center shrink-0">
-              <Building2 className="w-3.5 h-3.5 stroke-[2.2]" />
-            </div>
-            <div>
-              <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
-                700+
-              </div>
-              <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
-                Hiring Partners
-              </div>
-            </div>
-          </div>
+            {/* Right Side: 3D Illustration Graphic (lg:col-span-5) */}
 
-          {/* Card 3: 99% Placement Support */}
-          <div className="bg-white rounded-lg py-2 px-3 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
-            <div className="w-7 h-7 rounded-md bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
-              <Trophy className="w-3.5 h-3.5 stroke-[2.2]" />
-            </div>
-            <div>
-              <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
-                99%
-              </div>
-              <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
-                Placement Support
-              </div>
-            </div>
-          </div>
+            <div className="lg:col-span-5 relative h-full flex items-center justify-center p-2 lg:p-0 overflow-hidden">
 
-          {/* Card 4: Industry Aligned Curriculum */}
-          <div className="bg-white rounded-lg py-2 px-3 border border-slate-200/80 shadow-2xs flex items-center gap-2.5 hover:shadow-xs transition">
-            <div className="w-7 h-7 rounded-md bg-yellow-50 text-yellow-500 flex items-center justify-center shrink-0">
-              <Star className="w-3.5 h-3.5 stroke-[2.2]" />
-            </div>
-            <div>
-              <div className="text-sm sm:text-[15px] font-black text-slate-900 tracking-tight leading-none">
-                Industry
+              <div className="relative w-full h-[150px] sm:h-[175px] lg:h-[195px] flex items-center justify-center overflow-hidden">
+
+                <img
+
+                  src="/images/home_sections/career_programs_hero_3d.jpg"
+
+                  alt="Explore Our Career Programs Future AI 3D Mascot and Student"
+
+                  className="w-full h-full object-cover object-right lg:object-center select-none pointer-events-none drop-shadow-sm"
+
+                  style={{
+
+                    maskImage: 'linear-gradient(to right, transparent, black 12%, black 100%)',
+
+                    WebkitMaskImage: 'linear-gradient(to right, transparent, black 12%, black 100%)',
+
+                  }}
+
+                />
+
               </div>
-              <div className="text-[10px] text-slate-500 font-semibold mt-0.5 leading-none">
-                Aligned Curriculum
-              </div>
+
             </div>
+
+
+
           </div>
 
         </div>
-      </section>
 
-      {/* ─── 4. HIRING PARTNERS CONTINUOUS TICKER ROW (Right to Left Scrolling Marquee) ─── */}
-      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-2 shrink-0">
-        <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2 bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
-          
-          {/* Label */}
-          <div className="text-[11px] sm:text-xs font-black text-slate-800 whitespace-nowrap shrink-0 flex items-center gap-1.5 border-r border-slate-200 pr-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Our Placed Students</span>
+
+
+        {/* ─── ALL CAREER-FOCUSED INDUSTRY COURSES (EXACT POST-LOGIN SECTION) ─── */}
+        <div className="w-full mt-4">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 mb-3.5">
+            <div className="flex items-center gap-2.5 shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[#F5F3FF] border border-[#DDD6FE] flex items-center justify-center text-[#6D28D9] shrink-0">
+                <Layers className="w-4.5 h-4.5 text-[#6D28D9]" />
+              </div>
+              <div className="text-left">
+                <h2 className="text-base sm:text-lg lg:text-[19px] font-black text-slate-900 tracking-tight leading-tight">
+                  Explore Career-Focused Courses
+                </h2>
+                <p className="text-xs sm:text-[13px] text-slate-500 font-medium mt-0.5">
+                  Build practical skills through structured learning and real-world projects.
+                </p>
+              </div>
+            </div>
+
+            {/* Right Side: Category Filter Pills + Grid/List Toggle */}
+            <div className="flex items-center justify-end gap-2.5 flex-wrap">
+              {/* Category Filter Pills */}
+              <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5">
+                {[
+                  { id: 'all', label: `All (${CAREER_COURSES_12.length})` },
+                  { id: 'flagship', label: 'Flagship Tracks (5)' },
+                  { id: 'core', label: 'Core Analytics (2)' },
+                  { id: 'ai', label: 'AI & Live Classes (5)' },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => {
+                      soundEffects.playClick();
+                      setHomeCategoryTab(tab.id as any);
+                    }}
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                      homeCategoryTab === tab.id
+                        ? 'bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] text-white shadow-sm shadow-purple-500/25 scale-[1.02]'
+                        : 'bg-white text-slate-700 border border-slate-200 hover:border-[#DDD6FE] hover:text-[#6D28D9]'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* View Mode Toggle: Grid & List */}
+              <div className="flex items-center bg-slate-100 p-0.5 rounded-full border border-slate-200 shrink-0">
+                <button
+                  type="button"
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    homeCourseViewMode === 'grid'
+                      ? 'bg-[#6D28D9] text-white shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                  onClick={() => {
+                    soundEffects.playClick();
+                    setHomeCourseViewMode('grid');
+                  }}
+                  title="Grid View"
+                >
+                  <LayoutGrid className="w-3.5 h-3.5" />
+                  <span>Grid</span>
+                </button>
+                <button
+                  type="button"
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    homeCourseViewMode === 'list'
+                      ? 'bg-[#6D28D9] text-white shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                  onClick={() => {
+                    soundEffects.playClick();
+                    setHomeCourseViewMode('list');
+                  }}
+                  title="List View"
+                >
+                  <List className="w-3.5 h-3.5" />
+                  <span>List</span>
+                </button>
+              </div>
+            </div>
           </div>
 
-          {/* Continuous Right-to-Left Infinite Marquee */}
-          <div className="relative overflow-hidden flex-1 select-none">
-            {/* Fade gradients at edges */}
-            <div className="absolute left-0 top-0 bottom-0 w-6 sm:w-10 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-6 sm:w-10 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-
-            {/* Scrolling Track */}
-            <div className="animate-marquee-left flex items-center gap-7 sm:gap-9 text-xs font-bold text-slate-600">
-              {[...HIRING_PARTNERS, ...HIRING_PARTNERS].map((partner, index) => (
-                <div key={partner.id + '-' + index} className="shrink-0 flex items-center">
-                  {partner.node}
+          {/* Grid or List View */}
+          {homeCourseViewMode === 'grid' ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-3.5 w-full">
+              {filteredHomeCourses.map((c) => (
+                <CareerCourseCard
+                  key={c.id}
+                  {...c}
+                  isUnlocked={false}
+                  onClick={() => promptLogin('Please login to unlock ' + c.title, '#' + c.id)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="lhh-modules-list">
+              {filteredHomeCourses.map((c) => (
+                <div
+                  key={c.id}
+                  className="lhh-list-card cursor-pointer"
+                  onClick={() => promptLogin('Please login to unlock ' + c.title, '#' + c.id)}
+                >
+                  <img
+                    src={c.image}
+                    alt={c.title}
+                    width={800}
+                    height={450}
+                    loading="lazy"
+                    decoding="async"
+                    className="lhh-list-thumb"
+                  />
+                  <div className="lhh-list-info text-left">
+                    <h3 className="lhh-list-title">{c.title}</h3>
+                    <p className="lhh-list-desc">{c.shortDesc}</p>
+                    <div className="lhh-list-meta">
+                      <span className="lhh-list-badge">{c.salary}</span>
+                      <span className="lhh-list-badge lhh-badge-price">{c.price}</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="lhh-action-btn lhh-list-btn"
+                  >
+                    Unlock Course
+                  </button>
                 </div>
               ))}
             </div>
-          </div>
-
-        </div>
-      </div>
-
-      {/* ─── MOBILE ONLY CTAs & RATING (Placed Directly Below "Our Placed Students") ─── */}
-      <div className="lg:hidden w-full max-w-[1440px] mx-auto px-3 sm:px-6 py-3 flex flex-col items-center justify-center text-center z-10 shrink-0">
-        {/* CTAs Row: Left (Join Today!) & Right (DSA Coding Practice) */}
-        <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full max-w-lg">
-          {/* Left Side: Join Today! */}
-          <button
-            type="button"
-            onClick={promptLogin}
-            className="w-full px-2.5 min-[375px]:px-4 py-2.5 sm:py-3 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-extrabold text-xs min-[375px]:text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer flex items-center justify-center gap-1.5 group whitespace-nowrap"
-          >
-            <span>Join Today!</span>
-            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform shrink-0" />
-          </button>
-
-          {/* Right Side: DSA Coding Practice */}
-          <button
-            type="button"
-            onClick={promptLogin}
-            className="w-full px-2 min-[375px]:px-3 py-2.5 sm:py-3 rounded-xl bg-white hover:bg-slate-50 active:scale-95 text-slate-800 font-bold text-[11px] min-[375px]:text-xs sm:text-sm border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap"
-          >
-            <Code2 className="w-3.5 h-3.5 text-[#1a73e8] shrink-0" />
-            <span className="truncate">DSA Coding Practice</span>
-          </button>
+          )}
         </div>
 
-        {/* Rating */}
-        <div className="mt-2.5 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-[11px] text-slate-500 font-medium">
-          <div className="flex items-center text-amber-400 shrink-0">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
-            ))}
-          </div>
-          <span><strong className="text-slate-900 font-bold">4.9/5</strong> rating trusted by 100K+ learners across India</span>
         </div>
-      </div>
 
-      {/* ─── For Non-IT, Career Gap & Career Switchers Section (3 Compact Cards) ─── */}
-      <section className="w-full max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 pt-1 pb-2 sm:pb-3">
-        <div className="w-full">
-          {/* 3 Compact Cards (3-column layout on Desktop and Mobile) */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-4">
-            {/* Card 1: Non-IT Background? */}
-            <div
-              onClick={() => {
-                const el = document.getElementById('career-programs') || document.getElementById('learning-modules-section');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-                else promptLogin();
-              }}
-              className="bg-[#ecfdf5] border border-[#d1fae5] rounded-xl sm:rounded-2xl p-2 sm:p-4 flex flex-col min-[520px]:flex-row items-start min-[520px]:items-center gap-1.5 sm:gap-3.5 hover:shadow-md hover:border-emerald-300 transition-all cursor-pointer active:scale-[0.98] group"
-            >
-              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-100/70 text-[#059669] flex items-center justify-center shrink-0">
-                <Users className="w-4 h-4 sm:w-5 sm:h-5 text-[#059669]" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <h3 className="text-[10.5px] sm:text-sm font-black text-slate-900 leading-tight">
-                  Non-IT Background?
-                </h3>
-                <p className="text-[9px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5 sm:mt-1">
-                  No Problem! Start from Zero.
-                </p>
-              </div>
-            </div>
-
-            {/* Card 2: Career Gap? */}
-            <div
-              onClick={() => {
-                const el = document.getElementById('career-programs') || document.getElementById('learning-modules-section');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-                else promptLogin();
-              }}
-              className="bg-[#f5f3ff] border border-[#ede9fe] rounded-xl sm:rounded-2xl p-2 sm:p-4 flex flex-col min-[520px]:flex-row items-start min-[520px]:items-center gap-1.5 sm:gap-3.5 hover:shadow-md hover:border-purple-300 transition-all cursor-pointer active:scale-[0.98] group"
-            >
-              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-purple-100/70 text-[#7c3aed] flex items-center justify-center shrink-0">
-                <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-[#7c3aed]" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <h3 className="text-[10.5px] sm:text-sm font-black text-slate-900 leading-tight">
-                  Career Gap?
-                </h3>
-                <p className="text-[9px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5 sm:mt-1">
-                  Get Back to Your Career with New Skills.
-                </p>
-              </div>
-            </div>
-
-            {/* Card 3: Career Switch? */}
-            <div
-              onClick={() => {
-                const el = document.getElementById('career-programs') || document.getElementById('learning-modules-section');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-                else promptLogin();
-              }}
-              className="bg-[#fff7ed] border border-[#ffedd5] rounded-xl sm:rounded-2xl p-2 sm:p-4 flex flex-col min-[520px]:flex-row items-start min-[520px]:items-center gap-1.5 sm:gap-3.5 hover:shadow-md hover:border-orange-300 transition-all cursor-pointer active:scale-[0.98] group"
-            >
-              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-orange-100/70 text-[#ea580c] flex items-center justify-center shrink-0">
-                <ArrowLeftRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#ea580c]" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <h3 className="text-[10.5px] sm:text-sm font-black text-slate-900 leading-tight">
-                  Career Switch?
-                </h3>
-                <p className="text-[9px] sm:text-xs text-slate-600 font-medium leading-tight mt-0.5 sm:mt-1">
-                  Move to a High-Growth IT Career with Confidence.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════════
-          SECTION 1: Explore Our Career Programs (Panoramic 3D Visual Banner + Video Cards)
-      ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-1 pb-6 sm:pt-2 sm:pb-8">
-        
-        {/* MOBILE VIEW (< 768px): 7-Course Stacked Cards with Autoplay (Exact 1:1 Reference Design) */}
-        <div className="block md:hidden">
-          <MobileCareerProgramsSection
-            onUnlockCourse={(course) =>
-              promptLogin('Please login to unlock ' + course.titlePrefix + course.titleHighlight, course.route)
-            }
-          />
-        </div>
 
-        {/* DESKTOP VIEW (>= 768px): Existing Panoramic 3D Banner + 4 Video Cards (100% Unchanged) */}
-        <div className="hidden md:block">
-        {/* Panoramic 3D Showcase Banner (Matching Reference Visual Style) */}
-        <div className="relative mb-6 rounded-3xl overflow-hidden bg-gradient-to-r from-[#eaf2fb] via-[#f1f6fd] to-[#e4eef9] border border-blue-200/80 shadow-xs">
-          
-          {/* Subtle Ambient Aurora Light */}
-          <div className="absolute top-0 right-1/4 w-96 h-96 bg-cyan-400/15 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 items-center">
-            
-            {/* Left Content (lg:col-span-7) */}
-            <div className="lg:col-span-7 p-5 sm:p-7 lg:p-9 flex flex-col justify-center">
-              
-              {/* Main Headline */}
-              <h2 className="text-2xl sm:text-3xl lg:text-[38px] font-black text-slate-900 tracking-tight leading-[1.12]">
-                Explore Our{' '}
-<TypewriterHeading
-                  words={['Career Programs']}
-                  className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent"
-                  cursorClassName="text-purple-600"
-                />
-              </h2>
-
-              {/* Subtitle with High-End Formatting */}
-              <p className="text-xs sm:text-sm lg:text-[14.5px] text-slate-600 font-medium mt-2 leading-relaxed max-w-xl">
-                Choose an industry-curated program designed to take you from{' '}
-                <span className="text-slate-900 font-bold underline decoration-blue-400 decoration-2 underline-offset-4">foundational basics</span>{' '}
-                to{' '}
-                <span className="text-blue-600 font-black">high-paying tech placements</span>.
-              </p>
-
-              {/* 4 Feature Badges Row */}
-              <div className="mt-4 flex flex-wrap items-center gap-2 text-[11px] font-bold">
-                <span className="px-3 py-1 rounded-lg bg-white/90 border border-slate-200/90 shadow-2xs flex items-center gap-1.5 text-slate-800">
-                  <Flame className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Data Analyst with Gen AI</span>
-                </span>
-                <span className="px-3 py-1 rounded-lg bg-white/90 border border-slate-200/90 shadow-2xs flex items-center gap-1.5 text-slate-800">
-                  <Brain className="w-3.5 h-3.5 text-purple-600" />
-                  <span>Data Science &amp; Agentic AI</span>
-                </span>
-                <span className="px-3 py-1 rounded-lg bg-white/90 border border-slate-200/90 shadow-2xs flex items-center gap-1.5 text-slate-800">
-                  <Cpu className="w-3.5 h-3.5 text-cyan-600" />
-                  <span>AI Engineering</span>
-                </span>
-                <span className="px-3 py-1 rounded-lg bg-white/90 border border-slate-200/90 shadow-2xs flex items-center gap-1.5 text-slate-800">
-                  <Rocket className="w-3.5 h-3.5 text-pink-600" />
-                  <span>ML Engineering</span>
-                </span>
-              </div>
-
-              {/* CTA Row */}
-              <div className="mt-5 flex flex-wrap items-center gap-3">
-                <button
-                  type="button"
-                  onClick={promptLogin}
-                  className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs sm:text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer flex items-center gap-2 group active:scale-95"
-                >
-                  <span>View All Courses</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
-
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 px-3 py-1.5 rounded-lg bg-white/80 border border-slate-200/80 shadow-2xs">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>100% Placement Support Guard</span>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Right Side: 3D Illustration Graphic (lg:col-span-5) */}
-            <div className="lg:col-span-5 relative h-full flex items-center justify-center p-3 lg:p-0 overflow-hidden">
-              <div className="relative w-full h-[220px] sm:h-[270px] lg:h-[320px] flex items-center justify-center overflow-hidden">
-                <img
-                  src="/images/home_sections/career_programs_hero_3d.jpg"
-                  alt="Explore Our Career Programs Future AI 3D Mascot and Student"
-                  className="w-full h-full object-cover object-right lg:object-center select-none pointer-events-none drop-shadow-sm"
-                  style={{
-                    maskImage: 'linear-gradient(to right, transparent, black 12%, black 100%)',
-                    WebkitMaskImage: 'linear-gradient(to right, transparent, black 12%, black 100%)',
-                  }}
-                />
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        {/* 4 Career Programs Cards Grid (Video + Course Name Only) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          
-          {/* Program Card 1: Data Analyst with Gen AI */}
-          <div
-            onClick={promptLogin}
-            className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-blue-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
-          >
-            <div className="relative w-full h-[185px] sm:h-[200px] overflow-hidden bg-slate-900">
-              <video
-                src="/videos/data_analyst_genai_v2.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div className="p-4 sm:p-5 flex items-center justify-between gap-3">
-              <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">
-                Data Analyst with Gen AI
-              </h3>
-              <div className="w-8 h-8 rounded-full bg-blue-50 group-hover:bg-blue-600 text-blue-600 group-hover:text-white flex items-center justify-center shrink-0 transition-colors shadow-2xs">
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </div>
-            </div>
-          </div>
-
-          {/* Program Card 2: Data Science & Agentic AI */}
-          <div
-            onClick={promptLogin}
-            className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-purple-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
-          >
-            <div className="relative w-full h-[185px] sm:h-[200px] overflow-hidden bg-slate-900">
-              <video
-                src="/videos/data_science_agentic_ai_course.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div className="p-4 sm:p-5 flex items-center justify-between gap-3">
-              <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight group-hover:text-purple-600 transition-colors">
-                Data Science &amp; Agentic AI
-              </h3>
-              <div className="w-8 h-8 rounded-full bg-purple-50 group-hover:bg-purple-600 text-purple-600 group-hover:text-white flex items-center justify-center shrink-0 transition-colors shadow-2xs">
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </div>
-            </div>
-          </div>
-
-          {/* Program Card 3: AI Engineering */}
-          <div
-            onClick={promptLogin}
-            className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-sky-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
-          >
-            <div className="relative w-full h-[185px] sm:h-[200px] overflow-hidden bg-slate-900">
-              <video
-                src="/videos/ai_engineering_course.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div className="p-4 sm:p-5 flex items-center justify-between gap-3">
-              <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight group-hover:text-sky-600 transition-colors">
-                AI Engineering
-              </h3>
-              <div className="w-8 h-8 rounded-full bg-sky-50 group-hover:bg-sky-600 text-sky-600 group-hover:text-white flex items-center justify-center shrink-0 transition-colors shadow-2xs">
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </div>
-            </div>
-          </div>
-
-          {/* Program Card 4: ML Engineering */}
-          <div
-            onClick={promptLogin}
-            className="group relative bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-pink-400 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
-          >
-            <div className="relative w-full h-[185px] sm:h-[200px] overflow-hidden bg-slate-900">
-              <video
-                src="/videos/ml_engineering_course.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div className="p-4 sm:p-5 flex items-center justify-between gap-3">
-              <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight group-hover:text-pink-600 transition-colors">
-                ML Engineering
-              </h3>
-              <div className="w-8 h-8 rounded-full bg-pink-50 group-hover:bg-pink-600 text-pink-600 group-hover:text-white flex items-center justify-center shrink-0 transition-colors shadow-2xs">
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </div>
-            </div>
-          </div>
-
-        </div>
-        </div>
-      </section>
 
 {/* ═══════════════════════════════════════════════════════════════════════════
+
           SECTION 2.5: Mobile-Only ATS Resume Analyser (< 768px)
+
       ═══════════════════════════════════════════════════════════════════════════ */}
+
       <div className="block md:hidden">
+
         <MobileAtsResumeSection
+
           onOpenAts={() => {
+
             window.location.hash = '#ats';
+
           }}
+
         />
+
       </div>
 
+
+
       {/* ═══════════════════════════════════════════════════════════════════════════
+
           SECTION 3: 5-Step Progressive Roadmap (Responsive Mobile + Desktop)
+
       ═══════════════════════════════════════════════════════════════════════════ */}
+
       <MobileCareerJourneySection onExploreCourses={promptLogin} />
 
+
+
       {/* ═══════════════════════════════════════════════════════════════════════════
+
           SECTION 4: Why Choose Future IT Industry?
+
       ═══════════════════════════════════════════════════════════════════════════ */}
+
       <MobileWhyChooseSection onExploreCourses={promptLogin} />
 
+
+
       {/* ═══════════════════════════════════════════════════════════════════════════
+
           SECTION 5 & 6: Real Success Stories Showcase (Exact Post-Login Experience)
+
       ═══════════════════════════════════════════════════════════════════════════ */}
+
       <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+
         <RealSuccessStoriesShowcase
+
           onOpenRole={() => promptLogin()}
+
           onOpenPartnersModal={() => promptLogin()}
+
           onExploreProgram={() => promptLogin()}
+
         />
+
       </section>
 
+
+
       {/* ═══════════════════════════════════════════════════════════════════════════
+
           GLOBAL FULL FOOTER (1:1 Reference Match, Responsive Desktop & Mobile)
+
       ═══════════════════════════════════════════════════════════════════════════ */}
+
       {!isAuthRoute && <FullFooter onOpenAuthModal={() => promptLogin()} />}
 
+
+
       {/* Clean Auth Modal for Sign Up / Full Login Options */}
+
       <FutureAuthModal
+
         isOpen={authModalOpen}
+
         message={authMessage}
+
         redirectUrl={authRedirect}
+
         onClose={() => setAuthModalOpen(false)}
+
         onSuccess={(name, email, avatar, role) => {
+
           setAuthModalOpen(false);
+
           onLoginSuccess?.(name, email, avatar, role);
+
         }}
+
       />
 
+
+
     </div>
+
   );
+
 };
+

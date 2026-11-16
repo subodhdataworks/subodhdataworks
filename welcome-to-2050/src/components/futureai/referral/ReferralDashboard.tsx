@@ -194,7 +194,7 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
     if (soundEnabled) soundEffects.playClick();
     ReferralEngine.switchReferrerType(role);
     refreshState();
-    showToast(`Switched view to ${role.toUpperCase()} (₹${role === 'student' ? '125' : '100'} commission)`);
+    showToast(`Switched view to ${role.toUpperCase()} (₹300 commission)`);
   };
 
   // Toggle student enrollment paid/unpaid
@@ -319,7 +319,7 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
                 handleToggleStudentPaid(true);
               }}
             >
-              Student (Active ₹125)
+              Student (Active ₹300)
             </button>
             <button
               className={`ref-sim-btn ${isStudent && !isReferralActive ? 'active-warn' : ''}`}
@@ -334,7 +334,7 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
               className={`ref-sim-btn ${!isStudent ? 'active' : ''}`}
               onClick={() => handleSwitchRole('influencer')}
             >
-              Influencer / Creator (Active ₹100)
+              Influencer / Creator (Active ₹300)
             </button>
           </div>
 
@@ -427,7 +427,7 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
             <div className="ref-unpaid-text">
               <h3 className="ref-unpaid-title">Complete your ₹999 enrollment to activate referrals</h3>
               <p className="ref-unpaid-desc">
-                Students earn ₹125 for every successful referral. Complete your enrollment in the FUTURE IT INDUSTRY program to unlock your unique referral code and start earning!
+                Students earn ₹300 for every successful referral. Complete your enrollment in the FUTURE IT INDUSTRY program to unlock your unique referral code and start earning!
               </p>
             </div>
           </div>
@@ -573,7 +573,7 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
           <div className="ref-metric-content">
             <div className="ref-metric-val-row">
               <span className="ref-metric-val">{engineState.successfulEnrollmentsCount}</span>
-              <span className="ref-metric-trend green">₹100 / enroll</span>
+              <span className="ref-metric-trend green">₹300 / enroll</span>
             </div>
             <span className="ref-metric-label">Successful Enrollments</span>
           </div>
@@ -942,7 +942,7 @@ export const ReferralDashboard: React.FC<ReferralDashboardProps> = ({
                   {referrals.length === 0 ? (
                     <tr>
                       <td colSpan={7} className="text-center py-8 text-slate-400 text-xs font-semibold">
-                        Abhi tak koi referral nahi hai. Apna link share karein aur har paid enrollment par flat ₹100 payout kamayein!
+                        Abhi tak koi referral nahi hai. Apna link share karein aur har paid enrollment par flat ₹300 payout kamayein!
                       </td>
                     </tr>
                   ) : (

@@ -1,6 +1,8 @@
-import React from 'react';
-import { ArrowRight, Briefcase, Rocket, CheckCircle2 } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { ArrowRight, Briefcase } from 'lucide-react';
 import { ToolIcon } from './CourseToolIcons';
+import { COURSE_AUTHORITATIVE_IMAGES } from '../../data/careerCourses12';
+import { CourseSocialProof } from './CourseSocialProof';
 
 export interface CourseCardTool {
   name: string;
@@ -8,13 +10,28 @@ export interface CourseCardTool {
 
 export interface CareerCourseCardProps {
   id: string;
+  badgeNum?: number;
   title: string;
   subtitle?: string;
   shortDesc?: string;
   image: string;
   holoImage?: string;
   video?: string;
-  theme: 'emerald' | 'purple' | 'blue' | 'orange' | 'dark' | 'teal' | 'pink' | 'cyan';
+  theme?: string;
+  stripColor?:
+    | 'sapphire-blue'
+    | 'emerald-green'
+    | 'vibrant-orange'
+    | 'royal-purple'
+    | 'crimson-rose'
+    | 'indigo-cobalt'
+    | 'dark-teal'
+    | 'ocean-cyan'
+    | 'forest-lime'
+    | 'plum-magenta'
+    | 'olive-green'
+    | 'deep-olive'
+    | 'premium-violet';
   topBadge?: {
     icon: string;
     text: string;
@@ -25,156 +42,246 @@ export interface CareerCourseCardProps {
   price?: string;
   originalPrice?: string;
   discountBadge?: string;
+  isLiveCourse?: boolean;
+  liveBadgeText?: string;
+  courseTypeLabel?: string;
+  ctaLabel?: string;
   isUnlocked?: boolean;
   onClick: () => void;
 }
 
-export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
+// 10 distinct lighter, vibrant 2-color mix gradients (one unique dual-tone mix per course)
+const STRIP_COLOR_MAP: Record<string, { bg: string; btnText: string; borderHover: string }> = {
+  'sapphire-blue': {
+    // 1. Data Analyst: Bright Sky Blue + Soft Violet Purple mix
+    bg: 'bg-gradient-to-r from-[#3B82F6] via-[#6366F1] to-[#8B5CF6]',
+    btnText: 'text-[#4F46E5]',
+    borderHover: 'hover:border-[#6366F1]/60',
+  },
+  'royal-purple': {
+    // 2. Data Science: Luminous Violet + Vibrant Rose Pink mix
+    bg: 'bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#EC4899]',
+    btnText: 'text-[#9333EA]',
+    borderHover: 'hover:border-[#A855F7]/60',
+  },
+  'vibrant-orange': {
+    // 3. ML Engineering: Bright Tangerine Orange + Coral Rose Pink mix
+    bg: 'bg-gradient-to-r from-[#F97316] via-[#FB7185] to-[#EC4899]',
+    btnText: 'text-[#E11D48]',
+    borderHover: 'hover:border-[#F97316]/60',
+  },
+  'emerald-green': {
+    // 4. AI Engineering: Fresh Mint Emerald + Aqua Cyan Blue mix
+    bg: 'bg-gradient-to-r from-[#10B981] via-[#14B8A6] to-[#06B6D4]',
+    btnText: 'text-[#0D9488]',
+    borderHover: 'hover:border-[#14B8A6]/60',
+  },
+  'indigo-cobalt': {
+    // 5. AI Tools & Prompt: Electric Indigo + Bright Cyan Sky mix
+    bg: 'bg-gradient-to-r from-[#6366F1] via-[#3B82F6] to-[#06B6D4]',
+    btnText: 'text-[#2563EB]',
+    borderHover: 'hover:border-[#3B82F6]/60',
+  },
+  'forest-lime': {
+    // 6. MS Office 365: Vibrant Green + Ocean Sky Blue mix
+    bg: 'bg-gradient-to-r from-[#22C55E] via-[#10B981] to-[#0EA5E9]',
+    btnText: 'text-[#059669]',
+    borderHover: 'hover:border-[#10B981]/60',
+  },
+  'dark-teal': {
+    // 7. Full Stack Web Dev: Aqua Cyan + Royal Purple mix
+    bg: 'bg-gradient-to-r from-[#06B6D4] via-[#3B82F6] to-[#8B5CF6]',
+    btnText: 'text-[#2563EB]',
+    borderHover: 'hover:border-[#06B6D4]/60',
+  },
+  'amber-gold': {
+    // 8. AI Website Builder Pro: Golden Amber + Coral Orange-Red mix
+    bg: 'bg-gradient-to-r from-[#F59E0B] via-[#F97316] to-[#F43F5E]',
+    btnText: 'text-[#EA580C]',
+    borderHover: 'hover:border-[#F97316]/60',
+  },
+  'ocean-cyan': {
+    // 9. AI App Builder Pro: Sky Blue + Fresh Emerald Mint mix
+    bg: 'bg-gradient-to-r from-[#0EA5E9] via-[#06B6D4] to-[#10B981]',
+    btnText: 'text-[#0284C7]',
+    borderHover: 'hover:border-[#06B6D4]/60',
+  },
+  'cinematic-red': {
+    // 10. AI Video Creator Pro: Coral Rose + Luminous Violet Purple mix
+    bg: 'bg-gradient-to-r from-[#F43F5E] via-[#EC4899] to-[#8B5CF6]',
+    btnText: 'text-[#DB2777]',
+    borderHover: 'hover:border-[#EC4899]/60',
+  },
+  'crimson-rose': {
+    bg: 'bg-gradient-to-r from-[#F43F5E] via-[#EC4899] to-[#A855F7]',
+    btnText: 'text-[#E11D48]',
+    borderHover: 'hover:border-[#EC4899]/60',
+  },
+  'plum-magenta': {
+    bg: 'bg-gradient-to-r from-[#A855F7] via-[#D946EF] to-[#EC4899]',
+    btnText: 'text-[#C026D3]',
+    borderHover: 'hover:border-[#D946EF]/60',
+  },
+  'olive-green': {
+    bg: 'bg-gradient-to-r from-[#84CC16] to-[#10B981]',
+    btnText: 'text-[#059669]',
+    borderHover: 'hover:border-[#10B981]/50',
+  },
+  'deep-olive': {
+    bg: 'bg-gradient-to-r from-[#22C55E] to-[#14B8A6]',
+    btnText: 'text-[#0D9488]',
+    borderHover: 'hover:border-[#14B8A6]/50',
+  },
+  'premium-violet': {
+    bg: 'bg-gradient-to-r from-[#8B5CF6] to-[#EC4899]',
+    btnText: 'text-[#7C3AED]',
+    borderHover: 'hover:border-[#8B5CF6]/50',
+  },
+};
+
+// Unique color per course id matching its visual artwork and branding theme
+const COURSE_STRIP_FALLBACK: Record<string, string> = {
+  'data-analyst-genai': 'sapphire-blue',
+  'data-science-agentic-ai': 'royal-purple',
+  'ml-engineering': 'vibrant-orange',
+  'ai-engineering': 'emerald-green',
+  'ai-tools-prompt': 'indigo-cobalt',
+  'ms-office-copilot': 'forest-lime',
+  'full-stack-web-dev': 'dark-teal',
+  'ai-website-dev': 'amber-gold',
+  'ai-android-dev': 'ocean-cyan',
+  'ai-video-creation': 'cinematic-red',
+};
+
+export const CareerCourseCard: React.FC<CareerCourseCardProps> = React.memo(({
+  id,
+  badgeNum,
   title,
-  subtitle,
+  shortDesc,
   image,
   holoImage,
   video,
-  theme,
+  stripColor,
   topBadge,
   tools,
   jobRoles,
   salary,
-  price = '₹987',
-  originalPrice = '₹12,999',
+  price = '₹1,199',
+  originalPrice,
   discountBadge,
+  isLiveCourse = false,
+  liveBadgeText = 'LIVE CLASSES',
+  courseTypeLabel,
+  ctaLabel,
   isUnlocked = false,
   onClick,
 }) => {
-  const origPrice = originalPrice || '₹12,999';
-  const calculateDiscount = (orig: string, curr: string) => {
-    const o = parseInt(orig.replace(/\D/g, ''), 10) || 12999;
-    const c = parseInt(curr.replace(/\D/g, ''), 10) || 987;
-    if (o <= c) return '0% OFF';
-    const rawPct = Math.round(((o - c) / o) * 100);
-    const pct = c > 0 && rawPct >= 100 ? 99 : rawPct;
-    return `${pct}% OFF`;
-  };
-  const finalDiscount = discountBadge || calculateDiscount(origPrice, price);
+  const chosenColorKey = stripColor || COURSE_STRIP_FALLBACK[id] || 'royal-purple';
+  const stripTheme = STRIP_COLOR_MAP[chosenColorKey] || STRIP_COLOR_MAP['royal-purple'];
 
-  // Theme configuration matching reference image 1:1
-  const themeConfig = {
-    emerald: {
-      shadowClass: 'shadow-[0_8px_24px_rgba(16,185,129,0.18)] hover:shadow-[0_12px_28px_rgba(16,185,129,0.30)]',
-      borderClass: 'border-slate-200/90 hover:border-emerald-300',
-      briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-100',
-      salaryPill: 'bg-emerald-50 border border-emerald-100 text-emerald-700',
-      unlockBtn: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-[0_2px_8px_rgba(16,185,129,0.35)]',
-    },
-    purple: {
-      shadowClass: 'shadow-[0_8px_24px_rgba(168,85,247,0.18)] hover:shadow-[0_12px_28px_rgba(168,85,247,0.30)]',
-      borderClass: 'border-slate-200/90 hover:border-purple-300',
-      briefcaseBox: 'bg-purple-50 text-purple-600 border border-purple-100',
-      salaryPill: 'bg-purple-50 border border-purple-100 text-purple-700',
-      unlockBtn: 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-[0_2px_8px_rgba(168,85,247,0.35)]',
-    },
-    blue: {
-      shadowClass: 'shadow-[0_8px_24px_rgba(37,99,235,0.18)] hover:shadow-[0_12px_28px_rgba(37,99,235,0.30)]',
-      borderClass: 'border-slate-200/90 hover:border-blue-300',
-      briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-100',
-      salaryPill: 'bg-emerald-50 border border-emerald-100 text-emerald-700',
-      unlockBtn: 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-[0_2px_8px_rgba(37,99,235,0.35)]',
-    },
-    orange: {
-      shadowClass: 'shadow-[0_8px_24px_rgba(249,115,22,0.18)] hover:shadow-[0_12px_28px_rgba(249,115,22,0.30)]',
-      borderClass: 'border-slate-200/90 hover:border-orange-300',
-      briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-100',
-      salaryPill: 'bg-emerald-50 border border-emerald-100 text-emerald-700',
-      unlockBtn: 'bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white shadow-[0_2px_8px_rgba(249,115,22,0.35)]',
-    },
-    dark: {
-      shadowClass: 'shadow-[0_8px_24px_rgba(15,23,42,0.16)] hover:shadow-[0_12px_28px_rgba(15,23,42,0.26)]',
-      borderClass: 'border-slate-200/90 hover:border-slate-400',
-      briefcaseBox: 'bg-purple-50 text-purple-600 border border-purple-100',
-      salaryPill: 'bg-purple-50 border border-purple-100 text-purple-700',
-      unlockBtn: 'bg-slate-900 hover:bg-slate-800 text-white shadow-[0_2px_8px_rgba(15,23,42,0.35)]',
-    },
-    teal: {
-      shadowClass: 'shadow-[0_8px_24px_rgba(13,148,136,0.18)] hover:shadow-[0_12px_28px_rgba(13,148,136,0.30)]',
-      borderClass: 'border-slate-200/90 hover:border-teal-300',
-      briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-100',
-      salaryPill: 'bg-teal-50 border border-teal-100 text-teal-700',
-      unlockBtn: 'bg-gradient-to-r from-teal-700 to-cyan-700 hover:from-teal-800 hover:to-cyan-800 text-white shadow-[0_2px_8px_rgba(13,148,136,0.35)]',
-    },
-    pink: {
-      shadowClass: 'shadow-[0_8px_24px_rgba(225,29,72,0.18)] hover:shadow-[0_12px_28px_rgba(225,29,72,0.30)]',
-      borderClass: 'border-slate-200/90 hover:border-pink-300',
-      briefcaseBox: 'bg-pink-50 text-pink-600 border border-pink-100',
-      salaryPill: 'bg-rose-50 border border-rose-100 text-rose-700',
-      unlockBtn: 'bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white shadow-[0_2px_8px_rgba(225,29,72,0.35)]',
-    },
-    cyan: {
-      shadowClass: 'shadow-[0_8px_24px_rgba(16,185,129,0.18)] hover:shadow-[0_12px_28px_rgba(16,185,129,0.30)]',
-      borderClass: 'border-slate-200/90 hover:border-emerald-300',
-      briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-100',
-      salaryPill: 'bg-emerald-50 border border-emerald-100 text-emerald-700',
-      unlockBtn: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-[0_2px_8px_rgba(16,185,129,0.35)]',
-    },
-  }[theme] || {
-    shadowClass: 'shadow-[0_8px_24px_rgba(16,185,129,0.18)] hover:shadow-[0_12px_28px_rgba(16,185,129,0.30)]',
-    borderClass: 'border-slate-200/90 hover:border-emerald-300',
-    briefcaseBox: 'bg-blue-50 text-blue-600 border border-blue-100',
-    salaryPill: 'bg-emerald-50 border border-emerald-100 text-emerald-700',
-    unlockBtn: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-[0_2px_8px_rgba(16,185,129,0.35)]',
-  };
+  // Single authoritative image source per course (prevents any initial->loaded image switching)
+  const authoritativeSrc = COURSE_AUTHORITATIVE_IMAGES[id] || holoImage || image || '';
+  const fallbackJpgSrc = authoritativeSrc.endsWith('.webp')
+    ? authoritativeSrc.replace(/\.webp$/, '.jpg')
+    : authoritativeSrc;
+
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const [imgSrc, setImgSrc] = useState<string>(authoritativeSrc);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+
+  useEffect(() => {
+    setImgSrc(authoritativeSrc);
+    if (imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth > 0) {
+      setIsLoaded(true);
+    }
+  }, [authoritativeSrc]);
+
+  const isAboveFold = typeof badgeNum === 'number' ? badgeNum <= 10 : true;
 
   return (
     <article
       onClick={onClick}
-      className={`group relative rounded-2xl bg-white border ${themeConfig.borderClass} ${themeConfig.shadowClass} flex flex-col overflow-hidden transition-all duration-200 ease-out hover:-translate-y-1 cursor-pointer select-none`}
+      className={`group relative rounded-[18px] bg-white border border-slate-200/90 ${stripTheme.borderHover} shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_10px_24px_rgba(0,0,0,0.08)] flex flex-col justify-between overflow-hidden transition-all duration-200 ease-out hover:-translate-y-1 cursor-pointer select-none h-full`}
     >
-      {/* 1. TOP ARTWORK */}
-      <div className="relative w-full h-[115px] sm:h-[122px] overflow-hidden bg-slate-950 shrink-0">
-        {/* Top-Left Category Badge */}
-        {topBadge && (
+      {/* 1. TOP ARTWORK — Fixed reserved dimensions prevent layout shift */}
+      <div className="relative w-full h-[118px] sm:h-[122px] overflow-hidden bg-slate-900 shrink-0">
+        {/* Top-Left Category or LIVE CLASSES Badge */}
+        {isLiveCourse ? (
+          <div className="absolute top-2.5 left-2.5 z-20 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-red-600 via-rose-600 to-red-600 text-white text-[9.5px] font-black tracking-wider uppercase shadow-[0_2px_10px_rgba(220,38,38,0.45)] border border-red-400/50">
+            <span className="relative flex h-2 w-2 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-80" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
+            </span>
+            <span>{liveBadgeText}</span>
+          </div>
+        ) : topBadge ? (
           <div className="absolute top-2.5 left-2.5 z-20 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/95 backdrop-blur-xs text-slate-800 text-[10px] font-black shadow-sm border border-slate-100">
             <span>{topBadge.icon}</span>
             <span>{topBadge.text}</span>
           </div>
-        )}
+        ) : null}
+
+        {/* Neutral skeleton background underneath image */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-r from-slate-800 via-slate-700/80 to-slate-800"
+        />
 
         {video ? (
           <video
             src={video}
-            poster={holoImage || image}
+            poster={imgSrc}
             autoPlay
             loop
             muted
             playsInline
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="relative z-10 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
-        ) : (
+        ) : imgSrc && (
           <img
-            src={holoImage || image}
+            ref={imgRef}
+            src={imgSrc}
             alt={title}
-            loading="lazy"
-            decoding="async"
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            width={600}
+            height={338}
+            loading={isAboveFold ? 'eager' : 'lazy'}
+            decoding="sync"
+            fetchPriority={isAboveFold ? 'high' : 'auto'}
+            onLoad={() => setIsLoaded(true)}
+            onError={() => {
+              if (imgSrc !== fallbackJpgSrc && fallbackJpgSrc) {
+                setImgSrc(fallbackJpgSrc);
+              } else {
+                setIsLoaded(true);
+              }
+            }}
+            className="relative z-10 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         )}
       </div>
 
       {/* 2. CARD BODY */}
-      <div className="p-2.5 sm:p-3 flex flex-col flex-1 justify-between gap-1.5 bg-white">
-        
+      <div className="px-2.5 py-2 sm:px-3 sm:py-2 flex flex-col flex-1 justify-between gap-1 bg-white">
         {/* Course Title */}
         <div className="text-center pt-0.5">
-          <h3 className="font-black text-[13.5px] sm:text-[14.5px] text-slate-950 tracking-tight leading-snug">
+          <h3
+            title={title}
+            className="font-black text-[12.5px] sm:text-[13px] xl:text-[13.5px] text-slate-950 tracking-tight leading-snug line-clamp-1"
+          >
             {title}
-            {subtitle && <span className="font-bold text-slate-600 ml-1">({subtitle})</span>}
           </h3>
+          {isLiveCourse && shortDesc && (
+            <p className="text-[9.5px] text-slate-500 font-medium leading-tight line-clamp-1 mt-0.5">
+              {shortDesc}
+            </p>
+          )}
         </div>
 
         {/* 5 Technology Icons & Labels */}
         <div className="flex items-center justify-between w-full px-0.5 py-0.5">
           {tools.slice(0, 5).map((t, idx) => (
             <div key={idx} className="flex flex-col items-center flex-1 text-center min-w-0">
-              <div className="w-5.5 h-5.5 sm:w-6 sm:h-6 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <div className="w-5.5 h-5.5 sm:w-6 sm:h-6 flex items-center justify-center group-hover:scale-108 transition-transform">
                 <ToolIcon name={t.name} className="w-4.5 h-4.5 sm:w-5 sm:h-5 object-contain" />
               </div>
               <span className="text-[9px] font-bold text-slate-700 tracking-tight truncate w-full text-center mt-0.5">
@@ -189,75 +296,83 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = ({
 
         {/* Job Roles (Left) & Salary Package (Right) */}
         <div className="flex items-center justify-between w-full gap-1.5">
-          {/* Left: Job Roles */}
+          {/* Left: Job Roles / Course Type */}
           <div className="flex items-center gap-1.5 min-w-0 flex-1">
-            <div className={`w-5.5 h-5.5 rounded-md flex items-center justify-center shrink-0 ${themeConfig.briefcaseBox}`}>
+            <div className={`w-5.5 h-5.5 rounded-md flex items-center justify-center shrink-0 border ${isLiveCourse ? 'bg-red-50 text-red-600 border-red-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
               <Briefcase className="w-3 h-3" />
             </div>
             <div className="flex flex-col min-w-0 text-left">
-              <span className="text-[9px] font-bold tracking-tight text-slate-700 leading-none">
-                Job Roles
+              <span className="text-[8.5px] font-bold tracking-tight text-slate-500 uppercase leading-none">
+                {isLiveCourse ? 'Class Format' : 'Job Roles'}
               </span>
-              <span className="text-[9.5px] font-semibold text-slate-800 truncate max-w-[105px] sm:max-w-[125px] mt-0.5">
-                {jobRoles}
+              <span className="text-[9.5px] font-semibold text-slate-800 truncate max-w-[100px] sm:max-w-[115px] mt-0.5">
+                {courseTypeLabel || jobRoles}
               </span>
             </div>
           </div>
 
-          {/* Right: Salary Pill Container */}
-          <div className={`flex flex-col items-end text-right shrink-0 px-2 py-0.5 rounded-lg ${themeConfig.salaryPill}`}>
-            <span className="text-[11.5px] sm:text-[12px] font-black tracking-tight leading-none">
+          {/* Right: Salary / Outcome Pill Container */}
+          <div className={`flex flex-col items-end text-right shrink-0 px-2 py-0.5 rounded-lg border ${isLiveCourse ? 'bg-rose-50/80 border-rose-100 text-rose-700' : 'bg-emerald-50 border-emerald-100 text-emerald-700'}`}>
+            <span className="text-[10.5px] sm:text-[11px] font-black tracking-tight leading-none">
               {salary}
             </span>
             <span className="text-[8px] font-medium text-slate-500 mt-0.5">
-              Average Package
+              {isLiveCourse ? 'Hands-On Build' : 'Average Package'}
             </span>
           </div>
         </div>
 
-        {/* 3. BOTTOM ROW: Strikethrough & % Off (Left) | Unlock Course Button (Center) | Bold Green Price (Right) */}
-        <div className="flex items-center justify-between gap-1 w-full pt-1.5 border-t border-slate-50">
-          {/* Left: Original Price & Discount Badge */}
-          <div className="flex items-center gap-1 shrink-0">
-            <span className="text-[10px] sm:text-[10.5px] font-bold text-slate-700 line-through tracking-tight">
-              {origPrice}
+        {/* Animated Student Social Proof Row (4-5 Avatars + Enrolled Count + Star Rating) */}
+        <CourseSocialProof courseId={id} visibleCount={4} />
+      </div>
+
+      {/* 3. FULL-WIDTH PREMIUM PRICING STRIP (100% card width, flush with bottom 18px corners) */}
+      <div
+        className={`w-full ${stripTheme.bg} px-3 py-2 flex items-center justify-between text-white h-[46px] shrink-0 mt-auto select-none`}
+      >
+        {/* Left Side: Pricing details */}
+        {discountBadge && originalPrice ? (
+          /* Discounted courses: Original Price | 90% OFF | Selling Price */
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="text-[10px] xl:text-[10.5px] font-medium text-white/70 line-through tracking-tight whitespace-nowrap">
+              {originalPrice}
             </span>
-            <span className="text-[8px] sm:text-[8.5px] font-black text-emerald-700 bg-emerald-50 border border-emerald-200/90 px-1 py-0.5 rounded tracking-tight">
-              {finalDiscount}
+            <span className="bg-yellow-400 text-slate-950 font-black text-[8.5px] xl:text-[9px] px-1.5 py-0.5 rounded shadow-2xs uppercase tracking-tight whitespace-nowrap">
+              {discountBadge}
+            </span>
+            <span className="text-[14px] xl:text-[15.5px] font-black text-white tracking-tight whitespace-nowrap ml-0.5">
+              {price}
             </span>
           </div>
-
-          {/* Center: Premium Unlock Course Pill Button */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onClick();
-            }}
-            className={`shrink-0 py-1 px-2.5 sm:px-3 rounded-full font-bold text-[10px] sm:text-[10.5px] flex items-center justify-center gap-1 shadow-sm transition-all duration-150 active:scale-95 cursor-pointer whitespace-nowrap ${themeConfig.unlockBtn}`}
-          >
-            {isUnlocked ? (
-              <>
-                <CheckCircle2 className="w-3 h-3 text-white shrink-0" />
-                <span>Resume</span>
-                <ArrowRight className="w-2.5 h-2.5 ml-0.5" />
-              </>
-            ) : (
-              <>
-                <Rocket className="w-3 h-3 text-white stroke-[2.2] shrink-0" />
-                <span>Unlock Course</span>
-                <ArrowRight className="w-2.5 h-2.5 text-white stroke-[2.2] shrink-0" />
-              </>
-            )}
-          </button>
-
-          {/* Right: Bold Green Current Price */}
-          <span className="text-[15px] sm:text-[16px] font-black text-emerald-600 tracking-tight shrink-0 text-right">
+        ) : (
+          /* Full Stack (No discount): Just Selling Price */
+          <span className="text-[15.5px] xl:text-[16.5px] font-black text-white tracking-tight whitespace-nowrap">
             {price}
           </span>
-        </div>
+        )}
 
+        {/* Right Side: White Pill Button */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+          }}
+          className={`bg-white ${stripTheme.btnText} hover:bg-slate-50 font-black text-[10px] xl:text-[10.5px] px-2.5 sm:px-3 py-1.5 rounded-full shadow-sm hover:scale-[1.02] active:scale-98 transition-all flex items-center gap-1 shrink-0 cursor-pointer whitespace-nowrap ml-1.5`}
+        >
+          {isUnlocked ? (
+            <>
+              <span>{isLiveCourse ? 'Live Class & Demo' : 'Learning'}</span>
+              <ArrowRight className="w-2.5 h-2.5 stroke-[2.5]" />
+            </>
+          ) : (
+            <>
+              <span>{ctaLabel || 'Enroll Now'}</span>
+              <ArrowRight className="w-2.5 h-2.5 stroke-[2.5]" />
+            </>
+          )}
+        </button>
       </div>
     </article>
   );
-};
+});

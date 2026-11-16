@@ -213,7 +213,7 @@ export const SqlChallengesPracticeHub: React.FC<SqlChallengesPracticeHubProps> =
         onBack={() => {
           soundEffects.playClick();
           if (typeof window !== 'undefined' && window.location.hash.includes('arena=')) {
-            window.history.back();
+            window.location.hash = '#sql-challenges';
           } else {
             setActiveChallengeArenaTopic(null);
           }
@@ -221,7 +221,7 @@ export const SqlChallengesPracticeHub: React.FC<SqlChallengesPracticeHubProps> =
         onCompleteAll={() => {
           soundEffects.playSuccess();
           if (typeof window !== 'undefined' && window.location.hash.includes('arena=')) {
-            window.history.back();
+            window.location.hash = '#sql-challenges';
           } else {
             setActiveChallengeArenaTopic(null);
           }
@@ -231,7 +231,7 @@ export const SqlChallengesPracticeHub: React.FC<SqlChallengesPracticeHubProps> =
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 text-slate-800">
+    <div className="w-full px-3 sm:px-6 md:px-0 pt-1 pb-6 text-slate-800">
       
       {/* ─── 1. BREADCRUMB & HEADER SECTION ─── */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
@@ -251,7 +251,7 @@ export const SqlChallengesPracticeHub: React.FC<SqlChallengesPracticeHubProps> =
               onClick={onBackToPractice}
               className="hover:text-blue-600 transition-colors cursor-pointer"
             >
-              DSA Coding Practice
+              Coding Practice + DSA
             </button>
             <ChevronRight className="w-3 h-3 text-slate-400" />
             <span className="text-slate-800 font-semibold">SQL</span>
@@ -343,7 +343,8 @@ export const SqlChallengesPracticeHub: React.FC<SqlChallengesPracticeHubProps> =
           ) : (
             filteredChallenges.map((item) => {
               const isBookmarked = bookmarkedIds.has(item.id);
-              const isLocked = !internalEnrolled && item.id !== 1;
+              const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.port === '5173');
+              const isLocked = !isLocalhost && !internalEnrolled && item.id !== 1;
 
               return (
                 <div

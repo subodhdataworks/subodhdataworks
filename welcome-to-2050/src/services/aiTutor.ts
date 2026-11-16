@@ -30,17 +30,17 @@ export class AiTutorService {
       stages: {
         question: {
           en: "Imagine building a school app for Aarav. Where does the computer hold his name while the app runs?",
-          hi: "कल्पना करें कि आप आरव के लिए एक स्कूल ऐप बना रहे हैं। ऐप चलते समय कंप्यूटर उसका नाम कहां याद रखेगा?",
+          hi: "कल्पना करें कि आप आरव के लिए एक स्कूल ऐप बना रहे हैं। ऐप चलते समय Computer उसका नाम कहां याद रखेगा?",
           hinglish: "Socho tum ek school app bana rahe ho. App ko Aarav ka naam yaad rakhna hai. Computer isko kaha hold karega?"
         },
         hint: {
           en: "Computers have no natural memory unless we allocate a named container in RAM.",
-          hi: "कंप्यूटर के पास कोई स्वाभाविक याददाश्त नहीं होती, जब तक हम मेमोरी में एक नाम वाला डिब्बा न बनाएं।",
+          hi: "Computer के पास कोई स्वाभाविक याददाश्त नहीं होती, जब तक हम मेमोरी में एक नाम वाला डिब्बा न बनाएं।",
           hinglish: "Computer ko jab tak hum ek labelled box na dein, wo kuch yaad nahi rakh sakta."
         },
         specificHint: {
           en: "Look at `name = 'Aarav'`. The word on the left is the label; the text on the right is the stored value.",
-          hi: "`name = 'Aarav'` को देखें। बाईं ओर का शब्द लेबल है; दाईं ओर का टेक्स्ट अंदर रखी गई वैल्यू है।",
+          hi: "`name = 'Aarav'` को देखें। बाईं ओर का शब्द लेबल है; दाईं ओर का टेक्स्ट अंदर रखी गई Value है।",
           hinglish: "`name = 'Aarav'` dekho. Left side ka naam box ka label hai, right side ki value uske andar stored hai."
         },
         partialGuidance: {
@@ -50,7 +50,7 @@ export class AiTutorService {
         },
         explanation: {
           en: "A variable is simply a named storage location in memory. It lets programs remember, update, and reuse information dynamically.",
-          hi: "वैरिएबल कंप्यूटर की मेमोरी में एक नमित स्टोरेज (named container) है। यह प्रोग्राम को डेटा याद रखने और बदलने की क्षमता देता है।",
+          hi: "वैरिएबल Computer की मेमोरी में एक नमित स्टोरेज (named container) है। यह Program को Data याद रखने और बदलने की क्षमता देता है।",
           hinglish: "Variable basically ek labelled memory box hai. Iske bina computer na student ka naam yaad rakh sakta hai, na bank balance."
         }
       }
@@ -80,7 +80,7 @@ export class AiTutorService {
         },
         explanation: {
           en: "Variables can mutate over time. State changes from line to line, which is why tracing execution in your mind builds elite engineering instincts.",
-          hi: "वैरिएबल समय के साथ बदलते हैं। लाइन दर लाइन स्टेट बदलना ही प्रोग्रामिंग की वास्तविक शक्ति है।",
+          hi: "वैरिएबल समय के साथ बदलते हैं। लाइन दर लाइन स्टेट बदलना ही Programming की वास्तविक शक्ति है।",
           hinglish: "Variables badal sakte hain. Ek line se doosri line tak code ko dimaag mein chalana hi real programming skill hai."
         }
       }
@@ -95,7 +95,7 @@ export class AiTutorService {
         },
         hint: {
           en: "Every opening bracket `(` requires a matching closing bracket `)` in Python.",
-          hi: "पायथन में हर खुलने वाले ब्रैकेट `(` के लिए एक बंद होने वाला `)` जरूरी है।",
+          hi: "Python में हर खुलने वाले ब्रैकेट `(` के लिए एक बंद होने वाला `)` जरूरी है।",
           hinglish: "Python mein har khulne wale bracket `(` ka ek jodi closing bracket `)` hona zaroori hai."
         },
         specificHint: {
@@ -110,7 +110,7 @@ export class AiTutorService {
         },
         explanation: {
           en: "Bugs are not failures of intelligence; they are simple punctuation mismatches between human intent and computer syntax.",
-          hi: "बग्स किसी बुद्धिमत्ता की कमी नहीं हैं; यह केवल सिंटैक्स का एक छोटा सा मेल न होना है।",
+          hi: "बग्स किसी बुद्धिमत्ता की कमी नहीं हैं; यह केवल Syntax का एक छोटा सा मेल न होना है।",
           hinglish: "Bug se ghabraane ki bilkul zaroorat nahi hai. Real software mein 80% kaam debugging ka hi hota hai."
         }
       }
@@ -146,7 +146,7 @@ export class AiTutorService {
       return {
         id: 'tutor_' + Date.now(),
         sender: 'tutor',
-        text: "बिल्कुल! अब से मैं आपको सरल हिंदी में समझाऊँगा। क्या आपको वैरिएबल या कोड समझने में कोई परेशानी है?",
+        text: "बिल्कुल! अब से मैं आपको सरल हिंदी में समझाऊँगा। क्या आपको वैरिएबल या Code समझने में कोई परेशानी है?",
         timestamp: new Date().toISOString()
       };
     }
@@ -162,7 +162,7 @@ export class AiTutorService {
     // 2. Confused about '=' vs '=='
     if (raw.includes('=') && (raw.includes('==') || raw.includes('barabar') || raw.includes('equal') || raw.includes('difference'))) {
       const resp = lang === 'hindi' 
-        ? "बहुत बढ़िया सवाल! 30 सेकंड में समझिए:\n• एक बार '=' का मतलब है: डिब्बे में वैल्यू 'डालना' (Assignment), जैसे: x = 10\n• दो बार '==' का मतलब है: कंप्यूटर से 'पूछना' कि क्या दोनों बराबर हैं? (Comparison), जैसे: x == 10 ?"
+        ? "बहुत बढ़िया सवाल! 30 सेकंड में समझिए:\n• एक बार '=' का मतलब है: डिब्बे में Value 'डालना' (Assignment), जैसे: x = 10\n• दो बार '==' का मतलब है: Computer से 'पूछना' कि क्या दोनों बराबर हैं? (Comparison), जैसे: x == 10 ?"
         : lang === 'hinglish'
         ? "Bohot accha sawaal! 30 seconds mein crystal clear karo:\n• Ek '=' ka matlab hai: box mein value daalna (store karna), jaise: x = 10\n• Do '==' ka matlab hai: sawaal poochna ki kya dono barabar hain? (check karna), jaise: x == 10 ?"
         : "Excellent question! In 30 seconds:\n• Single '=' is ASSIGNMENT: store value into memory (e.g. x = 10)\n• Double '==' is COMPARISON: ask if two things are equal (e.g. x == 10 ?)";
@@ -178,7 +178,7 @@ export class AiTutorService {
     // 3. Learner says "Mujhe samajh nahi aa raha" / "I don't understand"
     if (raw.includes('samajh nahi') || raw.includes('dont understand') || raw.includes("don't understand") || raw.includes('confused') || raw.includes('phir se')) {
       const resp = lang === 'hindi'
-        ? "कोई बात नहीं! चलिए डिब्बे वाले उदाहरण को छोड़कर स्कूल रजिस्टर के उदाहरण से समझते हैं:\nजैसे स्कूल रजिस्टर में रोल नंबर 12 के सामने 'आरव' लिखा होता है, कंप्यूटर की मेमोरी में भी 'name' की जगह 'Aarav' लिखा जाता है। अब समझ आया?"
+        ? "कोई बात नहीं! चलिए डिब्बे वाले उदाहरण को छोड़कर स्कूल रजिस्टर के उदाहरण से समझते हैं:\nजैसे स्कूल रजिस्टर में रोल नंबर 12 के सामने 'आरव' लिखा होता है, Computer की मेमोरी में भी 'name' की जगह 'Aarav' लिखा जाता है। अब समझ आया?"
         : lang === 'hinglish'
         ? "Koi tension nahi! Chalo dabba chhodkar School Register ka example lete hain:\nJaise school attendance register mein Roll No 12 ke samne 'Aarav' likha hota hai, waise hi computer memory mein 'name' ke aage 'Aarav' save hota hai. Ab clear lag raha hai?"
         : "No problem at all! Let us switch from the box analogy to a School Register:\nIn a school attendance register, the row 'Roll No 12' holds the student's name 'Aarav' all year. In computer memory, 'name' holds 'Aarav' exactly the same way. Does that connect better?";

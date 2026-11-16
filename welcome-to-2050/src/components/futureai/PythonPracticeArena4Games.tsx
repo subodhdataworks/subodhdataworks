@@ -912,15 +912,15 @@ print(result)`
       if (qText.includes('Which of these is an example of data?')) {
         return {
           hintEn: 'Look for an option that represents an actual recorded value or measurement, rather than physical hardware or blank paper.',
-          hintHi: 'वह विकल्प चुनें जो किसी रिकॉर्ड किए गए मान (value) या माप को दर्शाता है, न कि कोई भौतिक वस्तु जैसे कीबोर्ड या खाली नोटबुक।',
+          hintHi: 'वह विकल्प चुनें जो किसी रिकॉर्ड किए गए Value (value) या माप को दर्शाता है, न कि कोई भौतिक वस्तु जैसे कीबोर्ड या खाली नोटबुक।',
           exampleCode: '// Physical Object vs Recorded Data:\nPhysical Hardware:  Computer Keyboard (Device)\nPhysical Furniture: Wooden Desk\nAuthentic Data:     Student\'s age: 18 (Recorded Value)',
           exampleNote: 'Hardware devices process or store information, but the recorded values themselves are the data.',
           explainTitleEn: 'Recognizing Data in Everyday Scenarios',
-          explainTitleHi: 'डेटा के उदाहरण पहचानना',
+          explainTitleHi: 'Data के उदाहरण पहचानना',
           explainTextEn: 'A keyboard, computer desk, or blank notebook are physical objects. A student\'s age (18) is a measured, recorded observation that represents real data.',
-          explainTextHi: 'कीबोर्ड, मेज या खाली कॉपी भौतिक वस्तुएं (Physical items) हैं। किसी छात्र की उम्र (18) एक रिकॉर्ड किया गया मान है, इसलिए यह डेटा है।',
+          explainTextHi: 'कीबोर्ड, मेज या खाली कॉपी भौतिक वस्तुएं (Physical items) हैं। किसी छात्र की उम्र (18) एक रिकॉर्ड किया गया Value है, इसलिए यह Data है।',
           realWorldEn: 'HR software systems store employee age, join date, and salary as structured data fields.',
-          realWorldHi: 'कंपनियों के HR सॉफ्टवेयर में कर्मचारी की उम्र, जॉइनिंग डेट और सैलरी डेटा के रूप में सेव होती है।',
+          realWorldHi: 'कंपनियों के HR Software में कर्मचारी की उम्र, जॉइनिंग डेट और सैलरी Data के रूप में सेव होती है।',
         };
       }
 
@@ -931,9 +931,9 @@ print(result)`
           exampleCode: '// Daily Store Transactions:\nDay 1: 20 items sold\nDay 2: 25 items sold\nDay 3: 30 items sold\n// Total = 75 items (Sales Data Log)',
           exampleNote: 'Daily transaction counts form the sales dataset of the store.',
           explainTitleEn: 'Sales Transaction Records as Business Data',
-          explainTitleHi: 'दुकान की बिक्री का डेटा',
+          explainTitleHi: 'दुकान की बिक्री का Data',
           explainTextEn: 'The daily numbers (20, 25, 30) are quantitative business records. They are not computer viruses or passwords; they are operational sales data used to analyze store performance.',
-          explainTextHi: '20, 25, 30 बेची गई वस्तुओं की संख्या है, जो कि व्यापार का बिक्री डेटा (Sales Data) है।',
+          explainTextHi: '20, 25, 30 बेची गई वस्तुओं की संख्या है, जो कि व्यापार का बिक्री Data (Sales Data) है।',
           realWorldEn: 'Retail stores like DMart and Reliance Smart track daily sold quantities to reorder stock and compute revenue.',
           realWorldHi: 'DMart और Reliance Retail हर दिन बिकने वाले सामान की संख्या से नया स्टॉक मंगाते हैं।',
         };
@@ -942,15 +942,15 @@ print(result)`
       if (qText.includes('Which item can be data?')) {
         return {
           hintEn: 'Remember that data is not limited to numbers—text, measurements, and images can all be data.',
-          hintHi: 'याद रखें कि डेटा केवल नंबर नहीं होता—नाम (टेक्स्ट), तापमान (माप) और फोटो (इमेज) सभी डेटा हो सकते हैं।',
+          hintHi: 'याद रखें कि Data केवल नंबर नहीं होता—नाम (टेक्स्ट), तापमान (माप) और फोटो (इमेज) सभी Data हो सकते हैं।',
           exampleCode: '// Variety of Data Types:\nCustomer Name:  "Rahul Sharma"  (Text / String)\nTemperature:    32.5°C          (Numerical Measurement)\nProduct Photo:  camera.jpg      (Image / Multimedia Data)',
           exampleNote: 'All of these forms can be stored and analyzed in modern databases.',
           explainTitleEn: 'Multimodal Nature of Data',
-          explainTitleHi: 'डेटा के विभिन्न रूप',
+          explainTitleHi: 'Data के विभिन्न रूप',
           explainTextEn: 'Modern data analysts work with varied data formats: text strings (customer names), continuous measurements (temperature 32°C), and multimedia files (product images). Therefore, all of these are data.',
-          explainTextHi: 'डेटा किसी भी रूप में हो सकता है: टेक्स्ट (नाम), नंबर या माप (तापमान) और फोटो। इसलिए ये सभी डेटा हैं।',
+          explainTextHi: 'Data किसी भी रूप में हो सकता है: टेक्स्ट (नाम), नंबर या माप (तापमान) और फोटो। इसलिए ये सभी Data हैं।',
           realWorldEn: 'E-commerce apps like Flipkart display product titles (text), user reviews (text), prices (numbers), and product photos (images).',
-          realWorldHi: 'Flipkart पर प्रोडक्ट का नाम, कीमत और फोटो तीनों ही अलग-अलग प्रकार का डेटा हैं।',
+          realWorldHi: 'Flipkart पर प्रोडक्ट का नाम, कीमत और फोटो तीनों ही अलग-अलग प्रकार का Data हैं।',
         };
       }
 
@@ -965,7 +965,7 @@ print(result)`
           explainTextEn: 'Marks represent observed, verifiable historical facts about a test that has taken place. They are not hardware, advertisements, or mere guesses; they are factual recorded observations.',
           explainTextHi: 'शिक्षक द्वारा दर्ज किए गए अंक परीक्षा के वास्तविक तथ्य (Recorded Facts) हैं, जो छात्र के प्रदर्शन को प्रमाणित करते हैं।',
           realWorldEn: 'Universities generate report cards and graduation eligibility by processing recorded marksheets in database systems.',
-          realWorldHi: 'स्कूल और कॉलेज मार्कशीट और रिजल्ट तैयार करने के लिए छात्रों के दर्ज किए गए अंकों का विश्लेषण करते हैं।',
+          realWorldHi: 'स्कूल और कॉलेज मार्कशीट और Result तैयार करने के लिए छात्रों के दर्ज किए गए अंकों का विश्लेषण करते हैं।',
         };
       }
 
@@ -973,28 +973,28 @@ print(result)`
       if (qText.includes('What is data analytics?')) {
         return {
           hintEn: currQ?.hint || 'Think about examining data to find patterns and actionable insights.',
-          hintHi: 'सोचिए कि डेटा की जांच करके उपयोगी जानकारी (insights) और पैटर्न कैसे निकाले जाते हैं।',
+          hintHi: 'सोचिए कि Data की जांच करके उपयोगी जानकारी (insights) और पैटर्न कैसे निकाले जाते हैं।',
           exampleCode: '// What Data Analytics Looks Like:\nRaw Data:  Monthly sales = [₹12k, ₹15k, ₹21k]\nAnalysis:  Sales grew +40% after weekend promotion!\nDecision:  Continue weekend promotional campaigns.',
           exampleNote: 'Data analytics transforms raw numbers into actionable business strategy.',
           explainTitleEn: 'What Is Data Analytics?',
-          explainTitleHi: 'डेटा एनालिटिक्स क्या है?',
+          explainTitleHi: 'Data Analytics क्या है?',
           explainTextEn: 'Data analytics is the science and practice of examining raw datasets to discover hidden trends, answer operational questions, and support better business decisions.',
-          explainTextHi: 'डेटा एनालिटिक्स का मतलब है डेटा की जांच करके उपयोगी जानकारी (Insights) निकालना, जिससे व्यापार में सही निर्णय लिए जा सकें।',
+          explainTextHi: 'Data Analytics का मतलब है Data की जांच करके उपयोगी जानकारी (Insights) निकालना, जिससे व्यापार में सही निर्णय लिए जा सकें।',
           realWorldEn: 'Netflix analyzes viewer ratings and watch time to decide which movies to produce and recommend next.',
-          realWorldHi: 'Netflix यूजर के देखने के पैटर्न को एनालाइज करके अगली सीरीज बनाने का फैसला करता है।',
+          realWorldHi: 'Netflix यूजर के देखने के पैटर्न को Analyze करके अगली सीरीज बनाने का फैसला करता है।',
         };
       }
 
       if (qText.includes('best-selling product') || qText.includes('checks its monthly sales')) {
         return {
           hintEn: 'The shop is analyzing monthly sales records to identify product trends.',
-          hintHi: 'दुकानदार पिछले महीने की बिक्री डेटा की जांच करके सबसे ज्यादा बिकने वाला सामान ढूंढ रहा है।',
+          hintHi: 'दुकानदार पिछले महीने की बिक्री Data की जांच करके सबसे ज्यादा बिकने वाला सामान ढूंढ रहा है।',
           exampleCode: '// Product Sales Analysis:\nItem A (Notebooks):  500 units\nItem B (Pens):      1,200 units (Best Seller!)\nItem C (Bags):        45 units',
           exampleNote: 'Ranking sales quantities is a standard descriptive analytics technique.',
           explainTitleEn: 'Identifying Best-Selling Products via Analytics',
-          explainTitleHi: 'बिक्री डेटा से बेस्ट सेलर खोजना',
+          explainTitleHi: 'बिक्री Data से बेस्ट सेलर खोजना',
           explainTextEn: 'By looking at sales logs across months, businesses evaluate which products generate high consumer demand and prioritize inventory restocking.',
-          explainTextHi: 'बिक्री रिकॉर्ड की जांच करके यह पता लगाना कि कौन सा सामान सबसे ज्यादा बिक रहा है, डेटा एनालिटिक्स कहलाता है।',
+          explainTextHi: 'बिक्री रिकॉर्ड की जांच करके यह पता लगाना कि कौन सा सामान सबसे ज्यादा बिक रहा है, Data Analytics कहलाता है।',
           realWorldEn: 'Amazon uses analytics to badge top-performing products with "Best Seller" tags.',
           realWorldHi: 'Amazon और Flipkart ज्यादा बिकने वाले प्रोडक्ट्स को "Best Seller" का टैग देते हैं।',
         };
@@ -1003,45 +1003,45 @@ print(result)`
       if (qText.includes('patterns in data')) {
         return {
           hintEn: 'Patterns reveal underlying trends and customer behaviors over time.',
-          hintHi: 'डेटा में पैटर्न ढूंढने से भविष्य के ट्रेंड्स और ग्राहकों की पसंद का पता चलता है।',
+          hintHi: 'Data में पैटर्न ढूंढने से भविष्य के Trends और ग्राहकों की पसंद का पता चलता है।',
           exampleCode: '// Weekly Sales Pattern:\nMon-Thu: ~50 orders/day\nFri-Sun: ~180 orders/day (Weekend Surge Pattern!)',
           exampleNote: 'Discovering patterns helps manage inventory and staffing proactively.',
           explainTitleEn: 'The Value of Patterns in Data',
-          explainTitleHi: 'डेटा में पैटर्न का महत्व',
+          explainTitleHi: 'Data में पैटर्न का महत्व',
           explainTextEn: 'Patterns allow organizations to understand recurring trends, forecast upcoming demand, and support evidence-based decisions rather than relying on guesswork.',
           explainTextHi: 'पैटर्न देखने से हमें यह समझ आता है कि किस दिन या महीने में मांग बढ़ती है, जिससे सही फैसले लिए जा सकते हैं।',
           realWorldEn: 'Uber detects Friday night trip spikes to dynamically position drivers near busy areas.',
-          realWorldHi: 'Uber शुक्रवार और वीकेंड पर ज्यादा गाड़ियां भेजता है क्योंकि डेटा में ऐसा पैटर्न दिखता है।',
+          realWorldHi: 'Uber शुक्रवार और वीकेंड पर ज्यादा गाड़ियां भेजता है क्योंकि Data में ऐसा पैटर्न दिखता है।',
         };
       }
 
       if (qText.includes("last month's") || qText.includes("month's sales")) {
         return {
           hintEn: 'Look for an activity that evaluates and compares numerical data over time.',
-          hintHi: 'उस गतिविधि को चुनें जिसमें दो महीनों के डेटा की तुलना करके ट्रेंड्स देखे जाते हैं।',
+          hintHi: 'उस गतिविधि को चुनें जिसमें दो महीनों के Data की तुलना करके Trends देखे जाते हैं।',
           exampleCode: '// Month-over-Month (MoM) Analytics:\nLast Month: ₹1,50,000\nThis Month: ₹1,95,000 (+30% Growth)',
           exampleNote: 'Comparing periods is one of the most common analytical workflows in finance and retail.',
           explainTitleEn: 'Comparative Analytics in Action',
           explainTitleHi: 'महीने-दर-महीने बिक्री की तुलना',
           explainTextEn: 'Comparing monthly sales identifies whether business is growing, stagnant, or declining. This is a foundational data analytics task.',
-          explainTextHi: 'पिछले महीने और इस महीने की बिक्री की तुलना करना डेटा एनालिटिक्स का एक सीधा उदाहरण है।',
+          explainTextHi: 'पिछले महीने और इस महीने की बिक्री की तुलना करना Data Analytics का एक सीधा उदाहरण है।',
           realWorldEn: 'Financial analysts present monthly growth rate reports to board executives every quarter.',
-          realWorldHi: 'कंपनियां हर महीने सेल्स रिपोर्ट बनाकर देखती हैं कि उनका बिजनेस कितना बढ़ा है।',
+          realWorldHi: 'कंपनियां हर महीने Cells Report बनाकर देखती हैं कि उनका बिजनेस कितना बढ़ा है।',
         };
       }
 
       if (qText.includes('help a business do')) {
         return {
           hintEn: 'Data analytics provides insights for informed decisions, but cannot eliminate all uncertainty.',
-          hintHi: 'डेटा एनालिटिक्स बेहतर और सूचित निर्णय (Better-informed decisions) लेने में मदद करता है।',
+          hintHi: 'Data Analytics बेहतर और सूचित निर्णय (Better-informed decisions) लेने में मदद करता है।',
           exampleCode: '// Intuition vs Data-Driven:\nIntuition: "I think people might like this shirt."\nAnalytics: "Data shows 78% of customers bought black shirts in winter."',
           exampleNote: 'Analytics reduces uncertainty and backs decisions with observable facts.',
           explainTitleEn: 'Business Impact of Data Analytics',
-          explainTitleHi: 'बिजनेस में डेटा एनालिटिक्स का फायदा',
+          explainTitleHi: 'बिजनेस में Data Analytics का फायदा',
           explainTextEn: 'Data analytics empowers business leaders to make better-informed, evidence-backed decisions, reducing costly mistakes and improving profitability.',
-          explainTextHi: 'डेटा एनालिटिक्स व्यापार को तुक्के लगाने के बजाय ठोस तथ्यों के आधार पर सही निर्णय लेने में सक्षम बनाता है।',
+          explainTextHi: 'Data Analytics व्यापार को तुक्के लगाने के बजाय ठोस तथ्यों के आधार पर सही निर्णय लेने में सक्षम बनाता है।',
           realWorldEn: 'Companies with strong data analytics practices achieve up to 23x greater customer acquisition.',
-          realWorldHi: 'डेटा का सही इस्तेमाल करने वाली कंपनियां ग्राहकों को बेहतर समझती हैं और ज्यादा मुनाफा कमाती हैं।',
+          realWorldHi: 'Data का सही इस्तेमाल करने वाली कंपनियां ग्राहकों को बेहतर समझती हैं और ज्यादा मुनाफा कमाती हैं।',
         };
       }
 
@@ -1049,45 +1049,45 @@ print(result)`
       if (qText.includes('Why do businesses need data analytics?')) {
         return {
           hintEn: 'Businesses use analytics to guide choices with evidence rather than pure guesswork.',
-          hintHi: 'बिजनेस तुक्के लगाने के बजाय ठोस तथ्यों के आधार पर सही निर्णय (better-informed decisions) लेने के लिए डेटा का उपयोग करते हैं।',
+          hintHi: 'बिजनेस तुक्के लगाने के बजाय ठोस तथ्यों के आधार पर सही निर्णय (better-informed decisions) लेने के लिए Data का उपयोग करते हैं।',
           exampleCode: '// Business Decision Making:\nGuesswork:  "Let us open 10 new branches randomly."\nAnalytics:  "Customer order data shows 80% demand in South Zone."\nDecision:   Open branches in South Zone first!',
           exampleNote: 'Data analytics empowers leaders with actionable business intelligence.',
           explainTitleEn: 'Why Businesses Need Data Analytics',
-          explainTitleHi: 'बिजनेस को डेटा एनालिटिक्स की जरूरत क्यों है?',
+          explainTitleHi: 'बिजनेस को Data Analytics की जरूरत क्यों है?',
           explainTextEn: 'Modern enterprises depend on data analytics to uncover customer behaviors, boost operational efficiency, minimize inventory waste, and make evidence-based decisions.',
-          explainTextHi: 'आज के दौर में कंपनियां ग्राहकों की पसंद समझने, नुकसान कम करने और मुनाफा बढ़ाने के लिए डेटा एनालिटिक्स का इस्तेमाल करती हैं।',
+          explainTextHi: 'आज के दौर में कंपनियां ग्राहकों की पसंद समझने, नुकसान कम करने और मुनाफा बढ़ाने के लिए Data Analytics का इस्तेमाल करती हैं।',
           realWorldEn: 'Amazon attributes 35% of its overall revenue to algorithmic data-driven recommendations.',
-          realWorldHi: 'Amazon की 35% बिक्री डेटा एनालिटिक्स और प्रोडक्ट रिकमेंडेशन से होती है।',
+          realWorldHi: 'Amazon की 35% बिक्री Data Analytics और प्रोडक्ट रिकमेंडेशन से होती है।',
         };
       }
 
       if (qText.includes("sales are falling") || qText.includes("sales drop")) {
         return {
           hintEn: 'When sales decline, data analytics investigates transaction history to pinpoint the exact reasons.',
-          hintHi: 'जब बिक्री घटती है, तो डेटा एनालिटिक्स पुराने रिकॉर्ड्स की जांच करके गिरावट के मुख्य कारण (reasons) ढूंढता है।',
+          hintHi: 'जब बिक्री घटती है, तो Data Analytics पुराने रिकॉर्ड्स की जांच करके गिरावट के मुख्य कारण (reasons) ढूंढता है।',
           exampleCode: '// Sales Drop Diagnostic:\nProduct A Sales: Steady (-1%)\nProduct B Sales: Crashed by -55% after price hike!\n-> Immediate insight: Customers rejected Product B price rise.',
           exampleNote: 'Diagnostic analytics answers the question: "Why did it happen?"',
           explainTitleEn: 'Investigating Sales Declines',
           explainTitleHi: 'बिक्री में गिरावट की जांच',
           explainTextEn: 'Instead of panicking or closing down, a business uses data analytics to break down sales numbers by category, pricing, and footfall to diagnose the root cause.',
-          explainTextHi: 'दुकान बंद करने या नजरअंदाज करने के बजाय डेटा का विश्लेषण करने से पता चलता है कि किस सामान या वजह से बिक्री घटी।',
+          explainTextHi: 'दुकान बंद करने या नजरअंदाज करने के बजाय Data का विश्लेषण करने से पता चलता है कि किस सामान या वजह से बिक्री घटी।',
           realWorldEn: 'Retail chains monitor daily store sales alerts to instantly investigate sudden revenue drops.',
-          realWorldHi: 'मॉल और सुपरमार्केट रोजाना बिक्री डेटा देखते हैं ताकि किसी भी गिरावट को तुरंत ठीक किया जा सके।',
+          realWorldHi: 'मॉल और सुपरमार्केट रोजाना बिक्री Data देखते हैं ताकि किसी भी गिरावट को तुरंत ठीक किया जा सके।',
         };
       }
 
       if (qText.includes('customer feedback data') || qText.includes('customer feedback')) {
         return {
           hintEn: 'Feedback ratings and review text highlight what customers love and what needs improvement.',
-          hintHi: 'कस्टमर फीडबैक और रेटिंग्स से समझ आता है कि ग्राहक क्या चाहते हैं और उन्हें क्या परेशानी हो रही है।',
+          hintHi: 'Customer फीडबैक और रेटिंग्स से समझ आता है कि ग्राहक क्या चाहते हैं और उन्हें क्या परेशानी हो रही है।',
           exampleCode: '// Customer Feedback Sentiment:\n⭐ 1-star: "Delivery took 7 days instead of 2."\n⭐ 5-star: "Product quality is awesome!"\n-> Business priority: Improve delivery logistics speed.',
           exampleNote: 'Feedback analytics directly connects user opinions with product improvements.',
           explainTitleEn: 'Leveraging Customer Feedback Data',
-          explainTitleHi: 'कस्टमर फीडबैक का सही उपयोग',
+          explainTitleHi: 'Customer फीडबैक का सही उपयोग',
           explainTextEn: 'Businesses analyze reviews, NPS scores, and survey responses to understand true customer requirements and systematically resolve service issues.',
           explainTextHi: 'ग्राहक फीडबैक का विश्लेषण करके कंपनी अपनी सेवाओं में सुधार करती है ताकि ग्राहक संतुष्ट रहें।',
           realWorldEn: 'Zomato and Swiggy use customer review NLP to flag restaurant hygiene and delivery speed issues.',
-          realWorldHi: 'Zomato और Swiggy कस्टमर रेटिंग्स देखकर खराब डिलीवरी और खाने की शिकायत दूर करते हैं।',
+          realWorldHi: 'Zomato और Swiggy Customer रेटिंग्स देखकर खराब डिलीवरी और खाने की शिकायत दूर करते हैं।',
         };
       }
 
@@ -1098,26 +1098,26 @@ print(result)`
           exampleCode: '// Stock Waste Reduction:\nMilk stock ordered:  100 packets/day\nAverage daily sales:  60 packets/day\nWaste:                40 packets expired!\n-> New order rule:    Order 65 packets/day max.',
           exampleNote: 'Inventory analytics balances holding costs and customer demand.',
           explainTitleEn: 'Reducing Stock Waste with Analytics',
-          explainTitleHi: 'डेटा से स्टॉक की बर्बादी रोकना',
+          explainTitleHi: 'Data से स्टॉक की बर्बादी रोकना',
           explainTextEn: 'Tracking sales velocity alongside warehouse stock data ensures businesses reorder just the right amount of goods, drastically cutting spoilage and holding costs.',
           explainTextHi: 'बिक्री और स्टॉक रिकॉर्ड्स को देखने से सही मात्रा में सामान मंगाया जाता है और बर्बादी रुकती है।',
           realWorldEn: 'Walmart uses predictive shelf-stocking algorithms to minimize perishable produce spoilage.',
-          realWorldHi: 'Walmart फल और सब्जियों की बर्बादी रोकने के लिए सटीक इन्वेंट्री डेटा का इस्तेमाल करता है।',
+          realWorldHi: 'Walmart फल और सब्जियों की बर्बादी रोकने के लिए सटीक इन्वेंट्री Data का इस्तेमाल करता है।',
         };
       }
 
       if (qText.includes('important benefit of data analytics') || qText.includes('benefit of data analytics')) {
         return {
           hintEn: 'Analytics does not guarantee instant magic or remove every risk, but it grounds decisions in solid evidence.',
-          hintHi: 'डेटा एनालिटिक्स हर जोखिम नहीं हटा सकता, लेकिन यह सबूतों पर आधारित सही निर्णय (evidence-based decisions) लेने में मदद करता है।',
+          hintHi: 'Data Analytics हर जोखिम नहीं हटा सकता, लेकिन यह सबूतों पर आधारित सही निर्णय (evidence-based decisions) लेने में मदद करता है।',
           exampleCode: '// Evidence-Based Decision Framework:\nObservation: 65% of app visits occur between 8 PM - 10 PM.\nAction:      Schedule flash sales at 8:30 PM with push notification.\nResult:      +35% conversion backed by user traffic evidence.',
           exampleNote: 'Evidence-based strategies consistently outperform subjective opinions.',
           explainTitleEn: 'Core Benefit: Evidence-Based Decisions',
-          explainTitleHi: 'डेटा एनालिटिक्स का सबसे बड़ा फायदा',
+          explainTitleHi: 'Data Analytics का सबसे बड़ा फायदा',
           explainTextEn: 'The primary benefit of data analytics is transforming raw operations data into clear evidence, eliminating guesswork and giving decision-makers confidence.',
-          explainTextHi: 'डेटा एनालिटिक्स का मुख्य फायदा यह है कि निर्णय अंदाजे के बजाय ठोस आंकड़ों और सबूतों पर आधारित होते हैं।',
+          explainTextHi: 'Data Analytics का मुख्य फायदा यह है कि निर्णय अंदाजे के बजाय ठोस आंकड़ों और सबूतों पर आधारित होते हैं।',
           realWorldEn: 'Fortune 500 CEOs rely on predictive analytics dashboards for multi-billion dollar capital allocation.',
-          realWorldHi: 'बड़ी कंपनियां नए प्रोजेक्ट्स में पैसा लगाने से पहले डेटा एनालिटिक्स रिपोर्ट की जांच करती हैं।',
+          realWorldHi: 'बड़ी कंपनियां नए Projects में पैसा लगाने से पहले Data Analytics Report की जांच करती हैं।',
         };
       }
 
@@ -1125,22 +1125,22 @@ print(result)`
       if (qText.includes('What is Data Science?')) {
         return {
           hintEn: 'Data Science combines scientific methods, algorithms, and data analysis to uncover hidden insights.',
-          hintHi: 'डेटा साइंस डेटा और वैज्ञानिक तरीकों (Scientific methods) का उपयोग करके छिपे हुए पैटर्न्स और इनसाइट्स ढूंढता है।',
+          hintHi: 'Data Science Data और वैज्ञानिक तरीकों (Scientific methods) का use करके छिपे हुए पैटर्न्स और इनसाइट्स ढूंढता है।',
           exampleCode: '// Data Science Workflow:\n1. Collect Raw Data       -> [10M User Interactions]\n2. Clean & Analyze         -> [Statistical Distributions]\n3. Build Machine Model     -> [Personalized Recommendation Engine]',
           exampleNote: 'Data Science goes beyond simple charts by applying scientific inquiry and predictive modeling.',
           explainTitleEn: 'What Is Data Science?',
-          explainTitleHi: 'डेटा साइंस क्या है?',
+          explainTitleHi: 'Data Science क्या है?',
           explainTextEn: 'Data Science is an interdisciplinary field combining mathematics, statistics, computer programming, and domain expertise to discover patterns and solve complex real-world challenges.',
-          explainTextHi: 'डेटा साइंस गणित, कंप्यूटर प्रोग्रामिंग और आंकड़ों का संगम है जो डेटा से गहरी समझ निकालकर भविष्य के फैसले लेने में मदद करता है।',
+          explainTextHi: 'Data Science गणित, Computer Programming और आंकड़ों का संगम है जो Data से गहरी समझ निकालकर भविष्य के फैसले लेने में मदद करता है।',
           realWorldEn: 'Google and NASA use Data Science pipelines to process exabytes of satellite imagery and search behavior.',
-          realWorldHi: 'Google सर्च और यूट्यूब रिकमेंडेशन पूरी तरह से डेटा साइंस पर आधारित हैं।',
+          realWorldHi: 'Google सर्च और यूट्यूब रिकमेंडेशन पूरी तरह से Data Science पर आधारित हैं।',
         };
       }
 
       if (qText.includes('music app recommends songs') || qText.includes('recommends songs')) {
         return {
           hintEn: 'Recommendation engines are powered by data science machine learning models.',
-          hintHi: 'म्यूजिक ऐप में गाने रिकमेंड करने की तकनीक डेटा साइंस (Data Science) का काम है।',
+          hintHi: 'म्यूजिक ऐप में गाने रिकमेंड करने की तकनीक Data Science (Data Science) का काम है।',
           exampleCode: '// Spotify Discover Weekly Engine:\nUser History: [Arijit Singh, Acoustic Ballads]\nData Science: Collaborative Filtering Model\nOutput:       "Here is an unreleased song you will love!"',
           exampleNote: 'Data science models study listening duration, skips, and playlist additions to match songs.',
           explainTitleEn: 'Music Recommendation via Data Science',
@@ -1148,7 +1148,7 @@ print(result)`
           explainTextEn: 'Streaming services like Spotify and Apple Music use data science algorithms to map millions of user listening habits into predictive preference clusters.',
           explainTextHi: 'Spotify और Gaana आपके पसंदीदा गानों का विश्लेषण करके आपकी पसंद के नए गाने ढूंढते हैं।',
           realWorldEn: 'Spotify\'s Discover Weekly drives over 1.7 Billion streaming hours annually through predictive data models.',
-          realWorldHi: 'Spotify का डिस्कवर वीकली फीचर डेटा साइंस की बदौलत हर हफ्ते करोड़ों यूजर्स को उनके पसंदीदा गाने सुझाता है।',
+          realWorldHi: 'Spotify का डिस्कवर वीकली Feature Data Science की बदौलत हर हफ्ते करोड़ों यूजर्स को उनके पसंदीदा गाने सुझाता है।',
         };
       }
 
@@ -1159,39 +1159,39 @@ print(result)`
           exampleCode: '// Weather Prediction Pipeline:\nInput:      Past 10 years of Barometric Pressure & Humidity Data\nModel:      Time-Series Atmospheric Neural Network\nPrediction: 85% Probability of Afternoon Rain (✓)',
           exampleNote: 'Historical measurements are the raw fuel for forecasting models.',
           explainTitleEn: 'Forecasting Weather with Historical Data',
-          explainTitleHi: 'पुराने डेटा से मौसम का पूर्वानुमान',
+          explainTitleHi: 'पुराने Data से मौसम का पूर्वानुमान',
           explainTextEn: 'Meteorological agencies rely on decades of historical satellite readings, temperature sensors, and atmospheric measurements to train accurate prediction models.',
           explainTextHi: 'मौसम वैज्ञानिक पिछले कई सालों के तापमान, हवा के दबाव और नमी के आंकड़ों का विश्लेषण करके बारिश की भविष्यवाणी करते हैं।',
           realWorldEn: 'AccuWeather runs supercomputer data science simulations processing billions of data points per minute.',
-          realWorldHi: 'मौसम विभाग सुपरकंप्यूटर और डेटा साइंस से लाखों सेंसर डेटा प्रोसेस करके चक्रवात और बारिश का अलर्ट जारी करता है।',
+          realWorldHi: 'मौसम विभाग सुपरकंप्यूटर और Data Science से लाखों सेंसर Data प्रोसेस करके चक्रवात और बारिश का अलर्ट जारी करता है।',
         };
       }
 
       if (qText.includes('pattern in data')) {
         return {
           hintEn: 'A pattern represents a consistent trend or relationship that repeats across observations.',
-          hintHi: 'डेटा में पैटर्न का मतलब है एक दोहराया जाने वाला ट्रेंड या संबंध (Repeated trend or relationship)।',
+          hintHi: 'Data में पैटर्न का मतलब है एक दोहराया जाने वाला Trend या संबंध (Repeated trend or relationship)।',
           exampleCode: '// Pattern Detection:\nDay 1 Temperature: 38°C -> Ice cream sales: 400\nDay 2 Temperature: 42°C -> Ice cream sales: 650\nDay 3 Temperature: 22°C -> Ice cream sales: 90\nPattern: Higher temperature strongly correlates with higher sales!',
           exampleNote: 'Detecting patterns helps organizations prepare inventory and allocate resources ahead of time.',
           explainTitleEn: 'Understanding Patterns in Data',
-          explainTitleHi: 'डेटा में पैटर्न का मतलब',
+          explainTitleHi: 'Data में पैटर्न का मतलब',
           explainTextEn: 'A data pattern is a noticeable, repeated regular trend or relationship among variables that allows data scientists to extrapolate and predict future occurrences.',
           explainTextHi: 'पैटर्न का मतलब आंकड़ों के बीच बार-बार दिखने वाला ऐसा रिश्ता है जिससे भविष्य का अनुमान लगाया जा सके।',
           realWorldEn: 'Retailers identify seasonal purchase patterns to stock winter jackets 3 months before peak cold weather.',
-          realWorldHi: 'दुकानें सर्दियों के कपड़े ठंड आने से 2 महीने पहले ही मंगा लेती हैं क्योंकि डेटा में ऐसा पैटर्न दिखता है।',
+          realWorldHi: 'दुकानें सर्दियों के कपड़े ठंड आने से 2 महीने पहले ही मंगा लेती हैं क्योंकि Data में ऐसा पैटर्न दिखता है।',
         };
       }
 
       if (qText.includes('help businesses make predictions')) {
         return {
           hintEn: 'Data science trains statistical models on past records to make probable predictions, but not 100% infallible guarantees.',
-          hintHi: 'हाँ, डेटा और सही मॉडल्स (Suitable models) का इस्तेमाल करके भविष्य का अनुमान लगाया जाता है।',
+          hintHi: 'हाँ, Data और सही Models (Suitable models) का use करके भविष्य का अनुमान लगाया जाता है।',
           exampleCode: '// Predictive Business Model:\nHistorical Sales Data + Economic Indicators\n-> Machine Learning Regression Model\n-> Predict Next Quarter Revenue with 92% Confidence Interval.',
           exampleNote: 'Predictions guide strategic decisions while accounting for market uncertainty.',
           explainTitleEn: 'Predictive Modeling in Business',
           explainTitleHi: 'बिजनेस में प्रेडिक्शन की शक्ति',
           explainTextEn: 'Data Science allows enterprises to forecast customer demand, anticipate supply shortages, and detect fraud before it escalates.',
-          explainTextHi: 'डेटा साइंस कंपनियों को भविष्य की मांग, मुनाफे और आने वाले जोखिमों का सटीक अनुमान लगाने में मदद करता है।',
+          explainTextHi: 'Data Science कंपनियों को भविष्य की मांग, मुनाफे और आने वाले जोखिमों का सटीक अनुमान लगाने में मदद करता है।',
           realWorldEn: 'Amazon forecasts package delivery volumes to hire temporary logistics fleets weeks before festive shopping rushes.',
           realWorldHi: 'Amazon त्योहारों के सीजन में डिलीवरी का लोड पहले से प्रेडिक्ट करके गाड़ियां और स्टाफ तैयार रखता है।',
         };
@@ -1200,30 +1200,30 @@ print(result)`
       if (qText.includes('Why do businesses use Data Science?')) {
         return {
           hintEn: 'Businesses use Data Science to transform raw numbers into insights and make evidence-based choices rather than guessing.',
-          hintHi: 'कंपनियां डेटा को समझकर सही और सूचित निर्णय (Better-informed decisions) लेने के लिए डेटा साइंस का उपयोग करती हैं।',
+          hintHi: 'कंपनियां Data को समझकर सही और सूचित निर्णय (Better-informed decisions) लेने के लिए Data Science का उपयोग करती हैं।',
           exampleCode: '// Business Decision Making:\nGuesswork:  "Let us produce 50,000 blue bags based on intuition."\nData Science: "Data shows demand for green bags is 4x higher in summer!"\nDecision:    Produce 40,000 green and 10,000 blue bags.',
           exampleNote: 'Data Science replaces guesswork with quantifiable facts.',
           explainTitleEn: 'Why Businesses Use Data Science',
-          explainTitleHi: 'कंपनियां डेटा साइंस का उपयोग क्यों करती हैं?',
+          explainTitleHi: 'कंपनियां Data Science का उपयोग क्यों करती हैं?',
           explainTextEn: 'Businesses leverage Data Science to uncover hidden consumer trends, optimize pricing, minimize operational waste, and make evidence-backed strategic decisions.',
-          explainTextHi: 'डेटा साइंस कंपनियों को ग्राहकों के व्यवहार को समझने, बर्बादी कम करने और सही फैसले लेने में मदद करता है।',
+          explainTextHi: 'Data Science कंपनियों को ग्राहकों के व्यवहार को समझने, बर्बादी कम करने और सही फैसले लेने में मदद करता है।',
           realWorldEn: 'Amazon, Uber, and Flipkart use data science to optimize pricing, logistics, and customer retention at scale.',
-          realWorldHi: 'Flipkart और Amazon करोड़ों ग्राहकों के डेटा का विश्लेषण करके सेल्स और ऑपरेशन्स को बेहतर बनाते हैं।',
+          realWorldHi: 'Flipkart और Amazon करोड़ों ग्राहकों के Data का विश्लेषण करके Cells और ऑपरेशन्स को बेहतर बनाते हैं।',
         };
       }
 
       if (qText.includes('recommend products customers may like') || qText.includes('online store wants to recommend')) {
         return {
           hintEn: 'Recommendation algorithms analyze browsing behavior, cart additions, and previous purchases.',
-          hintHi: 'कस्टमर की पुरानी खरीदारी और पसंद (Past purchases & customer preferences) का विश्लेषण करके सही प्रोडक्ट रिकमेंड किए जाते हैं।',
+          hintHi: 'Customer की पुरानी खरीदारी और पसंद (Past purchases & customer preferences) का विश्लेषण करके सही प्रोडक्ट रिकमेंड किए जाते हैं।',
           exampleCode: '// Collaborative Filtering Engine:\nUser A bought:  [Wireless Mouse, Laptop Stand]\nUser B bought:  [Wireless Mouse]\nRecommendation: Suggest "Laptop Stand" to User B (94% match)',
           exampleNote: 'Personalized product recommendations drive higher customer satisfaction and sales.',
           explainTitleEn: 'E-Commerce Product Recommendations',
           explainTitleHi: 'ऑनलाइन स्टोर में प्रोडक्ट रिकमेंडेशन',
           explainTextEn: 'Online stores use data science recommendation engines to analyze historical purchase logs and preferences, surfacing products each customer is most likely to buy.',
-          explainTextHi: 'ऑनलाइन शॉपिंग वेबसाइट्स यूजर के पुराने ऑर्डर्स और पसंद का डेटा देखकर वही सामान दिखाती हैं जो यूजर खरीदना चाहता है।',
+          explainTextHi: 'ऑनलाइन शॉपिंग वेबसाइट्स यूजर के पुराने Orders और पसंद का Data देखकर वही सामान दिखाती हैं जो यूजर खरीदना चाहता है।',
           realWorldEn: 'Over 35% of Amazon purchases originate directly from algorithmic product recommendations.',
-          realWorldHi: 'Amazon की 35% से ज्यादा बिक्री डेटा साइंस द्वारा सुझाए गए प्रोडक्ट्स से होती है।',
+          realWorldHi: 'Amazon की 35% से ज्यादा बिक्री Data Science द्वारा सुझाए गए प्रोडक्ट्स से होती है।',
         };
       }
 
@@ -1238,37 +1238,37 @@ print(result)`
           explainTextEn: 'Supermarkets analyze historical sales velocity, weekend spikes, and shelf-life timelines to order precisely what customers will buy, preventing food waste.',
           explainTextHi: 'बिक्री के आंकड़ों को देखकर सुपरमार्केट केवल उतनी ही सब्जियां और खाना मंगाता है जितना बिक सके।',
           realWorldEn: 'Tesco reduced perishable food waste by over 30% using predictive replenishment algorithms.',
-          realWorldHi: 'Tesco और DMart जैसे सुपरमार्केट डेटा साइंस की मदद से लाखों रुपये का सामान खराब होने से बचाते हैं।',
+          realWorldHi: 'Tesco और DMart जैसे सुपरमार्केट Data Science की मदद से लाखों रुपये का सामान खराब होने से बचाते हैं।',
         };
       }
 
       if (qText.includes('stop using its service') || qText.includes('customers stop using')) {
         return {
           hintEn: 'Study cancellation logs, customer support complaints, and activity drops to understand why users leave.',
-          hintHi: 'कस्टमर फीडबैक और उपयोग के पैटर्न (Customer feedback & usage patterns) की जांच करके पता चलता है कि ग्राहक सेवा क्यों छोड़ रहे हैं।',
+          hintHi: 'Customer फीडबैक और उपयोग के पैटर्न (Customer feedback & usage patterns) की जांच करके पता चलता है कि ग्राहक सेवा क्यों छोड़ रहे हैं।',
           exampleCode: '// Churn Diagnostic Analysis:\nUser Metric: App opens dropped from 5x/day to 0x in week 3\nExit Survey: "Streaming quality buffered on mobile network"\nFix Action:  Compress video streams for mobile networks.',
           exampleNote: 'Customer churn analytics helps businesses identify and fix pain points before losing users.',
           explainTitleEn: 'Understanding Customer Churn',
-          explainTitleHi: 'कस्टमर सर्विस क्यों छोड़ते हैं? (Churn Analysis)',
+          explainTitleHi: 'Customer सर्विस क्यों छोड़ते हैं? (Churn Analysis)',
           explainTextEn: 'When subscribers cancel, data scientists analyze customer feedback, support interactions, and drop-offs in usage patterns to diagnose the root issues.',
           explainTextHi: 'जब ग्राहक सेवा छोड़ते हैं, तो उनकी शिकायतों और ऐप इस्तेमाल करने के तरीकों की जांच करके सुधार किया जाता है।',
           realWorldEn: 'Telecom companies like Jio and Airtel predict customer churn weeks before a user ports their number.',
-          realWorldHi: 'Jio और Airtel डेटा एनालिसिस से पहले ही पता लगा लेते हैं कि कौन सा ग्राहक नंबर पोर्ट कराने की सोच रहा है।',
+          realWorldHi: 'Jio और Airtel Data Analysis से पहले ही पता लगा लेते हैं कि कौन सा ग्राहक नंबर पोर्ट कराने की सोच रहा है।',
         };
       }
 
       if (qText.includes("estimate next month's demand") || qText.includes('past sales data to estimate')) {
         return {
           hintEn: 'A company analyzes past transaction trends to forecast likely future demand and plan stock accordingly.',
-          hintHi: 'भविष्य की संभावित मांग का अनुमान (Predict likely future demand) लगाने के लिए पिछले बिक्री डेटा का उपयोग किया जाता है।',
+          hintHi: 'भविष्य की संभावित मांग का अनुमान (Predict likely future demand) लगाने के लिए पिछले बिक्री Data का उपयोग किया जाता है।',
           exampleCode: '// Time-Series Demand Forecasting:\nOctober Sales:  12,000 units\nNovember Sales: 18,500 units (Festive boost: +54%)\nEstimated Dec:  21,000 units (Trend extrapolation)',
           exampleNote: 'Forecasting estimates probable future demand to optimize supply chains.',
           explainTitleEn: 'Forecasting Future Demand',
           explainTitleHi: 'भविष्य की मांग का पूर्वानुमान',
           explainTextEn: 'By modeling historical sales patterns, seasonal peaks, and growth trends, businesses predict likely future product demand with statistical precision.',
-          explainTextHi: 'पुराने सेल्स डेटा की मदद से कंपनियां अनुमान लगाती हैं कि अगले महीने कितने सामान की जरूरत पड़ेगी।',
+          explainTextHi: 'पुराने Cells Data की मदद से कंपनियां अनुमान लगाती हैं कि अगले महीने कितने सामान की जरूरत पड़ेगी।',
           realWorldEn: 'Automobile makers like Maruti Suzuki forecast car demand 6 months ahead to procure parts and manage factories.',
-          realWorldHi: 'मारुति सुजुकी 6 महीने पहले ही डेटा देखकर तय करती है कि कौन सी कार कितनी संख्या में बनानी है।',
+          realWorldHi: 'मारुति सुजुकी 6 महीने पहले ही Data देखकर तय करती है कि कौन सी कार कितनी संख्या में बनानी है।',
         };
       }
 
@@ -1276,13 +1276,13 @@ print(result)`
       if (qText.includes('What is Machine Learning?')) {
         return {
           hintEn: 'Machine Learning teaches computers to discover patterns from historical data and examples rather than manually hardcoding every rule.',
-          hintHi: 'मशीन लर्निंग कंप्यूटर को डेटा और उदाहरणों (Patterns from data) से सीखना सिखाता है।',
+          hintHi: 'Machine Learning Computer को Data और उदाहरणों (Patterns from data) से सीखना सिखाता है।',
           exampleCode: '// Traditional Programming vs Machine Learning:\nTraditional: Data + Hardcoded Rules -> Output\nMachine Learning: Data + Expected Outputs -> Learned Rules (Model)',
           exampleNote: 'ML algorithms automatically learn mapping functions from input features to output targets.',
           explainTitleEn: 'What Is Machine Learning?',
-          explainTitleHi: 'मशीन लर्निंग क्या है?',
+          explainTitleHi: 'Machine Learning क्या है?',
           explainTextEn: 'Machine Learning is a subset of artificial intelligence where algorithms improve their performance at tasks through experience gained from analyzing historical data.',
-          explainTextHi: 'मशीन लर्निंग AI की वह शाखा है जिसमें कंप्यूटर बिना किसी मैनुअल कोडिंग के डेटा से खुद सीखता है।',
+          explainTextHi: 'Machine Learning AI की वह शाखा है जिसमें Computer बिना किसी मैनुअल Coding के Data से खुद सीखता है।',
           realWorldEn: 'Google Search, YouTube recommendations, and Tesla Autopilot all rely deeply on Machine Learning systems.',
           realWorldHi: 'YouTube और Google Search यूजर के देखने के पैटर्न से सीखकर सबसे अच्छे परिणाम दिखाते हैं।',
         };
@@ -1291,30 +1291,30 @@ print(result)`
       if (qText.includes('What does an ML model learn from?') || qText.includes('model learn from')) {
         return {
           hintEn: 'Models require representative training data and real-world examples to deduce predictive relationships.',
-          hintHi: 'मशीन लर्निंग मॉडल डेटा और उदाहरणों (Data and examples) से सीखता है।',
+          hintHi: 'Machine Learning Model Data और उदाहरणों (Data and examples) से सीखता है।',
           exampleCode: '// Training Input Data:\nImages of Cats (10,000 photos) + Images of Dogs (10,000 photos)\n-> Neural Network Training\n-> Model successfully recognizes new unseen cat photos!',
           exampleNote: 'High-quality, labeled training examples are the essential fuel of machine learning.',
           explainTitleEn: 'What ML Models Learn From',
-          explainTitleHi: 'एमएल मॉडल किससे सीखता है?',
+          explainTitleHi: 'एमएल Model किससे सीखता है?',
           explainTextEn: 'An ML model updates its internal mathematical weights and decision boundaries by iteratively examining features and labels provided in training datasets.',
-          explainTextHi: 'मॉडल लाखों उदाहरणों और डेटा रिकॉर्ड्स को देखकर सही और गलत की पहचान करना सीखता है।',
+          explainTextHi: 'Model लाखों उदाहरणों और Data रिकॉर्ड्स को देखकर सही और गलत की पहचान करना सीखता है।',
           realWorldEn: 'Speech recognition models like Siri and Alexa learn from thousands of hours of recorded human voices.',
-          realWorldHi: 'Siri और Alexa हजारों घंटों की इंसानी आवाज़ों के डेटा से सुनकर समझना सीखते हैं।',
+          realWorldHi: 'Siri और Alexa हजारों घंटों की इंसानी आवाज़ों के Data से सुनकर समझना सीखते हैं।',
         };
       }
 
       if (qText.includes('Machine Learning example') || qText.includes('Which is a Machine Learning example')) {
         return {
           hintEn: 'Look for an intelligent software system that dynamically adapts to incoming patterns, such as email spam filtering.',
-          hintHi: 'ईमेल स्पैम डिटेक्शन (Email spam detection) मशीन लर्निंग का एक बेहतरीन उदाहरण है।',
+          hintHi: 'ईमेल स्पैम डिटेक्शन (Email spam detection) Machine Learning का एक बेहतरीन उदाहरण है।',
           exampleCode: '// Spam Classification Model:\nInput: "Congratulations! You won $1,000,000 lottery!"\nSpam Probability: 99.8%\nAction: Route to Spam Folder automatically.',
           exampleNote: 'Spam filters continuously adapt as spammers change their wording over time.',
           explainTitleEn: 'Real-World Machine Learning Application',
-          explainTitleHi: 'मशीन लर्निंग का वास्तविक उदाहरण',
+          explainTitleHi: 'Machine Learning का वास्तविक उदाहरण',
           explainTextEn: 'Email spam detection utilizes Natural Language Processing (NLP) classification models trained on millions of messages to automatically safeguard user inboxes.',
-          explainTextHi: 'ईमेल स्पैम फिल्टर पुराने स्पैम मैसेजेस को पहचानकर नए फर्जी ईमेल्स को इनबॉक्स में आने से रोकता है।',
+          explainTextHi: 'ईमेल स्पैम Filter पुराने स्पैम मैसेजेस को पहचानकर नए फर्जी ईमेल्स को इनबॉक्स में आने से रोकता है।',
           realWorldEn: 'Gmail blocks over 99.9% of spam, phishing, and malware using machine learning classifiers.',
-          realWorldHi: 'Gmail हर रोज करोड़ों स्पैम ईमेल्स को मशीन लर्निंग की मदद से ब्लॉक करता है।',
+          realWorldHi: 'Gmail हर रोज करोड़ों स्पैम ईमेल्स को Machine Learning की मदद से ब्लॉक करता है।',
         };
       }
 
@@ -1325,9 +1325,9 @@ print(result)`
           exampleCode: '// Model Prediction Function:\nmodel.predict(house_features) -> Output: ₹75,00,000 Estimated Valuation',
           exampleNote: 'Predictions output probabilities, regression values, or classification labels.',
           explainTitleEn: 'Understanding ML Predictions',
-          explainTitleHi: 'मशीन लर्निंग में प्रेडिक्शन क्या है?',
+          explainTitleHi: 'Machine Learning में प्रेडिक्शन क्या है?',
           explainTextEn: 'A prediction is the result generated when a trained model is provided with novel inputs and extrapolates the most probable outcome using its learned parameters.',
-          explainTextHi: 'मॉडल नए इनपुट को देखकर अपनी सीखी हुई जानकारी के अनुसार सबसे सटीक अनुमान बताता है।',
+          explainTextHi: 'Model नए Input को देखकर अपनी सीखी हुई जानकारी के अनुसार सबसे सटीक अनुमान बताता है।',
           realWorldEn: 'Uber predicts ride pickup ETAs and fares in real time based on traffic and weather conditions.',
           realWorldHi: 'Uber ट्रैफिक और मौसम देखकर बताता है कि कैब आने में कितने मिनट लगेंगे।',
         };
@@ -1342,7 +1342,7 @@ print(result)`
           explainTitleEn: 'Primary Goal of ML Engineering',
           explainTitleHi: 'एमएल इंजीनियरिंग का मुख्य उद्देश्य',
           explainTextEn: 'The purpose of ML engineering is to productionize machine learning models—ensuring they scale smoothly, stay accurate, and serve reliable predictions to end-users.',
-          explainTextHi: 'एमएल इंजीनियरिंग मॉडल्स को सिर्फ रिसर्च में न रखकर उन्हें असल सॉफ्टवेयर और ऐप्स में चलाती है।',
+          explainTextHi: 'एमएल इंजीनियरिंग Models को सिर्फ रिसर्च में न रखकर उन्हें असल Software और ऐप्स में चलाती है।',
           realWorldEn: 'Netflix ML engineers operate real-time streaming recommendation engines serving 260M+ subscribers 24/7.',
           realWorldHi: 'Netflix के इंजीनियर्स 26 करोड़ से ज्यादा यूजर्स के लिए 24 घंटे बिना रुके रिकमेंडेशन सिस्टम चलाते हैं।',
         };
@@ -1351,15 +1351,15 @@ print(result)`
       if (qText.includes('responsibility of a data scientist') || qText.includes('responsibility of an ML engineer')) {
         return {
           hintEn: 'Data scientists explore data and discover business insights; ML engineers build, deploy, and scale production systems.',
-          hintHi: 'डेटा साइंटिस्ट डेटा का विश्लेषण करके इनसाइट्स निकालते हैं, जबकि एमएल इंजीनियर मॉडल्स को सिस्टम में डिप्लॉय करते हैं।',
+          hintHi: 'Data Scientist Data का विश्लेषण करके इनसाइट्स निकालते हैं, जबकि एमएल इंजीनियर Models को सिस्टम में डिप्लॉय करते हैं।',
           exampleCode: '// Role Distinction:\nData Scientist:  Hypothesis testing, exploratory analysis, prototype modeling\nML Engineer:     MLOps, API deployment, latency optimization, model monitoring',
           exampleNote: 'Both roles work together across the machine learning product lifecycle.',
           explainTitleEn: 'Data Scientist vs ML Engineer Roles',
-          explainTitleHi: 'डेटा साइंटिस्ट और एमएल इंजीनियर में अंतर',
+          explainTitleHi: 'Data Scientist और एमएल इंजीनियर में अंतर',
           explainTextEn: 'Data scientists focus on statistical exploration and answering business questions. ML engineers build the software infrastructure to deploy and monitor models at scale.',
-          explainTextHi: 'डेटा साइंटिस्ट डेटा से बिजनेस को समझने में मदद करते हैं, और एमएल इंजीनियर उस मॉडल को ऐप में लाइव चलाते हैं।',
+          explainTextHi: 'Data Scientist Data से बिजनेस को समझने में मदद करते हैं, और एमएल इंजीनियर उस Model को ऐप में लाइव चलाते हैं।',
           realWorldEn: 'At companies like Meta and Swiggy, data scientists discover what features matter and ML engineers deploy them.',
-          realWorldHi: 'Swiggy में डेटा साइंटिस्ट डिलीवरी के पैटर्न समझते हैं और एमएल इंजीनियर तुरंत लाइव डिलीवरी टाइम कैलकुलेट करने वाला सिस्टम बनाते हैं।',
+          realWorldHi: 'Swiggy में Data Scientist डिलीवरी के पैटर्न समझते हैं और एमएल इंजीनियर तुरंत लाइव डिलीवरी टाइम Calculate करने वाला सिस्टम बनाते हैं।',
         };
       }
 
@@ -1372,39 +1372,39 @@ print(result)`
           explainTitleEn: 'Phase 1: Problem Definition',
           explainTitleHi: 'पहला चरण: समस्या की परिभाषा',
           explainTextEn: 'Before collecting data or choosing architectures, teams must align on the exact business objective and establish measurable KPIs for project success.',
-          explainTextHi: 'बिना समस्या समझे मॉडल बनाना गलत होता है; सबसे पहले लक्ष्य और सफलता के मानक तय किए जाते हैं।',
+          explainTextHi: 'बिना समस्या समझे Model बनाना गलत होता है; सबसे पहले लक्ष्य और सफलता के मानक तय किए जाते हैं।',
           realWorldEn: 'Top tech companies spend the first 30% of project time scoping problem definitions with business leaders.',
-          realWorldHi: 'बड़ी कंपनियां कोडिंग शुरू करने से पहले पक्का करती हैं कि बिजनेस को असल में क्या चाहिए।',
+          realWorldHi: 'बड़ी कंपनियां Coding शुरू करने से पहले पक्का करती हैं कि बिजनेस को असल में क्या चाहिए।',
         };
       }
 
       if (qText.includes('evaluate a model before deployment')) {
         return {
           hintEn: 'Testing on held-out validation datasets confirms that the model generalizes to unseen data without catastrophic mistakes.',
-          hintHi: 'डिप्लॉय करने से पहले टेस्ट डेटा पर मॉडल के प्रदर्शन की जांच (Assess how well it performs on test data) जरूरी है।',
+          hintHi: 'डिप्लॉय करने से पहले टेस्ट Data पर Model के प्रदर्शन की जांच (Assess how well it performs on test data) जरूरी है।',
           exampleCode: '// Model Evaluation Metrics:\nTrain Accuracy: 98% (Learned on training data)\nTest Accuracy:  94% (Evaluated on fresh unseen test data)\nVerdict:        Safe to deploy! ✓',
           exampleNote: 'Evaluation prevents deploying overfitted or biased models.',
           explainTitleEn: 'Pre-Deployment Model Evaluation',
-          explainTitleHi: 'डिप्लॉयमेंट से पहले मॉडल की जांच',
+          explainTitleHi: 'डिप्लॉयमेंट से पहले Model की जांच',
           explainTextEn: 'Rigorous evaluation against holdout test sets guarantees the model meets precision, recall, and fairness thresholds before interacting with real users.',
-          explainTextHi: 'नए और अनदेखे डेटा पर टेस्ट करने से पता चलता है कि क्या मॉडल असल दुनिया में सही काम करेगा या नहीं।',
+          explainTextHi: 'नए और अनदेखे Data पर टेस्ट करने से पता चलता है कि क्या Model असल दुनिया में सही काम करेगा या नहीं।',
           realWorldEn: 'Self-driving cars undergo millions of simulated test miles before autonomous firmware is pushed to vehicles.',
-          realWorldHi: 'गाड़ियों में ऑटोनॉमस सॉफ्टवेयर डालने से पहले लाखों मील के टेस्ट डेटा पर उसकी जांच की जाती है।',
+          realWorldHi: 'गाड़ियों में ऑटोनॉमस Software डालने से पहले लाखों मील के टेस्ट Data पर उसकी जांच की जाती है।',
         };
       }
 
       if (qText.includes('What is model monitoring') || qText.includes('model monitoring?')) {
         return {
           hintEn: 'Monitoring continuously checks inference latency, prediction accuracy, and data drift after a model goes live.',
-          hintHi: 'लाइव मॉडल के व्यवहार और प्रदर्शन की लगातार जांच करना (Checking a deployed model\'s behaviour over time) मॉनिटरिंग है।',
+          hintHi: 'लाइव Model के व्यवहार और प्रदर्शन की लगातार जांच करना (Checking a deployed model\'s behaviour over time) मॉनिटरिंग है।',
           exampleCode: '// MLOps Telemetry Dashboard:\nLive Requests: 4,500/min | P99 Latency: 48ms | Drift Alert: Normal (0.02)\nStatus: Health 100% OK',
           exampleNote: 'Production monitoring alerts engineers when real-world trends diverge from training data.',
           explainTitleEn: 'Production Model Monitoring',
-          explainTitleHi: 'मॉडल मॉनिटरिंग क्या है?',
+          explainTitleHi: 'Model मॉनिटरिंग क्या है?',
           explainTextEn: 'Model monitoring is the ongoing tracking of a deployed ML model’s operational health, prediction distributions, and accuracy in live production environments.',
-          explainTextHi: 'मॉडल लाइव होने के बाद भी यह देखना जरूरी है कि क्या वो सही समय पर सही जवाब दे रहा है या उसमें कोई गिरावट आई है।',
+          explainTextHi: 'Model लाइव होने के बाद भी यह देखना जरूरी है कि क्या वो सही समय पर सही जवाब दे रहा है या उसमें कोई गिरावट आई है।',
           realWorldEn: 'Financial institutions monitor credit scoring models continuously to prevent lending discrimination or model drift.',
-          realWorldHi: 'बैंक लगातार मॉनिटर करते हैं ताकि लोन देने वाला AI मॉडल हमेशा सही और निष्पक्ष फैसले ले।',
+          realWorldHi: 'बैंक लगातार मॉनिटर करते हैं ताकि लोन देने वाला AI Model हमेशा सही और निष्पक्ष फैसले ले।',
         };
       }
 
@@ -1412,13 +1412,13 @@ print(result)`
       if (qText.includes('best describes Artificial Intelligence') || qText.includes('What is Artificial Intelligence?')) {
         return {
           hintEn: 'Artificial Intelligence refers to computer systems engineered to perform tasks associated with human intelligence.',
-          hintHi: 'आर्टिफिशियल इंटेलिजेंस (AI) कंप्यूटर सिस्टम द्वारा इंसानी समझ और बुद्धिमत्ता से जुड़े काम करने की क्षमता है।',
+          hintHi: 'Artificial Intelligence (AI) (AI) Computer सिस्टम द्वारा इंसानी समझ और बुद्धिमत्ता से जुड़े काम करने की क्षमता है।',
           exampleCode: '// AI Cognitive Capabilities:\n1. Vision: Recognize faces and street signs\n2. Language: Understand and translate speech\n3. Reasoning: Solve problems and plan moves (e.g. Chess AI)',
           exampleNote: 'AI enables software to perceive, reason, learn, and act intelligently.',
           explainTitleEn: 'What Is Artificial Intelligence?',
-          explainTitleHi: 'आर्टिफिशियल इंटेलिजेंस (AI) क्या है?',
+          explainTitleHi: 'Artificial Intelligence (AI) (AI) क्या है?',
           explainTextEn: 'AI is a broad branch of computer science dedicated to building software and algorithms that perform cognitive tasks historically unique to humans.',
-          explainTextHi: 'AI का मतलब ऐसी तकनीक से है जो कंप्यूटर को इंसानों की तरह सोचने, समझने, देखने और निर्णय लेने की क्षमता देती है।',
+          explainTextHi: 'AI का मतलब ऐसी तकनीक से है जो Computer को इंसानों की तरह सोचने, समझने, देखने और निर्णय लेने की क्षमता देती है।',
           realWorldEn: 'OpenAI ChatGPT, Google Gemini, and Tesla Full Self-Driving are state-of-the-art AI systems.',
           realWorldHi: 'ChatGPT, Google Gemini और सेल्फ ड्राइविंग कारें आधुनिक AI के सबसे बड़े उदाहरण हैं।',
         };
@@ -1442,13 +1442,13 @@ print(result)`
       if (qText.includes('physical robot body')) {
         return {
           hintEn: 'AI is fundamentally software and algorithms—it does not require a physical metallic robot body.',
-          hintHi: 'AI मूल रूप से सॉफ्टवेयर है—इसके लिए रोबोट की फिजिकल बॉडी होना बिल्कुल जरूरी नहीं है (False)।',
+          hintHi: 'AI मूल रूप से Software है—इसके लिए रोबोट की फिजिकल बॉडी होना बिल्कुल जरूरी नहीं है (False)।',
           exampleCode: '// AI Deployment Formats:\nSoftware Only (Cloud API): ChatGPT, Midjourney, Spam Filter\nPhysical Robotics:          Boston Dynamics Atlas, Warehouse AGVs',
           exampleNote: 'Most commercial AI algorithms exist entirely in cloud data centers.',
           explainTitleEn: 'Software AI vs Robotics',
-          explainTitleHi: 'सॉफ्टवेयर AI बनाम रोबोटिक्स',
+          explainTitleHi: 'Software AI बनाम रोबोटिक्स',
           explainTextEn: 'While robotics integrates AI to move mechanical limbs, the vast majority of AI systems (search engines, recommendation models, LLMs) run strictly as cloud software.',
-          explainTextHi: 'रोबोट सिर्फ AI का एक रूप है, लेकिन अधिकांश AI (जैसे ChatGPT, सर्च इंजन, फ्रॉड डिटेक्टर) सिर्फ सॉफ्टवेयर कोड के रूप में काम करते हैं।',
+          explainTextHi: 'रोबोट सिर्फ AI का एक रूप है, लेकिन अधिकांश AI (जैसे ChatGPT, सर्च इंजन, फ्रॉड डिटेक्टर) सिर्फ Software Code के रूप में काम करते हैं।',
           realWorldEn: 'Search engines, fraud detection systems, and language models operate entirely in the cloud without physical bodies.',
           realWorldHi: 'बैंकों का फ्रॉड डिटेक्टर और गूगल सर्च क्लाउड सर्वर पर बिना किसी रोबोट के चलता है।',
         };
@@ -1463,9 +1463,9 @@ print(result)`
         explainTitleEn: currQ?.question || 'Question Concept',
         explainTitleHi: 'सवाल की व्याख्या (Concept Details)',
         explainTextEn: currQ?.explanation || 'This concept is a core foundation of business data analytics.',
-        explainTextHi: currQ?.explanation || 'यह डेटा एनालिटिक्स का एक मूलभूत सिद्धांत है जो सही जानकारी रिकॉर्ड और विश्लेषित करने में मदद करता है।',
+        explainTextHi: currQ?.explanation || 'यह Data Analytics का एक मूलभूत सिद्धांत है जो सही जानकारी रिकॉर्ड और विश्लेषित करने में मदद करता है।',
         realWorldEn: 'Data professionals apply this concept to ensure high accuracy in dashboards and reporting.',
-        realWorldHi: 'डेटा प्रोफेशनल्स इस तकनीक का उपयोग वास्तविक प्रोजेक्ट्स और रिपोर्ट्स में करते हैं।',
+        realWorldHi: 'Data प्रोफेशनल्स इस तकनीक का उपयोग वास्तविक Projects और Reports में करते हैं।',
       };
     }
 
@@ -1476,13 +1476,13 @@ print(result)`
       if (pTitle.includes('Find the Data') || puzzle?.prompt?.includes('café records')) {
         return {
           hintEn: 'Look for recorded numbers or counts. Furniture and wall paint are physical surroundings, not data.',
-          hintHi: 'दुकान में रिकॉर्ड की गई संख्या को देखें। दीवार का रंग या कुर्सी डेटा नहीं हैं।',
+          hintHi: 'दुकान में रिकॉर्ड की गई संख्या को देखें। दीवार का रंग या कुर्सी Data नहीं हैं।',
           exampleCode: '// Identifying Data in a Café:\nWall Colour: Green        -> Physical Property (Not Data)\nChair in Café: Wooden     -> Physical Object (Not Data)\nCustomer Counts: 45, 52   -> Recorded Business Data (✓)',
           exampleNote: 'Recorded customer counts can be analyzed to find busiest hours and sales trends.',
           explainTitleEn: 'Puzzle 1: Find the Data',
-          explainTitleHi: 'पहेली 1: डेटा की पहचान',
+          explainTitleHi: 'पहेली 1: Data की पहचान',
           explainTextEn: 'A café\'s wall colour or physical chair are surrounding physical objects. The recorded customer numbers (45, 52, 38) are documented observations representing business metrics—this is authentic data.',
-          explainTextHi: 'कैफे की कुर्सी या दीवार का रंग केवल भौतिक वस्तुएं हैं। ग्राहकों की दर्ज की गई संख्या (45, 52, 38) वास्तविक डेटा है।',
+          explainTextHi: 'कैफे की कुर्सी या दीवार का रंग केवल भौतिक वस्तुएं हैं। ग्राहकों की दर्ज की गई संख्या (45, 52, 38) वास्तविक Data है।',
           realWorldEn: 'Starbucks analyzes customer footfall by hour to optimize staff scheduling and reduce queue wait times.',
           realWorldHi: 'कैफे और रेस्टोरेंट ग्राहकों की संख्या गिनकर तय करते हैं कि कितने कर्मचारी काम पर रखे जाएं।',
         };
@@ -1491,13 +1491,13 @@ print(result)`
       if (pTitle.includes('Spot the Data') || puzzle?.prompt?.includes('32°C')) {
         return {
           hintEn: 'Measurements like temperatures, rainfall, and wind speed are numerical data.',
-          hintHi: 'तापमान (32°C) एक संख्यात्मक माप (Measurement) है, जो डेटा का एक महत्वपूर्ण प्रकार है।',
+          hintHi: 'तापमान (32°C) एक संख्यात्मक माप (Measurement) है, जो Data का एक महत्वपूर्ण प्रकार है।',
           exampleCode: '// Weather App Data Feed:\nCity: "Delhi"\nTemperature: 32°C  (Quantitative Measurement = Data ✓)\nHumidity: 65%      (Measurement = Data ✓)',
           exampleNote: 'Data is not restricted to text; scientific and environmental measurements are data.',
           explainTitleEn: 'Puzzle 2: Spot the Data',
-          explainTitleHi: 'पहेली 2: तापमान डेटा है या नहीं?',
+          explainTitleHi: 'पहेली 2: तापमान Data है या नहीं?',
           explainTextEn: 'Yes, 32°C is a recorded environmental measurement. Data does not have to be text; numerical measurements, timestamps, and percentages are standard data points.',
-          explainTextHi: 'हाँ, 32°C एक मापी गई संख्या है। डेटा केवल टेक्स्ट नहीं होता, माप और संख्याएं भी डेटा हैं।',
+          explainTextHi: 'हाँ, 32°C एक मापी गई संख्या है। Data केवल टेक्स्ट नहीं होता, माप और संख्याएं भी Data हैं।',
           realWorldEn: 'Weather forecasting platforms collect sensor readings from satellites and ground stations to predict weather patterns.',
           realWorldHi: 'मौसम विभाग सैटेलाइट और थर्मामीटर से तापमान रिकॉर्ड करके बारिश और गर्मी का अनुमान लगाता है।',
         };
@@ -1512,7 +1512,7 @@ print(result)`
           explainTitleEn: 'Puzzle 3: Complete the Idea',
           explainTitleHi: 'पहेली 3: विचार पूरा करें',
           explainTextEn: 'Data is versatile and includes numbers, text, images, and measurements. Keyboards and chairs are physical hardware, while measurements represent recorded scientific or physical values.',
-          explainTextHi: 'डेटा में संख्या, टेक्स्ट, इमेज और माप (Measurements) शामिल होते हैं।',
+          explainTextHi: 'Data में संख्या, टेक्स्ट, इमेज और माप (Measurements) शामिल होते हैं।',
           realWorldEn: 'IoT devices (smartwatches, connected cars) transmit millions of real-time measurements (heart rate, vehicle speed) per minute.',
           realWorldHi: 'स्मार्टवॉच हमारे दिल की धड़कन और कदमों की गिनती को माप (Measurement) के रूप में स्टोर करती है।',
         };
@@ -1522,15 +1522,15 @@ print(result)`
       if (puzzle?.prompt?.includes('pizza sales rise') || pTitle.includes('Discovering Trends')) {
         return {
           hintEn: 'A weekly recurring surge in customer orders is a sales pattern.',
-          hintHi: 'हर शुक्रवार को बिक्री का बढ़ना एक सेल्स पैटर्न (Sales Pattern) कहलाता है।',
+          hintHi: 'हर शुक्रवार को बिक्री का बढ़ना एक Cells पैटर्न (Sales Pattern) कहलाता है।',
           exampleCode: '// Friday Pizza Orders:\nWeek 1 Friday: 120 pizzas\nWeek 2 Friday: 135 pizzas\nWeek 3 Friday: 140 pizzas\n-> Strong Friday Sales Pattern!',
           exampleNote: 'A pattern indicates predictable customer demand on specific days.',
           explainTitleEn: 'Discovering Sales Patterns',
-          explainTitleHi: 'सेल्स पैटर्न की खोज',
+          explainTitleHi: 'Cells पैटर्न की खोज',
           explainTextEn: 'When sales systematically increase on the same day every week, analysts describe this as a recurring sales pattern or seasonal trend.',
-          explainTextHi: 'जब हर हफ्ते किसी खास दिन बिक्री बढ़ती है, तो इसे सेल्स पैटर्न कहा जाता है।',
+          explainTextHi: 'जब हर हफ्ते किसी खास दिन बिक्री बढ़ती है, तो इसे Cells पैटर्न कहा जाता है।',
           realWorldEn: 'Domino\'s and Pizza Hut plan inventory prep and driver shifts around Friday-Saturday sales spikes.',
-          realWorldHi: 'पिज्जा कंपनियां शुक्रवार को पहले से ज्यादा आटा और पनीर तैयार रखती हैं क्योंकि डेटा में ऐसा पैटर्न दिखता है।',
+          realWorldHi: 'पिज्जा कंपनियां शुक्रवार को पहले से ज्यादा आटा और पनीर तैयार रखती हैं क्योंकि Data में ऐसा पैटर्न दिखता है।',
         };
       }
 
@@ -1545,22 +1545,22 @@ print(result)`
           explainTextEn: 'Comparing sales metrics before versus after a price promotion demonstrates the direct elasticity and impact of the discount on customer demand.',
           explainTextHi: 'डिस्काउंट देने से पहले और बाद के आंकड़ों की तुलना करने से पता चलता है कि ऑफर से बिक्री बढ़ी या घटी।',
           realWorldEn: 'E-commerce brands evaluate Festive Sale discount effectiveness through pre/post conversion tracking.',
-          realWorldHi: 'Flipkart Big Billion Days सेल में डिस्काउंट का असर देखने के लिए यही एनालिसिस करता है।',
+          realWorldHi: 'Flipkart Big Billion Days Cell में डिस्काउंट का असर देखने के लिए यही एनालिसिस करता है।',
         };
       }
 
       if (puzzle?.prompt?.includes('most absences') || pTitle.includes('Analyzing School Data')) {
         return {
           hintEn: 'Analyzing historical records to identify trends and solve problems is data analytics.',
-          hintHi: 'स्कूल रिकॉर्ड्स की जांच करके अनुपस्थिति का कारण और दिन ढूंढना डेटा एनालिटिक्स का काम है।',
+          hintHi: 'स्कूल रिकॉर्ड्स की जांच करके अनुपस्थिति का कारण और दिन ढूंढना Data Analytics का काम है।',
           exampleCode: '// School Attendance Log:\nMonday:    98%\nWednesday: 97%\nFriday:    82% (High Absence Day!)\n-> Data Analytics finding attendance patterns.',
           exampleNote: 'Educational institutions use attendance analytics to intervene before grades drop.',
           explainTitleEn: 'Educational Data Analytics',
-          explainTitleHi: 'स्कूल अटेंडेंस का डेटा एनालिसिस',
+          explainTitleHi: 'स्कूल अटेंडेंस का Data Analysis',
           explainTextEn: 'Examining recorded student attendance to reveal which days experience peak absences is an application of descriptive data analytics.',
-          explainTextHi: 'रिकॉर्ड किए गए हाजिरी डेटा की जांच करके यह समझना कि किस दिन सबसे ज्यादा छात्र अनुपस्थित रहते हैं, डेटा एनालिटिक्स कहलाता है।',
+          explainTextHi: 'रिकॉर्ड किए गए हाजिरी Data की जांच करके यह समझना कि किस दिन सबसे ज्यादा छात्र अनुपस्थित रहते हैं, Data Analytics कहलाता है।',
           realWorldEn: 'School districts allocate counseling and meal resources based on attendance trend dashboards.',
-          realWorldHi: 'स्कूल प्रशासन अटेंडेंस डेटा देखकर तय करता है कि किस दिन छात्रों के लिए स्पेशल एक्टिविटी रखी जाए।',
+          realWorldHi: 'स्कूल प्रशासन अटेंडेंस Data देखकर तय करता है कि किस दिन छात्रों के लिए स्पेशल एक्टिविटी रखी जाए।',
         };
       }
 
@@ -1568,13 +1568,13 @@ print(result)`
       if (puzzle?.prompt?.includes('100 bags last week') || pTitle.includes('Falling Sales')) {
         return {
           hintEn: 'When sales drop from 100 to 60, first investigate the data to identify why the decrease happened.',
-          hintHi: 'जब बैग्स की बिक्री 100 से घटकर 60 रह जाए, तो सबसे पहले सेल्स डेटा की जांच करें।',
+          hintHi: 'जब बैग्स की बिक्री 100 से घटकर 60 रह जाए, तो सबसे पहले Cells Data की जांच करें।',
           exampleCode: '// Falling Sales Diagnosis:\nLast Week: 100 bags sold\nThis Week:  60 bags sold (-40% drop!)\nAction:    Investigate sales data, price, and competitor discounts.',
           exampleNote: 'Always analyze the numbers before jumping to conclusions or shutting operations.',
           explainTitleEn: 'Puzzle 1: Falling Sales Investigation',
           explainTitleHi: 'पहेली 1: गिरती बिक्री की पड़ताल',
           explainTextEn: 'The most rational first response to declining sales is to inspect sales records, pricing changes, and customer footfall to uncover the underlying cause.',
-          explainTextHi: 'अचानक बिक्री घटने पर दुकान बंद करने या अनदेखा करने के बजाय बिक्री डेटा की जांच करना सबसे समझदारी भरा कदम है।',
+          explainTextHi: 'अचानक बिक्री घटने पर दुकान बंद करने या अनदेखा करने के बजाय बिक्री Data की जांच करना सबसे समझदारी भरा कदम है।',
           realWorldEn: 'Retail managers use daily sales anomaly detection to catch underperforming categories immediately.',
           realWorldHi: 'दुकानदार पिछले हफ्ते और इस हफ्ते की बिक्री देखकर पता लगाते हैं कि ग्राहक क्यों कम आए।',
         };
@@ -1591,14 +1591,14 @@ print(result)`
           explainTextEn: 'Unsold food waste occurs due to a mismatch between prepared inventory and customer demand. Analyzing sales and stock records aligns production with actual consumption.',
           explainTextHi: 'बिक्री और स्टॉक के रिकॉर्ड की जांच करके यह तय किया जाता है कि रोजाना कितना खाना बनाना चाहिए जिससे बर्बादी न हो।',
           realWorldEn: 'Restaurants and bakeries cut food waste by up to 30% using daily inventory tracking software.',
-          realWorldHi: 'रेस्टोरेंट और बेकरी रोजाना का स्टॉक डेटा देखकर ही नया माल तैयार करते हैं।',
+          realWorldHi: 'रेस्टोरेंट और बेकरी रोजाना का स्टॉक Data देखकर ही नया माल तैयार करते हैं।',
         };
       }
 
       if (puzzle?.prompt?.includes('ratings have dropped') || pTitle.includes('Unhappy Customers')) {
         return {
           hintEn: 'When ratings fall, check customer reviews and feedback comments to see specific complaints.',
-          hintHi: 'जब कस्टमर रेटिंग गिरे, तो ग्राहकों के रिव्यू और फीडबैक (Customer reviews and feedback) का विश्लेषण करें।',
+          hintHi: 'जब Customer रेटिंग गिरे, तो ग्राहकों के रिव्यू और फीडबैक (Customer reviews and feedback) का विश्लेषण करें।',
           exampleCode: '// Customer Sentiment Analysis:\nAverage Rating: Dropped from 4.6 ★ to 3.2 ★\nTop Complaints: "Delivery delayed", "Packaging damaged"\nAction:         Upgrade packaging and switch delivery partner.',
           exampleNote: 'Customer reviews contain direct qualitative feedback about product and service flaws.',
           explainTitleEn: 'Puzzle 3: Analyzing Customer Feedback',
@@ -1644,7 +1644,7 @@ print(result)`
       if (puzzle?.prompt?.includes('Hospital Planning') || pTitle.includes('Hospital Planning')) {
         return {
           hintEn: 'Review historical patient footfall logs and seasonal healthcare trends to prepare doctors and hospital beds.',
-          hintHi: 'पिछले मरीजों की संख्या और ट्रेंड्स (Past patient counts & relevant trends) का विश्लेषण करें।',
+          hintHi: 'पिछले मरीजों की संख्या और Trends (Past patient counts & relevant trends) का विश्लेषण करें।',
           exampleCode: '// Hospital Bed Capacity Model:\nPast 5 Years Data: Dengue admissions surge in August-September.\nPreparation:        Reserve 40 extra isolation beds & IV fluids in advance.',
           exampleNote: 'Time-series forecasting prevents hospital bed shortages during seasonal disease outbreaks.',
           explainTitleEn: 'Mystery 3: Healthcare Demand Forecasting',
@@ -1652,7 +1652,7 @@ print(result)`
           explainTextEn: 'Hospitals forecast patient admissions by examining historical admission counts, seasonal epidemics, and local demographic changes to prevent overcrowding.',
           explainTextHi: 'अस्पताल पुराने रिकॉर्ड्स देखकर पहले से दवाइयों और बेड्स की व्यवस्था करते हैं ताकि इमरजेंसी में कमी न पड़े।',
           realWorldEn: 'Apollo and Fortis healthcare networks use AI predictive bed allocation systems to reduce patient ER wait times.',
-          realWorldHi: 'बड़े अस्पताल डेटा साइंस की मदद से पहले से जान लेते हैं कि किस मौसम में कितने मरीज आ सकते हैं।',
+          realWorldHi: 'बड़े अस्पताल Data Science की मदद से पहले से जान लेते हैं कि किस मौसम में कितने मरीज आ सकते हैं।',
         };
       }
 
@@ -1668,7 +1668,7 @@ print(result)`
           explainTextEn: 'The shop owner needs to analyze the exact historical sales rate and current warehouse inventory numbers rather than logo colors or sports preferences.',
           explainTextHi: 'दुकानदार को लोगो का रंग या खेल देखने के बजाय पुरानी बिक्री और स्टॉक के आंकड़े देखने चाहिए।',
           realWorldEn: 'Zara and H&M use real-time store inventory telemetry to stop overproducing slow-selling apparel.',
-          realWorldHi: 'Zara और H&M हर हफ्ते बिक्री डेटा देखकर तय करते हैं कि कौन से कपड़े ज्यादा बनाने हैं।',
+          realWorldHi: 'Zara और H&M हर हफ्ते बिक्री Data देखकर तय करते हैं कि कौन से कपड़े ज्यादा बनाने हैं।',
         };
       }
 
@@ -1683,20 +1683,20 @@ print(result)`
           explainTextEn: 'To solve late deliveries, analysts compare the promised delivery SLA against actual courier arrival timestamps to detect where delays occur.',
           explainTextHi: 'डिलीवरी में देरी सुधारने के लिए वादा किए गए समय और असल में पहुंचे समय की तुलना की जाती है।',
           realWorldEn: 'Delhivery and Blue Dart track package scan timestamps every 15 minutes to guarantee on-time shipping.',
-          realWorldHi: 'Delhivery और Blue Dart हर पार्सल के समय का डेटा रिकॉर्ड करते हैं ताकि पैकेज समय पर पहुंचे।',
+          realWorldHi: 'Delhivery और Blue Dart हर पार्सल के समय का Data रिकॉर्ड करते हैं ताकि Package समय पर पहुंचे।',
         };
       }
 
       if (pTitle.includes('Customer Problem') || puzzle?.prompt?.includes('customers are leaving')) {
         return {
           hintEn: 'Examine customer exit feedback and usage drops before cancellations.',
-          hintHi: 'कैंसिलेशन के पैटर्न और कस्टमर फीडबैक (Cancellation patterns & customer feedback) की जांच करें।',
+          hintHi: 'कैंसिलेशन के पैटर्न और Customer फीडबैक (Cancellation patterns & customer feedback) की जांच करें।',
           exampleCode: '// Subscription Retention Analysis:\nFinding: 72% of cancellations happen on Day 28 after free trial.\nFeedback: "Forgot how to use advanced feature X."\nIntervention: Automated Day 20 video guide email.',
           exampleNote: 'Analyzing churn drivers enables proactive retention campaigns.',
           explainTitleEn: 'Puzzle 3: The Customer Problem',
-          explainTitleHi: 'पहेली 3: कस्टमर छोड़ने की समस्या',
+          explainTitleHi: 'पहेली 3: Customer छोड़ने की समस्या',
           explainTextEn: 'Studying cancellation logs alongside direct customer feedback surveys pinpoints product dissatisfaction drivers, allowing targeted improvements.',
-          explainTextHi: 'कस्टमर के फीडबैक और उनके छोड़ने के समय को देखने से पता चलता है कि सेवा में क्या कमी थी।',
+          explainTextHi: 'Customer के फीडबैक और उनके छोड़ने के समय को देखने से पता चलता है कि सेवा में क्या कमी थी।',
           realWorldEn: 'Hotstar and Netflix identify inactive users early to send personalized re-engagement offers before subscription renewal.',
           realWorldHi: 'Netflix और Hotstar यूजर के ऐप न खोलने पर उसे पसंदीदा शो का ईमेल भेजते हैं ताकि वो सब्सक्रिप्शन रद्द न करे।',
         };
@@ -1704,7 +1704,7 @@ print(result)`
 
       return {
         hintEn: puzzle?.hint || 'Analyze the sequence and identify the correct concept.',
-        hintHi: 'दी गई स्थिति को ध्यान से पढ़ें और उसमें से सही डेटा या क्रम पहचानें।',
+        hintHi: 'दी गई स्थिति को ध्यान से पढ़ें और उसमें से सही Data या क्रम पहचानें।',
         exampleCode: `Available Tokens:\n${puzzle?.tokens?.map((t: string) => `• ${t}`).join('\n')}`,
         exampleNote: puzzle?.hint || 'Arrange the blocks in logical order.',
         explainTitleEn: puzzle?.title || 'Puzzle Challenge',
@@ -1712,29 +1712,29 @@ print(result)`
         explainTextEn: (puzzle?.prompt || '') + '\n\nExpected target: ' + (puzzle?.expected?.join(' -> ') || ''),
         explainTextHi: 'इस पहेली में सही क्रम या विकल्प: ' + (puzzle?.expected?.join(', ') || ''),
         realWorldEn: 'Logical ordering and critical thinking are essential skills for clean data preparation.',
-        realWorldHi: 'डेटा क्लीनिंग और एनालिसिस में सही लॉजिकल सीक्वेंस समझना बहुत जरूरी होता है।',
+        realWorldHi: 'Data Cleaning और एनालिसिस में सही लॉजिकल सीक्वेंस समझना बहुत जरूरी होता है।',
       };
     }
 
     if (activeGame === 3) {
       return {
         hintEn: 'Match each data item on the left with its correct type on the right (e.g. Text, Number, Measurement, Image).',
-        hintHi: 'बाएं तरफ दिए गए उदाहरण को उसके सही डेटा प्रकार (जैसे Text, Number, Measurement, Image) से मिलाएं।',
+        hintHi: 'बाएं तरफ दिए गए उदाहरण को उसके सही Data Type (जैसे Text, Number, Measurement, Image) से मिलाएं।',
         exampleCode: matchPairs.map((p, i) => `${i + 1}. ${p.snippet} ➔ ${p.meaning}`).join('\n'),
         exampleNote: 'Names and words are Text, quantities and scores are Numbers, temperature and speed are Measurements.',
         explainTitleEn: 'Match Concept: Data Types & Categories',
-        explainTitleHi: 'डेटा प्रकारों की पहचान (Data Types Matching)',
+        explainTitleHi: 'Data प्रकारों की पहचान (Data Types Matching)',
         explainTextEn: 'Each data point belongs to a specific type. Text describes qualities or identifiers, Numbers represent counts or totals, Images provide visual records, and Measurements capture physical scales.',
-        explainTextHi: 'हर डेटा का एक प्रकार होता है: नाम और फीडबैक टेक्स्ट हैं, अंक नंबर हैं, फोटो इमेज है, और 28°C माप है।',
+        explainTextHi: 'हर Data का एक प्रकार होता है: नाम और फीडबैक टेक्स्ट हैं, अंक नंबर हैं, फोटो इमेज है, और 28°C माप है।',
         realWorldEn: 'In Excel and SQL databases, setting the correct column format (Text, Number, Date) prevents calculation bugs.',
-        realWorldHi: 'एक्सेल और डेटाबेस में कॉलम का सही टाइप सेट करने से गणना और रिपोर्टिंग सही होती है।',
+        realWorldHi: 'Excel और Database में Column का सही टाइप Set करने से Calculation और रिपोर्टिंग सही होती है।',
       };
     }
 
     // Game 4: Real-Life Mission
     return {
       hintEn: currentMission?.prompt || 'Identify 3 core data points or relevant operational records.',
-      hintHi: 'सोचिए कि इस स्थिति में कौन सी 3 मुख्य जानकारियां (Data Points) रजिस्टर या कंप्यूटर में दर्ज करनी चाहिए।',
+      hintHi: 'सोचिए कि इस स्थिति में कौन सी 3 मुख्य जानकारियां (Data Points) रजिस्टर या Computer में दर्ज करनी चाहिए।',
       exampleCode: currentMission?.expectedResponse || '// Analytical Guidelines:\n1. Identifier: ID / Barcode\n2. Metric: Count / Amount / Attendance\n3. Context: Date & Timestamp',
       exampleNote: currentMission?.scenario || 'Business Data Tracking Scenario',
       explainTitleEn: currentMission?.title || 'Real-Life Analytical Mission',
@@ -1742,7 +1742,7 @@ print(result)`
       explainTextEn: (currentMission?.scenario || '') + '\n\nKey Strategy:\n' + (currentMission?.expectedResponse || ''),
       explainTextHi: (currentMission?.scenario || '') + '\n\nसमाधान संकेत:\n' + (currentMission?.expectedResponse || ''),
       realWorldEn: 'Data engineering teams design intake schemas to capture exactly these transactional attributes.',
-      realWorldHi: 'कंपनियां ग्राहकों और छात्रों का रिकॉर्ड रखने के लिए इसी तरह का डेटा कलेक्ट करती हैं।',
+      realWorldHi: 'कंपनियां ग्राहकों और छात्रों का रिकॉर्ड रखने के लिए इसी तरह का Data कलेक्ट करती हैं।',
     };
   }, [activeGame, quizIdx, puzzleIdx, quizQuestions, currentPuzzle, matchPairs, currentMission]);
 

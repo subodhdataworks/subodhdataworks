@@ -31,7 +31,7 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
     "id": "tab-1",
     "tabNum": 1,
     "title": "Data Analytics Foundations",
-    "shortTitle": "Data Analytics Foundations",
+    "shortTitle": "Foundations",
     "subtitle": "Build a strong foundation in data analytics, business thinking and data quality.",
     "iconName": "chart",
     "isFree": true,
@@ -39,8 +39,8 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
       {
         "id": "mod-1",
         "chapterNum": 1,
-        "title": "Module 1: Understanding Data and Analytics",
-        "subtitle": "Core industry concepts and practical exercises for Understanding Data and Analytics.",
+        "title": "Module 1: Understanding Data Analytics",
+        "subtitle": "Core industry concepts and practical exercises for Understanding Data Analytics.",
         "topics": [
           {
             "id": "t-1",
@@ -87,11 +87,11 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
       {
         "id": "mod-2",
         "chapterNum": 2,
-        "title": "Module 2: Data Analyst Career and Workflow",
-        "subtitle": "Core industry concepts and practical exercises for Data Analyst Career and Workflow.",
+        "title": "Module 2: Data Analyst Essentials",
+        "subtitle": "Core industry concepts and practical exercises for Data Analyst Essentials.",
         "topics": [
           {
-            "id": "t-7",
+            "id": "t-6",
             "topicNum": 1,
             "title": "Data Analyst Roles and Responsibilities",
             "duration": "Video • 8 min",
@@ -99,7 +99,7 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
             "status": "locked"
           },
           {
-            "id": "t-8",
+            "id": "t-7",
             "topicNum": 2,
             "title": "Data Analyst vs Data Scientist vs Data Engineer",
             "duration": "Video • 11 min",
@@ -107,98 +107,94 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
             "status": "locked"
           },
           {
-            "id": "t-9",
+            "id": "t-8",
             "topicNum": 3,
-            "title": "Common Tasks in a Data Analyst’s Day",
-            "duration": "Video • 7 min",
+            "title": "Types of Data Analytics",
+            "duration": "Video • 9 min",
+            "type": "video",
+            "status": "locked"
+          },
+          {
+            "id": "t-9",
+            "topicNum": 4,
+            "title": "Understanding Data Types, Sources and Quality",
+            "duration": "Video • 10 min",
             "type": "video",
             "status": "locked"
           },
           {
             "id": "t-10",
-            "topicNum": 4,
-            "title": "Analytics Lifecycle: From Question to Action",
-            "duration": "Video • 10 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-11",
             "topicNum": 5,
-            "title": "Working with Stakeholders",
-            "duration": "Video • 6 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-12",
-            "topicNum": 6,
-            "title": "Ethics and Professional Responsibility",
-            "duration": "Video • 9 min",
+            "title": "Data Analytics Workflow: From Question to Action",
+            "duration": "Video • 8 min",
             "type": "video",
             "status": "locked"
           }
         ]
-      },
+      }
+    ]
+  },
+
+  {
+    "id": "tab-2",
+    "tabNum": 2,
+    "title": "Python with Data Analytics",
+    "shortTitle": "Python",
+    "subtitle": "From programming fundamentals to vectorized analysis and charting with Pandas & NumPy.",
+    "iconName": "python",
+    "isFree": false,
+    "chapters": [
       {
         "id": "mod-3",
         "chapterNum": 3,
-        "title": "Module 3: Analytics Types and Business Metrics",
-        "subtitle": "Core industry concepts and practical exercises for Analytics Types and Business Metrics.",
+        "title": "Module 3: Introduction to Programming and Python",
+        "subtitle": "Core industry concepts and practical exercises for Introduction to Programming and Python.",
         "topics": [
           {
-            "id": "t-13",
+            "id": "t-11",
             "topicNum": 1,
-            "title": "Descriptive Analytics",
+            "title": "What Is Programming?",
             "duration": "Video • 8 min",
             "type": "video",
             "status": "locked"
           },
           {
-            "id": "t-14",
+            "id": "t-12",
             "topicNum": 2,
-            "title": "Diagnostic Analytics",
-            "duration": "Video • 11 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-15",
-            "topicNum": 3,
-            "title": "Predictive Analytics",
-            "duration": "Video • 7 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-16",
-            "topicNum": 4,
-            "title": "Prescriptive Analytics",
-            "duration": "Video • 10 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-17",
-            "topicNum": 5,
-            "title": "Metrics, Dimensions and Measures",
-            "duration": "Video • 6 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-18",
-            "topicNum": 6,
-            "title": "Business Questions and KPIs",
+            "title": "How Computers Follow Instructions",
             "duration": "Video • 9 min",
             "type": "video",
             "status": "locked"
           },
           {
-            "id": "t-19",
-            "topicNum": 7,
-            "title": "Turning a Business Problem into an Analysis Plan",
-            "duration": "Video • 5 min",
+            "id": "t-13",
+            "topicNum": 3,
+            "title": "What Is Python and Why Use It?",
+            "duration": "Video • 7 min",
+            "type": "video",
+            "status": "locked"
+          },
+          {
+            "id": "t-14",
+            "topicNum": 4,
+            "title": "Python in Data Analytics and Real Life",
+            "duration": "Video • 10 min",
+            "type": "video",
+            "status": "locked"
+          },
+          {
+            "id": "t-15",
+            "topicNum": 5,
+            "title": "Setting Up Python and Your Coding Environment",
+            "duration": "Video • 9 min",
+            "type": "video",
+            "status": "locked"
+          },
+          {
+            "id": "t-16",
+            "topicNum": 6,
+            "title": "Writing and Running Your First Python Program",
+            "duration": "Video • 11 min",
             "type": "video",
             "status": "locked"
           }
@@ -207,82 +203,587 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
       {
         "id": "mod-4",
         "chapterNum": 4,
-        "title": "Module 4: Data Types, Sources and Quality",
-        "subtitle": "Core industry concepts and practical exercises for Data Types, Sources and Quality.",
+        "title": "Module 4: Python Syntax and Core Basics",
+        "subtitle": "Core industry concepts and practical exercises for Python Syntax and Core Basics.",
         "topics": [
           {
-            "id": "t-20",
+            "id": "t-17",
             "topicNum": 1,
-            "title": "Structured, Semi-Structured and Unstructured Data",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-21",
-            "topicNum": 2,
-            "title": "Common Data Sources: Files, Databases and Applications",
-            "duration": "Video • 11 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-22",
-            "topicNum": 3,
-            "title": "CSV, Excel, JSON and Database Tables",
-            "duration": "Video • 7 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-23",
-            "topicNum": 4,
-            "title": "Data Types and Schemas",
-            "duration": "Video • 10 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-24",
-            "topicNum": 5,
-            "title": "Missing Values and Duplicate Records",
-            "duration": "Video • 6 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-25",
-            "topicNum": 6,
-            "title": "Accuracy, Completeness and Consistency",
+            "title": "Python Syntax, Indentation and Comments",
             "duration": "Video • 9 min",
             "type": "video",
             "status": "locked"
           },
           {
-            "id": "t-26",
-            "topicNum": 7,
-            "title": "Data Quality Checks and Documentation",
-            "duration": "Video • 5 min",
+            "id": "t-18",
+            "topicNum": 2,
+            "title": "print() and Displaying Output",
+            "duration": "Video • 10 min",
             "type": "video",
             "status": "locked"
+          },
+          {
+            "id": "t-19",
+            "topicNum": 3,
+            "title": "Variables and Storing Information",
+            "duration": "Video • 8 min",
+            "type": "video",
+            "status": "locked"
+          },
+          {
+            "id": "t-20",
+            "topicNum": 4,
+            "title": "Python Data Types and type()",
+            "duration": "Video • 11 min",
+            "type": "video",
+            "status": "locked"
+          },
+          {
+            "id": "t-21",
+            "topicNum": 5,
+            "title": "Type Conversion",
+            "duration": "Video • 7 min",
+            "type": "video",
+            "status": "locked"
+          },
+          {
+            "id": "t-22",
+            "topicNum": 6,
+            "title": "input() and User Input",
+            "duration": "Video • 9 min",
+            "type": "video",
+            "status": "locked"
+          },
+          {
+            "id": "t-23",
+            "topicNum": 7,
+            "title": "Operators and Expressions",
+            "duration": "Video • 12 min",
+            "type": "video",
+            "status": "locked"
+          }
+        ]
+      },
+      {
+        "id": "mod-5",
+        "chapterNum": 5,
+        "title": "Module 5: Conditions, Loops and Problem-Solving",
+          "subtitle": "Master decision-making, repetitive loops, error handling and practical real-life analytics projects.",
+          "topics": [
+            {
+              "id": "t-24",
+              "topicNum": 1,
+              "title": "Comparison and Logical Operators",
+              "duration": "10 min",
+              "type": "video",
+              "status": "completed"
+            },
+            {
+              "id": "t-25",
+              "topicNum": 2,
+              "title": "if Statements and Decision-Making",
+              "duration": "9 min",
+              "type": "video",
+              "status": "completed"
+            },
+            {
+              "id": "t-26",
+              "topicNum": 3,
+              "title": "if-else and elif Statements",
+              "duration": "12 min",
+              "type": "video",
+              "status": "completed"
+            },
+            {
+              "id": "t-27",
+              "topicNum": 4,
+              "title": "Nested Conditions",
+              "duration": "8 min",
+              "type": "video",
+              "status": "completed"
+            },
+            {
+              "id": "t-28",
+              "topicNum": 5,
+              "title": "for Loops and range()",
+              "duration": "14 min",
+              "type": "video",
+              "status": "completed"
+            },
+            {
+              "id": "t-29",
+              "topicNum": 6,
+              "title": "while Loops",
+              "duration": "10 min",
+              "type": "video",
+              "status": "completed"
+            },
+            {
+              "id": "t-30",
+              "topicNum": 7,
+              "title": "break, continue and pass",
+              "duration": "9 min",
+              "type": "video",
+              "status": "completed"
+            },
+            {
+              "id": "t-31",
+              "topicNum": 8,
+              "title": "Common Python Errors and Debugging",
+              "duration": "12 min",
+              "type": "video",
+              "status": "completed"
+            },
+            {
+              "id": "t-32",
+              "topicNum": 9,
+              "title": "Practical Problem-Solving with Conditions and Loops",
+              "duration": "18 min",
+              "type": "video",
+              "status": "completed"
+            }
+          ]
+      },
+      {
+        "id": "mod-6",
+        "chapterNum": 6,
+        "title": "Module 6: Python Collections and Strings",
+          "subtitle": "Master strings, lists, tuples, sets, dictionaries, nested records, and data cleaning pipelines.",
+          "topics": [
+            {
+              "id": "t-33",
+              "topicNum": 1,
+              "title": "Strings, Indexing and Slicing",
+              "duration": "11 min",
+              "type": "video",
+              "status": "completed"
+            },
+            {
+              "id": "t-34",
+              "topicNum": 2,
+              "title": "String Methods and Text Processing",
+              "duration": "13 min",
+              "type": "video",
+              "status": "completed"
+            },
+            {
+              "id": "t-35",
+              "topicNum": 3,
+              "title": "Lists, Indexing and Slicing",
+              "duration": "10 min",
+              "type": "video",
+              "status": "completed"
+            },
+            {
+              "id": "t-36",
+              "topicNum": 4,
+              "title": "List Methods and Operations",
+              "duration": "12 min",
+              "type": "video",
+              "status": "completed"
+            },
+            {
+              "id": "t-37",
+              "topicNum": 5,
+              "title": "Tuples and Sets",
+              "duration": "11 min",
+              "type": "video",
+              "status": "completed"
+            },
+            {
+              "id": "t-38",
+              "topicNum": 6,
+              "title": "Dictionaries and Key-Value Pairs",
+              "duration": "14 min",
+              "type": "video",
+              "status": "completed"
+            },
+            {
+              "id": "t-39",
+              "topicNum": 7,
+              "title": "Looping Through Collections",
+              "duration": "12 min",
+              "type": "video",
+              "status": "completed"
+            },
+            {
+              "id": "t-40",
+              "topicNum": 8,
+              "title": "Nested Collections and Real-Life Data",
+              "duration": "18 min",
+              "type": "video",
+              "status": "completed"
+            }
+          ]
+      },
+      {
+        "id": "mod-7",
+        "chapterNum": 7,
+        "title": "Module 7: Functions, Modules and Files",
+        "subtitle": "Core industry concepts and practical exercises for Functions, Modules, File I/O, CSV Processing and Exception Handling.",
+        "topics": [
+          {
+            "id": "t-41",
+            "topicNum": 1,
+            "title": "Introduction to Functions",
+            "duration": "12 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-42",
+            "topicNum": 2,
+            "title": "Function Parameters and Return Values",
+            "duration": "14 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-43",
+            "topicNum": 3,
+            "title": "Default Arguments and Keyword Arguments",
+            "duration": "13 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-44",
+            "topicNum": 4,
+            "title": "Variable Scope and Built-in Functions",
+            "duration": "15 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-45",
+            "topicNum": 5,
+            "title": "Python Modules and Imports",
+            "duration": "14 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-46",
+            "topicNum": 6,
+            "title": "Working with Dates and Time",
+            "duration": "16 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-47",
+            "topicNum": 7,
+            "title": "Reading and Writing Files and CSV",
+            "duration": "18 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-48",
+            "topicNum": 8,
+            "title": "Exception Handling and Debugging",
+            "duration": "16 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-49",
+            "topicNum": 9,
+            "title": "Writing Reusable Code and Practical Projects",
+            "duration": "22 min",
+            "type": "video",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "id": "mod-8",
+        "chapterNum": 8,
+        "title": "Module 8: NumPy for Numerical Analysis",
+        "subtitle": "Core industry concepts and practical exercises for Numerical Python, ndarrays, Vectorization, Broadcasting, Summary Statistics and Retail Analytics Dashboard Logic.",
+        "topics": [
+          {
+            "id": "t-50",
+            "topicNum": 1,
+            "title": "What Is NumPy?",
+            "duration": "12 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-51",
+            "topicNum": 2,
+            "title": "Creating NumPy Arrays",
+            "duration": "14 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-52",
+            "topicNum": 3,
+            "title": "Array Shapes and Dimensions",
+            "duration": "13 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-53",
+            "topicNum": 4,
+            "title": "Indexing and Slicing Arrays",
+            "duration": "15 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-54",
+            "topicNum": 5,
+            "title": "Vectorized Operations and Broadcasting",
+            "duration": "16 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-55",
+            "topicNum": 6,
+            "title": "Aggregation and Summary Statistics",
+            "duration": "15 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-56",
+            "topicNum": 7,
+            "title": "Boolean Masks and Filtering",
+            "duration": "14 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-57",
+            "topicNum": 8,
+            "title": "Reshaping, Combining Arrays & Sales Analytics Dashboard",
+            "duration": "24 min",
+            "type": "video",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "id": "mod-9",
+        "chapterNum": 9,
+        "title": "Module 9: Pandas for Data Analysis",
+        "subtitle": "Core industry concepts and practical exercises for Series, DataFrames, Data Cleaning, Missing Values, Duplicates, GroupBy, Merging and Retail Sales Analytics.",
+        "topics": [
+          {
+            "id": "t-58",
+            "topicNum": 1,
+            "title": "What Is Pandas?",
+            "duration": "10 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-59",
+            "topicNum": 2,
+            "title": "Series and DataFrames",
+            "duration": "14 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-60",
+            "topicNum": 3,
+            "title": "Reading CSV and Excel Files",
+            "duration": "12 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-61",
+            "topicNum": 4,
+            "title": "Inspecting Data with head(), info() and describe()",
+            "duration": "15 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-62",
+            "topicNum": 5,
+            "title": "Selecting Columns and Rows (loc & iloc)",
+            "duration": "13 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-63",
+            "topicNum": 6,
+            "title": "Filtering and Sorting DataFrames",
+            "duration": "14 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-64",
+            "topicNum": 7,
+            "title": "Creating and Renaming Columns",
+            "duration": "12 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-65",
+            "topicNum": 8,
+            "title": "Handling Missing Values (NaN & None)",
+            "duration": "16 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-66",
+            "topicNum": 9,
+            "title": "Removing Duplicates",
+            "duration": "12 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-67",
+            "topicNum": 10,
+            "title": "GroupBy and Aggregation",
+            "duration": "16 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-68",
+            "topicNum": 11,
+            "title": "Merge, Join and Concatenate",
+            "duration": "18 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-69",
+            "topicNum": 12,
+            "title": "Dates and Text in Pandas",
+            "duration": "14 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-70",
+            "topicNum": 13,
+            "title": "Exporting Clean Data & Final Project",
+            "duration": "25 min",
+            "type": "video",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "id": "mod-10",
+        "chapterNum": 10,
+        "title": "Module 10: Python Data Visualization and Analytics",
+        "subtitle": "Core industry concepts and practical exercises for Matplotlib, Bar Charts, Line Trends, Histograms, Scatter Plots, EDA, and Retail Performance Analytics.",
+        "topics": [
+          {
+            "id": "t-71",
+            "topicNum": 1,
+            "title": "Why Data Visualization Matters",
+            "duration": "8 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-72",
+            "topicNum": 2,
+            "title": "Matplotlib Basics",
+            "duration": "11 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-73",
+            "topicNum": 3,
+            "title": "Bar and Column Charts",
+            "duration": "7 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-74",
+            "topicNum": 4,
+            "title": "Line Charts and Trends",
+            "duration": "10 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-75",
+            "topicNum": 5,
+            "title": "Histograms and Distributions",
+            "duration": "6 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-76",
+            "topicNum": 6,
+            "title": "Scatter Plots and Relationships",
+            "duration": "9 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-77",
+            "topicNum": 7,
+            "title": "Labels, Legends and Titles",
+            "duration": "5 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-78",
+            "topicNum": 8,
+            "title": "Choosing the Right Chart",
+            "duration": "8 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-79",
+            "topicNum": 9,
+            "title": "Exploratory Data Analysis with Pandas",
+            "duration": "11 min",
+            "type": "video",
+            "status": "completed"
+          },
+          {
+            "id": "t-80",
+            "topicNum": 10,
+            "title": "Python Data Analysis Mini Project",
+            "duration": "15 min",
+            "type": "video",
+            "status": "completed"
           }
         ]
       }
     ]
   },
+
   {
-    "id": "tab-2",
-    "tabNum": 2,
+    "id": "tab-3",
+    "tabNum": 3,
     "title": "Excel for Data Analysis",
-    "shortTitle": "Excel for Data Analysis",
+    "shortTitle": "Excel",
     "subtitle": "Master modern spreadsheets, complex formulas, PivotTables and Power Query workflows.",
     "iconName": "excel",
     "isFree": false,
     "chapters": [
       {
-        "id": "mod-5",
-        "chapterNum": 5,
-        "title": "Module 5: Getting Started with Excel",
+        "id": "mod-11",
+        "chapterNum": 11,
+        "title": "Module 11: Getting Started with Excel",
         "subtitle": "Core industry concepts and practical exercises for Getting Started with Excel.",
         "topics": [
           {
@@ -336,9 +837,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-6",
-        "chapterNum": 6,
-        "title": "Module 6: Data Preparation in Excel",
+        "id": "mod-12",
+        "chapterNum": 12,
+        "title": "Module 12: Data Preparation in Excel",
         "subtitle": "Core industry concepts and practical exercises for Data Preparation in Excel.",
         "topics": [
           {
@@ -416,9 +917,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-7",
-        "chapterNum": 7,
-        "title": "Module 7: Formulas and Core Functions",
+        "id": "mod-13",
+        "chapterNum": 13,
+        "title": "Module 13: Formulas and Core Functions",
         "subtitle": "Core industry concepts and practical exercises for Formulas and Core Functions.",
         "topics": [
           {
@@ -496,9 +997,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-8",
-        "chapterNum": 8,
-        "title": "Module 8: Text, Date and Lookup Functions",
+        "id": "mod-14",
+        "chapterNum": 14,
+        "title": "Module 14: Text, Date and Lookup Functions",
         "subtitle": "Core industry concepts and practical exercises for Text, Date and Lookup Functions.",
         "topics": [
           {
@@ -576,9 +1077,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-9",
-        "chapterNum": 9,
-        "title": "Module 9: Analysis and Reporting with Excel",
+        "id": "mod-15",
+        "chapterNum": 15,
+        "title": "Module 15: Analysis and Reporting with Excel",
         "subtitle": "Core industry concepts and practical exercises for Analysis and Reporting with Excel.",
         "topics": [
           {
@@ -656,9 +1157,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-10",
-        "chapterNum": 10,
-        "title": "Module 10: Power Query and Advanced Excel",
+        "id": "mod-16",
+        "chapterNum": 16,
+        "title": "Module 16: Power Query and Advanced Excel",
         "subtitle": "Core industry concepts and practical exercises for Power Query and Advanced Excel.",
         "topics": [
           {
@@ -729,19 +1230,20 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
       }
     ]
   },
+
   {
-    "id": "tab-3",
-    "tabNum": 3,
+    "id": "tab-4",
+    "tabNum": 4,
     "title": "SQL for Analytics",
-    "shortTitle": "SQL for Analytics",
+    "shortTitle": "SQL",
     "subtitle": "Query production databases, write multi-table joins, subqueries, and window functions.",
     "iconName": "sql",
     "isFree": false,
     "chapters": [
       {
-        "id": "mod-11",
-        "chapterNum": 11,
-        "title": "Module 11: Databases and SQL Fundamentals",
+        "id": "mod-17",
+        "chapterNum": 17,
+        "title": "Module 17: Databases and SQL Fundamentals",
         "subtitle": "Core industry concepts and practical exercises for Databases and SQL Fundamentals.",
         "topics": [
           {
@@ -811,9 +1313,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-12",
-        "chapterNum": 12,
-        "title": "Module 12: Filtering, Sorting and Calculations",
+        "id": "mod-18",
+        "chapterNum": 18,
+        "title": "Module 18: Filtering, Sorting and Calculations",
         "subtitle": "Core industry concepts and practical exercises for Filtering, Sorting and Calculations.",
         "topics": [
           {
@@ -891,9 +1393,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-13",
-        "chapterNum": 13,
-        "title": "Module 13: Aggregate Functions and Grouping",
+        "id": "mod-19",
+        "chapterNum": 19,
+        "title": "Module 19: Aggregate Functions and Grouping",
         "subtitle": "Core industry concepts and practical exercises for Aggregate Functions and Grouping.",
         "topics": [
           {
@@ -955,9 +1457,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-14",
-        "chapterNum": 14,
-        "title": "Module 14: Joins and Relationships",
+        "id": "mod-20",
+        "chapterNum": 20,
+        "title": "Module 20: Joins and Relationships",
         "subtitle": "Core industry concepts and practical exercises for Joins and Relationships.",
         "topics": [
           {
@@ -1035,9 +1537,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-15",
-        "chapterNum": 15,
-        "title": "Module 15: Subqueries and Set Operations",
+        "id": "mod-21",
+        "chapterNum": 21,
+        "title": "Module 21: Subqueries and Set Operations",
         "subtitle": "Core industry concepts and practical exercises for Subqueries and Set Operations.",
         "topics": [
           {
@@ -1099,9 +1601,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-16",
-        "chapterNum": 16,
-        "title": "Module 16: Advanced SQL for Analysts",
+        "id": "mod-22",
+        "chapterNum": 22,
+        "title": "Module 22: Advanced SQL for Analysts",
         "subtitle": "Core industry concepts and practical exercises for Advanced SQL for Analysts.",
         "topics": [
           {
@@ -1188,734 +1690,20 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
       }
     ]
   },
-  {
-    "id": "tab-4",
-    "tabNum": 4,
-    "title": "Python for Data Analytics",
-    "shortTitle": "Python for Data Analytics",
-    "subtitle": "From programming fundamentals to vectorized analysis and charting with Pandas & NumPy.",
-    "iconName": "python",
-    "isFree": false,
-    "chapters": [
-      {
-        "id": "mod-17",
-        "chapterNum": 17,
-        "title": "Module 17: Introduction to Programming and Python",
-        "subtitle": "Core industry concepts and practical exercises for Introduction to Programming and Python.",
-        "topics": [
-          {
-            "id": "t-127",
-            "topicNum": 1,
-            "title": "What Is Programming?",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-128",
-            "topicNum": 2,
-            "title": "How Do Computers Follow Instructions?",
-            "duration": "Video • 11 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-129",
-            "topicNum": 3,
-            "title": "What Is Python?",
-            "duration": "Video • 7 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-130",
-            "topicNum": 4,
-            "title": "Why Python Is Used in Data Analytics",
-            "duration": "Video • 10 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-131",
-            "topicNum": 5,
-            "title": "Python Use Cases in Everyday Life",
-            "duration": "Video • 6 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-132",
-            "topicNum": 6,
-            "title": "Installing Python and Choosing an Editor",
-            "duration": "Video • 9 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-133",
-            "topicNum": 7,
-            "title": "Using Jupyter Notebook or an IDE",
-            "duration": "Video • 5 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-134",
-            "topicNum": 8,
-            "title": "Writing and Running Your First Python Program",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          }
-        ]
-      },
-      {
-        "id": "mod-18",
-        "chapterNum": 18,
-        "title": "Module 18: Python Syntax and Core Basics",
-        "subtitle": "Core industry concepts and practical exercises for Python Syntax and Core Basics.",
-        "topics": [
-          {
-            "id": "t-135",
-            "topicNum": 1,
-            "title": "Understanding Python Syntax and Indentation",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-136",
-            "topicNum": 2,
-            "title": "Comments and Readable Code",
-            "duration": "Video • 11 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-137",
-            "topicNum": 3,
-            "title": "print() and Displaying Output",
-            "duration": "Video • 7 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-138",
-            "topicNum": 4,
-            "title": "Variables and Storing Information",
-            "duration": "Video • 10 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-139",
-            "topicNum": 5,
-            "title": "Strings, Integers, Floats and Booleans",
-            "duration": "Video • 6 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-140",
-            "topicNum": 6,
-            "title": "Type Checking with type()",
-            "duration": "Video • 9 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-141",
-            "topicNum": 7,
-            "title": "Type Conversion",
-            "duration": "Video • 5 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-142",
-            "topicNum": 8,
-            "title": "input() and User Input",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-143",
-            "topicNum": 9,
-            "title": "Operators and Expressions",
-            "duration": "Video • 11 min",
-            "type": "video",
-            "status": "locked"
-          }
-        ]
-      },
-      {
-        "id": "mod-19",
-        "chapterNum": 19,
-        "title": "Module 19: Conditions, Loops and Problem-Solving",
-        "subtitle": "Core industry concepts and practical exercises for Conditions, Loops and Problem-Solving.",
-        "topics": [
-          {
-            "id": "t-144",
-            "topicNum": 1,
-            "title": "Comparison Operators",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-145",
-            "topicNum": 2,
-            "title": "Logical Operators",
-            "duration": "Video • 11 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-146",
-            "topicNum": 3,
-            "title": "if Statements",
-            "duration": "Video • 7 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-147",
-            "topicNum": 4,
-            "title": "if-else Statements",
-            "duration": "Video • 10 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-148",
-            "topicNum": 5,
-            "title": "elif and Multiple Conditions",
-            "duration": "Video • 6 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-149",
-            "topicNum": 6,
-            "title": "Nested Conditions",
-            "duration": "Video • 9 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-150",
-            "topicNum": 7,
-            "title": "for Loops",
-            "duration": "Video • 5 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-151",
-            "topicNum": 8,
-            "title": "while Loops",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-152",
-            "topicNum": 9,
-            "title": "range()",
-            "duration": "Video • 11 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-153",
-            "topicNum": 10,
-            "title": "break, continue and pass",
-            "duration": "Video • 7 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-154",
-            "topicNum": 11,
-            "title": "Common Beginner Errors and Debugging",
-            "duration": "Video • 10 min",
-            "type": "video",
-            "status": "locked"
-          }
-        ]
-      },
-      {
-        "id": "mod-20",
-        "chapterNum": 20,
-        "title": "Module 20: Python Collections and Strings",
-        "subtitle": "Core industry concepts and practical exercises for Python Collections and Strings.",
-        "topics": [
-          {
-            "id": "t-155",
-            "topicNum": 1,
-            "title": "Strings and Indexing",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-156",
-            "topicNum": 2,
-            "title": "String Slicing",
-            "duration": "Video • 11 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-157",
-            "topicNum": 3,
-            "title": "Useful String Methods",
-            "duration": "Video • 7 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-158",
-            "topicNum": 4,
-            "title": "Lists and List Indexing",
-            "duration": "Video • 10 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-159",
-            "topicNum": 5,
-            "title": "List Methods",
-            "duration": "Video • 6 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-160",
-            "topicNum": 6,
-            "title": "Tuples",
-            "duration": "Video • 9 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-161",
-            "topicNum": 7,
-            "title": "Sets and Set Operations",
-            "duration": "Video • 5 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-162",
-            "topicNum": 8,
-            "title": "Dictionaries and Key-Value Pairs",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-163",
-            "topicNum": 9,
-            "title": "Looping Through Collections",
-            "duration": "Video • 11 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-164",
-            "topicNum": 10,
-            "title": "Nested Collections",
-            "duration": "Video • 7 min",
-            "type": "video",
-            "status": "locked"
-          }
-        ]
-      },
-      {
-        "id": "mod-21",
-        "chapterNum": 21,
-        "title": "Module 21: Functions, Modules and Files",
-        "subtitle": "Core industry concepts and practical exercises for Functions, Modules and Files.",
-        "topics": [
-          {
-            "id": "t-165",
-            "topicNum": 1,
-            "title": "Why Functions Are Useful",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-166",
-            "topicNum": 2,
-            "title": "Defining and Calling Functions",
-            "duration": "Video • 11 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-167",
-            "topicNum": 3,
-            "title": "Parameters and Return Values",
-            "duration": "Video • 7 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-168",
-            "topicNum": 4,
-            "title": "Default and Keyword Arguments",
-            "duration": "Video • 10 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-169",
-            "topicNum": 5,
-            "title": "Variable Scope Basics",
-            "duration": "Video • 6 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-170",
-            "topicNum": 6,
-            "title": "Built-in Functions",
-            "duration": "Video • 9 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-171",
-            "topicNum": 7,
-            "title": "Importing Modules",
-            "duration": "Video • 5 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-172",
-            "topicNum": 8,
-            "title": "Working with Dates",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-173",
-            "topicNum": 9,
-            "title": "Reading and Writing Files",
-            "duration": "Video • 11 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-174",
-            "topicNum": 10,
-            "title": "Exceptions with try and except",
-            "duration": "Video • 7 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-175",
-            "topicNum": 11,
-            "title": "Writing Reusable Code",
-            "duration": "Video • 10 min",
-            "type": "video",
-            "status": "locked"
-          }
-        ]
-      },
-      {
-        "id": "mod-22",
-        "chapterNum": 22,
-        "title": "Module 22: NumPy for Numerical Analysis",
-        "subtitle": "Core industry concepts and practical exercises for NumPy for Numerical Analysis.",
-        "topics": [
-          {
-            "id": "t-176",
-            "topicNum": 1,
-            "title": "What Is NumPy?",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-177",
-            "topicNum": 2,
-            "title": "Creating NumPy Arrays",
-            "duration": "Video • 11 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-178",
-            "topicNum": 3,
-            "title": "Array Shapes and Dimensions",
-            "duration": "Video • 7 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-179",
-            "topicNum": 4,
-            "title": "Indexing and Slicing Arrays",
-            "duration": "Video • 10 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-180",
-            "topicNum": 5,
-            "title": "Vectorized Operations",
-            "duration": "Video • 6 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-181",
-            "topicNum": 6,
-            "title": "Aggregation and Summary Statistics",
-            "duration": "Video • 9 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-182",
-            "topicNum": 7,
-            "title": "Boolean Masks and Filtering",
-            "duration": "Video • 5 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-183",
-            "topicNum": 8,
-            "title": "Reshaping and Combining Arrays",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          }
-        ]
-      },
-      {
-        "id": "mod-23",
-        "chapterNum": 23,
-        "title": "Module 23: Pandas for Data Analysis",
-        "subtitle": "Core industry concepts and practical exercises for Pandas for Data Analysis.",
-        "topics": [
-          {
-            "id": "t-184",
-            "topicNum": 1,
-            "title": "What Is Pandas?",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-185",
-            "topicNum": 2,
-            "title": "Series and DataFrames",
-            "duration": "Video • 11 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-186",
-            "topicNum": 3,
-            "title": "Reading CSV and Excel Files",
-            "duration": "Video • 7 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-187",
-            "topicNum": 4,
-            "title": "Inspecting Data with head(), info() and describe()",
-            "duration": "Video • 10 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-188",
-            "topicNum": 5,
-            "title": "Selecting Columns and Rows",
-            "duration": "Video • 6 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-189",
-            "topicNum": 6,
-            "title": "Filtering and Sorting DataFrames",
-            "duration": "Video • 9 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-190",
-            "topicNum": 7,
-            "title": "Creating and Renaming Columns",
-            "duration": "Video • 5 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-191",
-            "topicNum": 8,
-            "title": "Handling Missing Values",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-192",
-            "topicNum": 9,
-            "title": "Removing Duplicates",
-            "duration": "Video • 11 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-193",
-            "topicNum": 10,
-            "title": "GroupBy and Aggregation",
-            "duration": "Video • 7 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-194",
-            "topicNum": 11,
-            "title": "Merge, Join and Concatenate",
-            "duration": "Video • 10 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-195",
-            "topicNum": 12,
-            "title": "Dates and Text in Pandas",
-            "duration": "Video • 6 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-196",
-            "topicNum": 13,
-            "title": "Exporting Clean Data",
-            "duration": "Video • 9 min",
-            "type": "video",
-            "status": "locked"
-          }
-        ]
-      },
-      {
-        "id": "mod-24",
-        "chapterNum": 24,
-        "title": "Module 24: Python Visualization and Analytics",
-        "subtitle": "Core industry concepts and practical exercises for Python Visualization and Analytics.",
-        "topics": [
-          {
-            "id": "t-197",
-            "topicNum": 1,
-            "title": "Why Data Visualization Matters",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-198",
-            "topicNum": 2,
-            "title": "Matplotlib Basics",
-            "duration": "Video • 11 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-199",
-            "topicNum": 3,
-            "title": "Bar and Column Charts",
-            "duration": "Video • 7 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-200",
-            "topicNum": 4,
-            "title": "Line Charts and Trends",
-            "duration": "Video • 10 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-201",
-            "topicNum": 5,
-            "title": "Histograms and Distributions",
-            "duration": "Video • 6 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-202",
-            "topicNum": 6,
-            "title": "Scatter Plots and Relationships",
-            "duration": "Video • 9 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-203",
-            "topicNum": 7,
-            "title": "Labels, Legends and Titles",
-            "duration": "Video • 5 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-204",
-            "topicNum": 8,
-            "title": "Choosing the Right Chart",
-            "duration": "Video • 8 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-205",
-            "topicNum": 9,
-            "title": "Exploratory Data Analysis with Pandas",
-            "duration": "Video • 11 min",
-            "type": "video",
-            "status": "locked"
-          },
-          {
-            "id": "t-206",
-            "topicNum": 10,
-            "title": "Python Data Analysis Mini Project",
-            "duration": "Video • 7 min",
-            "type": "video",
-            "status": "locked"
-          }
-        ]
-      }
-    ]
-  },
+
   {
     "id": "tab-5",
     "tabNum": 5,
     "title": "Power BI and Dashboards",
-    "shortTitle": "Power BI and Dashboards",
+    "shortTitle": "Power BI",
     "subtitle": "Build dynamic enterprise dashboards, Star Schema data models, and advanced DAX measures.",
     "iconName": "powerbi",
     "isFree": false,
     "chapters": [
       {
-        "id": "mod-25",
-        "chapterNum": 25,
-        "title": "Module 25: Getting Started with Power BI",
+        "id": "mod-23",
+        "chapterNum": 23,
+        "title": "Module 23: Getting Started with Power BI",
         "subtitle": "Core industry concepts and practical exercises for Getting Started with Power BI.",
         "topics": [
           {
@@ -1969,9 +1757,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-26",
-        "chapterNum": 26,
-        "title": "Module 26: Power Query and Data Transformation",
+        "id": "mod-24",
+        "chapterNum": 24,
+        "title": "Module 24: Power Query and Data Transformation",
         "subtitle": "Core industry concepts and practical exercises for Power Query and Data Transformation.",
         "topics": [
           {
@@ -2049,9 +1837,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-27",
-        "chapterNum": 27,
-        "title": "Module 27: Data Modeling",
+        "id": "mod-25",
+        "chapterNum": 25,
+        "title": "Module 25: Data Modeling",
         "subtitle": "Core industry concepts and practical exercises for Data Modeling.",
         "topics": [
           {
@@ -2113,9 +1901,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-28",
-        "chapterNum": 28,
-        "title": "Module 28: DAX and Measures",
+        "id": "mod-26",
+        "chapterNum": 26,
+        "title": "Module 26: DAX and Measures",
         "subtitle": "Core industry concepts and practical exercises for DAX and Measures.",
         "topics": [
           {
@@ -2201,9 +1989,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-29",
-        "chapterNum": 29,
-        "title": "Module 29: Visuals and Dashboard Design",
+        "id": "mod-27",
+        "chapterNum": 27,
+        "title": "Module 27: Visuals and Dashboard Design",
         "subtitle": "Core industry concepts and practical exercises for Visuals and Dashboard Design.",
         "topics": [
           {
@@ -2273,9 +2061,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-30",
-        "chapterNum": 30,
-        "title": "Module 30: Publishing, Security and Projects",
+        "id": "mod-28",
+        "chapterNum": 28,
+        "title": "Module 28: Publishing, Security and Projects",
         "subtitle": "Core industry concepts and practical exercises for Publishing, Security and Projects.",
         "topics": [
           {
@@ -2330,19 +2118,20 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
       }
     ]
   },
+
   {
     "id": "tab-6",
     "tabNum": 6,
     "title": "Generative AI for Analysts",
-    "shortTitle": "Generative AI for Analysts",
+    "shortTitle": "GenAI",
     "subtitle": "Use LLMs, prompt engineering, and AI-assisted workflows to accelerate analysis responsibly.",
     "iconName": "genai",
     "isFree": false,
     "chapters": [
       {
-        "id": "mod-31",
-        "chapterNum": 31,
-        "title": "Module 31: Generative AI Foundations",
+        "id": "mod-29",
+        "chapterNum": 29,
+        "title": "Module 29: Generative AI Foundations",
         "subtitle": "Core industry concepts and practical exercises for Generative AI Foundations.",
         "topics": [
           {
@@ -2396,9 +2185,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-32",
-        "chapterNum": 32,
-        "title": "Module 32: Responsible and Safe AI Use",
+        "id": "mod-30",
+        "chapterNum": 30,
+        "title": "Module 30: Responsible and Safe AI Use",
         "subtitle": "Core industry concepts and practical exercises for Responsible and Safe AI Use.",
         "topics": [
           {
@@ -2452,9 +2241,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-33",
-        "chapterNum": 33,
-        "title": "Module 33: Prompt Engineering Basics",
+        "id": "mod-31",
+        "chapterNum": 31,
+        "title": "Module 31: Prompt Engineering Basics",
         "subtitle": "Core industry concepts and practical exercises for Prompt Engineering Basics.",
         "topics": [
           {
@@ -2516,9 +2305,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-34",
-        "chapterNum": 34,
-        "title": "Module 34: AI for Excel, SQL and Python",
+        "id": "mod-32",
+        "chapterNum": 32,
+        "title": "Module 32: AI for Excel, SQL and Python",
         "subtitle": "Core industry concepts and practical exercises for AI for Excel, SQL and Python.",
         "topics": [
           {
@@ -2580,9 +2369,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-35",
-        "chapterNum": 35,
-        "title": "Module 35: AI-Assisted Analytics Workflows",
+        "id": "mod-33",
+        "chapterNum": 33,
+        "title": "Module 33: AI-Assisted Analytics Workflows",
         "subtitle": "Core industry concepts and practical exercises for AI-Assisted Analytics Workflows.",
         "topics": [
           {
@@ -2645,19 +2434,20 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
       }
     ]
   },
+
   {
     "id": "tab-7",
     "tabNum": 7,
     "title": "Business Insights and Communication",
-    "shortTitle": "Business Insights & Communication",
+    "shortTitle": "Insights",
     "subtitle": "Translate numbers into high-impact executive stories, statistics, and presentations.",
     "iconName": "target",
     "isFree": false,
     "chapters": [
       {
-        "id": "mod-36",
-        "chapterNum": 36,
-        "title": "Module 36: Exploratory Data Analysis",
+        "id": "mod-34",
+        "chapterNum": 34,
+        "title": "Module 34: Exploratory Data Analysis",
         "subtitle": "Core industry concepts and practical exercises for Exploratory Data Analysis.",
         "topics": [
           {
@@ -2727,9 +2517,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-37",
-        "chapterNum": 37,
-        "title": "Module 37: Statistics for Data Analysts",
+        "id": "mod-35",
+        "chapterNum": 35,
+        "title": "Module 35: Statistics for Data Analysts",
         "subtitle": "Core industry concepts and practical exercises for Statistics for Data Analysts.",
         "topics": [
           {
@@ -2807,9 +2597,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-38",
-        "chapterNum": 38,
-        "title": "Module 38: Data Visualization and Storytelling",
+        "id": "mod-36",
+        "chapterNum": 36,
+        "title": "Module 36: Data Visualization and Storytelling",
         "subtitle": "Core industry concepts and practical exercises for Data Visualization and Storytelling.",
         "topics": [
           {
@@ -2879,9 +2669,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-39",
-        "chapterNum": 39,
-        "title": "Module 39: Business Reporting and Stakeholders",
+        "id": "mod-37",
+        "chapterNum": 37,
+        "title": "Module 37: Business Reporting and Stakeholders",
         "subtitle": "Core industry concepts and practical exercises for Business Reporting and Stakeholders.",
         "topics": [
           {
@@ -2936,19 +2726,20 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
       }
     ]
   },
+
   {
     "id": "tab-8",
     "tabNum": 8,
     "title": "Projects and Career Preparation",
-    "shortTitle": "Projects & Career Preparation",
+    "shortTitle": "Projects",
     "subtitle": "Complete real-world industry capstones, polish portfolio case studies, and crack interviews.",
     "iconName": "project",
     "isFree": false,
     "chapters": [
       {
-        "id": "mod-40",
-        "chapterNum": 40,
-        "title": "Module 40: Guided Analytics Projects",
+        "id": "mod-38",
+        "chapterNum": 38,
+        "title": "Module 38: Guided Analytics Projects",
         "subtitle": "Core industry concepts and practical exercises for Guided Analytics Projects.",
         "topics": [
           {
@@ -3002,9 +2793,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-41",
-        "chapterNum": 41,
-        "title": "Module 41: Portfolio and Case Studies",
+        "id": "mod-39",
+        "chapterNum": 39,
+        "title": "Module 39: Portfolio and Case Studies",
         "subtitle": "Core industry concepts and practical exercises for Portfolio and Case Studies.",
         "topics": [
           {
@@ -3066,9 +2857,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-42",
-        "chapterNum": 42,
-        "title": "Module 42: Interview Preparation",
+        "id": "mod-40",
+        "chapterNum": 40,
+        "title": "Module 40: Interview Preparation",
         "subtitle": "Core industry concepts and practical exercises for Interview Preparation.",
         "topics": [
           {
@@ -3138,9 +2929,9 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
         ]
       },
       {
-        "id": "mod-43",
-        "chapterNum": 43,
-        "title": "Module 43: Capstone and Career Launch",
+        "id": "mod-41",
+        "chapterNum": 41,
+        "title": "Module 41: Capstone and Career Launch",
         "subtitle": "Core industry concepts and practical exercises for Capstone and Career Launch.",
         "topics": [
           {
@@ -3212,3 +3003,73 @@ export const DATA_ANALYST_CURRICULUM: TabItem[] = [
     ]
   }
 ];
+
+export interface TopicHierarchyLookup {
+  tabId: string;
+  chapterId: string;
+  topicId: string;
+  topicNum: number;
+}
+
+export function findTabAndChapterForTopic(
+  topicIdOrNum: string | number,
+  preferredTabId?: string | number
+): TopicHierarchyLookup | null {
+  if (!topicIdOrNum) return null;
+  const rawStr = String(topicIdOrNum).trim();
+  const numericPart = parseInt(rawStr.replace(/\D/g, ''), 10);
+  const formattedId = rawStr.startsWith('t-') ? rawStr : `t-${numericPart}`;
+
+  // 1. Determine preferred tab (explicit argument or session storage fallback)
+  let normTab: string | null = null;
+  if (preferredTabId) {
+    const pStr = String(preferredTabId).trim();
+    normTab = pStr.startsWith('tab-') ? pStr : `tab-${pStr}`;
+  } else if (typeof window !== 'undefined') {
+    try {
+      const stored = sessionStorage.getItem('futureai_active_curriculum_tab');
+      if (stored) {
+        normTab = stored.startsWith('tab-') ? stored : `tab-${stored}`;
+      }
+    } catch {}
+  }
+
+  // Helper to search within a single tab
+  const searchTab = (tab: (typeof DATA_ANALYST_CURRICULUM)[number]): TopicHierarchyLookup | null => {
+    for (const chapter of tab.chapters) {
+      for (const topic of chapter.topics) {
+        if (
+          topic.id === formattedId ||
+          topic.id === rawStr ||
+          (!isNaN(numericPart) && topic.id === `t-${numericPart}`)
+        ) {
+          return {
+            tabId: tab.id,
+            chapterId: chapter.id,
+            topicId: topic.id,
+            topicNum: topic.topicNum,
+          };
+        }
+      }
+    }
+    return null;
+  };
+
+  // 2. If a preferred tab is identified, search it first to avoid cross-tab ID collisions (e.g. Tab 2 Python vs Tab 3 Excel)
+  if (normTab) {
+    const targetTab = DATA_ANALYST_CURRICULUM.find((t) => t.id === normTab);
+    if (targetTab) {
+      const match = searchTab(targetTab);
+      if (match) return match;
+    }
+  }
+
+  // 3. Fallback: search all tabs sequentially
+  for (const tab of DATA_ANALYST_CURRICULUM) {
+    if (normTab && tab.id === normTab) continue; // Already searched
+    const match = searchTab(tab);
+    if (match) return match;
+  }
+  return null;
+}
+

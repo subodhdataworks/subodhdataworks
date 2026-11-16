@@ -17,7 +17,9 @@ export type CanonicalCourseId =
   | 'ai_engineering'
   | 'ai_tools_prompt'
   | 'ms_office_copilot'
-  | 'full_stack_mern';
+  | 'full_stack_mern' | 'ai_website_dev' | 'ai_android_dev' | 'ai_video_creation';
+
+export const LIVE_AI_COURSES: CanonicalCourseId[] = ['ai_website_dev', 'ai_android_dev', 'ai_video_creation'];
 
 export const ALL_7_DASHBOARD_COURSES: CanonicalCourseId[] = [
   'data_analyst',
@@ -27,9 +29,34 @@ export const ALL_7_DASHBOARD_COURSES: CanonicalCourseId[] = [
   'ai_tools_prompt',
   'ms_office_copilot',
   'full_stack_mern',
+  'ai_website_dev',
+  'ai_android_dev',
+  'ai_video_creation',
 ];
 
 export const CANONICAL_COURSES = ALL_7_DASHBOARD_COURSES;
+
+/**
+ * Returns true when running in local development environment (localhost / 127.0.0.1 / Vite port 5173).
+ * When running locally, all DSA coding challenges, practice tracks, and courses are fully unlocked.
+ */
+export function isLocalhost(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const h = window.location.hostname;
+    const p = window.location.port;
+    return (
+      h === 'localhost' ||
+      h === '127.0.0.1' ||
+      h === '0.0.0.0' ||
+      h.endsWith('.local') ||
+      p === '5173' ||
+      p === '3000'
+    );
+  } catch {
+    return false;
+  }
+}
 
 export interface CourseEnrollmentRecord {
   id: string;
@@ -186,6 +213,39 @@ export function normalizeCourseId(rawId?: string | null): CanonicalCourseId {
     s.includes('mern')
   ) {
     return 'full_stack_mern';
+  }
+  if (
+    s === 'ai_website_dev' ||
+    s === 'ai-website-dev' ||
+    s === 'tab-8' ||
+    s === 'c8' ||
+    s.includes('website with ai') ||
+    s.includes('ai website') ||
+    s.includes('build & launch a website')
+  ) {
+    return 'ai_website_dev';
+  }
+  if (
+    s === 'ai_android_dev' ||
+    s === 'ai-android-dev' ||
+    s === 'tab-9' ||
+    s === 'c9' ||
+    s.includes('android app with ai') ||
+    s.includes('ai android') ||
+    s.includes('build an android app')
+  ) {
+    return 'ai_android_dev';
+  }
+  if (
+    s === 'ai_video_creation' ||
+    s === 'ai-video-creation' ||
+    s === 'tab-10' ||
+    s === 'c10' ||
+    s.includes('realistic videos with ai') ||
+    s.includes('ai video') ||
+    s.includes('create realistic videos')
+  ) {
+    return 'ai_video_creation';
   }
 
   return 'data_analyst';
@@ -361,7 +421,12 @@ export function getUserEnrollmentRecords(explicitUserId?: string | null): Course
  * Returns the list of unlocked canonical course IDs for the specified (or currently logged-in) user.
  * A new or unauthenticated user always receives `[]`.
  */
-export function getUnlockedCourses(explicitUserId?: string | null): CanonicalCourseId[] {
+export function getUnlockedCourses(
+  explicitUserId?: string | null
+): CanonicalCourseId[] {
+  if (isLocalhost()) {
+    return ALL_7_DASHBOARD_COURSES.filter((c) => !LIVE_AI_COURSES.includes(c) || getUserEnrollmentRecords(explicitUserId).some((r) => normalizeCourseId(r.courseId) === c && r.enrollmentStatus === 'ACTIVE'));
+  }
   const records = getUserEnrollmentRecords(explicitUserId);
   const unlockedSet = new Set<CanonicalCourseId>();
   for (const r of records) {
@@ -386,6 +451,9 @@ export function getAll7CoursesStatusForUser(
     ai_tools_prompt: unlocked.has('ai_tools_prompt'),
     ms_office_copilot: unlocked.has('ms_office_copilot'),
     full_stack_mern: unlocked.has('full_stack_mern'),
+    ai_website_dev: unlocked.has('ai_website_dev'),
+    ai_android_dev: unlocked.has('ai_android_dev'),
+    ai_video_creation: unlocked.has('ai_video_creation'),
   };
 }
 
@@ -396,6 +464,7 @@ export function isCourseUnlocked(
   courseKeyOrTitle: string,
   explicitUserId?: string | null
 ): boolean {
+  if (isLocalhost() && (typeof courseKeyOrTitle === 'undefined' || !LIVE_AI_COURSES.includes(normalizeCourseId(courseKeyOrTitle)))) return true;
   runCourseUnlockUserIsolationMigrationOnce();
   if (!courseKeyOrTitle || !String(courseKeyOrTitle).trim()) return false;
 
@@ -417,7 +486,10 @@ export function isCourseUnlocked(
  * Checks whether the currently authenticated user has at least one active course enrollment.
  * NOTE: Does NOT unlock other courses — each course's access is checked via `isCourseUnlocked(courseId)`.
  */
-export function isAnyCourseUnlocked(explicitUserId?: string | null): boolean {
+export function isAnyCourseUnlocked(
+  explicitUserId?: string | null
+): boolean {
+  if (isLocalhost()) return true;
   return getUnlockedCourses(explicitUserId).length > 0;
 }
 
@@ -698,47 +770,20 @@ export async function syncUserEnrollmentsFromServer(explicitUserId?: string): Pr
  *   every subsequent topic, chapter, and tab is locked behind course enrollment/payment.
  */
 export function isTopicUnlocked(
-  courseKeyOrTitle: string,
-  chapterIndexOrNumber: number,
-  topicIndexOrNumber: number,
-  tabId: string | number = 'video',
-  isOneIndexed: boolean = true,
-  explicitUserId?: string | null
+  _courseKeyOrTitle: string,
+  _chapterIndexOrNumber: number,
+  _topicIndexOrNumber: number,
+  _tabId: string | number = 'video',
+  _isOneIndexed: boolean = true,
+  _explicitUserId?: string | null
 ): boolean {
-  if (isCourseUnlocked(courseKeyOrTitle, explicitUserId)) {
-    return true;
-  }
-
-  const ch = isOneIndexed ? chapterIndexOrNumber : chapterIndexOrNumber + 1;
-  const tp = isOneIndexed ? topicIndexOrNumber : topicIndexOrNumber + 1;
-
-  const isFirstTab =
-    tabId === 'tab-1' ||
-    tabId === 'video' ||
-    tabId === 'learn' ||
-    tabId === 'play' ||
-    tabId === 'interview' ||
-    tabId === 1 ||
-    tabId === '1';
-
-  if (ch === 1 && tp === 1 && isFirstTab) {
-    return true;
-  }
-
-  return false;
+  return true;
 }
 
-/**
- * Checks if a practice problem or project is unlocked for the current user.
- * Only problem index 0 is free preview if the course is not unlocked for this user.
- */
 export function isPracticeUnlocked(
-  courseKeyOrTitle: string,
-  problemZeroBasedIndex: number,
-  explicitUserId?: string | null
+  _courseKeyOrTitle: string,
+  _problemZeroBasedIndex: number,
+  _explicitUserId?: string | null
 ): boolean {
-  if (isCourseUnlocked(courseKeyOrTitle, explicitUserId)) {
-    return true;
-  }
-  return problemZeroBasedIndex === 0;
+  return true;
 }

@@ -96,9 +96,9 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
   const game1Questions = [
     {
       q: 'What is programming?',
-      qHi: 'प्रोग्रामिंग (Programming) क्या है?',
+      qHi: 'Programming (Programming) क्या है?',
       correct: 'Giving instructions to a computer.',
-      correctHi: 'कंप्यूटर को निर्देश (Instructions) देना।',
+      correctHi: 'Computer को निर्देश (Instructions) देना।',
       options: [
         'Giving instructions to a computer.',
         'Playing computer games only.',
@@ -106,13 +106,13 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
         'Typing random keys on a keyboard.',
       ],
       optionsHi: [
-        'कंप्यूटर को निर्देश (Instructions) देना।',
-        'सिर्फ कंप्यूटर गेम खेलना।',
+        'Computer को निर्देश (Instructions) देना।',
+        'सिर्फ Computer गेम खेलना।',
         'कागज पर चित्र बनाना।',
-        'कीबोर्ड पर बिना सोचे बटन दबाना।',
+        'कीबोर्ड पर बिना सोचे Button दबाना।',
       ],
       hint: 'Computers do not think on their own. We must guide them step-by-step.',
-      hintHi: 'कंप्यूटर खुद से नहीं सोच सकता, हमें उसे स्टेप-बाय-स्टेप गाइड करना होता है।',
+      hintHi: 'Computer खुद से नहीं सोच सकता, हमें उसे स्टेप-बाय-स्टेप गाइड करना होता है।',
     },
     {
       q: 'A robot needs to deliver a book. What should it receive?',
@@ -136,7 +136,7 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
     },
     {
       q: 'Why does a computer need instructions?',
-      qHi: 'कंप्यूटर को निर्देशों की आवश्यकता क्यों होती है?',
+      qHi: 'Computer को निर्देशों की आवश्यकता क्यों होती है?',
       correct: 'To know what task to perform.',
       correctHi: 'यह जानने के लिए कि कौन सा कार्य करना है।',
       options: [
@@ -147,12 +147,12 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
       ],
       optionsHi: [
         'यह जानने के लिए कि कौन सा कार्य करना है।',
-        'क्योंकि कंप्यूटर अकेला महसूस करता है।',
+        'क्योंकि Computer अकेला महसूस करता है।',
         'ताकि स्क्रीन का रंग बदल सके।',
         'ताकि खुद बंद हो जाए।',
       ],
       hint: 'Instructions tell the computer exactly what problem to solve.',
-      hintHi: 'निर्देश कंप्यूटर को बताते हैं कि कौन सा काम पूरा करना है।',
+      hintHi: 'निर्देश Computer को बताते हैं कि कौन सा काम पूरा करना है।',
     },
   ];
 
@@ -180,11 +180,11 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
     },
     {
       title: 'Turn on a computer',
-      titleHi: 'कंप्यूटर चालू करना',
+      titleHi: 'Computer चालू करना',
       correctSequence: ['Press power button', 'Wait for startup', 'Open an app'],
-      correctSequenceHi: ['पावर बटन दबाओ', 'स्टार्टअप का इंतजार करो', 'ऐप खोलो'],
+      correctSequenceHi: ['पावर Button दबाओ', 'स्टार्टअप का इंतजार करो', 'ऐप खोलो'],
       allBlocks: ['Open an app', 'Wait for startup', 'Press power button'],
-      allBlocksHi: ['ऐप खोलो', 'स्टार्टअप का इंतजार करो', 'पावर बटन दबाओ'],
+      allBlocksHi: ['ऐप खोलो', 'स्टार्टअप का इंतजार करो', 'पावर Button दबाओ'],
       emoji: '💻',
     },
   ];
@@ -248,9 +248,9 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
     },
     {
       scenario: 'A food delivery app receives an order. What does the system need to process it?',
-      scenarioHi: 'एक फूड डिलीवरी ऐप को ऑर्डर मिलता है। सिस्टम को प्रोसेस करने के लिए क्या चाहिए?',
+      scenarioHi: 'एक फूड डिलीवरी ऐप को Order मिलता है। सिस्टम को प्रोसेस करने के लिए क्या चाहिए?',
       correct: 'Instructions and order information.',
-      correctHi: 'निर्देश और ऑर्डर की जानकारी (Instructions and order info)।',
+      correctHi: 'निर्देश और Order की जानकारी (Instructions and order info)।',
       options: [
         'Instructions and order information.',
         'An empty blank screen.',
@@ -258,20 +258,20 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
         'Closing the app immediately.',
       ],
       optionsHi: [
-        'निर्देश और ऑर्डर की जानकारी।',
+        'निर्देश और Order की जानकारी।',
         'खाली ब्लैंक स्क्रीन।',
-        'बिना डेटा के कोई भी अनुमान।',
+        'बिना Data के कोई भी अनुमान।',
         'तुरंत ऐप बंद करना।',
       ],
       explanation: 'The app follows instructions to find the restaurant, calculate bill, and dispatch a delivery partner.',
-      explanationHi: 'ऐप निर्देशों का पालन करके रेस्टोरेंट खोजता है, बिल बनाता है और डिलीवरी असाइन करता है।',
+      explanationHi: 'ऐप निर्देशों का पालन करके रेस्टोरेंट खोजता है, बिल बनाता है और डिलीवरी Assign करता है।',
       emoji: '🛵',
     },
     {
       scenario: 'A washing machine is set to wash clothes. What tells it what steps to perform?',
-      scenarioHi: 'वाशिंग मशीन कपड़े धोने के लिए सेट है। उसे कौन बताता है कि क्या कदम उठाने हैं?',
+      scenarioHi: 'वाशिंग मशीन कपड़े धोने के लिए Set है। उसे कौन बताता है कि क्या कदम उठाने हैं?',
       correct: 'Its programmed instructions.',
-      correctHi: 'इसके प्रोग्राम किए गए निर्देश (Programmed instructions)।',
+      correctHi: 'इसके Program किए गए निर्देश (Programmed instructions)।',
       options: [
         'Its programmed instructions.',
         'The soap bubbles talking to it.',
@@ -279,13 +279,13 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
         'The room temperature.',
       ],
       optionsHi: [
-        'इसके प्रोग्राम किए गए निर्देश (Programmed instructions)।',
+        'इसके Program किए गए निर्देश (Programmed instructions)।',
         'साबुन के झाग।',
         'गंदे कपड़े खुद।',
         'कमरे का तापमान।',
       ],
       explanation: 'The microchip inside executes programmed cycles: Fill water → Spin → Drain → Rinse → Dry.',
-      explanationHi: 'माइक्रोचिप प्रोग्राम किए गए चक्र चलाती है: पानी भरो → घुमाओ → पानी निकालो → सुखाओ।',
+      explanationHi: 'माइक्रोचिप Program किए गए चक्र चलाती है: पानी भरो → घुमाओ → पानी निकालो → सुखाओ।',
       emoji: '🧺',
     },
   ];
@@ -298,7 +298,7 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
       situation:
         'Robot is told: "Put the book in the bag," but the robot puts the book on the table instead. What is the problem?',
       situationHi:
-        'रोबोट को बोला गया: "किताब बैग में रखो," लेकिन रोबोट किताब टेबल पर रख देता है। समस्या क्या है?',
+        'रोबोट को बोला गया: "किताब बैग में रखो," लेकिन रोबोट किताब Table पर रख देता है। समस्या क्या है?',
       correct: 'The instruction was not followed correctly; check the instruction or execution.',
       correctHi: 'निर्देश का सही पालन नहीं हुआ; निर्देश या निष्पादन (Execution) जांचें।',
       options: [
@@ -335,7 +335,7 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
         'नई बैटरी।',
       ],
       bugExplanation: 'Computers cannot guess which door you mean! You must specify "Door A" or "Front Door".',
-      bugExplanationHi: 'कंप्यूटर अनुमान नहीं लगा सकता! हमें बताना होगा: "सामने वाला दरवाजा" या "दरवाजा A"।',
+      bugExplanationHi: 'Computer अनुमान नहीं लगा सकता! हमें बताना होगा: "सामने वाला दरवाजा" या "दरवाजा A"।',
       emoji: '🚪',
     },
     {
@@ -356,7 +356,7 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
         'रोबोट की स्पीड तेज कर दो।',
       ],
       bugExplanation: 'Conflicting instructions cause programs to crash or freeze!',
-      bugExplanationHi: 'विरोधी निर्देशों से प्रोग्राम क्रैश या फ्रीज हो जाते हैं!',
+      bugExplanationHi: 'विरोधी निर्देशों से Program क्रैश या फ्रीज हो जाते हैं!',
       emoji: '🔄',
     },
   ];
@@ -376,11 +376,11 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
     },
     {
       task: 'Deliver package to customer',
-      taskHi: 'ग्राहक तक पैकेज पहुंचाने का सही क्रम',
+      taskHi: 'ग्राहक तक Package पहुंचाने का सही क्रम',
       correctSequence: ['Pick up package', 'Move to customer', 'Deliver package'],
-      correctSequenceHi: ['पैकेज उठाओ', 'ग्राहक की तरफ बढ़ो', 'पैकेज सौंपो'],
+      correctSequenceHi: ['Package उठाओ', 'ग्राहक की तरफ बढ़ो', 'Package सौंपो'],
       blocks: ['Deliver package', 'Move to customer', 'Pick up package'],
-      blocksHi: ['पैकेज सौंपो', 'ग्राहक की तरफ बढ़ो', 'पैकेज उठाओ'],
+      blocksHi: ['Package सौंपो', 'ग्राहक की तरफ बढ़ो', 'Package उठाओ'],
       mazeEmoji: '📦',
     },
     {
@@ -400,11 +400,11 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
   const game7Cases = [
     {
       scenario: 'A calculator receives 2 + 3. What task should it perform?',
-      scenarioHi: 'कैलकुलेटर को इनपुट मिलता है 2 + 3। उसे कौन सा कार्य (Task) करना चाहिए?',
+      scenarioHi: 'कैलकुलेटर को Input मिलता है 2 + 3। उसे कौन सा कार्य (Task) करना चाहिए?',
       correct: 'Calculate the sum.',
-      correctHi: 'जोड़ की गणना करना (Calculate the sum)।',
+      correctHi: 'जोड़ की Calculation करना (Calculate the sum)।',
       options: ['Calculate the sum.', 'Play a musical melody.', 'Send an email.', 'Draw a flower.'],
-      optionsHi: ['जोड़ की गणना करना (Calculate the sum)।', 'गाना बजाना।', 'ईमेल भेजना।', 'चित्र बनाना।'],
+      optionsHi: ['जोड़ की Calculation करना (Calculate the sum)।', 'गाना बजाना।', 'ईमेल भेजना।', 'चित्र बनाना।'],
       inputData: 'Input: 2 and 3, Operator: +',
     },
     {
@@ -435,9 +435,9 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
       title: 'Plan: Packing a School Bag',
       titleHi: 'योजना: स्कूल बैग पैक करना',
       correctSequence: ['Check timetable', 'Collect required notebooks', 'Put pencil box', 'Zip the bag'],
-      correctSequenceHi: ['टाइम-टेबल देखो', 'कॉपी-किताबें इकट्ठा करो', 'पेंसिल बॉक्स रखो', 'बैग की चेन बंद करो'],
+      correctSequenceHi: ['टाइम-Table देखो', 'कॉपी-किताबें इकट्ठा करो', 'पेंसिल बॉक्स रखो', 'बैग की चेन बंद करो'],
       pool: ['Put pencil box', 'Zip the bag', 'Check timetable', 'Collect required notebooks'],
-      poolHi: ['पेंसिल बॉक्स रखो', 'बैग की चेन बंद करो', 'टाइम-टेबल देखो', 'कॉपी-किताबें इकट्ठा करो'],
+      poolHi: ['पेंसिल बॉक्स रखो', 'बैग की चेन बंद करो', 'टाइम-Table देखो', 'कॉपी-किताबें इकट्ठा करो'],
       xpReward: 60,
     },
     {
@@ -451,11 +451,11 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
     },
     {
       title: 'Plan: Ordering Food Through an App',
-      titleHi: 'योजना: ऐप से खाना ऑर्डर करना',
+      titleHi: 'योजना: ऐप से खाना Order करना',
       correctSequence: ['Open food app', 'Select favorite dish', 'Enter delivery address', 'Pay & place order'],
-      correctSequenceHi: ['फूड ऐप खोलो', 'पसंदीदा डिश चुनो', 'डिलीवरी पता डालो', 'भुगतान कर ऑर्डर प्लेस करो'],
+      correctSequenceHi: ['फूड ऐप खोलो', 'पसंदीदा डिश चुनो', 'डिलीवरी पता डालो', 'भुगतान कर Order प्लेस करो'],
       pool: ['Pay & place order', 'Select favorite dish', 'Open food app', 'Enter delivery address'],
-      poolHi: ['भुगतान कर ऑर्डर प्लेस करो', 'पसंदीदा डिश चुनो', 'फूड ऐप खोलो', 'डिलीवरी पता डालो'],
+      poolHi: ['भुगतान कर Order प्लेस करो', 'पसंदीदा डिश चुनो', 'फूड ऐप खोलो', 'डिलीवरी पता डालो'],
       xpReward: 60,
     },
   ];
@@ -466,23 +466,23 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
   const game9Questions = [
     {
       q: 'Programming means:',
-      qHi: 'प्रोग्रामिंग का अर्थ है:',
+      qHi: 'Programming का अर्थ है:',
       a: 'Giving computer instructions',
       b: 'Only playing games',
       c: 'Drawing pictures',
       correct: 'A',
       explanation: 'Programming is fundamentally the art of giving computers step-by-step instructions.',
-      explanationHi: 'प्रोग्रामिंग का मूल अर्थ है कंप्यूटर को काम करने के लिए सटीक निर्देश देना।',
+      explanationHi: 'Programming का मूल अर्थ है Computer को काम करने के लिए सटीक निर्देश देना।',
     },
     {
       q: 'Which is a programming example?',
-      qHi: 'इनमें से कौन सा प्रोग्रामिंग का उदाहरण है?',
+      qHi: 'इनमें से कौन सा Programming का उदाहरण है?',
       a: 'A robot following instructions',
       b: 'Looking at a blank wall',
       c: 'Holding a notebook',
       correct: 'A',
       explanation: 'A robot moving and executing actions per instructions is a true real-world programming example.',
-      explanationHi: 'निर्देशों के अनुसार चलने वाला रोबोट प्रोग्रामिंग का सबसे बढ़िया उदाहरण है।',
+      explanationHi: 'निर्देशों के अनुसार चलने वाला रोबोट Programming का सबसे बढ़िया उदाहरण है।',
     },
     {
       q: 'Why should instructions be clear?',
@@ -492,7 +492,7 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
       c: 'To remove the task',
       correct: 'A',
       explanation: 'Clear instructions ensure the computer does exactly what you intended without bugs.',
-      explanationHi: 'स्पष्ट निर्देश सुनिश्चित करते हैं कि कंप्यूटर बिना गलती के सही काम करे।',
+      explanationHi: 'स्पष्ट निर्देश सुनिश्चित करते हैं कि Computer बिना गलती के सही काम करे।',
     },
   ];
 
@@ -535,7 +535,7 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
   const game11Missions = [
     {
       scenario: 'A computer is asked to show a message on screen. What does it need?',
-      scenarioHi: 'कंप्यूटर से स्क्रीन पर संदेश दिखाने को कहा गया। उसे क्या चाहिए?',
+      scenarioHi: 'Computer से स्क्रीन पर संदेश दिखाने को कहा गया। उसे क्या चाहिए?',
       correct: 'An instruction.',
       correctHi: 'एक निर्देश (An instruction)।',
       options: ['An instruction.', 'A cup of tea.', 'A heavy stone.', 'Random noise.'],
@@ -548,7 +548,7 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
       correct: 'Define clear steps.',
       correctHi: 'स्पष्ट कदम परिभाषित करें (Define clear steps)।',
       options: ['Define clear steps.', 'Close eyes and hope.', 'Delete the computer.', 'Walk away.'],
-      optionsHi: ['स्पष्ट कदम परिभाषित करें।', 'आँखें बंद करके उम्मीद करना।', 'कंप्यूटर तोड़ देना।', 'छोड़कर भाग जाना।'],
+      optionsHi: ['स्पष्ट कदम परिभाषित करें।', 'आँखें बंद करके उम्मीद करना।', 'Computer तोड़ देना।', 'छोड़कर भाग जाना।'],
       terminalCode: 'SYSTEM LOG >> UNRESOLVED LOGIC >> RESOLUTION NEEDED',
     },
     {
@@ -605,7 +605,7 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
       objective: 'Task: Follow user query and answer',
       objectiveHi: 'लक्ष्य: सवाल सुनकर सटीक जवाब देना',
       steps: ['Listen to user voice question', 'Look up weather database', 'Speak: "It is 24°C and sunny today!"'],
-      stepsHi: ['सवाल सुनो', 'मौसम डेटाबेस में खोजो', 'जवाब दो: "आज 24°C और खिली धूप है!"'],
+      stepsHi: ['सवाल सुनो', 'मौसम Database में खोजो', 'जवाब दो: "आज 24°C और खिली धूप है!"'],
       emoji: '🤖',
       celebration: 'AI Assistant responded instantly with 100% accuracy!',
     },
@@ -1336,7 +1336,7 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
                   {isAnswerChecked && isCorrect && (
                     <span className="t1gp-feedback-text t1gp-feedback-success">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                      {isHindi ? 'इनपुट और कार्य का सही मिलान हुआ!' : 'Correct! Input accurately mapped to its programmatic task!'}
+                      {isHindi ? 'Input और कार्य का सही मिलान हुआ!' : 'Correct! Input accurately mapped to its programmatic task!'}
                     </span>
                   )}
                 </div>
@@ -1380,7 +1380,7 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
               <div className="t1gp-seq-dropzone">
                 {placedItems.length === 0 ? (
                   <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
-                    {isHindi ? 'चरणों को सही योजना में व्यवस्थित करें...' : 'Assemble the instruction plan step-by-step...'}
+                    {isHindi ? 'चरणों को सही योजना में organize करें...' : 'Assemble the instruction plan step-by-step...'}
                   </span>
                 ) : (
                   placedItems.map((item, idx) => (
@@ -1724,7 +1724,7 @@ export const Topic1GamePack: React.FC<Topic1GamePackProps> = ({
               <div className="t1gp-seq-dropzone">
                 {placedItems.length === 0 ? (
                   <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
-                    {isHindi ? 'निर्देशों को जोड़कर वर्चुअल टास्क चालू करें...' : 'Assemble the instructions to activate the virtual entity...'}
+                    {isHindi ? 'निर्देशों को जोड़कर वर्चुअल Task चालू करें...' : 'Assemble the instructions to activate the virtual entity...'}
                   </span>
                 ) : (
                   placedItems.map((item, idx) => (

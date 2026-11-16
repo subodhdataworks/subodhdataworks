@@ -984,7 +984,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
     if (isFem) {
       if (qNum === 1) {
         const intros = [
-          `नमस्कार। आपके पायथन टेक्निकल इंटरव्यू में आपका स्वागत है। चलिए पहले सवाल से शुरू करते हैं: ${questionHindi}`,
+          `नमस्कार। आपके Python टेक्निकल इंटरव्यू में आपका स्वागत है। चलिए पहले सवाल से शुरू करते हैं: ${questionHindi}`,
           `हेलो, टेक्निकल इंटरव्यू राउंड में आपका स्वागत है। आपका पहला सवाल यह है: ${questionHindi}`,
           `स्वागत है। आज के टेक्निकल असेसमेंट की शुरुआत करते हैं सवाल नंबर 1 से: ${questionHindi}`,
         ];
@@ -1045,7 +1045,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
       setIsMicHighlighted(true);
       setSpeechTip(
         isFem
-          ? "🎙️ मेंटर का सवाल पूरा हुआ! नीचे हाइलाइट किए गए बटन को दबाकर अपना उत्तर बोलें..."
+          ? "🎙️ मेंटर का सवाल पूरा हुआ! नीचे हाइलाइट किए गए Button को दबाकर अपना उत्तर बोलें..."
           : "🎙️ Mentor question complete! Tap the highlighted button below to speak your answer..."
       );
       try {

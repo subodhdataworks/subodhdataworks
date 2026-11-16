@@ -185,11 +185,27 @@ export async function loginWithGooglePopup(): Promise<{
       const popupUnusable =
         code === 'auth/popup-blocked' ||
         code === 'auth/operation-not-supported-in-this-environment' ||
-        code === 'auth/web-storage-unsupported';
-      // Android in-app WebViews (Instagram/WhatsApp/FB browser) or blocked popups → redirect fallback
-      if (popupUnusable && isAndroidOrMobile()) {
-        await signInWithRedirect(auth, googleProvider);
-        throw new Error('REDIRECT_INITIATED');
+        code === 'auth/web-storage-unsupported' ||
+        String(popupErr?.message || '').toLowerCase().includes('missing initial state') ||
+        String(popupErr?.message || '').toLowerCase().includes('sessionstorage');
+      // Storage-partitioned browsers / blocked popups → use Google Identity Services token client (no cross-domain sessionStorage redirect)
+      if (popupUnusable) {
+        const { requestGoogleAccountLogin } = await import('./googleAuthService');
+        const gsiUser = await requestGoogleAccountLogin();
+        const fallbackUid = `google_${gsiUser.sub || gsiUser.email.replace(/[^a-zA-Z0-9]/g, '_')}`;
+        recordUserInDatabase({
+          uid: fallbackUid,
+          name: gsiUser.name,
+          email: gsiUser.email,
+          avatar: gsiUser.picture || '',
+          source: 'Google',
+        }).catch((e) => console.warn('Background recordUser error:', e));
+        return {
+          name: gsiUser.name,
+          email: gsiUser.email,
+          avatar: gsiUser.picture || '',
+          uid: fallbackUid,
+        };
       }
       throw popupErr;
     }
@@ -814,11 +830,11 @@ export async function recordReferralSignup(
 /**
  * Strict Anti-Fraud Paid Enrollment & Commission Engine
  * Rules:
- * 1. ONLY credits ₹100 when Razorpay payment is verified (paymentId starts with genuine id).
+ * 1. ONLY credits ₹300 when Razorpay payment is verified (paymentId starts with genuine id).
  * 2. Idempotency: Each paymentId can ONLY be credited once. Replays/duplicates are rejected.
  * 3. Self-referral prevention: Payer cannot refer themselves.
  * 4. Increments paidEnrollments by 1.
- * 5. Credits exactly ₹100 to Available to Payout & Total Earned.
+ * 5. Credits exactly ₹300 to Available to Payout & Total Earned.
  */
 export async function recordReferralPayment(paymentData: {
   paymentId: string;
@@ -928,7 +944,7 @@ export async function recordReferralPayment(paymentData: {
   ).availableBalance;
 
   data.paidEnrollments = (data.paidEnrollments || 0) + 1;
-  data.totalEarned = Math.max((data.totalEarned || 0) + 100, data.paidEnrollments * 100);
+  data.totalEarned = Math.max((data.totalEarned || 0) + 300, data.paidEnrollments * 300);
   const recomputed = computeAffiliateBalancesFromWithdrawals(
     data.totalEarned,
     Array.isArray(data.withdrawals) ? data.withdrawals : []
@@ -944,7 +960,7 @@ export async function recordReferralPayment(paymentData: {
     paymentId,
     userId: cleanCode,
     type: 'COMMISSION_CREDITED',
-    amount: 100,
+    amount: 300,
     balanceBefore,
     balanceAfter: recomputed.availableBalance,
     status: 'Credited',
@@ -968,7 +984,7 @@ export async function recordReferralPayment(paymentData: {
     date: new Date().toISOString().slice(0, 10),
     status: 'Paid',
     amount: paymentData.amount || 987,
-    commission: 100, // ₹100 Flat Commission
+    commission: 300, // ₹300 Flat Commission
     course: paymentData.courseTitle || 'Data Analytics with GenAI',
     paymentId,
     referralId: `RF-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -1002,8 +1018,8 @@ export async function recordReferralPayment(paymentData: {
       {
         refCode: cleanCode,
         paidEnrollments: increment(1),
-        availableBalance: increment(100),
-        totalEarned: increment(100),
+        availableBalance: increment(300),
+        totalEarned: increment(300),
         lastPaidEnrollmentAt: serverTimestamp(),
       },
       { merge: true }
@@ -1020,7 +1036,7 @@ export async function recordReferralPayment(paymentData: {
       payerPhone: cleanPhone,
       payerName: paymentData.payerName || '',
       courseTitle: paymentData.courseTitle || '',
-      commission: 100,
+      commission: 300,
       processedAt: serverTimestamp(),
     }), 2500);
   } catch (cloudErr) {
@@ -1031,7 +1047,7 @@ export async function recordReferralPayment(paymentData: {
     try {
       window.dispatchEvent(
         new CustomEvent('futureai_affiliate_updated', {
-          detail: { refCode: cleanCode, amount: 100 },
+          detail: { refCode: cleanCode, amount: 300 },
         })
       );
     } catch {}
@@ -1216,7 +1232,7 @@ export async function submitAffiliateWithdrawalRequest(params: {
     const withdrawals = Array.isArray(parsed.withdrawals) ? parsed.withdrawals : [];
     const walletLedger: WalletLedgerEntry[] = Array.isArray(parsed.walletLedger) ? parsed.walletLedger : [];
     const paidEnrollments = Number(parsed.paidEnrollments) || 0;
-    const totalEarned = Math.max(Number(parsed.totalEarned) || 0, paidEnrollments * 100);
+    const totalEarned = Math.max(Number(parsed.totalEarned) || 0, paidEnrollments * 300);
     const balances = computeAffiliateBalancesFromWithdrawals(totalEarned, withdrawals);
     return {
       ...parsed,
@@ -1595,7 +1611,7 @@ export async function updateAffiliateWithdrawalStatus(params: {
   const withdrawals: any[] = Array.isArray(parsed.withdrawals) ? [...parsed.withdrawals] : [];
   const walletLedger: WalletLedgerEntry[] = Array.isArray(parsed.walletLedger) ? [...parsed.walletLedger] : [];
   const paidEnrollments = Number(parsed.paidEnrollments) || 0;
-  const totalEarned = Math.max(Number(parsed.totalEarned) || 0, paidEnrollments * 100);
+  const totalEarned = Math.max(Number(parsed.totalEarned) || 0, paidEnrollments * 300);
 
   const wIdx = withdrawals.findIndex(
     (w) => w.id === params.withdrawalId || w.txId === params.withdrawalId || w.requestId === params.withdrawalId
@@ -1810,7 +1826,7 @@ let latestAffiliateFetchRequestId = 0;
  * Enforces:
  * - Single Source of Truth: authoritative deduplicated cloud records strictly govern counts & balances
  * - Free signups give ₹0
- * - Verified paid enrollment gives ₹100
+ * - Verified paid enrollment gives ₹300
  * - Pending withdrawals remain reserved and are NEVER overwritten by background sync
  * - No stale cached KPI fallbacks
  */
@@ -1882,7 +1898,7 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
         const paidEnrollments = Number(serverData.paidEnrollments) || 0;
         const totalEarned = typeof serverData.totalEarned === 'number'
           ? serverData.totalEarned
-          : (paidEnrollments * 100);
+          : (paidEnrollments * 300);
         const serverWithdrawals = Array.isArray(serverData.withdrawals) ? serverData.withdrawals : [];
         const balances = computeAffiliateBalancesFromWithdrawals(totalEarned, serverWithdrawals);
 
@@ -1961,7 +1977,7 @@ export async function fetchAffiliateRealData(refCodeOrName: string): Promise<{
   const finalPaidEnrollments = Math.max(cloudPaidEnrollments, paidCount);
   const finalClicks = cloudClicks;
   const finalSignups = Math.max(cloudSignups, mergedRefs.length);
-  const finalEarned = Math.max(cloudTotalEarned, finalPaidEnrollments * 100);
+  const finalEarned = Math.max(cloudTotalEarned, finalPaidEnrollments * 300);
 
   // 4. Fetch user's withdrawals directly from Firestore collection 'withdrawal_requests'
   const cloudWithdrawals: any[] = [];
@@ -2100,7 +2116,7 @@ export function runAffiliateSystemResetMigrationOnce(): AffiliateMigrationReport
     completedAt: new Date().toISOString(),
     usersProcessed: 1,
     legacyKeysArchived: 0,
-    rulesVersion: 'v5 (Free Signup = ₹0 | Verified Paid Enrollment = ₹100 | Failed Payment = ₹0)',
+    rulesVersion: 'v5 (Free Signup = ₹0 | Verified Paid Enrollment = ₹300 | Failed Payment = ₹0)',
     paymentVerification: 'Server-Side Razorpay API & HMAC Signature Verified',
     payoutIntegrationStatus: 'Reset to Not Linked (Verification Required)',
   };
@@ -2239,7 +2255,7 @@ export function runAffiliateSystemResetMigrationOnce(): AffiliateMigrationReport
       completedAt: new Date().toISOString(),
       usersProcessed: userCodesToReset.size,
       legacyKeysArchived: keysToArchiveAndRemove.length,
-      rulesVersion: 'v5 (Free Signup = ₹0 | Verified Paid Enrollment = ₹100 | Failed Payment = ₹0)',
+      rulesVersion: 'v5 (Free Signup = ₹0 | Verified Paid Enrollment = ₹300 | Failed Payment = ₹0)',
       paymentVerification: 'Server-Side Razorpay API & HMAC Signature Verified',
       payoutIntegrationStatus: 'Reset to Not Linked (Verification Required)',
       alreadyCompleted: false,

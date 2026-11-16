@@ -79,6 +79,9 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
           ai_tools_prompt: '#ai-tools-prompt',
           ms_office_copilot: '#ms-office-copilot',
           full_stack_mern: '#full-stack',
+          ai_website_dev: '#ai-website-dev',
+          ai_android_dev: '#ai-android-dev',
+          ai_video_creation: '#ai-video-creation',
         };
         window.location.hash = routeMap[canonicalCourseId] || '#dashboard';
       }
@@ -245,7 +248,7 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
               alt={displayTitle}
               className="absolute inset-0 w-full h-full object-cover"
               onError={(e) => {
-                (e.target as HTMLImageElement).src = '/images/pot1_sharp_poster.jpg';
+                (e.target as HTMLImageElement).src = '/images/courses/final_data_analyst_genai.webp';
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-slate-950/60 pointer-events-none" />
@@ -504,7 +507,7 @@ export const SuccessPlanModal: React.FC<SuccessPlanModalProps> = ({
                   alt={displayTitle}
                   className="absolute inset-0 w-full h-full object-cover opacity-65 group-hover:scale-105 transition-transform duration-700"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/images/pot1_sharp_poster.jpg';
+                    (e.target as HTMLImageElement).src = '/images/courses/final_data_analyst_genai.webp';
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />

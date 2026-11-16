@@ -16,6 +16,7 @@ import { PrivacyPolicyView } from './components/legal/PrivacyPolicyView';
 import { RefundPolicyView } from './components/legal/RefundPolicyView';
 import { AboutUsView } from './components/legal/AboutUsView';
 import { PaymentResultModal } from './components/futureai/PaymentResultModal';
+import { FutureCinematicEntrance } from './components/futureai/FutureCinematicEntrance';
 import { auth } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { findExistingUser, recordUserInDatabase, runAffiliateSystemResetMigrationOnce, runFreshCloudStartResetMigrationOnce, fetchCanonicalReferralProfile } from './services/realAuthService';
@@ -254,49 +255,52 @@ export const App: React.FC = () => {
 
   return (
     <ThemeAccentProvider>
-      <div className="w-full min-h-screen bg-[#FAFCFE] font-sans antialiased relative">
+      {/* ─── PREMIUM CINEMATIC LOGO-TO-WEBSITE CIRCULAR REVEAL ENTRANCE ─── */}
+      <FutureCinematicEntrance />
+
+      <div className="w-full min-h-screen dock-dashboard-page font-sans antialiased relative">
         
         {/* Dedicated Secure Admin Control Center Route */}
         {['#admin', '#admin-portal', '#control-center', '#admin-panel'].includes(currentHash.split('?')[0].toLowerCase()) ? (
           <AdminControlCenter
             onClose={() => {
-              window.location.hash = '#home';
+              window.location.hash = isLoggedIn ? '#dashboard' : '#home';
             }}
           />
         ) : ['#contact-us', '#contactus', '#contact'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#ContactUs' ? (
           <ContactUsView
             onBack={() => {
-              window.location.hash = '#home';
+              window.location.hash = isLoggedIn ? '#dashboard' : '#home';
             }}
           />
         ) : ['#terms', '#terms-and-conditions', '#termsandconditions', '#terms-conditions'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#TermsAndConditions' ? (
           <TermsAndConditionsView
             onBack={() => {
-              window.location.hash = '#home';
+              window.location.hash = isLoggedIn ? '#dashboard' : '#home';
             }}
           />
         ) : ['#privacy', '#privacy-policy', '#privacypolicy'].includes(currentHash.split('?')[0].toLowerCase()) ? (
           <PrivacyPolicyView
             onBack={() => {
-              window.location.hash = '#home';
+              window.location.hash = isLoggedIn ? '#dashboard' : '#home';
             }}
           />
         ) : ['#refund', '#refund-policy', '#refundpolicy', '#cancellation', '#cancellation-policy'].includes(currentHash.split('?')[0].toLowerCase()) ? (
           <RefundPolicyView
             onBack={() => {
-              window.location.hash = '#home';
+              window.location.hash = isLoggedIn ? '#dashboard' : '#home';
             }}
           />
         ) : ['#about', '#about-us', '#aboutus', '#company'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#AboutUs' ? (
           <AboutUsView
             onBack={() => {
-              window.location.hash = '#home';
+              window.location.hash = isLoggedIn ? '#dashboard' : '#home';
             }}
           />
         ) : currentHash.split('?')[0] === '#ats-resume-checker' || currentHash.split('?')[0] === '#ats' ? (
           <AtsResumeChecker
             onBackToHome={() => {
-              window.location.hash = '#home';
+              window.location.hash = isLoggedIn ? '#dashboard' : '#home';
             }}
             onOpenLogin={(candidateName?: string) => {
               const nameToUse = candidateName || userName;
@@ -314,7 +318,44 @@ export const App: React.FC = () => {
             userName={userName}
           />
         ) : (() => {
-            const baseH = (typeof window !== 'undefined' ? window.location.hash : currentHash).split('?')[0].toLowerCase();
+            const fullH = (typeof window !== 'undefined' ? window.location.hash : currentHash).toLowerCase();
+            const baseH = fullH.split('?')[0];
+            const isLocal = typeof window !== 'undefined' && (
+              window.location.hostname === 'localhost' ||
+              window.location.hostname === '127.0.0.1' ||
+              window.location.port === '5173'
+            );
+            // On localhost: direct access to all DSA coding practice, challenges, and arenas
+            if (
+              isLocal &&
+              (baseH === '#python-classroom' ||
+                baseH === '#python-challenges' ||
+                baseH === '#pythonchallenges' ||
+                baseH === '#practice' ||
+                baseH === '#codingpractice' ||
+                baseH === '#coding-practice' ||
+                baseH === '#sql-challenges' ||
+                baseH === '#sqlchallenges' ||
+                baseH === '#excel-challenges' ||
+                baseH === '#excelchallenges' ||
+                baseH === '#game' ||
+                baseH === '#play' ||
+                baseH === '#learn' ||
+                baseH === '#video' ||
+                baseH === '#dashboard' ||
+                baseH === '#learning' ||
+                baseH === '#mylearning' ||
+                baseH === '#my-learning' ||
+                baseH === '#ai-website-dev' ||
+                baseH === '#ai-android-dev' ||
+                baseH === '#ai-video-creation' ||
+                baseH === '#arena')
+            ) {
+              return true;
+            }
+            if (baseH === '#python-challenges' && fullH.includes('arena=')) {
+              return true;
+            }
             // If logged in, show LearnerDashboard (unless user specifically visits pre-login #home or #welcome)
             if (isLoggedIn) {
               return baseH !== '#home' && baseH !== '#welcome';
@@ -340,14 +381,15 @@ export const App: React.FC = () => {
               const baseH = (typeof window !== 'undefined' ? window.location.hash : currentHash).split('?')[0].toLowerCase();
               const protectedRoutes = [
                 '#practice', '#codingpractice', '#coding-practice',
-                '#python-challenges', '#pythonchallenges',
+                '#python-classroom', '#python-challenges', '#pythonchallenges',
                 '#sql-challenges', '#sqlchallenges',
                 '#excel-challenges', '#excelchallenges',
                 '#game', '#games', '#arena', '#gamezone', '#coding_game',
                 '#data-analyst', '#data-analytics', '#data-science', '#data-science-agentic-ai', '#datascience',
                 '#ml-engineering', '#mlengineering', '#ml-eng', '#ml',
                 '#ai-engineering', '#aiengineering', '#ai-eng', '#ai',
-                '#full-stack', '#fullstack', '#fullstack-mern',
+                '#full-stack', '#fullstack', '#fullstack-mern', '#full-stack-web-dev',
+                '#ai-website-dev', '#ai-android-dev', '#ai-video-creation',
                 '#intro-game', '#pyintro', '#earnings', '#wallet', '#withdraw', '#earn', '#earncash', '#earn-cash',
                 '#placement', '#income', '#referral', '#dashboard',
                 '#certificate', '#certificates', '#internship', '#internships',

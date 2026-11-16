@@ -30,7 +30,7 @@ export const AboutUsView: React.FC<AboutUsViewProps> = ({ onBack }) => {
     if (onBack) {
       onBack();
     } else if (typeof window !== 'undefined') {
-      window.history.length > 1 ? window.history.back() : (window.location.hash = '#dashboard');
+      window.location.hash = '#home';
     }
   };
 
@@ -54,6 +54,15 @@ export const AboutUsView: React.FC<AboutUsViewProps> = ({ onBack }) => {
 
       {/* ─── Main Content Container ─── */}
       <main className="max-w-4xl mx-auto px-4 pt-6 sm:pt-10 space-y-6 text-left">
+        <button
+          type="button"
+          onClick={handleBack}
+          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200/90 transition shadow-2xs cursor-pointer"
+          title="Back"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Back</span>
+        </button>
         {/* Hero Banner Card */}
         <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 text-white rounded-3xl p-6 sm:p-10 shadow-lg relative overflow-hidden">
           <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-emerald-500/20 via-sky-500/15 to-transparent rounded-full blur-3xl pointer-events-none" />

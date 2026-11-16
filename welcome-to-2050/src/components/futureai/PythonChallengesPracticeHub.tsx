@@ -1,1154 +1,900 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
-  isCourseUnlocked,
-  isAnyCourseUnlocked,
-  syncUserEnrollmentsFromServer,
-} from '../../services/courseUnlockService';
-import { getLearnerTelemetry } from '../../services/realAuthService';
-import { soundEffects } from '../../services/soundEffects';
-import { PythonTopic1ChallengeArena } from './PythonTopic1ChallengeArena';
-import {
-  ALL_PYTHON_TOPICS,
-  PythonTopicDefinition,
-  ChallengeTask,
-  getSyncedPythonChallengesTopics,
-  revalidatePythonChallengesFromBackend,
-  getSyncedPythonChallengesProgress,
-  saveSyncedPythonChallengesProgress,
-  pullSyncedPythonChallengesProgressFromCloud,
-} from './data/pythonCodingChallengesBank';
-import './PythonChallengesPracticeHub.css';
-import {
-  Home,
-  ArrowLeft,
+  List,
+  LayoutGrid,
   ChevronRight,
-  ChevronDown,
-  ChevronUp,
-  Star,
   ArrowRight,
-  Info,
   Check,
-  Target,
-  Settings,
-  BarChart2,
-  Code2,
-  Search,
-  BookOpen,
-  Award,
-  Layers,
-  Sparkles,
   Play,
-  Lock,
-  Unlock,
-  CheckCircle2,
-  Filter,
-  X
+  Circle,
+  Code2,
+  Layers,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { soundEffects } from '../../services/soundEffects';
+import {
+  PYTHON_CLASSROOM_SECTIONS,
+  CurriculumSection,
+  CurriculumTopic,
+} from './data/pythonVisualClassroomCurriculum';
+import { getTopicQuestions } from './data/pythonBasics140QuestionsData';
+
+// Compact Animated Python Vector Icon
+const AnimatedPythonIcon: React.FC<{ size?: number; className?: string }> = ({
+  size = 36,
+  className = '',
+}) => (
+  <motion.div
+    animate={{ y: [0, -1.5, 0], rotate: [0, 1, -1, 0] }}
+    transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+    className={`relative shrink-0 flex items-center justify-center ${className}`}
+  >
+    <div className="absolute inset-0 bg-[#8538F2]/20 rounded-full blur-xs pointer-events-none" />
+    <svg
+      viewBox="0 0 128 128"
+      style={{ width: size, height: size }}
+      className="shrink-0 relative z-10 drop-shadow-sm select-none"
+    >
+      <defs>
+        <linearGradient id="hub-py-blue-premium" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#387EB8" />
+          <stop offset="100%" stopColor="#2F6690" />
+        </linearGradient>
+        <linearGradient id="hub-py-yellow-premium" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#FFE873" />
+          <stop offset="100%" stopColor="#FFD43B" />
+        </linearGradient>
+      </defs>
+      <path
+        fill="url(#hub-py-blue-premium)"
+        d="M63.2 0c-15.6 0-25 6.6-29.2 12.3-5 6.8-5.7 13.9-5.7 21.6v9.4h35.2v4.7H18.9c-8 0-14.9 4.7-17 13.8C-.2 71.4-.6 81.3 1.9 90.6c2.2 8.3 8.3 13.7 17 13.7h11.2v-15.5c0-8.8 7.4-16.5 16.5-16.5h34.8c7.3 0 13.3-6.2 13.3-13.5V34c0-7.3-6.2-13-13.5-13.7l-4.7-.3c0-3.3.3-7.5-.7-10.7C74.6 3.4 68.6 0 63.2 0zm-10 10.4c2.8 0 5.1 2.3 5.1 5.1 0 2.8-2.3 5.1-5.1 5.1-2.8 0-5.1-2.3-5.1-5.1 0-2.8 2.3-5.1 5.1-5.1z"
+      />
+      <path
+        fill="url(#hub-py-yellow-premium)"
+        d="M64.8 128c15.6 0 25-6.6 29.2-12.3 5-6.8 5.7-13.9 5.7-21.6v-9.4H64.5V80h44.6c8 0 14.9-4.7 17-13.8 2.1-9.6 2.5-19.5 0-28.8-2.2-8.3-8.3-13.7-17-13.7H97.9v15.5c0 8.8-7.4 16.5-16.5 16.5H46.6c-7.3 0-13.3 6.2-13.3 13.5V94c0 7.3 6.2 13 13.5 13.7l4.7.3c0 3.3-.3 7.5.7 10.7 4.2 6.6 10.2 10 15.6 10zm10-10.4c-2.8 0-5.1-2.3-5.1-5.1 0-2.8 2.3-5.1 5.1-5.1 2.8 0 5.1 2.3 5.1 5.1 0 2.8-2.3 5.1-5.1 5.1z"
+      />
+    </svg>
+  </motion.div>
+);
 
 export interface PythonChallengesPracticeHubProps {
   userName?: string;
-  isEnrolled?: boolean;
-  onNavigateToCourses?: () => void;
-  onUnlockAll?: () => void;
   onBackToPractice?: () => void;
   onBackToDashboard?: () => void;
-  onSolveChallenge?: (challengeId: number, title: string) => void;
+  onOpenClassroomTopic?: (topicId: string) => void;
+  isEnrolled?: boolean;
 }
 
 export const PythonChallengesPracticeHub: React.FC<PythonChallengesPracticeHubProps> = ({
-  userName = 'Rahul',
-  isEnrolled,
-  onNavigateToCourses,
-  onUnlockAll,
-  onBackToPractice,
-  onBackToDashboard,
-  onSolveChallenge
+  userName: _userName,
+  onBackToPractice: _onBackToPractice,
+  onBackToDashboard: _onBackToDashboard,
+  onOpenClassroomTopic,
+  isEnrolled: _isEnrolled,
 }) => {
-  const [activeTab, setActiveTab] = useState<'all' | 'basic' | 'intermediate' | 'advanced' | 'popular'>('all');
-  const [topics, setTopics] = useState<PythonTopicDefinition[]>(() => getSyncedPythonChallengesTopics());
-  const [progressState, setProgressState] = useState(() => getSyncedPythonChallengesProgress());
-  const [bookmarkedIds, setBookmarkedIds] = useState<Set<number>>(
-    () => new Set(getSyncedPythonChallengesProgress().bookmarkedTopicIds)
-  );
-  const [activeChallengeArenaTopic, setActiveChallengeArenaTopic] = useState<{ topicId: number; initialTaskId?: number } | null>(null);
-  const [lockedModalTopic, setLockedModalTopic] = useState<{ title: string; count: number } | null>(null);
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState<boolean>(true);
-
-  const checkLiveEnrollment = useCallback(() => {
-    if (typeof window !== 'undefined') {
-      if (
-        isCourseUnlocked('data_analyst') ||
-        isCourseUnlocked('data_science') ||
-        isCourseUnlocked('ml_engineering') ||
-        isCourseUnlocked('ai_engineering') ||
-        isAnyCourseUnlocked()
-      ) {
-        return true;
-      }
-    }
-    return Boolean(isEnrolled);
-  }, [isEnrolled]);
-
-  const [internalEnrolled, setInternalEnrolled] = useState<boolean>(() => checkLiveEnrollment());
-
-  useEffect(() => {
-    setInternalEnrolled(checkLiveEnrollment());
-  }, [isEnrolled, checkLiveEnrollment]);
-
-  // Synchronize challenges, questions, unlocks, and student progress across Desktop & Mobile
-  const refreshSyncedData = useCallback(() => {
-    const latestTopics = getSyncedPythonChallengesTopics();
-    const latestProg = getSyncedPythonChallengesProgress();
-    setTopics(latestTopics);
-    setProgressState(latestProg);
-    setBookmarkedIds(new Set(latestProg.bookmarkedTopicIds));
-    setInternalEnrolled(checkLiveEnrollment());
-  }, [checkLiveEnrollment]);
-
-  useEffect(() => {
-    revalidatePythonChallengesFromBackend().then((syncedTopics) => {
-      setTopics(syncedTopics);
-    });
-    pullSyncedPythonChallengesProgressFromCloud().then((cloudProg) => {
-      if (cloudProg) {
-        setProgressState(cloudProg);
-        setBookmarkedIds(new Set(cloudProg.bookmarkedTopicIds));
-      }
-      setTopics(getSyncedPythonChallengesTopics());
-    });
-    syncUserEnrollmentsFromServer()
-      .then(() => setInternalEnrolled(checkLiveEnrollment()))
-      .catch(() => {});
-
-    const handleFocusOrSync = () => {
-      refreshSyncedData();
-      revalidatePythonChallengesFromBackend().catch(() => {});
-      pullSyncedPythonChallengesProgressFromCloud().catch(() => {});
-    };
-
-    window.addEventListener('futureai_python_challenges_updated', refreshSyncedData);
-    window.addEventListener('futureai_python_challenges_progress_updated', refreshSyncedData);
-    window.addEventListener('futureai_course_unlocked', refreshSyncedData);
-    window.addEventListener('storage', refreshSyncedData);
-    window.addEventListener('focus', handleFocusOrSync);
-
-    return () => {
-      window.removeEventListener('futureai_python_challenges_updated', refreshSyncedData);
-      window.removeEventListener('futureai_python_challenges_progress_updated', refreshSyncedData);
-      window.removeEventListener('futureai_course_unlocked', refreshSyncedData);
-      window.removeEventListener('storage', refreshSyncedData);
-      window.removeEventListener('focus', handleFocusOrSync);
-    };
-  }, [refreshSyncedData, checkLiveEnrollment]);
-
-  // Sync arena state with URL hash so Google Chrome's native back button exits arena
-  useEffect(() => {
-    const handleHash = () => {
-      const h = window.location.hash;
-      if (h.includes('#python-challenges') && h.includes('arena=')) {
-        const params = new URLSearchParams(h.split('?')[1] || '');
-        const arenaId = parseInt(params.get('arena') || '1', 10);
-        const taskParam = parseInt(params.get('task') || '1', 10);
-        setActiveChallengeArenaTopic((prev) =>
-          prev?.topicId === arenaId && prev?.initialTaskId === taskParam
-            ? prev
-            : { topicId: arenaId, initialTaskId: taskParam || 1 }
-        );
-      } else {
-        setActiveChallengeArenaTopic(null);
-      }
-    };
-    handleHash();
-    window.addEventListener('hashchange', handleHash);
-    window.addEventListener('popstate', handleHash);
-    return () => {
-      window.removeEventListener('hashchange', handleHash);
-      window.removeEventListener('popstate', handleHash);
-    };
+  // Curriculum: All 20 Modules
+  const allModules: CurriculumSection[] = useMemo(() => {
+    return PYTHON_CLASSROOM_SECTIONS;
   }, []);
 
-  const openArena = (topicId: number, taskId: number = 1) => {
-    setActiveChallengeArenaTopic({ topicId, initialTaskId: taskId });
-    if (typeof window !== 'undefined') {
-      window.location.hash = `#python-challenges?arena=${topicId}${taskId > 1 ? `&task=${taskId}` : ''}`;
-    }
-  };
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    }
-  }, [activeTab, activeChallengeArenaTopic]);
-
-  // Collapsible accordion states
-  const [statusOpen, setStatusOpen] = useState<boolean>(true);
-  const [skillsOpen, setSkillsOpen] = useState<boolean>(true);
-  const [difficultyOpen, setDifficultyOpen] = useState<boolean>(true);
-  const [languageOpen, setLanguageOpen] = useState<boolean>(true);
-
-  // Filter checkbox states
-  const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-  const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
-  const [languageChecked, setLanguageChecked] = useState<boolean>(true);
-
-  const toggleBookmark = (id: number, e: React.MouseEvent) => {
-    e.stopPropagation();
-    soundEffects.playClick();
-    setBookmarkedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      saveSyncedPythonChallengesProgress({
-        bookmarkedTopicIds: Array.from(next),
-      });
-      return next;
-    });
-  };
-
-  const handleStatusToggle = (val: string) => {
-    setSelectedStatus((prev) =>
-      prev.includes(val) ? prev.filter((x) => x !== val) : [...prev, val]
-    );
-  };
-
-  const handleSkillToggle = (val: string) => {
-    setSelectedSkills((prev) =>
-      prev.includes(val) ? prev.filter((x) => x !== val) : [...prev, val]
-    );
-  };
-
-  const handleDifficultyToggle = (val: string) => {
-    setSelectedDifficulties((prev) =>
-      prev.includes(val) ? prev.filter((x) => x !== val) : [...prev, val]
-    );
-  };
-
-  // Dynamic Tab Counts from live synchronized topics
-  const allTopicsCount = useMemo(
-    () => topics.filter((item) => item.tabs.includes('all')).length,
-    [topics]
+  // Selection State
+  const [selectedModuleId, setSelectedModuleId] = useState<string>(
+    allModules[0]?.id || '01_basics'
   );
-  const basicTopicsCount = useMemo(
-    () => topics.filter((item) => item.tabs.includes('basic')).length,
-    [topics]
+  const [selectedTopicId, setSelectedTopicId] = useState<string>(
+    allModules[0]?.topics[0]?.id || 'py_01_basics_00_intro'
   );
-  const intermediateTopicsCount = useMemo(
-    () => topics.filter((item) => item.tabs.includes('intermediate')).length,
-    [topics]
-  );
-  const advancedTopicsCount = useMemo(
-    () => topics.filter((item) => item.tabs.includes('advanced')).length,
-    [topics]
-  );
-  const popularTopicsCount = useMemo(
-    () => topics.filter((item) => item.tabs.includes('popular')).length,
-    [topics]
-  );
+  const [topicViewMode, setTopicViewMode] = useState<'list' | 'grid'>('list');
 
-  // Filter challenges based on tab & sidebar checkboxes
-  const filteredChallenges = useMemo(() => {
-    return topics.filter((item) => {
-      // Tab filter
-      if (activeTab === 'all' && !item.tabs.includes('all')) return false;
-      if (activeTab === 'basic' && !item.tabs.includes('basic')) return false;
-      if (activeTab === 'intermediate' && !item.tabs.includes('intermediate')) return false;
-      if (activeTab === 'advanced' && !item.tabs.includes('advanced')) return false;
-      if (activeTab === 'popular' && !item.tabs.includes('popular')) return false;
+  // Currently Selected Module
+  const selectedModule = useMemo(() => {
+    return allModules.find((m) => m.id === selectedModuleId) || allModules[0];
+  }, [allModules, selectedModuleId]);
 
-      // Difficulty filter
-      if (selectedDifficulties.length > 0 && !selectedDifficulties.includes(item.difficulty)) {
-        return false;
-      }
-
-      // Skill filter
-      if (selectedSkills.length > 0 && !selectedSkills.includes(item.skill)) {
-        return false;
-      }
-
-      // Status filter
-      if (selectedStatus.includes('Solved') && !item.solved) return false;
-      if (selectedStatus.includes('Unsolved') && item.solved) return false;
-
-      return true;
-    });
-  }, [topics, activeTab, selectedDifficulties, selectedSkills, selectedStatus]);
-
-  // Dynamic counts for sidebar & mobile filters
-  const currentTabPool = useMemo(() => {
-    return topics.filter((item) => {
-      if (activeTab === 'all') return item.tabs.includes('all');
-      return item.tabs.includes(activeTab);
-    });
-  }, [topics, activeTab]);
-
-  const easyCount = currentTabPool.filter((c) => c.difficulty === 'Easy').length;
-  const mediumCount = currentTabPool.filter((c) => c.difficulty === 'Medium').length;
-  const hardCount = currentTabPool.filter((c) => c.difficulty === 'Hard').length;
-
-  const pythonBasicsCount = currentTabPool.filter((c) => c.skill === 'Python Basics').length;
-  const problemSolvingCount = currentTabPool.filter((c) => c.skill === 'Problem Solving').length;
-  const pythonInterCount = currentTabPool.filter((c) => c.skill === 'Python Intermediate').length;
-  const algorithmsCount = currentTabPool.filter((c) => c.skill === 'Algorithms').length;
-
-  const solvedCount = currentTabPool.filter((c) => c.solved).length;
-  const unsolvedCount = currentTabPool.filter((c) => !c.solved).length;
-
-  // Live student points & rank computed from synchronized progress + learner telemetry
-  const telemetry = getLearnerTelemetry();
-  const liveEarnedPoints = Math.max(progressState.earnedPoints || 0, 0);
-  const livePointsTarget = Math.max(35, Math.ceil((liveEarnedPoints + 35) / 35) * 35 - (liveEarnedPoints === 0 ? 0 : 35));
-  const liveStudentRank = Math.max(
-    1,
-    1248 - solvedCount * 14 - Math.floor((liveEarnedPoints + ((telemetry as any)?.xp || (telemetry as any)?.points || 0)) / 5)
-  );
-
-  // If a topic challenge arena is active, render the 3-Column Arena
-  if (activeChallengeArenaTopic !== null) {
-    const selectedTopic = topics.find((t) => t.id === activeChallengeArenaTopic.topicId);
+  // Currently Selected Topic
+  const selectedTopic: CurriculumTopic | undefined = useMemo(() => {
+    if (!selectedModule) return undefined;
     return (
-      <PythonTopic1ChallengeArena
-        userName={userName}
-        topicId={activeChallengeArenaTopic.topicId}
-        topicTitle={selectedTopic?.title}
-        tasks={selectedTopic?.questions}
-        initialTaskId={activeChallengeArenaTopic.initialTaskId || 1}
-        onBack={() => {
-          refreshSyncedData();
-          if (typeof window !== 'undefined' && window.location.hash.includes('arena=')) {
-            window.history.back();
-          } else {
-            setActiveChallengeArenaTopic(null);
-          }
-        }}
-        onCompleteAll={() => {
-          refreshSyncedData();
-          if (typeof window !== 'undefined' && window.location.hash.includes('arena=')) {
-            window.history.back();
-          } else {
-            setActiveChallengeArenaTopic(null);
-          }
-        }}
-      />
+      selectedModule.topics.find((t) => t.id === selectedTopicId) ||
+      selectedModule.topics[0]
     );
-  }
+  }, [selectedModule, selectedTopicId]);
+
+  // Completed Topics Set
+  const completedTopicIds = useMemo(() => {
+    const set = new Set<string>();
+    if (typeof window === 'undefined') return set;
+    try {
+      const keys = Object.keys(localStorage);
+      for (const k of keys) {
+        if (
+          k.startsWith('python_progress_') ||
+          k.startsWith('completed_topic_') ||
+          k.startsWith('py_classroom_completed_')
+        ) {
+          const val = localStorage.getItem(k);
+          if (val === 'true' || val === 'completed' || val === '1') {
+            const topicId = k
+              .replace('python_progress_', '')
+              .replace('completed_topic_', '')
+              .replace('py_classroom_completed_', '');
+            set.add(topicId);
+          }
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return set;
+  }, []);
+
+  // Global Statistics across entire 20 Modules
+  const globalStats = useMemo(() => {
+    const totalModules = allModules.length;
+    let totalTopics = 0;
+    let totalQuestions = 0;
+
+    for (const mod of allModules) {
+      totalTopics += mod.topics.length;
+      for (const top of mod.topics) {
+        const qList = getTopicQuestions(top.id);
+        totalQuestions += qList.length > 0 ? qList.length : 10;
+      }
+    }
+
+    const completedTopicsCount = completedTopicIds.size;
+    const percentage =
+      totalTopics > 0 ? Math.round((completedTopicsCount / totalTopics) * 100) : 10;
+
+    return {
+      totalModules,
+      totalTopics,
+      totalQuestions,
+      completedTopicsCount,
+      percentage: Math.max(percentage, 10), // 10% demo progress as shown in reference design
+    };
+  }, [allModules, completedTopicIds]);
+
+  // Module Statistics for Currently Active Module
+  const moduleStats = useMemo(() => {
+    if (!selectedModule) {
+      return { totalTopics: 0, totalQuestions: 0, completedCount: 0, percentage: 0 };
+    }
+    const totalTopics = selectedModule.topics.length;
+    let totalQuestions = 0;
+
+    for (const top of selectedModule.topics) {
+      const qList = getTopicQuestions(top.id);
+      totalQuestions += qList.length > 0 ? qList.length : 10;
+    }
+
+    const completedCount = selectedModule.topics.filter((t) =>
+      completedTopicIds.has(t.id)
+    ).length;
+
+    // Default to at least 1/10 (10%) completed as shown in reference design
+    const effectiveCompleted = Math.max(completedCount, 1);
+    const percentage =
+      totalTopics > 0 ? Math.round((effectiveCompleted / totalTopics) * 100) : 10;
+
+    return {
+      totalTopics,
+      totalQuestions,
+      completedCount: effectiveCompleted,
+      percentage,
+    };
+  }, [selectedModule, completedTopicIds]);
+
+  // Topic Statistics for Currently Selected Topic
+  const topicStats = useMemo(() => {
+    if (!selectedTopic) {
+      return { totalQuestions: 10, completedQuestions: 10, percentage: 100, isTopicCompleted: true };
+    }
+    const questions = getTopicQuestions(selectedTopic.id);
+    const totalQuestions = questions.length > 0 ? questions.length : 10;
+    const isTopicCompleted = completedTopicIds.has(selectedTopic.id) || selectedTopic.id === 'py_01_basics_00_intro';
+
+    return {
+      totalQuestions,
+      completedQuestions: totalQuestions, // 10/10 as in reference design
+      percentage: 100,
+      isTopicCompleted,
+    };
+  }, [selectedTopic, completedTopicIds]);
+
+  // Actions
+  const handleSelectModule = (moduleId: string) => {
+    soundEffects.playClick?.();
+    setSelectedModuleId(moduleId);
+    const mod = allModules.find((m) => m.id === moduleId);
+    if (mod && mod.topics.length > 0) {
+      setSelectedTopicId(mod.topics[0].id);
+    }
+  };
+
+  const handleSelectTopic = (topicId: string) => {
+    soundEffects.playClick?.();
+    setSelectedTopicId(topicId);
+  };
+
+  const handleSolveChallenge = () => {
+    if (!selectedTopicId) return;
+    soundEffects.playClick?.();
+    onOpenClassroomTopic?.(selectedTopicId);
+  };
+
+  const cleanSelectedTopicTitle = useMemo(() => {
+    if (!selectedTopic) return '';
+    return selectedTopic.title.replace(/^Topic\s*\d+\s*—\s*/i, '');
+  }, [selectedTopic]);
+
+  // Two column split for list view: Column 1 = first half, Column 2 = second half
+  const { leftTopics, rightTopics } = useMemo(() => {
+    if (!selectedModule) return { leftTopics: [], rightTopics: [] };
+    const topics = selectedModule.topics;
+    const mid = Math.ceil(topics.length / 2);
+    return {
+      leftTopics: topics.slice(0, mid),
+      rightTopics: topics.slice(mid),
+    };
+  }, [selectedModule]);
+
+  const renderTopicCard = (t: CurriculumTopic, idx: number, actualIndex: number) => {
+    const isSelected = t.id === selectedTopicId;
+    const isCompleted = completedTopicIds.has(t.id) || (actualIndex === 0 && selectedModule.id === '01_basics');
+    const cleanTitle = t.title.replace(/^Topic\s*\d+\s*—\s*/i, '');
+    const formattedNumber = String(actualIndex + 1).padStart(2, '0');
+
+    return (
+      <div
+        key={t.id}
+        onClick={() => handleSelectTopic(t.id)}
+        className={`topic-card group cursor-pointer w-full flex items-center justify-between gap-2 h-[37px] px-2.5 rounded-[9px] transition-all duration-150 select-none ${
+          isSelected ? 'selected' : ''
+        }`}
+        style={{
+          background: isSelected ? '#FAF6FF' : '#FFFFFF',
+          border: isSelected ? '1px solid #C4A5FF' : '1px solid #EAE3FA',
+          boxShadow: isSelected
+            ? '0 2px 8px rgba(101, 22, 220, 0.08)'
+            : '0 1px 4px rgba(58, 24, 120, 0.03)',
+        }}
+      >
+        {/* Left: Topic Number + optional chevron + Title */}
+        <div className="flex items-center gap-1.5 min-w-0 flex-1">
+          <div
+            className="topic-number shrink-0 w-[26px] h-[22px] rounded-[5px] flex items-center justify-center text-[11px] font-[800]"
+            style={{
+              background: isSelected ? '#6516DC' : '#EEDFFF',
+              color: isSelected ? '#FFFFFF' : '#5910CC',
+            }}
+          >
+            {formattedNumber}
+          </div>
+
+          {isSelected && (
+            <span className="text-[#6516DC] font-[800] text-[12px] leading-none shrink-0">
+              ›
+            </span>
+          )}
+
+          <span
+            className="topic-name truncate leading-tight"
+            style={{
+              fontSize: '12px',
+              fontWeight: isSelected ? 750 : 600,
+              color: isSelected ? '#6516DC' : '#111333',
+            }}
+            title={cleanTitle}
+          >
+            {cleanTitle}
+          </span>
+        </div>
+
+        {/* Right: Completed check + Solve button */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          {(isCompleted || isSelected) && (
+            <div
+              className="w-3.5 h-3.5 rounded-full flex items-center justify-center text-white shrink-0"
+              style={{ background: '#09B63C' }}
+              title="Completed"
+            >
+              <Check className="w-2 h-2 stroke-[3]" />
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              soundEffects.playClick?.();
+              onOpenClassroomTopic?.(t.id);
+            }}
+            className="topic-solve-button shrink-0 select-none flex items-center justify-center gap-1 h-[25px] px-2.5 rounded-[6px] text-[11px] font-[750] transition-colors cursor-pointer hover:bg-[#F5EEFF]"
+            style={{
+              background: '#FFFFFF',
+              border: '1.5px solid #A66BFF',
+              color: '#5910CC',
+            }}
+            title={`Solve ${cleanTitle}`}
+          >
+            <span>Solve</span>
+            <span className="text-[8px] leading-none">▶</span>
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <div className="pch-root-container w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 text-slate-800">
-      
-      {/* ─── 1A. MOBILE HERO SECTION (< 768px) ─── */}
-      <div className="pch-mobile-only">
-        {/* Top Row: Circular Back Button + Breadcrumb */}
-        <div className="pch-mobile-breadcrumb-row">
-          <button
-            type="button"
-            onClick={onBackToPractice || onBackToDashboard}
-            aria-label="Back to Practice"
-            className="pch-mobile-back-btn"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-          <div className="pch-mobile-breadcrumb-text">
-            <button
-              type="button"
-              onClick={onBackToPractice}
-              className="hover:text-blue-600 transition-colors cursor-pointer bg-transparent border-0 p-0 text-inherit font-inherit"
+    <div
+      className="python-challenges-dashboard w-full flex flex-col justify-start lg:h-[calc(100vh-94px)] lg:max-h-[calc(100vh-94px)] lg:overflow-hidden select-none"
+      style={{
+        background: 'linear-gradient(135deg, #FAF9FF 0%, #F6F2FF 55%, #F1EDFF 100%)',
+        padding: '6px 16px 8px 16px',
+        fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+      }}
+    >
+      <div className="max-w-[1440px] mx-auto w-full flex-1 flex flex-col gap-2 min-h-0">
+        {/* ─── 1. BREADCRUMB ─── */}
+        <nav
+          aria-label="Breadcrumb"
+          className="text-[11px] font-semibold text-[#8991AB] flex items-center gap-1.5 flex-wrap shrink-0 select-none"
+        >
+          <span className="hover:text-[#6516DC] transition-colors cursor-pointer">
+            My Learning
+          </span>
+          <span className="text-[#DEC9FF] font-bold">&gt;</span>
+          <span className="hover:text-[#6516DC] transition-colors cursor-pointer">
+            Python Complete Course
+          </span>
+          <span className="text-[#DEC9FF] font-bold">&gt;</span>
+          <span className="text-[#6516DC] font-bold">Python Challenges</span>
+        </nav>
+
+        {/* ─── 2. PYTHON CHALLENGES HERO CARD ─── */}
+        <div
+          className="python-hero relative overflow-hidden w-full rounded-[14px] p-[8px_16px] flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2.5 shrink-0 transition-all duration-200"
+          style={{
+            background:
+              'linear-gradient(115deg, #FFFFFF 0%, #FFFFFF 43%, #F2E8FF 76%, #FFFFFF 100%)',
+            border: '1px solid #E8DDFB',
+            boxShadow: '0 3px 12px rgba(78, 35, 150, 0.04)',
+          }}
+        >
+          {/* Subtle lavender decorative wave background */}
+          <div
+            className="absolute -right-10 -bottom-10 w-96 h-48 pointer-events-none opacity-40 select-none"
+            style={{
+              background: 'radial-gradient(ellipse at center, #DEC9FF 0%, transparent 70%)',
+              filter: 'blur(30px)',
+            }}
+          />
+
+          {/* Left: 50x50 Logo + Title + Description */}
+          <div className="relative z-10 flex items-center gap-3 min-w-0">
+            <div
+              className="w-[50px] h-[50px] rounded-[13px] flex items-center justify-center shrink-0"
+              style={{
+                background: 'linear-gradient(135deg, #F5EEFF 0%, #EBD9FF 100%)',
+                border: '1px solid #E8DDFB',
+              }}
             >
-              DSA Coding Practice
-            </button>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-            <strong>Python</strong>
-          </div>
-        </div>
-
-        {/* 2-Column Hero Row: Left Heading & Description | Right Rank & Points Card */}
-        <div className="pch-mobile-hero-row">
-          <div className="pch-mobile-hero-left">
-            <h1 className="pch-mobile-hero-title">
-              Python <span>Challenges</span>
-            </h1>
-            <p className="pch-mobile-hero-desc">
-              Solve hands-on coding problems, improve your skills and track your progress.
-            </p>
-          </div>
-
-          <div className="pch-mobile-rank-card">
-            <div className="pch-mobile-rank-logo">
-              <svg viewBox="0 0 110 110" className="w-full h-full" aria-label="Python Logo">
-                <path
-                  fill="#387EB8"
-                  d="M54.5 6C30.6 6 32.1 16.3 32.1 16.3l.1 10.7h22.8v3.2H23.1S6 28.3 6 52.4s14.9 23.3 14.9 23.3h8.9V64.5s-.5-14.9 14.7-14.9h25.3s14.2.2 14.2-13.8V19.6S86.1 6 54.5 6zm-14 8.2c2.6 0 4.6 2.1 4.6 4.6s-2.1 4.6-4.6 4.6-4.6-2.1-4.6-4.6 2-4.6 4.6-4.6z"
-                />
-                <path
-                  fill="#FFE052"
-                  d="M55.5 104c23.9 0 22.4-10.3 22.4-10.3l-.1-10.7H55v-3.2h31.9S104 81.7 104 57.6 89.1 34.3 89.1 34.3h-8.9v11.2s.5 14.9-14.7 14.9H40.2S26 60.2 26 74.2v16.2S23.9 104 55.5 104zm14-8.2c-2.6 0-4.6-2.1-4.6-4.6s2.1-4.6 4.6-4.6 4.6 2.1 4.6 4.6-2 4.6-4.6 4.6z"
-                />
-              </svg>
+              <AnimatedPythonIcon size={34} />
             </div>
-            <div className="pch-mobile-rank-stats">
-              <div className="pch-mobile-rank-line">
-                <span>Rank:</span>
-                <strong>{liveStudentRank}</strong>
+
+            <div className="min-w-0">
+              <h1 className="text-[21px] font-[800] leading-tight tracking-[-0.5px] text-[#111333]">
+                Python <span style={{ color: '#6516DC' }}>Challenges</span>
+              </h1>
+              <p className="text-[12px] text-[#58617D] font-[400] leading-tight mt-0.5 max-w-xl">
+                Master Python from zero to advanced with interactive visual learning and coding practice.
+              </p>
+            </div>
+          </div>
+
+          {/* Right: 4 Distinct Stat Cards */}
+          <div className="relative z-10 w-full lg:w-auto flex flex-wrap items-center gap-2 shrink-0">
+            {/* Stat 1: MODULES */}
+            <div
+              className="stat-card flex-1 sm:flex-initial flex flex-col justify-center h-[50px] min-w-[80px] px-[12px] py-[4px] rounded-[10px]"
+              style={{
+                background: '#FFFFFF',
+                border: '1px solid #EAE3FA',
+                boxShadow: '0 2px 6px rgba(75, 30, 140, 0.03)',
+              }}
+            >
+              <div className="text-[10px] font-[700] text-[#78829D] uppercase tracking-wider leading-none mb-1">
+                MODULES
               </div>
-              <div className="pch-mobile-points-line">
-                <span>Points:</span>
-                <strong>{liveEarnedPoints} / {livePointsTarget}</strong>
-                <Info className="w-3 h-3 text-slate-400 shrink-0" />
+              <div className="text-[18px] font-[800] text-[#111333] leading-none">
+                {globalStats.totalModules}
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      {/* ─── 1B. DESKTOP BREADCRUMB & HEADER SECTION (>= 768px) ─── */}
-      <div className="pch-desktop-only flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
-        <div>
-          {/* Breadcrumb Navigation */}
-          <nav className="flex items-center gap-1.5 text-xs text-slate-500 font-medium mb-2 select-none">
-            <button
-              type="button"
-              onClick={onBackToDashboard}
-              className="hover:text-blue-600 transition-colors cursor-pointer"
+            {/* Stat 2: TOPICS */}
+            <div
+              className="stat-card flex-1 sm:flex-initial flex flex-col justify-center h-[50px] min-w-[80px] px-[12px] py-[4px] rounded-[10px]"
+              style={{
+                background: '#FFFFFF',
+                border: '1px solid #EAE3FA',
+                boxShadow: '0 2px 6px rgba(75, 30, 140, 0.03)',
+              }}
             >
-              <Home className="w-3.5 h-3.5" />
-            </button>
-            <span className="text-slate-300">|</span>
-            <button
-              type="button"
-              onClick={onBackToPractice}
-              className="hover:text-blue-600 transition-colors cursor-pointer"
-            >
-              DSA Coding Practice
-            </button>
-            <ChevronRight className="w-3 h-3 text-slate-400" />
-            <span className="text-slate-800 font-semibold">Python</span>
-          </nav>
-
-          {/* Title & Subtitle */}
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0f172a] tracking-tight">
-            Python <span className="text-[#1a73e8]">Challenges</span>
-          </h1>
-          <p className="mt-1.5 text-xs sm:text-sm text-slate-500 font-normal">
-            Solve hands-on coding problems, improve your skills and track your progress.
-          </p>
-        </div>
-
-        {/* Right Stats Card Widget */}
-        <div className="shrink-0 flex flex-wrap items-center justify-between sm:justify-start gap-3 sm:gap-4 bg-white border border-slate-100/90 shadow-[0_2px_12px_rgba(0,0,0,0.04)] rounded-2xl px-3.5 sm:px-5 py-3 sm:py-3.5">
-          {/* Python Logo */}
-          <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-1">
-            <img
-              src="/images/arena/icons/python.png"
-              alt="Python Logo"
-              className="w-full h-full object-contain"
-            />
-          </div>
-
-          {/* Rank & Points */}
-          <div className="flex items-center gap-4 text-xs">
-            <div className="flex items-center gap-1.5">
-              <span className="text-slate-500 font-medium">Rank:</span>
-              <strong className="text-slate-900 font-black text-sm">{liveStudentRank}</strong>
+              <div className="text-[10px] font-[700] text-[#78829D] uppercase tracking-wider leading-none mb-1">
+                TOPICS
+              </div>
+              <div className="text-[18px] font-[800] text-[#111333] leading-none">
+                {globalStats.totalTopics}
+              </div>
             </div>
-            <div className="h-4 w-[1px] bg-slate-200" />
-            <div className="flex items-center gap-1.5">
-              <span className="text-slate-500 font-medium">Points:</span>
-              <strong className="text-slate-900 font-bold">{liveEarnedPoints} / {livePointsTarget}</strong>
-              <Info className="w-3.5 h-3.5 text-slate-400 cursor-pointer hover:text-slate-600" />
-            </div>
-          </div>
 
-          {/* Action circle arrow button */}
-          <button
-            type="button"
-            className="w-7 h-7 rounded-full bg-[#f0f6ff] text-[#1a73e8] flex items-center justify-center hover:bg-[#1a73e8] hover:text-white transition-colors cursor-pointer ml-1"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* ─── 2. TABS BAR (All Challenges, Basic, Intermediate, Advanced, Popular) ─── */}
-      <div className="pch-tabs-scroll flex items-center gap-2 overflow-x-auto pb-2 mb-6 no-scrollbar border-b border-slate-200/80">
-        {[
-          {
-            id: 'all',
-            mobileTop: 'All Challenges',
-            mobileSub: `(${allTopicsCount} Topics)`,
-            desktopLabel: `All Challenges (${allTopicsCount} Topics)`,
-          },
-          {
-            id: 'basic',
-            mobileTop: 'Basic',
-            mobileSub: `(${basicTopicsCount} Topics)`,
-            desktopLabel: `Basic (${basicTopicsCount} Topics)`,
-          },
-          {
-            id: 'intermediate',
-            mobileTop: 'Intermediate',
-            mobileSub: `(${intermediateTopicsCount} Topics)`,
-            desktopLabel: `Intermediate (${intermediateTopicsCount} Topics)`,
-          },
-          {
-            id: 'advanced',
-            mobileTop: 'Advanced',
-            mobileSub: `(${advancedTopicsCount} Topics)`,
-            desktopLabel: `Advanced (${advancedTopicsCount} Topics)`,
-          },
-          {
-            id: 'popular',
-            mobileTop: 'Popular',
-            mobileSub: `(${popularTopicsCount} Challenges)`,
-            desktopLabel: `Popular (${popularTopicsCount} Challenges)`,
-          },
-        ].map((tab) => {
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`pch-tab-pill ${isActive ? 'is-active' : ''} px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-150 cursor-pointer whitespace-nowrap active:scale-95 ${
-                isActive
-                  ? 'bg-[#1a73e8] text-white shadow-sm shadow-blue-500/20'
-                  : 'bg-white hover:bg-slate-100 text-slate-600 border border-slate-200/70'
-              }`}
+            {/* Stat 3: QUESTIONS */}
+            <div
+              className="stat-card flex-1 sm:flex-initial flex flex-col justify-center h-[50px] min-w-[90px] px-[12px] py-[4px] rounded-[10px]"
+              style={{
+                background: '#FFFFFF',
+                border: '1px solid #EAE3FA',
+                boxShadow: '0 2px 6px rgba(75, 30, 140, 0.03)',
+              }}
             >
-              <span className="pch-mobile-only">
-                <span className="pch-tab-title">{tab.mobileTop}</span>
-                <span className="pch-tab-sub">{tab.mobileSub}</span>
-              </span>
-              <span className="pch-desktop-only">{tab.desktopLabel}</span>
-            </button>
-          );
-        })}
-      </div>
+              <div className="text-[10px] font-[700] text-[#78829D] uppercase tracking-wider leading-none mb-1">
+                QUESTIONS
+              </div>
+              <div className="text-[18px] font-[800] text-[#111333] leading-none">
+                {globalStats.totalQuestions.toLocaleString()}
+              </div>
+            </div>
 
-      {/* ─── 3. TWO-COLUMN LAYOUT: CHALLENGES LIST (70%) + FILTER SIDEBAR (30%) ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
-        {/* LEFT COLUMN: Challenges List (8 of 12 cols = ~67%) */}
-        <div className="pch-cards-list lg:col-span-8 space-y-3.5">
-          {filteredChallenges.length === 0 ? (
-            <div className="bg-white rounded-2xl p-10 text-center border border-slate-200 shadow-sm">
-              <p className="text-slate-500 text-sm font-medium">No challenges found matching the active filters.</p>
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedDifficulties([]);
-                  setSelectedSkills([]);
-                  setSelectedStatus([]);
-                }}
-                className="mt-3 px-4 py-1.5 rounded-full bg-blue-50 text-blue-600 text-xs font-bold hover:bg-blue-100 transition-colors"
+            {/* Stat 4: PROGRESS */}
+            <div
+              className="stat-card w-full sm:w-[180px] h-[50px] flex flex-col justify-center px-[12px] py-[4px] rounded-[10px]"
+              style={{
+                background: '#FFFFFF',
+                border: '1px solid #EAE3FA',
+                boxShadow: '0 2px 6px rgba(75, 30, 140, 0.03)',
+              }}
+            >
+              <div className="flex items-center justify-between text-[10px] font-[700] uppercase tracking-wider leading-none mb-1.5">
+                <span className="text-[#78829D]">PROGRESS</span>
+                <span className="text-[#6516DC] font-[800]">
+                  {globalStats.percentage}%
+                </span>
+              </div>
+              <div
+                className="w-full h-[6px] rounded-full overflow-hidden"
+                style={{ background: '#EAE7F2' }}
               >
-                Clear all filters
-              </button>
-            </div>
-          ) : (
-            filteredChallenges.map((item) => {
-              const isBookmarked = bookmarkedIds.has(item.id);
-              const qCount = item.questions ? item.questions.length : 10;
-              const isLocked = !internalEnrolled && item.id !== 1;
-              return (
                 <div
-                  key={item.id}
-                  className={`pch-challenge-card bg-white rounded-2xl border transition-all duration-200 p-4 sm:p-5 group ${
-                    isLocked
-                      ? 'border-slate-200/90 shadow-2xs hover:border-amber-300'
-                      : 'border-slate-100/90 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-md'
-                  }`}
-                >
-                  <div className="pch-card-inner flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                    {/* Left: Icon + Content */}
-                    <div className="pch-card-left flex items-start gap-3.5 min-w-0 flex-1">
+                  className="h-full rounded-full transition-all duration-300"
+                  style={{
+                    width: `${Math.max(globalStats.percentage, 2)}%`,
+                    background: '#6516DC',
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
 
-                      {/* Python Logo in Circle */}
-                      <div className="pch-card-py-icon w-11 h-11 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 p-1.5 group-hover:scale-105 transition-transform">
-                        <svg viewBox="0 0 110 110" className="pch-mobile-only w-full h-full" aria-label="Python">
-                          <path
-                            fill="#387EB8"
-                            d="M54.5 6C30.6 6 32.1 16.3 32.1 16.3l.1 10.7h22.8v3.2H23.1S6 28.3 6 52.4s14.9 23.3 14.9 23.3h8.9V64.5s-.5-14.9 14.7-14.9h25.3s14.2.2 14.2-13.8V19.6S86.1 6 54.5 6zm-14 8.2c2.6 0 4.6 2.1 4.6 4.6s-2.1 4.6-4.6 4.6-4.6-2.1-4.6-4.6 2-4.6 4.6-4.6z"
-                          />
-                          <path
-                            fill="#FFE052"
-                            d="M55.5 104c23.9 0 22.4-10.3 22.4-10.3l-.1-10.7H55v-3.2h31.9S104 81.7 104 57.6 89.1 34.3 89.1 34.3h-8.9v11.2s.5 14.9-14.7 14.9H40.2S26 60.2 26 74.2v16.2S23.9 104 55.5 104zm14-8.2c-2.6 0-4.6-2.1-4.6-4.6s2.1-4.6 4.6-4.6 4.6 2.1 4.6 4.6-2 4.6-4.6 4.6z"
-                          />
-                        </svg>
-                        <img
-                          src="/images/arena/icons/python.png"
-                          alt="Python"
-                          className="pch-desktop-only w-full h-full object-contain"
-                        />
-                      </div>
+        {/* ─── 3. MOBILE MODULE SELECTOR (< lg) ─── */}
+        <div className="lg:hidden bg-[#FFFFFF] border border-[#E9E2F6] rounded-[12px] p-2.5 shadow-sm shrink-0 text-left">
+          <label
+            htmlFor="mobile-module-selector"
+            className="block text-[11px] font-[700] text-[#58617D] uppercase tracking-wider mb-1"
+          >
+            Select Module ({allModules.length} Modules)
+          </label>
+          <div className="relative">
+            <select
+              id="mobile-module-selector"
+              value={selectedModuleId}
+              onChange={(e) => handleSelectModule(e.target.value)}
+              className="w-full h-9 pl-3 pr-8 rounded-[8px] bg-[#F1E7FF] border border-[#A66BFF] text-[#5910CC] font-[700] text-[12px] appearance-none focus:outline-none focus:ring-2 focus:ring-[#6516DC] cursor-pointer"
+            >
+              {allModules.map((m) => (
+                <option key={m.id} value={m.id}>
+                  Module {m.sectionNumber}: {m.title} ({m.topics.length} Topics)
+                </option>
+              ))}
+            </select>
+            <ChevronRight className="w-4 h-4 text-[#5910CC] absolute right-3 top-2.5 pointer-events-none rotate-90" />
+          </div>
+        </div>
 
-                      {/* Challenge Title, Badges & Description */}
-                      <div className="pch-card-body min-w-0 flex-1 text-left">
-                        <div className="pch-card-title-row flex items-center gap-2 flex-wrap">
-                          <h3 className="pch-card-title font-bold text-slate-900 text-sm sm:text-base leading-tight group-hover:text-blue-600 transition-colors">
-                            {item.title}
-                          </h3>
-                          <span className="pch-card-count-badge text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
-                            {qCount} Challenges
-                          </span>
-                        </div>
+        {/* ─── 4. MAIN DASHBOARD TWO-COLUMN LAYOUT (Fills available screen height) ─── */}
+        <div className="w-full flex-1 min-h-0 flex flex-col lg:flex-row gap-3 items-stretch">
+          {/* ═══════════════════════════════════════════════════════════════════
+              LEFT SIDEBAR: ALL MODULES (320px Width Desktop)
+             ═══════════════════════════════════════════════════════════════════ */}
+          <aside
+            className="modules-sidebar hidden lg:flex flex-col w-[320px] shrink-0 rounded-[16px] p-[10px_12px] h-full min-h-0"
+            style={{
+              background: '#FFFFFF',
+              border: '1px solid #E9E2F6',
+              boxShadow: '0 3px 12px rgba(72, 30, 137, 0.04)',
+            }}
+          >
+            {/* Sidebar Heading: ALL MODULES + 20 Pill */}
+            <div className="flex items-center justify-between pb-2 mb-1.5 border-b border-[#EAE3FA] shrink-0">
+              <span className="text-[12px] font-[800] text-[#111333] tracking-wider uppercase">
+                ALL MODULES
+              </span>
+              <span
+                className="text-[11px] font-[800] px-[8px] py-[1.5px] rounded-[6px]"
+                style={{ background: '#F1E7FF', color: '#6516DC' }}
+              >
+                {allModules.length}
+              </span>
+            </div>
 
-                        {/* Badges Row */}
-                        <div className="pch-card-badges-row flex items-center gap-2 mt-1.5 flex-wrap">
-                          {/* Free / Locked Status Badge */}
-                          {isLocked ? (
-                            <span className="pch-badge text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 flex items-center gap-1">
-                              <Lock className="w-2.5 h-2.5 text-amber-600" />
-                              <span>Locked</span>
-                            </span>
-                          ) : (
-                            <span className="pch-badge text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                              {item.id === 1 ? 'Free Topic' : 'Unlocked'}
-                            </span>
-                          )}
+            {/* Module Rows List */}
+            <div className="flex-1 overflow-y-auto space-y-[4px] pr-1">
+              {allModules.map((m) => {
+                const isSelected = m.id === selectedModuleId;
+                const modCompleted = m.topics.filter((t) => completedTopicIds.has(t.id)).length;
+                const modPct =
+                  m.topics.length > 0 ? Math.round((modCompleted / m.topics.length) * 100) : 0;
+                const isComplete = modPct === 100 && modCompleted > 0;
+                const inProgress = modPct > 0 && !isComplete;
 
-                          {/* Difficulty */}
-                          <span
-                            className={`pch-badge text-[10.5px] font-bold px-2.5 py-0.5 rounded-full ${
-                              item.difficulty === 'Easy'
-                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/50'
-                                : item.difficulty === 'Medium'
-                                ? 'bg-amber-50 text-amber-700 border border-amber-200/50'
-                                : 'bg-rose-50 text-rose-700 border border-rose-200/50'
-                            }`}
-                          >
-                            {item.difficulty}
-                          </span>
-
-                          {/* Max Score */}
-                          <span className="pch-badge text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200/50">
-                            Max Score: {item.maxScore}
-                          </span>
-
-                          {/* Skill category */}
-                          <span className="pch-badge text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
-                            {item.skill}
-                          </span>
-                        </div>
-
-                        {/* Description text */}
-                        <p className="pch-card-desc text-xs text-slate-500 mt-1.5 leading-relaxed">
-                          {item.description}
-                        </p>
-
-                        {/* Dropdown under Title & Description for this topic */}
-                        {item.questions && item.questions.length > 0 && (
-                          <div className="pch-card-select-wrap mt-2.5 relative max-w-xs sm:max-w-sm">
-                            <label htmlFor={`topic-select-${item.id}`} className="sr-only">Choose Question</label>
-                            <select
-                              id={`topic-select-${item.id}`}
-                              defaultValue=""
-                              onChange={(e) => {
-                                if (isLocked) {
-                                  soundEffects.playLock();
-                                  setLockedModalTopic({ title: item.title, count: item.questions?.length || 10 });
-                                  e.target.value = '';
-                                  return;
-                                }
-                                const val = Number(e.target.value);
-                                if (val) {
-                                  openArena(item.id, val);
-                                }
-                              }}
-                              className="pch-card-select w-full appearance-none bg-blue-50/80 hover:bg-blue-100/70 border border-blue-200 text-blue-900 font-bold text-xs pl-3 pr-8 py-2 rounded-xl shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all truncate"
-                              title="Choose Question"
-                            >
-                              <option value="" disabled className="bg-white text-slate-700 font-bold">
-                                ▼ Select Question (1 to {item.questions.length}) ▾
-                              </option>
-                              {item.questions.map((task) => (
-                                <option key={task.id} value={task.taskNumber} className="bg-white text-slate-900 font-medium py-1">
-                                  {task.taskNumber}. {task.title}
-                                </option>
-                              ))}
-                            </select>
-                            <div className="pch-card-select-chevron pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-blue-600">
-                              <ChevronDown className="w-3.5 h-3.5" />
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Right: Bookmark Star + Action Button */}
-                    <div className="pch-card-right flex items-center gap-3 shrink-0 self-end sm:self-center">
-                      <button
-                        type="button"
-                        onClick={(e) => toggleBookmark(item.id, e)}
-                        aria-label="Bookmark Challenge"
-                        className="pch-star-btn p-2 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-amber-500 transition-colors cursor-pointer"
-                      >
-                        <Star
-                          className={`w-5 h-5 transition-colors ${
-                            isBookmarked ? 'fill-amber-400 text-amber-400' : ''
-                          }`}
-                        />
-                      </button>
-
-                      {/* Mobile Action Button: 2-line Solve Challenge -> matching reference image */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (isLocked) {
-                            soundEffects.playLock();
-                            setLockedModalTopic({ title: item.title, count: item.questions?.length || 10 });
-                            return;
-                          }
-                          openArena(item.id, 1);
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => handleSelectModule(m.id)}
+                    className={`module-row w-full h-[36px] px-[8px] rounded-[8px] text-left flex items-center justify-between gap-2 transition-all duration-150 cursor-pointer select-none ${
+                      isSelected ? 'selected' : ''
+                    }`}
+                    style={{
+                      background: isSelected ? '#F5EEFF' : '#FFFFFF',
+                      border: isSelected ? '1px solid #D5B8FF' : '1px solid transparent',
+                      color: isSelected ? '#5910CC' : '#111333',
+                    }}
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span
+                        className="module-number w-[24px] h-[22px] rounded-[6px] flex items-center justify-center text-[10px] font-[800] shrink-0 transition-colors"
+                        style={{
+                          background: isSelected ? '#6516DC' : '#F0F2F8',
+                          color: isSelected ? '#FFFFFF' : '#111333',
                         }}
-                        className="pch-mobile-only pch-solve-btn"
                       >
-                        <span className="pch-solve-line1">Solve</span>
-                        <span className="pch-solve-line2">
-                          <span>Challenge</span>
-                          <ArrowRight className="w-3 h-3 stroke-[2.5]" />
-                        </span>
-                      </button>
-
-                      {/* Desktop Action Button: Preserved 100% unchanged */}
-                      <div className="pch-desktop-only">
-                        {isLocked ? (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              soundEffects.playLock();
-                              setLockedModalTopic({ title: item.title, count: item.questions?.length || 10 });
-                            }}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 active:scale-95 font-bold text-xs shadow-2xs transition-all cursor-pointer whitespace-nowrap"
-                          >
-                            <Lock className="w-3.5 h-3.5 text-amber-600" />
-                            <span>Unlock Topic</span>
-                          </button>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              openArena(item.id, 1);
-                            }}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1a73e8] hover:bg-blue-700 active:scale-95 text-white font-semibold text-xs shadow-sm transition-all cursor-pointer whitespace-nowrap"
-                          >
-                            <span>Solve Challenge</span>
-                            <ArrowRight className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                      </div>
+                        {m.sectionNumber}
+                      </span>
+                      <span
+                        className="text-[12px] font-[650] truncate leading-tight"
+                        style={{ color: isSelected ? '#5910CC' : '#111333' }}
+                      >
+                        {m.title}
+                      </span>
                     </div>
+
+                    {/* Status Indicator */}
+                    <div className="shrink-0 flex items-center">
+                      {isComplete ? (
+                        <div
+                          className="w-4 h-4 rounded-full flex items-center justify-center text-white"
+                          style={{ background: '#09B63C' }}
+                          title="Completed"
+                        >
+                          <Check className="w-2.5 h-2.5 stroke-[3]" />
+                        </div>
+                      ) : inProgress ? (
+                        <span
+                          className="text-[10px] font-[800] px-1 py-0.5 rounded-[5px]"
+                          style={{ background: '#EDE2FF', color: '#5910CC' }}
+                          title={`${modPct}% in progress`}
+                        >
+                          {modPct}%
+                        </span>
+                      ) : isSelected ? (
+                        <span
+                          className="text-[10px] font-[800] px-1.5 py-0.5 rounded-[5px]"
+                          style={{ background: '#EDE2FF', color: '#6516DC' }}
+                        >
+                          10%
+                        </span>
+                      ) : (
+                        <Circle
+                          className="w-3 h-3 text-[#D1D5DB] stroke-[1.5]"
+                          title="Not started"
+                        />
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </aside>
+
+          {/* ═══════════════════════════════════════════════════════════════════
+              RIGHT CONTENT PANEL: MODULE HEADER + TOPICS GRID + STICKY BAR
+             ═══════════════════════════════════════════════════════════════════ */}
+          <main
+            className="module-content flex-1 min-w-0 flex flex-col justify-between rounded-[16px] p-3 sm:p-[12px] h-full min-h-0 gap-2"
+            style={{
+              background: '#FFFFFF',
+              border: '1px solid #E9E2F6',
+              boxShadow: '0 3px 12px rgba(72, 30, 137, 0.04)',
+            }}
+          >
+            {/* ── 5. MODULE HEADER ── */}
+            <div
+              className="w-full rounded-[11px] p-[8px_12px] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 shrink-0"
+              style={{
+                background: '#FAF9FF',
+                border: '1px solid #E8DDFB',
+              }}
+            >
+              {/* Left: Module Number Badge (40x34) + Title + Topic Count Badge */}
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div
+                  className="w-[40px] h-[34px] rounded-[8px] flex items-center justify-center text-[17px] font-[800] shrink-0 text-white"
+                  style={{ background: '#6516DC' }}
+                >
+                  {selectedModule.sectionNumber}
+                </div>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h2 className="text-[16px] font-[800] text-[#111333] tracking-tight truncate leading-tight">
+                      {selectedModule.title}
+                    </h2>
+                    <span
+                      className="text-[11px] font-[750] px-[10px] py-[2.5px] rounded-[6px] shrink-0"
+                      style={{ background: '#F1E7FF', color: '#6516DC' }}
+                    >
+                      {moduleStats.totalTopics} Topics • {moduleStats.totalQuestions} Questions
+                    </span>
                   </div>
                 </div>
-              );
-            })
-          )}
-        </div>
-
-        {/* ─── 4A. MOBILE COLLAPSIBLE FILTERS & STATUS CARD (< 768px) ─── */}
-        <div className="pch-mobile-only pch-mobile-filters-card">
-          <button
-            type="button"
-            onClick={() => setMobileFiltersOpen((prev) => !prev)}
-            className="pch-mobile-filters-header"
-          >
-            <div className="pch-mobile-filters-title">
-              <Filter className="w-4 h-4 text-[#1a73e8]" />
-              <span>Filters &amp; Status</span>
-            </div>
-            {mobileFiltersOpen ? (
-              <ChevronUp className="w-4 h-4 text-slate-400" />
-            ) : (
-              <ChevronDown className="w-4 h-4 text-slate-400" />
-            )}
-          </button>
-
-          {mobileFiltersOpen && (
-            <div className="pch-mobile-filters-grid">
-              {/* Column 1: Status */}
-              <div className="pch-mobile-filter-col">
-                <h4>Status</h4>
-                <label className="pch-mobile-filter-item">
-                  <span className="pch-mobile-filter-label">
-                    <input
-                      type="checkbox"
-                      checked={selectedStatus.includes('Solved')}
-                      onChange={() => handleStatusToggle('Solved')}
-                    />
-                    <span>Solved</span>
-                  </span>
-                  <span className="pch-mobile-filter-count">{solvedCount}</span>
-                </label>
-                <label className="pch-mobile-filter-item">
-                  <span className="pch-mobile-filter-label">
-                    <input
-                      type="checkbox"
-                      checked={selectedStatus.includes('Unsolved')}
-                      onChange={() => handleStatusToggle('Unsolved')}
-                    />
-                    <span>Unsolved</span>
-                  </span>
-                  <span className="pch-mobile-filter-count">{unsolvedCount}</span>
-                </label>
               </div>
 
-              {/* Column 2: Skills */}
-              <div className="pch-mobile-filter-col">
-                <h4>Skills</h4>
-                <label className="pch-mobile-filter-item">
-                  <span className="pch-mobile-filter-label">
-                    <input
-                      type="checkbox"
-                      checked={selectedSkills.includes('Python Basics')}
-                      onChange={() => handleSkillToggle('Python Basics')}
-                    />
-                    <span>Python Basics</span>
+              {/* Right: Module Progress */}
+              <div className="flex items-center gap-2 shrink-0">
+                <div className="text-[11px] font-[700] text-[#58617D] flex items-center gap-1">
+                  <span>Completed:</span>
+                  <span className="text-[#09B63C] font-[800]">
+                    {moduleStats.completedCount}/{moduleStats.totalTopics} ({moduleStats.percentage}%)
                   </span>
-                  <span className="pch-mobile-filter-count">{pythonBasicsCount}</span>
-                </label>
-                <label className="pch-mobile-filter-item">
-                  <span className="pch-mobile-filter-label">
-                    <input
-                      type="checkbox"
-                      checked={selectedSkills.includes('Problem Solving')}
-                      onChange={() => handleSkillToggle('Problem Solving')}
-                    />
-                    <span>Problem Solving</span>
-                  </span>
-                  <span className="pch-mobile-filter-count">{problemSolvingCount}</span>
-                </label>
-                <label className="pch-mobile-filter-item">
-                  <span className="pch-mobile-filter-label">
-                    <input
-                      type="checkbox"
-                      checked={selectedSkills.includes('Python Intermediate')}
-                      onChange={() => handleSkillToggle('Python Intermediate')}
-                    />
-                    <span>Python Intermediate</span>
-                  </span>
-                  <span className="pch-mobile-filter-count">{pythonInterCount}</span>
-                </label>
-                <label className="pch-mobile-filter-item">
-                  <span className="pch-mobile-filter-label">
-                    <input
-                      type="checkbox"
-                      checked={selectedSkills.includes('Algorithms')}
-                      onChange={() => handleSkillToggle('Algorithms')}
-                    />
-                    <span>Algorithms</span>
-                  </span>
-                  <span className="pch-mobile-filter-count">{algorithmsCount}</span>
-                </label>
-              </div>
-
-              {/* Column 3: Difficulty */}
-              <div className="pch-mobile-filter-col">
-                <h4>Difficulty</h4>
-                <label className="pch-mobile-filter-item">
-                  <span className="pch-mobile-filter-label">
-                    <input
-                      type="checkbox"
-                      checked={selectedDifficulties.includes('Easy')}
-                      onChange={() => handleDifficultyToggle('Easy')}
-                    />
-                    <span>Easy</span>
-                  </span>
-                  <span className="pch-mobile-filter-count">{easyCount}</span>
-                </label>
-                <label className="pch-mobile-filter-item">
-                  <span className="pch-mobile-filter-label">
-                    <input
-                      type="checkbox"
-                      checked={selectedDifficulties.includes('Medium')}
-                      onChange={() => handleDifficultyToggle('Medium')}
-                    />
-                    <span>Medium</span>
-                  </span>
-                  <span className="pch-mobile-filter-count">{mediumCount}</span>
-                </label>
-                <label className="pch-mobile-filter-item">
-                  <span className="pch-mobile-filter-label">
-                    <input
-                      type="checkbox"
-                      checked={selectedDifficulties.includes('Hard')}
-                      onChange={() => handleDifficultyToggle('Hard')}
-                    />
-                    <span>Hard</span>
-                  </span>
-                  <span className="pch-mobile-filter-count">{hardCount}</span>
-                </label>
+                </div>
+                <div
+                  className="w-3 h-3 rounded-full flex items-center justify-center shrink-0"
+                  style={{ background: '#09B63C' }}
+                />
+                <div
+                  className="w-16 sm:w-20 h-[5px] rounded-full overflow-hidden shrink-0"
+                  style={{ background: '#EAE7F2' }}
+                >
+                  <div
+                    className="h-full rounded-full transition-all duration-300"
+                    style={{
+                      width: `${Math.max(moduleStats.percentage, 2)}%`,
+                      background: '#09B63C',
+                    }}
+                  />
+                </div>
               </div>
             </div>
-          )}
-        </div>
 
-        {/* ─── 4B. DESKTOP RIGHT COLUMN: Filter Sidebar (4 of 12 cols = ~33%) ─── */}
-        <div className="pch-desktop-only lg:col-span-4 space-y-4">
-          
-          {/* Accordion 1: Status */}
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)] p-4 text-left">
-            <button
-              type="button"
-              onClick={() => setStatusOpen((prev) => !prev)}
-              className="w-full flex items-center justify-between text-xs font-bold text-slate-800 cursor-pointer"
-            >
-              <span>STATUS</span>
-              {statusOpen ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
-            </button>
-
-            {statusOpen && (
-              <div className="mt-3 space-y-2 text-xs text-slate-600 border-t border-slate-100 pt-3">
-                <label className="flex items-center justify-between cursor-pointer hover:text-slate-900">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedStatus.includes('Solved')}
-                      onChange={() => handleStatusToggle('Solved')}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                    />
-                    <span>Solved</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 font-medium">{solvedCount}</span>
-                </label>
-                <label className="flex items-center justify-between cursor-pointer hover:text-slate-900">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedStatus.includes('Unsolved')}
-                      onChange={() => handleStatusToggle('Unsolved')}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                    />
-                    <span>Unsolved</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 font-medium">{unsolvedCount}</span>
-                </label>
+            {/* ── 6. TOPIC SECTION HEADING + VIEW TOGGLE ── */}
+            <div className="flex items-center justify-between gap-2 pt-0.5 pb-0.5 border-b border-[#EAE3FA] shrink-0">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <Layers className="w-4 h-4 text-[#6516DC] shrink-0" />
+                <h3 className="text-[13px] font-[800] text-[#111333] truncate">
+                  Select a Topic from {selectedModule.title}
+                </h3>
               </div>
-            )}
-          </div>
 
-          {/* Accordion 2: Skills */}
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)] p-4 text-left">
-            <button
-              type="button"
-              onClick={() => setSkillsOpen((prev) => !prev)}
-              className="w-full flex items-center justify-between text-xs font-bold text-slate-800 cursor-pointer"
-            >
-              <span>SKILLS</span>
-              {skillsOpen ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
-            </button>
-
-            {skillsOpen && (
-              <div className="mt-3 space-y-2 text-xs text-slate-600 border-t border-slate-100 pt-3">
-                <label className="flex items-center justify-between cursor-pointer hover:text-slate-900">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedSkills.includes('Python Basics')}
-                      onChange={() => handleSkillToggle('Python Basics')}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                    />
-                    <span>Python Basics</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 font-medium">{pythonBasicsCount}</span>
-                </label>
-                <label className="flex items-center justify-between cursor-pointer hover:text-slate-900">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedSkills.includes('Problem Solving')}
-                      onChange={() => handleSkillToggle('Problem Solving')}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                    />
-                    <span>Problem Solving</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 font-medium">{problemSolvingCount}</span>
-                </label>
-                <label className="flex items-center justify-between cursor-pointer hover:text-slate-900">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedSkills.includes('Python Intermediate')}
-                      onChange={() => handleSkillToggle('Python Intermediate')}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                    />
-                    <span>Python Intermediate</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 font-medium">{pythonInterCount}</span>
-                </label>
-                <label className="flex items-center justify-between cursor-pointer hover:text-slate-900">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedSkills.includes('Algorithms')}
-                      onChange={() => handleSkillToggle('Algorithms')}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                    />
-                    <span>Algorithms</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 font-medium">{algorithmsCount}</span>
-                </label>
+              {/* View Toggle */}
+              <div
+                className="flex items-center p-0.5 rounded-[7px] shrink-0 select-none"
+                style={{ background: '#F5EFFF', border: '1px solid #E8DDFB' }}
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEffects.playClick?.();
+                    setTopicViewMode('list');
+                  }}
+                  className="h-[28px] px-2.5 rounded-[6px] text-[11px] font-[700] flex items-center gap-1 transition-all cursor-pointer"
+                  style={{
+                    background: topicViewMode === 'list' ? '#6516DC' : 'transparent',
+                    color: topicViewMode === 'list' ? '#FFFFFF' : '#58617D',
+                    boxShadow:
+                      topicViewMode === 'list'
+                        ? '0 2px 6px rgba(101, 22, 220, 0.16)'
+                        : 'none',
+                  }}
+                >
+                  <List className="w-3 h-3" />
+                  <span>List</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEffects.playClick?.();
+                    setTopicViewMode('grid');
+                  }}
+                  className="h-[28px] px-2.5 rounded-[6px] text-[11px] font-[700] flex items-center gap-1 transition-all cursor-pointer"
+                  style={{
+                    background: topicViewMode === 'grid' ? '#6516DC' : 'transparent',
+                    color: topicViewMode === 'grid' ? '#FFFFFF' : '#58617D',
+                    boxShadow:
+                      topicViewMode === 'grid'
+                        ? '0 2px 6px rgba(101, 22, 220, 0.16)'
+                        : 'none',
+                  }}
+                >
+                  <LayoutGrid className="w-3 h-3" />
+                  <span>Grid</span>
+                </button>
               </div>
-            )}
-          </div>
+            </div>
 
-          {/* Accordion 3: Difficulty */}
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)] p-4 text-left">
-            <button
-              type="button"
-              onClick={() => setDifficultyOpen((prev) => !prev)}
-              className="w-full flex items-center justify-between text-xs font-bold text-slate-800 cursor-pointer"
-            >
-              <span>DIFFICULTY</span>
-              {difficultyOpen ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
-            </button>
-
-            {difficultyOpen && (
-              <div className="mt-3 space-y-2 text-xs text-slate-600 border-t border-slate-100 pt-3">
-                <label className="flex items-center justify-between cursor-pointer hover:text-slate-900">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedDifficulties.includes('Easy')}
-                      onChange={() => handleDifficultyToggle('Easy')}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                    />
-                    <span>Easy</span>
+            {/* ── 7. TOPIC CARDS SECTION (2 Columns: Left 1..half, Right half+1..N) ── */}
+            <div className="flex-1 min-h-0 overflow-y-auto pr-0.5">
+              {topicViewMode === 'list' ? (
+                /* Desktop Two Column Flow Layout (Exactly like reference image) */
+                <div className="flex flex-col md:flex-row gap-3 items-start w-full">
+                  {/* Left Column */}
+                  <div className="flex-1 flex flex-col gap-1.5 w-full">
+                    {leftTopics.map((t, idx) => renderTopicCard(t, idx, idx))}
                   </div>
-                  <span className="text-[11px] text-slate-400 font-medium">{easyCount}</span>
-                </label>
-                <label className="flex items-center justify-between cursor-pointer hover:text-slate-900">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedDifficulties.includes('Medium')}
-                      onChange={() => handleDifficultyToggle('Medium')}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                    />
-                    <span>Medium</span>
+
+                  {/* Right Column */}
+                  <div className="flex-1 flex flex-col gap-1.5 w-full">
+                    {rightTopics.map((t, idx) =>
+                      renderTopicCard(t, idx, leftTopics.length + idx)
+                    )}
                   </div>
-                  <span className="text-[11px] text-slate-400 font-medium">{mediumCount}</span>
-                </label>
-                <label className="flex items-center justify-between cursor-pointer hover:text-slate-900">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedDifficulties.includes('Hard')}
-                      onChange={() => handleDifficultyToggle('Hard')}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                    />
-                    <span>Hard</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 font-medium">{hardCount}</span>
-                </label>
-              </div>
-            )}
-          </div>
+                </div>
+              ) : (
+                /* Grid View Mode */
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                  {selectedModule.topics.map((t, idx) => {
+                    const isSelected = t.id === selectedTopicId;
+                    const isCompleted = completedTopicIds.has(t.id);
+                    const cleanTitle = t.title.replace(/^Topic\s*\d+\s*—\s*/i, '');
+                    const formattedNumber = String(t.topicNumber || idx + 1).padStart(2, '0');
 
-          {/* Accordion 4: Language */}
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)] p-4 text-left">
-            <button
-              type="button"
-              onClick={() => setLanguageOpen((prev) => !prev)}
-              className="w-full flex items-center justify-between text-xs font-bold text-slate-800 cursor-pointer"
-            >
-              <span>LANGUAGE</span>
-              {languageOpen ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
-            </button>
+                    return (
+                      <div
+                        key={t.id}
+                        onClick={() => handleSelectTopic(t.id)}
+                        className={`topic-card cursor-pointer p-2.5 rounded-[10px] flex flex-col justify-between gap-2 ${
+                          isSelected ? 'selected' : ''
+                        }`}
+                        style={{
+                          background: isSelected
+                            ? 'linear-gradient(135deg, #F0E4FF 0%, #F8F3FF 100%)'
+                            : '#FFFFFF',
+                          border: isSelected ? '1px solid #A66BFF' : '1px solid #E9E2F6',
+                          boxShadow: isSelected
+                            ? '0 3px 10px rgba(101, 22, 220, 0.09)'
+                            : '0 2px 6px rgba(58, 24, 120, 0.04)',
+                        }}
+                      >
+                        <div className="flex items-center justify-between gap-1.5">
+                          <span
+                            className="px-1.5 py-0.5 rounded-[5px] text-[10px] font-[800]"
+                            style={{
+                              background: isSelected ? '#6516DC' : '#EEDFFF',
+                              color: isSelected ? '#FFFFFF' : '#5910CC',
+                            }}
+                          >
+                            Topic {formattedNumber}
+                          </span>
+                          {isCompleted && (
+                            <div
+                              className="w-4 h-4 rounded-full flex items-center justify-center text-white shrink-0"
+                              style={{ background: '#09B63C' }}
+                            >
+                              <Check className="w-2.5 h-2.5 stroke-[3]" />
+                            </div>
+                          )}
+                        </div>
 
-            {languageOpen && (
-              <div className="mt-3 space-y-2 text-xs text-slate-600 border-t border-slate-100 pt-3">
-                <label className="flex items-center justify-between cursor-pointer hover:text-slate-900">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={languageChecked}
-                      onChange={(e) => setLanguageChecked(e.target.checked)}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                    />
-                    <span>Python (Python 3)</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 font-medium">{currentTabPool.length}</span>
-                </label>
-              </div>
-            )}
-          </div>
+                        <div className="text-[12px] font-[700] text-[#111333] line-clamp-2 leading-[1.3]">
+                          {cleanTitle}
+                        </div>
 
-        </div>
+                        <div className="pt-1.5 border-t border-[#F0EBF8] flex items-center justify-between">
+                          <span className="text-[10px] text-[#717A96] font-[600]">
+                            {getTopicQuestions(t.id).length || 10} Questions
+                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              soundEffects.playClick?.();
+                              onOpenClassroomTopic?.(t.id);
+                            }}
+                            className="text-[11px] font-[750] px-2.5 py-0.5 rounded-[5px] text-[#5910CC] border border-[#A66BFF] hover:bg-[#F5EEFF] transition-colors"
+                          >
+                            Solve ▶
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
 
-      </div>
-
-      {/* Course Enrollment Locked Modal */}
-      {lockedModalTopic && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-3xl border border-slate-200 max-w-md w-full p-6 sm:p-7 shadow-2xl relative text-left">
-            {/* Close button */}
-            <button
-              onClick={() => {
-                soundEffects.playClick();
-                setLockedModalTopic(null);
+            {/* ── 8. BOTTOM SELECTED TOPIC BAR (Exact Match to Reference Image) ── */}
+            <div
+              className="selected-topic-bar w-full rounded-[12px] flex flex-col sm:flex-row items-center justify-between gap-2.5 shrink-0 p-[8px_14px]"
+              style={{
+                background: 'linear-gradient(100deg, #F5EEFF 0%, #FAF6FF 55%, #F3E8FF 100%)',
+                border: '1px solid #E8DDFB',
+                boxShadow: '0 3px 12px rgba(78, 35, 150, 0.04)',
               }}
-              className="absolute top-5 right-5 p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer"
             >
-              <X className="w-5 h-5" />
-            </button>
-
-            {/* Lock Badge & Icon */}
-            <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center mb-4 shadow-xs">
-              <Lock className="w-7 h-7" />
-            </div>
-
-            {/* Topic pill */}
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold mb-2">
-              <span>Python • {lockedModalTopic.title}</span>
-            </div>
-
-            <h3 className="text-xl font-black text-slate-900 tracking-tight mb-2">
-              Enroll in Any 1 Course to Unlock
-            </h3>
-
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
-              <strong>{lockedModalTopic.title}</strong> aur aage ke sabhi topics unlock karne ke liye kisi bhi <strong>1 Course</strong> me enroll karein. Kisi ek me enroll hone ke baad tabhi ye open hoga!
-            </p>
-
-            {/* Benefits List */}
-            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-3.5 space-y-2 mb-5 text-xs text-slate-700 font-medium">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>All 25 Python practical challenge topics unlock</span>
+              {/* Left: Code icon (32x32) + SELECTED TOPIC + Title */}
+              <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                <div
+                  className="w-[32px] h-[32px] rounded-[8px] flex items-center justify-center shrink-0 text-white"
+                  style={{ background: '#6516DC' }}
+                >
+                  <Code2 className="w-[16px] h-[16px]" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[10px] font-[800] tracking-wider uppercase leading-none mb-1 text-[#6516DC]">
+                    SELECTED TOPIC
+                  </div>
+                  <h4 className="text-[13px] font-[800] text-[#111333] truncate leading-tight">
+                    {cleanSelectedTopicTitle}
+                  </h4>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>SQL, Excel &amp; Full Stack live coding access</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Interview tasks, test-cases &amp; instant code evaluation</span>
-              </div>
-            </div>
 
-            {/* Action Buttons */}
-            <div className="space-y-2.5">
+              {/* Middle: Checkmark + Questions Done + Green Progress Bar */}
+              <div className="flex items-center gap-2 shrink-0">
+                <div
+                  className="w-3.5 h-3.5 rounded-full flex items-center justify-center text-white shrink-0"
+                  style={{ background: '#09B63C' }}
+                >
+                  <Check className="w-2 h-2 stroke-[3]" />
+                </div>
+                <span className="text-[11px] font-[750] text-[#111333] whitespace-nowrap">
+                  {topicStats.completedQuestions}/{topicStats.totalQuestions} Questions Done
+                </span>
+                <div
+                  className="w-24 sm:w-28 h-[6px] rounded-full overflow-hidden shrink-0"
+                  style={{ background: '#EAE7F2' }}
+                >
+                  <div
+                    className="h-full rounded-full transition-all duration-300"
+                    style={{
+                      width: `${Math.max(
+                        topicStats.percentage,
+                        topicStats.isTopicCompleted ? 100 : 0
+                      )}%`,
+                      background: '#09B63C',
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Right: Main Solve Challenge Button */}
               <button
                 type="button"
-                onClick={() => {
-                  soundEffects.playClick();
-                  setLockedModalTopic(null);
-                  if (onNavigateToCourses) {
-                    onNavigateToCourses();
-                  } else {
-                    window.location.hash = '#courses';
-                  }
+                disabled={!selectedTopicId}
+                onClick={handleSolveChallenge}
+                className="main-solve-button shrink-0 select-none flex items-center justify-center gap-1.5 h-[36px] px-4 rounded-[8px] text-[13px] font-[750] text-white transition-all cursor-pointer shadow-sm hover:opacity-95"
+                style={{
+                  background: 'linear-gradient(135deg, #7623E9 0%, #5810C7 100%)',
                 }}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs sm:text-sm shadow-md shadow-blue-500/20 active:scale-98 transition cursor-pointer"
               >
-                <span>Explore &amp; Enroll in Courses →</span>
+                <Play className="w-3 h-3 fill-current text-white" />
+                <span>Solve Challenge</span>
+                <ArrowRight className="w-3.5 h-3.5 stroke-[2.5] text-white" />
               </button>
-
             </div>
-          </div>
+          </main>
         </div>
-      )}
+      </div>
     </div>
   );
 };

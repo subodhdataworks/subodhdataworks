@@ -5,7 +5,7 @@ export const DAY1_STEPS: Day1Step[] = [
     stepNumber: 1,
     id: 'step_what_is_python',
     title: 'Meet Python: Exact Instructions',
-    titleHindi: 'पायथन से परिचय: सटीक निर्देश',
+    titleHindi: 'Python से परिचय: सटीक निर्देश',
     titleHinglish: 'Meet Python: Exact Instructions',
     tagline: 'Python = instructions for computers.',
     conceptContext: {
@@ -13,7 +13,7 @@ export const DAY1_STEPS: Day1Step[] = [
       why: 'Computers are super-fast, but cannot do anything without human commands.',
       realLife: 'Jaise kisi ko bolte ho: "Room mein jao, book uthao aur table par rakho."',
       doNow: 'Click "Transmit Signal" to send your first exact instruction to the machine.',
-      hindiSummary: 'पायथन के माध्यम से हम कंप्यूटर को सीधे निर्देश देते हैं।',
+      hindiSummary: 'Python के माध्यम से हम Computer को सीधे निर्देश देते हैं।',
       hinglishSummary: 'Python ke through hum computer ko step-by-step instructions dete hain.'
     },
     hints: [
@@ -61,7 +61,7 @@ export const DAY1_STEPS: Day1Step[] = [
       why: 'You are the author commanding the computer, not a spectator.',
       realLife: 'Personalized bank messages: "Welcome Aarav, your balance is ₹5,000".',
       doNow: 'Change the text inside quotes to: Welcome to 2050',
-      hindiSummary: 'कोड बदलने से कंप्यूटर का आउटपुट तुरंत बदल जाता है।',
+      hindiSummary: 'Code बदलने से Computer का Output तुरंत बदल जाता है।',
       hinglishSummary: 'Quotes ke andar text badalne se output turant change ho jata hai.'
     },
     initialCode: 'print("Hello, Future")',
@@ -78,7 +78,7 @@ export const DAY1_STEPS: Day1Step[] = [
     stepNumber: 4,
     id: 'step_why_useful',
     title: 'Superhuman Speed',
-    titleHindi: 'कंप्यूटर की सुपरपावर: पलक झपकते गणना',
+    titleHindi: 'Computer की सुपरपावर: पलक झपकते Calculation',
     titleHinglish: 'Superhuman Speed: 10,000 Calculations',
     tagline: '3.5 hours of human effort vs 0.002s in Python.',
     conceptContext: {
@@ -86,7 +86,7 @@ export const DAY1_STEPS: Day1Step[] = [
       why: 'Humans get tired and make mistakes; Python calculates 10,000 items in milliseconds.',
       realLife: 'Bihar/UP Board exam results calculation: 10,000 students verified in 1 second.',
       doNow: 'Click "Test Speed" to watch Python process 10,000 records in 0.002 seconds.',
-      hindiSummary: 'इंसान को 3.5 घंटे लगेंगे, पायथन 0.002 सेकंड में पूरा कर देता है।',
+      hindiSummary: 'इंसान को 3.5 घंटे लगेंगे, Python 0.002 सेकंड में पूरा कर देता है।',
       hinglishSummary: 'Jo hisaab karne mein ghanton lagte hain, Python use 0.002s mein kar deta hai.'
     },
     hints: [
@@ -101,7 +101,7 @@ export const DAY1_STEPS: Day1Step[] = [
     stepNumber: 5,
     id: 'step_variables',
     title: 'Variables: Teach Computer to Remember',
-    titleHindi: 'वैरिएबल: कंप्यूटर को याद रखना सिखाएं',
+    titleHindi: 'वैरिएबल: Computer को याद रखना सिखाएं',
     titleHinglish: 'Variables: Named Storage in Memory',
     tagline: 'A labelled storage container in computer memory.',
     conceptContext: {
@@ -152,7 +152,7 @@ export const DAY1_STEPS: Day1Step[] = [
     stepNumber: 7,
     id: 'step_predict',
     title: 'Predict Before Running: State Mutation',
-    titleHindi: 'कोड चलाने से पहले अनुमान लगाएं',
+    titleHindi: 'Code चलाने से पहले अनुमान लगाएं',
     titleHinglish: 'Predict Before Running: Mental Model',
     tagline: 'Execute code in your mind first.',
     conceptContext: {
@@ -160,7 +160,7 @@ export const DAY1_STEPS: Day1Step[] = [
       why: 'Elite engineers build mental models before execution.',
       realLife: 'Anticipating autopilot behavior before deploying updates.',
       doNow: 'Select what age will become after age = age + 1.',
-      hindiSummary: 'दिमाग में पहले कोड चलाएं, फिर रन करें।',
+      hindiSummary: 'दिमाग में पहले Code चलाएं, फिर रन करें।',
       hinglishSummary: 'Pehle dimaag mein chalao: 20 mein 1 jodne par kya aayega?'
     },
     initialCode: 'age = 20\nage = age + 1\nprint(age)',
@@ -210,7 +210,7 @@ export const DAY1_STEPS: Day1Step[] = [
       why: 'Python is not just syntax; Python answers real questions.',
       realLife: 'Small business store discount: Price ₹800, Discount ₹100; plus 10,000 student marks analysis.',
       doNow: 'Run the store pricing & student exam analysis script.',
-      hindiSummary: 'पायथन सिर्फ कोड नहीं है, यह असली समस्याओं का समाधान करता है।',
+      hindiSummary: 'Python सिर्फ Code नहीं है, यह असली समस्याओं का समाधान करता है।',
       hinglishSummary: 'Product price aur discount calculate karo, aur 10,000 records ka average dekho.'
     },
     realIndiaContext: {

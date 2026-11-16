@@ -649,7 +649,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
             <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-6 text-left">
               <div>
                 <h3 className="text-lg font-bold text-[#0F172A]">Affiliate Referral Engine Management</h3>
-                <p className="text-xs text-[#64748B]">Real referral relationships, registered accounts, and paid commissions (₹100 flat per verified Razorpay enrollment)</p>
+                <p className="text-xs text-[#64748B]">Real referral relationships, registered accounts, and paid commissions (₹300 flat per verified Razorpay enrollment)</p>
               </div>
 
               {/* 4 Metric Cards */}
@@ -715,7 +715,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose 
                               <td className="py-2.5 px-3 text-[#64748B]">{u.registeredAt}</td>
                               <td className="py-2.5 px-3 text-right">
                                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#EFF6FF] border border-[#BFDBFE] text-[#2563EB]">
-                                  ₹100 on Course Purchase
+                                  ₹300 on Course Purchase
                                 </span>
                               </td>
                             </tr>

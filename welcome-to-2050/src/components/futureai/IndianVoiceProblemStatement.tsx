@@ -366,13 +366,12 @@ export const IndianVoiceProblemStatement: React.FC<IndianVoiceProblemStatementPr
 
           {/* Automatic Indian Voice Indicator Badge (Boy / Girl) */}
           <span
-            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border transition-all ${
+            className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-bold border transition-all ${
               currentGender === 'boy' ? themeStyles.tagBoy : themeStyles.tagGirl
             }`}
-            title={`Question voice: Indian ${currentGender === 'boy' ? 'Boy (Male)' : 'Girl (Female)'}`}
+            title={`Voice: ${currentGender === 'boy' ? 'Indian Boy' : 'Indian Girl'}`}
           >
             <span>{currentGender === 'boy' ? '👦' : '👧'}</span>
-            <span>{currentGender === 'boy' ? 'Indian Boy Voice' : 'Indian Girl Voice'}</span>
             {isSpeaking && (
               <div className="flex items-center gap-0.5 ml-0.5" title="Speaking right now">
                 <span className="w-1 h-2.5 bg-current rounded-full animate-pulse" />
@@ -466,12 +465,7 @@ export const IndianVoiceProblemStatement: React.FC<IndianVoiceProblemStatementPr
         <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-600 animate-fadeIn">
           <div className="flex items-center gap-1.5">
             <Radio className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
-            <span>
-              Speaking in pure Indian{' '}
-              <strong className={currentGender === 'boy' ? 'text-cyan-700' : 'text-pink-700'}>
-                {currentGender === 'boy' ? '👦 Boy Voice' : '👧 Girl Voice'}
-              </strong>
-            </span>
+            <span>Speaking...</span>
           </div>
 
           <button

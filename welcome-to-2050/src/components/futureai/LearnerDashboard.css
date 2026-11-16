@@ -4063,7 +4063,7 @@
   z-index: 1;
   max-width: 1480px;
   margin: 0 auto;
-  padding: 16px 24px 32px;
+  padding: 1px 24px 32px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
   gap: 18px;

@@ -11,7 +11,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
     tabId: 1,
     tabName: 'Data Analytics Foundations',
     moduleId: 1,
-    moduleName: 'Understanding Data and Analytics',
+    moduleName: 'Understanding Data Analytics',
     topicKey: '1.1',
     id: 1,
     topicTitle: 'What Is Data Analytics?',
@@ -212,7 +212,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
     tabId: 1,
     tabName: 'Data Analytics Foundations',
     moduleId: 1,
-    moduleName: 'Understanding Data and Analytics',
+    moduleName: 'Understanding Data Analytics',
     topicKey: '1.2',
     id: 2,
     topicTitle: 'Why Businesses Need Data Analytics',
@@ -413,7 +413,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "tabId": 1,
   "tabName": "Data Analytics Foundations",
   "moduleId": 1,
-  "moduleName": "Understanding Data and Analytics",
+  "moduleName": "Understanding Data Analytics",
   "topicKey": "1.3",
   "id": 3,
   "topicTitle": "Real-Life Examples of Data Analytics",
@@ -678,7 +678,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "tabId": 1,
   "tabName": "Data Analytics Foundations",
   "moduleId": 1,
-  "moduleName": "Understanding Data and Analytics",
+  "moduleName": "Understanding Data Analytics",
   "topicKey": "1.4",
   "id": 4,
   "topicTitle": "Data vs Information vs Insight",
@@ -943,7 +943,7 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "tabId": 1,
   "tabName": "Data Analytics Foundations",
   "moduleId": 1,
-  "moduleName": "Understanding Data and Analytics",
+  "moduleName": "Understanding Data Analytics",
   "topicKey": "1.5",
   "id": 5,
   "topicTitle": "The Role of Data in Decision-Making",
@@ -1208,9 +1208,9 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "tabId": 1,
   "tabName": "Data Analytics Foundations",
   "moduleId": 2,
-  "moduleName": "Data Analyst Career and Workflow",
+  "moduleName": "Data Analyst Essentials",
   "topicKey": "2.1",
-  "id": 7,
+  "id": 6,
   "topicTitle": "Data Analyst Roles and Responsibilities",
   "mode": "Non-coding",
   "game1Quiz": [
@@ -1473,9 +1473,9 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "tabId": 1,
   "tabName": "Data Analytics Foundations",
   "moduleId": 2,
-  "moduleName": "Data Analyst Career and Workflow",
+  "moduleName": "Data Analyst Essentials",
   "topicKey": "2.2",
-  "id": 8,
+  "id": 7,
   "topicTitle": "Data Analyst vs Data Scientist vs Data Engineer",
   "mode": "Non-coding",
   "game1Quiz": [
@@ -1738,136 +1738,136 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "tabId": 1,
   "tabName": "Data Analytics Foundations",
   "moduleId": 2,
-  "moduleName": "Data Analyst Career and Workflow",
+  "moduleName": "Data Analyst Essentials",
   "topicKey": "2.3",
-  "id": 9,
-  "topicTitle": "Common Tasks in a Data Analyst’s Day",
+  "id": 8,
+  "topicTitle": "Types of Data Analytics",
   "mode": "Non-coding",
   "game1Quiz": [
     {
       "id": 1,
-      "question": "What is the main purpose of Common Tasks in a Data Analyst’s Day?",
+      "question": "What are the four primary types of data analytics?",
       "options": [
         {
           "key": "A",
-          "text": "To replace all human decisions"
+          "text": "Hardware, Software, Network, Cloud"
         },
         {
           "key": "B",
-          "text": "To perform or understand Common Tasks in a Data Analyst’s Day"
+          "text": "Descriptive, Diagnostic, Predictive, Prescriptive"
         },
         {
           "key": "C",
-          "text": "To make every result correct automatically"
+          "text": "Addition, Subtraction, Multiplication, Division"
         },
         {
           "key": "D",
-          "text": "To skip understanding the problem"
+          "text": "Input, Output, Process, Storage"
         }
       ],
       "correct": 1,
-      "explanation": "The primary objective of learning Common Tasks in a Data Analyst’s Day is to perform and understand its principles within business analytics.",
-      "hint": "Think about what Common Tasks in a Data Analyst’s Day accomplishes in data analytics."
+      "explanation": "Data analytics is categorized into four fundamental types: Descriptive (what happened), Diagnostic (why it happened), Predictive (what will happen), and Prescriptive (what to do).",
+      "hint": "Think of the 4 D's/P's of analytics from historical summary to actionable recommendation."
     },
     {
       "id": 2,
-      "question": "Which action best fits a lesson on Common Tasks in a Data Analyst’s Day?",
+      "question": "Which type of analytics answers the question: 'What happened in the past?'",
       "options": [
         {
           "key": "A",
-          "text": "Use an unrelated advanced topic"
+          "text": "Descriptive Analytics"
         },
         {
           "key": "B",
-          "text": "Ignore the task requirements"
+          "text": "Diagnostic Analytics"
         },
         {
           "key": "C",
-          "text": "Assume every result is correct"
+          "text": "Predictive Analytics"
         },
         {
           "key": "D",
-          "text": "Apply Common Tasks in a Data Analyst’s Day to a relevant example"
-        }
-      ],
-      "correct": 3,
-      "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Common Tasks in a Data Analyst’s Day.",
-      "hint": "Best learning practice always involves practical application to relevant examples."
-    },
-    {
-      "id": 3,
-      "question": "What should you do before applying Common Tasks in a Data Analyst’s Day?",
-      "options": [
-        {
-          "key": "A",
-          "text": "Guess without reading"
-        },
-        {
-          "key": "B",
-          "text": "Skip checking the result"
-        },
-        {
-          "key": "C",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "D",
-          "text": "Use an unintroduced feature"
-        }
-      ],
-      "correct": 2,
-      "explanation": "Before proceeding with Common Tasks in a Data Analyst’s Day, you must clearly understand the task objectives and the data available.",
-      "hint": "Always comprehend requirements and inputs before taking action."
-    },
-    {
-      "id": 4,
-      "question": "Which is a good practice when learning Common Tasks in a Data Analyst’s Day?",
-      "options": [
-        {
-          "key": "A",
-          "text": "Check whether the result meets the task"
-        },
-        {
-          "key": "B",
-          "text": "Ignore errors"
-        },
-        {
-          "key": "C",
-          "text": "Use unrelated concepts"
-        },
-        {
-          "key": "D",
-          "text": "Never explain your choice"
+          "text": "Prescriptive Analytics"
         }
       ],
       "correct": 0,
-      "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
-      "hint": "Verify results to ensure accuracy."
+      "explanation": "Descriptive analytics summarizes historical data to understand past trends and current performance.",
+      "hint": "It describes past historical performance (e.g. monthly sales report)."
     },
     {
-      "id": 5,
-      "question": "How can you show understanding of Common Tasks in a Data Analyst’s Day?",
+      "id": 3,
+      "question": "A business investigates why app uninstalls suddenly doubled last week. Which analytics type is this?",
       "options": [
         {
           "key": "A",
-          "text": "Memorize an unrelated definition"
+          "text": "Prescriptive Analytics"
         },
         {
           "key": "B",
-          "text": "Explain or demonstrate it with a relevant example"
+          "text": "Predictive Analytics"
         },
         {
           "key": "C",
-          "text": "Skip the example"
+          "text": "Diagnostic Analytics"
         },
         {
           "key": "D",
-          "text": "Use a future lesson's concept"
+          "text": "Random Guesswork"
+        }
+      ],
+      "correct": 2,
+      "explanation": "Diagnostic analytics digs into the root cause of an event to uncover why it occurred.",
+      "hint": "Like a doctor diagnosing the cause of symptoms."
+    },
+    {
+      "id": 4,
+      "question": "Forecasting Diwali festival sales using historical seasonal models is an example of:",
+      "options": [
+        {
+          "key": "A",
+          "text": "Predictive Analytics"
+        },
+        {
+          "key": "B",
+          "text": "Data Cleaning"
+        },
+        {
+          "key": "C",
+          "text": "Diagnostic Analytics"
+        },
+        {
+          "key": "D",
+          "text": "Hardware Audit"
+        }
+      ],
+      "correct": 0,
+      "explanation": "Predictive analytics uses historical trends, statistics, and machine learning to forecast future outcomes.",
+      "hint": "Predicting what is likely to happen in the future."
+    },
+    {
+      "id": 5,
+      "question": "Which type of analytics recommends specific actions and strategies to achieve a desired outcome?",
+      "options": [
+        {
+          "key": "A",
+          "text": "Descriptive Analytics"
+        },
+        {
+          "key": "B",
+          "text": "Prescriptive Analytics"
+        },
+        {
+          "key": "C",
+          "text": "Static Logging"
+        },
+        {
+          "key": "D",
+          "text": "Diagnostic Analytics"
         }
       ],
       "correct": 1,
-      "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Common Tasks in a Data Analyst’s Day.",
-      "hint": "Clear explanation and working examples prove mastery."
+      "explanation": "Prescriptive analytics prescribes the best course of action to optimize business results.",
+      "hint": "Like a prescription recommending what action to take."
     }
   ],
   "game2Puzzles": [
@@ -2003,136 +2003,136 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "tabId": 1,
   "tabName": "Data Analytics Foundations",
   "moduleId": 2,
-  "moduleName": "Data Analyst Career and Workflow",
+  "moduleName": "Data Analyst Essentials",
   "topicKey": "2.4",
-  "id": 10,
-  "topicTitle": "Analytics Lifecycle: From Question to Action",
+  "id": 9,
+  "topicTitle": "Understanding Data Types, Sources and Quality",
   "mode": "Non-coding",
   "game1Quiz": [
     {
       "id": 1,
-      "question": "What is the main purpose of Analytics Lifecycle: From Question to Action?",
+      "question": "Which of the following is an example of structured data?",
       "options": [
         {
           "key": "A",
-          "text": "To perform or understand Analytics Lifecycle: From Question to Action"
+          "text": "Relational SQL database table with defined schema"
         },
         {
           "key": "B",
-          "text": "To replace all human decisions"
+          "text": "Recorded customer call audio"
         },
         {
           "key": "C",
-          "text": "To make every result correct automatically"
+          "text": "Social media video post"
         },
         {
           "key": "D",
-          "text": "To skip understanding the problem"
+          "text": "Handwritten doctor notes"
         }
       ],
       "correct": 0,
-      "explanation": "The primary objective of learning Analytics Lifecycle: From Question to Action is to perform and understand its principles within business analytics.",
-      "hint": "Think about what Analytics Lifecycle: From Question to Action accomplishes in data analytics."
+      "explanation": "Structured data conforms to a tabular format with clearly defined rows, columns, and data types, such as in a SQL database or Excel table.",
+      "hint": "Look for tabular data stored in organized rows and columns."
     },
     {
       "id": 2,
-      "question": "Which action best fits a lesson on Analytics Lifecycle: From Question to Action?",
+      "question": "What are common enterprise data sources for data analysts?",
       "options": [
         {
           "key": "A",
-          "text": "Use an unrelated advanced topic"
+          "text": "CSV files, SQL databases, API JSON feeds, and Excel workbooks"
         },
         {
           "key": "B",
-          "text": "Ignore the task requirements"
+          "text": "Only handwritten diaries"
         },
         {
           "key": "C",
-          "text": "Apply Analytics Lifecycle: From Question to Action to a relevant example"
+          "text": "Keyboard hardware circuits"
         },
         {
           "key": "D",
-          "text": "Assume every result is correct"
-        }
-      ],
-      "correct": 2,
-      "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Analytics Lifecycle: From Question to Action.",
-      "hint": "Best learning practice always involves practical application to relevant examples."
-    },
-    {
-      "id": 3,
-      "question": "What should you do before applying Analytics Lifecycle: From Question to Action?",
-      "options": [
-        {
-          "key": "A",
-          "text": "Guess without reading"
-        },
-        {
-          "key": "B",
-          "text": "Understand the task and available information"
-        },
-        {
-          "key": "C",
-          "text": "Skip checking the result"
-        },
-        {
-          "key": "D",
-          "text": "Use an unintroduced feature"
-        }
-      ],
-      "correct": 1,
-      "explanation": "Before proceeding with Analytics Lifecycle: From Question to Action, you must clearly understand the task objectives and the data available.",
-      "hint": "Always comprehend requirements and inputs before taking action."
-    },
-    {
-      "id": 4,
-      "question": "Which is a good practice when learning Analytics Lifecycle: From Question to Action?",
-      "options": [
-        {
-          "key": "A",
-          "text": "Ignore errors"
-        },
-        {
-          "key": "B",
-          "text": "Use unrelated concepts"
-        },
-        {
-          "key": "C",
-          "text": "Never explain your choice"
-        },
-        {
-          "key": "D",
-          "text": "Check whether the result meets the task"
-        }
-      ],
-      "correct": 3,
-      "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
-      "hint": "Verify results to ensure accuracy."
-    },
-    {
-      "id": 5,
-      "question": "How can you show understanding of Analytics Lifecycle: From Question to Action?",
-      "options": [
-        {
-          "key": "A",
-          "text": "Explain or demonstrate it with a relevant example"
-        },
-        {
-          "key": "B",
-          "text": "Memorize an unrelated definition"
-        },
-        {
-          "key": "C",
-          "text": "Skip the example"
-        },
-        {
-          "key": "D",
-          "text": "Use a future lesson's concept"
+          "text": "Monitor display cables"
         }
       ],
       "correct": 0,
-      "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Analytics Lifecycle: From Question to Action.",
-      "hint": "Clear explanation and working examples prove mastery."
+      "explanation": "Data analysts regularly extract and ingest data from tabular files (CSV, XLSX), transactional databases (PostgreSQL, MySQL), and cloud APIs (JSON).",
+      "hint": "Files, databases, and application endpoints are standard data sources."
+    },
+    {
+      "id": 3,
+      "question": "What is meant by Data Accuracy in data quality assessments?",
+      "options": [
+        {
+          "key": "A",
+          "text": "The file size in megabytes"
+        },
+        {
+          "key": "B",
+          "text": "Data correctly represents real-world entities without errors"
+        },
+        {
+          "key": "C",
+          "text": "The number of colors used in the dashboard"
+        },
+        {
+          "key": "D",
+          "text": "The font style of column names"
+        }
+      ],
+      "correct": 1,
+      "explanation": "Accuracy measures whether the recorded values reflect real-world facts truthfully and without corruption.",
+      "hint": "Accuracy means correctness and truthfulness of values."
+    },
+    {
+      "id": 4,
+      "question": "When missing values (nulls) appear in a critical revenue column, an analyst should:",
+      "options": [
+        {
+          "key": "A",
+          "text": "Silently delete all records without logging"
+        },
+        {
+          "key": "B",
+          "text": "Investigate root cause, document, and apply an appropriate imputation or filter strategy"
+        },
+        {
+          "key": "C",
+          "text": "Convert everything to random numbers"
+        },
+        {
+          "key": "D",
+          "text": "Ignore the missing values entirely"
+        }
+      ],
+      "correct": 1,
+      "explanation": "Professional analysts audit missing data patterns, identify systemic source errors, document decisions, and treat missingness transparently.",
+      "hint": "Audit, document, and handle missing data with sound methodology."
+    },
+    {
+      "id": 5,
+      "question": "A customer table contains two identical rows for the same transaction ID. This violates:",
+      "options": [
+        {
+          "key": "A",
+          "text": "Data Uniqueness and Consistency"
+        },
+        {
+          "key": "B",
+          "text": "Screen Brightness"
+        },
+        {
+          "key": "C",
+          "text": "Internet Bandwidth"
+        },
+        {
+          "key": "D",
+          "text": "Operating System Version"
+        }
+      ],
+      "correct": 0,
+      "explanation": "Duplicate records inflate totals and violate data uniqueness and consistency requirements.",
+      "hint": "Duplicate rows break data consistency and unique identification."
     }
   ],
   "game2Puzzles": [
@@ -2268,136 +2268,136 @@ export const TAB1_QUESTION_BANK: Record<string, TopicQuestionBank> = {
   "tabId": 1,
   "tabName": "Data Analytics Foundations",
   "moduleId": 2,
-  "moduleName": "Data Analyst Career and Workflow",
+  "moduleName": "Data Analyst Essentials",
   "topicKey": "2.5",
-  "id": 11,
-  "topicTitle": "Working with Stakeholders",
+  "id": 10,
+  "topicTitle": "Data Analytics Workflow: From Question to Action",
   "mode": "Non-coding",
   "game1Quiz": [
     {
       "id": 1,
-      "question": "What is the main purpose of Working with Stakeholders?",
+      "question": "What is the crucial first step in any professional data analytics workflow?",
       "options": [
         {
           "key": "A",
-          "text": "To replace all human decisions"
+          "text": "Selecting slide themes and presentation animations"
         },
         {
           "key": "B",
-          "text": "To make every result correct automatically"
+          "text": "Understanding the core business problem and formulating clear questions"
         },
         {
           "key": "C",
-          "text": "To skip understanding the problem"
+          "text": "Immediately training an advanced neural network"
         },
         {
           "key": "D",
-          "text": "To perform or understand Working with Stakeholders"
-        }
-      ],
-      "correct": 3,
-      "explanation": "The primary objective of learning Working with Stakeholders is to perform and understand its principles within business analytics.",
-      "hint": "Think about what Working with Stakeholders accomplishes in data analytics."
-    },
-    {
-      "id": 2,
-      "question": "Which action best fits a lesson on Working with Stakeholders?",
-      "options": [
-        {
-          "key": "A",
-          "text": "Use an unrelated advanced topic"
-        },
-        {
-          "key": "B",
-          "text": "Apply Working with Stakeholders to a relevant example"
-        },
-        {
-          "key": "C",
-          "text": "Ignore the task requirements"
-        },
-        {
-          "key": "D",
-          "text": "Assume every result is correct"
+          "text": "Deleting unformatted records without backup"
         }
       ],
       "correct": 1,
-      "explanation": "Practical application to relevant real-world business examples is the cornerstone of understanding Working with Stakeholders.",
-      "hint": "Best learning practice always involves practical application to relevant examples."
+      "explanation": "Every successful analytics project begins by framing the business objective into quantifiable analytical questions.",
+      "hint": "Understanding what business question needs answering is always step #1."
     },
     {
-      "id": 3,
-      "question": "What should you do before applying Working with Stakeholders?",
+      "id": 2,
+      "question": "What is the correct sequence of an end-to-end data analytics workflow?",
       "options": [
         {
           "key": "A",
-          "text": "Understand the task and available information"
+          "text": "Ask Question -> Ingest/Collect -> Clean & Validate -> Analyze -> Communicate Insights -> Drive Action"
         },
         {
           "key": "B",
-          "text": "Guess without reading"
+          "text": "Drive Action -> Clean Data -> Formulate Question -> Collect Data"
         },
         {
           "key": "C",
-          "text": "Skip checking the result"
+          "text": "Visualize Insights -> Guess Business Questions -> Clean Data"
         },
         {
           "key": "D",
-          "text": "Use an unintroduced feature"
+          "text": "Collect Data -> Delete Logs -> Announce Decisions"
         }
       ],
       "correct": 0,
-      "explanation": "Before proceeding with Working with Stakeholders, you must clearly understand the task objectives and the data available.",
-      "hint": "Always comprehend requirements and inputs before taking action."
+      "explanation": "The industry analytics lifecycle progresses from Question -> Data Collection -> Cleaning -> Analysis -> Insight Communication -> Actionable Decision.",
+      "hint": "Logical flow starts from the question and ends with business action."
+    },
+    {
+      "id": 3,
+      "question": "Why is data cleaning considered one of the most vital stages in the workflow?",
+      "options": [
+        {
+          "key": "A",
+          "text": "'Garbage In, Garbage Out' — inaccurate or dirty data produces misleading insights"
+        },
+        {
+          "key": "B",
+          "text": "It artificially increases storage usage"
+        },
+        {
+          "key": "C",
+          "text": "It eliminates the need for asking business questions"
+        },
+        {
+          "key": "D",
+          "text": "It is only required for computer hardware maintenance"
+        }
+      ],
+      "correct": 0,
+      "explanation": "If errors, duplicates, and missing values are not cleaned, downstream calculations and business decisions will be fatally flawed.",
+      "hint": "Dirty data produces bad conclusions (Garbage In, Garbage Out)."
     },
     {
       "id": 4,
-      "question": "Which is a good practice when learning Working with Stakeholders?",
+      "question": "What is the primary role of data visualization and storytelling in the workflow?",
       "options": [
         {
           "key": "A",
-          "text": "Ignore errors"
+          "text": "Translating complex numbers into intuitive, convincing, and actionable executive insights"
         },
         {
           "key": "B",
-          "text": "Use unrelated concepts"
+          "text": "Hiding calculation errors from leadership"
         },
         {
           "key": "C",
-          "text": "Check whether the result meets the task"
+          "text": "Replacing all SQL queries"
         },
         {
           "key": "D",
-          "text": "Never explain your choice"
+          "text": "Delaying decision deadlines"
         }
       ],
-      "correct": 2,
-      "explanation": "Validating outcomes against requirements ensures high data quality and correct conclusions.",
-      "hint": "Verify results to ensure accuracy."
+      "correct": 0,
+      "explanation": "Effective visual storytelling communicates findings clearly to non-technical stakeholders so they can act quickly.",
+      "hint": "Visualizations bridge technical findings with human decision-makers."
     },
     {
       "id": 5,
-      "question": "How can you show understanding of Working with Stakeholders?",
+      "question": "When is a data analytics workflow truly complete?",
       "options": [
         {
           "key": "A",
-          "text": "Memorize an unrelated definition"
+          "text": "When a Python script runs without throwing a syntax error"
         },
         {
           "key": "B",
-          "text": "Skip the example"
+          "text": "When the insights are implemented to drive concrete business impact or strategy"
         },
         {
           "key": "C",
-          "text": "Use a future lesson's concept"
+          "text": "When the CSV file is saved to the Desktop"
         },
         {
           "key": "D",
-          "text": "Explain or demonstrate it with a relevant example"
+          "text": "When the user logs out"
         }
       ],
-      "correct": 3,
-      "explanation": "Demonstrating understanding requires clear explanation and concrete demonstration of Working with Stakeholders.",
-      "hint": "Clear explanation and working examples prove mastery."
+      "correct": 1,
+      "explanation": "The true measure of analytics is impact: when business stakeholders leverage the insights to solve problems or create value.",
+      "hint": "The ultimate destination of analytics is business action."
     }
   ],
   "game2Puzzles": [

@@ -62,7 +62,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
 
   // Modal for wallet adjustment
   const [walletModalUser, setWalletModalUser] = useState<RegisteredUserRecord | null>(null);
-  const [walletAmountDelta, setWalletAmountDelta] = useState<number>(100);
+  const [walletAmountDelta, setWalletAmountDelta] = useState<number>(300);
   const [walletReason, setWalletReason] = useState('Referral reward credit');
   const [isAdjustingWallet, setIsAdjustingWallet] = useState(false);
 
@@ -391,7 +391,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
                             ? 'bg-purple-500/10 border-purple-500/20 text-purple-400'
                             : 'bg-blue-500/10 border-blue-500/20 text-blue-400'
                         }`}>
-                          {user.role === 'influencer' ? 'Creator (₹100)' : 'Student (₹125)'}
+                          {user.role === 'influencer' ? 'Creator (₹300)' : 'Student (₹300)'}
                         </span>
                         <div className="text-[10px] text-slate-400">
                           Code: <strong className="text-slate-200">{user.referralCode}</strong>
@@ -444,7 +444,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
                             type="button"
                             onClick={() => {
                               setWalletModalUser(user);
-                              setWalletAmountDelta(100);
+                              setWalletAmountDelta(300);
                               setWalletReason('Referral reward credit');
                             }}
                             title="Adjust / Credit Wallet"
@@ -710,10 +710,10 @@ export const UserManagement: React.FC<UserManagementProps> = ({ users, suspensio
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => setWalletAmountDelta(100)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold ${walletAmountDelta === 100 ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-300'}`}
+                    onClick={() => setWalletAmountDelta(300)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold ${walletAmountDelta === 300 ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-300'}`}
                   >
-                    +₹100 (Referral)
+                    +₹300 (Referral)
                   </button>
                   <button
                     type="button"

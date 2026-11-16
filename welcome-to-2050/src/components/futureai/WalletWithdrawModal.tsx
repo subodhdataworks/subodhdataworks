@@ -296,7 +296,7 @@ export const WalletWithdrawModal: React.FC<WalletWithdrawModalProps> = ({
                   <strong className="block font-bold">Minimum Balance: ₹{minWithdrawal}</strong>
                   <span>
                     You need at least ₹{minWithdrawal} in your wallet to withdraw. Share your referral link with students and
-                    friends to earn Flat ₹100 per enrollment!
+                    friends to earn Flat ₹300 per enrollment!
                   </span>
                 </div>
               </div>

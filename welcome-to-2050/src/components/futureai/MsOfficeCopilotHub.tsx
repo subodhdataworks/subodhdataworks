@@ -129,7 +129,7 @@ export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#f3f7fd] text-slate-900 font-sans pb-16">
+    <div className="min-h-screen bg-transparent text-slate-900 font-sans pb-16">
       
       {/* =========================================================================
           MAIN CONTAINER: STREAMLINED COMPACT TOP SPACING
@@ -169,12 +169,12 @@ export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
 
       {/* DESKTOP VIEW (>=768px) - 100% UNCHANGED */}
       <div className="course-desktop-only">
-        <main className="max-w-[1520px] mx-auto px-4 sm:px-6 pt-2 sm:pt-3 space-y-3">
+        <main className="w-full pt-0 space-y-3">
 
         {/* =========================================================================
             1. TOP HERO BANNER: LIGHT EXECUTIVE THEME (HIGH-CONTRAST TECH BACKDROP)
             ========================================================================= */}
-        <section className="w-full relative rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm bg-white text-slate-900">
+        <section className="w-full relative rounded-2xl lg:rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm bg-white text-slate-900 md:h-[275px] md:min-h-[275px] md:max-h-[275px]">
           {/* Background Poster Image */}
           <img
             src="/images/msoffice_365_copilot_poster.jpg"
@@ -188,10 +188,10 @@ export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
           <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 md:via-white/80 to-transparent pointer-events-none w-full md:w-[58%] lg:w-[52%]" />
           <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent pointer-events-none md:hidden" />
 
-          <div className="relative z-10 p-4 sm:p-6 lg:p-7 flex flex-col justify-between min-h-[220px] sm:min-h-[240px]">
+          <div className="relative z-10 px-4 py-2.5 sm:px-6 lg:px-7 lg:py-2.5 flex flex-col justify-between h-full">
             
             {/* Left Content Zone */}
-            <div className="max-w-2xl space-y-2.5 min-w-0">
+            <div className="max-w-3xl space-y-1 min-w-0">
               {/* Back Arrow + Eyebrow Pill */}
               <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
                 {onBack && (
@@ -212,7 +212,7 @@ export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
               </div>
 
               {/* Headline */}
-              <h1 className="text-xl min-[375px]:text-2xl sm:text-3xl lg:text-[34px] font-black tracking-tight text-slate-950 leading-tight">
+              <h1 className="text-xl min-[375px]:text-2xl sm:text-2xl lg:text-[28px] font-black tracking-tight text-slate-950 leading-tight">
                 Microsoft 365 with{' '}
                 <span className="bg-gradient-to-r from-blue-600 via-sky-500 to-indigo-600 bg-clip-text text-transparent">
                   Copilot AI
@@ -244,14 +244,14 @@ export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1.5">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-0.5">
                 <button
                   type="button"
                   onClick={() => onStartTopic && onStartTopic('ms-t-1', 'What Is Microsoft 365?')}
                   className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-blue-600 via-sky-500 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-blue-500/25 active:scale-95 transition-all cursor-pointer"
                 >
                   <Play className="w-3.5 h-3.5 fill-white shrink-0" />
-                  <span>Resume Learning</span>
+                  <span>Learning</span>
                 </button>
                 <button
                   type="button"
@@ -276,7 +276,7 @@ export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
             </div>
 
             {/* Bottom Stats Bar inside Hero */}
-            <div className="mt-5 pt-3 border-t border-slate-200/70 bg-white/75 backdrop-blur-sm -mx-4 sm:-mx-6 lg:-mx-7 -mb-4 sm:-mb-6 lg:-mb-7 px-4 sm:px-6 lg:px-7 py-3 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 text-[11px] sm:text-xs font-black text-slate-800 rounded-b-3xl">
+            <div className="mt-1 pt-1.5 border-t border-slate-200/70 bg-white/75 backdrop-blur-sm -mx-4 sm:-mx-6 lg:-mx-7 -mb-2.5 px-4 sm:px-6 lg:px-7 py-1.5 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 text-[11px] sm:text-xs font-black text-slate-800 rounded-b-2xl lg:rounded-b-3xl">
               <div className="flex items-center gap-1.5">
                 <span className="w-6 h-6 rounded-lg bg-sky-50 text-sky-800 border border-sky-200 flex items-center justify-center font-black text-[11px]">26</span>
                 <span>Modules</span>

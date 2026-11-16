@@ -57,8 +57,8 @@ export const SystemSettings: React.FC<SystemSettingsProps> = ({
     setIsSavingConfig(true);
     try {
       await onUpdateSettings({
-        studentReferralCommission: parseInt(studentComm, 10) || 125,
-        influencerReferralCommission: parseInt(influencerComm, 10) || 100,
+        studentReferralCommission: parseInt(studentComm, 10) || 300,
+        influencerReferralCommission: parseInt(influencerComm, 10) || 300,
         minimumWithdrawalAmount: parseInt(minWithdrawal, 10) || 500,
         allowDirectBankPayout: allowBank,
         allowUpiPayout: allowUpi,
@@ -348,7 +348,7 @@ export const SystemSettings: React.FC<SystemSettingsProps> = ({
           <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
             <span className="text-[#64748B] font-bold uppercase text-[10px] block">Commission Structure</span>
             <strong className="text-[#059669] font-black text-sm mt-0.5 block">
-              Free: ₹0 • Paid Course: ₹100
+              Free: ₹0 • Paid Course: ₹300
             </strong>
             <span className="text-[#64748B] font-semibold text-[11px]">
               No Self-Referral • Unique Email Verification

@@ -52,7 +52,7 @@ export const PrivacyPolicyView: React.FC<PrivacyPolicyViewProps> = ({ onBack }) 
     if (onBack) {
       onBack();
     } else if (typeof window !== 'undefined') {
-      window.history.length > 1 ? window.history.back() : (window.location.hash = '#dashboard');
+      window.location.hash = '#home';
     }
   };
 

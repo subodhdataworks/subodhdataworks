@@ -25,6 +25,9 @@ const CANONICAL_COURSE_PRICES_INR = {
   ai_tools_prompt: 499,
   ms_office_copilot: 499,
   full_stack_mern: 987,
+  ai_website_dev: 2999,
+  ai_android_dev: 2499,
+  ai_video_creation: 999,
 };
 
 const corsHeaders = {
@@ -247,7 +250,7 @@ export async function onRequestPost(context) {
             true
           );
 
-          // 3. Referral Commission Crediting (Flat ₹100, Idempotent, Self-Referral Protected)
+          // 3. Referral Commission Crediting (Flat ₹300, Idempotent, Self-Referral Protected)
           if (activeRef) {
             await runFirestoreTransaction(async (tx) => {
               // Deduplication check: prevent multiple credits for the same paymentId
@@ -258,7 +261,7 @@ export async function onRequestPost(context) {
 
               // Get existing affiliate stats for this referral code
               const affiliateDoc = (await tx.get('affiliate_stats', activeRef)) || {};
-              const totalEarned = (Number(affiliateDoc.totalEarned) || 0) + 100;
+              const totalEarned = (Number(affiliateDoc.totalEarned) || 0) + 300;
               const totalPaid = Number(affiliateDoc.totalPaid) || 0;
               const pendingBalance = Number(affiliateDoc.pendingBalance) || 0;
               const availableBalance = Math.max(0, totalEarned - totalPaid - pendingBalance);
@@ -285,7 +288,7 @@ export async function onRequestPost(context) {
                 payerUserId: cleanUserId,
                 payerEmail,
                 courseId: canonicalCourseId,
-                commission: 100,
+                commission: 300,
                 creditedAt: nowIso,
               });
 
@@ -296,7 +299,7 @@ export async function onRequestPost(context) {
                 paymentId: razorpay_payment_id,
                 userId: activeRef,
                 type: 'COMMISSION_CREDITED',
-                amount: 100,
+                amount: 300,
                 balanceBefore: Number(affiliateDoc.availableBalance) || 0,
                 balanceAfter: availableBalance,
                 status: 'Credited',

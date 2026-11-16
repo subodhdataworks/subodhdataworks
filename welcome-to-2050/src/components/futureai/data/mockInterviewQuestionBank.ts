@@ -108,17 +108,17 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
     topic: 'Technical',
     difficulty: 'Easy',
     questionEn: 'What is programming and can you give one real-life example?',
-    questionHi: 'प्रोग्रामिंग क्या है और क्या आप इसका एक वास्तविक जीवन (Real-life) का उदाहरण दे सकते हैं?',
+    questionHi: 'Programming क्या है और क्या आप इसका एक वास्तविक जीवन (Real-life) का उदाहरण दे सकते हैं?',
     hintEn: 'Keep your answer structured with a clear explanation and a practical example.',
     hintHi: 'अपने उत्तर को स्पष्ट परिभाषा और एक व्यावहारिक उदाहरण के साथ संरचित रखें।',
     idealAnswerEn:
       'Programming is the process of writing clear, step-by-step instructions for a computer to perform a specific task or solve a problem. For example, mobile apps like WhatsApp, ATM machines, or traffic signal timers run on programs written by developers.',
     idealAnswerHi:
-      'प्रोग्रामिंग कंप्यूटर को किसी विशिष्ट कार्य को पूरा करने या समस्या को हल करने के लिए स्पष्ट और क्रमबद्ध निर्देश (Instructions) देने की प्रक्रिया है। उदाहरण के लिए, WhatsApp जैसा मोबाइल ऐप, ATM मशीन या ट्रैफिक सिग्नल प्रोग्रामिंग के निर्देशों पर काम करते हैं।',
+      'Programming Computer को किसी विशिष्ट कार्य को पूरा करने या समस्या को हल करने के लिए स्पष्ट और क्रमबद्ध निर्देश (Instructions) देने की प्रक्रिया है। उदाहरण के लिए, WhatsApp जैसा मोबाइल ऐप, ATM मशीन या ट्रैफिक सिग्नल Programming के निर्देशों पर काम करते हैं।',
     exampleAnswerEn:
       'Programming is a way to give instructions to a computer to perform a specific task. For example, when we use a mobile app like WhatsApp, it is made using programming.',
     exampleAnswerHi:
-      'प्रोग्रामिंग कंप्यूटर को कोई काम करने के लिए निर्देश देने का तरीका है। उदाहरण के लिए, जब हम WhatsApp या ATM का उपयोग करते हैं, तो वह प्रोग्रामिंग से बना होता है।',
+      'Programming Computer को कोई काम करने के लिए निर्देश देने का तरीका है। उदाहरण के लिए, जब हम WhatsApp या ATM का उपयोग करते हैं, तो वह Programming से बना होता है।',
     requiredKeywords: [
       {
         id: 'kw_instructions',
@@ -139,14 +139,14 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
           'कमांड',
           'स्टेप्स',
           'नियम',
-          'कोड',
+          'Code',
           'nirdesh',
         ],
       },
       {
         id: 'kw_computer',
         labelEn: 'Computer / Machine',
-        labelHi: 'कंप्यूटर / मशीन',
+        labelHi: 'Computer / मशीन',
         weight: 1.5,
         synonyms: [
           'computer',
@@ -155,11 +155,11 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
           'system',
           'device',
           'software',
-          'कंप्यूटर',
+          'Computer',
           'कम्प्यूटर',
           'मशीन',
           'सिस्टम',
-          'सॉफ्टवेयर',
+          'Software',
         ],
       },
       {
@@ -183,7 +183,7 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
           'समस्या',
           'हल',
           'समाधान',
-          'टास्क',
+          'Task',
         ],
       },
       {
@@ -210,7 +210,7 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
           'ऐप',
           'मोबाइल',
           'एटीएम',
-          'वेबसाइट',
+          'Website',
           'कैलकुलेटर',
         ],
       },
@@ -219,7 +219,7 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
       {
         id: 'cp_give_instructions',
         conceptEn: 'Explained that programming gives instructions to a computer',
-        conceptHi: 'स्पष्ट किया कि प्रोग्रामिंग कंप्यूटर को निर्देश देने की प्रक्रिया है',
+        conceptHi: 'स्पष्ट किया कि Programming Computer को निर्देश देने की प्रक्रिया है',
         weight: 2.0,
         patterns: [
           'instructions to a computer',
@@ -229,17 +229,17 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
           'computer instructions',
           'write code',
           'writing code',
-          'कंप्यूटर को निर्देश',
+          'Computer को निर्देश',
           'निर्देश देना',
           'निर्देश देने',
-          'कंप्यूटर को काम',
-          'कोड लिखना',
+          'Computer को काम',
+          'Code लिखना',
         ],
       },
       {
         id: 'cp_real_example',
         conceptEn: 'Provided a concrete real-life application or analogy',
-        conceptHi: 'एक वास्तविक जीवन का उदाहरण (जैसे ऐप, वेबसाइट या मशीन) दिया',
+        conceptHi: 'एक वास्तविक जीवन का उदाहरण (जैसे ऐप, Website या मशीन) दिया',
         weight: 1.5,
         patterns: [
           'for example',
@@ -255,7 +255,7 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
           'जैसे',
           'मोबाइल ऐप',
           'व्हाट्सएप',
-          'वेबसाइट',
+          'Website',
         ],
       },
     ],
@@ -263,10 +263,10 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
       {
         id: 'mk_hardware',
         mistakeEn: 'Confused programming with physical hardware repair',
-        mistakeHi: 'प्रोग्रामिंग को हार्डवेयर की मरम्मत से जोड़ दिया',
+        mistakeHi: 'Programming को Hardware की मरम्मत से जोड़ दिया',
         correctionEn: 'Programming creates software instructions, not physical hardware repairs.',
-        correctionHi: 'प्रोग्रामिंग सॉफ्टवेयर निर्देश लिखने के लिए है, हार्डवेयर रिपेयर करने के लिए नहीं।',
-        triggerPatterns: ['repair hardware', 'repairing hardware', 'fixing wires', 'हार्डवेयर की मरम्मत'],
+        correctionHi: 'Programming Software निर्देश लिखने के लिए है, Hardware रिपेयर करने के लिए नहीं।',
+        triggerPatterns: ['repair hardware', 'repairing hardware', 'fixing wires', 'Hardware की मरम्मत'],
         penalty: 2.0,
       },
       {
@@ -287,17 +287,17 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
     topic: 'Algorithms',
     difficulty: 'Easy',
     questionEn: 'What is an algorithm, and how is it different from a computer program?',
-    questionHi: 'एल्गोरिदम (Algorithm) क्या है, और यह कंप्यूटर प्रोग्राम से कैसे अलग है?',
+    questionHi: 'Algorithm (Algorithm) क्या है, और यह Computer Program से कैसे अलग है?',
     hintEn: 'Define an algorithm as step-by-step logic, and a program as its implementation in a coding language.',
-    hintHi: 'एल्गोरिदम को चरणबद्ध तर्क (Step-by-step logic) और प्रोग्राम को किसी कोडिंग भाषा में लिखे कोड के रूप में समझाएं।',
+    hintHi: 'Algorithm को चरणबद्ध तर्क (Step-by-step logic) और Program को किसी Coding भाषा में लिखे Code के रूप में समझाएं।',
     idealAnswerEn:
       'An algorithm is a finite, ordered sequence of logical steps designed to solve a problem, independent of any programming language. A program is the actual implementation of that algorithm written in a specific language like Python so a computer can execute it.',
     idealAnswerHi:
-      'एल्गोरिदम किसी समस्या को हल करने के लिए निश्चित और क्रमबद्ध चरणों (Step-by-step logic) की योजना है, जो किसी प्रोग्रामिंग भाषा पर निर्भर नहीं करती। जबकि प्रोग्राम उस एल्गोरिदम को Python जैसी भाषा में लिखा गया वास्तविक कोड है जिसे कंप्यूटर चला सकता है।',
+      'Algorithm किसी समस्या को हल करने के लिए निश्चित और क्रमबद्ध चरणों (Step-by-step logic) की योजना है, जो किसी Programming भाषा पर निर्भर नहीं करती। जबकि Program उस Algorithm को Python जैसी भाषा में लिखा गया वास्तविक Code है जिसे Computer चला सकता है।',
     exampleAnswerEn:
       'An algorithm is the step-by-step logical plan to solve a problem, like a cooking recipe. A program is when we write those steps in a programming language like Python for the computer to run.',
     exampleAnswerHi:
-      'एल्गोरिदम किसी समस्या को हल करने का स्टेप-बाय-स्टेप लॉजिक या प्लान है। जब हम उन्हीं स्टेप्स को Python जैसी भाषा में लिखते हैं तो उसे प्रोग्राम कहते हैं।',
+      'Algorithm किसी समस्या को हल करने का स्टेप-बाय-स्टेप लॉजिक या प्लान है। जब हम उन्हीं स्टेप्स को Python जैसी भाषा में लिखते हैं तो उसे Program कहते हैं।',
     requiredKeywords: [
       {
         id: 'kw_steps',
@@ -316,34 +316,34 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
       {
         id: 'kw_language',
         labelEn: 'Programming Language / Code (Python, C++, etc.)',
-        labelHi: 'प्रोग्रामिंग भाषा / कोड (Python आदि)',
+        labelHi: 'Programming भाषा / Code (Python आदि)',
         weight: 1.5,
-        synonyms: ['language', 'code', 'python', 'syntax', 'implementation', 'execute', 'भाषा', 'कोड', 'पायथन', 'इंप्लीमेंट'],
+        synonyms: ['language', 'code', 'python', 'syntax', 'implementation', 'execute', 'भाषा', 'Code', 'Python', 'इंप्लीमेंट'],
       },
     ],
     importantConcepts: [
       {
         id: 'cp_algo_plan',
         conceptEn: 'Defined algorithm as logical steps or blueprint to solve a problem',
-        conceptHi: 'एल्गोरिदम को समस्या सुलझाने के चरणबद्ध प्लान के रूप में परिभाषित किया',
+        conceptHi: 'Algorithm को समस्या सुलझाने के चरणबद्ध प्लान के रूप में परिभाषित किया',
         weight: 2.0,
         patterns: ['step by step', 'ordered steps', 'sequence of steps', 'logical steps', 'solve a problem', 'क्रमबद्ध चरण', 'स्टेप बाय स्टेप', 'समस्या को हल'],
       },
       {
         id: 'cp_prog_impl',
         conceptEn: 'Distinguished a program as code written in a specific language',
-        conceptHi: 'प्रोग्राम को किसी कोडिंग भाषा में लिखे गए कोड के रूप में अलग बताया',
+        conceptHi: 'Program को किसी Coding भाषा में लिखे गए Code के रूप में अलग बताया',
         weight: 1.5,
-        patterns: ['programming language', 'written in', 'implementation', 'execute', 'python', 'कोड', 'भाषा में लिखा', 'कंप्यूटर चला'],
+        patterns: ['programming language', 'written in', 'implementation', 'execute', 'python', 'Code', 'भाषा में लिखा', 'Computer चला'],
       },
     ],
     commonMistakes: [
       {
         id: 'mk_same_thing',
         mistakeEn: 'Stated that an algorithm and a program are the exact same thing',
-        mistakeHi: 'एल्गोरिदम और प्रोग्राम को बिल्कुल एक ही चीज़ बता दिया',
+        mistakeHi: 'Algorithm और Program को बिल्कुल एक ही चीज़ बता दिया',
         correctionEn: 'An algorithm is the language-independent logical plan; a program is the code written in a specific language.',
-        correctionHi: 'एल्गोरिदम भाषा से स्वतंत्र लॉजिक है, जबकि प्रोग्राम किसी विशेष भाषा में लिखा गया कोड है।',
+        correctionHi: 'Algorithm भाषा से स्वतंत्र लॉजिक है, जबकि Program किसी विशेष भाषा में लिखा गया Code है।',
         triggerPatterns: ['both are same', 'exactly the same', 'no difference', 'दोनों एक ही हैं', 'कोई अंतर नहीं'],
         penalty: 1.5,
       },
@@ -356,17 +356,17 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
     topic: 'Python Basics',
     difficulty: 'Easy',
     questionEn: 'What is Python and why is it so popular in Data Analytics and AI?',
-    questionHi: 'Python क्या है और यह डेटा एनालिटिक्स (Data Analytics) तथा AI में इतना लोकप्रिय क्यों है?',
+    questionHi: 'Python क्या है और यह Data Analytics (Data Analytics) तथा AI में इतना लोकप्रिय क्यों है?',
     hintEn: 'Mention that Python is a high-level, interpreted language with simple syntax and rich libraries like Pandas and NumPy.',
-    hintHi: 'बताएं कि Python एक हाई-लेवल, इंटरप्रेटेड भाषा है जिसका सिंटैक्स सरल है और इसमें Pandas, NumPy जैसी लाइब्रेरीज़ हैं।',
+    hintHi: 'बताएं कि Python एक हाई-लेवल, इंटरप्रेटेड भाषा है जिसका Syntax सरल है और इसमें Pandas, NumPy जैसी Libraries हैं।',
     idealAnswerEn:
       'Python is a high-level, interpreted programming language known for its simple, readable English-like syntax. It is widely used in Data Analytics, AI, and Machine Learning because of its massive ecosystem of libraries such as Pandas, NumPy, Matplotlib, and Scikit-learn.',
     idealAnswerHi:
-      'Python एक हाई-लेवल और इंटरप्रेटेड प्रोग्रामिंग भाषा है जो अपने सरल और पढ़ने में आसान सिंटैक्स के लिए जानी जाती है। यह Data Analytics और AI में बहुत लोकप्रिय है क्योंकि इसमें Pandas, NumPy, और Scikit-learn जैसी शक्तिशाली लाइब्रेरीज़ और बड़ा कम्युनिटी सपोर्ट उपलब्ध है।',
+      'Python एक हाई-लेवल और इंटरप्रेटेड Programming भाषा है जो अपने सरल और पढ़ने में आसान Syntax के लिए जानी जाती है। यह Data Analytics और AI में बहुत लोकप्रिय है क्योंकि इसमें Pandas, NumPy, और Scikit-learn जैसी शक्तिशाली Libraries और बड़ा कम्युनिटी सपोर्ट उपलब्ध है।',
     exampleAnswerEn:
       'Python is a high-level, interpreted programming language with easy-to-read syntax. It is popular in Data Analytics and AI because it has powerful libraries like Pandas, NumPy, and TensorFlow.',
     exampleAnswerHi:
-      'Python एक हाई-लेवल इंटरप्रेटेड प्रोग्रामिंग भाषा है जिसे सीखना और पढ़ना बहुत आसान है। डेटा एनालिटिक्स और AI में इसके लोकप्रिय होने का मुख्य कारण Pandas और NumPy जैसी लाइब्रेरीज़ हैं।',
+      'Python एक हाई-लेवल इंटरप्रेटेड Programming भाषा है जिसे सीखना और पढ़ना बहुत आसान है। Data Analytics और AI में इसके लोकप्रिय होने का मुख्य कारण Pandas और NumPy जैसी Libraries हैं।',
     requiredKeywords: [
       {
         id: 'kw_highlevel',
@@ -378,32 +378,32 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
       {
         id: 'kw_simple',
         labelEn: 'Simple & Readable Syntax',
-        labelHi: 'सरल और पठनीय सिंटैक्स',
+        labelHi: 'सरल और पठनीय Syntax',
         weight: 1.5,
-        synonyms: ['simple', 'easy', 'readable', 'clean', 'syntax', 'beginner', 'सरल', 'आसान', 'सिंटैक्स'],
+        synonyms: ['simple', 'easy', 'readable', 'clean', 'syntax', 'beginner', 'सरल', 'आसान', 'Syntax'],
       },
       {
         id: 'kw_libraries',
         labelEn: 'Libraries (Pandas, NumPy, AI/ML)',
-        labelHi: 'लाइब्रेरीज़ (Pandas, NumPy, AI/ML)',
+        labelHi: 'Libraries (Pandas, NumPy, AI/ML)',
         weight: 2.0,
-        synonyms: ['library', 'libraries', 'pandas', 'numpy', 'matplotlib', 'scikit', 'tensorflow', 'ecosystem', 'लाइब्रेरी', 'पंडास', 'नमपाई'],
+        synonyms: ['library', 'libraries', 'pandas', 'numpy', 'matplotlib', 'scikit', 'tensorflow', 'ecosystem', 'Library', 'पंडास', 'नमपाई'],
       },
     ],
     importantConcepts: [
       {
         id: 'cp_readability',
         conceptEn: 'Highlighted Python’s easy-to-read syntax and high-level nature',
-        conceptHi: 'Python के सरल सिंटैक्स और हाई-लेवल प्रकृति का उल्लेख किया',
+        conceptHi: 'Python के सरल Syntax और हाई-लेवल प्रकृति का उल्लेख किया',
         weight: 2.0,
-        patterns: ['easy to read', 'easy to learn', 'simple syntax', 'high level', 'interpreted', 'सीखना आसान', 'सरल सिंटैक्स', 'हाई लेवल'],
+        patterns: ['easy to read', 'easy to learn', 'simple syntax', 'high level', 'interpreted', 'सीखना आसान', 'सरल Syntax', 'हाई लेवल'],
       },
       {
         id: 'cp_data_ecosystem',
         conceptEn: 'Connected popularity in Data/AI to rich libraries and community ecosystem',
-        conceptHi: 'डेटा और AI में लोकप्रियता को लाइब्रेरीज़ (Pandas/NumPy) से जोड़ा',
+        conceptHi: 'Data और AI में लोकप्रियता को Libraries (Pandas/NumPy) से जोड़ा',
         weight: 1.5,
-        patterns: ['libraries', 'pandas', 'numpy', 'data analysis', 'machine learning', 'community', 'लाइब्रेरी', 'डेटा एनालिसिस'],
+        patterns: ['libraries', 'pandas', 'numpy', 'data analysis', 'machine learning', 'community', 'Library', 'Data Analysis'],
       },
     ],
     commonMistakes: [],
@@ -415,17 +415,17 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
     topic: 'Execution',
     difficulty: 'Easy',
     questionEn: 'Why must computer instructions be clear and unambiguous?',
-    questionHi: 'कंप्यूटर को दिए जाने वाले निर्देश स्पष्ट और बिना किसी भ्रम (Unambiguous) के क्यों होने चाहिए?',
+    questionHi: 'Computer को दिए जाने वाले निर्देश स्पष्ट और बिना किसी भ्रम (Unambiguous) के क्यों होने चाहिए?',
     hintEn: 'Explain that computers follow instructions literally and cannot guess human intent if steps are vague.',
-    hintHi: 'समझाएं कि कंप्यूटर निर्देशों का अक्षरशः पालन करते हैं और अपने आप मानव का इरादा अंदाज़ा नहीं लगा सकते।',
+    hintHi: 'समझाएं कि Computer निर्देशों का अक्षरशः पालन करते हैं और अपने आप मानव का इरादा अंदाज़ा नहीं लगा सकते।',
     idealAnswerEn:
       'Computer instructions must be clear and unambiguous because computers execute commands literally and cannot guess missing context or human intent. Vague or ambiguous instructions lead to bugs, unexpected output, or runtime errors.',
     idealAnswerHi:
-      'कंप्यूटर के निर्देश स्पष्ट होने चाहिए क्योंकि कंप्यूटर के पास अपनी समझ नहीं होती और वह छूटे हुए निर्देशों का अंदाज़ा (Guess) नहीं लगा सकता। अस्पष्ट निर्देशों से प्रोग्राम में बग्स (Bugs) या गलत आउटपुट आ सकता है।',
+      'Computer के निर्देश स्पष्ट होने चाहिए क्योंकि Computer के पास अपनी समझ नहीं होती और वह छूटे हुए निर्देशों का अंदाज़ा (Guess) नहीं लगा सकता। अस्पष्ट निर्देशों से Program में बग्स (Bugs) या गलत Output आ सकता है।',
     exampleAnswerEn:
       'Computers follow instructions literally and cannot guess what we mean. If instructions are vague or ambiguous, the program will produce errors or wrong results.',
     exampleAnswerHi:
-      'कंप्यूटर दिए गए निर्देशों का बिल्कुल वैसा ही पालन करते हैं और खुद अंदाज़ा नहीं लगा सकते। यदि निर्देश अस्पष्ट होंगे तो एरर या गलत परिणाम मिलेगा।',
+      'Computer दिए गए निर्देशों का बिल्कुल वैसा ही पालन करते हैं और खुद अंदाज़ा नहीं लगा सकते। यदि निर्देश अस्पष्ट होंगे तो Error या गलत परिणाम मिलेगा।',
     requiredKeywords: [
       {
         id: 'kw_literal',
@@ -437,16 +437,16 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
       {
         id: 'kw_error',
         labelEn: 'Prevents Errors / Bugs / Wrong Output',
-        labelHi: 'एरर / बग्स और गलत आउटपुट से बचाव',
+        labelHi: 'Error / बग्स और गलत Output से बचाव',
         weight: 2.5,
-        synonyms: ['error', 'errors', 'bug', 'bugs', 'wrong', 'fail', 'crash', 'mistake', 'एरर', 'गलत', 'बग', 'त्रुटि'],
+        synonyms: ['error', 'errors', 'bug', 'bugs', 'wrong', 'fail', 'crash', 'mistake', 'Error', 'गलत', 'बग', 'Error'],
       },
     ],
     importantConcepts: [
       {
         id: 'cp_no_guessing',
         conceptEn: 'Explained that computers execute literally without guessing intent',
-        conceptHi: 'बताया कि कंप्यूटर बिना अंदाज़ा लगाए निर्देशों का सटीक पालन करते हैं',
+        conceptHi: 'बताया कि Computer बिना अंदाज़ा लगाए निर्देशों का सटीक पालन करते हैं',
         weight: 2.0,
         patterns: ['cannot guess', 'literally', 'exact instructions', 'do not think', 'अंदाज़ा नहीं', 'केवल दिए गए निर्देश'],
       },
@@ -455,7 +455,7 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
         conceptEn: 'Noted that ambiguity causes bugs or incorrect results',
         conceptHi: 'स्पष्ट किया कि अस्पष्टता से बग्स या गलत परिणाम आते हैं',
         weight: 1.5,
-        patterns: ['error', 'bug', 'wrong output', 'unexpected', 'एरर', 'गलत परिणाम', 'गलतियाँ'],
+        patterns: ['error', 'bug', 'wrong output', 'unexpected', 'Error', 'गलत परिणाम', 'गलतियाँ'],
       },
     ],
     commonMistakes: [],
@@ -467,47 +467,47 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
     topic: 'Architecture',
     difficulty: 'Easy',
     questionEn: 'What are Input, Process, and Output (IPO) in a computer program? Give an example.',
-    questionHi: 'कंप्यूटर प्रोग्राम में इनपुट, प्रोसेस और आउटपुट (IPO) क्या होते हैं? एक उदाहरण दीजिए।',
+    questionHi: 'Computer Program में Input, प्रोसेस और Output (IPO) क्या होते हैं? एक उदाहरण दीजिए।',
     hintEn: 'Describe Input as raw data entered, Process as calculation/logic, and Output as the final result displayed.',
-    hintHi: 'इनपुट को दिया गया डेटा, प्रोसेस को गणना/लॉजिक और आउटपुट को अंतिम परिणाम के रूप में उदाहरण सहित बताएं।',
+    hintHi: 'Input को दिया गया Data, प्रोसेस को Calculation/लॉजिक और Output को अंतिम परिणाम के रूप में उदाहरण सहित बताएं।',
     idealAnswerEn:
       'In the IPO cycle, Input is the data given to the program, Process is the computation or logic performed on that data, and Output is the final result returned to the user. For example, in a calculator: entering 10 and 20 is Input, adding them (10 + 20) is Process, and displaying 30 on screen is Output.',
     idealAnswerHi:
-      'IPO साइकिल में, इनपुट वह डेटा है जो यूज़र प्रोग्राम को देता है, प्रोसेस उस डेटा पर की जाने वाली गणना है, और आउटपुट स्क्रीन पर मिलने वाला अंतिम परिणाम है। उदाहरण के लिए कैलकुलेटर में 10 और 20 डालना इनपुट है, उन्हें जोड़ना प्रोसेस है, और 30 दिखना आउटपुट है।',
+      'IPO साइकिल में, Input वह Data है जो यूज़र Program को देता है, प्रोसेस उस Data पर की जाने वाली Calculation है, और Output स्क्रीन पर मिलने वाला अंतिम परिणाम है। उदाहरण के लिए कैलकुलेटर में 10 और 20 डालना Input है, उन्हें जोड़ना प्रोसेस है, और 30 दिखना Output है।',
     exampleAnswerEn:
       'Input is the data we give to the computer, Process is the calculation done on it, and Output is the final result. For example, typing two numbers in a calculator is input, adding them is process, and showing the sum is output.',
     exampleAnswerHi:
-      'इनपुट वह डेटा है जो हम कंप्यूटर को देते हैं, प्रोसेस उस पर होने वाली गणना है, और आउटपुट अंतिम परिणाम है। जैसे कैलकुलेटर में दो नंबर देना इनपुट, जोड़ना प्रोसेस और उत्तर दिखना आउटपुट है।',
+      'Input वह Data है जो हम Computer को देते हैं, प्रोसेस उस पर होने वाली Calculation है, और Output अंतिम परिणाम है। जैसे कैलकुलेटर में दो नंबर देना Input, जोड़ना प्रोसेस और उत्तर दिखना Output है।',
     requiredKeywords: [
       {
         id: 'kw_input',
         labelEn: 'Input (Data Entered)',
-        labelHi: 'इनपुट (दिया गया डेटा)',
+        labelHi: 'Input (दिया गया Data)',
         weight: 1.5,
-        synonyms: ['input', 'data', 'enter', 'user', 'इनपुट', 'डेटा'],
+        synonyms: ['input', 'data', 'enter', 'user', 'Input', 'Data'],
       },
       {
         id: 'kw_process',
         labelEn: 'Process (Calculation / Logic)',
-        labelHi: 'प्रोसेस (गणना / लॉजिक)',
+        labelHi: 'प्रोसेस (Calculation / लॉजिक)',
         weight: 1.5,
-        synonyms: ['process', 'processing', 'calculation', 'compute', 'add', 'logic', 'प्रोसेस', 'गणना', 'जोड़ना'],
+        synonyms: ['process', 'processing', 'calculation', 'compute', 'add', 'logic', 'प्रोसेस', 'Calculation', 'जोड़ना'],
       },
       {
         id: 'kw_output',
         labelEn: 'Output (Final Result)',
-        labelHi: 'आउटपुट (अंतिम परिणाम)',
+        labelHi: 'Output (अंतिम परिणाम)',
         weight: 2.0,
-        synonyms: ['output', 'result', 'display', 'screen', 'आउटपुट', 'परिणाम', 'रिजल्ट'],
+        synonyms: ['output', 'result', 'display', 'screen', 'Output', 'परिणाम', 'Result'],
       },
     ],
     importantConcepts: [
       {
         id: 'cp_ipo_flow',
         conceptEn: 'Clearly defined all three stages: Input, Process, and Output',
-        conceptHi: 'तीनों चरणों (इनपुट, प्रोसेस, आउटपुट) को स्पष्ट रूप से समझाया',
+        conceptHi: 'तीनों चरणों (Input, प्रोसेस, Output) को स्पष्ट रूप से समझाया',
         weight: 2.0,
-        patterns: ['input', 'process', 'output', 'इनपुट', 'प्रोसेस', 'आउटपुट'],
+        patterns: ['input', 'process', 'output', 'Input', 'प्रोसेस', 'Output'],
       },
       {
         id: 'cp_ipo_example',
@@ -526,17 +526,17 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
     topic: 'Execution',
     difficulty: 'Medium',
     questionEn: 'How does the Python interpreter execute code, and how does it differ from a compiler?',
-    questionHi: 'Python इंटरप्रेटर (Interpreter) कोड को कैसे चलाता है, और यह कंपाइलर (Compiler) से कैसे अलग है?',
+    questionHi: 'Python Interpreter (Interpreter) Code को कैसे चलाता है, और यह Compiler (Compiler) से कैसे अलग है?',
     hintEn: 'Mention that an interpreter executes code line by line, whereas a compiler translates the entire program at once.',
-    hintHi: 'बताएं कि इंटरप्रेटर कोड को एक-एक लाइन (Line-by-line) करके चलाता है, जबकि कंपाइलर पूरे प्रोग्राम को एक साथ ट्रांसलेट करता है।',
+    hintHi: 'बताएं कि Interpreter Code को एक-एक लाइन (Line-by-line) करके चलाता है, जबकि Compiler पूरे Program को एक साथ ट्रांसलेट करता है।',
     idealAnswerEn:
       'The Python interpreter reads and executes code line by line (converting it into bytecode and running it on the Python Virtual Machine). If an error occurs on a line, it stops immediately, making debugging easier. In contrast, a compiler translates the entire source code into machine code before execution.',
     idealAnswerHi:
-      'Python का इंटरप्रेटर कोड को एक-एक लाइन (Line-by-line) पढ़कर चलाता है। यदि किसी लाइन में एरर हो तो वह वहीं रुक जाता है जिससे डीबगिंग आसान होती है। इसके विपरीत, कंपाइलर पूरे प्रोग्राम को चलाने से पहले एक साथ मशीन कोड में बदलता है।',
+      'Python का Interpreter Code को एक-एक लाइन (Line-by-line) पढ़कर चलाता है। यदि किसी लाइन में Error हो तो वह वहीं रुक जाता है जिससे Debugging आसान होती है। इसके विपरीत, Compiler पूरे Program को चलाने से पहले एक साथ मशीन Code में बदलता है।',
     exampleAnswerEn:
       'An interpreter executes Python code line by line and stops immediately if it finds an error. A compiler translates the whole program into machine code all at once before running.',
     exampleAnswerHi:
-      'इंटरप्रेटर कोड को लाइन-बाय-लाइन चलाता है और एरर आने पर तुरंत रुक जाता है, जबकि कंपाइलर पूरे कोड को एक साथ मशीन भाषा में बदलता है।',
+      'Interpreter Code को लाइन-बाय-लाइन चलाता है और Error आने पर तुरंत रुक जाता है, जबकि Compiler पूरे Code को एक साथ मशीन भाषा में बदलता है।',
     requiredKeywords: [
       {
         id: 'kw_linebyline',
@@ -548,32 +548,32 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
       {
         id: 'kw_interpreter',
         labelEn: 'Interpreter / Bytecode',
-        labelHi: 'इंटरप्रेटर / बाइटकोड',
+        labelHi: 'Interpreter / बाइटकोड',
         weight: 1.5,
-        synonyms: ['interpreter', 'interpreted', 'bytecode', 'pvm', 'इंटरप्रेटर', 'बाइटकोड'],
+        synonyms: ['interpreter', 'interpreted', 'bytecode', 'pvm', 'Interpreter', 'बाइटकोड'],
       },
       {
         id: 'kw_compiler',
         labelEn: 'Compiler (Translates Whole Program at Once)',
-        labelHi: 'कंपाइलर (पूरे प्रोग्राम को एक साथ बदलता है)',
+        labelHi: 'Compiler (पूरे Program को एक साथ बदलता है)',
         weight: 1.5,
-        synonyms: ['compiler', 'entire', 'whole', 'at once', 'machine code', 'कंपाइलर', 'पूरे', 'एक साथ', 'मशीन कोड'],
+        synonyms: ['compiler', 'entire', 'whole', 'at once', 'machine code', 'Compiler', 'पूरे', 'एक साथ', 'मशीन Code'],
       },
     ],
     importantConcepts: [
       {
         id: 'cp_line_exec',
         conceptEn: 'Explained that Python interpreter runs code line by line',
-        conceptHi: 'स्पष्ट किया कि इंटरप्रेटर कोड को लाइन-बाय-लाइन चलाता है',
+        conceptHi: 'स्पष्ट किया कि Interpreter Code को लाइन-बाय-लाइन चलाता है',
         weight: 2.0,
         patterns: ['line by line', 'one line at a time', 'लाइन बाय लाइन', 'एक-एक लाइन'],
       },
       {
         id: 'cp_compiler_diff',
         conceptEn: 'Contrasted with compiler translating the whole program before execution',
-        conceptHi: 'कंपाइलर से अंतर बताया कि वह पूरे प्रोग्राम को एक साथ ट्रांसलेट करता है',
+        conceptHi: 'Compiler से अंतर बताया कि वह पूरे Program को एक साथ ट्रांसलेट करता है',
         weight: 1.5,
-        patterns: ['compiler', 'entire program', 'whole program', 'at once', 'कंपाइलर', 'पूरे प्रोग्राम', 'एक साथ'],
+        patterns: ['compiler', 'entire program', 'whole program', 'at once', 'Compiler', 'पूरे Program', 'एक साथ'],
       },
     ],
     commonMistakes: [],
@@ -585,47 +585,47 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
     topic: 'Variables & Data',
     difficulty: 'Easy',
     questionEn: 'What is a variable in Python, and why is Python called dynamically typed?',
-    questionHi: 'Python में वेरिएबल (Variable) क्या होता है, और Python को Dynamically Typed क्यों कहा जाता है?',
+    questionHi: 'Python में Variable (Variable) क्या होता है, और Python को Dynamically Typed क्यों कहा जाता है?',
     hintEn: 'Explain a variable as a named container for storing data, and dynamic typing as not needing to declare data types manually.',
-    hintHi: 'वेरिएबल को डेटा स्टोर करने का कंटेनर बताएं, और डायनेमिक टाइपिंग का अर्थ है कि डेटा टाइप पहले से घोषित नहीं करना पड़ता।',
+    hintHi: 'Variable को Data स्टोर करने का कंटेनर बताएं, और डायनेमिक टाइपिंग का अर्थ है कि Data Type पहले से घोषित नहीं करना पड़ता।',
     idealAnswerEn:
       'A variable is a named memory location or container used to store data values (for example, x = 10). Python is called dynamically typed because we do not need to declare the data type of a variable in advance—Python automatically determines the type at runtime based on the assigned value.',
     idealAnswerHi:
-      'वेरिएबल मेमोरी में डेटा स्टोर करने का एक नामित कंटेनर होता है (जैसे x = 10)। Python को Dynamically Typed इसलिए कहते हैं क्योंकि हमें वेरिएबल का डेटा टाइप (int, str आदि) पहले से लिखना नहीं पड़ता; Python वैल्यू के आधार पर रनटाइम पर खुद टाइप पहचान लेता है।',
+      'Variable मेमोरी में Data स्टोर करने का एक नामित कंटेनर होता है (जैसे x = 10)। Python को Dynamically Typed इसलिए कहते हैं क्योंकि हमें Variable का Data Type (int, str आदि) पहले से लिखना नहीं पड़ता; Python Value के आधार पर रनटाइम पर खुद टाइप पहचान लेता है।',
     exampleAnswerEn:
       'A variable is a container that stores data values in memory, like name = "Rahul". Python is dynamically typed because it automatically detects the data type at runtime without manual declaration.',
     exampleAnswerHi:
-      'वेरिएबल डेटा को मेमोरी में स्टोर करने का एक कंटेनर है। Python को डायनेमिकली टाइप्ड इसलिए कहते हैं क्योंकि यह वैल्यू देखकर खुद डेटा टाइप समझ लेता है।',
+      'Variable Data को मेमोरी में स्टोर करने का एक कंटेनर है। Python को डायनेमिकली टाइप्ड इसलिए कहते हैं क्योंकि यह Value देखकर खुद Data Type समझ लेता है।',
     requiredKeywords: [
       {
         id: 'kw_store',
         labelEn: 'Stores Data / Container / Memory',
-        labelHi: 'डेटा स्टोर करना / मेमोरी कंटेनर',
+        labelHi: 'Data स्टोर करना / मेमोरी कंटेनर',
         weight: 2.0,
-        synonyms: ['store', 'stores', 'container', 'memory', 'value', 'hold', 'स्टोर', 'कंटेनर', 'मेमोरी', 'वैल्यू'],
+        synonyms: ['store', 'stores', 'container', 'memory', 'value', 'hold', 'स्टोर', 'कंटेनर', 'मेमोरी', 'Value'],
       },
       {
         id: 'kw_dynamic',
         labelEn: 'Dynamic Typing / Auto Type Detection at Runtime',
         labelHi: 'डायनेमिक टाइपिंग / रनटाइम पर ऑटो टाइप पहचान',
         weight: 3.0,
-        synonyms: ['dynamic', 'dynamically', 'runtime', 'declare', 'type', 'automatic', 'डायनेमिक', 'रनटाइम', 'डेटा टाइप', 'घोषित'],
+        synonyms: ['dynamic', 'dynamically', 'runtime', 'declare', 'type', 'automatic', 'डायनेमिक', 'रनटाइम', 'Data Type', 'घोषित'],
       },
     ],
     importantConcepts: [
       {
         id: 'cp_var_def',
         conceptEn: 'Defined variable as a named reference/container for storing values',
-        conceptHi: 'वेरिएबल को डेटा स्टोर करने वाले कंटेनर के रूप में समझाया',
+        conceptHi: 'Variable को Data स्टोर करने वाले कंटेनर के रूप में समझाया',
         weight: 2.0,
-        patterns: ['store data', 'stores value', 'container', 'memory', 'डेटा स्टोर', 'कंटेनर', 'मेमोरी'],
+        patterns: ['store data', 'stores value', 'container', 'memory', 'Data स्टोर', 'कंटेनर', 'मेमोरी'],
       },
       {
         id: 'cp_dyn_type',
         conceptEn: 'Explained dynamic typing as automatic type inference at runtime',
         conceptHi: 'डायनेमिक टाइपिंग को बिना डिक्लेरेशन के ऑटोमैटिक टाइप पहचान बताया',
         weight: 1.5,
-        patterns: ['declare', 'data type', 'runtime', 'automatically', 'डेटा टाइप', 'रनटाइम', 'खुद पहचान'],
+        patterns: ['declare', 'data type', 'runtime', 'automatically', 'Data Type', 'रनटाइम', 'खुद पहचान'],
       },
     ],
     commonMistakes: [],
@@ -639,11 +639,11 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
     questionEn: 'What is the difference between a List and a Tuple in Python?',
     questionHi: 'Python में List और Tuple के बीच मुख्य अंतर क्या है?',
     hintEn: 'Compare mutability (mutable vs immutable), bracket syntax ([] vs ()), and performance.',
-    hintHi: 'म्यूटेबिलिटी (बदलाव संभव है या नहीं), ब्रैकेट सिंटैक्स ([] बनाम ()), और परफॉर्मेंस की तुलना करें।',
+    hintHi: 'म्यूटेबिलिटी (बदलाव संभव है या नहीं), ब्रैकेट Syntax ([] बनाम ()), और परफॉर्मेंस की तुलना करें।',
     idealAnswerEn:
       'Lists are mutable, meaning their elements can be modified, added, or removed after creation, and they use square brackets []. Tuples are immutable, meaning they cannot be changed once created, and they use parentheses (). Tuples are faster and consume less memory than lists.',
     idealAnswerHi:
-      'List म्यूटेबल (Mutable) होती है, यानी बनने के बाद उसके तत्वों को बदला या हटाया जा सकता है और इसे [] ब्रैकेट से लिखते हैं। Tuple इम्यूटेबल (Immutable) होता है, यानी उसे बदला नहीं जा सकता और इसे () से लिखते हैं। Tuple लिस्ट की तुलना में तेज़ होता है।',
+      'List म्यूटेबल (Mutable) होती है, यानी बनने के बाद उसके तत्वों को बदला या हटाया जा सकता है और इसे [] ब्रैकेट से लिखते हैं। Tuple इम्यूटेबल (Immutable) होता है, यानी उसे बदला नहीं जा सकता और इसे () से लिखते हैं। Tuple List की तुलना में तेज़ होता है।',
     exampleAnswerEn:
       'Lists are mutable and use square brackets [], so we can change their items. Tuples are immutable and use round parentheses (), making them faster and memory-efficient for fixed data.',
     exampleAnswerHi:
@@ -659,7 +659,7 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
       {
         id: 'kw_brackets',
         labelEn: 'Syntax: Square Brackets [] vs Parentheses ()',
-        labelHi: 'सिंटैक्स: स्क्वायर ब्रैकेट [] बनाम पैरेंथेसिस ()',
+        labelHi: 'Syntax: स्क्वायर ब्रैकेट [] बनाम पैरेंथेसिस ()',
         weight: 1.5,
         synonyms: ['square', 'bracket', 'brackets', 'parentheses', 'round', '[]', '()', 'ब्रैकेट', 'कोष्ठक'],
       },
@@ -682,7 +682,7 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
       {
         id: 'cp_syntax_perf',
         conceptEn: 'Mentioned bracket syntax ([] vs ()) or speed/memory advantages',
-        conceptHi: 'ब्रैकेट सिंटैक्स ([] बनाम ()) या परफॉर्मेंस का उल्लेख किया',
+        conceptHi: 'ब्रैकेट Syntax ([] बनाम ()) या परफॉर्मेंस का उल्लेख किया',
         weight: 1.5,
         patterns: ['square bracket', 'parentheses', 'faster', 'memory', '[]', '()', 'ब्रैकेट', 'तेज़', 'मेमोरी'],
       },
@@ -698,34 +698,34 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
     questionEn: 'What is the difference between a Syntax Error and a Runtime Error in Python?',
     questionHi: 'Python में Syntax Error और Runtime Error में क्या अंतर होता है?',
     hintEn: 'Explain Syntax Error as a grammar rule violation before running, and Runtime Error as a crash during execution (like dividing by zero).',
-    hintHi: 'Syntax Error को भाषा के नियम की गलती और Runtime Error को प्रोग्राम चलते समय आने वाली गलती (जैसे 0 से भाग देना) के रूप में समझाएं।',
+    hintHi: 'Syntax Error को भाषा के नियम की गलती और Runtime Error को Program चलते समय आने वाली गलती (जैसे 0 से भाग देना) के रूप में समझाएं।',
     idealAnswerEn:
       'A Syntax Error occurs when code violates Python grammar rules (such as a missing colon or parenthesis) and prevents the program from starting. A Runtime Error (or Exception) occurs while the program is running, such as dividing a number by zero (ZeroDivisionError) or accessing a missing list index.',
     idealAnswerHi:
-      'Syntax Error तब आती है जब कोड में Python के व्याकरण/सिंटैक्स के नियम टूटते हैं (जैसे कोष्ठक या कोलन छूटना) और प्रोग्राम शुरू ही नहीं हो पाता। Runtime Error प्रोग्राम के चलते समय आती है, जैसे किसी संख्या को शून्य से भाग देना (ZeroDivisionError)।',
+      'Syntax Error तब आती है जब Code में Python के व्याकरण/Syntax के नियम टूटते हैं (जैसे कोष्ठक या कोलन छूटना) और Program शुरू ही नहीं हो पाता। Runtime Error Program के चलते समय आती है, जैसे किसी संख्या को शून्य से भाग देना (ZeroDivisionError)।',
     exampleAnswerEn:
       'A syntax error happens when we break Python grammar rules like forgetting a colon, stopping the code before it runs. A runtime error happens while the program is executing, like dividing a number by zero.',
     exampleAnswerHi:
-      'Syntax Error कोडिंग के नियम तोड़ने पर प्रोग्राम चलने से पहले आती है। Runtime Error प्रोग्राम चलते समय आती है, जैसे किसी नंबर को 0 से भाग देना।',
+      'Syntax Error Coding के नियम तोड़ने पर Program चलने से पहले आती है। Runtime Error Program चलते समय आती है, जैसे किसी नंबर को 0 से भाग देना।',
     requiredKeywords: [
       {
         id: 'kw_syntax_err',
         labelEn: 'Syntax / Grammar Rule Violation',
-        labelHi: 'सिंटैक्स / नियम की त्रुटि',
+        labelHi: 'Syntax / नियम की Error',
         weight: 2.0,
-        synonyms: ['syntax', 'grammar', 'colon', 'bracket', 'indentation', 'rule', 'सिंटैक्स', 'नियम', 'कोलन', 'कोष्ठक'],
+        synonyms: ['syntax', 'grammar', 'colon', 'bracket', 'indentation', 'rule', 'Syntax', 'नियम', 'कोलन', 'कोष्ठक'],
       },
       {
         id: 'kw_runtime_err',
         labelEn: 'Runtime Execution Crash / Exception',
-        labelHi: 'रनटाइम (चलते समय) आने वाली एरर',
+        labelHi: 'रनटाइम (चलते समय) आने वाली Error',
         weight: 2.0,
         synonyms: ['runtime', 'running', 'execution', 'exception', 'zero', 'zerodivisionerror', 'रनटाइम', 'चलते समय', 'शून्य', 'जीरो'],
       },
       {
         id: 'kw_err_example',
         labelEn: 'Concrete Error Example',
-        labelHi: 'एरर का उदाहरण',
+        labelHi: 'Error का उदाहरण',
         weight: 1.0,
         synonyms: ['example', 'divide by zero', 'colon', 'parenthesis', 'index', 'उदाहरण', 'भाग', 'जैसे'],
       },
@@ -734,14 +734,14 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
       {
         id: 'cp_syntax_time',
         conceptEn: 'Identified Syntax Error as detected before execution due to invalid code structure',
-        conceptHi: 'बताया कि Syntax Error गलत सिंटैक्स के कारण कोड चलने से पहले पकड़ी जाती है',
+        conceptHi: 'बताया कि Syntax Error गलत Syntax के कारण Code चलने से पहले पकड़ी जाती है',
         weight: 2.0,
-        patterns: ['syntax', 'grammar', 'before running', 'missing colon', 'सिंटैक्स', 'नियम', 'चलने से पहले'],
+        patterns: ['syntax', 'grammar', 'before running', 'missing colon', 'Syntax', 'नियम', 'चलने से पहले'],
       },
       {
         id: 'cp_runtime_time',
         conceptEn: 'Identified Runtime Error as occurring during execution on valid syntax',
-        conceptHi: 'बताया कि Runtime Error प्रोग्राम चलते समय (जैसे 0 से भाग देने पर) आती है',
+        conceptHi: 'बताया कि Runtime Error Program चलते समय (जैसे 0 से भाग देने पर) आती है',
         weight: 1.5,
         patterns: ['runtime', 'while running', 'during execution', 'zero', 'रनटाइम', 'चलते समय', 'शून्य'],
       },
@@ -757,15 +757,15 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
     questionEn: 'Why do we write comments and use proper indentation in Python?',
     questionHi: 'हम Python में कमेंट्स (Comments) क्यों लिखते हैं और सही इंडेंटेशन (Indentation) क्यों ज़रूरी है?',
     hintEn: 'Note that comments (#) improve human readability, while indentation (spaces) is mandatory in Python to define code blocks.',
-    hintHi: 'बताएं कि कमेंट्स (#) कोड को समझने में आसान बनाते हैं, जबकि इंडेंटेशन Python में कोड ब्लॉक बनाने के लिए अनिवार्य है।',
+    hintHi: 'बताएं कि कमेंट्स (#) Code को समझने में आसान बनाते हैं, जबकि इंडेंटेशन Python में Code ब्लॉक बनाने के लिए अनिवार्य है।',
     idealAnswerEn:
       'Comments (starting with #) are written to explain code logic for human developers and are ignored by the Python interpreter. Indentation (leading whitespace) is mandatory in Python because it defines code blocks for loops, functions, and conditions instead of curly braces.',
     idealAnswerHi:
-      'कमेंट्स (# के साथ) कोड को इंसानों के समझने और डॉक्यूमेंटेशन के लिए लिखे जाते हैं जिन्हें Python अनदेखा करता है। जबकि इंडेंटेशन (स्पेस) Python में अनिवार्य है क्योंकि यह लूप, फंक्शन और if-else के कोड ब्लॉक को तय करता है।',
+      'कमेंट्स (# के साथ) Code को इंसानों के समझने और डॉक्यूमेंटेशन के लिए लिखे जाते हैं जिन्हें Python अनदेखा करता है। जबकि इंडेंटेशन (स्पेस) Python में अनिवार्य है क्योंकि यह Loop, Function और if-else के Code ब्लॉक को तय करता है।',
     exampleAnswerEn:
       'Comments using # help developers understand and maintain the code. Proper indentation is mandatory in Python because it defines blocks of code inside functions, loops, and if statements.',
     exampleAnswerHi:
-      'कमेंट्स (#) से कोड समझना आसान होता है। इंडेंटेशन Python में बहुत ज़रूरी है क्योंकि इसी से फंक्शन और इफ-एल्स के कोड ब्लॉक बनते हैं।',
+      'कमेंट्स (#) से Code समझना आसान होता है। इंडेंटेशन Python में बहुत ज़रूरी है क्योंकि इसी से Function और इफ-एल्स के Code ब्लॉक बनते हैं।',
     requiredKeywords: [
       {
         id: 'kw_comments',
@@ -777,7 +777,7 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
       {
         id: 'kw_indentation',
         labelEn: 'Indentation (Spaces / Code Blocks)',
-        labelHi: 'इंडेंटेशन (स्पेस / कोड ब्लॉक)',
+        labelHi: 'इंडेंटेशन (स्पेस / Code ब्लॉक)',
         weight: 3.0,
         synonyms: ['indentation', 'indent', 'space', 'spaces', 'block', 'blocks', 'indentationerror', 'इंडेंटेशन', 'स्पेस', 'ब्लॉक'],
       },
@@ -793,9 +793,9 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
       {
         id: 'cp_indent_block',
         conceptEn: 'Explained that indentation is syntactically required in Python to group code blocks',
-        conceptHi: 'स्पष्ट किया कि Python में कोड ब्लॉक बनाने के लिए इंडेंटेशन अनिवार्य है',
+        conceptHi: 'स्पष्ट किया कि Python में Code ब्लॉक बनाने के लिए इंडेंटेशन अनिवार्य है',
         weight: 2.0,
-        patterns: ['code block', 'blocks', 'mandatory', 'required', 'spaces', 'कोड ब्लॉक', 'अनिवार्य', 'ज़रूरी', 'स्पेस'],
+        patterns: ['code block', 'blocks', 'mandatory', 'required', 'spaces', 'Code ब्लॉक', 'अनिवार्य', 'ज़रूरी', 'स्पेस'],
       },
     ],
     commonMistakes: [
@@ -804,7 +804,7 @@ export const CORE_PRELOADED_QUESTIONS: PreloadedInterviewQuestion[] = [
         mistakeEn: 'Claimed that indentation in Python is optional and only for style',
         mistakeHi: 'इंडेंटेशन को केवल स्टाइल के लिए वैकल्पिक (Optional) बता दिया',
         correctionEn: 'Unlike C++ or Java, indentation in Python is mandatory syntax; wrong indentation raises an IndentationError.',
-        correctionHi: 'Python में इंडेंटेशन वैकल्पिक नहीं बल्कि अनिवार्य सिंटैक्स है; गलत स्पेस होने पर IndentationError आती है।',
+        correctionHi: 'Python में इंडेंटेशन वैकल्पिक नहीं बल्कि अनिवार्य Syntax है; गलत स्पेस होने पर IndentationError आती है।',
         triggerPatterns: ['indentation is optional', 'only for style', 'not required', 'इंडेंटेशन ज़रूरी नहीं'],
         penalty: 2.0,
       },
@@ -1203,7 +1203,7 @@ export function evaluateInterviewAnswerDeterministically(
 
   if (suggestionsEn.length === 0) {
     suggestionsEn.push('Excellent job! Your answer covered all required keywords and concepts clearly.');
-    suggestionsHi.push('शानदार! आपके उत्तर में सभी आवश्यक कीवर्ड्स और मुख्य बिंदु स्पष्ट रूप से शामिल हैं।');
+    suggestionsHi.push('शानदार! आपके उत्तर में सभी आवश्यक Keywords और मुख्य बिंदु स्पष्ट रूप से शामिल हैं।');
   }
 
   const summaryEn =
@@ -1215,10 +1215,10 @@ export function evaluateInterviewAnswerDeterministically(
 
   const summaryHi =
     clampedScore >= 8.5
-      ? `शानदार उत्तर (${clampedScore}/10): आपने ${question.requiredKeywords.length} में से ${matchedKeywords.length} कीवर्ड्स और ${question.importantConcepts.length} में से ${matchedConcepts.length} मुख्य अवधारणाओं को कवर किया।`
+      ? `शानदार उत्तर (${clampedScore}/10): आपने ${question.requiredKeywords.length} में से ${matchedKeywords.length} Keywords और ${question.importantConcepts.length} में से ${matchedConcepts.length} मुख्य अवधारणाओं को कवर किया।`
       : clampedScore >= 5.5
-      ? `अच्छा प्रयास (${clampedScore}/10): आपने ${question.requiredKeywords.length} में से ${matchedKeywords.length} कीवर्ड्स शामिल किए। बेहतर स्कोर के लिए छूटे हुए बिंदु देखें।`
-      : `सुधार की आवश्यकता (${clampedScore}/10): केवल ${matchedKeywords.length}/${question.requiredKeywords.length} आवश्यक कीवर्ड्स मिले। नीचे दिए गए आदर्श उत्तर से तुलना करें।`;
+      ? `अच्छा प्रयास (${clampedScore}/10): आपने ${question.requiredKeywords.length} में से ${matchedKeywords.length} Keywords शामिल किए। बेहतर स्कोर के लिए छूटे हुए बिंदु देखें।`
+      : `सुधार की आवश्यकता (${clampedScore}/10): केवल ${matchedKeywords.length}/${question.requiredKeywords.length} आवश्यक Keywords मिले। नीचे दिए गए आदर्श उत्तर से तुलना करें।`;
 
   return {
     score: clampedScore,

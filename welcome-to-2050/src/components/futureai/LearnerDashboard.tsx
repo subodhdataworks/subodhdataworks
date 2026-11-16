@@ -75,19 +75,22 @@ import './navigation/GlobalNavigation.css';
 import { AffiliateEarningsHub } from './AffiliateEarningsHub';
 import { GameArenaHub } from './GameArenaHub';
 import { CodingPracticeMasterHub } from './CodingPracticeMasterHub';
-import { PythonChallengesPracticeHub } from './PythonChallengesPracticeHub';
+import { PythonVisualClassroomHub } from './PythonVisualClassroomHub';
 import { SqlChallengesPracticeHub } from './SqlChallengesPracticeHub';
 import { ExcelChallengesPracticeHub } from './ExcelChallengesPracticeHub';
 import { LearnerHomeHub } from './LearnerHomeHub';
 import { DataAnalystGenAiHub } from './DataAnalystGenAiHub';
+import { findTabAndChapterForTopic } from '../../data/dataAnalystCurriculum';
 import { DataScienceAgenticAiHub } from './DataScienceAgenticAiHub';
 import { MlEngineeringHub } from './MlEngineeringHub';
 import { AiEngineeringHub } from './AiEngineeringHub';
 import { AiToolsPromptHub } from './AiToolsPromptHub';
 import { MsOfficeCopilotHub } from './MsOfficeCopilotHub';
 import { FullStackMernHub } from './FullStackMernHub';
+import { AiLiveCourseDemoHub } from './AiLiveCourseDemoHub';
 import { AiMockInterviewsPage } from './interview/AiMockInterviewsPage';
 import { StudentCoursesDashboard } from './StudentCoursesDashboard';
+import { DashboardV22BentoHub } from './dashboard/DashboardV22BentoHub';
 import { MobileDashboardBottomNav } from './mobile/MobileDashboardBottomNav';
 import { PythonIntroGameWorkspace } from './PythonIntroGameWorkspace';
 import { LearningModulesProgressModal } from './LearningModulesProgressModal';
@@ -407,7 +410,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   const [dockTab, setDockTab] = useState<'home' | 'game' | 'income' | 'referral' | 'wallet' | 'withdraw' | 'placement'>(() => {
     if (typeof window !== 'undefined') {
       const h = window.location.hash;
-      if (h === '#game' || h === '#games' || h === '#arena' || h === '#gamearena' || h.startsWith('#python-challenges') || h.startsWith('#pythonchallenges') || h.startsWith('#sql-challenges') || h.startsWith('#sqlchallenges')) return 'game';
+      if (h === '#game' || h === '#games' || h === '#arena' || h === '#gamearena' || h.startsWith('#python-classroom') || h.startsWith('#python-challenges') || h.startsWith('#pythonchallenges') || h.startsWith('#sql-challenges') || h.startsWith('#sqlchallenges')) return 'game';
       if (h === '#income' || h === '#earnings' || h === '#myearnings' || h === '#myearning' || h === '#earning' || h === '#earn' || h === '#earncash' || h === '#earn-cash' || h === '#wallet') return 'income';
       if (h === '#placement' || h === '#jobs' || h === '#placements') return 'placement';
       if (h === '#referral') return 'referral';
@@ -541,7 +544,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   };
 
   // Sub-view: null = 4-Course Student Dashboard (#dashboard), 'data_analyst' = Data Analyst with GenAI 6-Module Hub (#data-analyst), 'python' = Python Module Detail Page, 'python_intro_game' = Python Introduction & Setup Game Workspace, 'sql' = SQL Chapter View, 'excel' = Excel Chapter View, 'powerbi' = Power BI Chapter View, 'stats' = Statistics Chapter View, 'genai' = GenAI Chapter View
-  const [selectedModuleView, setSelectedModuleView] = useState<'data_analyst' | 'data_science' | 'ml_engineering' | 'ai_engineering' | 'ai_tools_prompt' | 'ms_office_copilot' | 'full_stack_mern' | 'mockinterview' | 'python' | 'python_intro_game' | 'python_challenges' | 'sql_challenges' | 'excel_challenges' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai' | null>(() => {
+  const [selectedModuleView, setSelectedModuleView] = useState<'my_learning' | 'data_analyst' | 'data_science' | 'ml_engineering' | 'ai_engineering' | 'ai_tools_prompt' | 'ms_office_copilot' | 'full_stack_mern' | 'ai_website_dev' | 'ai_android_dev' | 'ai_video_creation' | 'mockinterview' | 'python' | 'python_intro_game' | 'python_classroom' | 'python_challenges' | 'sql_challenges' | 'excel_challenges' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai' | null>(() => {
     if (typeof window !== 'undefined') {
       const h = window.location.hash;
       setCurrentHash(h);
@@ -549,10 +552,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       if (!['#placement', '#jobs', '#placements', '#internship', '#internships', '#certificate', '#certificates', '#recommendation', '#recommendations', '#lor'].includes(baseH)) {
         setPlacementLockOpen(false);
       }
-      if (baseH === '#learning' || baseH === '#mylearning') {
-        setSelectedModuleView('data_analyst');
-        setActiveTopicWs(null);
-        setDockTab('home');
+      if (baseH === '#learning' || baseH === '#mylearning' || baseH === '#my-learning') {
+        return 'my_learning';
       } else if (baseH === '#data-analyst' || baseH === '#data-analytics') {
         return 'data_analyst';
       }
@@ -561,6 +562,15 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       }
       if (baseH === '#ml-engineering' || baseH === '#mlengineering' || baseH === '#ml-eng' || baseH === '#ml') {
         return 'ml_engineering';
+      }
+      if (baseH === '#ai-website-dev' || baseH === '#ai-website') {
+        return 'ai_website_dev';
+      }
+      if (baseH === '#ai-android-dev' || baseH === '#ai-android') {
+        return 'ai_android_dev';
+      }
+      if (baseH === '#ai-video-creation' || baseH === '#ai-video') {
+        return 'ai_video_creation';
       }
       if (baseH === '#ai-engineering' || baseH === '#aiengineering' || baseH === '#ai-eng' || baseH === '#ai') {
         return 'ai_engineering';
@@ -572,13 +582,16 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         return 'sql';
       }
       if (baseH === '#excel') {
+        return 'data_analyst';
+      }
+      if (baseH === '#excel-visual' || baseH === '#excel-notes' || baseH === '#excel-lesson') {
         return 'python';
       }
       if (baseH === '#powerbi') {
         return 'powerbi';
       }
-      if (baseH === '#python-challenges' || baseH === '#pythonchallenges') {
-        return 'python_challenges';
+      if (baseH === '#python-classroom' || baseH === '#python-classroom' || baseH === '#python-classroom' || baseH === '#python-challenges' || baseH === '#pythonchallenges') {
+        return 'python_classroom';
       }
       if (baseH === '#sql-challenges' || baseH === '#sqlchallenges') {
         return 'sql_challenges';
@@ -634,6 +647,37 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     return 1;
   });
 
+  // Saved tab and topic to restore when returning to curriculum hub
+  const [returnCurriculumTabId, setReturnCurriculumTabId] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      const h = window.location.hash;
+      if (h.includes('?')) {
+        const params = new URLSearchParams(h.split('?')[1]);
+        const tab = params.get('tab');
+        if (tab) return tab.startsWith('tab-') ? tab : `tab-${tab}`;
+      }
+      try {
+        return sessionStorage.getItem('futureai_active_curriculum_tab');
+      } catch {}
+    }
+    return null;
+  });
+
+  const [returnCurriculumTopicId, setReturnCurriculumTopicId] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      const h = window.location.hash;
+      if (h.includes('?')) {
+        const params = new URLSearchParams(h.split('?')[1]);
+        const topic = params.get('topic');
+        if (topic) return topic.startsWith('t-') ? topic : `t-${topic}`;
+      }
+      try {
+        return sessionStorage.getItem('futureai_active_curriculum_topic');
+      } catch {}
+    }
+    return null;
+  });
+
   const [introGameLevelId, setIntroGameLevelId] = useState<number>(() => {
     if (typeof window === 'undefined') return 1;
     const h = window.location.hash;
@@ -652,44 +696,21 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     }
   }, []);
 
-  // Always scroll to top upon any tab, module view, or topic workspace transition
-  useLayoutEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-      const dockPage = document.querySelector('.dock-dashboard-page');
-      if (dockPage) dockPage.scrollTop = 0;
-      const mainContainer = document.querySelector('.dock-main-container');
-      if (mainContainer) mainContainer.scrollTop = 0;
-      requestAnimationFrame(() => {
-        window.scrollTo(0, 0);
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-      });
-    }
-  }, [dockTab, selectedModuleView, activeTopicWs]);
-
-  // Sync hash changes
+  // Sync hash changes with dashboard view state
   useEffect(() => {
     const handleHash = () => {
-      if (typeof window !== 'undefined') {
-        window.scrollTo(0, 0);
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-        const dockPage = document.querySelector('.dock-dashboard-page');
-        if (dockPage) dockPage.scrollTop = 0;
-        const mainContainer = document.querySelector('.dock-main-container');
-        if (mainContainer) mainContainer.scrollTop = 0;
-        requestAnimationFrame(() => {
-          window.scrollTo(0, 0);
-          document.documentElement.scrollTop = 0;
-          document.body.scrollTop = 0;
-        });
-      }
       const h = window.location.hash;
       const baseH = h.split('?')[0];
-      if (baseH === '#data-analyst' || baseH === '#data-analytics') {
+      if (baseH === '#learning' || baseH === '#mylearning' || baseH === '#my-learning') {
+        setSelectedModuleView('my_learning');
+        setActiveTopicWs(null);
+        setDockTab('home');
+      } else if (baseH === '#data-analyst' || baseH === '#data-analytics') {
+        const params = new URLSearchParams(h.includes('?') ? h.split('?')[1] : '');
+        const hashTab = params.get('tab');
+        const hashTopic = params.get('topic');
+        if (hashTab) setReturnCurriculumTabId(hashTab.startsWith('tab-') ? hashTab : `tab-${hashTab}`);
+        if (hashTopic) setReturnCurriculumTopicId(hashTopic.startsWith('t-') ? hashTopic : `t-${hashTopic}`);
         setSelectedModuleView('data_analyst');
         setActiveTopicWs(null);
         setDockTab('home');
@@ -705,7 +726,19 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         setSelectedModuleView('ai_engineering');
         setActiveTopicWs(null);
         setDockTab('home');
-      } else if (baseH === '#full-stack' || baseH === '#fullstack' || baseH === '#fullstack-mern') {
+      } else if (baseH === '#ai-website-dev' || baseH === '#ai-website') {
+        setSelectedModuleView('ai_website_dev');
+        setActiveTopicWs(null);
+        setDockTab('home');
+      } else if (baseH === '#ai-android-dev' || baseH === '#ai-android') {
+        setSelectedModuleView('ai_android_dev');
+        setActiveTopicWs(null);
+        setDockTab('home');
+      } else if (baseH === '#ai-video-creation' || baseH === '#ai-video') {
+        setSelectedModuleView('ai_video_creation');
+        setActiveTopicWs(null);
+        setDockTab('home');
+      } else if (baseH === '#full-stack' || baseH === '#fullstack' || baseH === '#fullstack-mern' || baseH === '#full-stack-web-dev') {
         setSelectedModuleView('full_stack_mern');
         setActiveTopicWs(null);
         setDockTab('home');
@@ -717,8 +750,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         if (lvl) setIntroGameLevelId(parseInt(lvl, 10));
         setSelectedModuleView('python_intro_game');
         setActiveTopicWs(null);
-      } else if (baseH === '#python-challenges' || baseH === '#pythonchallenges') {
-        setSelectedModuleView('python_challenges');
+      } else if (baseH === '#python-classroom' || baseH === '#python-challenges' || baseH === '#pythonchallenges') {
+        setSelectedModuleView('python_classroom');
         setActiveTopicWs(null);
         setDockTab('game');
       } else if (baseH === '#sql-challenges' || baseH === '#sqlchallenges') {
@@ -776,6 +809,14 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         } else {
           setActiveTopicWs(prev => prev ?? 1);
         }
+        const hashTab = params.get('tab');
+        if (hashTab) {
+          const normTab = hashTab.startsWith('tab-') ? hashTab : `tab-${hashTab}`;
+          setReturnCurriculumTabId(normTab);
+          try {
+            sessionStorage.setItem('futureai_active_curriculum_tab', normTab);
+          } catch {}
+        }
         if (baseH === '#practice' || baseH === '#mcq') setTargetStep('practice');
         else if (baseH === '#play' || baseH === '#codequest') setTargetStep('play');
         else if (baseH === '#code' || baseH === '#codepractice' || baseH === '#workspace') setTargetStep('code');
@@ -792,8 +833,24 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         setActiveTopicWs(null);
         setDockTab('home');
       } else if (baseH === '#excel') {
-        setSelectedModuleView('python');
+        setSelectedModuleView('data_analyst');
+        setReturnCurriculumTabId('tab-3');
+        try {
+          sessionStorage.setItem('futureai_active_curriculum_tab', 'tab-3');
+        } catch {}
         setActiveTopicWs(null);
+        setDockTab('home');
+      } else if (baseH === '#excel-visual' || baseH === '#excel-notes' || baseH === '#excel-lesson') {
+        const topicParam = new URLSearchParams(window.location.hash.includes('?') ? window.location.hash.split('?')[1] : '').get('topic');
+        const num = topicParam ? parseInt(topicParam, 10) : 27;
+        setSelectedModuleView('python');
+        setActiveTopicWs(num);
+        setReturnCurriculumTabId('tab-3');
+        try {
+          sessionStorage.setItem('futureai_active_curriculum_tab', 'tab-3');
+          sessionStorage.setItem('futureai_active_curriculum_topic', `t-${num}`);
+        } catch {}
+        setTargetStep('learn');
         setDockTab('home');
       } else if (baseH === '#powerbi') {
         setSelectedModuleView('powerbi');
@@ -1317,8 +1374,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     return (
       <div className="relative dock-dashboard-page">
         {/* Preserve exact existing mobile header on Android/Mobile (< md) */}
-        <div className="md:hidden">
-          <FutureAdvancedHeader
+        <FutureAdvancedHeader showDesktopDock={true}
             isLoggedIn={isLoggedIn}
             userName={currentUserName || userName}
             onOpenLogin={onOpenLogin}
@@ -1337,11 +1393,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               if (typeof window !== 'undefined') window.location.hash = '#learning';
             }}
             onNavigatePractice={(track) => {
-              if (track === 'python') {
-                setSelectedModuleView('python_challenges');
-                setActiveTopicWs(null);
-                if (typeof window !== 'undefined') window.location.hash = '#python-challenges';
-              } else if (track === 'sql') {
+              if (track === 'sql') {
                 setSelectedModuleView('sql_challenges');
                 setActiveTopicWs(null);
                 if (typeof window !== 'undefined') window.location.hash = '#sql-challenges';
@@ -1387,18 +1439,47 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             onOpenWallet={() => setIsWithdrawModalOpen(true)}
             onLogout={onLogout}
           />
-        </div>
 
-        <PythonTopicWorkspace
-          userName={currentUserName || userName}
-          topicId={activeTopicWs || 1}
-          initialStep={targetStep}
-          onBack={() => {
-            setSelectedModuleView('data_analyst');
-            setActiveTopicWs(null);
-            setTargetStep('learn');
-            if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
-          }}
+          <PythonTopicWorkspace
+            userName={currentUserName || userName}
+            topicId={activeTopicWs || 1}
+            initialStep={targetStep}
+            onBack={(lastTopicId?: number, explicitTabId?: string | number) => {
+              playClick();
+              const targetTopicNum = lastTopicId || activeTopicWs || 1;
+              const targetTopicId = `t-${targetTopicNum}`;
+              
+              // Resolve active tab context with strict priority (no default to tab-2):
+              let candidateTab: string | null = explicitTabId ? String(explicitTabId) : returnCurriculumTabId;
+              if (!candidateTab && typeof window !== 'undefined') {
+                try {
+                  candidateTab = sessionStorage.getItem('futureai_active_curriculum_tab');
+                } catch {}
+                if (!candidateTab && window.location.hash.includes('?')) {
+                  const p = new URLSearchParams(window.location.hash.split('?')[1]);
+                  const t = p.get('tab');
+                  if (t) candidateTab = t.startsWith('tab-') ? t : `tab-${t}`;
+                }
+              }
+              if (candidateTab && !candidateTab.startsWith('tab-')) {
+                candidateTab = `tab-${candidateTab}`;
+              }
+
+              const info = findTabAndChapterForTopic(targetTopicId, candidateTab || undefined);
+              const resolvedTabId = candidateTab || (info ? info.tabId : 'tab-1');
+
+              try {
+                sessionStorage.setItem('futureai_active_curriculum_tab', resolvedTabId);
+                sessionStorage.setItem('futureai_active_curriculum_topic', targetTopicId);
+              } catch {}
+              setReturnCurriculumTabId(resolvedTabId);
+              setReturnCurriculumTopicId(targetTopicId);
+              setSelectedModuleView('data_analyst');
+              setActiveTopicWs(null);
+              setTargetStep('learn');
+              setDockTab('home');
+              window.location.hash = `#data-analyst?tab=${resolvedTabId}&topic=${targetTopicNum}`;
+            }}
           onNavigateDock={(tab) => {
             setActiveTopicWs(null);
             if (tab === 'game') {
@@ -1437,10 +1518,10 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             setUnlockModalOpen(true);
           }}
           onOpenAdvisor={onOpenAdvisor}
-          onNavigateNextTopic={() => {
-            setActiveTopicWs(2);
+          onNavigateNextTopic={(nextTopicId?: number) => {
+            const next = nextTopicId !== undefined ? nextTopicId : ((activeTopicWs || 1) + 1);
+            setActiveTopicWs(next);
             setTargetStep('learn');
-            if (typeof window !== 'undefined') window.location.hash = '#learn';
           }}
         />
         <PayToUnlockModal
@@ -1568,8 +1649,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       .split('?')[0]
       .toLowerCase();
 
-    // 1. Login / Signup -> No Footer
-    if (['#login', '#signup', '#auth'].includes(rawHash)) {
+    // 1. Login / Signup / Full-screen Practice Dashboards -> No Footer
+    if (['#login', '#signup', '#auth', '#python-challenges', '#pythonchallenges', '#python-classroom'].includes(rawHash) || selectedModuleView === 'python_classroom') {
       return 'none';
     }
 
@@ -1638,9 +1719,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
     // 10. Course Details -> Full Footer
     if (
-      ['#data-analyst', '#data-analytics', '#data-science', '#data-science-agentic-ai', '#datascience', '#ml-engineering', '#mlengineering', '#ml-eng', '#ml', '#ai-engineering', '#aiengineering', '#ai-eng', '#ai', '#full-stack', '#fullstack', '#fullstack-mern', '#ai-tools-prompt', '#ms-office-copilot', '#sql', '#powerbi', '#stats', '#genai', '#mockinterview', '#mock-interview', '#interview'].includes(rawHash) ||
+      ['#data-analyst', '#data-analytics', '#data-science', '#data-science-agentic-ai', '#datascience', '#ml-engineering', '#mlengineering', '#ml-eng', '#ml', '#ai-engineering', '#aiengineering', '#ai-eng', '#ai', '#full-stack', '#fullstack', '#fullstack-mern', '#full-stack-web-dev', '#ai-website-dev', '#ai-android-dev', '#ai-video-creation', '#ai-tools-prompt', '#ms-office-copilot', '#sql', '#powerbi', '#stats', '#genai', '#mockinterview', '#mock-interview', '#interview'].includes(rawHash) ||
       (dockTab === 'home' && selectedModuleView &&
-        ['data_analyst', 'data_science', 'ml_engineering', 'ai_engineering', 'ai_tools_prompt', 'ms_office_copilot', 'full_stack_mern', 'sql', 'excel', 'powerbi', 'stats', 'genai', 'mockinterview'].includes(selectedModuleView))
+        ['data_analyst', 'data_science', 'ml_engineering', 'ai_engineering', 'ai_tools_prompt', 'ms_office_copilot', 'full_stack_mern', 'ai_website_dev', 'ai_android_dev', 'ai_video_creation', 'sql', 'excel', 'powerbi', 'stats', 'genai', 'mockinterview'].includes(selectedModuleView))
     ) {
       return 'full';
     }
@@ -1658,7 +1739,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     <div className="dock-dashboard-page">
       
 {/* ─── ULTRA-ADVANCED NEW HEADER (Exact 1:1 Reference media_1792902949292_fb98d943.png) ─── */}
-      <FutureAdvancedHeader
+      <FutureAdvancedHeader showDesktopDock={true}
         isLoggedIn={isLoggedIn}
         userName={currentUserName || userName}
         onOpenLogin={onOpenLogin}
@@ -1670,7 +1751,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             ? 'placement'
             : dockTab === 'income' || dockTab === 'referral' || dockTab === 'wallet' || dockTab === 'withdraw'
             ? 'earn'
-            : dockTab === 'game' || selectedModuleView === 'python_challenges' || selectedModuleView === 'sql_challenges' || selectedModuleView === 'excel_challenges'
+            : dockTab === 'game' || selectedModuleView === 'python_classroom' ||
+              selectedModuleView === 'python_challenges' || selectedModuleView === 'sql_challenges' || selectedModuleView === 'excel_challenges'
             ? 'practice'
             : selectedModuleView !== null
             ? 'learning'
@@ -1684,13 +1766,13 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         }}
         onNavigateLearning={() => {
           setDockTab('home');
-          setSelectedModuleView('data_analyst');
+          setSelectedModuleView('my_learning');
           setActiveTopicWs(null);
           if (typeof window !== 'undefined') window.location.hash = '#learning';
         }}
         onNavigatePractice={(track) => {
           if (track === 'python') {
-            setSelectedModuleView('python_challenges');
+            setSelectedModuleView('python_classroom');
             setActiveTopicWs(null);
             if (typeof window !== 'undefined') window.location.hash = '#python-challenges';
           } else if (track === 'sql') {
@@ -1743,7 +1825,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             {/* =========================================================================
           2. MAIN DASHBOARD CONTENT GRID (media_1790998423618.jpg)
           ========================================================================= */}
-      <div className="dock-main-container">
+      <div className={`dock-main-container ${selectedModuleView === 'python_classroom' ? '!p-0 !pb-0 !m-0 !max-w-none !block' : ''}`}>
 
 {/* PythonChapterView removed as requested - direct workspace access */}
 
@@ -1826,33 +1908,41 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           <div className="col-span-full">
             <DataAnalystGenAiHub
                 userName={currentUserName || userName}
+                initialTabId={returnCurriculumTabId || undefined}
+                initialTopicId={returnCurriculumTopicId || undefined}
+                onTabChange={(tId) => {
+                  setReturnCurriculumTabId(tId);
+                  try {
+                    sessionStorage.setItem('futureai_active_curriculum_tab', tId);
+                  } catch {}
+                }}
                 onBack={() => {
                   playClick();
                   setSelectedModuleView(null);
-                  if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+                  window.location.hash = '#dashboard';
                 }}
-                onStartTopic={(topicId, title, step = 'learn') => {
+                onStartTopic={(topicId, title, step = 'learn', explicitTabId?: string) => {
                   playClick();
                   const numericTopicId = parseInt(topicId.replace(/\D/g, ''), 10) || 1;
+                  const currentTab = explicitTabId || returnCurriculumTabId || (typeof window !== 'undefined' ? sessionStorage.getItem('futureai_active_curriculum_tab') : null) || 'tab-1';
+                  const found = findTabAndChapterForTopic(topicId, currentTab);
+                  const activeTab = explicitTabId || (found ? found.tabId : currentTab);
+                  const normalizedTab = activeTab.startsWith('tab-') ? activeTab : `tab-${activeTab}`;
 
-                  if (topicId.startsWith('t-7') || topicId.startsWith('t-8') || topicId.startsWith('t-9')) {
-                    playCinema();
-                    setSelectedModuleView('sql');
-                    if (typeof window !== 'undefined') window.location.hash = '#sql';
-                  } else if (topicId.startsWith('t-13') || topicId.startsWith('t-14') || topicId.startsWith('t-15')) {
-                    playCinema();
-                    setSelectedModuleView('powerbi');
-                    if (typeof window !== 'undefined') window.location.hash = '#powerbi';
-                  } else if (topicId.startsWith('t-16') || topicId.startsWith('t-17') || topicId.startsWith('t-18')) {
-                    playCinema();
-                    setSelectedModuleView('genai');
-                    if (typeof window !== 'undefined') window.location.hash = '#genai';
-                  } else {
-                    playCinema();
-                    setSelectedModuleView('python');
-                    setActiveTopicWs(numericTopicId);
-                    setTargetStep(step as any);
-                    if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}`;
+                  setReturnCurriculumTabId(normalizedTab);
+                  setReturnCurriculumTopicId(topicId);
+                  try {
+                    sessionStorage.setItem('futureai_active_curriculum_tab', normalizedTab);
+                    sessionStorage.setItem('futureai_active_curriculum_topic', topicId);
+                  } catch {}
+
+                  playCinema();
+                  setSelectedModuleView('python');
+                  setActiveTopicWs(numericTopicId);
+                  setTargetStep(step as any);
+                  const tabNum = normalizedTab.replace(/\D/g, '');
+                  if (typeof window !== 'undefined') {
+                    window.location.hash = `#${step}?topic=${numericTopicId}&tab=${tabNum}`;
                   }
                 }}
               />
@@ -1868,7 +1958,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               onBack={() => {
                 playClick();
                 setSelectedModuleView(null);
-                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+                window.location.hash = '#dashboard';
               }}
               onStartTopic={(topicId, title, step = 'learn') => {
                 playClick();
@@ -1892,7 +1982,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               onBack={() => {
                 playClick();
                 setSelectedModuleView(null);
-                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+                window.location.hash = '#dashboard';
               }}
               onStartTopic={(topicId, title, step = 'learn') => {
                 playClick();
@@ -1916,7 +2006,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               onBack={() => {
                 playClick();
                 setSelectedModuleView(null);
-                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+                window.location.hash = '#dashboard';
               }}
               onStartTopic={(topicId, title, step = 'learn') => {
                 playClick();
@@ -1940,7 +2030,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               onBack={() => {
                 playClick();
                 setSelectedModuleView(null);
-                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+                window.location.hash = '#dashboard';
               }}
               onStartTopic={(topicId, title, step = 'learn') => {
                 playClick();
@@ -1964,7 +2054,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               onBack={() => {
                 playClick();
                 setSelectedModuleView(null);
-                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+                window.location.hash = '#dashboard';
               }}
               onStartTopic={(topicId, title, step = 'learn') => {
                 playClick();
@@ -1987,7 +2077,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               onBack={() => {
                 playClick();
                 setSelectedModuleView(null);
-                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+                window.location.hash = '#dashboard';
               }}
               onStartTopic={(topicId, title, step = 'learn') => {
                 playClick();
@@ -2002,6 +2092,29 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           </div>
         )}
 
+        {/* ─── 3 NEW AI LIVE COURSES DEMO-FIRST LANDING PAGES (#ai-website-dev, #ai-android-dev, #ai-video-creation) ─── */}
+        {dockTab === 'home' && (selectedModuleView === 'ai_website_dev' || selectedModuleView === 'ai_android_dev' || selectedModuleView === 'ai_video_creation') && (
+          <div className="col-span-full">
+            <AiLiveCourseDemoHub
+              courseId={selectedModuleView}
+              userName={currentUserName || userName}
+              onBack={() => {
+                playClick();
+                setSelectedModuleView(null);
+                window.location.hash = '#dashboard';
+              }}
+              onOpenEnrollModal={(_courseId, courseTitle) => {
+                playClick();
+                handleOpenCourseDetail(courseTitle);
+              }}
+              onOpenLogin={() => {
+                playClick();
+                setAuthModalOpen(true);
+              }}
+            />
+          </div>
+        )}
+
         {/* ─── AI-POWERED MOCK INTERVIEWS PAGE (#mockinterview) ─── */}
         {selectedModuleView === 'mockinterview' && (
           <div className="col-span-full">
@@ -2010,9 +2123,94 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
               onBack={() => {
                 playClick();
                 setSelectedModuleView(null);
-                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+                window.location.hash = '#dashboard';
               }}
               onOpenLogin={onOpenLogin}
+            />
+          </div>
+        )}
+
+        {/* ─── MY LEARNING WORKSPACE (#learning) ─── */}
+        {dockTab === 'home' && selectedModuleView === 'my_learning' && (
+          <div className="col-span-full max-w-[1380px] mx-auto w-full px-3 sm:px-5 lg:px-6 py-4">
+            <DashboardV22BentoHub
+              userName={currentUserName || userName}
+              onContinueCourse={(courseId) => {
+                playClick();
+                playCinema();
+                if (courseId === 'data-science-agentic-ai') {
+                  setSelectedModuleView('data_science');
+                  if (typeof window !== 'undefined') window.location.hash = '#data-science';
+                } else if (courseId === 'ml-engineering') {
+                  setSelectedModuleView('ml_engineering');
+                  if (typeof window !== 'undefined') window.location.hash = '#ml-engineering';
+                } else if (courseId === 'ai-engineering') {
+                  setSelectedModuleView('ai_engineering');
+                  if (typeof window !== 'undefined') window.location.hash = '#ai-engineering';
+                } else if (courseId === 'ai-tools-prompt') {
+                  setSelectedModuleView('ai_tools_prompt');
+                  if (typeof window !== 'undefined') window.location.hash = '#ai-tools-prompt';
+                } else if (courseId === 'ms-office-copilot') {
+                  setSelectedModuleView('ms_office_copilot');
+                  if (typeof window !== 'undefined') window.location.hash = '#ms-office-copilot';
+                } else if (courseId === 'full-stack-web-dev') {
+                  setSelectedModuleView('full_stack_mern');
+                  if (typeof window !== 'undefined') window.location.hash = '#full-stack-web-dev';
+                } else if (courseId === 'ai-website-dev') {
+                  setSelectedModuleView('ai_website_dev');
+                  if (typeof window !== 'undefined') window.location.hash = '#ai-website-dev';
+                } else if (courseId === 'ai-android-dev') {
+                  setSelectedModuleView('ai_android_dev');
+                  if (typeof window !== 'undefined') window.location.hash = '#ai-android-dev';
+                } else if (courseId === 'ai-video-creation') {
+                  setSelectedModuleView('ai_video_creation');
+                  if (typeof window !== 'undefined') window.location.hash = '#ai-video-creation';
+                } else {
+                  setSelectedModuleView('data_analyst');
+                  if (typeof window !== 'undefined') window.location.hash = '#data-analyst';
+                }
+              }}
+              onOpenDsaPractice={() => {
+                playClick();
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                setDockTab('game');
+                if (typeof window !== 'undefined') window.location.hash = '#game';
+              }}
+              onOpenAtsResume={() => {
+                playClick();
+                if (typeof window !== 'undefined') window.location.hash = '#ats';
+              }}
+              onOpenInternship={() => {
+                playClick();
+                openLockedFeatureModal('Internship');
+              }}
+              onOpenPlacement={() => {
+                playClick();
+                openLockedFeatureModal('Placement');
+              }}
+              onOpenCertificates={() => {
+                playClick();
+                openLockedFeatureModal('Certificate');
+              }}
+              onOpenWallet={() => {
+                playClick();
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                setDockTab('income');
+                if (typeof window !== 'undefined') window.location.hash = '#income';
+              }}
+              onOpenWithdraw={() => {
+                playClick();
+                setIsWithdrawModalOpen(true);
+              }}
+              onBrowseCourses={() => {
+                playClick();
+                setSelectedModuleView(null);
+                setActiveTopicWs(null);
+                setDockTab('home');
+                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+              }}
             />
           </div>
         )}
@@ -2065,6 +2263,24 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                   setSelectedModuleView('full_stack_mern');
                   if (typeof window !== 'undefined') window.location.hash = '#full-stack-web-dev';
                 }}
+                onOpenAiWebsiteCourse={() => {
+                  playClick();
+                  playCinema();
+                  setSelectedModuleView('ai_website_dev');
+                  if (typeof window !== 'undefined') window.location.hash = '#ai-website-dev';
+                }}
+                onOpenAiAndroidCourse={() => {
+                  playClick();
+                  playCinema();
+                  setSelectedModuleView('ai_android_dev');
+                  if (typeof window !== 'undefined') window.location.hash = '#ai-android-dev';
+                }}
+                onOpenAiVideoCourse={() => {
+                  playClick();
+                  playCinema();
+                  setSelectedModuleView('ai_video_creation');
+                  if (typeof window !== 'undefined') window.location.hash = '#ai-video-creation';
+                }}
                 onOpenLockedCourse={(courseTitle) => {
                   playClick();
                   handleOpenCourseDetail(courseTitle);
@@ -2107,6 +2323,26 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                     if (typeof window !== 'undefined') window.location.hash = '#placement';
                   }
                 }}
+                onOpenInternshipSupport={() => {
+                  playClick();
+                  openLockedFeatureModal('Internship');
+                }}
+                onOpenCertificatesSupport={() => {
+                  playClick();
+                  openLockedFeatureModal('Certificate');
+                }}
+                onOpenWalletHub={() => {
+                  playClick();
+                  setSelectedModuleView(null);
+                  setActiveTopicWs(null);
+                  setDockTab('income');
+                  if (typeof window !== 'undefined') window.location.hash = '#income';
+                }}
+                onOpenWithdrawModal={() => {
+                  playClick();
+                  setIsWithdrawModalOpen(true);
+                }}
+                onLogout={onLogout}
               />
           </div>
         )}
@@ -2131,8 +2367,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                   setUnlockModalOpen(true);
                 }
               }}
-              onOpenPython={(topicId) => {
-                setSelectedModuleView('python_challenges');
+              onOpenPython={() => {
+                setSelectedModuleView('python_classroom');
                 setActiveTopicWs(null);
                 if (typeof window !== 'undefined') window.location.hash = '#python-challenges';
               }}
@@ -2180,40 +2416,17 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         )}
 
         {/* ─── TAB: PYTHON CODING PRACTICE CHALLENGES (Exact 1:1 with media_1792864596408_8910eb47.png) ─── */}
-        {selectedModuleView === 'python_challenges' && (
+        
+        {/* ─── TAB: PYTHON VISUAL CLASSROOM + CODING PRACTICE ─── */}
+        {selectedModuleView === 'python_classroom' && (
           <div className="col-span-full">
-            <PythonChallengesPracticeHub
+            <PythonVisualClassroomHub
               userName={userName}
-              isEnrolled={!isNewStudentMode || isCourseUnlocked('data_analyst') || isAnyCourseUnlocked()}
-              onNavigateToCourses={() => {
-                setDockTab('home');
-                setSelectedModuleView(null);
-                setActiveTopicWs(null);
-                if (typeof window !== 'undefined') window.location.hash = '#courses';
-              }}
-              onUnlockAll={() => {
-                setIsNewStudentMode(false);
-                if (typeof window !== 'undefined') {
-                  setUnlockModalOpen(true);
-                }
-              }}
-              onBackToPractice={() => {
+              onBack={() => {
                 setSelectedModuleView(null);
                 setActiveTopicWs(null);
                 setDockTab('game');
-                if (typeof window !== 'undefined') window.location.hash = '#game';
-              }}
-              onBackToDashboard={() => {
-                setSelectedModuleView(null);
-                setActiveTopicWs(null);
-                setDockTab('home');
-                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
-              }}
-              onSolveChallenge={(challengeId, title) => {
-                setSelectedModuleView('python');
-                setActiveTopicWs(challengeId || 1);
-                setTargetStep('play');
-                if (typeof window !== 'undefined') window.location.hash = `#python?topic=${challengeId || 1}`;
+                window.location.hash = '#game';
               }}
             />
           </div>
@@ -2241,13 +2454,13 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setSelectedModuleView(null);
                 setActiveTopicWs(null);
                 setDockTab('game');
-                if (typeof window !== 'undefined') window.location.hash = '#game';
+                window.location.hash = '#game';
               }}
               onBackToDashboard={() => {
                 setSelectedModuleView(null);
                 setActiveTopicWs(null);
                 setDockTab('home');
-                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+                window.location.hash = '#dashboard';
               }}
               onSolveChallenge={(challengeId, title) => {
                 // Handled in arena
@@ -2278,13 +2491,13 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setSelectedModuleView(null);
                 setActiveTopicWs(null);
                 setDockTab('game');
-                if (typeof window !== 'undefined') window.location.hash = '#game';
+                window.location.hash = '#game';
               }}
               onBackToDashboard={() => {
                 setSelectedModuleView(null);
                 setActiveTopicWs(null);
                 setDockTab('home');
-                if (typeof window !== 'undefined') window.location.hash = '#dashboard';
+                window.location.hash = '#dashboard';
               }}
               onSolveChallenge={(challengeId, title) => {
                 // Handled in arena
@@ -2407,12 +2620,11 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       {/* ₹9 Pay to Unlock Modal — Razorpay Payment */}
 {/* Replaced by SuccessPlanModal above */}
 
-      {/* 3D Floating Luminous Blue Marble Sphere (Bottom Left - media_1791029953384.jpg) */}
-      <div className="hidden md:block dock-floating-sphere-bl" />
-
       {/* ─── FIXED MOBILE BOTTOM NAVIGATION (Mobile Only: < md) ─── */}
-      <div className="md:hidden h-[64px] shrink-0 pointer-events-none" aria-hidden="true" />
-      <MobileDashboardBottomNav
+      {selectedModuleView !== "python_classroom" && (
+        <>
+          <div className="md:hidden h-[64px] shrink-0 pointer-events-none" aria-hidden="true" />
+          <MobileDashboardBottomNav
         active={
           dockTab === 'placement'
             ? 'job'
@@ -2440,10 +2652,10 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         onLearning={() => {
           playClick();
           setDockTab('home');
-          setSelectedModuleView('data_analyst');
+          setSelectedModuleView('my_learning');
           setActiveTopicWs(null);
           if (typeof window !== 'undefined') {
-            window.location.hash = '#data-analyst';
+            window.location.hash = '#learning';
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }
         }}
@@ -2494,6 +2706,8 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
           if (onOpenLogin) onOpenLogin();
         }}
       />
+        </>
+      )}
 
     </div>
   );
