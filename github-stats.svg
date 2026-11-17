@@ -14,7 +14,7 @@
     <g transform="translate(0, 25)">
       <circle cx="8" cy="6" r="4.5" fill="#39d353"/>
       <text x="24" y="10" class="stat">Total Contributions:</text>
-      <text x="330" y="10" class="stat-val">536</text>
+      <text x="330" y="10" class="stat-val">542</text>
     </g>
     
     <g transform="translate(0, 52)">
