@@ -22,8 +22,8 @@ function humanNeuralTtsPlugin(): Plugin {
             return
           }
 
-          // Default to hi-IN-SwaraNeural (exact Indian Female Teacher voice used in Classroom Explanation)
-          const voiceName = requestedVoice || (lang === 'hi' ? 'hi-IN-SwaraNeural' : 'hi-IN-SwaraNeural')
+          // PERMANENTLY LOCKED DEFAULT: hi-IN-SwaraNeural (Authentic Indian Female Teacher Voice)
+          const voiceName = 'hi-IN-SwaraNeural'
           const cacheKey = `${voiceName}::${text}`
 
           const cached = ttsMemoryCache.get(cacheKey)
@@ -79,4 +79,7 @@ function humanNeuralTtsPlugin(): Plugin {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), humanNeuralTtsPlugin()],
+  build: {
+    sourcemap: false,
+  },
 })

@@ -1,358 +1,251 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
-import { MentorLessonSection } from '../mentor/mentorLessonRegistry';
+import { FileText, ZoomIn, ZoomOut, RotateCcw, Loader2, AlertCircle } from 'lucide-react';
 
-// Configure pdfjs-dist worker
-try {
-  // @ts-ignore
-  if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-      'pdfjs-dist/build/pdf.worker.min.mjs',
-      import.meta.url
-    ).toString();
-  }
-} catch {
-  try {
-    // @ts-ignore
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
-  } catch {
-    // fallback
-  }
-}
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
 export interface SectionRectInfo {
-  left: number;
+  id: string;
   top: number;
-  right: number;
-  bottom: number;
-  width: number;
   height: number;
-  centerX: number;
-  centerY: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+  width?: number;
+  centerX?: number;
+  centerY?: number;
 }
 
-interface PdfVisualNotesViewerProps {
+export interface PdfVisualNotesViewerProps {
   pdfUrl: string;
-  className?: string;
-  activeSection?: MentorLessonSection | null;
-  onUserManualScroll?: () => void;
-  onScrollSettled?: () => void;
-  onSectionRectChange?: (rect: SectionRectInfo | null) => void;
+  title?: string;
 }
+
+const PdfPageCanvas: React.FC<{
+  pdfDoc: pdfjsLib.PDFDocumentProxy;
+  pageNumber: number;
+  containerWidth: number;
+  zoom: number;
+}> = ({ pdfDoc, pageNumber, containerWidth, zoom }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const renderTaskRef = useRef<pdfjsLib.RenderTask | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const renderPage = async () => {
+      if (!canvasRef.current || containerWidth <= 0) return;
+      try {
+        const page = await pdfDoc.getPage(pageNumber);
+        if (cancelled) return;
+
+        const unscaledViewport = page.getViewport({ scale: 1 });
+        const targetCssWidth = Math.max(280, (containerWidth - 4) * zoom);
+        const cssScale = targetCssWidth / unscaledViewport.width;
+        const outputScale = Math.min(window.devicePixelRatio || 2, 2.5);
+
+        const viewport = page.getViewport({ scale: cssScale });
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        canvas.width = Math.floor(viewport.width * outputScale);
+        canvas.height = Math.floor(viewport.height * outputScale);
+        canvas.style.width = `${Math.floor(viewport.width)}px`;
+        canvas.style.height = `${Math.floor(viewport.height)}px`;
+
+        if (renderTaskRef.current) {
+          try {
+            renderTaskRef.current.cancel();
+          } catch {}
+        }
+
+        const transform =
+          outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : undefined;
+
+        const task = page.render({
+          canvasContext: ctx,
+          canvas,
+          transform,
+          viewport,
+        });
+        renderTaskRef.current = task;
+        await task.promise;
+      } catch (err: any) {
+        if (err?.name !== 'RenderingCancelledException') {
+          // Ignore benign cancellation on fast topic switch
+        }
+      }
+    };
+
+    renderPage();
+
+    return () => {
+      cancelled = true;
+      if (renderTaskRef.current) {
+        try {
+          renderTaskRef.current.cancel();
+        } catch {}
+      }
+    };
+  }, [pdfDoc, pageNumber, containerWidth, zoom]);
+
+  return (
+    <div className="bg-white rounded-2xl border border-[#E5DEFF] shadow-xs overflow-hidden flex justify-center">
+      <canvas ref={canvasRef} className="block max-w-none" />
+    </div>
+  );
+};
 
 export const PdfVisualNotesViewer: React.FC<PdfVisualNotesViewerProps> = ({
   pdfUrl,
-  className = '',
-  activeSection = null,
-  onUserManualScroll,
-  onScrollSettled,
-  onSectionRectChange,
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const highlightRef = useRef<HTMLDivElement>(null);
-  const [pages, setPages] = useState<number[]>([]);
-  const [loading, setLoading] = useState(true);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(680);
+  const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
+  const [numPages, setNumPages] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [renderedHeight, setRenderedHeight] = useState<number>(0);
-  const pdfDocRef = useRef<any>(null);
-  const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
-  const activeRenderTasks = useRef<Record<number, any>>({});
-  const isRenderingRef = useRef(false);
+  const [zoom, setZoom] = useState<number>(1);
 
-  // 1. Load Document
+  // Track responsive container width
   useEffect(() => {
-    let isCancelled = false;
+    const el = containerRef.current;
+    if (!el) return;
+    const updateWidth = () => {
+      const w = el.clientWidth;
+      if (w > 100) setContainerWidth(w);
+    };
+    updateWidth();
+    const ro = new ResizeObserver(updateWidth);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  // Load PDF document whenever URL changes
+  useEffect(() => {
+    let active = true;
+    let loadedDoc: pdfjsLib.PDFDocumentProxy | null = null;
     setLoading(true);
     setError(null);
+    setPdfDoc(null);
+    setNumPages(0);
+    setZoom(1);
 
-    const loadDoc = async () => {
+    const abortCtrl = new AbortController();
+    let loadingTask: pdfjsLib.PDFDocumentLoadingTask | null = null;
+
+    (async () => {
       try {
-        const loadingTask = pdfjsLib.getDocument({ url: pdfUrl });
+        const res = await fetch(pdfUrl, { signal: abortCtrl.signal });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const buf = await res.arrayBuffer();
+        if (!active) return;
+
+        loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(buf) });
         const doc = await loadingTask.promise;
-        if (isCancelled) return;
-        pdfDocRef.current = doc;
-        const pageNumbers = Array.from({ length: doc.numPages }, (_, i) => i + 1);
-        setPages(pageNumbers);
+        if (!active) {
+          doc.destroy().catch(() => {});
+          return;
+        }
+        loadedDoc = doc;
+        setPdfDoc(doc);
+        setNumPages(doc.numPages);
         setLoading(false);
       } catch (err: any) {
-        if (!isCancelled) {
-          setError(err?.message || 'Failed to load PDF');
-          setLoading(false);
-        }
+        if (!active || err?.name === 'AbortError') return;
+        console.error('[PdfVisualNotesViewer] Failed to load PDF:', pdfUrl, err);
+        setError(`Unable to load Visual Notes PDF (${err?.message || 'load error'}).`);
+        setLoading(false);
       }
-    };
-
-    loadDoc();
+    })();
 
     return () => {
-      isCancelled = true;
-      Object.values(activeRenderTasks.current).forEach((task) => {
-        try {
-          task?.cancel();
-        } catch {}
-      });
-      activeRenderTasks.current = {};
+      active = false;
+      try {
+        abortCtrl.abort();
+      } catch {}
+      try {
+        loadingTask?.destroy?.()?.catch?.(() => {});
+      } catch {}
+      try {
+        loadedDoc?.destroy?.()?.catch?.(() => {});
+      } catch {}
     };
   }, [pdfUrl]);
 
-  // 2. Render Pages to Fit Container Width with Sharpness & Clean Background
-  useEffect(() => {
-    if (!pdfDocRef.current || pages.length === 0 || !containerRef.current) return;
-
-    let isCancelled = false;
-    let resizeTimer: any = null;
-
-    const renderPages = async () => {
-      if (isRenderingRef.current) return;
-      isRenderingRef.current = true;
-
-      const container = containerRef.current;
-      if (!container) {
-        isRenderingRef.current = false;
-        return;
-      }
-
-      const targetWidth = Math.max(260, container.clientWidth - 24);
-      const dpr = window.devicePixelRatio || 1;
-
-      for (let i = 0; i < pages.length; i++) {
-        const pageNum = pages[i];
-        const canvas = canvasRefs.current[i];
-        if (!canvas || !pdfDocRef.current || isCancelled) continue;
-
-        try {
-          if (activeRenderTasks.current[pageNum]) {
-            try {
-              activeRenderTasks.current[pageNum].cancel();
-            } catch {}
-            activeRenderTasks.current[pageNum] = null;
-          }
-
-          const page = await pdfDocRef.current.getPage(pageNum);
-          if (isCancelled) break;
-
-          const unscaledViewport = page.getViewport({ scale: 1 });
-          const scale = targetWidth / unscaledViewport.width;
-          const viewport = page.getViewport({ scale: scale * dpr });
-
-          canvas.width = Math.floor(viewport.width);
-          canvas.height = Math.floor(viewport.height);
-          canvas.style.width = `${Math.floor(viewport.width / dpr)}px`;
-          canvas.style.height = `${Math.floor(viewport.height / dpr)}px`;
-
-          const ctx = canvas.getContext('2d', { alpha: false });
-          if (!ctx) continue;
-
-          ctx.setTransform(1, 0, 0, 1, 0, 0);
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-          const renderContext = {
-            canvasContext: ctx,
-            viewport: viewport,
-            background: 'rgb(255, 255, 255)',
-          };
-
-          const task = page.render(renderContext);
-          activeRenderTasks.current[pageNum] = task;
-          await task.promise;
-          activeRenderTasks.current[pageNum] = null;
-          if (canvas) {
-            setRenderedHeight(canvas.clientHeight || Math.floor(viewport.height / dpr));
-          }
-        } catch (err: any) {
-          if (err?.name !== 'RenderingCancelledException') {
-            console.error(`Error rendering PDF page ${pageNum}:`, err);
-          }
-        }
-      }
-
-      isRenderingRef.current = false;
-    };
-
-    renderPages();
-
-    const resizeObserver = new ResizeObserver(() => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        if (!isCancelled) {
-          renderPages();
-        }
-      }, 100);
-    });
-
-    resizeObserver.observe(containerRef.current);
-
-    return () => {
-      isCancelled = true;
-      clearTimeout(resizeTimer);
-      resizeObserver.disconnect();
-      Object.values(activeRenderTasks.current).forEach((task) => {
-        try {
-          task?.cancel();
-        } catch {}
-      });
-      activeRenderTasks.current = {};
-    };
-  }, [pages]);
-
-  // 3. Robust Physical User Interaction Detection (wheel & touch only, never programmatic scroll)
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const handleUserGesture = () => {
-      if (onUserManualScroll) {
-        onUserManualScroll();
-      }
-    };
-
-    container.addEventListener('wheel', handleUserGesture, { passive: true });
-    container.addEventListener('touchmove', handleUserGesture, { passive: true });
-
-    return () => {
-      container.removeEventListener('wheel', handleUserGesture);
-      container.removeEventListener('touchmove', handleUserGesture);
-    };
-  }, [onUserManualScroll]);
-
-  // 4. Intelligent PDF Auto-Scroll Engine (Page-aware, scale-aware, non-destructive)
-  useEffect(() => {
-    if (!activeSection || !containerRef.current || renderedHeight === 0) return;
-
-    const container = containerRef.current;
-    const pageIdx = (activeSection.pageNumber || 1) - 1;
-    const canvas = canvasRefs.current[pageIdx];
-
-    const canvasHeight = canvas?.clientHeight || renderedHeight;
-    const canvasOffsetTop = canvas?.offsetTop || 0;
-
-    const sectionTop = canvasOffsetTop + (canvasHeight * activeSection.yStartPercent) / 100;
-    const sectionHeight = (canvasHeight * (activeSection.yEndPercent - activeSection.yStartPercent)) / 100;
-
-    const currentScroll = container.scrollTop;
-    const containerHeight = container.clientHeight;
-
-    // Check if section is already comfortably within view
-    const isAlreadyFullyVisible =
-      sectionTop >= currentScroll + 20 &&
-      sectionTop + sectionHeight <= currentScroll + containerHeight - 30;
-
-    if (!isAlreadyFullyVisible) {
-      // Calculate smooth target scroll position
-      const idealScroll = Math.max(0, sectionTop - containerHeight * 0.22);
-      container.scrollTo({
-        top: idealScroll,
-        behavior: 'smooth',
-      });
-    }
-
-    // Wait for smooth scroll to settle before notifying voice narration
-    const settleTimer = setTimeout(() => {
-      if (onScrollSettled) {
-        onScrollSettled();
-      }
-      updateSectionBoundingBox();
-    }, 450);
-
-    return () => clearTimeout(settleTimer);
-  }, [activeSection, renderedHeight]);
-
-  // 5. Update Bounding Box for the Flying Robot & Laser Pointer
-  const updateSectionBoundingBox = useCallback(() => {
-    if (!highlightRef.current || !onSectionRectChange) return;
-    const rect = highlightRef.current.getBoundingClientRect();
-    onSectionRectChange({
-      left: rect.left,
-      top: rect.top,
-      right: rect.right,
-      bottom: rect.bottom,
-      width: rect.width,
-      height: rect.height,
-      centerX: rect.left + rect.width / 2,
-      centerY: rect.top + rect.height / 2,
-    });
-  }, [onSectionRectChange]);
-
-  useEffect(() => {
-    updateSectionBoundingBox();
-    window.addEventListener('resize', updateSectionBoundingBox);
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener('scroll', updateSectionBoundingBox, { passive: true });
-    }
-    return () => {
-      window.removeEventListener('resize', updateSectionBoundingBox);
-      if (container) {
-        container.removeEventListener('scroll', updateSectionBoundingBox);
-      }
-    };
-  }, [updateSectionBoundingBox, activeSection]);
-
-  // Derived coordinates for precise highlighting
-  const activePageIdx = (activeSection?.pageNumber || 1) - 1;
-  const activeCanvas = canvasRefs.current[activePageIdx];
-  const activeCanvasHeight = activeCanvas?.clientHeight || renderedHeight;
-  const activeCanvasOffsetTop = activeCanvas?.offsetTop || 0;
-
-  const highlightTop = activeSection
-    ? activeCanvasOffsetTop + (activeCanvasHeight * activeSection.yStartPercent) / 100
-    : 0;
-  const highlightHeight = activeSection
-    ? Math.max(45, (activeCanvasHeight * (activeSection.yEndPercent - activeSection.yStartPercent)) / 100)
-    : 0;
-
   return (
-    <div
-      ref={containerRef}
-      className={`w-full h-full overflow-y-auto bg-white flex flex-col items-center p-2 sm:p-3 select-none relative ${className}`}
-      style={{
-        scrollbarWidth: 'thin',
-        scrollbarColor: '#d8b4fe #faf5ff',
-      }}
-    >
-      {loading && (
-        <div className="w-full flex flex-col items-center justify-center p-12 space-y-3">
-          <div className="w-8 h-8 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" />
-          <span className="text-xs text-purple-700 font-bold">Rendering Visual Notes PDF...</span>
+    <div ref={containerRef} className="sql-vn-root w-full space-y-3.5 pb-6 font-sans">
+      {/* Compact Toolbar */}
+      <div className="bg-[#FAF8FF] border border-[#E5DEFF] rounded-2xl px-3.5 py-2 flex items-center justify-between gap-2 flex-wrap shadow-2xs sticky top-0 z-10 backdrop-blur-xs">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6D28D9] text-white text-[11px] font-semibold shadow-2xs">
+          <FileText className="w-3 h-3" />
+          <span>Visual Notes {numPages > 0 ? `(${numPages} ${numPages === 1 ? 'Page' : 'Pages'})` : ''}</span>
         </div>
-      )}
 
-      {error && (
-        <div className="w-full p-6 text-center text-red-600 text-xs font-semibold">
-          {error}
-        </div>
-      )}
-
-      <div className="relative w-full flex flex-col items-center">
-        {pages.map((pageNum, idx) => (
-          <canvas
-            key={pageNum}
-            ref={(el) => (canvasRefs.current[idx] = el)}
-            className="rounded-2xl shadow-xs border border-purple-100/70 max-w-full block bg-white mb-4 last:mb-0"
-          />
-        ))}
-
-        {/* ── Precise Concept Highlight Overlay ── */}
-        {activeSection && renderedHeight > 0 && (
-          <div
-            ref={highlightRef}
-            className="absolute rounded-2xl pointer-events-none transition-all duration-500 border-2 border-purple-500 bg-purple-500/12 shadow-[0_0_25px_rgba(168,85,247,0.4)] animate-pulse z-10"
-            style={{
-              left: `${activeSection.xStartPercent ?? 4}%`,
-              width: `${(activeSection.xEndPercent ?? 96) - (activeSection.xStartPercent ?? 4)}%`,
-              top: `${highlightTop}px`,
-              height: `${highlightHeight}px`,
-            }}
+        <div className="inline-flex items-center gap-1 bg-white border border-[#E5DEFF] rounded-full px-1.5 py-0.5 shadow-2xs">
+          <button
+            type="button"
+            onClick={() => setZoom((z) => Math.max(0.75, +(z - 0.1).toFixed(2)))}
+            className="p-1 rounded-full text-slate-600 hover:bg-[#F5F3FF] hover:text-[#6D28D9] transition-colors cursor-pointer"
+            title="Zoom out"
           >
-            {/* Top pill badge */}
-            <div className="absolute -top-3 left-3 px-3 py-0.5 rounded-full bg-purple-600 text-white text-[10px] font-black tracking-wide shadow-md flex items-center gap-1.5 z-20 whitespace-nowrap">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span>Explaining: {activeSection.title}</span>
-            </div>
-          </div>
-        )}
+            <ZoomOut className="w-3.5 h-3.5" />
+          </button>
+          <span className="text-[11px] font-bold text-[#1E1B4B] px-1 tabular-nums min-w-[38px] text-center">
+            {Math.round(zoom * 100)}%
+          </span>
+          <button
+            type="button"
+            onClick={() => setZoom((z) => Math.min(1.6, +(z + 0.1).toFixed(2)))}
+            className="p-1 rounded-full text-slate-600 hover:bg-[#F5F3FF] hover:text-[#6D28D9] transition-colors cursor-pointer"
+            title="Zoom in"
+          >
+            <ZoomIn className="w-3.5 h-3.5" />
+          </button>
+          {zoom !== 1 && (
+            <button
+              type="button"
+              onClick={() => setZoom(1)}
+              className="p-1 rounded-full text-slate-500 hover:bg-[#F5F3FF] hover:text-[#6D28D9] transition-colors cursor-pointer"
+              title="Reset zoom"
+            >
+              <RotateCcw className="w-3 h-3" />
+            </button>
+          )}
+        </div>
       </div>
+
+      {/* Loading State */}
+      {loading && (
+        <div className="bg-white rounded-2xl border border-[#E5DEFF] p-12 flex flex-col items-center justify-center gap-2.5 text-slate-500">
+          <Loader2 className="w-6 h-6 text-[#7C3AED] animate-spin" />
+          <span className="text-xs font-semibold">Loading Visual Learning Notes...</span>
+        </div>
+      )}
+
+      {/* Error State */}
+      {!loading && error && (
+        <div className="bg-rose-50 rounded-2xl border border-rose-200 p-6 flex items-center gap-2.5 text-rose-700 text-xs font-semibold">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {/* Exact Pixel-Perfect PDF Pages */}
+      {!loading && !error && pdfDoc && (
+        <div className="space-y-4 overflow-x-auto">
+          {Array.from({ length: numPages }, (_, idx) => (
+            <PdfPageCanvas
+              key={`${pdfUrl}-p${idx + 1}`}
+              pdfDoc={pdfDoc}
+              pageNumber={idx + 1}
+              containerWidth={containerWidth}
+              zoom={zoom}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

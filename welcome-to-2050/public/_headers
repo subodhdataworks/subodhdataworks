@@ -1,23 +1,53 @@
 # Security and Cache Headers for Cloudflare Pages
 
-# 1. HTML entry documents: Never cache; always revalidate on navigation
+# 1. Global security headers
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Permissions-Policy: camera=(), geolocation=(), microphone=(self), payment=(self)
 
+# 2. HTML entry documents: Never cache; always revalidate on navigation
 /index.html
   Cache-Control: no-cache, no-store, must-revalidate, max-age=0
   Pragma: no-cache
   Expires: 0
 
-# 2. Static versioned bundles with content-hashed filenames: Cache immutably for 1 year
+# 3. AI Discoverability & SEO root files: Explicit Content-Type & balanced caching
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=3600
+  X-Robots-Tag: all
+
+/llms-full.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=3600
+  X-Robots-Tag: all
+
+/robots.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=3600
+
+/sitemap.xml
+  Content-Type: application/xml; charset=utf-8
+  Cache-Control: public, max-age=3600
+
+# 4. Private / paid static assets: Prevent search engine indexing
+/visual-notes/*
+  X-Robots-Tag: noindex, nofollow
+
+/pdf/*
+  X-Robots-Tag: noindex, nofollow
+
+# 5. Static versioned bundles with content-hashed filenames: Cache immutably for 1 year
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
-# 3. Dynamic and authenticated API routes: Never cache across requests or users
+# 6. Dynamic and authenticated API routes: Never cache across requests or users
 /api/*
   Cache-Control: no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0
   Pragma: no-cache
   Expires: 0
   Vary: Authorization, Cookie, Accept-Encoding
+  X-Robots-Tag: noindex, nofollow

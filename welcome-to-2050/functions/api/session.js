@@ -17,19 +17,10 @@ import {
   getServiceAccount,
 } from './_firestore-admin.js';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Content-Type': 'application/json',
-  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
-  'Pragma': 'no-cache',
-  'Expires': '0',
-  'Vary': 'Authorization, Cookie, Accept-Encoding',
-};
-
-const json = (data, status = 200) =>
-  new Response(JSON.stringify(data), { status, headers: corsHeaders });
+import { createJsonResponder, handleCorsPreflight, rejectUnauthorizedOrigin } from './_cors.js';
+const CORS_OPTS = { methods: "GET, POST, OPTIONS", headers: "Content-Type, Authorization" };
+// Strict origin-allowlisted CORS is applied per request via _cors.js
+const json = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 
 const SESSION_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
 
@@ -44,6 +35,9 @@ function generateSecureSessionId() {
 }
 
 export async function onRequestPost(context) {
+  const _corsBlocked = rejectUnauthorizedOrigin(context.request, context.env, CORS_OPTS);
+  if (_corsBlocked) return _corsBlocked;
+  const json = createJsonResponder(context.request, context.env, CORS_OPTS);
   const { request, env } = context;
   const url = new URL(request.url);
 
@@ -319,9 +313,12 @@ export async function onRequestPost(context) {
 }
 
 export async function onRequestGet(context) {
+  const _corsBlocked = rejectUnauthorizedOrigin(context.request, context.env, CORS_OPTS);
+  if (_corsBlocked) return _corsBlocked;
+  const json = createJsonResponder(context.request, context.env, CORS_OPTS);
   return onRequestPost(context);
 }
 
-export async function onRequestOptions() {
-  return new Response(null, { status: 204, headers: corsHeaders });
+export async function onRequestOptions(context) {
+  return handleCorsPreflight(context, CORS_OPTS);
 }

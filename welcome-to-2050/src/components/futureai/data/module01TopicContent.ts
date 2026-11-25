@@ -95,6 +95,7 @@ export interface TopicGameData {
     phase1Prompt: string;
     phase1Options: Array<{ id: string; text: string; isCorrect: boolean }>;
     phase2Prompt: string;
+    phase2Options?: Array<{ id: string; text: string; isCorrect: boolean }>;
     phase2Starter: string;
     phase2Solution: string;
     phase2ExpectedOutput: string;

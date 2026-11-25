@@ -417,7 +417,63 @@
   font-weight: 800;
   color: #0f172a;
   line-height: 1.35;
-  margin: 4px 0 0;
+  margin: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   AI AVATAR HOST ROW & SPEECH BUBBLE
+   ══════════════════════════════════════════════════════════════════ */
+.ppa-prompt-question-with-avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.ppa-speech-bubble-container {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px 12px;
+  box-shadow: 0 1px 6px -1px rgba(15, 23, 42, 0.05);
+}
+
+.ppa-speech-bubble-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -6px;
+  transform: translateY(-50%) rotate(45deg);
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  border-left: 1.5px solid #e2e8f0;
+  border-bottom: 1.5px solid #e2e8f0;
+}
+
+.ppa-prompt-question-with-avatar-row .ppa-prompt-question-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 !important;
+}
+
+@media (max-width: 640px) {
+  .ppa-prompt-question-with-avatar-row {
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .ppa-speech-bubble-container {
+    padding: 8px 10px;
+    border-radius: 12px;
+  }
+  .ppa-speech-bubble-container::before {
+    top: 22px;
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -2768,3 +2824,908 @@
     border-radius: 16px !important;
   }
 }
+
+/* ============================================================================
+   FUTURE IT INDUSTRY EXECUTIVE THEME OVERRIDES — CODING GAME COMPACT & CLEAN
+   - Zero juvenile clutter or 3D robot mascots
+   - 2-Column layout: Clean wide arena (Left ~75%) + Sleek stats/hint (Right ~25%)
+   - Brand Royal Purple (#6D28D9) CTAs, high-contrast crisp text, subtle borders
+   ============================================================================ */
+
+.ppa-arena-stage {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 280px !important;
+  gap: 14px !important;
+  align-items: stretch !important;
+}
+
+.ppa-left-card-col,
+.ppa-mobile-course-hero,
+.ppa-robot-mascot-wrap,
+.ppa-mentor-mascot-img {
+  display: none !important;
+}
+
+@media (max-width: 960px) {
+  .ppa-arena-stage {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Stepper Bar */
+.ppa-stepper-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+  padding: 6px 12px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+  margin-bottom: 12px !important;
+  height: auto !important;
+  box-sizing: border-box !important;
+}
+
+.ppa-step-item {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 6px 14px !important;
+  border-radius: 10px !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  transition: all 0.15s ease !important;
+}
+
+.ppa-step-item.active {
+  background: #6D28D9 !important;
+  border-color: #6D28D9 !important;
+  box-shadow: 0 2px 8px rgba(109, 40, 217, 0.25) !important;
+}
+
+.ppa-step-item.active .ppa-step-name {
+  color: #ffffff !important;
+}
+
+.ppa-step-item.active .ppa-step-sub {
+  color: #e9d5ff !important;
+}
+
+.ppa-step-circle-badge {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+
+.ppa-step-circle-badge.quiz {
+  background: #6D28D9 !important;
+}
+
+.ppa-step-circle-badge.puzzle {
+  background: #4f46e5 !important;
+}
+
+.ppa-step-circle-badge.completed {
+  background: #10b981 !important;
+}
+
+/* Main Card */
+.ppa-main-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 18px !important;
+  padding: 18px 22px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  min-height: unset !important;
+  box-sizing: border-box !important;
+}
+
+.ppa-card-header {
+  padding-bottom: 10px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.ppa-card-title {
+  font-size: 1.15rem !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+}
+
+.ppa-prompt-banner {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 10px 14px !important;
+}
+
+.ppa-prompt-question-row {
+  margin: 4px 0 10px 0 !important;
+}
+
+.ppa-prompt-question {
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  line-height: 1.45 !important;
+}
+
+/* Quiz 2x2 Option Cards */
+.ppa-quiz-options-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 12px !important;
+  margin-top: 8px !important;
+  margin-bottom: 14px !important;
+}
+
+@media (max-width: 640px) {
+  .ppa-quiz-options-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.ppa-quiz-opt-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+  padding: 12px 16px !important;
+  font-size: 0.95rem !important;
+  color: #1e293b !important;
+  min-height: 52px !important;
+  box-sizing: border-box !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+  transition: all 0.15s ease !important;
+}
+
+.ppa-quiz-opt-btn:hover:not(:disabled) {
+  transform: translateY(-1px) !important;
+  background: #faf5ff !important;
+  border-color: #c084fc !important;
+  box-shadow: 0 4px 12px rgba(109, 40, 217, 0.06) !important;
+}
+
+.ppa-quiz-opt-btn.selected {
+  background: #f5f3ff !important;
+  border-color: #6D28D9 !important;
+  box-shadow: 0 0 0 1.5px #6D28D9, 0 4px 12px rgba(109, 40, 217, 0.1) !important;
+  color: #4c1d95 !important;
+}
+
+.ppa-quiz-opt-btn.correct {
+  background: #f0fdf4 !important;
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 1.5px #10b981 !important;
+  color: #065f46 !important;
+}
+
+.ppa-quiz-opt-btn.wrong {
+  background: #fef2f2 !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 1.5px #ef4444 !important;
+  color: #991b1b !important;
+}
+
+.ppa-opt-key-badge {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 800 !important;
+  font-size: 0.85rem !important;
+  flex-shrink: 0 !important;
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  border: 1px solid #e2e8f0 !important;
+  transition: all 0.15s ease !important;
+  box-shadow: none !important;
+}
+
+.ppa-quiz-opt-btn.selected .ppa-opt-key-badge {
+  background: #6D28D9 !important;
+  color: #ffffff !important;
+  border-color: #6D28D9 !important;
+}
+
+.ppa-quiz-opt-btn.correct .ppa-opt-key-badge {
+  background: #10b981 !important;
+  color: #ffffff !important;
+  border-color: #10b981 !important;
+}
+
+.ppa-quiz-opt-btn.wrong .ppa-opt-key-badge {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  border-color: #ef4444 !important;
+}
+
+/* Card Footer Controls */
+.ppa-card-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  padding-top: 14px !important;
+  border-top: 1px solid #f1f5f9 !important;
+  margin-top: auto !important;
+}
+
+.ppa-btn-prev {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 9px 18px !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+  font-weight: 600 !important;
+  font-size: 0.88rem !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.ppa-btn-prev:hover:not(:disabled) {
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+.ppa-btn-skip-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 9px 18px !important;
+  border-radius: 10px !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #64748b !important;
+  font-weight: 600 !important;
+  font-size: 0.88rem !important;
+  cursor: pointer !important;
+  margin-left: auto !important;
+  transition: all 0.15s ease !important;
+}
+
+.ppa-btn-skip-pill:hover {
+  background: #f1f5f9 !important;
+  color: #1e293b !important;
+  border-color: #cbd5e1 !important;
+}
+
+.ppa-btn-submit-main {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 10px 26px !important;
+  border-radius: 10px !important;
+  background: #6D28D9 !important;
+  color: #ffffff !important;
+  border: none !important;
+  font-weight: 700 !important;
+  font-size: 0.92rem !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 8px rgba(109, 40, 217, 0.25) !important;
+  transition: all 0.15s ease !important;
+}
+
+.ppa-btn-submit-main:hover:not(:disabled) {
+  background: #5B21B6 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 14px rgba(109, 40, 217, 0.35) !important;
+}
+
+.ppa-btn-submit-main:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Sidebar Column */
+.ppa-sidebar-col {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+.ppa-ai-mentor-card,
+.ppa-points-streak-card,
+.ppa-progress-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  padding: 14px 16px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+}
+
+.ppa-mentor-head,
+.ppa-ps-head {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 0.82rem !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin-bottom: 8px !important;
+}
+
+.ppa-mentor-content-row {
+  display: block !important;
+}
+
+.ppa-mentor-speech-text {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  padding: 8px 12px !important;
+  font-size: 0.78rem !important;
+  color: #334155 !important;
+  line-height: 1.45 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.ppa-mentor-help-cta-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  background: #fdf4ff !important;
+  border: 1px dashed #d8b4fe !important;
+  border-radius: 10px !important;
+  padding: 7px 12px !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  color: #7e22ce !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  margin-top: 8px !important;
+  width: 100% !important;
+}
+
+.ppa-mentor-help-cta-btn:hover {
+  background: #fae8ff !important;
+  border-color: #c084fc !important;
+}
+
+/* Puzzle Challenge Tokens & Slots */
+.ppa-puzzle-block-pill {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  padding: 8px 14px !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 0.85rem !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+  transition: all 0.15s ease !important;
+}
+
+.ppa-puzzle-block-pill:hover {
+  border-color: #6D28D9 !important;
+  background: #faf5ff !important;
+  color: #6D28D9 !important;
+}
+
+.ppa-puzzle-slot-row {
+  background: #f8fafc !important;
+  border: 1.5px dashed #cbd5e1 !important;
+  border-radius: 10px !important;
+  padding: 8px 12px !important;
+  transition: all 0.15s ease !important;
+}
+
+.ppa-puzzle-slot-row.filled {
+  background: #f5f3ff !important;
+  border: 1.5px solid #c084fc !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   SHIFTED GAME TABS INSIDE CARD HEADER (COMPACT & ZERO-SPACE-WASTE)
+   ══════════════════════════════════════════════════════════════════ */
+.ppa-stepper-bar {
+  display: none !important;
+}
+
+.ppa-card-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  padding-bottom: 12px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  flex-wrap: nowrap !important;
+}
+
+.ppa-header-stepper-tabs {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 3px 4px !important;
+}
+
+.ppa-header-tab-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 6px 12px !important;
+  border-radius: 9px !important;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  color: #475569 !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  user-select: none !important;
+}
+
+.ppa-header-tab-btn:hover:not(:disabled) {
+  color: #0f172a !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+
+.ppa-header-tab-btn.active {
+  background: #6D28D9 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(109, 40, 217, 0.25) !important;
+}
+
+.ppa-header-tab-btn.active .ppa-header-tab-count {
+  color: #e9d5ff !important;
+}
+
+.ppa-header-tab-btn.locked {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+}
+
+.ppa-header-tab-badge {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #e2e8f0 !important;
+  color: #475569 !important;
+  flex-shrink: 0 !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  transition: all 0.15s ease !important;
+}
+
+.ppa-header-tab-btn.active .ppa-header-tab-badge.quiz {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
+.ppa-header-tab-btn.active .ppa-header-tab-badge.puzzle {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
+.ppa-header-tab-badge.completed {
+  background: #10b981 !important;
+  color: #ffffff !important;
+}
+
+.ppa-header-tab-title {
+  font-weight: 700 !important;
+  font-size: 0.82rem !important;
+  line-height: 1 !important;
+}
+
+.ppa-header-tab-count {
+  font-size: 0.7rem !important;
+  font-weight: 600 !important;
+  opacity: 0.85 !important;
+}
+
+@media (max-width: 768px) {
+  .ppa-card-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+  .ppa-header-stepper-tabs {
+    width: 100% !important;
+  }
+  .ppa-header-tab-btn {
+    flex: 1 1 0% !important;
+    justify-content: center !important;
+  }
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PUZZLE CHALLENGE & AI HOST UI — EXACT MATCH TO REFERENCE SCREENSHOT
+   ══════════════════════════════════════════════════════════════════════════ */
+.ppa-header-stepper-tabs {
+  background: #f5f3ff !important;
+  border: 1px solid #e9e2ff !important;
+  border-radius: 999px !important;
+  padding: 4px 5px !important;
+}
+
+.ppa-header-tab-btn {
+  border-radius: 999px !important;
+  padding: 7px 14px !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+}
+
+.ppa-header-tab-btn.active {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(109, 40, 217, 0.28) !important;
+}
+
+.ppa-prompt-banner {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 2px 0 !important;
+}
+
+.ppa-speech-bubble-container {
+  background: #ffffff !important;
+  border: 1.5px solid #e5deff !important;
+  border-radius: 18px !important;
+  padding: 16px 20px !important;
+  box-shadow: 0 6px 22px rgba(109, 40, 217, 0.06) !important;
+}
+
+.ppa-speech-bubble-container::before {
+  width: 12px !important;
+  height: 12px !important;
+  left: -7px !important;
+  background: #ffffff !important;
+  border-left: 1.5px solid #e5deff !important;
+  border-bottom: 1.5px solid #e5deff !important;
+}
+
+.ppa-prompt-question-row {
+  margin: 0 !important;
+}
+
+.ppa-prompt-question {
+  font-size: 1.06rem !important;
+  font-weight: 800 !important;
+  color: #111827 !important;
+  line-height: 1.45 !important;
+}
+
+.ppa-mentor-help-cta-btn {
+  background: #f5f3ff !important;
+  border: 1px solid #ddd6fe !important;
+  border-radius: 12px !important;
+  color: #6d28d9 !important;
+  font-weight: 800 !important;
+}
+
+.ppa-mentor-help-cta-btn:hover {
+  background: #ede9fe !important;
+  border-color: #c4b5fd !important;
+}
+
+
+/* Soft Lavender AI Host Banner Box matching media_1795114662364_b668d29c.jpg */
+.ppa-prompt-banner {
+  background: linear-gradient(90deg, #f1ecff 0%, #f7f4ff 55%, #f5f2ff 100%) !important;
+  border: 1px solid #e9e2ff !important;
+  border-radius: 20px !important;
+  padding: 10px 18px 8px 14px !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   GAME 3: REAL-WORLD MISSION ENHANCED PURPLE & WHITE THEME
+   ══════════════════════════════════════════════════════════════════ */
+.ppa-header-tab-btn .ppa-header-tab-badge.mission {
+  background: #ede9fe !important;
+  color: #6d28d9 !important;
+}
+
+.ppa-header-tab-btn.active .ppa-header-tab-badge.mission {
+  background: rgba(255, 255, 255, 0.22) !important;
+  color: #ffffff !important;
+}
+
+.ppa-mission-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: ppaFadeIn 0.25s ease-out;
+}
+
+.ppa-mission-card {
+  background: #ffffff;
+  border: 1.5px solid #e9e5f5;
+  border-radius: 18px;
+  padding: 20px 22px;
+  box-shadow: 0 4px 18px rgba(109, 40, 217, 0.04);
+  transition: all 0.2s ease;
+}
+
+.ppa-mission-card:hover {
+  border-color: #ddd6fe;
+  box-shadow: 0 6px 22px rgba(109, 40, 217, 0.07);
+}
+
+.ppa-mission-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: 9999px;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  color: #6d28d9;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.ppa-mission-textarea {
+  width: 100%;
+  border-radius: 14px;
+  border: 1.5px solid #e2e8f0;
+  background: #fafafa;
+  padding: 14px 16px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #1e293b;
+  outline: none;
+  transition: all 0.2s ease;
+  resize: vertical;
+}
+
+.ppa-mission-textarea:focus {
+  background: #ffffff;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+.ppa-mission-code-editor {
+  width: 100%;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  border-radius: 12px;
+  border: 1.5px solid #334155;
+  background: #0f172a;
+  color: #f8fafc;
+  padding: 14px;
+  outline: none;
+  resize: vertical;
+}
+
+.ppa-mission-model-box {
+  background: #faf8ff;
+  border: 1.5px solid #ddd6fe;
+  border-radius: 14px;
+  padding: 16px;
+  animation: ppaFadeIn 0.3s ease-out;
+}
+
+/* ── Tight Gap Fix: Industrial Training Mode ── */
+.ppa-main-card.ppa-in-mission {
+  justify-content: flex-start !important;
+  gap: 4px !important;
+  padding-top: 8px !important;
+  padding-bottom: 12px !important;
+  min-height: auto !important;
+}
+
+.ppa-main-card.ppa-in-mission .ppa-card-header {
+  padding-bottom: 4px !important;
+  margin-bottom: 2px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  flex-wrap: nowrap !important;
+  gap: 6px !important;
+}
+
+.ppa-main-card.ppa-in-mission .ppa-header-left {
+  flex-shrink: 0 !important;
+}
+
+.ppa-main-card.ppa-in-mission .ppa-header-stepper-tabs {
+  gap: 4px !important;
+  padding: 2px 3px !important;
+}
+
+.ppa-main-card.ppa-in-mission .ppa-header-tab-btn {
+  padding: 4px 8px !important;
+  gap: 4px !important;
+  font-size: 0.76rem !important;
+  white-space: nowrap !important;
+}
+
+.ppa-main-card.ppa-in-mission .ppa-header-right {
+  gap: 4px !important;
+  flex-shrink: 0 !important;
+}
+
+.ppa-main-card.ppa-in-mission .ppa-streak-pill,
+.ppa-main-card.ppa-in-mission .ppa-timer-pill,
+.ppa-main-card.ppa-in-mission .ppa-points-pill {
+  padding: 4px 7px !important;
+  font-size: 0.72rem !important;
+  gap: 3px !important;
+  white-space: nowrap !important;
+}
+
+.ppa-main-card.ppa-in-mission .ppa-sound-toggle-btn {
+  width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+.ppa-main-card.ppa-in-mission .ppa-mission-container {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  gap: 2px !important;
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   PREMIUM INDUSTRIAL TRAINING TAB BUTTON, CTA, TYPOGRAPHY & MICRO-ANIMATIONS
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+@keyframes ppaPremiumShimmer {
+  0% {
+    transform: translateX(-140%) skewX(-22deg);
+  }
+  45%, 100% {
+    transform: translateX(260%) skewX(-22deg);
+  }
+}
+
+@keyframes ppaPremiumGlowPulse {
+  0%, 100% {
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.34), 0 0 0 1px rgba(196, 181, 253, 0.45);
+  }
+  50% {
+    box-shadow: 0 6px 24px rgba(124, 58, 237, 0.52), 0 0 0 3px rgba(167, 139, 250, 0.35);
+  }
+}
+
+@keyframes itSmoothRise {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ppa-header-tab-btn.ppa-it-premium-tab,
+.ppa-main-card.ppa-in-mission .ppa-header-tab-btn.ppa-it-premium-tab {
+  position: relative !important;
+  overflow: hidden !important;
+  padding: 6px 14px !important;
+  gap: 7px !important;
+  border-radius: 12px !important;
+  font-size: 0.85rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.01em !important;
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, background 0.22s ease !important;
+}
+
+.ppa-header-tab-btn.ppa-it-premium-tab:not(.active):not(:disabled) {
+  background: linear-gradient(135deg, #FAF5FF 0%, #EDE9FE 100%) !important;
+  color: #5B21B6 !important;
+  border: 1px solid #DDD6FE !important;
+}
+
+.ppa-header-tab-btn.ppa-it-premium-tab:hover:not(:disabled) {
+  transform: translateY(-1.5px) scale(1.02) !important;
+}
+
+.ppa-header-tab-btn.ppa-it-premium-tab.active,
+.ppa-main-card.ppa-in-mission .ppa-header-tab-btn.ppa-it-premium-tab.active {
+  background: linear-gradient(135deg, #5B21B6 0%, #7C3AED 50%, #9333EA 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(221, 214, 254, 0.45) !important;
+  animation: ppaPremiumGlowPulse 2.8s ease-in-out infinite !important;
+}
+
+.ppa-header-tab-btn.ppa-it-premium-tab.active::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.32) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: ppaPremiumShimmer 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.ppa-header-tab-btn.ppa-it-premium-tab .ppa-header-tab-badge {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 7px !important;
+}
+
+.ppa-header-tab-btn.ppa-it-premium-tab.active .ppa-header-tab-badge {
+  background: rgba(255, 255, 255, 0.22) !important;
+  color: #ffffff !important;
+  backdrop-filter: blur(4px);
+}
+
+.ppa-header-tab-btn.ppa-it-premium-tab .ppa-header-tab-title {
+  font-weight: 800 !important;
+  font-size: 0.85rem !important;
+}
+
+.ppa-header-tab-btn.ppa-it-premium-tab.active .ppa-header-tab-count {
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: #F5F3FF !important;
+  padding: 1px 6px !important;
+  border-radius: 999px !important;
+  font-size: 0.74rem !important;
+  font-weight: 800 !important;
+}
+
+/* Premium Industrial Training Action CTA Button */
+.it-premium-cta-btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, filter 0.2s ease;
+}
+
+.it-premium-cta-btn:not(:disabled)::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 42%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.28) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: ppaPremiumShimmer 3.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.it-premium-cta-btn:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.015);
+  box-shadow: 0 10px 26px -4px rgba(124, 58, 237, 0.48);
+}
+
+.it-premium-cta-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.985);
+}
+
+.it-smooth-rise {
+  animation: itSmoothRise 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+
+

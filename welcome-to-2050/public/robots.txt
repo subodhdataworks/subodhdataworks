@@ -1,0 +1,150 @@
+# FUTURE IT INDUSTRY — robots.txt
+# Canonical Domain: https://futureitindustry.com
+# Note: robots.txt guides crawler indexing and is not an authentication or security control.
+
+# 1. Default Search Engine Crawlers
+User-agent: *
+Allow: /
+Allow: /courses
+Allow: /courses/
+Allow: /ats-resume-checker
+Allow: /about
+Allow: /contact
+Allow: /terms
+Allow: /privacy
+Allow: /refund
+Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /sitemap.xml
+
+# Protect private dashboards, admin routes, authenticated areas, and backend APIs from unnecessary crawling
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin-portal
+Disallow: /control-center
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /mylearning
+Disallow: /my-learning
+Disallow: /wallet
+Disallow: /withdraw
+Disallow: /earnings
+Disallow: /referral
+Disallow: /visual-notes/
+Disallow: /*?*token=
+Disallow: /*?*auth=
+Disallow: /*?*ref=
+Disallow: /*?*refCode=
+
+# 2. Search Engine Crawlers (Explicit Allow on Public Content)
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /wallet
+Disallow: /visual-notes/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /wallet
+Disallow: /visual-notes/
+
+# 3. AI Search & Discovery Crawlers (Public Information & llms.txt Allowed; Private/Paid Paths Disallowed)
+User-agent: OAI-SearchBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /wallet
+Disallow: /visual-notes/
+
+User-agent: ChatGPT-User
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /wallet
+Disallow: /visual-notes/
+
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /wallet
+Disallow: /visual-notes/
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /wallet
+Disallow: /visual-notes/
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /wallet
+Disallow: /visual-notes/
+
+User-agent: Claude-Web
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /wallet
+Disallow: /visual-notes/
+
+User-agent: anthropic-ai
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /wallet
+Disallow: /visual-notes/
+
+User-agent: Google-Extended
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /wallet
+Disallow: /visual-notes/
+
+User-agent: Applebot-Extended
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /wallet
+Disallow: /visual-notes/
+
+# Production XML Sitemap
+Sitemap: https://futureitindustry.com/sitemap.xml

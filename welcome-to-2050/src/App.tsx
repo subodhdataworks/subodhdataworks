@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { FutureAiHome } from './components/futureai/FutureAiHome';
-import { LearnerDashboard } from './components/futureai/LearnerDashboard';
-import { AtsResumeChecker } from './components/futureai/AtsResumeChecker';
+const LearnerDashboard = lazy(() => import('./components/futureai/LearnerDashboard').then((m) => ({ default: m.LearnerDashboard })));
+const AtsResumeChecker = lazy(() => import('./components/futureai/AtsResumeChecker').then((m) => ({ default: m.AtsResumeChecker })));
 import { SuccessPlanModal } from './components/futureai/SuccessPlanModal';
 import { AdvisorModal } from './components/futureai/AdvisorModal';
 import { AdminHrSettingsModal } from './components/admin/AdminHrSettingsModal';
@@ -9,7 +9,8 @@ import { AdminLeadManagerModal } from './components/futureai/AdminLeadManagerMod
 import { recordReferralClick } from './services/realAuthService';
 import { StorageService } from './services/storage';
 import { ThemeAccentProvider } from './context/ThemeAccentContext';
-import { AdminControlCenter } from './components/admin/controlcenter/AdminControlCenter';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
+const AdminControlCenter = lazy(() => import('./components/admin/controlcenter/AdminControlCenter').then((m) => ({ default: m.AdminControlCenter })));
 import { ContactUsView } from './components/legal/ContactUsView';
 import { TermsAndConditionsView } from './components/legal/TermsAndConditionsView';
 import { PrivacyPolicyView } from './components/legal/PrivacyPolicyView';
@@ -23,6 +24,7 @@ import { findExistingUser, recordUserInDatabase, runAffiliateSystemResetMigratio
 import { restoreUserEntitlementsFromCloud } from './services/cloudSyncService';
 import { clearActiveCourseSessionCacheOnLogout } from './services/courseUnlockService';
 import { SessionService } from './services/sessionService';
+import { applySeoMetadata } from './utils/seoManager';
 
 export const App: React.FC = () => {
   // ─── CONTROLLED VERSIONED ONE-TIME AFFILIATE SYSTEM v5 RESET MIGRATION ───
@@ -169,13 +171,19 @@ export const App: React.FC = () => {
   const [currentHash, setCurrentHash] = useState<string>(() => {
     return typeof window !== 'undefined' ? window.location.hash : '';
   });
+  const [currentPath, setCurrentPath] = useState<string>(() => {
+    return typeof window !== 'undefined' ? window.location.pathname : '/';
+  });
 
-  // Sync hash changes
+  // Sync hash & pathname changes and apply dynamic Technical SEO metadata
   useEffect(() => {
-    const handleHashChange = () => {
+    const syncRoute = () => {
       const h = window.location.hash;
+      const p = window.location.pathname;
       const baseH = h.split('?')[0];
       setCurrentHash(h);
+      setCurrentPath(p);
+      applySeoMetadata(p, h);
       if (baseH === '#hr-settings') {
         setAdminModalOpen(true);
       }
@@ -183,8 +191,13 @@ export const App: React.FC = () => {
         setAdminLeadsModalOpen(true);
       }
     };
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    syncRoute();
+    window.addEventListener('hashchange', syncRoute);
+    window.addEventListener('popstate', syncRoute);
+    return () => {
+      window.removeEventListener('hashchange', syncRoute);
+      window.removeEventListener('popstate', syncRoute);
+    };
   }, []);
 
   const handleLogin = (name: string, email?: string, avatar?: string, role?: 'student' | 'influencer') => {
@@ -255,10 +268,18 @@ export const App: React.FC = () => {
 
   return (
     <ThemeAccentProvider>
-      {/* ─── PREMIUM CINEMATIC LOGO-TO-WEBSITE CIRCULAR REVEAL ENTRANCE ─── */}
-      <FutureCinematicEntrance />
+      <ErrorBoundary>
+        {/* ─── PREMIUM CINEMATIC LOGO-TO-WEBSITE CIRCULAR REVEAL ENTRANCE ─── */}
+        <FutureCinematicEntrance />
 
-      <div className="w-full min-h-screen dock-dashboard-page font-sans antialiased relative">
+        <div className="w-full min-h-screen dock-dashboard-page font-sans antialiased relative">
+        <Suspense
+          fallback={
+            <div className="w-full min-h-screen flex items-center justify-center bg-white text-slate-600 text-sm font-semibold">
+              Loading Future IT Industry...
+            </div>
+          }
+        >
         
         {/* Dedicated Secure Admin Control Center Route */}
         {['#admin', '#admin-portal', '#control-center', '#admin-panel'].includes(currentHash.split('?')[0].toLowerCase()) ? (
@@ -267,39 +288,51 @@ export const App: React.FC = () => {
               window.location.hash = isLoggedIn ? '#dashboard' : '#home';
             }}
           />
-        ) : ['#contact-us', '#contactus', '#contact'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#ContactUs' ? (
+        ) : ['#contact-us', '#contactus', '#contact'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#ContactUs' || (!currentHash && ['/contact', '/contact-us'].includes(currentPath.replace(/\/+$/, '').toLowerCase())) ? (
           <ContactUsView
             onBack={() => {
+              if (window.location.pathname !== '/') window.history.replaceState({}, '', '/');
+              setCurrentPath('/');
               window.location.hash = isLoggedIn ? '#dashboard' : '#home';
             }}
           />
-        ) : ['#terms', '#terms-and-conditions', '#termsandconditions', '#terms-conditions'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#TermsAndConditions' ? (
+        ) : ['#terms', '#terms-and-conditions', '#termsandconditions', '#terms-conditions'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#TermsAndConditions' || (!currentHash && ['/terms', '/terms-and-conditions'].includes(currentPath.replace(/\/+$/, '').toLowerCase())) ? (
           <TermsAndConditionsView
             onBack={() => {
+              if (window.location.pathname !== '/') window.history.replaceState({}, '', '/');
+              setCurrentPath('/');
               window.location.hash = isLoggedIn ? '#dashboard' : '#home';
             }}
           />
-        ) : ['#privacy', '#privacy-policy', '#privacypolicy'].includes(currentHash.split('?')[0].toLowerCase()) ? (
+        ) : ['#privacy', '#privacy-policy', '#privacypolicy'].includes(currentHash.split('?')[0].toLowerCase()) || (!currentHash && ['/privacy', '/privacy-policy'].includes(currentPath.replace(/\/+$/, '').toLowerCase())) ? (
           <PrivacyPolicyView
             onBack={() => {
+              if (window.location.pathname !== '/') window.history.replaceState({}, '', '/');
+              setCurrentPath('/');
               window.location.hash = isLoggedIn ? '#dashboard' : '#home';
             }}
           />
-        ) : ['#refund', '#refund-policy', '#refundpolicy', '#cancellation', '#cancellation-policy'].includes(currentHash.split('?')[0].toLowerCase()) ? (
+        ) : ['#refund', '#refund-policy', '#refundpolicy', '#cancellation', '#cancellation-policy'].includes(currentHash.split('?')[0].toLowerCase()) || (!currentHash && ['/refund', '/refund-policy'].includes(currentPath.replace(/\/+$/, '').toLowerCase())) ? (
           <RefundPolicyView
             onBack={() => {
+              if (window.location.pathname !== '/') window.history.replaceState({}, '', '/');
+              setCurrentPath('/');
               window.location.hash = isLoggedIn ? '#dashboard' : '#home';
             }}
           />
-        ) : ['#about', '#about-us', '#aboutus', '#company'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#AboutUs' ? (
+        ) : ['#about', '#about-us', '#aboutus', '#company'].includes(currentHash.split('?')[0].toLowerCase()) || currentHash.split('?')[0] === '#AboutUs' || (!currentHash && ['/about', '/about-us'].includes(currentPath.replace(/\/+$/, '').toLowerCase())) ? (
           <AboutUsView
             onBack={() => {
+              if (window.location.pathname !== '/') window.history.replaceState({}, '', '/');
+              setCurrentPath('/');
               window.location.hash = isLoggedIn ? '#dashboard' : '#home';
             }}
           />
-        ) : currentHash.split('?')[0] === '#ats-resume-checker' || currentHash.split('?')[0] === '#ats' ? (
+        ) : currentHash.split('?')[0] === '#ats-resume-checker' || currentHash.split('?')[0] === '#ats' || (!currentHash && ['/ats-resume-checker', '/ats'].includes(currentPath.replace(/\/+$/, '').toLowerCase())) ? (
           <AtsResumeChecker
             onBackToHome={() => {
+              if (window.location.pathname !== '/') window.history.replaceState({}, '', '/');
+              setCurrentPath('/');
               window.location.hash = isLoggedIn ? '#dashboard' : '#home';
             }}
             onOpenLogin={(candidateName?: string) => {
@@ -452,8 +485,9 @@ export const App: React.FC = () => {
         />
 
         
+        </Suspense>
       </div>
-
+      </ErrorBoundary>
       </ThemeAccentProvider>
   );
 };

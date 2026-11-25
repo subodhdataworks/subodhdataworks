@@ -10,16 +10,11 @@ import {
   bootstrapAdminUser,
   setFirestoreDocument,
 } from './_firestore-admin.js';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Content-Type': 'application/json',
-};
-
-const json = (data, status = 200) =>
-  new Response(JSON.stringify(data), { status, headers: corsHeaders });
+
+import { createJsonResponder, handleCorsPreflight, rejectUnauthorizedOrigin } from './_cors.js';
+const CORS_OPTS = { methods: "GET, POST, OPTIONS", headers: "Content-Type, Authorization" };
+// Strict origin-allowlisted CORS is applied per request via _cors.js
+const json = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 
 const CONFIRMED_TEST_AUTH_UIDS = [
   '36F6AYw29LbKVSdjEk1c7k9LuvC2', // kitabiduniya.india@gmail.com
@@ -57,11 +52,14 @@ const CONFIRMED_TEST_FIRESTORE_DOCS = [
   { collection: 'course_enrollments', id: 'ENR_zodiyo.co@gmail.com_data_analyst' },
 ];
 
-export async function onRequestOptions() {
-  return new Response(null, { status: 204, headers: corsHeaders });
+export async function onRequestOptions(context) {
+  return handleCorsPreflight(context, CORS_OPTS);
 }
 
 export async function onRequestPost(context) {
+  const _corsBlocked = rejectUnauthorizedOrigin(context.request, context.env, CORS_OPTS);
+  if (_corsBlocked) return _corsBlocked;
+  const json = createJsonResponder(context.request, context.env, CORS_OPTS);
   const { request, env } = context;
 
   if (!getServiceAccount(env)) {

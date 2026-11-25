@@ -334,7 +334,7 @@ export const HeroReference: React.FC<HeroReferenceProps> = ({
         <div className="trust-strip-inner">
           
           <div className="trust-left-group">
-            <span className="trust-title">Trusted by 50,000+ Learners</span>
+            <span className="trust-title">Skills Aligned With Top Tech Teams</span>
             <div className="trust-marquee-wrapper overflow-hidden w-full relative">
               <div className="trust-marquee-track">
                 {/* 1st Loop */}

@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node -e \"const fs=require('fs'); if(fs.existsSync('functions')) fs.cpSync('functions', 'dist/functions', {recursive:true});\"",
+    "generate:seo": "node scripts/generate-seo-assets.mjs",
+    "build": "node scripts/generate-seo-assets.mjs && vite build",
     "lint": "oxlint",
     "preview": "vite preview"
   },
@@ -17,7 +18,7 @@
     "gsap": "^3.15.1",
     "lucide-react": "^1.48.0",
     "mammoth": "^1.13.0",
-    "pdfjs-dist": "^6.4.299",
+    "pdfjs-dist": "^6.5.438",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "three": "^0.186.1"

@@ -351,7 +351,7 @@ export async function findExistingUser(email?: string, uid?: string): Promise<Re
 
       if (cleanEmail) {
         const colRef = collection(db, 'registered_users');
-        const q = query(colRef, where('email', '==', cleanEmail));
+        const q = query(colRef, where('email', '==', cleanEmail), limit(1));
         const snapshot = await getDocs(q);
         if (!snapshot.empty) {
           const docData = snapshot.docs[0].data() as RegisteredUserRecord;
@@ -410,7 +410,7 @@ export async function findUserByPhone(phone: string): Promise<RegisteredUserReco
   // 2. Check Firestore with a 2-second timeout so mobile never hangs
   try {
     const colRef = collection(db, 'registered_users');
-    const q = query(colRef, where('phone', '==', clean));
+    const q = query(colRef, where('phone', '==', clean), limit(1));
     const timeoutPromise = new Promise<null>((r) => setTimeout(() => r(null), 2000));
     const fetchPromise = getDocs(q).then((snapshot) => {
       if (!snapshot.empty) {

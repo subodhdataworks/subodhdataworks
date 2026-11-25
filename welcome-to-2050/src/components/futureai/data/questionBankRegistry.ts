@@ -88,7 +88,13 @@ export interface TopicQuestionBank {
 import { TAB1_QUESTION_BANK, TAB1_QUESTION_BANK_BY_ID } from './questionBankTab1Foundations';
 import { TAB2_DATA_SCIENCE_QUESTION_BANK, TAB2_DATA_SCIENCE_QUESTION_BANK_BY_ID } from './questionBankTab2DataScience';
 import { TAB3_ML_ENGINEERING_QUESTION_BANK, TAB3_ML_ENGINEERING_QUESTION_BANK_BY_ID } from './questionBankTab3MlEngineering';
+import { TAB3_EXCEL_QUESTION_BANK, TAB3_EXCEL_QUESTION_BANK_BY_ID } from './questionBankTab3Excel';
 import { TAB4_AI_ENGINEERING_QUESTION_BANK, TAB4_AI_ENGINEERING_QUESTION_BANK_BY_ID } from './questionBankTab4AiEngineering';
+import { TAB4_SQL_QUESTION_BANK, TAB4_SQL_QUESTION_BANK_BY_ID } from './questionBankTab4Sql';
+import { TAB5_POWERBI_QUESTION_BANK, TAB5_POWERBI_QUESTION_BANK_BY_ID } from './questionBankTab5PowerBi';
+import { TAB6_GENAI_QUESTION_BANK, TAB6_GENAI_QUESTION_BANK_BY_ID } from './questionBankTab6GenAi';
+import { TAB7_INSIGHTS_QUESTION_BANK, TAB7_INSIGHTS_QUESTION_BANK_BY_ID } from './questionBankTab7Insights';
+import { TAB8_PROJECTS_QUESTION_BANK, TAB8_PROJECTS_QUESTION_BANK_BY_ID } from './questionBankTab8Projects';
 
 export const QUESTION_BANK_OVERRIDES_KEY = 'futureai_question_bank_overrides_v1';
 export const QUESTION_BANK_REVISION_KEY = 'futureai_question_bank_revision_v1';
@@ -246,6 +252,26 @@ function getBaseTopicQuestionBank(
   numericTab: number,
   topicKeyOrId: string | number
 ): TopicQuestionBank | null {
+  const strKey = String(topicKeyOrId);
+  if (TAB8_PROJECTS_QUESTION_BANK[strKey]) {
+    return TAB8_PROJECTS_QUESTION_BANK[strKey];
+  }
+  if (TAB7_INSIGHTS_QUESTION_BANK[strKey]) {
+    return TAB7_INSIGHTS_QUESTION_BANK[strKey];
+  }
+  if (TAB6_GENAI_QUESTION_BANK[strKey]) {
+    return TAB6_GENAI_QUESTION_BANK[strKey];
+  }
+  if (TAB5_POWERBI_QUESTION_BANK[strKey]) {
+    return TAB5_POWERBI_QUESTION_BANK[strKey];
+  }
+  if (TAB4_SQL_QUESTION_BANK[strKey]) {
+    return TAB4_SQL_QUESTION_BANK[strKey];
+  }
+  if (TAB3_EXCEL_QUESTION_BANK[strKey]) {
+    return TAB3_EXCEL_QUESTION_BANK[strKey];
+  }
+
   if (numericTab === 1) {
     if (typeof topicKeyOrId === 'number') {
       return TAB1_QUESTION_BANK_BY_ID[topicKeyOrId] || TAB1_QUESTION_BANK['1.1'] || null;
@@ -256,26 +282,135 @@ function getBaseTopicQuestionBank(
 
   if (numericTab === 2) {
     if (typeof topicKeyOrId === 'number') {
-      return TAB2_DATA_SCIENCE_QUESTION_BANK_BY_ID[topicKeyOrId] || TAB2_DATA_SCIENCE_QUESTION_BANK['1.1'] || null;
+      return (
+        TAB2_DATA_SCIENCE_QUESTION_BANK_BY_ID[topicKeyOrId] ||
+        TAB1_QUESTION_BANK_BY_ID[topicKeyOrId] ||
+        TAB2_DATA_SCIENCE_QUESTION_BANK['1.1'] ||
+        null
+      );
     }
     const key = String(topicKeyOrId);
-    return TAB2_DATA_SCIENCE_QUESTION_BANK[key] || TAB2_DATA_SCIENCE_QUESTION_BANK_BY_ID[Number(key)] || null;
+    return (
+      TAB2_DATA_SCIENCE_QUESTION_BANK[key] ||
+      TAB1_QUESTION_BANK[key] ||
+      TAB2_DATA_SCIENCE_QUESTION_BANK_BY_ID[Number(key)] ||
+      TAB1_QUESTION_BANK_BY_ID[Number(key)] ||
+      null
+    );
   }
 
   if (numericTab === 3) {
     if (typeof topicKeyOrId === 'number') {
-      return TAB3_ML_ENGINEERING_QUESTION_BANK_BY_ID[topicKeyOrId] || TAB3_ML_ENGINEERING_QUESTION_BANK['1.1'] || null;
+      return (
+        TAB3_EXCEL_QUESTION_BANK_BY_ID[topicKeyOrId] ||
+        TAB3_EXCEL_QUESTION_BANK[`11.${topicKeyOrId}`] ||
+        TAB3_ML_ENGINEERING_QUESTION_BANK_BY_ID[topicKeyOrId] ||
+        TAB3_EXCEL_QUESTION_BANK['11.1'] ||
+        null
+      );
     }
     const key = String(topicKeyOrId);
-    return TAB3_ML_ENGINEERING_QUESTION_BANK[key] || TAB3_ML_ENGINEERING_QUESTION_BANK_BY_ID[Number(key)] || null;
+    return (
+      TAB3_EXCEL_QUESTION_BANK[key] ||
+      TAB3_EXCEL_QUESTION_BANK_BY_ID[Number(key)] ||
+      TAB3_ML_ENGINEERING_QUESTION_BANK[key] ||
+      TAB3_ML_ENGINEERING_QUESTION_BANK_BY_ID[Number(key)] ||
+      TAB3_EXCEL_QUESTION_BANK['11.1'] ||
+      null
+    );
   }
 
   if (numericTab === 4) {
     if (typeof topicKeyOrId === 'number') {
-      return TAB4_AI_ENGINEERING_QUESTION_BANK_BY_ID[topicKeyOrId] || TAB4_AI_ENGINEERING_QUESTION_BANK['1.1'] || null;
+      return (
+        TAB4_SQL_QUESTION_BANK_BY_ID[topicKeyOrId] ||
+        TAB4_SQL_QUESTION_BANK[`17.${topicKeyOrId}`] ||
+        TAB4_AI_ENGINEERING_QUESTION_BANK_BY_ID[topicKeyOrId] ||
+        TAB4_SQL_QUESTION_BANK['17.1'] ||
+        null
+      );
     }
     const key = String(topicKeyOrId);
-    return TAB4_AI_ENGINEERING_QUESTION_BANK[key] || TAB4_AI_ENGINEERING_QUESTION_BANK_BY_ID[Number(key)] || null;
+    return (
+      TAB4_SQL_QUESTION_BANK[key] ||
+      TAB4_SQL_QUESTION_BANK_BY_ID[Number(key)] ||
+      TAB4_AI_ENGINEERING_QUESTION_BANK[key] ||
+      TAB4_AI_ENGINEERING_QUESTION_BANK_BY_ID[Number(key)] ||
+      TAB4_SQL_QUESTION_BANK['17.1'] ||
+      null
+    );
+  }
+
+  if (numericTab === 5) {
+    if (typeof topicKeyOrId === 'number') {
+      return (
+        TAB5_POWERBI_QUESTION_BANK_BY_ID[topicKeyOrId] ||
+        TAB5_POWERBI_QUESTION_BANK[`23.${topicKeyOrId}`] ||
+        TAB5_POWERBI_QUESTION_BANK['23.1'] ||
+        null
+      );
+    }
+    const key = String(topicKeyOrId);
+    return (
+      TAB5_POWERBI_QUESTION_BANK[key] ||
+      TAB5_POWERBI_QUESTION_BANK_BY_ID[Number(key)] ||
+      TAB5_POWERBI_QUESTION_BANK['23.1'] ||
+      null
+    );
+  }
+
+  if (numericTab === 6) {
+    if (typeof topicKeyOrId === 'number') {
+      return (
+        TAB6_GENAI_QUESTION_BANK_BY_ID[topicKeyOrId] ||
+        TAB6_GENAI_QUESTION_BANK[`29.${topicKeyOrId}`] ||
+        TAB6_GENAI_QUESTION_BANK['29.1'] ||
+        null
+      );
+    }
+    const key = String(topicKeyOrId);
+    return (
+      TAB6_GENAI_QUESTION_BANK[key] ||
+      TAB6_GENAI_QUESTION_BANK_BY_ID[Number(key)] ||
+      TAB6_GENAI_QUESTION_BANK['29.1'] ||
+      null
+    );
+  }
+
+  if (numericTab === 7) {
+    if (typeof topicKeyOrId === 'number') {
+      return (
+        TAB7_INSIGHTS_QUESTION_BANK_BY_ID[topicKeyOrId] ||
+        TAB7_INSIGHTS_QUESTION_BANK[`34.${topicKeyOrId}`] ||
+        TAB7_INSIGHTS_QUESTION_BANK['34.1'] ||
+        null
+      );
+    }
+    const key = String(topicKeyOrId);
+    return (
+      TAB7_INSIGHTS_QUESTION_BANK[key] ||
+      TAB7_INSIGHTS_QUESTION_BANK_BY_ID[Number(key)] ||
+      TAB7_INSIGHTS_QUESTION_BANK['34.1'] ||
+      null
+    );
+  }
+
+  if (numericTab === 8) {
+    if (typeof topicKeyOrId === 'number') {
+      return (
+        TAB8_PROJECTS_QUESTION_BANK_BY_ID[topicKeyOrId] ||
+        TAB8_PROJECTS_QUESTION_BANK[`38.${topicKeyOrId}`] ||
+        TAB8_PROJECTS_QUESTION_BANK['38.1'] ||
+        null
+      );
+    }
+    const key = String(topicKeyOrId);
+    return (
+      TAB8_PROJECTS_QUESTION_BANK[key] ||
+      TAB8_PROJECTS_QUESTION_BANK_BY_ID[Number(key)] ||
+      TAB8_PROJECTS_QUESTION_BANK['38.1'] ||
+      null
+    );
   }
 
   // Fallback for Tabs 5..8 to Tab 1 structure unless overridden by admin
@@ -361,6 +496,34 @@ export function getTab4TopicList(): TopicQuestionBank[] {
 }
 
 /**
+ * Get all available topics for Tab 5 (Power BI and Dashboards)
+ */
+export function getTab5TopicList(): TopicQuestionBank[] {
+  return getTopicListForTab(5);
+}
+
+/**
+ * Get all available topics for Tab 6 (Generative AI for Analysts)
+ */
+export function getTab6TopicList(): TopicQuestionBank[] {
+  return getTopicListForTab(6);
+}
+
+/**
+ * Get all available topics for Tab 7 (Business Insights and Communication)
+ */
+export function getTab7TopicList(): TopicQuestionBank[] {
+  return getTopicListForTab(7);
+}
+
+/**
+ * Get all available topics for Tab 8 (Projects and Career Preparation)
+ */
+export function getTab8TopicList(): TopicQuestionBank[] {
+  return getTopicListForTab(8);
+}
+
+/**
  * Get available published topic list by tabId (automatically synchronized with admin overrides)
  */
 export function getTopicListForTab(tabId: number = 1): TopicQuestionBank[] {
@@ -370,7 +533,17 @@ export function getTopicListForTab(tabId: number = 1): TopicQuestionBank[] {
   } else if (tabId === 3) {
     baseList = Object.values(TAB3_ML_ENGINEERING_QUESTION_BANK_BY_ID);
   } else if (tabId === 4) {
-    baseList = Object.values(TAB4_AI_ENGINEERING_QUESTION_BANK_BY_ID);
+    baseList = Object.values(TAB4_SQL_QUESTION_BANK).length > 0
+      ? Object.values(TAB4_SQL_QUESTION_BANK)
+      : Object.values(TAB4_AI_ENGINEERING_QUESTION_BANK_BY_ID);
+  } else if (tabId === 5) {
+    baseList = Object.values(TAB5_POWERBI_QUESTION_BANK);
+  } else if (tabId === 6) {
+    baseList = Object.values(TAB6_GENAI_QUESTION_BANK);
+  } else if (tabId === 7) {
+    baseList = Object.values(TAB7_INSIGHTS_QUESTION_BANK);
+  } else if (tabId === 8) {
+    baseList = Object.values(TAB8_PROJECTS_QUESTION_BANK);
   } else {
     baseList = Object.values(TAB1_QUESTION_BANK_BY_ID);
   }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { AnimatedDesktopHeaderLogo } from '../AnimatedFutureFLogo';
 import {
   House,
   BookOpen,
@@ -7,6 +8,7 @@ import {
   CodeXml,
   FileChartColumn,
   BriefcaseBusiness,
+  Briefcase,
   Trophy,
   Wallet,
   LayoutGrid,
@@ -18,6 +20,13 @@ import {
   IndianRupee,
   X,
   User,
+  Bot,
+  ChevronDown,
+  BarChart3,
+  FlaskConical,
+  Cpu,
+  Brain,
+  Code2,
 } from 'lucide-react';
 import { soundEffects } from '../../../services/soundEffects';
 
@@ -26,11 +35,82 @@ export type AppleTopNavTab =
   | 'learning'
   | 'practice'
   | 'ats'
+  | 'hr_round'
   | 'earn'
   | 'internship'
   | 'placement'
   | 'certificate'
   | 'recommendation';
+
+export interface HrRoundTrackOption {
+  id: string;
+  tabId: number;
+  label: string;
+  role: string;
+  iconType: 'chart' | 'flask' | 'cpu' | 'brain' | 'code';
+  badge: string;
+  badgeClass: string;
+  desc: string;
+  iconBgClass: string;
+}
+
+export const HR_ROUND_TRACKS: HrRoundTrackOption[] = [
+  {
+    id: 'data_analyst',
+    tabId: 1,
+    label: 'Data Analyst Interview Prep',
+    role: 'Data Analyst / BI Engineer',
+    iconType: 'chart',
+    iconBgClass: 'bg-emerald-50 text-emerald-600 border border-emerald-100',
+    badge: 'Popular',
+    badgeClass: 'bg-purple-100 text-purple-700 border-purple-200',
+    desc: '11 Systematic Sections • SQL, Excel, Power BI...',
+  },
+  {
+    id: 'data_science',
+    tabId: 2,
+    label: 'Data Science Interview Prep',
+    role: 'Data Scientist / Agentic AI Specialist',
+    iconType: 'flask',
+    iconBgClass: 'bg-purple-50 text-purple-600 border border-purple-100',
+    badge: 'Advanced',
+    badgeClass: 'bg-sky-100 text-sky-700 border-sky-200',
+    desc: 'ML Algorithms, Statistics, Model Evaluation...',
+  },
+  {
+    id: 'ai_engineering',
+    tabId: 4,
+    label: 'AI Engineering Interview Prep',
+    role: 'AI Engineer / LLM Architect',
+    iconType: 'cpu',
+    iconBgClass: 'bg-fuchsia-50 text-fuchsia-600 border border-fuchsia-100',
+    badge: 'Trending',
+    badgeClass: 'bg-pink-100 text-pink-700 border-pink-200',
+    desc: 'LLMs, RAG, Vector DB, GenAI Applications...',
+  },
+  {
+    id: 'ml_engineering',
+    tabId: 3,
+    label: 'ML Engineering Interview Prep',
+    role: 'MLOps & Systems Engineer',
+    iconType: 'brain',
+    iconBgClass: 'bg-rose-50 text-rose-500 border border-rose-100',
+    badge: 'Core Tech',
+    badgeClass: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    desc: 'Model Training, Pipelines, MLOps, Deployment...',
+  },
+  {
+    id: 'full_stack',
+    tabId: 7,
+    label: 'Full Stack MERN Interview Prep',
+    role: 'Full Stack Web & Cloud Architect',
+    iconType: 'code',
+    iconBgClass: 'bg-indigo-50 text-indigo-600 border border-indigo-100',
+    badge: 'High Demand',
+    badgeClass: 'bg-amber-100 text-amber-800 border-amber-200',
+    desc: 'React, Node.js, Express, MongoDB, APIs...',
+  },
+];
 
 export interface NotificationEntry {
   id: number;
@@ -59,6 +139,7 @@ export interface DesktopAppleTopNavProps {
   onNavigateLearning: () => void;
   onNavigatePractice: (track?: 'python' | 'sql' | 'excel' | 'master') => void;
   onOpenAtsResume: () => void;
+  onNavigateHrRound?: (roleKey?: string, tabId?: number) => void;
   onNavigateEarn: () => void;
   onOpenWallet: () => void;
   onNavigateInternship: () => void;
@@ -89,6 +170,7 @@ export const DesktopAppleTopNav: React.FC<DesktopAppleTopNavProps> = ({
   onNavigateLearning,
   onNavigatePractice,
   onOpenAtsResume,
+  onNavigateHrRound,
   onNavigateEarn,
   onOpenWallet,
   onNavigateInternship,
@@ -106,7 +188,9 @@ export const DesktopAppleTopNav: React.FC<DesktopAppleTopNavProps> = ({
 
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [hrDropdownOpen, setHrDropdownOpen] = useState(false);
   const moreContainerRef = useRef<HTMLDivElement | null>(null);
+  const hrContainerRef = useRef<HTMLDivElement | null>(null);
   const profileContainerRef = useRef<HTMLDivElement | null>(null);
 
   // ResizeObserver to track bar width dynamically for pixel-perfect SVG wing cuts
@@ -136,10 +220,17 @@ export const DesktopAppleTopNav: React.FC<DesktopAppleTopNavProps> = ({
       ) {
         setMoreOpen(false);
       }
+      if (
+        hrContainerRef.current &&
+        !hrContainerRef.current.contains(e.target as Node)
+      ) {
+        setHrDropdownOpen(false);
+      }
     };
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setMoreOpen(false);
+        setHrDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleOutsideClick);
@@ -171,6 +262,8 @@ export const DesktopAppleTopNav: React.FC<DesktopAppleTopNavProps> = ({
         return activeNavTab === 'practice' || currentHash.includes('#game') || currentHash.includes('#challenges') || currentHash.includes('#practice');
       case 'ats':
         return activeNavTab === 'ats' || currentHash.includes('#ats');
+      case 'hr_round':
+        return activeNavTab === 'hr_round' || currentHash.includes('#hr-round') || currentHash.includes('#hrround');
       case 'internship':
         return activeNavTab === 'internship' || currentHash.includes('#internship');
       case 'placement':
@@ -244,6 +337,16 @@ export const DesktopAppleTopNav: React.FC<DesktopAppleTopNavProps> = ({
         soundEffects.playClick();
         scrollToTop();
         onOpenAtsResume();
+      },
+    },
+    {
+      id: 'hr_round',
+      label: 'Interview Prep',
+      tooltip: 'AI Interview Prep & Master Question Bank',
+      icon: Briefcase,
+      onClick: () => {
+        soundEffects.playClick();
+        setHrDropdownOpen((prev) => !prev);
       },
     },
     {
@@ -356,34 +459,15 @@ export const DesktopAppleTopNav: React.FC<DesktopAppleTopNavProps> = ({
       aria-label="Desktop Primary Navigation"
     >
       {/* ════════════════════════════════════════════════════════════════════
-          1. SEPARATE FLOATING FUTURE IT INDUSTRY LOGO (Far-left: 24-32px from viewport edge)
+          1. SEPARATE FLOATING FUTURE IT INDUSTRY LOGO (5-Stage Animated V2)
           ════════════════════════════════════════════════════════════════════ */}
-      <div
+      <AnimatedDesktopHeaderLogo
         onClick={() => {
           soundEffects.playClick();
           scrollToTop();
           onNavigateHome();
         }}
-        className="relative shrink-0 h-[54px] px-3.5 sm:px-4 rounded-2xl bg-gradient-to-r from-[#5716cc] to-[#4b18a5] text-white flex items-center gap-2.5 select-none cursor-pointer group transition-all duration-200 hover:scale-[1.03] active:scale-95 border border-white/10 z-20"
-        style={{
-          boxShadow: '0 10px 24px rgba(87, 22, 204, 0.38), 0 4px 8px rgba(87, 22, 204, 0.20)',
-        }}
-        title="Future IT Industry — Home"
-      >
-        <img
-          src="/images/brand/future_it_white_emblem.png"
-          alt="Future IT"
-          className="h-[26px] w-auto object-contain shrink-0 drop-shadow-sm group-hover:scale-105 transition-transform"
-          onError={(e) => {
-            // Inline SVG fallback if image missing
-            (e.target as HTMLElement).style.display = 'none';
-          }}
-        />
-        <div className="flex flex-col text-white font-black italic tracking-tight leading-[1.05] text-[12.5px] select-none">
-          <span>Future IT</span>
-          <span className="text-[11.5px] tracking-normal font-extrabold">Industry</span>
-        </div>
-      </div>
+      />
 
       {/* ════════════════════════════════════════════════════════════════════
           2 & 3. MAIN NAVIGATION + FLOATING PROFILE BUTTON (Centered on Desktop)
@@ -392,9 +476,9 @@ export const DesktopAppleTopNav: React.FC<DesktopAppleTopNavProps> = ({
         {/* 2. MAIN PURPLE NAVIGATION BAR WITH ASYMMETRIC CONCAVE WING CUTS */}
         <div
           ref={barContainerRef}
-          className="relative shrink-0 max-w-[890px] h-[72px] flex items-center justify-between"
+          className="relative shrink-0 max-w-[1040px] lg:max-w-[1100px] h-[72px] flex items-center justify-between"
           style={{
-            filter: 'drop-shadow(0 12px 24px rgba(87, 22, 204, 0.38)) drop-shadow(0 4px 8px rgba(87, 22, 204, 0.20))',
+            filter: 'drop-shadow(0 4px 12px rgba(87, 22, 204, 0.14))',
           }}
         >
           {/* SVG Background Path with Deep-Purple Gradient & Concave Scoop Cuts */}
@@ -413,70 +497,194 @@ export const DesktopAppleTopNav: React.FC<DesktopAppleTopNavProps> = ({
             <path d={svgPath} fill="url(#purpleNavGradientExact)" />
           </svg>
 
-          {/* ── CENTER: PRIMARY NAV ITEMS (Home, My Learning, Courses, Coding + DSA, ATS Resume, Internship, Placement, Earn Cash, Wallet) ── */}
-          <nav className="flex items-center gap-0.5 lg:gap-1.5 pl-9 lg:pl-11 shrink-0" aria-label="Main Navigation">
+          {/* ── CENTER: PRIMARY NAV ITEMS (Equal Spacing, Aligned Icons & Smooth Hover) ── */}
+          <nav className="flex items-center gap-1 lg:gap-2 pl-9 lg:pl-11 shrink-0" aria-label="Main Navigation">
             {navItems.map((item) => {
               const active = isItemActive(item.id);
-              const isHovered = hoveredId === item.id;
               const IconComp = item.icon;
 
               return (
-                <div key={item.id} className="relative">
+                <div
+                  key={item.id}
+                  ref={item.id === 'hr_round' ? hrContainerRef : undefined}
+                  className="relative"
+                >
                   <button
                     type="button"
                     onClick={item.onClick}
                     onMouseEnter={() => setHoveredId(item.id)}
                     onMouseLeave={() => setHoveredId((prev) => (prev === item.id ? null : prev))}
                     aria-label={item.label}
-                    className={`group relative flex flex-col items-center justify-center transition-all duration-200 cursor-pointer ${
+                    className={`group relative flex flex-col items-center justify-center min-w-[64px] lg:min-w-[74px] h-[54px] px-2.5 py-1 rounded-2xl transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 ${
                       active
-                        ? 'min-w-[58px] lg:min-w-[64px] h-[56px] px-2.5 py-1 rounded-2xl bg-white text-[#5716cc] shadow-[0_8px_20px_rgba(87,22,204,0.32)] border-2 border-white'
-                        : 'min-w-[54px] lg:min-w-[60px] h-[56px] px-2 py-1 rounded-2xl text-white border border-transparent hover:bg-white/10 hover:shadow-[0_0_12px_rgba(255,255,255,0.18)] hover:-translate-y-0.5'
+                        ? 'bg-white text-[#5716cc] shadow-[0_2px_8px_rgba(45,12,115,0.12)] border border-white'
+                        : 'text-white/95 border border-transparent hover:bg-white/14 hover:text-white'
                     }`}
                   >
-                    {/* Icon Container with Smooth Framer Motion Hover Animation */}
-                    <div className="relative mb-0.5 flex items-center justify-center">
+                    {/* Icon Container with Consistent Alignment */}
+                    <div className="relative h-6 mb-1 flex items-center justify-center">
                       <motion.span
-                        whileHover={{ y: -3, scale: 1.08 }}
-                        whileTap={{ scale: 0.95 }}
+                        whileHover={{ y: -2, scale: 1.06 }}
+                        whileTap={{ scale: 0.96 }}
                         transition={{
                           type: "spring",
-                          stiffness: 350,
-                          damping: 22,
+                          stiffness: 380,
+                          damping: 24,
                         }}
                         className={`inline-flex items-center justify-center ${
                           active ? 'text-[#5716cc]' : 'text-white'
                         }`}
                       >
                         <IconComp
-                          size={24}
-                          strokeWidth={2.2}
+                          size={20}
+                          strokeWidth={2.15}
                           color={active ? '#5716cc' : '#ffffff'}
                           style={{ color: active ? '#5716cc' : '#ffffff' }}
                           className={active ? 'text-[#5716cc]' : 'text-white'}
                         />
                       </motion.span>
 
-                      {/* Glowing Orange-Red Badge on Placement Icon */}
+                      {/* Badges on Tab Icons */}
                       {item.hasBadge && (
-                        <span
-                          className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#FF5722] ring-2 ring-[#5716cc] shadow-[0_0_8px_#FF5722] animate-pulse pointer-events-none"
-                          aria-label="New placement update"
-                        />
+                        item.badgeText ? (
+                          <span
+                            className="absolute -top-1.5 -right-2 px-1 py-0.2 rounded-full bg-cyan-400 text-slate-950 text-[7px] font-black uppercase tracking-wider shadow-[0_0_8px_rgba(6,182,212,0.65)] pointer-events-none"
+                          >
+                            {item.badgeText}
+                          </span>
+                        ) : (
+                          <span
+                            className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#FF5722] ring-2 ring-[#5716cc] shadow-[0_0_8px_#FF5722] animate-pulse pointer-events-none"
+                            aria-label="New update"
+                          />
+                        )
                       )}
                     </div>
 
-                    {/* Label beneath icon — Shown for BOTH active and inactive */}
+                    {/* Label beneath icon — Larger & Clearer Readability */}
                     <span
-                      className={`text-[10px] lg:text-[10.5px] tracking-tight leading-none whitespace-nowrap ${
+                      className={`text-[11px] lg:text-[11.5px] tracking-normal leading-none whitespace-nowrap ${
                         active
                           ? 'font-bold text-[#5716cc]'
-                          : 'font-medium text-white/95'
+                          : 'font-semibold text-white'
                       }`}
                     >
                       {item.label}
                     </span>
                   </button>
+
+                  {/* ─── HR ROUND TRACK SELECTION DROPDOWN POPOVER ─── */}
+                  {item.id === 'hr_round' && (
+                    <AnimatePresence>
+                      {hrDropdownOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -6, scale: 0.96 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -6, scale: 0.96 }}
+                          transition={{ type: 'spring', stiffness: 420, damping: 28 }}
+                          role="menu"
+                          className="absolute left-1/2 -translate-x-1/2 top-full mt-2.5 w-[390px] sm:w-[440px] rounded-2xl p-3.5 z-50 text-left bg-white border border-purple-200/80 shadow-[0_20px_50px_rgba(20,10,50,0.22)]"
+                        >
+                          {/* Dropdown Header */}
+                          <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-9 h-9 rounded-xl bg-purple-100 flex items-center justify-center shrink-0">
+                                <Briefcase className="w-5 h-5 text-purple-700" />
+                              </div>
+                              <div>
+                                <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 m-0">
+                                  Select Interview Prep Track
+                                </h3>
+                                <p className="text-[11px] text-slate-500 font-medium m-0">
+                                  Comprehensive Question Bank &amp; Live AI Interviewer
+                                </p>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setHrDropdownOpen(false);
+                              }}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+
+                          {/* HR Round Track Badges / Buttons */}
+                          <div className="space-y-2">
+                            {HR_ROUND_TRACKS.map((t) => {
+                              const renderTrackIcon = () => {
+                                switch (t.iconType) {
+                                  case 'chart':
+                                    return <BarChart3 className="w-5 h-5 text-emerald-600" />;
+                                  case 'flask':
+                                    return <FlaskConical className="w-5 h-5 text-purple-600" />;
+                                  case 'cpu':
+                                    return <Cpu className="w-5 h-5 text-fuchsia-600" />;
+                                  case 'brain':
+                                    return <Brain className="w-5 h-5 text-rose-500" />;
+                                  case 'code':
+                                    return <Code2 className="w-5 h-5 text-indigo-600" />;
+                                  default:
+                                    return <Briefcase className="w-5 h-5 text-purple-600" />;
+                                }
+                              };
+
+                              return (
+                                <button
+                                  key={t.id}
+                                  type="button"
+                                  onClick={() => {
+                                    soundEffects.playClick();
+                                    setHrDropdownOpen(false);
+                                    scrollToTop();
+                                    if (typeof window !== 'undefined') {
+                                      window.location.hash = `#interview-prep?role=${t.id}`;
+                                      window.dispatchEvent(
+                                        new CustomEvent('futureai_interview_role_change', {
+                                          detail: { role: t.id },
+                                        })
+                                      );
+                                    }
+                                    if (onNavigateHrRound) onNavigateHrRound(t.id, t.tabId);
+                                  }}
+                                  className="w-full group flex items-center justify-between p-2 rounded-xl bg-white hover:bg-purple-50/70 border border-slate-200/90 hover:border-purple-300 transition-all cursor-pointer text-left shadow-2xs hover:shadow-xs"
+                                >
+                                  <div className="flex items-center gap-2.5 min-w-0">
+                                    <div
+                                      className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${t.iconBgClass} group-hover:scale-105 transition-transform`}
+                                    >
+                                      {renderTrackIcon()}
+                                    </div>
+                                    <div className="min-w-0">
+                                      <div className="flex items-center gap-1.5 flex-wrap">
+                                        <span className="text-xs font-bold text-slate-900 group-hover:text-purple-700 transition">
+                                          {t.label}
+                                        </span>
+                                        <span
+                                          className={`text-[9.5px] font-bold px-2 py-0.5 rounded-full border ${t.badgeClass}`}
+                                        >
+                                          {t.badge}
+                                        </span>
+                                      </div>
+                                      <p className="text-[10.5px] text-slate-500 font-medium truncate mt-0.5">
+                                        {t.desc}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <span className="shrink-0 text-xs font-bold px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white shadow-xs group-hover:shadow-[0_2px_8px_rgba(147,51,234,0.35)] transition ml-2">
+                                    Start ▶
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  )}
                 </div>
               );
             })}
@@ -608,7 +816,7 @@ export const DesktopAppleTopNav: React.FC<DesktopAppleTopNavProps> = ({
               aria-label="Student Profile"
               className="w-[54px] h-[54px] rounded-2xl bg-gradient-to-r from-[#5716cc] to-[#4b18a5] text-white flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 border border-white/10"
               style={{
-                boxShadow: '0 10px 24px rgba(87, 22, 204, 0.38), 0 4px 8px rgba(87, 22, 204, 0.20)',
+                boxShadow: '0 4px 12px rgba(87, 22, 204, 0.16)',
               }}
               title={`${studentName || 'Student'} — Profile & Settings`}
             >
@@ -638,7 +846,7 @@ export const DesktopAppleTopNav: React.FC<DesktopAppleTopNavProps> = ({
               aria-label="Login / Sign Up"
               className="h-[54px] px-4 rounded-2xl bg-gradient-to-r from-[#5716cc] to-[#4b18a5] text-white flex items-center justify-center gap-2 cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 border border-white/10 font-bold text-xs sm:text-sm whitespace-nowrap"
               style={{
-                boxShadow: '0 10px 24px rgba(87, 22, 204, 0.38), 0 4px 8px rgba(87, 22, 204, 0.20)',
+                boxShadow: '0 4px 12px rgba(87, 22, 204, 0.16)',
               }}
               title="Login to your account"
             >

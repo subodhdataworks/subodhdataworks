@@ -260,23 +260,13 @@ export const CareerFocusedCoursesSection: React.FC<CareerFocusedCoursesProps> = 
                     className="lhh-list-card cursor-pointer"
                     onClick={() => handleCourseClick(c.id)}
                   >
-                    {c.video ? (
-                      <video
-                        src={c.video}
-                        poster={c.image}
-                        loop
-                        muted
-                        playsInline
-                        preload="none"
-                        className="lhh-list-thumb"
-                      />
-                    ) : (
-                      <img
-                        src={c.image}
-                        alt={c.title}
-                        className="lhh-list-thumb"
-                      />
-                    )}
+                    <img
+                      src={c.image}
+                      alt={c.title}
+                      loading="eager"
+                      decoding="async"
+                      className="lhh-list-thumb"
+                    />
                     <div className="lhh-list-info">
                       <h3 className="lhh-list-title">{c.title} {c.subtitle}</h3>
                       <p className="lhh-list-desc">

@@ -2,6 +2,7 @@
  * Future.AI High-Tech Web Audio Sound Engine
  * Zero external audio files required - 100% latency-free Web Audio synthesizer.
  */
+import { playSwaraVoice, stopSwaraVoice } from './swaraAudioService';
 
 class SoundEffectsService {
   private ctx: AudioContext | null = null;
@@ -332,17 +333,11 @@ class SoundEffectsService {
         osc2.stop(ctx.currentTime + 0.28);
       }
 
-      if (speakVoice && typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const phrases = ['Wrong answer!', 'Incorrect answer.', 'Not quite right!'];
+      if (speakVoice) {
+        stopSwaraVoice();
+        const phrases = ['Galat jawab, try again!', 'Incorrect answer.', 'Not quite right!'];
         const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-        const utterance = new SpeechSynthesisUtterance(phrase);
-        utterance.rate = 1.05;
-        utterance.pitch = 0.95;
-        const voices = window.speechSynthesis.getVoices();
-        const voice = voices.find(v => v.lang.startsWith('en')) || voices[0];
-        if (voice) utterance.voice = voice;
-        window.speechSynthesis.speak(utterance);
+        playSwaraVoice(phrase);
       }
     } catch {
       // AudioContext fallback
@@ -412,30 +407,20 @@ class SoundEffectsService {
         });
       }
 
-      // Randomized speech praise
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const praiseList = [
-          'Good job!',
-          'Nice!',
-          'Excellent!',
-          'Awesome!',
-          'Brilliant!',
-          'Superb!',
-          'You nailed it!',
-          'Outstanding!',
-          'Fantastic!'
-        ];
-        const chosen = praiseList[Math.floor(Math.random() * praiseList.length)];
-        const utterance = new SpeechSynthesisUtterance(chosen);
-        utterance.rate = 1.05 + Math.random() * 0.15;
-        utterance.pitch = 1.15 + Math.random() * 0.25;
-        utterance.volume = 1;
-        const voices = window.speechSynthesis.getVoices();
-        const englishVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Female') || v.name.includes('Natural') || v.name.includes('Google'))) || voices.find(v => v.lang.startsWith('en')) || voices[0];
-        if (englishVoice) utterance.voice = englishVoice;
-        window.speechSynthesis.speak(utterance);
-      }
+      // Randomized Swara speech praise
+      const praiseList = [
+        'Good job!',
+        'Nice!',
+        'Excellent!',
+        'Awesome!',
+        'Brilliant!',
+        'Superb!',
+        'You nailed it!',
+        'Outstanding!',
+        'Fantastic!'
+      ];
+      const chosen = praiseList[Math.floor(Math.random() * praiseList.length)];
+      playSwaraVoice(chosen);
     } catch {
       // AudioContext fallback
     }

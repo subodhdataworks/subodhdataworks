@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Play,
   Pause,
@@ -25,13 +26,24 @@ import {
 import { SectionRectInfo } from '../visualNotes/PdfVisualNotesViewer';
 import { soundEffects } from '../../../services/soundEffects';
 import { languageEngine } from '../../../services/visualLearningLanguageEngine';
+import { playSwaraVoice, stopSwaraVoice } from '../../../services/swaraAudioService';
+import { StableMouthLipSyncAvatar } from '../interview/StableMouthLipSyncAvatar';
 
 interface FutureITMentorProps {
   topicId: number;
   isExcelTrack?: boolean;
+  isSqlTrack?: boolean;
+  isDataScienceCourse?: boolean;
+  isMlEngineeringCourse?: boolean;
+  isAiEngineeringCourse?: boolean;
+  isAiToolsPromptCourse?: boolean;
+  isMsOfficeCourse?: boolean;
+  isFullStackMernCourse?: boolean;
   sectionRect?: SectionRectInfo | null;
   scrollSettled?: boolean;
   onActiveSectionChange?: (section: MentorLessonSection | null) => void;
+  onSpeechProgressChange?: (progress: number) => void;
+  onLiveTypedTextChange?: (text: string, isSpeaking: boolean) => void;
   onUserManualScrollDetected?: boolean;
   onResetUserManualScroll?: () => void;
   language?: MentorLanguage;
@@ -40,12 +52,177 @@ interface FutureITMentorProps {
   onPlayMentor?: () => void;
 }
 
+/**
+ * Pixel-calibrated Full-Body Female AI Mentor with natural Eye Blink & Voice-Synced Lip Movement
+ * Native image dimensions: 682 x 1024 (Left Eye: 275,86 | Right Eye: 313,81 | Mouth: 300,123)
+ */
+const AnimatedFullBodyMentor: React.FC<{
+  isSpeaking: boolean;
+  isBlinking: boolean;
+  mouthShape: number;
+  className?: string;
+}> = ({ isSpeaking, isBlinking, mouthShape, className = '' }) => {
+  const activeMouth = isSpeaking ? (mouthShape || 1) : 0;
+
+  return (
+    <div className={`relative h-full aspect-[682/1024] mx-auto select-none pointer-events-none ${className}`}>
+      <img
+        src="/images/future_it_mentor_girl_fullbody.png?v=2"
+        alt="Future IT Full-Body Female AI Mentor"
+        draggable={false}
+        style={{ imageRendering: 'auto' }}
+        className="w-full h-full object-contain pointer-events-none select-none"
+      />
+
+      {/* Exact 682x1024 SVG Facial Animation Overlay (Eyes Blink + Voice Lip-Sync) */}
+      <svg
+        viewBox="0 0 682 1024"
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        aria-hidden="true"
+      >
+        {/* ── NATURAL EYE BLINK OVERLAY (Left Eye: 275,86 | Right Eye: 313,81) ── */}
+        <g
+          style={{
+            opacity: isBlinking ? 1 : 0,
+            transition: 'opacity 65ms ease-in-out',
+          }}
+        >
+          {/* Left closed eyelid */}
+          <ellipse cx="275" cy="85.5" rx="12.5" ry="6.5" fill="#e2b49b" />
+          <path
+            d="M 263 86.5 Q 275 91.5 287 86"
+            fill="none"
+            stroke="#2f1c16"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+          />
+          {/* Right closed eyelid */}
+          <ellipse cx="313" cy="80.5" rx="12.5" ry="6.5" fill="#e2b49b" />
+          <path
+            d="M 301 81.5 Q 313 86.5 325 81"
+            fill="none"
+            stroke="#2f1c16"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+          />
+        </g>
+
+        {/* Subtle expressive eye sparkle while speaking */}
+        {isSpeaking && !isBlinking && (
+          <g opacity="0.65">
+            <circle cx="272" cy="84" r="1.4" fill="#ffffff" />
+            <circle cx="310" cy="79" r="1.4" fill="#ffffff" />
+          </g>
+        )}
+
+        {/* ── VOICE-SYNCED NATURAL ROSE LIP ANIMATION (Mouth Center: 300, 123 — ZERO dark/black fill!) ── */}
+        {activeMouth > 0 && (
+          <g style={{ transition: 'all 85ms ease-out' }}>
+            {activeMouth === 1 && (
+              <>
+                {/* Soft natural closed-smile rose lip highlight */}
+                <path
+                  d="M 285 122.5 Q 300 120 315 122 Q 300 126.5 285 122.5 Z"
+                  fill="#d27481"
+                  opacity="0.72"
+                />
+                <path
+                  d="M 291 122.8 Q 300 123.8 309 122.8"
+                  stroke="#fff5f5"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  opacity="0.85"
+                />
+              </>
+            )}
+
+            {activeMouth === 2 && (
+              <>
+                {/* Gentle warm open vowel — soft rose pink, never black */}
+                <path
+                  d="M 284 121.8 Q 300 117.5 316 121.2 Q 300 123.2 284 121.8 Z"
+                  fill="#cf6e7b"
+                  opacity="0.82"
+                />
+                <ellipse cx="300" cy="124.2" rx="10.5" ry="3.2" fill="#9c4252" opacity="0.78" />
+                <path
+                  d="M 290 122.2 Q 300 123.3 310 122.2"
+                  stroke="#ffffff"
+                  strokeWidth="1.9"
+                  strokeLinecap="round"
+                  opacity="0.92"
+                />
+                <path
+                  d="M 285 124 Q 300 130.2 315 123.5 Q 300 127 285 124 Z"
+                  fill="#dc8490"
+                  opacity="0.82"
+                />
+              </>
+            )}
+
+            {activeMouth === 3 && (
+              <>
+                {/* Expressive warm speaking syllable — soft rose & pearl teeth */}
+                <path
+                  d="M 284 121.2 Q 300 116.5 316 120.8 Q 300 122.8 284 121.2 Z"
+                  fill="#cf6e7b"
+                  opacity="0.85"
+                />
+                <ellipse cx="300" cy="125" rx="11.5" ry="4.4" fill="#a24858" opacity="0.8" />
+                <path
+                  d="M 289.5 121.8 Q 300 123.2 310.5 121.8"
+                  stroke="#ffffff"
+                  strokeWidth="2.1"
+                  strokeLinecap="round"
+                  opacity="0.95"
+                />
+                <path
+                  d="M 285 124.5 Q 300 132 315 124 Q 300 128.5 285 124.5 Z"
+                  fill="#de8894"
+                  opacity="0.85"
+                />
+              </>
+            )}
+          </g>
+        )}
+      </svg>
+      {/* Subtle Animated Purple Voice Wave beside Mentor's face when speaking (stays inside avatar bounds) */}
+      {isSpeaking && (
+        <div
+          className="absolute top-[7%] right-[14%] flex items-center gap-[2px] px-1.5 py-1 rounded-full bg-white/95 border border-[#DDD6FE] shadow-xs pointer-events-none"
+          aria-hidden="true"
+        >
+          {[8, 14, 19, 12, 16, 9].map((h, idx) => (
+            <span
+              key={idx}
+              className="w-[2px] rounded-full bg-gradient-to-t from-[#6D28D9] to-[#A78BFA] animate-pulse"
+              style={{
+                height: `${Math.max(5, ((h + mouthShape * 4 + idx * 3) % 16) + 5)}px`,
+                transition: 'height 110ms ease-out',
+              }}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const FutureITMentor: React.FC<FutureITMentorProps> = ({
   topicId,
   isExcelTrack = false,
+  isSqlTrack = false,
+  isDataScienceCourse = false,
+  isMlEngineeringCourse = false,
+  isAiEngineeringCourse = false,
+  isAiToolsPromptCourse = false,
+  isMsOfficeCourse = false,
+  isFullStackMernCourse = false,
   sectionRect,
   scrollSettled = true,
   onActiveSectionChange,
+  onSpeechProgressChange,
+  onLiveTypedTextChange,
   onUserManualScrollDetected,
   onResetUserManualScroll,
   language: externalLanguage = 'english',
@@ -54,8 +231,18 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
   onPlayMentor,
 }) => {
   const lessonData: MentorLessonData | null = useMemo(() => {
-    return getMentorLessonData(topicId, isExcelTrack);
-  }, [topicId, isExcelTrack]);
+    return getMentorLessonData(
+      topicId,
+      isExcelTrack,
+      isSqlTrack,
+      isDataScienceCourse,
+      isMlEngineeringCourse,
+      isAiEngineeringCourse,
+      isAiToolsPromptCourse,
+      isMsOfficeCourse,
+      isFullStackMernCourse
+    );
+  }, [topicId, isExcelTrack, isSqlTrack, isDataScienceCourse, isMlEngineeringCourse, isAiEngineeringCourse, isAiToolsPromptCourse, isMsOfficeCourse, isFullStackMernCourse]);
 
   // Mentor state
   const [isOpen, setIsOpen] = useState(false);
@@ -70,6 +257,8 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
     }
   }, [externalLanguage]);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
+  const [sectionProgressDisplay, setSectionProgressDisplay] = useState<number>(0);
+  const [liveTypedExplanation, setLiveTypedExplanation] = useState<string>('');
   const [isMuted, setIsMuted] = useState(false);
   const [speechBubbleText, setSpeechBubbleText] = useState<string>('');
   const [voiceStatus, setVoiceStatus] = useState<VoiceStatus>({
@@ -83,7 +272,7 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
   const [mouthShape, setMouthShape] = useState<number>(0);
 
   // ── Native Female Welcome Voice & Live Lip-Sync Engine ──
-  const WELCOME_VOICE_TEXT = 'Hey! Ready to learn? Tap me and enjoy learning with interactive visualizations!';
+  const WELCOME_VOICE_TEXT = 'Hey! Tap me to learn!';
   const WELCOME_DISPLAY_TEXT = 'Hey! Tap me to learn! 🚀';
 
   const [showWelcomeBubble, setShowWelcomeBubble] = useState(true);
@@ -95,14 +284,26 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
   const hasSpokenWelcomeInSessionRef = useRef(false);
   const lipSyncTimerRef = useRef<any>(null);
 
-  // ── RESET STATE ON TOPIC/LESSON CHANGE ──
-  // Next lesson starts from the very beginning, and robot only explains when launched!
-  const prevTopicIdRef = useRef<number>(topicId);
+  // Notify VisualNotesTopBar whenever Mentor opens or closes so it can dock cleanly at the top
   useEffect(() => {
-    if (prevTopicIdRef.current !== topicId) {
-      prevTopicIdRef.current = topicId;
+    window.dispatchEvent(new CustomEvent('futureai_mentor_open_state', { detail: { isOpen } }));
+    return () => {
+      window.dispatchEvent(new CustomEvent('futureai_mentor_open_state', { detail: { isOpen: false } }));
+    };
+  }, [isOpen]);
+
+  // ── RESET STATE ON TOPIC/LESSON OR COURSE CHANGE ──
+  // Next lesson starts from the very beginning, and robot only explains when launched!
+  const prevTopicKeyRef = useRef<string>(
+    `${topicId}:${isDataScienceCourse}:${isMlEngineeringCourse}:${isExcelTrack}:${isSqlTrack}`
+  );
+  useEffect(() => {
+    const nextTopicKey = `${topicId}:${isDataScienceCourse}:${isMlEngineeringCourse}:${isExcelTrack}:${isSqlTrack}`;
+    if (prevTopicKeyRef.current !== nextTopicKey) {
+      prevTopicKeyRef.current = nextTopicKey;
 
       // 1. Stop any voice / audio playback
+      stopSwaraVoice();
       if (voiceControllerRef.current) {
         voiceControllerRef.current.stop();
       }
@@ -118,6 +319,7 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
       setIsPlaying(false);
       setIsSpeaking(false);
       setIsOpen(false);
+      setLiveTypedExplanation('');
 
       // 3. Reset section index to 0 (very beginning)
       currentSectionIndexRef.current = 0;
@@ -134,25 +336,7 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
         onActiveSectionChange(null);
       }
     }
-  }, [topicId, onActiveSectionChange]);
-
-  // Typewriter effect for speech bubble
-  useEffect(() => {
-    let index = 0;
-    setTypedWelcomeText('');
-    setIsTypingComplete(false);
-
-    const timer = setInterval(() => {
-      index++;
-      setTypedWelcomeText(WELCOME_DISPLAY_TEXT.slice(0, index));
-      if (index >= WELCOME_DISPLAY_TEXT.length) {
-        clearInterval(timer);
-        setIsTypingComplete(true);
-      }
-    }, 45);
-
-    return () => clearInterval(timer);
-  }, [topicId]);
+  }, [topicId, isDataScienceCourse, isMlEngineeringCourse, isExcelTrack, isSqlTrack, onActiveSectionChange]);
 
   // Lip-Sync Animation Driver (Cycles mouth shapes 1, 2, 3 while speaking)
   const startLipSyncAnimation = () => {
@@ -176,24 +360,26 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
     setIsWelcomeSpeaking(false);
   };
 
-  // Select best natural female English teacher voice on the device
+  // Select best natural female Indian teacher voice on the device (matching DSA Module 1 Swara)
   const getBestFemaleEnglishVoice = (): SpeechSynthesisVoice | null => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return null;
     const voices = window.speechSynthesis.getVoices() || [];
     if (!voices || voices.length === 0) return null;
 
-    // High priority natural English female voices (Windows, Mac, Android, Chrome)
+    // Strict priority: Authentic Indian Female Teacher Voice (Swara, Heera, Neerja, Kalpana, Veena)
     const priorityKeywords = [
+      'swara',
       'heera',
+      'neerja',
+      'kalpana',
+      'lekha',
+      'veena',
+      'ananya',
+      'shruti',
+      'priya',
       'zira',
       'aria',
       'jenny',
-      'google us english',
-      'samantha',
-      'karen',
-      'victoria',
-      'veena',
-      'neerja',
       'female',
     ];
 
@@ -219,67 +405,77 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
     return voices.find((v) => v.lang.toLowerCase().startsWith('en')) || voices[0] || null;
   };
 
-  // Play Native Welcome Voice
+  // Play Native Welcome Voice — ONLY animate lips & voice wave once real audio starts playing!
   const playWelcomeVoice = useCallback(() => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-
+    stopSwaraVoice();
+    stopLipSyncAnimation();
+    hasSpokenWelcomeInSessionRef.current = true;
     try {
-      if (window.speechSynthesis.paused) {
-        window.speechSynthesis.resume();
-      }
-      window.speechSynthesis.cancel();
+      sessionStorage.setItem('futureai_robot_welcome_voice_session_v1', 'true');
     } catch {}
 
-    // Give browser speech synthesis a tick after cancel() to clear internal queue cleanly
-    setTimeout(() => {
-      try {
-        const utterance = new SpeechSynthesisUtterance(WELCOME_VOICE_TEXT);
-        utterance.rate = 0.98;
-        utterance.pitch = 1.15; // Cheerful natural female teacher pitch
-
-        const voice = getBestFemaleEnglishVoice();
-        if (voice) {
-          utterance.voice = voice;
-          utterance.lang = voice.lang;
-        } else {
-          utterance.lang = 'en-US';
-        }
-
-        utterance.onstart = () => {
-          setIsWelcomeSpeaking(true);
-          hasSpokenWelcomeInSessionRef.current = true;
-          try {
-            sessionStorage.setItem('futureai_robot_welcome_voice_session_v1', 'true');
-          } catch {}
-          startLipSyncAnimation();
-        };
-
-        utterance.onend = () => {
-          stopLipSyncAnimation();
-        };
-
-        utterance.onerror = (e) => {
-          console.warn('Welcome voice speech notice:', e);
-          stopLipSyncAnimation();
-        };
-
-        // Retain strong reference on window to prevent Chrome V8 garbage collection
-        (window as any).__robot_welcome_utterance = utterance;
-        welcomeUtteranceRef.current = utterance;
-
-        window.speechSynthesis.speak(utterance);
-      } catch (err) {
-        console.warn('SpeechSynthesis speak error:', err);
+    playSwaraVoice(WELCOME_VOICE_TEXT, {
+      onStart: () => {
+        startLipSyncAnimation();
+        setIsWelcomeSpeaking(true);
+      },
+      onEnd: () => {
+        setIsWelcomeSpeaking(false);
         stopLipSyncAnimation();
-      }
-    }, 50);
+      },
+      onError: () => {
+        setIsWelcomeSpeaking(false);
+        stopLipSyncAnimation();
+      },
+    });
   }, []);
 
-  // Silent welcome bubble on mount (NO auto-speech: voice explains ONLY when robot is launched)
+
+  // Slower, comfortable typewriter effect synchronized with voice & mouth lip-sync (~85ms per char)
   useEffect(() => {
+    let index = 0;
+    setTypedWelcomeText('');
+    setIsTypingComplete(false);
     setShowWelcomeBubble(true);
-    setIsWelcomeSpeaking(false);
-  }, [topicId]);
+
+    let timer: any = null;
+    const startTimeout = setTimeout(() => {
+      // 1. Play natural welcome voice & trigger lip-sync
+      playWelcomeVoice();
+
+      // 2. Type character-by-character comfortably slow in sync with voice
+      timer = setInterval(() => {
+        index++;
+        setTypedWelcomeText(WELCOME_DISPLAY_TEXT.slice(0, index));
+        if (index >= WELCOME_DISPLAY_TEXT.length) {
+          clearInterval(timer);
+          setIsTypingComplete(true);
+        }
+      }, 85);
+    }, 400);
+
+    return () => {
+      clearTimeout(startTimeout);
+      if (timer) clearInterval(timer);
+    };
+  }, [topicId, playWelcomeVoice]);
+
+  // User gesture fallback for autoplay policies: if browser blocked speech on first load, play on first interaction
+  useEffect(() => {
+    const handleFirstGesture = () => {
+      if (!hasSpokenWelcomeInSessionRef.current && showWelcomeBubble && !isOpen) {
+        playWelcomeVoice();
+      }
+      window.removeEventListener('pointerdown', handleFirstGesture);
+      window.removeEventListener('keydown', handleFirstGesture);
+    };
+    window.addEventListener('pointerdown', handleFirstGesture, { once: true });
+    window.addEventListener('keydown', handleFirstGesture, { once: true });
+    return () => {
+      window.removeEventListener('pointerdown', handleFirstGesture);
+      window.removeEventListener('keydown', handleFirstGesture);
+    };
+  }, [playWelcomeVoice, showWelcomeBubble, isOpen]);
 
   // Cleanup welcome voice and timers on unmount
   useEffect(() => {
@@ -355,6 +551,77 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
   const currentSectionIndexRef = useRef(0);
   const languageRef = useRef<MentorLanguage>(externalLanguage);
   const isUserPausedRef = useRef(false);
+  const resumingFromPauseRef = useRef(false);
+  const narrationLengthRef = useRef<number>(120);
+  const currentNarrationTextRef = useRef<string>('');
+  const speechProgressRef = useRef<number>(0);
+  const speechProgressTimerRef = useRef<any>(null);
+  const playbackSpeedRef = useRef<number>(1.0);
+  const onSpeechProgressChangeRef = useRef(onSpeechProgressChange);
+  const onLiveTypedTextChangeRef = useRef(onLiveTypedTextChange);
+
+  useEffect(() => {
+    onSpeechProgressChangeRef.current = onSpeechProgressChange;
+  }, [onSpeechProgressChange]);
+
+  useEffect(() => {
+    onLiveTypedTextChangeRef.current = onLiveTypedTextChange;
+  }, [onLiveTypedTextChange]);
+
+  useEffect(() => {
+    onLiveTypedTextChangeRef.current?.(liveTypedExplanation, isSpeaking);
+  }, [liveTypedExplanation, isSpeaking]);
+
+  useEffect(() => {
+    playbackSpeedRef.current = playbackSpeed;
+  }, [playbackSpeed]);
+
+  const stopSpeechProgressSweep = useCallback(() => {
+    if (speechProgressTimerRef.current) {
+      clearInterval(speechProgressTimerRef.current);
+      speechProgressTimerRef.current = null;
+    }
+  }, []);
+
+  const startSpeechProgressSweep = useCallback(
+    (charCount: number) => {
+      stopSpeechProgressSweep();
+      narrationLengthRef.current = Math.max(20, charCount);
+      speechProgressRef.current = 0.04;
+      onSpeechProgressChangeRef.current?.(0.04);
+
+      const estWords = Math.max(8, Math.round(charCount / 5.2));
+      const tickMs = 200;
+      setSectionProgressDisplay(0.05);
+
+      speechProgressTimerRef.current = setInterval(() => {
+        if (!isPlayingRef.current) return;
+        const liveEstMs = Math.max(2400, (estWords / (2.3 * playbackSpeedRef.current)) * 1000);
+        const liveStep = (0.94 * tickMs) / liveEstMs;
+        const next = Math.min(0.98, speechProgressRef.current + liveStep);
+        const prevBucket = Math.floor(speechProgressRef.current * 24);
+        const nextBucket = Math.floor(next * 24);
+        speechProgressRef.current = next;
+        if (nextBucket !== prevBucket) {
+          setSectionProgressDisplay(next);
+          onSpeechProgressChangeRef.current?.(next);
+          if (currentNarrationTextRef.current) {
+            const words = currentNarrationTextRef.current.split(/\s+/);
+            const count = Math.max(1, Math.ceil(next * words.length));
+            setLiveTypedExplanation((prev) => {
+              const candidate = words.slice(0, count).join(' ');
+              return candidate.length >= prev.length ? candidate : prev;
+            });
+          }
+        }
+      }, tickMs);
+    },
+    [stopSpeechProgressSweep]
+  );
+
+  useEffect(() => {
+    return () => stopSpeechProgressSweep();
+  }, [stopSpeechProgressSweep]);
 
   // Sync refs with state
   useEffect(() => {
@@ -400,8 +667,8 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
       soundEffects.playCelebration();
       const finishMsg =
         languageRef.current === 'hindi'
-          ? 'Shabash! Visual Notes complete ho gaye! Ab chaliye Practice Challenge solve karein!'
-          : 'Outstanding! Visual Notes is complete! Now proceed to the practice challenge!';
+          ? 'शाबाश! आपने इस टॉपिक के Visual Notes को बहुत अच्छे से समझ लिया है। अब चलिए नीचे Practice Challenge हल करते हैं!'
+          : 'Outstanding! You have mastered the Visual Notes for this topic. Now let us try the Practice Challenge!';
       setSpeechBubbleText(finishMsg);
     }
   }, [lessonData]);
@@ -415,11 +682,36 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
 
     vc.setCallbacks({
       onStart: () => {
-        setIsSpeaking(true);
+        setIsSpeaking(!isMuted);
+        if (!speechProgressTimerRef.current) {
+          startSpeechProgressSweep(narrationLengthRef.current);
+        }
       },
-      onBoundary: () => {
+      onBoundary: (ev) => {
         // Dynamic syllable/word lip-sync variety
-        setMouthShape((prev) => (prev + 1) % 4);
+        setMouthShape((prev) => ((prev % 3) + 1));
+        // SINGLE TIMELINE: Drive both Live Voice-Synced Typing and Visual Highlights from real audio clock
+        if (ev?.spokenTextSoFar) {
+          setLiveTypedExplanation(ev.spokenTextSoFar);
+        } else if (ev && typeof ev.charIndex === 'number' && currentNarrationTextRef.current) {
+          const text = currentNarrationTextRef.current;
+          const endIdx = text.indexOf(' ', ev.charIndex + 1);
+          setLiveTypedExplanation(endIdx === -1 ? text : text.slice(0, endIdx));
+        }
+
+        if (ev && typeof ev.charIndex === 'number' && narrationLengthRef.current > 0) {
+          const exactRatio = Math.min(
+            0.99,
+            Math.max(speechProgressRef.current, (ev.charIndex + 4) / narrationLengthRef.current)
+          );
+          const prevBucket = Math.floor(speechProgressRef.current * 24);
+          const nextBucket = Math.floor(exactRatio * 24);
+          speechProgressRef.current = exactRatio;
+          if (nextBucket !== prevBucket) {
+            setSectionProgressDisplay(exactRatio);
+            onSpeechProgressChangeRef.current?.(exactRatio);
+          }
+        }
         // 18% chance of an expressive syllable blink/squeeze during speech
         if (Math.random() < 0.18) {
           setIsBlinking(true);
@@ -427,6 +719,13 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
         }
       },
       onEnd: () => {
+        stopSpeechProgressSweep();
+        speechProgressRef.current = 1;
+        setSectionProgressDisplay(1);
+        if (currentNarrationTextRef.current) {
+          setLiveTypedExplanation(currentNarrationTextRef.current);
+        }
+        onSpeechProgressChangeRef.current?.(1);
         setIsSpeaking(false);
         setMouthShape(0);
         // Automatically advance to the next section
@@ -434,6 +733,7 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
       },
       onError: (err) => {
         console.warn('Mentor voice notice:', err);
+        stopSpeechProgressSweep();
         setIsSpeaking(false);
         setMouthShape(0);
         // If an unexpected error occurs during playback, wait 3.5s for user to read then advance
@@ -541,17 +841,27 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
         : currentSection.englishSummary;
 
     setSpeechBubbleText(summary);
+    currentNarrationTextRef.current = narration;
+    narrationLengthRef.current = Math.max(20, narration.length);
+    setLiveTypedExplanation('');
+    setIsSpeaking(false);
+    setMouthShape(0);
     voiceControllerRef.current.speak(narration);
   }, [currentSection]);
 
-  // Trigger narration whenever section changes or resumes, after scroll settles
+  // Trigger narration whenever section changes or opens/switches language
   useEffect(() => {
     if (!isOpen || !isPlaying || !currentSection) return;
+    // If resuming from user pause, handleResume() already resumed the exact audio position
+    if (resumingFromPauseRef.current) {
+      resumingFromPauseRef.current = false;
+      return;
+    }
 
-    // Small delay to ensure PDF has smoothly scrolled and settled
+    // Small delay to ensure Visual Notes has smoothly scrolled and settled
     const timer = setTimeout(() => {
       playCurrentSectionNarration();
-    }, 450);
+    }, 380);
 
     return () => clearTimeout(timer);
   }, [currentSectionIndex, isPlaying, isOpen, language]);
@@ -569,19 +879,24 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
       return;
     }
 
-    // Desktop: Position robot along the LEFT side of the visual notes panel
-    // Robot faces inward to the right and explains the content without blocking it!
-    let targetY = 190;
-    if (sectionRect && sectionRect.top > 0) {
-      targetY = Math.max(140, Math.min(window.innerHeight - 240, sectionRect.centerY - 50));
+    // Desktop: Position mentor straight upright along the LEFT edge of the visual notes panel
+    // Automatically glides vertically to align with the exact highlighted section/line!
+    let targetY = 120;
+    const maxSafeY = typeof window !== 'undefined' ? Math.max(80, window.innerHeight - 310) : 460;
+    if (sectionRect && (typeof sectionRect.centerY === 'number' || sectionRect.height > 0)) {
+      const cy =
+        typeof sectionRect.centerY === 'number'
+          ? sectionRect.centerY
+          : sectionRect.top + sectionRect.height / 2;
+      targetY = Math.max(76, Math.min(maxSafeY, cy - 135));
     } else {
-      if (currentSection.robotTarget === 'top-right' || currentSection.robotTarget === 'top-left') targetY = 180;
-      else if (currentSection.robotTarget === 'mid-right' || currentSection.robotTarget === 'mid-left') targetY = 320;
-      else targetY = 520;
+      if (currentSection.robotTarget === 'top-right' || currentSection.robotTarget === 'top-left') targetY = 110;
+      else if (currentSection.robotTarget === 'mid-right' || currentSection.robotTarget === 'mid-left') targetY = 230;
+      else targetY = Math.min(maxSafeY, 390);
     }
 
-    // Place robot comfortably on the left side (~16px to 28px)
-    const targetX = 20;
+    // Place mentor cleanly on the left side (~12px) so she never covers the visual notes text
+    const targetX = 12;
 
     setPosition({ x: targetX, y: targetY });
   }, [currentSectionIndex, isOpen, sectionRect]);
@@ -680,6 +995,7 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
     isUserPausedRef.current = true;
     setIsPlaying(false);
     setIsSpeaking(false);
+    setMouthShape(0);
     if (voiceControllerRef.current) {
       voiceControllerRef.current.pause();
     }
@@ -691,10 +1007,18 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
     if (onResetUserManualScroll) onResetUserManualScroll();
     isPlayingRef.current = true;
     isUserPausedRef.current = false;
-    setIsPlaying(true);
     if (voiceControllerRef.current) {
-      voiceControllerRef.current.resume();
+      const resumed = voiceControllerRef.current.resume();
+      if (resumed) {
+        resumingFromPauseRef.current = true;
+        setIsPlaying(true);
+        setIsSpeaking(true);
+      } else {
+        resumingFromPauseRef.current = false;
+        setIsPlaying(true);
+      }
     } else {
+      setIsPlaying(true);
       playCurrentSectionNarration();
     }
   };
@@ -740,37 +1064,104 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
     playCurrentSectionNarration();
   };
 
-  const handleToggleLanguage = (newLang: MentorLanguage) => {
+  const handleRestartFromBeginning = () => {
     soundEffects.playClick();
-    const isSameLang = languageRef.current === newLang;
-    setLanguage(newLang);
-    languageRef.current = newLang;
-    if (onLanguageChange) onLanguageChange(newLang);
+    stopSpeechProgressSweep();
+    stopSwaraVoice();
     if (voiceControllerRef.current) {
-      voiceControllerRef.current.setLanguage(newLang);
       voiceControllerRef.current.stop();
     }
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch {}
+    }
+    if (onPlayMentor) onPlayMentor();
+    if (onResetUserManualScroll) onResetUserManualScroll();
 
-    // Reset explaining from the very beginning (Step 1)
-    const wasAlreadyZero = currentSectionIndexRef.current === 0;
+    setLiveTypedExplanation('');
+    currentNarrationTextRef.current = '';
+    speechProgressRef.current = 0;
+    setSectionProgressDisplay(0);
+    onSpeechProgressChangeRef.current?.(0);
+    setIsSpeaking(false);
+    setMouthShape(0);
+
+    const wasAtStart = currentSectionIndexRef.current === 0;
     currentSectionIndexRef.current = 0;
     setCurrentSectionIndex(0);
     isUserPausedRef.current = false;
+    resumingFromPauseRef.current = false;
+    isPlayingRef.current = true;
+    setIsPlaying(true);
+    setIsOpen(true);
+
+    const firstSec = lessonData?.sections[0];
+    if (firstSec && onActiveSectionChange) {
+      onActiveSectionChange(firstSec);
+    }
+
+    if (wasAtStart) {
+      setTimeout(() => {
+        playCurrentSectionNarration();
+      }, 280);
+    }
+  };
+
+  const handleToggleLanguage = (newLang: MentorLanguage) => {
+    soundEffects.playClick();
+    const isSameLang = languageRef.current === newLang;
+
+    // 1. Immediately halt any previous language audio, timer, and typed text so English & Hindi NEVER mix
+    stopSpeechProgressSweep();
+    stopSwaraVoice();
+    if (voiceControllerRef.current) {
+      voiceControllerRef.current.stop();
+      voiceControllerRef.current.setLanguage(newLang);
+    }
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch {}
+    }
+    setIsWelcomeSpeaking(false);
+    setWelcomeMouthShape(0);
+    setShowWelcomeBubble(false);
+    setLiveTypedExplanation('');
+    currentNarrationTextRef.current = '';
+    speechProgressRef.current = 0;
+    setSectionProgressDisplay(0);
+    onSpeechProgressChangeRef.current?.(0);
+    setIsSpeaking(false);
+    setMouthShape(0);
+
+    // 2. Commit new language cleanly
+    setLanguage(newLang);
+    languageRef.current = newLang;
+    if (onLanguageChange) onLanguageChange(newLang);
+
+    // 3. Stay on the current section and replay it cleanly in the newly chosen language
+    isUserPausedRef.current = false;
+    resumingFromPauseRef.current = false;
     isPlayingRef.current = true;
     setIsPlaying(true);
     setIsOpen(true);
     if (onResetUserManualScroll) onResetUserManualScroll();
 
-    if (lessonData && lessonData.sections[0]) {
-      setSpeechBubbleText(newLang === 'hindi' ? languageEngine.standardizeHinglish(lessonData.sections[0].hindiSummary) : lessonData.sections[0].englishSummary);
+    const activeSec = lessonData?.sections[currentSectionIndexRef.current];
+    if (activeSec) {
+      setSpeechBubbleText(
+        newLang === 'hindi'
+          ? languageEngine.standardizeHinglish(activeSec.hindiSummary)
+          : activeSec.englishSummary
+      );
     }
 
-    // If language was already the same AND section was already 0, the useEffect will not re-run,
-    // so in this case only, manually trigger narration. Otherwise, useEffect([..., language]) triggers cleanly.
-    if (isSameLang && wasAlreadyZero) {
+    // If language was already the same, trigger clean replay manually (otherwise useEffect([..., language]) fires)
+    if (isSameLang) {
       setTimeout(() => {
         playCurrentSectionNarration();
-      }, 350);
+      }, 260);
     }
   };
 
@@ -809,8 +1200,8 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDraggingRef.current) return;
-    const newX = Math.max(10, Math.min(window.innerWidth - 170, e.clientX - dragStartOffset.current.x));
-    const newY = Math.max(70, Math.min(window.innerHeight - 200, e.clientY - dragStartOffset.current.y));
+    const newX = Math.max(10, Math.min(window.innerWidth - 130, e.clientX - dragStartOffset.current.x));
+    const newY = Math.max(76, Math.min(window.innerHeight - 250, e.clientY - dragStartOffset.current.y));
     setPosition({ x: newX, y: newY });
   };
 
@@ -897,113 +1288,27 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
             </div>
           )}
 
-          {/* Clickable 3D Robot Mascot (With Soft Purple Glow & Animated Lip-Sync) */}
+          {/* Clickable Full-Body Female AI Mentor (Slightly Larger, Crisp HD, Head-to-Shoes Visible) */}
           <button
             type="button"
             onClick={handleRobotTap}
-            aria-label="Launch Visual Learning Classroom with Future IT Mentor"
-            title="Tap me to launch Visual Learning Classroom!"
-            className="relative w-32 h-22 sm:w-44 sm:h-30 md:w-48 md:h-32 p-0 bg-transparent border-none cursor-pointer group transition-transform duration-300 transform hover:scale-105 active:scale-95 focus:outline-hidden"
+            aria-label="Open Visual Learning Classroom with Future IT Mentor"
+            title="Tap me to learn with AI Mentor!"
+            className="relative w-[108px] h-[220px] sm:w-[126px] sm:h-[256px] md:w-[136px] md:h-[272px] p-0 bg-transparent border-none cursor-pointer group transition-transform duration-300 hover:scale-[1.03] active:scale-95 focus:outline-hidden"
           >
-            {/* Soft Purple Glow behind the robot */}
-            <div className="absolute -inset-2 rounded-3xl bg-gradient-to-r from-purple-500/25 via-indigo-500/20 to-purple-600/25 blur-xl pointer-events-none animate-pulse" />
-
-            {/* The 3D Robot Mascot Body with Articulated Gesturing Hand */}
-            <div className="w-full h-full relative animate-float-subtle group-hover:drop-shadow-[0_10px_25px_rgba(147,51,234,0.45)] transition-all">
-              <img
-                src="/images/future_it_mentor_robot_body.png"
-                alt="Future IT Mentor Robot"
-                className="w-full h-full object-contain filter drop-shadow-2xl"
-                draggable={false}
+            {/* Full-Body Female AI Mentor (Head, Hands, Legs & Shoes 100% Visible + Live Eyes & Lip-Sync, Zero Blur) */}
+            <div className="w-full h-full relative">
+              <AnimatedFullBodyMentor
+                isSpeaking={isWelcomeSpeaking}
+                isBlinking={isBlinking}
+                mouthShape={welcomeMouthShape}
               />
-              {/* Natural Articulated Hand Gesture (Pivots smoothly up and down around elbow) */}
-              <img
-                src="/images/future_it_mentor_robot_hand.png"
-                alt=""
-                className={`absolute inset-0 w-full h-full object-contain pointer-events-none ${
-                  isWelcomeSpeaking ? 'animate-mentor-hand-speaking' : 'animate-mentor-hand-float'
-                }`}
-                draggable={false}
-              />
-
-              {/* Synchronized Real Mouth Lip-Sync Overlay when Welcome Voice is Speaking */}
-              {(isWelcomeSpeaking || welcomeMouthShape > 0) && (
-                <svg
-                  className="absolute inset-0 w-full h-full pointer-events-none select-none z-10"
-                  viewBox="0 0 1024 682"
-                >
-                  <defs>
-                    <filter id="welcomeMouthGlow" x="-30%" y="-30%" width="160%" height="160%">
-                      <feGaussianBlur stdDeviation="1.5" result="b1" />
-                      <feGaussianBlur stdDeviation="3.5" result="b2" />
-                      <feMerge>
-                        <feMergeNode in="b2" />
-                        <feMergeNode in="b1" />
-                        <feMergeNode in="SourceGraphic" />
-                      </feMerge>
-                    </filter>
-                  </defs>
-
-                  {/* Micro-precise tiny mask covering EXACT mouth at y: 144-156 */}
-                  <ellipse cx="429" cy="151" rx="20" ry="9" fill="#080e1b" opacity="0.98" />
-
-                  {welcomeMouthShape === 0 && (
-                    <path
-                      d="M 413 144 Q 429 157 447 150"
-                      fill="none"
-                      stroke="#00ffff"
-                      strokeWidth="5.5"
-                      strokeLinecap="round"
-                      filter="url(#welcomeMouthGlow)"
-                    />
-                  )}
-                  {welcomeMouthShape === 1 && (
-                    <path
-                      d="M 413 144 Q 429 161 447 150 Q 429 147 413 144 Z"
-                      fill="#041a24"
-                      stroke="#00ffff"
-                      strokeWidth="5.5"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      filter="url(#welcomeMouthGlow)"
-                    />
-                  )}
-                  {welcomeMouthShape === 2 && (
-                    <path
-                      d="M 413 144 Q 429 167 447 150 Q 429 146 413 144 Z"
-                      fill="#041a24"
-                      stroke="#00ffff"
-                      strokeWidth="5.5"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      filter="url(#welcomeMouthGlow)"
-                    />
-                  )}
-                  {welcomeMouthShape === 3 && (
-                    <path
-                      d="M 413 144 Q 429 163 447 150 Q 429 143 413 144 Z"
-                      fill="#041a24"
-                      stroke="#00ffff"
-                      strokeWidth="5.5"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      filter="url(#welcomeMouthGlow)"
-                    />
-                  )}
-                </svg>
-              )}
-            </div>
-
-            {/* Glowing "Tap Me!" Pill directly on the robot */}
-            <div className="absolute -bottom-2 sm:-bottom-2.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white font-extrabold text-[10px] sm:text-[11px] shadow-lg shadow-purple-500/40 flex items-center gap-1.5 border border-purple-300 animate-pulse whitespace-nowrap z-30">
-              <Sparkles className="w-3 h-3 text-amber-300 animate-spin" style={{ animationDuration: '3s' }} />
-              <span>Tap to Launch! 🚀</span>
             </div>
           </button>
         </div>
       )}
 
-      {/* ── 3. FLOATING 3D ROBOT MASCOT & DYNAMIC ORIENTATION ── */}
+      {/* ── 3. FLOATING FULL-BODY FEMALE AI MENTOR & DYNAMIC ORIENTATION ── */}
       {isOpen && (
         <div
           style={{
@@ -1013,25 +1318,14 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
           className="fixed top-0 left-0 z-50 pointer-events-auto select-none"
         >
           <div className="relative flex flex-col items-center">
-            {/* The 3D Robot Image with Hovering, Dynamic Head Tilt & Facing */}
+            {/* The Full-Body Female AI Mentor — Slightly Larger Compact HD, Straight Upright */}
             <div
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
-              style={{
-                // Tilt dynamically towards the explained concept
-                transform: `rotate(${tiltDeg}deg)`,
-                transition: 'transform 0.4s ease-out',
-              }}
-              className="relative w-36 h-24 sm:w-48 sm:h-32 cursor-grab active:cursor-grabbing group"
-              title="Drag me anywhere or use Arrow Keys / D-pad!"
+              className="relative w-[122px] h-[250px] sm:w-[142px] sm:h-[284px] cursor-grab active:cursor-grabbing group"
+              title="Drag me anywhere or use Arrow Keys!"
             >
-              {/* 
-                ROBOT MASCOT CONTAINER:
-                Robot naturally faces and gestures to the RIGHT (face right, hand pointing right).
-                When on left side of notes (!isTargetToLeft), scaleX(1) keeps it facing right into notes.
-                If dragged to the right of the notes (isTargetToLeft), scaleX(-1) turns it back left.
-              */}
               <div
                 style={{
                   transform: isTargetToLeft ? 'scaleX(-1)' : 'scaleX(1)',
@@ -1039,112 +1333,11 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
                 }}
                 className="w-full h-full relative"
               >
-                {/* 3D Robot Mascot Body */}
-                <img
-                  src="/images/future_it_mentor_robot_body.png"
-                  alt="Future IT Mentor Robot"
-                  className={`w-full h-full object-contain filter drop-shadow-xl ${
-                    isSpeaking ? 'animate-bounce-subtle' : 'animate-float-subtle'
-                  }`}
-                  draggable={false}
+                <AnimatedFullBodyMentor
+                  isSpeaking={isSpeaking}
+                  isBlinking={isBlinking}
+                  mouthShape={mouthShape}
                 />
-
-                {/* Articulated Hand Gesture (Pivots up and down like a real robot teaching) */}
-                <img
-                  src="/images/future_it_mentor_robot_hand.png"
-                  alt=""
-                  className={`absolute inset-0 w-full h-full object-contain pointer-events-none ${
-                    isSpeaking ? 'animate-mentor-hand-speaking' : 'animate-mentor-hand-float'
-                  }`}
-                  draggable={false}
-                />
-
-                {/* 
-                  EXACT REAL MOUTH LIP-SYNC (Active only when speaking):
-                  Positioned pixel-accurately on the robot's real mouth (cx: 431, cy: 140, w: 41px).
-                  Eyes remain 100% untouched, authentic, and natural.
-                */}
-                {isSpeaking && (
-                  <svg
-                    className="absolute inset-0 w-full h-full pointer-events-none select-none z-10"
-                    viewBox="0 0 1024 682"
-                  >
-                    <defs>
-                      <filter id="realMouthGlow" x="-30%" y="-30%" width="160%" height="160%">
-                        <feGaussianBlur stdDeviation="1.5" result="b1" />
-                        <feGaussianBlur stdDeviation="3.5" result="b2" />
-                        <feMerge>
-                          <feMergeNode in="b2" />
-                          <feMergeNode in="b1" />
-                          <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                      </filter>
-                    </defs>
-
-                    {/* Micro-precise tiny mask covering EXACT mouth at y: 144-156 */}
-                    <ellipse cx="429" cy="151" rx="20" ry="9" fill="#080e1b" opacity="0.98" />
-
-                    {mouthShape === 0 && (
-                      // Resting / closed smile
-                      <path
-                        d="M 413 144 Q 429 157 447 150"
-                        fill="none"
-                        stroke="#00ffff"
-                        strokeWidth="5.5"
-                        strokeLinecap="round"
-                        filter="url(#realMouthGlow)"
-                      />
-                    )}
-                    {mouthShape === 1 && (
-                      // Parted talking smile
-                      <path
-                        d="M 413 144 Q 429 161 447 150 Q 429 147 413 144 Z"
-                        fill="#041a24"
-                        stroke="#00ffff"
-                        strokeWidth="5.5"
-                        strokeLinejoin="round"
-                        strokeLinecap="round"
-                        filter="url(#realMouthGlow)"
-                      />
-                    )}
-                    {mouthShape === 2 && (
-                      // Open vowel talking smile
-                      <path
-                        d="M 413 144 Q 429 167 447 150 Q 429 146 413 144 Z"
-                        fill="#041a24"
-                        stroke="#00ffff"
-                        strokeWidth="5.5"
-                        strokeLinejoin="round"
-                        strokeLinecap="round"
-                        filter="url(#realMouthGlow)"
-                      />
-                    )}
-                    {mouthShape === 3 && (
-                      // Syllable talking smile
-                      <path
-                        d="M 413 144 Q 429 163 447 150 Q 429 147 413 144 Z"
-                        fill="#041a24"
-                        stroke="#00ffff"
-                        strokeWidth="5.5"
-                        strokeLinejoin="round"
-                        strokeLinecap="round"
-                        filter="url(#realMouthGlow)"
-                      />
-                    )}
-                  </svg>
-                )}
-
-                {/* Counter-flipped chest badge layer only when mirrored, so branding is NEVER reversed */}
-                {isTargetToLeft && (
-                  <div
-                    style={{ transform: 'scaleX(-1)' }}
-                    className="absolute top-[42%] left-[38%] -translate-x-1/2 -translate-y-1/2 bg-slate-950/90 border border-cyan-400/60 rounded-full px-1.5 py-0.5 shadow-xs pointer-events-none"
-                  >
-                    <span className="text-[7px] font-black text-cyan-300 tracking-tight leading-none">
-                      Future AI
-                    </span>
-                  </div>
-                )}
               </div>
 
               {/* Drag indicator badge on hover */}
@@ -1157,113 +1350,89 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
         </div>
       )}
 
-      {/* ── 4. FLOATING MENTOR CONTROLS PANEL (WITH ROTATING GOOGLE AI COLOR BORDER) ── */}
+      {/* ── 4. FLOATING VOICE PLAYER (BOTTOM-CENTER COMPACT BAR WITH SYNC TIMELINE) ── */}
       {isOpen && (
-        <div className="fixed bottom-7 sm:bottom-9 md:bottom-11 left-1/2 -translate-x-1/2 z-[9999] w-[94%] max-w-md sm:max-w-lg rounded-3xl p-[2.5px] shadow-[0_20px_60px_-10px_rgba(0,0,0,0.35)] overflow-hidden transition-all duration-300 pointer-events-auto">
-          {/* Google Multi-Color Rotating Gradient Border ("patli sa round color") */}
+        <div className="fixed bottom-4 sm:bottom-5 left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center max-w-[96vw] pointer-events-none">
           <div
-            className={`absolute -inset-[150%] pointer-events-none ${
-              isPlaying ? 'animate-google-spin-fast opacity-100' : 'animate-google-spin opacity-75'
-            }`}
-            style={{
-              background:
-                'conic-gradient(from 0deg, #4285F4 0deg, #9b72cb 60deg, #EA4335 120deg, #FBBC05 180deg, #34A853 240deg, #00d2ff 300deg, #4285F4 360deg)',
-            }}
-          />
+            className="relative w-auto max-w-[96vw] rounded-full p-[2px] shadow-[0_12px_32px_-6px_rgba(76,29,149,0.24)] overflow-hidden transition-all duration-300 pointer-events-auto"
+          >
+            {/* Subtle Gradient Border */}
+            <div
+              className="absolute inset-0 pointer-events-none bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#4F46E5]"
+            />
 
-          {/* Inner Card Content */}
-          <div className="relative w-full h-full bg-white/95 backdrop-blur-xl rounded-[22px] px-3.5 py-2.5 sm:px-4 sm:py-3 flex flex-col gap-2">
-            {/* Top Row: Section Title & Language Switcher & Close */}
-            <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
-              <div className="flex items-center gap-2 overflow-hidden">
-                <div className="text-xs font-black text-slate-900 truncate flex items-center gap-1.5">
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black text-[10.5px] shadow-xs shrink-0">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                    <span>{currentSectionIndex + 1}/{lessonData.sections.length}</span>
-                  </span>
-                  <span className="truncate font-black text-slate-900">{currentSection?.title}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 shrink-0">
-                {/* Language Switcher: ONLY English | हिंदी (English First) */}
-                <div className="inline-flex rounded-full bg-purple-50 border border-purple-200 p-0.5 text-[11px] font-bold">
-                  <button
-                    type="button"
-                    onClick={() => handleToggleLanguage('english')}
-                    className={`px-2.5 py-0.5 rounded-full transition cursor-pointer ${
-                      language === 'english'
-                        ? 'bg-purple-600 text-white shadow-xs font-black'
-                        : 'text-purple-800 hover:text-purple-950'
-                    }`}
+            {/* Inner Card Content — Ultra-Slim Single-Line Bottom-Center Pill + Sleek Progress Track */}
+            <div
+              className="relative w-full h-full bg-white/95 backdrop-blur-xl rounded-full px-3.5 pt-1.5 pb-2.5 flex items-center justify-between gap-2 flex-nowrap"
+            >
+              {/* Sleek Bottom Progress Track with Purple Scrubber Dot */}
+              {(() => {
+                const pct = Math.min(
+                  100,
+                  Math.max(
+                    2,
+                    Math.round(
+                      ((currentSectionIndex + sectionProgressDisplay) /
+                        Math.max(1, lessonData.sections.length)) *
+                        100
+                    )
+                  )
+                );
+                return (
+                  <div
+                    className="absolute bottom-1 left-5 right-5 h-[3px] bg-gradient-to-r from-[#EDE9FE] via-[#E0E7FF] to-[#FEF3C7] rounded-full pointer-events-none"
+                    aria-hidden="true"
                   >
-                    English
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleToggleLanguage('hindi')}
-                    className={`px-2.5 py-0.5 rounded-full transition cursor-pointer ${
-                      language === 'hindi'
-                        ? 'bg-purple-600 text-white shadow-xs font-black'
-                        : 'text-purple-800 hover:text-purple-950'
-                    }`}
-                  >
-                    हिंदी
-                  </button>
-                </div>
-
-                {/* Close Button */}
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="w-6 h-6 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition cursor-pointer"
-                  title="Close Mentor"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-[#7C3AED] to-[#6366F1] transition-all duration-200 relative"
+                      style={{ width: `${pct}%` }}
+                    >
+                      <span className="absolute -right-1 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#6D28D9] border-2 border-white shadow-xs" />
+                    </div>
+                  </div>
+                );
+              })()}
+              {/* Left: Step Badge + Section Title */}
+              <div className="flex items-center gap-1.5 overflow-hidden min-w-0 flex-1">
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-[10px] shadow-2xs shrink-0 tabular-nums">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                  <span>{currentSectionIndex + 1}/{lessonData.sections.length}</span>
+                </span>
+                <span className="truncate text-[11.5px] font-bold text-slate-900">
+                  {currentSection?.title}
+                </span>
               </div>
-            </div>
 
-            {/* Voice Fallback Notice if device lacks Indian voice pack */}
-            {!voiceStatus.isAuthenticIndian && (
-              <div className="flex items-center gap-1.5 text-[10px] text-amber-700 bg-amber-50/80 px-2.5 py-1 rounded-xl border border-amber-200/60 font-semibold">
-                <Info className="w-3 h-3 shrink-0 text-amber-600" />
-                <span className="truncate">Device Indian voice pack not installed — using default system voice.</span>
-              </div>
-            )}
-
-            {/* Bottom Row: Playback Controls */}
-            <div className="flex items-center justify-between gap-2">
-              {/* Step navigation & Play/Pause */}
-              <div className="flex items-center gap-1.5">
+              {/* Center: Compact Playback Controls */}
+              <div className="flex items-center gap-1 shrink-0">
                 <button
                   type="button"
                   onClick={handlePrevSection}
                   disabled={currentSectionIndex === 0}
-                  className="p-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer border border-slate-200"
+                  className="p-1 rounded-md bg-slate-50 hover:bg-slate-100 text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer border border-slate-200"
                   title="Previous Section"
                 >
-                  <SkipBack className="w-3.5 h-3.5" />
+                  <SkipBack className="w-3 h-3" />
                 </button>
 
                 {isPlaying ? (
                   <button
                     type="button"
                     onClick={handlePause}
-                    className="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-black flex items-center gap-1.5 shadow-xs transition cursor-pointer"
+                    className="px-2.5 py-1 rounded-md bg-purple-600 hover:bg-purple-700 text-white text-[11px] font-bold flex items-center gap-1 shadow-2xs transition cursor-pointer"
                     title="Pause Teaching"
                   >
-                    <Pause className="w-3.5 h-3.5 fill-current" />
+                    <Pause className="w-2.5 h-2.5 fill-current" />
                     <span>Pause</span>
                   </button>
                 ) : (
                   <button
                     type="button"
                     onClick={handleResume}
-                    className="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-black flex items-center gap-1.5 shadow-xs transition cursor-pointer"
+                    className="px-2.5 py-1 rounded-md bg-purple-600 hover:bg-purple-700 text-white text-[11px] font-bold flex items-center gap-1 shadow-2xs transition cursor-pointer"
                     title="Resume Teaching"
                   >
-                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <Play className="w-2.5 h-2.5 fill-current" />
                     <span>Resume</span>
                   </button>
                 )}
@@ -1272,46 +1441,88 @@ export const FutureITMentor: React.FC<FutureITMentorProps> = ({
                   type="button"
                   onClick={handleNextSection}
                   disabled={currentSectionIndex === lessonData.sections.length - 1}
-                  className="p-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer border border-slate-200"
+                  className="p-1 rounded-md bg-slate-50 hover:bg-slate-100 text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer border border-slate-200"
                   title="Next Section"
                 >
-                  <SkipForward className="w-3.5 h-3.5" />
+                  <SkipForward className="w-3 h-3" />
                 </button>
 
                 <button
                   type="button"
                   onClick={handleReplay}
-                  className="p-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 transition cursor-pointer border border-slate-200"
+                  className="p-1 rounded-md bg-slate-50 hover:bg-slate-100 text-slate-700 transition cursor-pointer border border-slate-200"
                   title="Replay Current Section"
                 >
-                  <RotateCcw className="w-3.5 h-3.5" />
+                  <RotateCcw className="w-3 h-3" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleRestartFromBeginning}
+                  className="px-2 py-1 rounded-md bg-purple-50 hover:bg-purple-100 text-purple-700 hover:text-purple-900 text-[10.5px] font-bold flex items-center gap-1 transition cursor-pointer border border-purple-200 shadow-2xs"
+                  title="Start Lesson From the Very Beginning (1/16)"
+                >
+                  <RotateCcw className="w-2.5 h-2.5 text-purple-600" />
+                  <span>Start</span>
                 </button>
               </div>
 
-              {/* Speed & Mute controls */}
-              <div className="flex items-center gap-1.5">
-                {/* Speed Button */}
+              {/* Right: Speed + Mute + Language + Close */}
+              <div className="flex items-center gap-1 shrink-0">
                 <button
                   type="button"
                   onClick={handleCycleSpeed}
-                  className="px-2 py-1 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-[11px] font-mono font-bold transition cursor-pointer border border-slate-200"
+                  className="px-1.5 py-0.5 rounded-md bg-slate-50 hover:bg-slate-100 text-slate-700 text-[10.5px] font-mono font-bold transition cursor-pointer border border-slate-200"
                   title="Speech Speed"
                 >
                   {playbackSpeed}x
                 </button>
 
-                {/* Mute Button */}
                 <button
                   type="button"
                   onClick={() => setIsMuted((prev) => !prev)}
-                  className="p-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 transition cursor-pointer border border-slate-200"
+                  className="p-1 rounded-md bg-slate-50 hover:bg-slate-100 text-slate-700 transition cursor-pointer border border-slate-200"
                   title={isMuted ? 'Unmute Voice' : 'Mute Voice'}
                 >
                   {isMuted ? (
-                    <VolumeX className="w-3.5 h-3.5 text-red-500" />
+                    <VolumeX className="w-3 h-3 text-red-500" />
                   ) : (
-                    <Volume2 className="w-3.5 h-3.5 text-purple-600" />
+                    <Volume2 className="w-3 h-3 text-purple-600" />
                   )}
+                </button>
+
+                <div className="inline-flex rounded-full bg-purple-50 border border-purple-200 p-0.5 text-[10px] font-bold">
+                  <button
+                    type="button"
+                    onClick={() => handleToggleLanguage('english')}
+                    className={`px-2 py-0.5 rounded-full transition cursor-pointer ${
+                      language === 'english'
+                        ? 'bg-purple-600 text-white shadow-2xs'
+                        : 'text-purple-800 hover:text-purple-950'
+                    }`}
+                  >
+                    English
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleToggleLanguage('hindi')}
+                    className={`px-2 py-0.5 rounded-full transition cursor-pointer ${
+                      language === 'hindi'
+                        ? 'bg-purple-600 text-white shadow-2xs'
+                        : 'text-purple-800 hover:text-purple-950'
+                    }`}
+                  >
+                    हिंदी
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="w-5.5 h-5.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition cursor-pointer"
+                  title="Close Mentor"
+                >
+                  <X className="w-3 h-3" />
                 </button>
               </div>
             </div>

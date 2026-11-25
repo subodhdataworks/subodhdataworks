@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Volume2, VolumeX, RotateCcw, Zap, Check, Radio } from 'lucide-react';
+import { playSwaraVoice, stopSwaraVoice } from '../../services/swaraAudioService';
 
 export interface IndianVoiceProblemStatementProps {
   title?: string;
@@ -44,21 +45,8 @@ export const IndianVoiceProblemStatement: React.FC<IndianVoiceProblemStatementPr
 }) => {
   const fullText = problemStatement || '';
 
-  // ── 1. Automatic Gender Determination (Alternating Boy & Girl across questions) ──
-  // Odd questions = Indian Boy (Male Voice)
-  // Even questions = Indian Girl (Female Voice)
-  const currentGender: 'boy' | 'girl' = useMemo(() => {
-    if (taskIndex !== undefined) {
-      return taskIndex % 2 !== 0 ? 'boy' : 'girl';
-    }
-    // Hash fallback if no taskIndex
-    let hash = 0;
-    for (let i = 0; i < fullText.length; i++) {
-      hash = (hash << 5) - hash + fullText.charCodeAt(i);
-      hash |= 0;
-    }
-    return Math.abs(hash) % 2 === 0 ? 'girl' : 'boy';
-  }, [taskIndex, fullText]);
+  // ── 1. Voice Determination: Universal Authentic Indian Female Voice (Matching DSA Module 1 Swara) ──
+  const currentGender: 'girl' = 'girl';
 
   // ── 2. Typewriter State ──
   const [typedChars, setTypedChars] = useState<number>(0);
@@ -124,8 +112,8 @@ export const IndianVoiceProblemStatement: React.FC<IndianVoiceProblemStatementPr
     };
   }, []);
 
-  // ── 5. Indian Voice Picker ──
-  const getIndianVoice = useCallback((gender: 'boy' | 'girl'): {
+  // ── 5. Indian Voice Picker (Strictly Swara / Indian Female Voice) ──
+  const getIndianVoice = useCallback((_gender?: 'boy' | 'girl'): {
     voice: SpeechSynthesisVoice | null;
     pitch: number;
     rate: number;
@@ -133,132 +121,50 @@ export const IndianVoiceProblemStatement: React.FC<IndianVoiceProblemStatementPr
     if (!synthRef.current) {
       return {
         voice: null,
-        pitch: gender === 'girl' ? 1.18 : 0.92,
-        rate: gender === 'girl' ? 0.96 : 0.94,
+        pitch: 1.05,
+        rate: 0.95,
       };
     }
     const voices = synthRef.current.getVoices();
 
-    // Look for Indian English (en-IN) or Hindi (hi-IN)
-    const indianVoices = voices.filter(
-      (v) =>
-        v.lang === 'en-IN' ||
-        v.lang.startsWith('en-IN') ||
-        v.lang === 'hi-IN' ||
-        v.lang.startsWith('hi-IN') ||
-        v.name.includes('India') ||
-        v.name.includes('Hindi')
-    );
+    // Look for Swara, Heera, Neerja, Kalpana, Lekha, Veena, Indian Female Voice
+    const swaraVoice =
+      voices.find((v) => /swara/i.test(v.name)) ||
+      voices.find((v) => /heera|neerja|kalpana|lekha|veena|ananya|shruti|priya/i.test(v.name)) ||
+      voices.find((v) => (/hi[-_]in/i.test(v.lang) || /en[-_]in/i.test(v.lang)) && /female|woman/i.test(v.name)) ||
+      voices.find((v) => !/male|man|ravi|madhav|hemant|prabhat|david|mark|george/i.test(v.name) && (/hi[-_]in/i.test(v.lang) || /en[-_]in/i.test(v.lang))) ||
+      voices.find((v) => /female|woman|zira|samantha/i.test(v.name)) ||
+      voices[0];
 
-    let selectedVoice: SpeechSynthesisVoice | undefined;
-
-    if (gender === 'girl') {
-      // Pure Indian Girl Voice Selection
-      selectedVoice =
-        indianVoices.find(
-          (v) =>
-            v.name.toLowerCase().includes('female') ||
-            v.name.toLowerCase().includes('neerja') ||
-            v.name.toLowerCase().includes('heera') ||
-            v.name.toLowerCase().includes('veena') ||
-            v.name.toLowerCase().includes('kalpana') ||
-            v.name.toLowerCase().includes('swara') ||
-            v.name.toLowerCase().includes('lekha')
-        ) ||
-        indianVoices.find((v) => !v.name.toLowerCase().includes('male')) ||
-        indianVoices[0] ||
-        voices.find(
-          (v) =>
-            v.lang.startsWith('en') &&
-            (v.name.toLowerCase().includes('female') ||
-              v.name.toLowerCase().includes('zira') ||
-              v.name.toLowerCase().includes('samantha') ||
-              v.name.toLowerCase().includes('natural'))
-        );
-
-      return {
-        voice: selectedVoice || null,
-        pitch: 1.18, // Bright, youthful Indian female pitch
-        rate: 0.95, // Clear conversational Indian pace
-      };
-    } else {
-      // Pure Indian Boy Voice Selection
-      selectedVoice =
-        indianVoices.find(
-          (v) =>
-            v.name.toLowerCase().includes('male') ||
-            v.name.toLowerCase().includes('prabhat') ||
-            v.name.toLowerCase().includes('ravi') ||
-            v.name.toLowerCase().includes('rishi') ||
-            v.name.toLowerCase().includes('madhur') ||
-            v.name.toLowerCase().includes('hemant') ||
-            v.name.toLowerCase().includes('madhav')
-        ) ||
-        indianVoices.find((v) => v.name.toLowerCase().includes('male')) ||
-        indianVoices[indianVoices.length > 1 ? 1 : 0] ||
-        voices.find(
-          (v) =>
-            v.lang.startsWith('en') &&
-            (v.name.toLowerCase().includes('male') ||
-              v.name.toLowerCase().includes('david') ||
-              v.name.toLowerCase().includes('george') ||
-              v.name.toLowerCase().includes('guy'))
-        );
-
-      return {
-        voice: selectedVoice || null,
-        pitch: 0.92, // Warm, youthful Indian boy pitch
-        rate: 0.93, // Conversational Indian pace
-      };
-    }
+    return {
+      voice: swaraVoice || null,
+      pitch: 1.05, // Warm natural Indian female teacher pitch
+      rate: 0.95, // Clear conversational Indian pace
+    };
   }, []);
 
-  // ── 6. Speak Logic ──
+  // ── 6. Speak Logic (Exact DSA Module 1 Swara Voice) ──
   const speakVoice = useCallback(
-    (gender: 'boy' | 'girl') => {
-      if (!synthRef.current || isMuted) return;
+    (_gender?: 'boy' | 'girl') => {
+      if (isMuted) return;
 
       try {
-        synthRef.current.cancel();
+        stopSwaraVoice();
 
         const textToSpeak = cleanTextForSpeech(fullText, highlightedKeyword, suffix);
         if (!textToSpeak) return;
 
-        const utterance = new SpeechSynthesisUtterance(textToSpeak);
-        utteranceRef.current = utterance;
-        const voiceConfig = getIndianVoice(gender);
-
-        if (voiceConfig.voice) {
-          utterance.voice = voiceConfig.voice;
-        }
-        utterance.pitch = voiceConfig.pitch;
-        utterance.rate = voiceConfig.rate;
-        utterance.lang = 'en-IN';
-        utterance.volume = 1.0;
-
-        utterance.onstart = () => {
-          setIsSpeaking(true);
-        };
-
-        utterance.onend = () => {
-          setIsSpeaking(false);
-          utteranceRef.current = null;
-        };
-
-        utterance.onerror = () => {
-          setIsSpeaking(false);
-          utteranceRef.current = null;
-        };
-
-        if (synthRef.current.paused) {
-          synthRef.current.resume();
-        }
-        synthRef.current.speak(utterance);
+        setIsSpeaking(true);
+        playSwaraVoice(textToSpeak, {
+          onStart: () => setIsSpeaking(true),
+          onEnd: () => setIsSpeaking(false),
+          onError: () => setIsSpeaking(false),
+        });
       } catch {
         setIsSpeaking(false);
       }
     },
-    [fullText, highlightedKeyword, suffix, isMuted, getIndianVoice]
+    [fullText, highlightedKeyword, suffix, isMuted]
   );
 
   // ── 7. Automatic Typewriter & Automatic Voice on Load / Question Change ──
@@ -364,14 +270,12 @@ export const IndianVoiceProblemStatement: React.FC<IndianVoiceProblemStatementPr
             <span>{title}</span>
           </div>
 
-          {/* Automatic Indian Voice Indicator Badge (Boy / Girl) */}
+          {/* Automatic Indian Voice Indicator Badge */}
           <span
-            className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-bold border transition-all ${
-              currentGender === 'boy' ? themeStyles.tagBoy : themeStyles.tagGirl
-            }`}
-            title={`Voice: ${currentGender === 'boy' ? 'Indian Boy' : 'Indian Girl'}`}
+            className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-bold border transition-all ${themeStyles.tagGirl}`}
+            title="Voice: Indian Female Voice (Swara)"
           >
-            <span>{currentGender === 'boy' ? '👦' : '👧'}</span>
+            <span>👧 Indian</span>
             {isSpeaking && (
               <div className="flex items-center gap-0.5 ml-0.5" title="Speaking right now">
                 <span className="w-1 h-2.5 bg-current rounded-full animate-pulse" />

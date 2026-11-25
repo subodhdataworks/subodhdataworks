@@ -146,7 +146,13 @@ const Card: React.FC<{ course: MobileShowcaseCourse }> = ({ course }) => {
           className="relative shrink-0 overflow-hidden rounded-tl-2xl bg-slate-900"
           style={{ width: '115px', minWidth: '115px' }}
         >
-          <AutoplayVideo video={course.video} poster={course.image} alt={course.title} />
+          <img
+            src={course.image}
+            alt={course.title}
+            loading="eager"
+            decoding="async"
+            className="w-full h-full object-cover"
+          />
 
           {/* MOST POPULAR badge */}
           {course.popularBadge && (

@@ -1,3 +1,4 @@
+import { createJsonResponder, handleCorsPreflight, rejectUnauthorizedOrigin } from './_cors.js';
 /**
  * Cloudflare Pages Function — /api/entitlements
  *
@@ -12,19 +13,9 @@
  *   RAZORPAY_KEY_SECRET  (Used to verify cryptographic entitlement signatures)
  */
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-User-Id',
-  'Content-Type': 'application/json',
-  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
-  'Pragma': 'no-cache',
-  'Expires': '0',
-  'Vary': 'Authorization, Cookie, Accept-Encoding',
-};
-
-const json = (data, status = 200) =>
-  new Response(JSON.stringify(data), { status, headers: corsHeaders });
+const CORS_OPTS = { methods: "GET, POST, OPTIONS", headers: "Content-Type, Authorization, X-User-Id" };
+// Strict origin-allowlisted CORS is applied per request via _cors.js
+const json = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 
 export const ALL_7_CANONICAL_COURSES = [
   'data_analyst',
@@ -289,6 +280,9 @@ function safeEqual(a, b) {
  * - ?userId=<userId>&courseId=<courseId> -> Verifies whether that user is entitled to access that course/lesson.
  */
 export async function onRequestGet(context) {
+  const _corsBlocked = rejectUnauthorizedOrigin(context.request, context.env, CORS_OPTS);
+  if (_corsBlocked) return _corsBlocked;
+  const json = createJsonResponder(context.request, context.env, CORS_OPTS);
   const { request } = context;
   const url = new URL(request.url);
   const rawUserId = url.searchParams.get('userId') || request.headers.get('x-user-id') || '';
@@ -366,6 +360,9 @@ export async function onRequestGet(context) {
 }
 
 export async function onRequestPost(context) {
+  const _corsBlocked = rejectUnauthorizedOrigin(context.request, context.env, CORS_OPTS);
+  if (_corsBlocked) return _corsBlocked;
+  const json = createJsonResponder(context.request, context.env, CORS_OPTS);
   const { request, env } = context;
   const keySecret = env?.RAZORPAY_KEY_SECRET;
 
@@ -523,6 +520,6 @@ export async function onRequestPost(context) {
   });
 }
 
-export async function onRequestOptions() {
-  return new Response(null, { status: 204, headers: corsHeaders });
+export async function onRequestOptions(context) {
+  return handleCorsPreflight(context, CORS_OPTS);
 }

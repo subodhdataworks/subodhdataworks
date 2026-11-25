@@ -23,6 +23,7 @@ import {
   DEFAULT_HR_SETTINGS,
   HrAvatarOption
 } from '../../services/hrSettingsService';
+import { playSwaraVoice, stopSwaraVoice } from '../../services/swaraAudioService';
 import { StableMouthLipSyncAvatar } from '../futureai/interview/StableMouthLipSyncAvatar';
 import './AdminHrSettingsModal.css';
 
@@ -89,35 +90,23 @@ export const AdminHrSettingsModal: React.FC<AdminHrSettingsModalProps> = ({
 
   if (!isOpen) return null;
 
-  // Handle Voice Preview
+  // Handle Voice Preview (Exact Swara Voice)
   const handleTestVoicePreview = () => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (typeof window === 'undefined') return;
 
     if (isPreviewSpeaking) {
-      window.speechSynthesis.cancel();
+      stopSwaraVoice();
       setIsPreviewSpeaking(false);
       return;
     }
 
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(previewTestText);
-    utterance.rate = settings.speakingRate;
-    utterance.pitch = settings.speakingPitch;
-
-    // Pick selected voice
-    if (settings.voiceURI && settings.voiceURI !== 'auto') {
-      const selected = availableVoices.find(v => v.voiceURI === settings.voiceURI);
-      if (selected) utterance.voice = selected;
-    } else {
-      const voices = HrSettingsService.getAvailableVoices(settings.language);
-      if (voices.length > 0) utterance.voice = voices[0];
-    }
-
-    utterance.onstart = () => setIsPreviewSpeaking(true);
-    utterance.onend = () => setIsPreviewSpeaking(false);
-    utterance.onerror = () => setIsPreviewSpeaking(false);
-
-    window.speechSynthesis.speak(utterance);
+    stopSwaraVoice();
+    setIsPreviewSpeaking(true);
+    playSwaraVoice(previewTestText, {
+      onStart: () => setIsPreviewSpeaking(true),
+      onEnd: () => setIsPreviewSpeaking(false),
+      onError: () => setIsPreviewSpeaking(false),
+    });
   };
 
   // Handle Preset Avatar selection

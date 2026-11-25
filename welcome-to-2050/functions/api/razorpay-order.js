@@ -9,16 +9,11 @@
  */
 
 import { normalizeCourseKey, normalizeUserId } from './entitlements.js';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Content-Type': 'application/json',
-};
-
-const json = (data, status = 200) =>
-  new Response(JSON.stringify(data), { status, headers: corsHeaders });
+
+import { createJsonResponder, handleCorsPreflight, rejectUnauthorizedOrigin } from './_cors.js';
+const CORS_OPTS = { methods: "POST, OPTIONS", headers: "Content-Type" };
+// Strict origin-allowlisted CORS is applied per request via _cors.js
+const json = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 
 // Canonical Server-Side Course Price Validation (Rupees)
 const CANONICAL_COURSE_PRICES_INR = {
@@ -36,6 +31,9 @@ const CANONICAL_COURSE_PRICES_INR = {
 };
 
 export async function onRequestPost(context) {
+  const _corsBlocked = rejectUnauthorizedOrigin(context.request, context.env, CORS_OPTS);
+  if (_corsBlocked) return _corsBlocked;
+  const json = createJsonResponder(context.request, context.env, CORS_OPTS);
   const { request, env } = context;
 
   // Read credentials exclusively from Cloudflare environment bindings
@@ -111,6 +109,6 @@ export async function onRequestPost(context) {
   }
 }
 
-export async function onRequestOptions() {
-  return new Response(null, { status: 204, headers: corsHeaders });
+export async function onRequestOptions(context) {
+  return handleCorsPreflight(context, CORS_OPTS);
 }

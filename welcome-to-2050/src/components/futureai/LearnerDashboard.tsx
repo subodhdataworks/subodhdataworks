@@ -58,6 +58,7 @@ import {
   Settings
 } from 'lucide-react';
 import { FutureLogo } from './FutureLogo';
+import { playSwaraVoice, stopSwaraVoice } from '../../services/swaraAudioService';
 import { useThemeAccent } from '../../context/ThemeAccentContext';
 import { PayToUnlockModal } from './PayToUnlockModal';
 import { isCourseUnlocked, isAnyCourseUnlocked } from '../../services/courseUnlockService';
@@ -80,6 +81,7 @@ import { SqlChallengesPracticeHub } from './SqlChallengesPracticeHub';
 import { ExcelChallengesPracticeHub } from './ExcelChallengesPracticeHub';
 import { LearnerHomeHub } from './LearnerHomeHub';
 import { DataAnalystGenAiHub } from './DataAnalystGenAiHub';
+import { NavigationService } from '../../services/navigationService';
 import { findTabAndChapterForTopic } from '../../data/dataAnalystCurriculum';
 import { DataScienceAgenticAiHub } from './DataScienceAgenticAiHub';
 import { MlEngineeringHub } from './MlEngineeringHub';
@@ -89,6 +91,7 @@ import { MsOfficeCopilotHub } from './MsOfficeCopilotHub';
 import { FullStackMernHub } from './FullStackMernHub';
 import { AiLiveCourseDemoHub } from './AiLiveCourseDemoHub';
 import { AiMockInterviewsPage } from './interview/AiMockInterviewsPage';
+import { DedicatedHrRoundRoom, HrRoundRoleKey } from './interview/DedicatedHrRoundRoom';
 import { StudentCoursesDashboard } from './StudentCoursesDashboard';
 import { DashboardV22BentoHub } from './dashboard/DashboardV22BentoHub';
 import { MobileDashboardBottomNav } from './mobile/MobileDashboardBottomNav';
@@ -543,8 +546,19 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     }
   };
 
-  // Sub-view: null = 4-Course Student Dashboard (#dashboard), 'data_analyst' = Data Analyst with GenAI 6-Module Hub (#data-analyst), 'python' = Python Module Detail Page, 'python_intro_game' = Python Introduction & Setup Game Workspace, 'sql' = SQL Chapter View, 'excel' = Excel Chapter View, 'powerbi' = Power BI Chapter View, 'stats' = Statistics Chapter View, 'genai' = GenAI Chapter View
-  const [selectedModuleView, setSelectedModuleView] = useState<'my_learning' | 'data_analyst' | 'data_science' | 'ml_engineering' | 'ai_engineering' | 'ai_tools_prompt' | 'ms_office_copilot' | 'full_stack_mern' | 'ai_website_dev' | 'ai_android_dev' | 'ai_video_creation' | 'mockinterview' | 'python' | 'python_intro_game' | 'python_classroom' | 'python_challenges' | 'sql_challenges' | 'excel_challenges' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai' | null>(() => {
+  // Sub-view: null = 4-Course Student Dashboard (#dashboard), 'data_analyst' = Data Analyst with GenAI 6-Module Hub (#data-analyst), 'python' = Python Module Detail Page, 'python_intro_game' = Python Introduction & Setup Game Workspace, 'sql' = SQL Chapter View, 'excel' = Excel Chapter View, 'powerbi' = Power BI Chapter View, 'stats' = Statistics Chapter View, 'genai' = GenAI Chapter View, 'hr_round' = Dedicated AI HR Round Chamber
+  const [hrRoundRole, setHrRoundRole] = useState<HrRoundRoleKey>(() => {
+    if (typeof window !== 'undefined' && window.location.hash.includes('?')) {
+      const params = new URLSearchParams(window.location.hash.split('?')[1]);
+      const r = params.get('role') || params.get('track');
+      if (r && ['data_analyst', 'data_science', 'ai_engineering', 'ml_engineering', 'full_stack'].includes(r)) {
+        return r as HrRoundRoleKey;
+      }
+    }
+    return 'data_analyst';
+  });
+
+  const [selectedModuleView, setSelectedModuleView] = useState<'my_learning' | 'data_analyst' | 'data_science' | 'ml_engineering' | 'ai_engineering' | 'ai_tools_prompt' | 'ms_office_copilot' | 'full_stack_mern' | 'ai_website_dev' | 'ai_android_dev' | 'ai_video_creation' | 'mockinterview' | 'hr_round' | 'python' | 'python_intro_game' | 'python_classroom' | 'python_challenges' | 'sql_challenges' | 'excel_challenges' | 'sql' | 'excel' | 'powerbi' | 'stats' | 'genai' | null>(() => {
     if (typeof window !== 'undefined') {
       const h = window.location.hash;
       setCurrentHash(h);
@@ -602,6 +616,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       if (baseH === '#stats') {
         return 'stats';
       }
+      if (baseH === '#hr-round' || baseH === '#hrround' || baseH === '#hr_round' || baseH === '#ai-hr' || baseH === '#interview-prep' || baseH === '#interviewprep') {
+        return 'hr_round';
+      }
       if (baseH === '#mockinterview' || baseH === '#mock-interview' || (baseH === '#interview' && !h.includes('topic='))) {
         return 'mockinterview';
       }
@@ -621,8 +638,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
     const baseH = window.location.hash.split('?')[0];
     const isStep = ['#practice','#mcq','#play','#codequest','#workspace','#code','#codepractice','#interview','#mockinterview','#score','#scorecard','#learn','#video'].includes(baseH);
     if (!isStep) return null;
-    const params = new URLSearchParams(window.location.hash.includes('?') ? window.location.hash.split('?')[1] : '');
-    const t = params.get('topic');
+    const searchParams = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(window.location.hash.includes('?') ? window.location.hash.split('?')[1] : '');
+    const t = searchParams.get('topic') || hashParams.get('topic');
     return t ? parseInt(t, 10) : 1;
   });
   const [targetStep, setTargetStep] = useState<WorkspaceStepId>(() => {
@@ -790,6 +808,15 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         setSelectedModuleView(null);
         setActiveTopicWs(null);
         setDockTab('withdraw');
+      } else if (baseH === '#hr-round' || baseH === '#hrround' || baseH === '#hr_round' || baseH === '#ai-hr' || baseH === '#interview-prep' || baseH === '#interviewprep') {
+        const params = new URLSearchParams(h.includes('?') ? h.split('?')[1] : '');
+        const r = params.get('role') || params.get('track');
+        if (r && ['data_analyst', 'data_science', 'ai_engineering', 'ml_engineering', 'full_stack'].includes(r)) {
+          setHrRoundRole(r as HrRoundRoleKey);
+        }
+        setSelectedModuleView('hr_round');
+        setActiveTopicWs(null);
+        setDockTab('home');
       } else if (baseH === '#mockinterview' || baseH === '#mock-interview' || (baseH === '#interview' && !h.includes('topic='))) {
         setSelectedModuleView('mockinterview');
         setActiveTopicWs(null);
@@ -802,14 +829,15 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
         setDockTab('home');
       } else if (['#mcq','#play','#codequest','#workspace','#code','#codepractice','#interview','#mockinterview','#score','#scorecard','#learn','#video'].includes(baseH)) {
         setSelectedModuleView('python');
-        const params = new URLSearchParams(h.includes('?') ? h.split('?')[1] : '');
-        const hashTopicId = params.get('topic');
+        const searchParams = new URLSearchParams(window.location.search);
+        const hashParams = new URLSearchParams(h.includes('?') ? h.split('?')[1] : '');
+        const hashTopicId = searchParams.get('topic') || hashParams.get('topic');
         if (hashTopicId) {
           setActiveTopicWs(parseInt(hashTopicId, 10));
         } else {
           setActiveTopicWs(prev => prev ?? 1);
         }
-        const hashTab = params.get('tab');
+        const hashTab = searchParams.get('tab') || hashParams.get('tab');
         if (hashTab) {
           const normTab = hashTab.startsWith('tab-') ? hashTab : `tab-${hashTab}`;
           setReturnCurriculumTabId(normTab);
@@ -873,6 +901,19 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
       window.removeEventListener('hashchange', handleHash);
       window.removeEventListener('popstate', handleHash);
     };
+  }, []);
+
+  // Listen to direct role switches from Interview Prep dropdown
+  useEffect(() => {
+    const handleInterviewRoleChange = (e: any) => {
+      const role = e.detail?.role;
+      if (role && ['data_analyst', 'data_science', 'ai_engineering', 'ml_engineering', 'full_stack'].includes(role)) {
+        setHrRoundRole(role as HrRoundRoleKey);
+        setSelectedModuleView('hr_round');
+      }
+    };
+    window.addEventListener('futureai_interview_role_change', handleInterviewRoleChange);
+    return () => window.removeEventListener('futureai_interview_role_change', handleInterviewRoleChange);
   }, []);
 
   // Interactive AI Mentor Chat state in bottom right widget
@@ -1198,21 +1239,21 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
   };
 
   const handleToggleAiSpeak = (text: string) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
     if (isAiSpeaking) {
-      window.speechSynthesis.cancel();
+      stopSwaraVoice();
       setIsAiSpeaking(false);
       return;
     }
-    window.speechSynthesis.cancel();
+    stopSwaraVoice();
     const clean = text.replace(/[*_#`[\]()]/g, ' ').replace(/\s+/g, ' ').trim();
-    const utt = new SpeechSynthesisUtterance(clean);
-    utt.lang = 'en-US';
-    utt.rate = 0.95;
-    utt.onstart = () => setIsAiSpeaking(true);
-    utt.onend = () => setIsAiSpeaking(false);
-    utt.onerror = () => setIsAiSpeaking(false);
-    window.speechSynthesis.speak(utt);
+    if (!clean) return;
+
+    setIsAiSpeaking(true);
+    playSwaraVoice(clean, {
+      onStart: () => setIsAiSpeaking(true),
+      onEnd: () => setIsAiSpeaking(false),
+      onError: () => setIsAiSpeaking(false),
+    });
   };
 
   const handleSendChat = async (textToSend?: string) => {
@@ -1446,39 +1487,31 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
             initialStep={targetStep}
             onBack={(lastTopicId?: number, explicitTabId?: string | number) => {
               playClick();
+              NavigationService.silenceAllAudio();
+
               const targetTopicNum = lastTopicId || activeTopicWs || 1;
               const targetTopicId = `t-${targetTopicNum}`;
               
-              // Resolve active tab context with strict priority (no default to tab-2):
-              let candidateTab: string | null = explicitTabId ? String(explicitTabId) : returnCurriculumTabId;
-              if (!candidateTab && typeof window !== 'undefined') {
-                try {
-                  candidateTab = sessionStorage.getItem('futureai_active_curriculum_tab');
-                } catch {}
-                if (!candidateTab && window.location.hash.includes('?')) {
-                  const p = new URLSearchParams(window.location.hash.split('?')[1]);
-                  const t = p.get('tab');
-                  if (t) candidateTab = t.startsWith('tab-') ? t : `tab-${t}`;
-                }
-              }
-              if (candidateTab && !candidateTab.startsWith('tab-')) {
-                candidateTab = `tab-${candidateTab}`;
-              }
-
-              const info = findTabAndChapterForTopic(targetTopicId, candidateTab || undefined);
-              const resolvedTabId = candidateTab || (info ? info.tabId : 'tab-1');
+              // Dynamically resolve course route based on active tab and origin
+              const course = NavigationService.getCurrentCourse(explicitTabId || returnCurriculumTabId);
+              const resolvedTabId = `tab-${course.tabId}`;
 
               try {
                 sessionStorage.setItem('futureai_active_curriculum_tab', resolvedTabId);
                 sessionStorage.setItem('futureai_active_curriculum_topic', targetTopicId);
               } catch {}
+
               setReturnCurriculumTabId(resolvedTabId);
               setReturnCurriculumTopicId(targetTopicId);
-              setSelectedModuleView('data_analyst');
+              setSelectedModuleView(course.key as any);
               setActiveTopicWs(null);
               setTargetStep('learn');
               setDockTab('home');
-              window.location.hash = `#data-analyst?tab=${resolvedTabId}&topic=${targetTopicNum}`;
+
+              if (typeof window !== 'undefined') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.location.hash = `${course.hash}?tab=${resolvedTabId}&topic=${targetTopicNum}`;
+              }
             }}
           onNavigateDock={(tab) => {
             setActiveTopicWs(null);
@@ -1719,9 +1752,9 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
 
     // 10. Course Details -> Full Footer
     if (
-      ['#data-analyst', '#data-analytics', '#data-science', '#data-science-agentic-ai', '#datascience', '#ml-engineering', '#mlengineering', '#ml-eng', '#ml', '#ai-engineering', '#aiengineering', '#ai-eng', '#ai', '#full-stack', '#fullstack', '#fullstack-mern', '#full-stack-web-dev', '#ai-website-dev', '#ai-android-dev', '#ai-video-creation', '#ai-tools-prompt', '#ms-office-copilot', '#sql', '#powerbi', '#stats', '#genai', '#mockinterview', '#mock-interview', '#interview'].includes(rawHash) ||
+      ['#data-analyst', '#data-analytics', '#data-science', '#data-science-agentic-ai', '#datascience', '#ml-engineering', '#mlengineering', '#ml-eng', '#ml', '#ai-engineering', '#aiengineering', '#ai-eng', '#ai', '#full-stack', '#fullstack', '#fullstack-mern', '#full-stack-web-dev', '#ai-website-dev', '#ai-android-dev', '#ai-video-creation', '#ai-tools-prompt', '#ms-office-copilot', '#sql', '#powerbi', '#stats', '#genai', '#mockinterview', '#mock-interview', '#interview', '#hr-round', '#hrround'].includes(rawHash) ||
       (dockTab === 'home' && selectedModuleView &&
-        ['data_analyst', 'data_science', 'ml_engineering', 'ai_engineering', 'ai_tools_prompt', 'ms_office_copilot', 'full_stack_mern', 'ai_website_dev', 'ai_android_dev', 'ai_video_creation', 'sql', 'excel', 'powerbi', 'stats', 'genai', 'mockinterview'].includes(selectedModuleView))
+        ['data_analyst', 'data_science', 'ml_engineering', 'ai_engineering', 'ai_tools_prompt', 'ms_office_copilot', 'full_stack_mern', 'ai_website_dev', 'ai_android_dev', 'ai_video_creation', 'sql', 'excel', 'powerbi', 'stats', 'genai', 'mockinterview', 'hr_round'].includes(selectedModuleView))
     ) {
       return 'full';
     }
@@ -1967,7 +2000,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setSelectedModuleView('python');
                 setActiveTopicWs(numericTopicId);
                 setTargetStep(step as any);
-                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&tab=2`;
+                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&course=data_science`;
               }}
             />
           </div>
@@ -1991,7 +2024,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setSelectedModuleView('python');
                 setActiveTopicWs(numericTopicId);
                 setTargetStep(step as any);
-                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&tab=3`;
+                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&course=ml_engineering`;
               }}
             />
           </div>
@@ -2015,7 +2048,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setSelectedModuleView('python');
                 setActiveTopicWs(numericTopicId);
                 setTargetStep(step as any);
-                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&tab=4`;
+                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&course=ai_engineering`;
               }}
             />
           </div>
@@ -2039,7 +2072,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setSelectedModuleView('python');
                 setActiveTopicWs(numericTopicId);
                 setTargetStep(step as any);
-                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&tab=5`;
+                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&course=ai_tools_prompt`;
               }}
             />
           </div>
@@ -2063,7 +2096,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setSelectedModuleView('python');
                 setActiveTopicWs(numericTopicId);
                 setTargetStep(step as any);
-                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&tab=6`;
+                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&course=ms_office_copilot`;
               }}
             />
           </div>
@@ -2086,7 +2119,7 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 setSelectedModuleView('python');
                 setActiveTopicWs(numericTopicId);
                 setTargetStep(step as any);
-                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&tab=7`;
+                if (typeof window !== 'undefined') window.location.hash = `#${step}?topic=${numericTopicId}&course=full_stack_mern`;
               }}
             />
           </div>
@@ -2126,6 +2159,21 @@ export const LearnerDashboard: React.FC<LearnerDashboardProps> = ({
                 window.location.hash = '#dashboard';
               }}
               onOpenLogin={onOpenLogin}
+            />
+          </div>
+        )}
+
+        {/* ─── DEDICATED AI HR ROUND PREPARATION CHAMBER (#hr-round) ─── */}
+        {selectedModuleView === 'hr_round' && (
+          <div className="col-span-full">
+            <DedicatedHrRoundRoom
+              userName={currentUserName || userName}
+              initialRole={hrRoundRole}
+              onBack={() => {
+                playClick();
+                setSelectedModuleView(null);
+                window.location.hash = '#dashboard';
+              }}
             />
           </div>
         )}

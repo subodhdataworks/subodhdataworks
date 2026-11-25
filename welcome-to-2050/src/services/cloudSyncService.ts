@@ -305,7 +305,7 @@ export async function restoreUserEntitlementsFromCloud(identifier?: {
         }
       } else {
         const col = collection(db, 'registered_users');
-        const q = query(col, where('email', '==', cleanEmail));
+        const q = query(col, where('email', '==', cleanEmail), limit(1));
         const res = await withTimeout(getDocs(q), 2500);
         if (!res.empty) {
           const docData = res.docs[0].data();
@@ -329,7 +329,7 @@ export async function restoreUserEntitlementsFromCloud(identifier?: {
     // 3. Check by phone if email didn't match
     if (restoredCoursesSet.size === 0 && cleanPhone && cleanPhone.length >= 10) {
       const col = collection(db, 'registered_users');
-      const q = query(col, where('phone', '==', cleanPhone));
+      const q = query(col, where('phone', '==', cleanPhone), limit(1));
       const res = await withTimeout(getDocs(q), 2500);
       if (!res.empty) {
         const docData = res.docs[0].data();

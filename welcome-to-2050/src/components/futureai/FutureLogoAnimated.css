@@ -1,0 +1,383 @@
+/* ============================================================================
+   FUTURE IT INDUSTRY — ADVANCED 5-STAGE ANIMATED LOGO V2 (SVG + CSS)
+   Stage 1 (0.0s–0.45s): First curved stroke draws smoothly
+   Stage 2 (0.4s–1.1s):  2-part F symbol slides & assembles into exact shape
+   Stage 3 (1.1s–1.7s):  Bright purple/lavender energy trail travels the F curve
+   Stage 4 (1.7s–2.3s):  Staggered "Future IT" / "Industry" reveal + shimmer
+   Stage 5 (2.3s–2.85s): Controlled settle + soft glow -> exact static logo
+   ============================================================================ */
+
+/* --- STAGE 1 & 2: SVG Stroke Drawing --- */
+@keyframes fiiStrokeDrawPrimary {
+  0% {
+    stroke-dashoffset: 100;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  75% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes fiiStrokeDrawUpper {
+  0% {
+    stroke-dashoffset: 90;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  78% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+/* --- STAGE 2: 2-Part Real F Emblem Assembly --- */
+@keyframes fiiAssembleLower {
+  0% {
+    opacity: 0;
+    transform: translate(-9px, 10px) scale(0.76);
+  }
+  30% {
+    opacity: 1;
+  }
+  82% {
+    opacity: 1;
+    transform: translate(0.8px, -0.8px) scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+@keyframes fiiAssembleUpper {
+  0% {
+    opacity: 0;
+    transform: translate(11px, -9px) rotate(-8deg) scale(0.76);
+  }
+  35% {
+    opacity: 1;
+  }
+  82% {
+    opacity: 1;
+    transform: translate(-0.8px, 0.6px) rotate(1deg) scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+}
+
+/* --- STAGE 3: Purple Energy Comet Trail along the F Curve --- */
+@keyframes fiiEnergyTrail {
+  0% {
+    stroke-dashoffset: 110;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -110;
+    opacity: 0;
+  }
+}
+
+@keyframes fiiLightSweepV2 {
+  0% {
+    transform: translateX(-150%) skewX(-24deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.95;
+  }
+  75% {
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateX(240%) skewX(-24deg);
+    opacity: 0;
+  }
+}
+
+/* --- STAGE 4: Staggered Brand Text Reveal + Purple-White Shimmer --- */
+@keyframes fiiBrandLineIn {
+  0% {
+    opacity: 0;
+    transform: translateY(7px);
+    filter: blur(2px);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-0.5px);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes fiiTextShimmerSweep {
+  0% {
+    background-position: 180% 0;
+  }
+  100% {
+    background-position: -80% 0;
+  }
+}
+
+/* --- STAGE 5: Final Controlled Settle + Soft Glow --- */
+@keyframes fiiFinalSettle {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+  }
+  42% {
+    transform: scale(1.07);
+    filter: drop-shadow(0 0 12px rgba(216, 180, 254, 0.98)) drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+  }
+}
+
+/* ============================================================================
+   LAYOUT & LAYER RULES (Exact original dimensions, zero layout shift)
+   ============================================================================ */
+.fii-v2-stage {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 26px;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.fii-v2-emblem-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.fii-v2-lower-part {
+  clip-path: inset(40% 0 0 0);
+}
+
+.fii-v2-upper-part {
+  clip-path: inset(0 0 54% 0);
+}
+
+.fii-v2-svg-overlay {
+  position: absolute;
+  inset: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  pointer-events: none;
+  overflow: visible;
+}
+
+.fii-v2-sweep-mask {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 5px;
+  pointer-events: none;
+}
+
+.fii-v2-sweep-bar {
+  position: absolute;
+  inset: -4px 0;
+  width: 58%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(192, 132, 252, 0.4) 30%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(192, 132, 252, 0.4) 70%,
+    transparent 100%
+  );
+  opacity: 0;
+}
+
+/* ============================================================================
+   FULL INTRO TIMELINE (2.85s — Plays on initial page load)
+   ============================================================================ */
+.fii-mode-intro .fii-v2-stage {
+  animation: fiiFinalSettle 0.55s cubic-bezier(0.22, 1, 0.36, 1) 2.3s 1 both;
+}
+
+.fii-mode-intro .fii-v2-stroke-lower {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: fiiStrokeDrawPrimary 0.72s cubic-bezier(0.22, 1, 0.36, 1) 0.04s 1 forwards;
+}
+
+.fii-mode-intro .fii-v2-stroke-upper {
+  stroke-dasharray: 90;
+  stroke-dashoffset: 90;
+  animation: fiiStrokeDrawUpper 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.38s 1 forwards;
+}
+
+.fii-mode-intro .fii-v2-lower-part {
+  animation: fiiAssembleLower 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.35s 1 both;
+}
+
+.fii-mode-intro .fii-v2-upper-part {
+  animation: fiiAssembleUpper 0.68s cubic-bezier(0.16, 1, 0.3, 1) 0.52s 1 both;
+}
+
+.fii-mode-intro .fii-v2-energy-path {
+  stroke-dasharray: 34 140;
+  stroke-dashoffset: 110;
+  animation: fiiEnergyTrail 0.68s cubic-bezier(0.4, 0, 0.2, 1) 1.12s 1 forwards;
+}
+
+.fii-mode-intro .fii-v2-sweep-bar {
+  animation: fiiLightSweepV2 0.65s cubic-bezier(0.25, 0.8, 0.25, 1) 1.2s 1 forwards;
+}
+
+.fii-mode-intro .fii-v2-text-line-1 {
+  animation: fiiBrandLineIn 0.48s cubic-bezier(0.22, 1, 0.36, 1) 1.65s 1 both;
+}
+
+.fii-mode-intro .fii-v2-text-line-2 {
+  animation: fiiBrandLineIn 0.48s cubic-bezier(0.22, 1, 0.36, 1) 1.82s 1 both;
+}
+
+.fii-mode-intro .fii-v2-text-shimmer {
+  background-image: linear-gradient(
+    110deg,
+    #ffffff 32%,
+    #e9d5ff 46%,
+    #ffffff 56%,
+    #ffffff 100%
+  );
+  background-size: 240% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: fiiTextShimmerSweep 0.75s ease-out 1.85s 1 forwards;
+}
+
+/* ============================================================================
+   HOVER / CLICK REPLAY TIMELINE (~1.25s — Crisp, snappy replay, no loop)
+   ============================================================================ */
+.fii-mode-replay .fii-v2-stage {
+  animation: fiiFinalSettle 0.38s cubic-bezier(0.22, 1, 0.36, 1) 0.88s 1 both;
+}
+
+.fii-mode-replay .fii-v2-stroke-lower {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: fiiStrokeDrawPrimary 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0s 1 forwards;
+}
+
+.fii-mode-replay .fii-v2-stroke-upper {
+  stroke-dasharray: 90;
+  stroke-dashoffset: 90;
+  animation: fiiStrokeDrawUpper 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.16s 1 forwards;
+}
+
+.fii-mode-replay .fii-v2-lower-part {
+  animation: fiiAssembleLower 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.12s 1 both;
+}
+
+.fii-mode-replay .fii-v2-upper-part {
+  animation: fiiAssembleUpper 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.22s 1 both;
+}
+
+.fii-mode-replay .fii-v2-energy-path {
+  stroke-dasharray: 34 140;
+  stroke-dashoffset: 110;
+  animation: fiiEnergyTrail 0.52s cubic-bezier(0.4, 0, 0.2, 1) 0.48s 1 forwards;
+}
+
+.fii-mode-replay .fii-v2-sweep-bar {
+  animation: fiiLightSweepV2 0.52s cubic-bezier(0.25, 0.8, 0.25, 1) 0.52s 1 forwards;
+}
+
+/* --- IDLE STATE (Exact Original Static Logo) --- */
+.fii-mode-idle .fii-v2-stroke-lower,
+.fii-mode-idle .fii-v2-stroke-upper,
+.fii-mode-idle .fii-v2-energy-path,
+.fii-mode-idle .fii-v2-sweep-bar {
+  opacity: 0;
+}
+
+/* ============================================================================
+   MOBILE LOGO WRAPPER (FutureLogo.tsx)
+   ============================================================================ */
+.fii-mobile-logo-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.fii-mobile-mode-intro .fii-mobile-logo-img {
+  animation: fiiAssembleLower 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0.1s 1 both;
+}
+
+.fii-mobile-mode-intro .fii-v2-sweep-bar {
+  animation: fiiLightSweepV2 0.75s cubic-bezier(0.25, 0.8, 0.25, 1) 0.85s 1 forwards;
+}
+
+.fii-mobile-mode-replay .fii-mobile-logo-img {
+  animation: fiiFinalSettle 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0s 1 both;
+}
+
+.fii-mobile-mode-replay .fii-v2-sweep-bar {
+  animation: fiiLightSweepV2 0.55s cubic-bezier(0.25, 0.8, 0.25, 1) 0.05s 1 forwards;
+}
+
+/* ============================================================================
+   ACCESSIBILITY: RESPECT PREFERS-REDUCED-MOTION
+   ============================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .fii-v2-stage,
+  .fii-v2-lower-part,
+  .fii-v2-upper-part,
+  .fii-v2-text-line-1,
+  .fii-v2-text-line-2,
+  .fii-v2-text-shimmer,
+  .fii-mobile-logo-img {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .fii-v2-stroke-lower,
+  .fii-v2-stroke-upper,
+  .fii-v2-energy-path,
+  .fii-v2-sweep-bar {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}

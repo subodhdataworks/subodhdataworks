@@ -440,71 +440,46 @@ export const AiLiveCourseDemoHub: React.FC<AiLiveCourseDemoHubProps> = ({
     <div className="min-h-screen bg-transparent text-slate-800 font-sans pb-12 selection:bg-blue-500 selection:text-white">
       <main className="w-full pt-0 space-y-5">
         {/* ═══════════════════════════════════════════════════════════════════════════
-            1. UNIFIED HERO BANNER (275px Desktop Height, 24px Radius — Matches Homepage)
+            1. SLIM THEME-MATCHED HERO BANNER (210px Desktop Height — Future IT Purple-White)
            ═══════════════════════════════════════════════════════════════════════════ */}
-        <section className="relative rounded-2xl lg:rounded-3xl overflow-hidden bg-slate-950 border border-slate-200/80 shadow-md text-white md:h-[275px] md:min-h-[275px] md:max-h-[275px] flex flex-col justify-between">
+        <section className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-[#FAF8FF] via-white to-[#F5F3FF] border border-[#E9E5F5] shadow-[0_4px_18px_rgba(109,40,217,0.06)] text-[#111827] md:h-[210px] md:min-h-[210px] md:max-h-[210px] flex flex-col justify-between">
           <div className="absolute inset-0 z-0">
             <img
               src={spec.posterImage}
               alt={spec.title}
-              className="w-full h-full object-cover object-center opacity-35"
+              className="w-full h-full object-cover object-center opacity-25"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/65" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-[#FAF8FF]/95 to-white/60" />
           </div>
 
-          <div className="relative z-10 p-4 sm:p-5 lg:px-7 lg:py-4 flex-1 flex flex-col justify-between">
-            {/* Top Row: Back Button + LIVE CLASSES Badge + Type Pill */}
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  onClick={onBack}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-bold backdrop-blur-md border border-white/15 cursor-pointer transition-all"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>All Courses</span>
-                </button>
-
-                {/* Prominent LIVE CLASSES Red Badge */}
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-red-600 via-rose-600 to-red-600 text-white text-[11px] font-black tracking-wider uppercase shadow-[0_2px_12px_rgba(220,38,38,0.5)] border border-red-400/50">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-80" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
-                  </span>
-                  <span>{isSessionLiveNow ? 'LIVE NOW' : 'LIVE CLASSES'}</span>
-                </div>
-
-                <span className="px-3 py-1 rounded-full bg-white/10 border border-white/15 text-cyan-200 text-[11px] font-bold">
-                  {spec.typeLabel}
-                </span>
-              </div>
-
-              {/* Price Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-md">
-                <span className="text-[11px] text-slate-300 font-semibold">Course Fee:</span>
-                <span className="text-base sm:text-lg font-black text-white">{spec.priceText}</span>
+          <div className="relative z-10 p-4 sm:px-6 lg:px-7 lg:py-3.5 flex-1 flex flex-col justify-between">
+            {/* Top Row: Price Badge Right-Aligned */}
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/95 border border-[#E9E5F5] shadow-2xs">
+                <span className="text-[11px] text-[#64748B] font-medium">Course Fee:</span>
+                <span className="text-sm sm:text-base font-bold text-[#6D28D9]">{spec.priceText}</span>
               </div>
             </div>
 
-            {/* Center: Course Title & Learning Outcome */}
-            <div className="my-auto py-1 text-left max-w-3xl">
-              <h1 className="text-xl sm:text-2xl lg:text-[28px] font-black tracking-tight text-white leading-tight">
+            {/* Center: Course Title & Learning Outcome (Slightly Lowered) */}
+            <div className="my-auto pt-2.5 pb-1 text-left max-w-2xl">
+              <h1 className="text-lg sm:text-xl lg:text-[24px] font-bold tracking-tight text-[#111827] leading-tight m-0">
                 {spec.title}
               </h1>
-              <p className="text-xs sm:text-[13.5px] text-slate-200 font-medium mt-1.5 line-clamp-2 leading-relaxed">
+              <p className="text-xs sm:text-[13px] text-[#64748B] font-medium mt-1 line-clamp-2 leading-snug m-0">
                 {spec.learningOutcome}
               </p>
             </div>
 
             {/* Bottom Row: Demo CTA + Enroll Now CTA */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-white/10">
-              <div className="flex flex-wrap items-center gap-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-[#E9E5F5]">
+              <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
                   onClick={() => scrollToSection('interactive-course-demo')}
-                  className="px-4 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-950 font-black text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
+                  className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-[#F5F3FF] text-[#111827] border border-[#E9E5F5] font-semibold text-xs flex items-center gap-1.5 cursor-pointer shadow-2xs transition-all"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#6D28D9]" />
                   <span>{spec.demoButtonText}</span>
                 </button>
 
@@ -512,7 +487,7 @@ export const AiLiveCourseDemoHub: React.FC<AiLiveCourseDemoHubProps> = ({
                   type="button"
                   onClick={handleEnrollNow}
                   disabled={isPaying}
-                  className={`px-5 py-2 rounded-xl bg-gradient-to-r ${spec.accentGradient} hover:opacity-95 text-white font-black text-xs flex items-center gap-1.5 cursor-pointer shadow-md border border-white/20 transition-all`}
+                  className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white font-semibold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs transition-all"
                 >
                   {isPaying ? (
                     <>

@@ -49,11 +49,12 @@ export interface FutureAdvancedHeaderProps {
   userName?: string;
   userPhone?: string;
   userAvatar?: string;
-  activeNavTab?: 'home' | 'learning' | 'practice' | 'ats' | 'earn' | 'internship' | 'placement';
+  activeNavTab?: 'home' | 'learning' | 'practice' | 'ats' | 'earn' | 'internship' | 'placement' | 'hr_round';
   onNavigateHome: () => void;
   onNavigateLearning: () => void;
   onNavigatePractice: (track?: 'master' | 'python' | 'sql' | 'excel') => void;
   onOpenAtsResume: () => void;
+  onNavigateHrRound?: () => void;
   onNavigateEarn: () => void;
   onNavigateInternship: () => void;
   onNavigatePlacement: () => void;
@@ -81,6 +82,7 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
   onNavigateLearning,
   onNavigatePractice,
   onOpenAtsResume,
+  onNavigateHrRound,
   onNavigateEarn,
   onNavigateInternship,
   onNavigatePlacement,
@@ -697,6 +699,18 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
             scrollToTop();
             onOpenAtsResume();
           }}
+          onNavigateHrRound={(targetRoleKey) => {
+            scrollToTop();
+            if (typeof window !== 'undefined') {
+              const rParam = targetRoleKey ? `?role=${targetRoleKey}` : '';
+              window.location.hash = `#interview-prep${rParam}`;
+              window.dispatchEvent(
+                new CustomEvent('futureai_interview_role_change', {
+                  detail: { role: targetRoleKey },
+                })
+              );
+            }
+          }}
           onNavigateEarn={() => {
             scrollToTop();
             onNavigateEarn();
@@ -837,6 +851,27 @@ export const FutureAdvancedHeader: React.FC<FutureAdvancedHeaderProps> = ({
             >
               <FileCheck2 className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'ats' ? 'text-[#6D28D9]' : 'text-[#667085]'}`} />
               <span>ATS Resume</span>
+            </button>
+
+            {/* 4.5 Interview Prep */}
+            <button
+              type="button"
+              onClick={() => {
+                soundEffects.playClick();
+                scrollToTop();
+                if (onNavigateHrRound) onNavigateHrRound();
+                else if (typeof window !== 'undefined') {
+                  window.location.hash = '#hr-round';
+                }
+              }}
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
+                activeNavTab === 'hr_round'
+                  ? 'bg-[#F5F3FF] text-[#6D28D9] font-bold border border-[#DDD6FE] shadow-2xs'
+                  : 'text-[#344054] hover:text-[#6D28D9] hover:bg-[#F5F3FF]/70 border border-transparent'
+              }`}
+            >
+              <Target className={`w-4 h-4 stroke-[1.8] ${activeNavTab === 'hr_round' ? 'text-[#6D28D9]' : 'text-[#667085]'}`} />
+              <span>Interview Prep</span>
             </button>
 
             {/* 5. Earn Cash */}

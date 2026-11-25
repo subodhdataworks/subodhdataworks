@@ -34,12 +34,12 @@ const SLIDES: BannerSlide[] = [
     headlineHighlight: 'Build Your Future.',
     description: 'Learn practical skills, solve real problems and build projects that showcase your abilities.',
     ctaText: 'Start Learning',
-    ctaBg: 'bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] hover:from-[#5B21B6] hover:to-[#7C3AED] text-white',
-    ctaShadow: 'shadow-[0_4px_14px_rgba(109,40,217,0.25)]',
-    bgGradient: 'bg-gradient-to-r from-[#f7f3fb] via-[#fbf9fe] to-[#ffffff]',
-    vignetteGradient: 'from-[#f7f3fb] via-[#f7f3fb]/95 via-[72%]',
+    ctaBg: 'bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white',
+    ctaShadow: 'shadow-[0_4px_14px_rgba(109,40,217,0.22)]',
+    bgGradient: 'bg-gradient-to-r from-[#FAF8FF] via-[#F5F3FF]/70 to-white',
+    vignetteGradient: 'from-[#FAF8FF] via-[#FAF8FF]/95 via-[65%]',
     imageSrc: '/images/dashboard/story_hero_students_freshers.jpg',
-    imagePosition: 'object-[80%_center] xl:object-[82%_20%]',
+    imagePosition: 'object-[68%_18%]',
     altText: 'Young Indian student working waist-up on a laptop surrounded by project screens',
   },
   {
@@ -50,12 +50,12 @@ const SLIDES: BannerSlide[] = [
     headlineSuffix: ' for Your Career.',
     description: 'No IT background? No problem. Learn from the basics.',
     ctaText: 'Start Your Journey',
-    ctaBg: 'bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] hover:from-[#5B21B6] hover:to-[#7C3AED] text-white',
-    ctaShadow: 'shadow-[0_4px_14px_rgba(109,40,217,0.25)]',
-    bgGradient: 'bg-gradient-to-r from-[#f7f3fb] via-[#faf6fd] to-[#ffffff]',
-    vignetteGradient: 'from-[#f7f3fb] via-[#f7f3fb]/95 via-[72%]',
+    ctaBg: 'bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white',
+    ctaShadow: 'shadow-[0_4px_14px_rgba(109,40,217,0.22)]',
+    bgGradient: 'bg-gradient-to-r from-[#FAF8FF] via-[#F5F3FF]/70 to-white',
+    vignetteGradient: 'from-[#FAF8FF] via-[#FAF8FF]/95 via-[65%]',
     imageSrc: '/images/dashboard/story_hero_career_gap.jpg',
-    imagePosition: 'object-[80%_center] xl:object-[82%_20%]',
+    imagePosition: 'object-[68%_18%]',
     altText: 'Indian woman learner seated waist-up at desk with laptop and learning milestones',
   },
   {
@@ -65,12 +65,12 @@ const SLIDES: BannerSlide[] = [
     headlineHighlight: 'Switch to IT?',
     description: 'Build practical tech skills, work on projects and prepare for your next career move.',
     ctaText: 'Explore Career Paths',
-    ctaBg: 'bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] hover:from-[#5B21B6] hover:to-[#7C3AED] text-white',
-    ctaShadow: 'shadow-[0_4px_14px_rgba(109,40,217,0.25)]',
-    bgGradient: 'bg-gradient-to-r from-[#f7f3fb] via-[#faf6fd] to-[#ffffff]',
-    vignetteGradient: 'from-[#f7f3fb] via-[#f7f3fb]/95 via-[72%]',
+    ctaBg: 'bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white',
+    ctaShadow: 'shadow-[0_4px_14px_rgba(109,40,217,0.22)]',
+    bgGradient: 'bg-gradient-to-r from-[#FAF8FF] via-[#F5F3FF]/70 to-white',
+    vignetteGradient: 'from-[#FAF8FF] via-[#FAF8FF]/95 via-[65%]',
     imageSrc: '/images/dashboard/story_hero_career_switch.jpg',
-    imagePosition: 'object-[80%_center] xl:object-[82%_20%]',
+    imagePosition: 'object-[68%_18%]',
     altText: 'Indian professional waist-up at modern workstation with analytics and code editor',
   },
   {
@@ -80,13 +80,46 @@ const SLIDES: BannerSlide[] = [
     headlineHighlight: 'Placement Solution',
     description: 'DSA Practice. Mock Interviews. Resume Preparation. Placement Prep.',
     ctaText: 'Start Placement Prep',
-    ctaBg: 'bg-gradient-to-r from-[#6D28D9] to-[#8B5CF6] hover:from-[#5B21B6] hover:to-[#7C3AED] text-white',
-    ctaShadow: 'shadow-[0_4px_14px_rgba(109,40,217,0.25)]',
-    bgGradient: 'bg-gradient-to-r from-[#f7f3fb] via-[#faf6fd] to-[#ffffff]',
-    vignetteGradient: 'from-[#f7f3fb] via-[#f7f3fb]/95 via-[72%]',
+    ctaBg: 'bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white',
+    ctaShadow: 'shadow-[0_4px_14px_rgba(109,40,217,0.22)]',
+    bgGradient: 'bg-gradient-to-r from-[#FAF8FF] via-[#F5F3FF]/70 to-white',
+    vignetteGradient: 'from-[#FAF8FF] via-[#FAF8FF]/95 via-[65%]',
     imageSrc: '/images/dashboard/story_hero_placement_solution.jpg',
-    imagePosition: 'object-[80%_center] xl:object-[82%_20%]',
+    imagePosition: 'object-[68%_18%]',
     altText: 'Young Indian professional waist-up at interview desk during a mock interview session',
+  },
+  {
+    id: 'start-analysing',
+    badge: 'INTERACTIVE DATA LAB',
+    headlinePrefix: 'Stop memorising.',
+    breakLine: true,
+    headlineHighlight: 'Start analysing.',
+    description:
+      'Play with real-world data concepts. Sort information, spot mistakes, build a workflow and make smarter business decisions.',
+    ctaText: 'Start Analysing',
+    ctaBg: 'bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white',
+    ctaShadow: 'shadow-[0_4px_14px_rgba(109,40,217,0.22)]',
+    bgGradient: 'bg-gradient-to-r from-[#FAF8FF] via-[#F5F3FF]/70 to-white',
+    vignetteGradient: 'from-[#FAF8FF] via-[#FAF8FF]/95 via-[65%]',
+    imageSrc: '/images/dashboard/story_hero_start_analysing.jpg',
+    imagePosition: 'object-[68%_18%]',
+    altText: 'Young Indian data analyst working with interactive data charts, error spotting tables, and analytics workflows',
+  },
+  {
+    id: 'learn-coding-playing',
+    badge: 'GAMIFIED CODING LAB',
+    headlinePrefix: 'Learn coding ',
+    headlineHighlight: 'by playing.',
+    description:
+      'Solve interactive coding challenges, build logic step by step and master programming through hands-on play.',
+    ctaText: 'Play & Code',
+    ctaBg: 'bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white',
+    ctaShadow: 'shadow-[0_4px_14px_rgba(109,40,217,0.22)]',
+    bgGradient: 'bg-gradient-to-r from-[#FAF8FF] via-[#F5F3FF]/70 to-white',
+    vignetteGradient: 'from-[#FAF8FF] via-[#FAF8FF]/95 via-[65%]',
+    imageSrc: '/images/dashboard/story_hero_learn_coding_playing.jpg',
+    imagePosition: 'object-[68%_18%]',
+    altText: 'Young Indian student learning coding interactively with gamified code blocks and logic challenges',
   },
 ];
 
@@ -158,7 +191,7 @@ export const DesktopLoggedInHero: React.FC<DesktopLoggedInHeroProps> = ({
   const handleCtaClick = (e: React.MouseEvent, slideId: string) => {
     e.stopPropagation();
     playClick?.();
-    if (slideId === 'placement-solution') {
+    if (slideId === 'placement-solution' || slideId === 'placement-program-banner') {
       if (onOpenPlacement) {
         onOpenPlacement();
       } else if (typeof window !== 'undefined') {
@@ -201,8 +234,8 @@ export const DesktopLoggedInHero: React.FC<DesktopLoggedInHeroProps> = ({
         onMouseLeave={() => setIsPaused(false)}
         onFocus={() => setIsPaused(true)}
         onBlur={() => setIsPaused(false)}
-        className="group relative w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-sm hover:shadow-md border border-[#DDD6FE]/60 transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#8B5CF6]/50"
-        style={{ aspectRatio: '16 / 4.2', minHeight: '220px', maxHeight: '275px' }}
+        className="group relative w-full rounded-2xl overflow-hidden shadow-[0_4px_18px_rgba(109,40,217,0.06)] hover:shadow-[0_6px_22px_rgba(109,40,217,0.09)] border border-[#E9E5F5] transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#7C3AED]/50"
+        style={{ aspectRatio: '16 / 3.1', minHeight: '175px', maxHeight: '205px' }}
       >
         {/* ─── SLIDING TRACK ─── */}
         <div
@@ -221,50 +254,58 @@ export const DesktopLoggedInHero: React.FC<DesktopLoggedInHeroProps> = ({
               aria-hidden={idx !== currentIndex}
               className={`relative h-full w-full flex-shrink-0 overflow-hidden ${slide.bgGradient}`}
             >
-              {/* 1. Story-Driven Visual: Waist-up Learner, Desk, Laptop & UI Screens */}
-              <img
-                src={slide.imageSrc}
-                alt={slide.altText}
-                className={`absolute inset-0 w-full h-full object-cover ${slide.imagePosition} contrast-[1.06] saturate-[1.05] transition-transform duration-700 pointer-events-none`}
-                loading={idx === 0 ? 'eager' : 'lazy'}
-                decoding="async"
-              />
-
-              {/* 2. Controlled Smooth Vignette on Left (Feathers before subject, giving 100% clarity to the story visuals) */}
+              {/* 1. Right-Fitted Banner Image (Balanced with Left Text — Zero Dead Center Space) */}
               <div
-                className={`absolute inset-y-0 left-0 w-[58%] lg:w-[50%] bg-gradient-to-r ${slide.vignetteGradient} to-transparent pointer-events-none z-10`}
+                className="absolute inset-y-0 right-0 w-[64%] md:w-[60%] lg:w-[58%] h-full overflow-hidden pointer-events-none"
+                style={{
+                  WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 16%, black 100%)',
+                  maskImage: 'linear-gradient(to right, transparent 0%, black 16%, black 100%)',
+                }}
+              >
+                <img
+                  src={slide.imageSrc}
+                  alt={slide.altText}
+                  className={`w-full h-full object-cover ${slide.imagePosition} contrast-[1.04] saturate-[1.04] transition-transform duration-700 pointer-events-none`}
+                  loading={idx === 0 ? 'eager' : 'lazy'}
+                  decoding="async"
+                />
+              </div>
+
+              {/* 2. Controlled Smooth Lavender-White Vignette on Left */}
+              <div
+                className={`absolute inset-y-0 left-0 w-[56%] lg:w-[50%] bg-gradient-to-r from-[#FAF8FF] via-[#FAF8FF]/92 via-[52%] to-transparent pointer-events-none z-10`}
               />
 
-              {/* 3. Left-Aligned Text Content */}
-              <div className="absolute inset-y-0 left-0 pl-6 sm:pl-8 lg:pl-10 xl:pl-11 flex flex-col justify-center z-20 max-w-[56%] lg:max-w-[49%] text-left py-3 sm:py-4">
-                {/* Highlighted Royal-Purple Top Badge */}
-                <div className="mb-2 sm:mb-2.5">
-                  <span className="inline-flex items-center px-3 sm:px-3.5 py-0.5 sm:py-1 rounded-full bg-[#F5F3FF] border border-[#DDD6FE] text-[#6D28D9] text-[13px] sm:text-[14px] font-semibold tracking-wide uppercase shadow-2xs">
+              {/* 3. Left-Aligned Theme-Matched Text Content (Larger Headline & Supporting Copy) */}
+              <div className="absolute inset-y-0 left-0 pl-5 sm:pl-7 lg:pl-9 flex flex-col justify-center gap-1.5 z-20 max-w-[60%] lg:max-w-[56%] text-left py-3">
+                {/* Compact Brand Purple Top Pill */}
+                <div>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-white/95 border border-[#E9E5F5] text-[#6D28D9] text-[10.5px] sm:text-[11px] font-semibold tracking-wider uppercase shadow-2xs">
                     {slide.badge}
                   </span>
                 </div>
 
-                {/* Headline: Deep Navy with subtle Lavender Highlight on key words */}
-                <h2 className="text-xl sm:text-2xl lg:text-[25px] xl:text-[28px] font-black text-[#111827] leading-[1.22] tracking-tight">
+                {/* Headline: Larger & Stronger Visual Presence */}
+                <h2 className="text-xl sm:text-2xl lg:text-[27px] xl:text-[30px] font-extrabold text-[#111827] leading-[1.14] tracking-tight m-0">
                   {slide.headlinePrefix && <span>{slide.headlinePrefix}</span>}
                   {slide.breakLine && <br />}
-                  <span className="bg-[#F5F3FF] text-[#6D28D9] border border-[#DDD6FE]/60 px-2 py-0.5 rounded-lg inline-block my-0.5 shadow-2xs">
+                  <span className="text-[#6D28D9]">
                     {slide.headlineHighlight}
                   </span>
                   {slide.headlineSuffix && <span>{slide.headlineSuffix}</span>}
                 </h2>
 
-                {/* Description */}
-                <p className="mt-1 sm:mt-1.5 text-slate-600 text-[11px] sm:text-[11.5px] lg:text-[12.5px] font-medium leading-snug max-w-[94%]">
+                {/* Supporting Description */}
+                <p className="text-[#475569] text-xs sm:text-[13px] lg:text-[14px] font-medium leading-snug max-w-[96%] m-0">
                   {slide.description}
                 </p>
 
-                {/* Primary CTA (Refined Solid Brand Button) */}
-                <div className="mt-2.5 sm:mt-3">
+                {/* Primary CTA */}
+                <div className="pt-1">
                   <button
                     type="button"
                     onClick={(e) => handleCtaClick(e, slide.id)}
-                    className={`inline-flex items-center justify-center gap-1.5 h-9 px-4 sm:px-4.5 rounded-xl ${slide.ctaBg} font-bold text-xs sm:text-[12.5px] shadow-sm ${slide.ctaShadow} hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer group/btn`}
+                    className={`inline-flex items-center justify-center gap-1.5 h-8.5 sm:h-9 px-4 sm:px-5 rounded-xl ${slide.ctaBg} font-semibold text-xs sm:text-[13px] shadow-xs ${slide.ctaShadow} hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer group/btn`}
                   >
                     <span>{slide.ctaText}</span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />

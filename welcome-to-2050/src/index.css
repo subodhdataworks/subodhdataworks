@@ -29,7 +29,23 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    user-select: text !important;
+    -webkit-user-select: text !important;
   }
+}
+
+/* Universal Text Selection & Mouse Copy Enablement across all Questions, Topics & Modules */
+body *,
+.select-none,
+[class*="select-none"],
+h1, h2, h3, h4, h5, h6,
+p, span, div, section, article, main,
+li, ul, ol, td, th,
+pre, code, label, summary, blockquote,
+button, a, input, textarea {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
 }
 
 /* Premium Primary & Secondary SaaS Buttons */
@@ -550,5 +566,18 @@ summary {
     transform: translateY(-1.5px) rotate(0.4deg);
   }
 }
+
+/* Fractional Tailwind Spacing Safety Utilities (prevents unstyled SVGs from expanding) */
+.w-4\.5 { width: 1.125rem !important; }
+.h-4\.5 { height: 1.125rem !important; }
+.w-5\.5 { width: 1.375rem !important; }
+.h-5\.5 { height: 1.375rem !important; }
+.w-6\.5 { width: 1.625rem !important; }
+.h-6\.5 { height: 1.625rem !important; }
+.w-7\.5 { width: 1.875rem !important; }
+.h-7\.5 { height: 1.875rem !important; }
+.w-8\.5 { width: 2.125rem !important; }
+.h-8\.5 { height: 2.125rem !important; }
+
 
 

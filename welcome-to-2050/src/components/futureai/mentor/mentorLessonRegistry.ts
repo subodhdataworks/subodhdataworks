@@ -3,6 +3,24 @@ import {
   ExcelLessonData,
   getExcelLessonById,
 } from '../../../data/excelModules11To16Data';
+import { getStructuredSqlVisualNote, getSqlVisualLesson } from '../visualNotes/sqlVisualNotesData';
+import { getPowerBiVisualNote } from '../visualNotes/powerBiVisualNotesData';
+import { getGenAiVisualNote } from '../visualNotes/genAiVisualNotesData';
+import { getFoundationsVisualNote } from '../visualNotes/foundationsVisualNotesData';
+import { getPythonVisualNote } from '../visualNotes/pythonVisualNotesData';
+import { getExcelVisualNote } from '../visualNotes/excelVisualNotesData';
+import { getDataScienceVisualNote } from '../visualNotes/dataScienceVisualNotesData';
+import { getMlEngineeringVisualNote } from '../visualNotes/mlEngineeringVisualNotesData';
+import { getAiEngineeringVisualNote } from '../visualNotes/aiEngineeringVisualNotesData';
+import { getAiToolsPromptVisualNote } from '../visualNotes/aiToolsPromptVisualNotesData';
+import { getMsOfficeVisualNote } from '../visualNotes/msOfficeVisualNotesData';
+import { getFullStackMernVisualNote } from '../visualNotes/fullStackMernVisualNotesData';
+import { StructuredVisualNoteTopic, VisualNoteBlock } from '../visualNotes/StructuredVisualNotesRenderer';
+import {
+  buildRealTeacherHindiNarration,
+  buildRealTeacherEnglishNarration,
+  resolveHinglishHeading,
+} from '../visualNotes/visualNotesHinglishEngine';
 
 export interface MentorLessonSection {
   id: string;
@@ -8780,17 +8798,256 @@ export const getExcelMentorLessonData = (
   };
 };
 
+const stripMarkdown = (text: string): string =>
+  text
+    .replace(/\*\*/g, '')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const summarizeBlocksForMentor = (
+  blocks: VisualNoteBlock[],
+  lang: 'en' | 'hi'
+): string => {
+  const parts: string[] = [];
+  for (const block of blocks) {
+    if (block.type === 'flow') {
+      const steps = block.items
+        .map((it) => `${it.title}: ${stripMarkdown(lang === 'hi' ? it.bodyHi : it.bodyEn)}`)
+        .join('. ');
+      if (steps) parts.push(steps);
+    } else if (block.type === 'compare') {
+      const items = block.items
+        .map((it) => `${it.title}: ${stripMarkdown(lang === 'hi' ? it.bodyHi : it.bodyEn)}`)
+        .join('. ');
+      if (items) parts.push(items);
+    } else if (block.type === 'bullets') {
+      const bullets = block.items
+        .slice(0, 4)
+        .map((it) => stripMarkdown(lang === 'hi' ? it.hi : it.en))
+        .join('. ');
+      if (bullets) parts.push(bullets);
+    } else if (block.type === 'note') {
+      parts.push(stripMarkdown(lang === 'hi' ? block.bodyHi : block.bodyEn));
+    } else if (block.type === 'table') {
+      const note = lang === 'hi' ? block.noteHi || block.noteEn : block.noteEn;
+      if (note) {
+        parts.push(stripMarkdown(note));
+      } else if (block.headers.length > 0) {
+        parts.push(
+          lang === 'hi'
+            ? `Is table mein ${block.headers.join(', ')} columns diye gaye hain.`
+            : `This table shows ${block.headers.join(', ')}.`
+        );
+      }
+    } else if (block.type === 'sql') {
+      const cap = lang === 'hi' ? block.captionHi || block.captionEn : block.captionEn;
+      if (cap) {
+        parts.push(stripMarkdown(cap));
+      } else {
+        parts.push(
+          lang === 'hi'
+            ? `Yahan example code aur syntax dikhaya gaya hai.`
+            : `Here is the practical example code and syntax.`
+        );
+      }
+    }
+    if (parts.join(' ').length > 260) break;
+  }
+  return parts.join(' ').slice(0, 340);
+};
+
+const MENTOR_LESSON_CACHE = new Map<string, MentorLessonData>();
+
+const buildSectionBySectionMentorData = (
+  numId: number,
+  spec: StructuredVisualNoteTopic,
+  cachePrefix: string = 'da'
+): MentorLessonData => {
+  const cacheKey = `${cachePrefix}:${spec.module}:${numId}:${spec.topic}`;
+  const cached = MENTOR_LESSON_CACHE.get(cacheKey);
+  if (cached) return cached;
+
+  const sections: MentorLessonSection[] = [];
+  let secIdx = 0;
+
+  // Count total sections upfront so we know which is the final section
+  const totalSections = spec.pages.reduce(
+    (acc, pg) => acc + (pg.intro ? 1 : 0) + pg.sections.length,
+    0
+  );
+
+  spec.pages.forEach((pg, pageIdx) => {
+    const pageNumber = pageIdx + 1;
+
+    if (pg.intro) {
+      const myIdx = secIdx++;
+      const introEn = stripMarkdown(pg.intro.bodyEn || pg.subtitle || pg.title);
+      const heading = pg.intro.titleEn || pg.title;
+      const teacherHindi = buildRealTeacherHindiNarration({
+        topicTitle: spec.topic,
+        sectionTitle: heading,
+        blocks: [],
+        isIntro: true,
+        introEn: pg.intro.bodyEn || pg.subtitle || pg.title,
+        introHi: pg.intro.bodyHi,
+        isFirstSection: myIdx === 0,
+        isLastSection: myIdx === totalSections - 1,
+        moduleCode: spec.module,
+      });
+      const teacherEnglish = buildRealTeacherEnglishNarration({
+        topicTitle: spec.topic,
+        sectionTitle: heading,
+        blocks: [],
+        isIntro: true,
+        introEn: pg.intro.bodyEn || pg.subtitle || pg.title,
+        isFirstSection: myIdx === 0,
+        isLastSection: myIdx === totalSections - 1,
+        moduleCode: spec.module,
+      });
+      sections.push({
+        id: `sec-${myIdx}`,
+        pageNumber,
+        title: heading,
+        xStartPercent: 0,
+        xEndPercent: 100,
+        yStartPercent: 0,
+        yEndPercent: 100,
+        robotTarget: 'top-right',
+        targetFacing: 'right',
+        englishNarration: teacherEnglish,
+        hindiNarration: teacherHindi,
+        englishSummary: introEn.slice(0, 140),
+        hindiSummary: teacherHindi.slice(0, 140),
+        shortSummary: heading,
+      });
+    }
+
+    pg.sections.forEach((sec) => {
+      const myIdx = secIdx++;
+      const bodyEn = summarizeBlocksForMentor(sec.blocks, 'en') || `Let's examine ${sec.pill}.`;
+      const teacherHindi = buildRealTeacherHindiNarration({
+        topicTitle: spec.topic,
+        sectionTitle: sec.pill,
+        blocks: sec.blocks,
+        isIntro: false,
+        isFirstSection: myIdx === 0,
+        isLastSection: myIdx === totalSections - 1,
+        moduleCode: spec.module,
+      });
+      const teacherEnglish = buildRealTeacherEnglishNarration({
+        topicTitle: spec.topic,
+        sectionTitle: sec.pill,
+        blocks: sec.blocks,
+        isIntro: false,
+        isFirstSection: myIdx === 0,
+        isLastSection: myIdx === totalSections - 1,
+        moduleCode: spec.module,
+      });
+      sections.push({
+        id: `sec-${myIdx}`,
+        pageNumber,
+        title: sec.pill,
+        xStartPercent: 0,
+        xEndPercent: 100,
+        yStartPercent: 0,
+        yEndPercent: 100,
+        robotTarget: 'mid-right',
+        targetFacing: 'right',
+        englishNarration: teacherEnglish,
+        hindiNarration: teacherHindi,
+        englishSummary: bodyEn.slice(0, 140),
+        hindiSummary: resolveHinglishHeading(sec.pill),
+        shortSummary: sec.pill,
+      });
+    });
+  });
+
+  const built: MentorLessonData = {
+    topicId: numId,
+    topicTitle: spec.topic,
+    pdfUrl: '',
+    sections,
+  };
+  MENTOR_LESSON_CACHE.set(cacheKey, built);
+  return built;
+};
+
 export const getMentorLessonData = (
   topicId: number | string,
-  isExcelTrack: boolean = false
+  isExcelTrack: boolean = false,
+  isSqlTrack: boolean = false,
+  isDataScienceCourse: boolean = false,
+  isMlEngineeringCourse: boolean = false,
+  isAiEngineeringCourse: boolean = false,
+  isAiToolsPromptCourse: boolean = false,
+  isMsOfficeCourse: boolean = false,
+  isFullStackMernCourse: boolean = false
 ): MentorLessonData | null => {
-  // If explicitly flagged as Excel track
+  const numId = typeof topicId === 'number' ? topicId : parseInt(String(topicId).replace(/\D/g, ''), 10);
+
+  // 0000. Prioritize Full-Stack MERN visual notes when course=full_stack_mern
+  if (isFullStackMernCourse) {
+    const mernSpec = getFullStackMernVisualNote(numId);
+    if (mernSpec) return buildSectionBySectionMentorData(numId, mernSpec, 'mern');
+  }
+
+  // 000. Prioritize Microsoft 365 with Copilot AI visual notes when course=ms_office_copilot
+  if (isMsOfficeCourse) {
+    const msoSpec = getMsOfficeVisualNote(numId);
+    if (msoSpec) return buildSectionBySectionMentorData(numId, msoSpec, 'mso');
+  }
+
+  // 00. Prioritize AI Tools & Prompt Engineering visual notes when course=ai_tools_prompt
+  if (isAiToolsPromptCourse) {
+    const atpSpec = getAiToolsPromptVisualNote(numId);
+    if (atpSpec) return buildSectionBySectionMentorData(numId, atpSpec, 'atp');
+  }
+
+  // 0. Prioritize AI Engineering visual notes when course=ai_engineering
+  if (isAiEngineeringCourse) {
+    const aiSpec = getAiEngineeringVisualNote(numId);
+    if (aiSpec) return buildSectionBySectionMentorData(numId, aiSpec, 'aie');
+  }
+
+  // 0a. Prioritize Machine Learning Engineering visual notes when course=ml_engineering
+  if (isMlEngineeringCourse) {
+    const mlSpec = getMlEngineeringVisualNote(numId);
+    if (mlSpec) return buildSectionBySectionMentorData(numId, mlSpec, 'mle');
+  }
+
+  // 0b. Prioritize Data Science course visual notes when course=data_science
+  if (isDataScienceCourse) {
+    const dsSpec = getDataScienceVisualNote(numId);
+    if (dsSpec) return buildSectionBySectionMentorData(numId, dsSpec, 'ds');
+  }
+
+  // 1. Prioritize exact 1-to-1 section-by-section sync for all StructuredVisualNotesSheet tracks!
   if (isExcelTrack) {
+    const excelSpec = getExcelVisualNote(numId);
+    if (excelSpec) return buildSectionBySectionMentorData(numId, excelSpec, 'excel');
     const excelData = getExcelMentorLessonData(topicId);
     if (excelData) return excelData;
   }
 
-  // Check if topicId indicates an Excel lesson (e.g. string starting with 't-' or 'excel' or code like '11.1')
+  if (isSqlTrack) {
+    const sqlSpec = getStructuredSqlVisualNote(numId);
+    if (sqlSpec) return buildSectionBySectionMentorData(numId, sqlSpec, 'sql');
+  }
+
+  if (!isExcelTrack && !isSqlTrack) {
+    const structuredSpec =
+      getFoundationsVisualNote(numId) ||
+      getPythonVisualNote(numId) ||
+      getPowerBiVisualNote(numId) ||
+      getGenAiVisualNote(numId) ||
+      getStructuredSqlVisualNote(numId);
+    if (structuredSpec) {
+      return buildSectionBySectionMentorData(numId, structuredSpec, 'da');
+    }
+  }
+
+  // 2. Fallback: string Excel lesson codes
   if (
     typeof topicId === 'string' &&
     (topicId.startsWith('t-') ||
@@ -8802,6 +9059,37 @@ export const getMentorLessonData = (
     if (excelData) return excelData;
   }
 
-  const numId = typeof topicId === 'number' ? topicId : parseInt(topicId, 10);
-  return MENTOR_LESSONS_REGISTRY[numId] || null;
+  // 3. Legacy hardcoded registry fallback
+  if (MENTOR_LESSONS_REGISTRY[numId]) {
+    return MENTOR_LESSONS_REGISTRY[numId];
+  }
+
+  const sqlBasic = getSqlVisualLesson(numId);
+  if (sqlBasic) {
+    return {
+      topicId: numId,
+      topicTitle: sqlBasic.topic,
+      pdfUrl: '',
+      sections: [
+        {
+          id: 'page-1',
+          pageNumber: 1,
+          title: sqlBasic.topic,
+          xStartPercent: 0,
+          xEndPercent: 100,
+          yStartPercent: 0,
+          yEndPercent: 100,
+          robotTarget: 'bottom-right',
+          targetFacing: 'right',
+          englishNarration: `Welcome to ${sqlBasic.topic}. Follow the illustrated cards, tables, and SQL queries step by step to master this concept.`,
+          hindiNarration: `${sqlBasic.topic} mein aapka swagat hai! Step-by-step tables, diagrams aur SQL queries dekh kar is concept ko aasani se samjhein.`,
+          englishSummary: `Visual guide to ${sqlBasic.topic}.`,
+          hindiSummary: `${sqlBasic.topic} ka visual guide.`,
+          shortSummary: sqlBasic.topic,
+        },
+      ],
+    };
+  }
+
+  return null;
 };

@@ -3947,15 +3947,14 @@
 /* 2050 GLASS CAPSULE DOCK DASHBOARD (media_1790998423618.jpg) */
 /* ============================================================ */
 
-/* Page background matching reference: soft white and ice-blue base with subtle lavender/cyan/violet gradients */
+/* Page background: 85% White + 15% Light Purple elegant ambient tint */
 .dock-dashboard-page {
   min-height: 100vh;
   background:
-    radial-gradient(1200px 800px at 10% 8%, rgba(22, 197, 234, 0.08) 0%, transparent 60%),
-    radial-gradient(1000px 700px at 90% 18%, rgba(168, 85, 247, 0.07) 0%, transparent 60%),
-    radial-gradient(1100px 700px at 50% 90%, rgba(99, 102, 241, 0.05) 0%, transparent 65%),
-    radial-gradient(800px 500px at 20% 70%, rgba(236, 72, 153, 0.04) 0%, transparent 60%),
-    linear-gradient(180deg, #f9fbff 0%, #eff5fe 35%, #f3f7fd 70%, #f9fbff 100%);
+    radial-gradient(1200px 800px at 15% 10%, rgba(147, 51, 234, 0.08) 0%, transparent 60%),
+    radial-gradient(1000px 700px at 85% 20%, rgba(168, 85, 247, 0.07) 0%, transparent 60%),
+    radial-gradient(1100px 700px at 50% 85%, rgba(192, 132, 252, 0.06) 0%, transparent 65%),
+    linear-gradient(180deg, #FFFFFF 0%, #FBF9FD 20%, #F7F2FC 50%, #FAF6FD 80%, #FFFFFF 100%);
   color: #0f172a;
   position: relative;
   overflow-x: hidden;

@@ -1361,7 +1361,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
 
           <span className="text-slate-400 font-bold text-xs shrink-0">&gt;</span>
 
-          {/* Stepper Pill 3: Mock Interview */}
+          {/* Stepper Pill 3: Topic Interview */}
           <button
             type="button"
             onClick={() => {
@@ -1379,7 +1379,7 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             }`}>
               3
             </span>
-            <span>Mock Interview</span>
+            <span>Topic Interview</span>
           </button>
         </div>
       </div>
@@ -1492,14 +1492,18 @@ export const MobileTopicWorkspace: React.FC<MobileTopicWorkspaceProps> = ({
             <span className="text-[10.5px] font-black text-slate-700">
               Chapter 1 • Lesson 1
             </span>
-            <button
-              type="button"
-              onClick={handleCloseVideoAndPlayGame}
-              className="px-3 py-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black border border-blue-600 flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-xs"
-            >
-              <span>Start Coding Game</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
+            <div className="relative group overflow-hidden p-[2px] rounded-full inline-flex shadow-[0_0_12px_rgba(66,133,244,0.22),0_0_18px_rgba(139,92,246,0.18)]">
+              <div className="google-border-beam-glow pointer-events-none" />
+              <div className="google-border-beam-spinner pointer-events-none" />
+              <button
+                type="button"
+                onClick={handleCloseVideoAndPlayGame}
+                className="relative z-10 px-3.5 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-900 text-[10.5px] font-black flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+              >
+                <span>Practice</span>
+                <ChevronRight className="w-3.5 h-3.5 text-[#6D28D9]" />
+              </button>
+            </div>
           </div>
 
           {/* What You Will Learn Card */}

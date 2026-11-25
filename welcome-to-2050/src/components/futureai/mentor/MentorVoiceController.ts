@@ -6,6 +6,14 @@
  * Zero external paid API required. Free, instant, privacy-friendly.
  */
 
+import {
+  playSwaraVoice,
+  stopSwaraVoice,
+  pauseSwaraVoice,
+  resumeSwaraVoice,
+  setSwaraPlaybackRate,
+} from '../../../services/swaraAudioService';
+
 export type MentorLanguage = 'hindi' | 'english';
 
 export interface VoiceStatus {
@@ -28,7 +36,7 @@ export class MentorVoiceController {
   private onSpeechStart?: () => void;
   private onSpeechEnd?: () => void;
   private onSpeechError?: (err: any) => void;
-  private onSpeechBoundary?: (event: SpeechSynthesisEvent) => void;
+  private onSpeechBoundary?: (event: SpeechSynthesisEvent & { spokenTextSoFar?: string }) => void;
 
   constructor() {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -43,7 +51,7 @@ export class MentorVoiceController {
     onStart?: () => void;
     onEnd?: () => void;
     onError?: (err: any) => void;
-    onBoundary?: (event: SpeechSynthesisEvent) => void;
+    onBoundary?: (event: SpeechSynthesisEvent & { spokenTextSoFar?: string }) => void;
   }) {
     this.onSpeechStart = callbacks.onStart;
     this.onSpeechEnd = callbacks.onEnd;
@@ -57,6 +65,7 @@ export class MentorVoiceController {
 
   public setSpeed(speed: number) {
     this.playbackSpeed = speed;
+    setSwaraPlaybackRate(speed);
     if (this.currentUtterance) {
       this.currentUtterance.rate = speed;
     }
@@ -183,15 +192,16 @@ export class MentorVoiceController {
     }
 
     if (lang === 'english') {
-      // 1. Look for Indian English (en-IN) Female voice (e.g. Heera, Neerja, Veena)
-      const femaleIndianEnglish = voices.find(
+      // 1. Look for Swara or Indian Female voice (Swara, Heera, Neerja, Kalpana, Veena)
+      const swaraIndianFemale = voices.find(
         (v) =>
-          (v.lang.toLowerCase().includes('en-in') ||
+          (/swara|heera|neerja|kalpana|lekha|veena|ananya|shruti|priya/i.test(v.name) ||
+            v.lang.toLowerCase().includes('en-in') ||
             v.lang.toLowerCase().includes('en_in') ||
             v.name.toLowerCase().includes('india')) &&
           isFemale(v)
       );
-      if (femaleIndianEnglish) return femaleIndianEnglish;
+      if (swaraIndianFemale) return swaraIndianFemale;
 
       // 2. Any English Female voice (e.g. Zira, Samantha, Jenny, Aria, Google UK Female)
       const anyEnglishFemale = voices.find(
@@ -239,8 +249,7 @@ export class MentorVoiceController {
     return new Promise((resolve) => {
       this.clearWatchdog();
 
-      if (this.isMuted || !this.synth) {
-        // Muted or speech not supported: simulate reading time then complete
+      if (this.isMuted) {
         const words = text.split(' ').length;
         const duration = Math.max(2500, (words / 2.6) * 1000 * (1 / this.playbackSpeed));
         if (this.onSpeechStart) this.onSpeechStart();
@@ -252,118 +261,70 @@ export class MentorVoiceController {
       }
 
       this.stop();
+      this.isSpeaking = false;
+      this.isPaused = false;
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      this.currentUtterance = utterance;
-
-      // Retain strong reference on window to prevent Chrome V8 garbage collection bug
-      if (typeof window !== 'undefined') {
-        (window as any).__mentor_utterance = utterance;
-      }
-
-      const voice = this.getBestVoice(this.currentLanguage);
-      if (voice) {
-        utterance.voice = voice;
-        utterance.lang = voice.lang;
-      } else {
-        utterance.lang = this.currentLanguage === 'hindi' ? 'hi-IN' : 'en-IN';
-      }
-
-      utterance.rate = this.playbackSpeed;
-      utterance.pitch = 1.15; // Friendly natural female teacher pitch
-
-      let hasFinished = false;
-
-      const handleFinish = (success: boolean) => {
-        if (hasFinished) return;
-        hasFinished = true;
-        this.clearWatchdog();
-        this.stopKeepAlive();
-        this.isSpeaking = false;
-        this.isPaused = false;
-        if (typeof window !== 'undefined') {
-          delete (window as any).__mentor_utterance;
-        }
-        if (success) {
-          if (this.onSpeechEnd) this.onSpeechEnd();
-        } else {
-          if (this.onSpeechError) this.onSpeechError('Speech aborted or errored');
-        }
-        resolve(success);
-      };
-
-      utterance.onstart = () => {
-        this.isSpeaking = true;
-        this.isPaused = false;
-        this.startKeepAlive();
-        if (this.onSpeechStart) this.onSpeechStart();
-      };
-
-      utterance.onboundary = (e) => {
-        if (this.onSpeechBoundary) this.onSpeechBoundary(e);
-      };
-
-      utterance.onend = () => {
-        handleFinish(true);
-      };
-
-      utterance.onerror = (e) => {
-        if (e.error === 'canceled' || e.error === 'interrupted') {
-          hasFinished = true;
-          this.clearWatchdog();
-          this.stopKeepAlive();
+      // Only trigger onStart (lips + voice wave) when REAL decoded audio begins playing!
+      playSwaraVoice(text, {
+        onStart: () => {
+          this.isSpeaking = true;
+          this.isPaused = false;
+          setSwaraPlaybackRate(this.playbackSpeed);
+          if (this.onSpeechStart) this.onSpeechStart();
+        },
+        onWordBoundary: (spokenSoFar, charIndex) => {
+          if (this.onSpeechBoundary) {
+            this.onSpeechBoundary({
+              charIndex,
+              spokenTextSoFar: spokenSoFar,
+            } as SpeechSynthesisEvent & { spokenTextSoFar?: string });
+          }
+        },
+        onEnd: () => {
           this.isSpeaking = false;
           this.isPaused = false;
+          if (this.onSpeechEnd) this.onSpeechEnd();
+          resolve(true);
+        },
+        onError: () => {
+          this.isSpeaking = false;
+          this.isPaused = false;
+          if (this.onSpeechEnd) this.onSpeechEnd();
           resolve(false);
-          return;
-        }
-        console.warn('SpeechSynthesis error:', e);
-        handleFinish(false);
-      };
-
-      // Safety watchdog: In case Chromium silently freezes long speech synthesis
-      const words = text.split(/\s+/).filter(Boolean).length;
-      const expectedDurationMs = Math.max(3500, Math.ceil(((words * 60) / (105 * this.playbackSpeed)) * 1000) + 4000);
-      this.watchdogTimer = setTimeout(() => {
-        if (!hasFinished) {
-          console.warn('Speech watchdog triggered auto-completion fallback.');
-          handleFinish(true);
-        }
-      }, expectedDurationMs);
-
-      try {
-        this.synth.speak(utterance);
-      } catch (err) {
-        console.error('Speech synthesis call error:', err);
-        handleFinish(false);
-      }
+        },
+      });
     });
   }
 
   public pause() {
     this.clearWatchdog();
     this.stopKeepAlive();
-    if (this.synth && this.isSpeaking && !this.isPaused) {
+    pauseSwaraVoice();
+    this.isPaused = true;
+    this.isSpeaking = false;
+    if (this.synth) {
       try {
         this.synth.pause();
-        this.isPaused = true;
       } catch {}
     }
   }
 
-  public resume() {
-    if (this.synth && this.isPaused) {
+  public resume(): boolean {
+    const resumed = resumeSwaraVoice();
+    if (this.synth && this.synth.paused) {
       try {
         this.synth.resume();
-        this.isPaused = false;
-        this.startKeepAlive();
       } catch {}
     }
+    this.isPaused = false;
+    this.isSpeaking = resumed;
+    return resumed;
   }
 
   public stop() {
     this.clearWatchdog();
     this.stopKeepAlive();
+    stopSwaraVoice();
     if (this.synth) {
       try {
         this.synth.cancel();

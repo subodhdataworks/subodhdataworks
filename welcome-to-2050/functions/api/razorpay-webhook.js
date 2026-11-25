@@ -21,16 +21,9 @@ import {
   setFirestoreDocument,
   runFirestoreTransaction,
 } from './_firestore-admin.js';
+import { createJsonResponder, handleCorsPreflight, rejectUnauthorizedOrigin } from './_cors.js';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, X-Razorpay-Signature',
-  'Content-Type': 'application/json',
-};
-
-const json = (data, status = 200) =>
-  new Response(JSON.stringify(data), { status, headers: corsHeaders });
+const CORS_OPTS = { methods: 'POST, OPTIONS', headers: 'Content-Type, X-Razorpay-Signature' };
 
 // In-memory sets for deduplication / idempotency (scoped to function instance)
 const processedEventIds = new Set();
@@ -76,6 +69,9 @@ function safeEqual(a, b) {
 
 export async function onRequestPost(context) {
   const { request, env } = context;
+  const blocked = rejectUnauthorizedOrigin(request, env, CORS_OPTS);
+  if (blocked) return blocked;
+  const json = createJsonResponder(request, env, CORS_OPTS);
   const webhookSecret = env?.RAZORPAY_WEBHOOK_SECRET;
 
   if (!webhookSecret) {
@@ -388,6 +384,6 @@ export async function onRequestPost(context) {
   });
 }
 
-export async function onRequestOptions() {
-  return new Response(null, { status: 204, headers: corsHeaders });
+export async function onRequestOptions(context) {
+  return handleCorsPreflight(context, CORS_OPTS);
 }

@@ -26,6 +26,11 @@ function hindiWordReg(phrase: string): RegExp {
 
 // ── Multi-word and compound phrases (processed first) ──
 const COMPOUND_PHRASE_MAPPINGS: [RegExp, string][] = [
+  // Protect conversational Hindi phrases before replacing technical terms
+  [hindiWordReg('मान लीजिए'), '__MAAN_LIJIYE__'],
+  [hindiWordReg('मान लो'), '__MAAN_LO__'],
+  [hindiWordReg('मान लेते हैं'), '__MAAN_LETE_HAIN__'],
+  [hindiWordReg('रोक'), '__ROK__'],
   [hindiWordReg('पंक्तियों और स्तंभों'), 'Rows और Columns'],
   [hindiWordReg('पंक्तियों व स्तंभों'), 'Rows व Columns'],
   [hindiWordReg('रोज़ और कॉलम्स'), 'Rows और Columns'],
@@ -444,6 +449,13 @@ export class VisualLearningLanguageEngine {
     for (const [pattern, replacement] of SINGLE_TERM_MAPPINGS) {
       result = result.replace(pattern, replacement);
     }
+
+    // 2b. Restore protected conversational Hindi idioms
+    result = result
+      .replace(/__MAAN_LIJIYE__/g, 'मान लीजिए')
+      .replace(/__MAAN_LO__/g, 'मान लो')
+      .replace(/__MAAN_LETE_HAIN__/g, 'मान लेते हैं')
+      .replace(/__ROK__/g, 'रोक');
 
     // 3. Normalization of common educational patterns
     result = result

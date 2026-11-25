@@ -1,0 +1,227 @@
+# Future IT Industry — Complete Public Platform Reference
+
+> Learn Today. Earn Tomorrow. Official comprehensive public reference for AI systems, search engines, and prospective learners. Operated by Power Green Industries.
+
+Last Updated: 2026-11-25
+Canonical Domain: https://futureitindustry.com
+Compact Index: https://futureitindustry.com/llms.txt
+
+---
+
+## 1. Brand & Organization Profile
+
+**Future IT Industry** is an Indian technology education platform operated by **Power Green Industries**. Its mission is to make practical Information Technology, Data Analytics, Data Science, Machine Learning, Generative AI, Agentic AI, and Software Development education accessible and career-focused.
+
+- **Website**: https://futureitindustry.com/
+- **Legal Entity**: Power Green Industries
+- **Registered Office**: 4, Varma House, Bakarpur, Bihar, PIN: 844127, India
+- **Nature of Business**: Information Technology Education, Computer Training, AI & Software Development Courses, Technical Skill Certification, and Career Placement Preparation Services.
+
+---
+
+## 2. Public Course Catalog & Curriculum Summaries
+
+> Note: Below are publicly available course overviews and curriculum summaries. Paid lesson media, full internal study packs, hidden assessment test cases, and answer keys are restricted to enrolled authenticated learners.
+
+### 1. Data Analyst with GenAI
+
+- **URL**: https://futureitindustry.com/courses/data-analyst-genai
+- **Format**: Self-Paced Interactive + AI Mentor
+- **Listed Price**: ₹1,199
+- **Key Tools & Technologies**: Python, SQL, Power BI, Excel, ChatGPT
+- **Target Career Roles**: Data Analyst | BI Consultant
+- **Summary**: Master Python, SQL, Power BI, Excel & GenAI to build automated business dashboards.
+- **Public Curriculum Overview**:
+  - Data Analytics Foundations: Data vs Information vs Insight, analytics workflows, and business decision-making.
+  - Python for Data Analysis: Variables, data types, control flow, functions, NumPy arrays, Pandas DataFrames, and Matplotlib visualizations.
+  - SQL & Relational Databases: Filtering, aggregations, joins, CTEs, window functions, and analytical queries.
+  - Microsoft Excel & Power BI: Formulas, PivotTables, Power Query, DAX measures, and executive business dashboards.
+  - Generative AI for Analysts: Prompt workflows, automated insight summaries, and human-in-the-loop verification.
+
+### 2. Data Science & Agentic AI
+
+- **URL**: https://futureitindustry.com/courses/data-science-agentic-ai
+- **Format**: Self-Paced Interactive + AI Mentor
+- **Listed Price**: ₹1,299
+- **Key Tools & Technologies**: Python, PyTorch, LangChain, Vector DB, RAG
+- **Target Career Roles**: Data Scientist | AI Agent
+- **Summary**: Build Machine Learning models, RAG pipelines, and autonomous AI Agent systems.
+- **Public Curriculum Overview**:
+  - Foundations & Python Programming: Core Data Science workflow, Python fundamentals, and structured problem solving.
+  - Math, Statistics & Data Preparation: Descriptive statistics, probability, data cleaning, and exploratory data analysis.
+  - NumPy, Pandas, SQL & Data Engineering: Structured data manipulation, querying, and analytical pipelines.
+  - Machine Learning: Supervised and unsupervised learning, model evaluation, and feature engineering.
+  - Deep Learning & Generative AI: Neural networks, PyTorch foundations, embeddings, and RAG pipelines.
+  - Agentic AI & Reliable AI Systems: Multi-step AI agents, tool calling, LangChain workflows, Vector DBs, and evaluation.
+  - Deployment, Projects & Career Readiness: End-to-end capstones, portfolio building, and interview preparation.
+
+### 3. Machine Learning Engineering
+
+- **URL**: https://futureitindustry.com/courses/ml-engineering
+- **Format**: Self-Paced Interactive + AI Mentor
+- **Listed Price**: ₹1,399
+- **Key Tools & Technologies**: Python, FastAPI, Docker, Kubernetes, Cloud
+- **Target Career Roles**: ML Engineer | MLOps Specialist
+- **Summary**: Build, train, and deploy production-scale ML pipelines with MLOps and Docker.
+- **Public Curriculum Overview**:
+  - Production Python & Software Engineering for ML systems.
+  - Model Training Pipelines, Experiment Tracking, and Reproducibility.
+  - Model Serving APIs using FastAPI and containerization with Docker.
+  - Orchestration & Cloud MLOps fundamentals with Kubernetes and monitoring.
+
+### 4. AI Engineering
+
+- **URL**: https://futureitindustry.com/courses/ai-engineering
+- **Format**: Self-Paced Interactive + AI Mentor
+- **Listed Price**: ₹1,499
+- **Key Tools & Technologies**: OpenAI, LangChain, Hugging Face, Vector DB, RAG
+- **Target Career Roles**: AI Engineer | Full Stack AI
+- **Summary**: Build and deploy end-to-end enterprise AI products, LLMs, and multi-agent solutions.
+- **Public Curriculum Overview**:
+  - Large Language Model (LLM) Architecture & API integration (OpenAI, Hugging Face).
+  - Retrieval-Augmented Generation (RAG) and Vector Databases.
+  - Multi-Agent Systems and Orchestration with LangChain.
+  - Enterprise AI product deployment, safety guardrails, and reliability evaluation.
+
+### 5. AI Tools & Prompt Engineering
+
+- **URL**: https://futureitindustry.com/courses/ai-tools-prompt
+- **Format**: Self-Paced Interactive + AI Mentor
+- **Listed Price**: ₹1,599
+- **Key Tools & Technologies**: ChatGPT, OpenAI, LangChain, Python, Cloud
+- **Target Career Roles**: AI Automation Lead | Prompt
+- **Summary**: 10x your productivity with ChatGPT-4o, Claude 3.5, Midjourney, Cursor & Zapier automations.
+- **Public Curriculum Overview**:
+  - Structured Prompt Engineering frameworks for ChatGPT-4o and Claude.
+  - Visual & Creative AI workflows with Midjourney and content generation tools.
+  - AI-assisted coding and productivity workflows with Cursor.
+  - Workflow automation connecting everyday business apps and AI models.
+
+### 6. Microsoft Office 365 with Copilot
+
+- **URL**: https://futureitindustry.com/courses/ms-office-copilot
+- **Format**: Self-Paced Interactive + AI Mentor
+- **Listed Price**: ₹899
+- **Key Tools & Technologies**: Excel, DAX, Power Query, Power BI, OpenAI
+- **Target Career Roles**: Business Analyst | Operations Analyst
+- **Summary**: Automate executive reporting, decks, financial models, and emails with Microsoft Copilot AI.
+- **Public Curriculum Overview**:
+  - Advanced Microsoft Excel formulas, PivotTables, and Power Query automation.
+  - Financial and business reporting models with DAX and Power BI.
+  - Executive decks, document drafting, and email automation using Microsoft 365 Copilot.
+
+### 7. Full Stack Web Development
+
+- **URL**: https://futureitindustry.com/courses/full-stack-web-dev
+- **Format**: Self-Paced Interactive + AI Mentor
+- **Listed Price**: ₹18,999
+- **Key Tools & Technologies**: React, Node.js, TypeScript, Docker, GitHub
+- **Target Career Roles**: Full Stack Developer | Web Developer
+- **Summary**: Build modern responsive full-stack applications with React, Node.js, Express & PostgreSQL.
+- **Public Curriculum Overview**:
+  - Modern Frontend Engineering with React and TypeScript.
+  - Backend API Development with Node.js and Express.
+  - Relational Database Design with PostgreSQL and SQL.
+  - Version control with GitHub and containerized deployment with Docker.
+
+### 8. AI Website Builder Pro
+
+- **URL**: https://futureitindustry.com/courses/ai-website-dev
+- **Format**: LIVE Instructor-Led Class
+- **Listed Price**: ₹2,999
+- **Key Tools & Technologies**: AI Builder, React, Node.js, SQL, Payments
+- **Target Career Roles**: LIVE Instructor-Led Class
+- **Summary**: Build corporate sites, e-commerce stores, SaaS dashboards, and booking portals with AI, full database and payment integrations.
+- **Public Curriculum Overview**:
+  - Live instructor-led hands-on sessions building real websites with AI-assisted workflows.
+  - Corporate websites, e-commerce storefronts, SaaS dashboards, and booking portals.
+  - Database integration, payment gateway wiring, and live web deployment.
+
+### 9. AI App Builder Pro
+
+- **URL**: https://futureitindustry.com/courses/ai-android-dev
+- **Format**: LIVE Instructor-Led Class
+- **Listed Price**: ₹2,499
+- **Key Tools & Technologies**: Android, AI Builder, Firebase, REST API, Play Store
+- **Target Career Roles**: LIVE Instructor-Led Class
+- **Summary**: Build professional Android mobile apps for food delivery, shopping, fintech, and booking with AI, Firebase and Play Store deployment.
+- **Public Curriculum Overview**:
+  - Live instructor-led Android mobile application development with AI builders.
+  - Real-world app patterns: food delivery, shopping, fintech, and booking flows.
+  - Firebase backend integration, REST APIs, and Google Play Store publishing workflow.
+
+### 10. AI Video Creator Pro
+
+- **URL**: https://futureitindustry.com/courses/ai-video-creation
+- **Format**: LIVE Instructor-Led Class
+- **Listed Price**: ₹999
+- **Key Tools & Technologies**: AI Video, Lip Sync, AI Voice, Cinema 4K, Ads & Reels
+- **Target Career Roles**: LIVE Instructor-Led Class
+- **Summary**: Create cinematic brand advertisements, product showcases, social reels, and YouTube videos with AI characters, lip-sync, and 4K export.
+- **Public Curriculum Overview**:
+  - Live instructor-led AI video production for brand ads, product showcases, reels, and YouTube.
+  - AI characters, voiceovers, lip-sync workflows, and 4K cinematic export pipelines.
+
+---
+
+## 3. Learning Experience & Platform Capabilities
+
+### Interactive Visual Learning
+Concepts are taught using structured visual learning sheets combining editorial diagrams, step-by-step concept flows, comparison cards, sample data tables, and highlighted code blocks rather than dense walls of text.
+
+### AI Mentor & Bilingual Learning (English + Hindi)
+Every structured visual lesson integrates an interactive AI Mentor supporting both English and Hindi (Hinglish) modes with synchronized audio-visual pacing so learners from diverse educational backgrounds can understand technical terminology clearly.
+
+### Coding Practice & DSA
+Dedicated hands-on coding practice tracks help learners build muscle memory in Python, SQL, Excel formulas, and Data Structures & Algorithms through structured problem sets.
+
+### Multi-Format Topic Assessments
+Topics include separate interactive practice layers:
+- **MCQ Assessments**: Conceptual accuracy checks.
+- **Puzzle Challenges**: Code and logic assembly exercises.
+- **Real-World Challenges**: Applied business and engineering scenarios.
+
+### Topic Interview & AI Mock Interviews
+Learners can practice topic-specific technical interview questions as well as structured AI Mock Interviews and HR round preparation to improve communication clarity and technical confidence.
+
+### ATS Resume Score Checker
+Publicly accessible at https://futureitindustry.com/ats-resume-checker, enabling learners to evaluate resume structure, keyword coverage, and Applicant Tracking System (ATS) compatibility.
+
+### Internship & Placement Preparation
+Structured portfolio capstone projects, role-specific interview preparation tracks, and career readiness resources designed to help learners prepare for technical hiring processes.
+
+---
+
+## 4. Dedicated Learner Pathways
+
+1. **Non-IT Background Learners**: Guided Zero-to-Job Foundation starting from core analytical thinking, spreadsheets, SQL, and beginner-friendly Python with bilingual support.
+2. **Career Gap Professionals**: Skill Refresh & Portfolio pathway focused on modern industry tools (Python, SQL, Power BI, GenAI), practical capstones, ATS resume rebuilding, and mock interview practice.
+3. **Freshers & College Students**: Structured end-to-end tracks combining conceptual visual notes, daily coding/DSA practice, real-world projects, and interview readiness.
+4. **Career Switchers**: Fast-track transition pathways tailored for professionals moving into Data Analytics, Data Science, Machine Learning Engineering, AI Engineering, or Full Stack Web Development.
+
+---
+
+## 5. Frequently Asked Questions (Public FAQ)
+
+**Q: Who can join Future IT Industry courses?**
+A: Courses are designed for beginners, college students, freshers, non-IT graduates, professionals returning after a career gap, and working professionals switching into IT, Data, and AI roles.
+
+**Q: In which languages are lessons available?**
+A: The platform supports bilingual learning with English and Hindi (Hinglish) explanations, making complex technical topics approachable for Indian learners.
+
+**Q: Are there both self-paced and live instructor-led programs?**
+A: Yes. Core career tracks (such as Data Analyst with GenAI, Data Science & Agentic AI, ML Engineering, AI Engineering, AI Tools & Prompt Engineering, MS Office 365 with Copilot, and Full Stack Web Development) offer structured interactive learning, while specialized builder programs (AI Website Builder Pro, AI App Builder Pro, and AI Video Creator Pro) are offered as live instructor-led classes.
+
+**Q: Does Future IT Industry offer resume and interview preparation tools?**
+A: Yes. The platform includes an ATS Resume Score Checker (https://futureitindustry.com/ats-resume-checker), topic-wise technical interview Q&A practice, AI-assisted mock interviews, and HR round preparation.
+
+**Q: How can I contact Future IT Industry support?**
+A: You can reach official support by phone at +91 8210778369, via WhatsApp at https://wa.me/917632099528, or by email at subodh.mscit@gmail.com. Support hours are Monday – Saturday: 9:00 AM – 7:00 PM IST; Sunday: 10:00 AM – 2:00 PM IST.
+
+**Q: Where can I read official policies?**
+A: Official policies are publicly available at:
+- About Us: https://futureitindustry.com/about
+- Contact Us: https://futureitindustry.com/contact
+- Terms & Conditions: https://futureitindustry.com/terms
+- Privacy Policy: https://futureitindustry.com/privacy
+- Refund Policy: https://futureitindustry.com/refund

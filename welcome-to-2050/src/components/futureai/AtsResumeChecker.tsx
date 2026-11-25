@@ -47,6 +47,8 @@ import {
 import { FutureLogo } from './FutureLogo';
 import { FutureAdvancedHeader } from './FutureAdvancedHeader';
 import { AtsCareerReadyBanner } from './AtsCareerReadyBanner';
+import { AtsAnalysisResultDashboard } from './AtsAnalysisResultDashboard';
+import { AtsUploadWorkspace } from './AtsUploadWorkspace';
 import './LearnerHomeHub.css';
 import './AtsResumeChecker.css';
 import { SupportedLanguage } from '../../services/powerGreenAIService';
@@ -58,7 +60,7 @@ import {
   parseResumeText,
   printAtsFixedResume,
 } from '../../services/atsResumeOptimizer';
-import { extractResumeText, ExtractionResult } from '../../services/resumeExtractor';
+import { extractResumeText, ExtractionResult, validateResumeFile } from '../../services/resumeExtractor';
 
 interface AtsResumeCheckerProps {
   onBackToHome?: () => void;
@@ -108,13 +110,16 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
       localStorage.getItem('futureai_user_name') &&
       localStorage.getItem('futureai_user_name') !== 'Learner')
   );
-  // Step inputs
+  // Step inputs & 3-Step Workflow State
+  const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [extractedText, setExtractedText] = useState<string>('');
   const [extractionError, setExtractionError] = useState<string | null>(null);
+  const [uploadSuccessMsg, setUploadSuccessMsg] = useState<string | null>(null);
   const [isExtracting, setIsExtracting] = useState<boolean>(false);
+  const autoAdvanceTimerRef = useRef<number | null>(null);
 
-  const [selectedRole, setSelectedRole] = useState<string>('data-analyst');
+  const [selectedRole, setSelectedRole] = useState<string>('');
   const [roleDropdownOpen, setRoleDropdownOpen] = useState<boolean>(false);
   const [roleSearchFilter, setRoleSearchFilter] = useState<string>('');
 
@@ -190,27 +195,77 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, []);
 
-  // Handle File Upload
+  // Cleanup pending auto-advance timer on unmount
+  useEffect(() => {
+    return () => {
+      if (autoAdvanceTimerRef.current) {
+        window.clearTimeout(autoAdvanceTimerRef.current);
+      }
+    };
+  }, []);
+
+  // Handle File Upload with strict validation & automatic step advance to Step 2
   const handleFileProcess = async (file: File) => {
+    if (autoAdvanceTimerRef.current) {
+      window.clearTimeout(autoAdvanceTimerRef.current);
+      autoAdvanceTimerRef.current = null;
+    }
+
     setExtractionError(null);
     setAnalysisError(null);
-    setUploadedFile(file);
+    setUploadSuccessMsg(null);
+    // Invalidate any outdated scan result whenever a new/replacement file is uploaded
+    setAnalysisResult(null);
+    setCheckerMode('input');
+
+    // Step 1: Validate file type & size using existing rules BEFORE accepting
+    const validation = validateResumeFile(file, 5);
+    if (!validation.isValid) {
+      setUploadedFile(null);
+      setExtractedText('');
+      setExtractionError(validation.error || 'Unsupported file. Please upload a valid PDF or DOCX (max 5 MB).');
+      setActiveStep(1);
+      return;
+    }
+
     setIsExtracting(true);
 
     try {
       const res: ExtractionResult = await extractResumeText(file);
-      if (res.error) {
-        setExtractionError(res.error);
+      if (res.error || !res.text.trim()) {
+        setUploadedFile(null);
         setExtractedText('');
+        setExtractionError(
+          res.error || 'Could not extract readable text from this file. Please upload a valid text-based PDF or DOCX.'
+        );
+        setActiveStep(1);
       } else {
+        setUploadedFile(file);
         setExtractedText(res.text);
+        setExtractionError(null);
+        setUploadSuccessMsg(`"${file.name}" uploaded successfully! Moving to Step 2...`);
+        // Automatically advance to Step 2 after brief visual confirmation (do NOT start scanning)
+        autoAdvanceTimerRef.current = window.setTimeout(() => {
+          setActiveStep(2);
+          setUploadSuccessMsg(null);
+          autoAdvanceTimerRef.current = null;
+        }, 550);
       }
     } catch (err: any) {
-      setExtractionError(err?.message || 'Failed to read file. Please ensure it is a valid PDF or DOCX.');
+      setUploadedFile(null);
       setExtractedText('');
+      setExtractionError(err?.message || 'Failed to read file. Please ensure it is a valid PDF or DOCX.');
+      setActiveStep(1);
     } finally {
       setIsExtracting(false);
     }
+  };
+
+  // Handle Job Role selection — invalidate any outdated analysis result
+  const handleSelectRole = (roleId: string) => {
+    setSelectedRole(roleId);
+    setAnalysisResult(null);
+    setAnalysisError(null);
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -282,7 +337,9 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
 
     const candidate = extractCandidateInfo(extractedText, uploadedFile);
     const totalKeywords = analysisResult.matchedKeywords.length + analysisResult.missingKeywords.length;
-    const scanDate = new Date(analysisResult.metadata.analysisTimestamp).toLocaleString('en-IN', {
+    const scanDate = new Date(
+      analysisResult.metadata.isoTimestamp || Date.now()
+    ).toLocaleString('en-IN', {
       dateStyle: 'medium',
       timeStyle: 'short',
     });
@@ -551,20 +608,27 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
       </div>
     </div>
 
-    <div class="section-title">4. Section-wise Resume Audit</div>
+    <div class="section-title">4. ATS Formatting &amp; Section Audit</div>
     ${analysisResult.sections
-      .map(
-        (sec) => `
+      .map((sec) => {
+        const isPassed = sec.status === 'passed';
+        const isNotEval = sec.status === 'not_evaluated';
+        const statusLabel = isPassed
+          ? '✓ Passed'
+          : isNotEval
+          ? 'Not Evaluated'
+          : '! Needs Improvement';
+        return `
       <div class="audit-item">
         <div>
           <strong style="font-size:12.5px;color:#0f172a;">${esc(sec.name)}</strong>
           <div style="font-size:11.5px;color:#475569;margin-top:2px;">${esc(sec.feedback)}</div>
         </div>
-        <span class="audit-status ${sec.found ? 'status-pass' : 'status-miss'}">
-          ${sec.found ? '✓ Detected' : '✗ Missing'}
+        <span class="audit-status ${isPassed ? 'status-pass' : 'status-miss'}">
+          ${statusLabel}
         </span>
-      </div>`
-      )
+      </div>`;
+      })
       .join('')}
 
     <div class="section-title">5. Prioritized Recommendations for Your Resume</div>
@@ -666,8 +730,10 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
     }
   };
 
-  // Handle clicking "Scan My Resume" - Require Candidate Login/Verification first
+  // Handle clicking "Scan My Resume" — strictly validate inputs & prevent duplicate scans
   const handleScanButtonClick = () => {
+    if (isAnalyzing || isExtracting) return;
+
     // Auto-detect candidate name/email from uploaded resume if available for later unlock
     const detected = extractCandidateInfo(extractedText, uploadedFile);
     if (detected.name && detected.name !== 'Candidate Resume' && !candidateNameInput) {
@@ -677,8 +743,8 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
       setCandidateEmailInput(detected.email);
     }
 
-    // Run real analysis so scanning animation and progress happens
-    handleRunAnalysis(true);
+    // Run real analysis (never fall back to fake sample data)
+    handleRunAnalysis(false);
   };
 
   const handleAuthSubmit = (e?: React.FormEvent, customName?: string) => {
@@ -696,24 +762,36 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
       onOpenLogin(nameToUse);
     }
     setIsAuthModalOpen(false);
-    handleRunAnalysis(true, nameToUse);
+    // If real analysis already completed, unlock it immediately without rescanning
+    if (analysisResult) {
+      setCheckerMode('result');
+    } else {
+      handleRunAnalysis(false, nameToUse);
+    }
   };
 
   // Run Real Analysis with Dynamic ATS Scoring
-  const handleRunAnalysis = (useSampleFallback = false, overrideName?: string) => {
-    let textToAnalyze = extractedText.trim();
+  const handleRunAnalysis = (_useSampleFallback = false, overrideName?: string) => {
+    // Prevent duplicate concurrent scan submissions
+    if (isAnalyzing || isExtracting) return;
 
-    if (!textToAnalyze && !uploadedFile) {
-      if (useSampleFallback) {
-        textToAnalyze = sampleResumeData;
-      } else {
-        setAnalysisError('Please upload your resume (PDF or DOCX) in Step 1 first to check your resume.');
-        return;
-      }
+    const textToAnalyze = extractedText.trim();
+
+    if (!uploadedFile || !textToAnalyze) {
+      setAnalysisError('Please upload a valid resume (PDF or DOCX) in Step 1 before scanning.');
+      setActiveStep(1);
+      return;
     }
 
-    if (extractionError && !textToAnalyze) {
+    if (!selectedRole || !TARGET_JOB_ROLES.some((r) => r.id === selectedRole)) {
+      setAnalysisError('Please select a target job role in Step 2 before scanning.');
+      setActiveStep(2);
+      return;
+    }
+
+    if (extractionError) {
       setAnalysisError(extractionError);
+      setActiveStep(1);
       return;
     }
 
@@ -752,24 +830,33 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
       try {
         // REAL ATS Scoring Engine based on actual resume text & target job role!
         const result = analyzeResumeContent(textToAnalyze, selectedRole, customJobDesc);
-        
+
         setAnalysisResult(result);
         setIsAnalyzing(false);
         setCheckerMode('result');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } catch (err: any) {
+        // Preserve uploadedFile & selectedRole on Step 3 so the user can retry without re-uploading
         setAnalysisError(err?.message || 'Analysis encountered an error. Please try again.');
         setIsAnalyzing(false);
+        setActiveStep(3);
       }
     }, 2800);
   };
 
   const handleRemoveFile = () => {
+    if (autoAdvanceTimerRef.current) {
+      window.clearTimeout(autoAdvanceTimerRef.current);
+      autoAdvanceTimerRef.current = null;
+    }
     setUploadedFile(null);
     setExtractedText('');
     setExtractionError(null);
+    setAnalysisError(null);
+    setUploadSuccessMsg(null);
     setAnalysisResult(null);
     setCheckerMode('input');
+    setActiveStep(1);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -863,22 +950,23 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
         {/* Content Container */}
         <main className="relative z-10 max-w-[1480px] w-full mx-auto px-3 sm:px-6 pt-[1px] pb-8 space-y-3">
           
-          {/* ── HERO BANNER: DASHBOARD SIZE MATCH (~210px HEIGHT) ── */}
-          <div className="relative w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-[0_6px_24px_rgba(0,80,220,0.06)] border border-slate-200/90 min-h-[195px] h-auto sm:h-[220px] md:h-[275px] md:min-h-[275px] md:max-h-[275px] flex items-center bg-[#E6F3FC]">
-            {/* Base Seamless Wave Backdrop (matches Frame 0 of video palette) */}
+          {/* ── SLIM THEME-MATCHED HERO BANNER (Upload Page Only) ── */}
+          {checkerMode !== 'result' && (
+          <div className="relative w-full rounded-2xl overflow-hidden shadow-[0_4px_18px_rgba(109,40,217,0.06)] border border-[#E9E5F5] min-h-[155px] h-auto sm:h-[175px] md:h-[190px] flex items-center bg-gradient-to-r from-[#F5F3FF] via-white to-[#EEF2FF]">
+            {/* Base Seamless Wave Backdrop */}
             <img
               src="/images/ats/ats_top_banner_wave_bg.jpg"
               alt=""
               aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover object-left select-none pointer-events-none"
+              className="absolute inset-0 w-full h-full object-cover object-left select-none pointer-events-none opacity-45"
             />
 
-            {/* Fitted Top Banner Video (crops outer 16:9 letterbox y=184..534 and aligns 3D Mentor + 90+ Score + Checklist on right) */}
+            {/* Fitted Top Banner Video on Right */}
             <div
-              className="absolute inset-y-0 right-0 w-full sm:w-[68%] md:w-[65%] overflow-hidden pointer-events-none select-none z-[1]"
+              className="absolute inset-y-0 right-0 w-full sm:w-[62%] md:w-[58%] overflow-hidden pointer-events-none select-none z-[1]"
               style={{
-                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 12%, black 100%)',
-                maskImage: 'linear-gradient(to right, transparent 0%, black 12%, black 100%)',
+                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 18%, black 100%)',
+                maskImage: 'linear-gradient(to right, transparent 0%, black 18%, black 100%)',
               }}
             >
               <video
@@ -892,1281 +980,152 @@ export const AtsResumeChecker: React.FC<AtsResumeCheckerProps> = ({
               />
             </div>
 
-            {/* Subtle soft gradient fade on mobile to ensure crisp text readability */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#EDF6FD]/95 via-[#EDF6FD]/85 to-[#EDF6FD]/40 sm:from-[#E8F4FD]/75 sm:via-[#E8F4FD]/25 sm:to-transparent z-[2] pointer-events-none" />
+            {/* Soft Lavender-White Pearl Gradient Fade for Crisp Purple-Theme Readability */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FAF8FF]/98 via-[#F5F3FF]/92 to-[#F5F3FF]/35 sm:from-white/95 sm:via-[#F5F3FF]/85 sm:to-transparent z-[2] pointer-events-none" />
 
-            {/* Text Overlay on Left Side - Dashboard Compact Styling */}
-            <div className="relative z-10 px-3.5 py-3.5 sm:px-6 sm:py-3.5 md:px-7 max-w-xl lg:max-w-[490px] flex flex-col justify-center gap-1.5 min-w-0">
-              {/* Sparkles Badge */}
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/95 border border-blue-200/90 text-blue-700 text-[9.5px] sm:text-[10px] font-bold shadow-2xs backdrop-blur-md w-fit max-w-full">
-                <Sparkles className="w-3 h-3 fill-blue-600 text-blue-600 shrink-0" />
+            {/* Compact Theme-Matched Text Overlay on Left */}
+            <div className="relative z-10 px-4 py-3 sm:px-6 md:px-7 max-w-xl lg:max-w-[520px] flex flex-col justify-center gap-1.5 min-w-0">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/95 border border-[#E9E5F5] text-[#6D28D9] text-[10px] sm:text-[11px] font-semibold shadow-2xs w-fit max-w-full">
+                <Target className="w-3 h-3 text-[#6D28D9] shrink-0" />
                 <span className="tracking-wide truncate">AI-Powered Industry Standard ATS Scanner</span>
               </div>
 
-              {/* Headline */}
-              <h1 className="text-lg min-[375px]:text-xl sm:text-2xl md:text-[27px] font-black text-slate-950 tracking-tight leading-tight">
-                ATS Resume <span className="text-blue-600">Checker &amp; Optimizer</span>
+              <h1 className="text-lg sm:text-2xl md:text-[25px] font-bold text-[#111827] tracking-tight leading-tight m-0">
+                ATS Resume <span className="text-[#6D28D9]">Checker &amp; Optimizer</span>
               </h1>
 
-              {/* Subheading */}
-              <p className="text-[11px] sm:text-xs font-bold text-slate-800 leading-snug">
-                Know what&apos;s missing in your resume for your target job role.
+              <p className="text-xs sm:text-[13px] font-medium text-[#64748B] leading-snug m-0 max-w-md">
+                Know what&apos;s missing in your resume for your target job role and get actionable improvements.
               </p>
 
-              {/* Description */}
-              <p className="text-[10px] sm:text-[11px] text-slate-600 max-w-md font-normal leading-relaxed sm:line-clamp-1">
-                Get instant AI analysis, find missing skills and keywords, and improve shortlist chances.
-              </p>
-
-              {/* 4 Feature Badges (Compact) */}
-              <div className="flex flex-wrap items-center gap-1 pt-0.5">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/95 border border-slate-200 text-[10px] font-bold text-slate-700 shadow-2xs">
-                  <CheckCircle2 className="w-2.5 h-2.5 text-emerald-500 fill-emerald-100" />
-                  Industry Standard Analysis
+              <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/95 border border-[#E9E5F5] text-[10.5px] font-medium text-slate-700">
+                  <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                  Industry Standard
                 </span>
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/95 border border-slate-200 text-[10px] font-bold text-slate-700 shadow-2xs">
-                  <Target className="w-2.5 h-2.5 text-purple-600" />
-                  Role-based Matching
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/95 border border-[#E9E5F5] text-[10.5px] font-medium text-slate-700">
+                  <Target className="w-3 h-3 text-[#6D28D9]" />
+                  Role-Based Match
                 </span>
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/95 border border-slate-200 text-[10px] font-bold text-slate-700 shadow-2xs">
-                  <Zap className="w-2.5 h-2.5 text-amber-500 fill-amber-400" />
-                  Instant Results
-                </span>
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/95 border border-slate-200 text-[10px] font-bold text-slate-700 shadow-2xs">
-                  <ShieldCheck className="w-2.5 h-2.5 text-blue-600" />
-                  100% Private &amp; Secure
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/95 border border-[#E9E5F5] text-[10.5px] font-medium text-slate-700">
+                  <ShieldCheck className="w-3 h-3 text-[#6D28D9]" />
+                  100% Private
                 </span>
               </div>
             </div>
           </div>
-          {/* ══════════════════════════════════════════════════════════
+          )}
+
           {/* ══════════════════════════════════════════════════════════
               CONDITIONAL DISPLAY:
               1. SCANNING HUD (Centered)
-              2. DEDICATED SEPARATE RESULT PAGE (Full Width)
-              3. INPUT MODE: 3-STEP RESUME OPTIMIZER (Exact Reference Image 1:1)
+              2. DEDICATED RESULT PAGE (AtsAnalysisResultDashboard)
+              3. INPUT MODE (AtsUploadWorkspace)
               ══════════════════════════════════════════════════════════ */}
           {isAnalyzing ? (
-            /* ── ULTRA-FUTURISTIC SCANNING HUD & LIVE LASER BEAM ANIMATION ── */
-            <div className="max-w-4xl mx-auto my-6 ats-scanner-hud shadow-2xl">
-              <div className="ats-scanner-header">
-                <div className="ats-scanner-badge">
-                  <span className="ats-scanner-pulse-dot" />
-                  <span>Live Neural ATS Engine 4.0</span>
-                </div>
-                <div className="ats-scanner-filename">
-                  <FileText className="w-3.5 h-3.5 text-blue-500" />
-                  <span>{uploadedFile?.name || 'Resume_Document.pdf'}</span>
-                </div>
+            <div className="w-full max-w-2xl mx-auto my-8 bg-white rounded-2xl border border-[#E9E5F5] shadow-md p-6 sm:p-8 text-center space-y-5">
+              <div className="w-14 h-14 rounded-2xl bg-[#F5F3FF] border border-[#E9E5F5] text-[#6D28D9] flex items-center justify-center mx-auto animate-pulse">
+                <Search className="w-7 h-7" />
               </div>
-
-              <div className="ats-scanner-canvas-wrap">
-                {/* Visual Resume Document with Laser Beam */}
-                <div className="ats-scanner-doc-card">
-                  <div className="ats-scanner-laser-beam">
-                    <div className="ats-scanner-laser-glow" />
-                  </div>
-                  <div className="ats-scanner-doc-lines">
-                    <div className="ats-doc-line line-title" />
-                    <div className="ats-doc-line line-sub" />
-                    <div className="ats-doc-line w-full" />
-                    <div className="ats-doc-line w-85" />
-                    <div className="ats-doc-line w-70" />
-                    <div className="ats-doc-line w-90" />
-                    <div className="ats-doc-line w-60" />
-                    <div className="ats-doc-line w-85" />
-                    <div className="ats-doc-line w-70" />
-                  </div>
-                </div>
-
-                {/* 5 Sequential Scanning Phases */}
-                <div className="ats-scanner-phases">
-                  {[
-                    { step: 1, title: 'Document Extraction & Structure', desc: 'Parsing headers, contact info & format' },
-                    { step: 2, title: 'Semantic Keyword Matching', desc: `Auditing keywords for ${activeRoleData.name}` },
-                    { step: 3, title: 'Reverse Chronological Timeline', desc: 'Verifying work history ordering & date formats' },
-                    { step: 4, title: 'Quantified Impact Audit', desc: 'Analyzing numbers, metrics & % achievements' },
-                    { step: 5, title: 'ATS Score Benchmarking', desc: 'Synthesizing final score & mechanical fixes' },
-                  ].map((phase) => {
-                    const isDone = scanPhase > phase.step;
-                    const isActive = scanPhase === phase.step;
-                    return (
-                      <div
-                        key={phase.step}
-                        className={`ats-scan-phase-item ${isDone ? 'phase-done' : isActive ? 'phase-active' : 'phase-pending'}`}
-                      >
-                        <div className="ats-phase-icon">
-                          {isDone ? (
-                            <Check className="w-3.5 h-3.5 stroke-[3]" />
-                          ) : isActive ? (
-                            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                          ) : (
-                            <span>0{phase.step}</span>
-                          )}
-                        </div>
-                        <div className="ats-phase-text">
-                          <span className="ats-phase-title">{phase.title}</span>
-                          <span className="ats-phase-desc">{phase.desc}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+              <div>
+                <h2 className="text-lg sm:text-xl font-bold text-[#111827] m-0">
+                  Analyzing Your Resume...
+                </h2>
+                <p className="text-xs sm:text-sm text-[#64748B] mt-1 m-0">
+                  {uploadedFile?.name || 'Uploaded Resume'} • Matching against {activeRoleData.name}
+                </p>
               </div>
-
-              {/* Bottom Progress Bar */}
-              <div className="ats-scanner-bottom-bar">
-                <div className="ats-scanner-progress-info">
-                  <span className="flex items-center gap-1.5 text-blue-700 font-semibold">
-                    <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-                    <span>Scanning Resume Against Industry ATS Standards...</span>
-                  </span>
-                  <span className="font-black text-slate-800">{analysisProgress}%</span>
-                </div>
-                <div className="ats-scanner-track">
-                  <div className="ats-scanner-fill" style={{ width: `${analysisProgress}%` }} />
-                </div>
+              <div className="w-full h-2.5 rounded-full bg-[#F5F3FF] overflow-hidden border border-[#E9E5F5]">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] transition-all duration-300"
+                  style={{ width: `${Math.max(10, analysisProgress)}%` }}
+                />
+              </div>
+              <div className="flex items-center justify-center gap-4 text-xs font-medium text-[#64748B] flex-wrap">
+                <span className={scanPhase >= 1 ? 'text-[#6D28D9] font-semibold' : ''}>1. Parsing Text</span>
+                <span>•</span>
+                <span className={scanPhase >= 2 ? 'text-[#6D28D9] font-semibold' : ''}>2. Matching Keywords</span>
+                <span>•</span>
+                <span className={scanPhase >= 3 ? 'text-[#6D28D9] font-semibold' : ''}>3. Scoring Structure</span>
               </div>
             </div>
           ) : checkerMode === 'result' && analysisResult ? (
-            /* ══════════════════════════════════════════════════════════
-               DEDICATED SEPARATE PAGE: ATS ANALYSIS RESULT (Full Width)
-               ══════════════════════════════════════════════════════════ */
             !isCandidateVerified ? (
-              <div className="max-w-3xl mx-auto my-8 p-6 sm:p-10 rounded-3xl bg-white border border-blue-200/90 shadow-2xl text-center">
-                <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-lg mx-auto mb-4">
-                  <Lock className="w-8 h-8" />
+              <div className="max-w-2xl mx-auto my-8 p-6 sm:p-8 rounded-2xl bg-white border border-[#E9E5F5] shadow-lg text-center space-y-4">
+                <div className="w-14 h-14 rounded-2xl bg-[#6D28D9] text-white flex items-center justify-center shadow-sm mx-auto">
+                  <Lock className="w-7 h-7" />
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-black uppercase tracking-wider mb-2">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Scan Complete (ATS Score Ready)</span>
+                  <span>Scan Complete — ATS Score Ready</span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#111827] m-0">
                   Free Login / Sign Up to View Your Score
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-lg mx-auto mt-2 leading-relaxed">
-                  Your resume has been algorithmically parsed and evaluated against enterprise ATS standards. Free login required to unlock your 0–100 score, recruiter keyword match, and optimization suggestions.
+                <p className="text-xs sm:text-sm text-[#64748B] max-w-md mx-auto m-0 leading-relaxed">
+                  Your resume has been parsed and evaluated. Sign in for free to unlock your full ATS score, keyword analysis, and improvement suggestions.
                 </p>
-                <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
                   <button
                     type="button"
                     onClick={() => setIsAuthModalOpen(true)}
-                    className="w-full sm:w-auto px-7 py-3 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-black text-sm shadow-md hover:shadow-lg active:scale-95 transition cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-semibold text-sm shadow-xs transition cursor-pointer flex items-center justify-center gap-2"
                   >
-                    <span>Free Login / Sign Up to Unlock Result</span>
+                    <span>Unlock ATS Result</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                   <button
                     type="button"
                     onClick={() => {
                       setCheckerMode('input');
+                      setActiveStep(1);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    className="w-full sm:w-auto px-5 py-3 rounded-xl border border-slate-200 text-slate-700 font-bold text-sm hover:bg-slate-50 transition cursor-pointer"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-[#E9E5F5] text-[#111827] font-semibold text-sm hover:bg-slate-50 transition cursor-pointer"
                   >
                     Upload Another Resume
                   </button>
                 </div>
-                <p className="text-[11px] text-slate-400 font-semibold mt-3">
-                  100% Free • No Payment Required • Instant Unlock
-                </p>
-
-                {/* Blurred teaser preview of the score */}
-                <div className="mt-8 pt-6 border-t border-slate-100 opacity-40 filter blur-xs pointer-events-none select-none">
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-center">
-                      <div className="text-xs font-bold text-slate-400">ATS Score</div>
-                      <div className="text-xl font-black text-slate-600">?? / 100</div>
-                    </div>
-                    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-center">
-                      <div className="text-xs font-bold text-slate-400">Keyword Match</div>
-                      <div className="text-xl font-black text-slate-600">?? %</div>
-                    </div>
-                    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-center">
-                      <div className="text-xs font-bold text-slate-400">Impact Words</div>
-                      <div className="text-xl font-black text-slate-600">?? %</div>
-                    </div>
-                    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-center">
-                      <div className="text-xs font-bold text-slate-400">ATS Formatting</div>
-                      <div className="text-xl font-black text-slate-600">Pass</div>
-                    </div>
-                  </div>
-                </div>
               </div>
             ) : (
-              <div className="w-full space-y-6 ats-dedicated-result-view">
-              {/* Top Navigation & Action Bar */}
-              <div className="ats-result-top-action-bar">
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCheckerMode('input');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    className="ats-btn-back-checker"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                    <span>Back to Resume Optimizer</span>
-                  </button>
-
-                  <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700">
-                    <span className="text-slate-400">Candidate:</span>
-                    <strong className="text-slate-900">{candidateFirstName}</strong>
-                    <span className="text-slate-300">•</span>
-                    <span className="text-slate-400">Target Role:</span>
-                    <strong className="text-blue-600">{activeRoleData.name}</strong>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-                  <button
-                    type="button"
-                    onClick={handleOpenFixedResume}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white text-xs font-black transition-all shadow-md shadow-emerald-500/25 active:scale-95 cursor-pointer"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 fill-white" />
-                    <span>⚡ Download ATS-Fixed Resume (96 Score)</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleRunAnalysis(true)}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all shadow-2xs cursor-pointer"
-                  >
-                    <RefreshCw className="w-3.5 h-3.5" />
-                    <span>Re-run ATS Scan</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleDownloadResumeReport}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-blue-600 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all shadow-md shadow-blue-500/25 cursor-pointer"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>Download PDF Report</span>
-                    <ChevronDown className="w-3 h-3 text-blue-200" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Main Result Card */}
-              <div className="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-[0_16px_48px_rgba(15,23,42,0.06)] relative z-10 space-y-6">
-                
-                {/* 5 Accessible Results Tabs */}
-                <div className="flex items-center gap-2 p-1.5 bg-slate-100/90 border border-slate-200/80 rounded-2xl overflow-x-auto text-xs font-semibold">
-                  {[
-                    { id: 'overall', label: 'Overall Analysis' },
-                    { id: 'skills', label: 'Skills & Keywords' },
-                    { id: 'missing', label: 'Missing Skills' },
-                    { id: 'sections', label: 'Section-wise' },
-                    { id: 'tips', label: 'Recommendations' },
-                  ].map((t) => (
-                    <button
-                      key={t.id}
-                      onClick={() => setActiveTab(t.id as any)}
-                      className={`px-4 py-2 rounded-xl whitespace-nowrap transition-all cursor-pointer font-bold ${
-                        activeTab === t.id
-                          ? 'bg-blue-600 text-white shadow-xs'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-white/70'
-                      }`}
-                    >
-                      {t.label}
-                    </button>
-                  ))}
-                </div>
-
-                  {activeTab === 'overall' && (
-                    <div className="space-y-4">
-                      {/* Ultra-Premium Hero Score Banner */}
-                      <div className="ats-hero-score-card">
-                        <div className="ats-hsc-grid">
-                          <div className="ats-hsc-text-col">
-                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-[11px] font-black text-blue-700 w-fit">
-                              <Sparkles className="w-3 h-3 text-blue-600" />
-                              <span>Verified ATS Diagnostic</span>
-                            </div>
-                            <h2 className="ats-hsc-salutation">
-                              {candidateFirstName}, your resume scored <span className="ats-hsc-score-highlight">{analysisResult.overallScore} out of 100</span>
-                            </h2>
-                            <p className="ats-hsc-context">
-                              <strong>{analysisResult.missingSkills.length + (analysisResult.sections.filter((s) => !s.found).length || 2)} fixes across {Math.max(2, analysisResult.sections.filter((s) => !s.found).length + 1)} sections so far.</strong>{' '}
-                              {analysisResult.overallScore >= 80
-                                ? 'Your resume is highly competitive! A few high-impact tweaks will push you into the top 5% of applicants.'
-                                : analysisResult.overallScore >= 65
-                                ? 'That is around average. Everything below is mechanical, and fixing it is the fastest way to move the score.'
-                                : 'Your resume is below the screening threshold. Mechanical fixes below will provide the biggest score jump.'}
-                            </p>
-                          </div>
-
-                          {/* Right Score Gauge Circle Pill */}
-                          <div className="ats-hsc-gauge-col">
-                            <div className="ats-score-circle-pill">
-                              <span className="ats-circle-score-num">{analysisResult.overallScore}</span>
-                              <span className="ats-circle-score-denom">/ 100</span>
-                            </div>
-                            <div className="ats-score-rating-badge">
-                              {analysisResult.overallScore >= 80 ? (
-                                <>
-                                  <Sparkles className="w-3 h-3 text-emerald-600" />
-                                  <span className="text-emerald-700 font-bold">Top Match</span>
-                                </>
-                              ) : analysisResult.overallScore >= 65 ? (
-                                <>
-                                  <AlertTriangle className="w-3 h-3 text-amber-600" />
-                                  <span className="text-amber-700 font-bold">Around Average</span>
-                                </>
-                              ) : (
-                                <>
-                                  <AlertCircle className="w-3 h-3 text-rose-600" />
-                                  <span className="text-rose-700 font-bold">Needs Improvement</span>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Benchmark Target Comparison Bar */}
-                        <div className="ats-benchmark-bar-row">
-                          <div className="ats-benchmark-metric">
-                            <Target className="w-4 h-4 text-blue-600" />
-                            <span>Target for Top Tech Shortlist: <strong>88+ Score</strong></span>
-                          </div>
-                          <div className="ats-benchmark-target-pill">
-                            <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
-                            <span>+{Math.max(10, 92 - analysisResult.overallScore)} Pts Potential with Priority Fixes Below</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* "Fix these first" High-Impact Container */}
-                      <div className="ats-fix-first-container">
-                        <div className="ats-fix-first-header">
-                          <div className="ats-fix-first-title-wrap">
-                            <div className="ats-fix-first-icon-badge">
-                              <Zap className="w-4 h-4" />
-                            </div>
-                            <div>
-                              <h3 className="ats-fix-first-h3">Fix these first</h3>
-                              <span className="ats-fix-first-sub">Mechanical improvements with the fastest score lift</span>
-                            </div>
-                          </div>
-                          <div className="ats-fix-first-speed-tag">
-                            <Clock className="w-3.5 h-3.5" />
-                            <span>Estimated fix time: ~6 mins</span>
-                          </div>
-                        </div>
-
-                        <div className="ats-fix-cards-list">
-                          {/* Card 1: Buzzwords / Action Words */}
-                          <div className="ats-priority-fix-card">
-                            <div className="ats-pfc-top">
-                              <div className="ats-pfc-left">
-                                <div className="flex items-center gap-2">
-                                  <span className="w-5 h-5 rounded-full bg-purple-100 text-purple-700 text-xs font-black flex items-center justify-center">1</span>
-                                  <span className="ats-pfc-title">
-                                    {analysisResult.weaknesses?.buzzwordFixes?.[0]?.found
-                                      ? `Vague phrasing: "${analysisResult.weaknesses.buzzwordFixes[0].found}"`
-                                      : 'Passive wording & action verbs'}
-                                  </span>
-                                </div>
-                                <p className="ats-pfc-desc">
-                                  Replace passive task phrasing with quantifiable technical achievements.
-                                </p>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-[11px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                                  +6 pts
-                                </span>
-                                <span className="ats-pfc-cat-badge cat-style">Style</span>
-                              </div>
-                            </div>
-
-                            <div className="ats-pfc-drawer">
-                              <div className="ats-drawer-before">
-                                <span className="ats-drawer-pill">Found in Resume</span>
-                                <span className="line-through text-slate-500">
-                                  "{analysisResult.weaknesses?.buzzwordFixes?.[0]?.originalSentence || 'Worked as a go-getter team player on data pipelines.'}"
-                                </span>
-                              </div>
-                              <div className="ats-drawer-after">
-                                <span className="ats-drawer-pill">Recommended</span>
-                                <span className="text-emerald-800">
-                                  "{analysisResult.weaknesses?.buzzwordFixes?.[0]?.recommendedSentence || 'Engineered automated SQL and Python ETL pipelines reducing load latency by 35%.'}"
-                                </span>
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    handleCopyFix(
-                                      'fix-buzzword',
-                                      analysisResult.weaknesses?.buzzwordFixes?.[0]?.recommendedSentence ||
-                                        'Engineered automated SQL and Python ETL pipelines reducing load latency by 35%.'
-                                    )
-                                  }
-                                  className="ml-auto inline-flex items-center gap-1 text-[10px] font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2 py-1 rounded-md transition-all cursor-pointer"
-                                  title="Copy recommended bullet"
-                                >
-                                  {copiedFixId === 'fix-buzzword' ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                                  <span>{copiedFixId === 'fix-buzzword' ? 'Copied' : 'Copy'}</span>
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Card 2: Roles are not in reverse chronological order */}
-                          <div className="ats-priority-fix-card">
-                            <div className="ats-pfc-top">
-                              <div className="ats-pfc-left">
-                                <div className="flex items-center gap-2">
-                                  <span className="w-5 h-5 rounded-full bg-purple-100 text-purple-700 text-xs font-black flex items-center justify-center">2</span>
-                                  <span className="ats-pfc-title">Roles timeline &amp; reverse chronological order</span>
-                                </div>
-                                <p className="ats-pfc-desc">
-                                  Most recent first, every time. ATS parsers build your career timeline from this.
-                                </p>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-[11px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                                  +8 pts
-                                </span>
-                                <span className="ats-pfc-cat-badge cat-style">Style</span>
-                              </div>
-                            </div>
-
-                            <div className="ats-pfc-drawer">
-                              <div className="ats-drawer-before">
-                                <span className="ats-drawer-pill">Parser Audit</span>
-                                <span className="text-rose-700">
-                                  {analysisResult.weaknesses?.chronologyIssue?.description ||
-                                    'Chronology issue: Older role placed before most recent experience.'}
-                                </span>
-                              </div>
-                              <div className="ats-drawer-after">
-                                <span className="ats-drawer-pill">Quick Fix</span>
-                                <span className="text-slate-700">
-                                  {analysisResult.weaknesses?.chronologyIssue?.fix ||
-                                    'Put your Latest / 2024–Present role at the very top of Experience, then order previous roles descending.'}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Card 3: Bullet density & Quantified Impact */}
-                          <div className="ats-priority-fix-card">
-                            <div className="ats-pfc-top">
-                              <div className="ats-pfc-left">
-                                <div className="flex items-center gap-2">
-                                  <span className="w-5 h-5 rounded-full bg-rose-100 text-rose-700 text-xs font-black flex items-center justify-center">3</span>
-                                  <span className="ats-pfc-title">
-                                    Only {analysisResult.weaknesses?.unquantifiedBullets?.quantifiedCount ?? 5} of{' '}
-                                    {analysisResult.weaknesses?.unquantifiedBullets?.totalBullets ?? 14} bullets carry a number
-                                  </span>
-                                </div>
-                                <p className="ats-pfc-desc">
-                                  A count, percentage, rupee amount or time saved. Aim for at least 50% of bullets.
-                                </p>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-[11px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                                  +14 pts
-                                </span>
-                                <span className="ats-pfc-cat-badge cat-impact">Impact</span>
-                              </div>
-                            </div>
-
-                            {/* Mini metric progress meter */}
-                            <div className="ats-impact-mini-meter">
-                              <div className="ats-impact-meter-info">
-                                <span>
-                                  Quantified Bullet Density:{' '}
-                                  <strong>
-                                    {analysisResult.weaknesses?.unquantifiedBullets?.quantifiedCount ?? 5} /{' '}
-                                    {analysisResult.weaknesses?.unquantifiedBullets?.totalBullets ?? 14} (
-                                    {analysisResult.weaknesses?.unquantifiedBullets?.densityPercent ?? 36}%)
-                                  </strong>
-                                </span>
-                                <span className="text-amber-600 font-bold">Target: 50%+</span>
-                              </div>
-                              <div className="ats-impact-meter-track">
-                                <div
-                                  className="ats-impact-meter-fill"
-                                  style={{
-                                    width: `${Math.min(100, analysisResult.weaknesses?.unquantifiedBullets?.densityPercent ?? 36)}%`,
-                                  }}
-                                />
-                              </div>
-                            </div>
-
-                            <div className="ats-pfc-drawer">
-                              <div className="ats-drawer-before">
-                                <span className="ats-drawer-pill">Unquantified Bullet</span>
-                                <span className="line-through text-slate-500">
-                                  "{analysisResult.weaknesses?.unquantifiedBullets?.sampleUnquantified ||
-                                    'Handled reporting and dashboard analysis for stakeholders.'}"
-                                </span>
-                              </div>
-                              <div className="ats-drawer-after">
-                                <span className="ats-drawer-pill">Quantified Formula</span>
-                                <span className="text-emerald-800">
-                                  "{analysisResult.weaknesses?.unquantifiedBullets?.sampleQuantified ||
-                                    'Delivered 12+ interactive dashboards in Power BI saving 14 hrs/week for 40+ executive stakeholders.'}"
-                                </span>
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    handleCopyFix(
-                                      'fix-metric',
-                                      analysisResult.weaknesses?.unquantifiedBullets?.sampleQuantified ||
-                                        'Delivered 12+ interactive dashboards in Power BI saving 14 hrs/week for 40+ executive stakeholders.'
-                                    )
-                                  }
-                                  className="ml-auto inline-flex items-center gap-1 text-[10px] font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2 py-1 rounded-md transition-all cursor-pointer"
-                                  title="Copy recommended bullet"
-                                >
-                                  {copiedFixId === 'fix-metric' ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                                  <span>{copiedFixId === 'fix-metric' ? 'Copied' : 'Copy'}</span>
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* ── 1-CLICK AI RESUME OPTIMIZER CALLOUT BANNER ── */}
-                        <div className="mt-5 p-5 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 text-white shadow-xl shadow-emerald-500/20 flex flex-col md:flex-row items-center justify-between gap-4">
-                          <div className="flex items-center gap-3.5">
-                            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center shrink-0 border border-white/30 shadow-inner">
-                              <Sparkles className="w-6 h-6 fill-white" />
-                            </div>
-                            <div>
-                              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 border border-white/30 text-[10px] font-black uppercase tracking-wider text-emerald-100 mb-1">
-                                ⚡ 1-Click AI Fix Available
-                              </div>
-                              <h4 className="text-base sm:text-lg font-black text-white leading-tight">
-                                Want Us to Fix Everything in Your Resume Automatically?
-                              </h4>
-                              <p className="text-xs text-white/90 font-medium mt-1 max-w-2xl leading-relaxed">
-                                Our AI has rewritten your resume into a 100% ATS-compliant single-column layout scoring <strong>96 / 100</strong>. All missing role skills injected, all bullets quantified, and all passive words fixed!
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2.5 shrink-0 w-full md:w-auto">
-                            <button
-                              type="button"
-                              onClick={handleOpenFixedResume}
-                              className="w-full md:w-auto px-4 py-3 rounded-xl bg-white hover:bg-slate-50 text-emerald-800 text-xs font-black shadow-lg transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
-                            >
-                              <Sparkles className="w-4 h-4 text-emerald-600 fill-emerald-600" />
-                              <span>Preview AI-Fixed Resume</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={handleDownloadFixedPdf}
-                              className="w-full md:w-auto px-4 py-3 rounded-xl bg-emerald-950/40 hover:bg-emerald-950/60 border border-white/40 text-white text-xs font-black transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
-                            >
-                              <Download className="w-4 h-4" />
-                              <span>Download ATS PDF</span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Top Row: Semi-circle ATS Gauge (Left) + Your Resume Status (Right) */}
-                      <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center p-3 bg-gradient-to-r from-slate-50/80 to-blue-50/30 rounded-2xl border border-slate-100">
-                        
-                        {/* Left: Semi-circular Round Gauge matching reference image */}
-                        <div className="sm:col-span-5 flex flex-col items-center justify-center py-2">
-                          <div className="relative w-36 h-28 flex items-center justify-center">
-                            {/* Semi-circular gauge SVG */}
-                            <svg className="w-36 h-36" viewBox="0 0 100 70">
-                              {/* Background arc */}
-                              <path
-                                d="M 15 65 A 35 35 0 0 1 85 65"
-                                fill="none"
-                                stroke="#E2E8F0"
-                                strokeWidth="9"
-                                strokeLinecap="round"
-                              />
-                              {/* Highlighted arc for score */}
-                              <path
-                                d="M 15 65 A 35 35 0 0 1 85 65"
-                                fill="none"
-                                stroke="#00C49F"
-                                strokeWidth="9"
-                                strokeDasharray="110"
-                                strokeDashoffset={110 - (110 * analysisResult.overallScore) / 100}
-                                strokeLinecap="round"
-                              />
-                            </svg>
-                            <div className="absolute inset-0 flex flex-col items-center justify-center top-3 leading-none">
-                              <span className="text-3xl font-black text-slate-900 tracking-tight">
-                                {analysisResult.overallScore}%
-                              </span>
-                              <span className="text-[11px] font-bold text-slate-500 mt-1">ATS Score</span>
-                            </div>
-                          </div>
-                          
-                          {/* Good Match pill below gauge */}
-                          <div className="inline-flex items-center px-3.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-black shadow-2xs">
-                            {analysisResult.scoreLabel}
-                          </div>
-                        </div>
-
-                        {/* Right: Your Resume Status Checklist (Dynamically reflects the user's resume) */}
-                        <div className="sm:col-span-7 space-y-2.5 pl-0 sm:pl-2">
-                          <strong className="text-xs font-extrabold text-slate-900 block">
-                            Your Resume Status {uploadedFile?.name ? `(${uploadedFile.name})` : ''}
-                          </strong>
-                          <div className="space-y-2 text-xs font-semibold text-slate-700">
-                            <div className="flex items-start gap-2">
-                              {analysisResult.overallScore >= 60 ? (
-                                <CheckCircle2 className="w-4 h-4 text-emerald-500 fill-emerald-100 shrink-0 mt-0.5" />
-                              ) : (
-                                <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                              )}
-                              <span>
-                                {analysisResult.overallScore >= 60
-                                  ? `Good match (${analysisResult.overallScore}%) with ${analysisResult.roleName} role`
-                                  : `Needs stronger alignment (${analysisResult.overallScore}%) with ${analysisResult.roleName} role`}
-                              </span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              {analysisResult.matchedKeywords.length > 0 ? (
-                                <CheckCircle2 className="w-4 h-4 text-emerald-500 fill-emerald-100 shrink-0 mt-0.5" />
-                              ) : (
-                                <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                              )}
-                              <span>
-                                Found {analysisResult.matchedKeywords.length} industry keywords &amp; {analysisResult.skillsFound.length} skills in your resume
-                              </span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              {analysisResult.missingSkills.length === 0 ? (
-                                <CheckCircle2 className="w-4 h-4 text-emerald-500 fill-emerald-100 shrink-0 mt-0.5" />
-                              ) : (
-                                <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                              )}
-                              <span>
-                                {analysisResult.missingSkills.length === 0
-                                  ? 'All target role skills are present in your resume'
-                                  : `${analysisResult.missingSkills.length} important skills are missing (${analysisResult.missingSkills.slice(0, 2).join(', ')})`}
-                              </span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              {analysisResult.sections.every((s) => s.found) ? (
-                                <CheckCircle2 className="w-4 h-4 text-emerald-500 fill-emerald-100 shrink-0 mt-0.5" />
-                              ) : (
-                                <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                              )}
-                              <span>
-                                {analysisResult.sections.every((s) => s.found)
-                                  ? 'All core ATS resume sections are properly structured'
-                                  : 'Improve missing sections for a higher ATS shortlist score'}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* 4 Analytics Stat Cards Row (Using exact user resume counts) */}
-                      {(() => {
-                        const totalKw = analysisResult.matchedKeywords.length + analysisResult.missingKeywords.length;
-                        const totalSk = analysisResult.skillsFound.length + analysisResult.missingSkills.length;
-                        const matchedKwPct = totalKw > 0 ? Math.round((analysisResult.matchedKeywords.length / totalKw) * 100) : 0;
-                        const missingKwPct = totalKw > 0 ? Math.round((analysisResult.missingKeywords.length / totalKw) * 100) : 0;
-                        const foundSkPct = totalSk > 0 ? Math.round((analysisResult.skillsFound.length / totalSk) * 100) : 0;
-                        const missingSkPct = totalSk > 0 ? Math.round((analysisResult.missingSkills.length / totalSk) * 100) : 0;
-
-                        return (
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                            {/* Card 1: Matched Keywords */}
-                            <div className="p-3 bg-white rounded-2xl border border-slate-200/90 shadow-2xs space-y-1">
-                              <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-bold">
-                                <div className="w-5 h-5 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                                  <Search className="w-3 h-3" />
-                                </div>
-                                <span className="truncate">Matched Keywords</span>
-                              </div>
-                              <div className="text-base font-black text-slate-900 pt-0.5">
-                                {analysisResult.matchedKeywords.length}{' '}
-                                <span className="text-xs text-slate-400 font-semibold">/ {totalKw}</span>
-                              </div>
-                              <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
-                                <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${matchedKwPct}%` }} />
-                              </div>
-                            </div>
-
-                            {/* Card 2: Missing Keywords */}
-                            <div className="p-3 bg-white rounded-2xl border border-slate-200/90 shadow-2xs space-y-1">
-                              <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-bold">
-                                <div className="w-5 h-5 rounded-md bg-rose-50 text-rose-600 flex items-center justify-center">
-                                  <Target className="w-3 h-3" />
-                                </div>
-                                <span className="truncate">Missing Keywords</span>
-                              </div>
-                              <div className="text-base font-black text-slate-900 pt-0.5">
-                                {analysisResult.missingKeywords.length}
-                              </div>
-                              <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
-                                <div className="bg-rose-500 h-full rounded-full" style={{ width: `${missingKwPct}%` }} />
-                              </div>
-                            </div>
-
-                            {/* Card 3: Skills Found */}
-                            <div className="p-3 bg-white rounded-2xl border border-slate-200/90 shadow-2xs space-y-1">
-                              <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-bold">
-                                <div className="w-5 h-5 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center">
-                                  <Layers className="w-3.5 h-3.5" />
-                                </div>
-                                <span className="truncate">Skills Found</span>
-                              </div>
-                              <div className="text-base font-black text-slate-900 pt-0.5">
-                                {analysisResult.skillsFound.length}
-                              </div>
-                              <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
-                                <div className="bg-blue-600 h-full rounded-full" style={{ width: `${foundSkPct}%` }} />
-                              </div>
-                            </div>
-
-                            {/* Card 4: Recommended Skills */}
-                            <div className="p-3 bg-white rounded-2xl border border-slate-200/90 shadow-2xs space-y-1">
-                              <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-bold">
-                                <div className="w-5 h-5 rounded-md bg-amber-50 text-amber-600 flex items-center justify-center">
-                                  <Award className="w-3 h-3" />
-                                </div>
-                                <span className="truncate">Recommended Skills</span>
-                              </div>
-                              <div className="text-base font-black text-slate-900 pt-0.5">
-                                {analysisResult.missingSkills.length}
-                              </div>
-                              <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
-                                <div className="bg-amber-500 h-full rounded-full" style={{ width: `${missingSkPct}%` }} />
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })()}
-
-                      {/* Bottom Quick Recommendation Strip with CTA Button */}
-                      <div className="p-3 bg-blue-50/60 border border-blue-100 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
-                        <div className="flex items-center gap-2.5">
-                          <span className="text-lg">💡</span>
-                          <div>
-                            <strong className="text-xs font-black text-slate-900 block leading-tight">
-                              Quick Recommendation
-                            </strong>
-                            <p className="text-[11px] text-slate-600 font-medium mt-0.5">
-                              {analysisResult.missingSkills.length > 0
-                                ? `Add missing skills from your resume like ${analysisResult.missingSkills.slice(0, 3).join(', ')} to boost your ${analysisResult.roleName} ATS score.`
-                                : `Great job! Your resume covers the core ${analysisResult.roleName} skills. Quantify your project achievements with metrics (%) to reach 95+.`}
-                            </p>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => setActiveTab('tips')}
-                          className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold whitespace-nowrap shadow-xs active:scale-95 transition-all flex items-center gap-1 cursor-pointer shrink-0"
-                        >
-                          <span>View Detailed Report</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-
-                    </div>
-                  )}
-
-                  {/* ── TAB 2: SKILLS & KEYWORDS ── */}
-                  {activeTab === 'skills' && (
-                    <div className="space-y-4">
-                      {/* Skills Detected List */}
-                      <div className="space-y-2">
-                        <strong className="text-xs font-extrabold text-slate-900 block">
-                          Skills Found in Your Resume ({analysisResult.skillsFound.length})
-                        </strong>
-                        <div className="flex flex-wrap gap-1.5">
-                          {analysisResult.skillsFound.map((sk) => (
-                            <span
-                              key={sk}
-                              className="px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold"
-                            >
-                              ✓ {sk}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Category Breakdown Progress Bars */}
-                      <div className="space-y-2 pt-2 border-t border-slate-100">
-                        <strong className="text-xs font-extrabold text-slate-900 block">
-                          Category Breakdown:
-                        </strong>
-                        <div className="space-y-2">
-                          {Object.values(analysisResult.categories).map((cat) => (
-                            <div key={cat.name} className="space-y-1">
-                              <div className="flex justify-between text-xs font-semibold">
-                                <span className="text-slate-700">{cat.name}</span>
-                                <span className="text-slate-900 font-bold">
-                                  {cat.earnedPoints} / {cat.maxPoints} pts ({cat.score}%)
-                                </span>
-                              </div>
-                              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                                <div
-                                  className="bg-blue-600 h-full rounded-full transition-all duration-500"
-                                  style={{ width: `${cat.score}%` }}
-                                />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* ── TAB 3: MISSING SKILLS ── */}
-                  {activeTab === 'missing' && (
-                    <div className="space-y-3">
-                      <strong className="text-xs font-extrabold text-slate-900 block">
-                        High-Impact Missing Skills for {analysisResult.roleName}:
-                      </strong>
-                      <div className="flex flex-wrap gap-2">
-                        {analysisResult.missingSkills.map((sk) => (
-                          <span
-                            key={sk}
-                            className="px-3 py-1.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-1.5"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                            {sk}
-                          </span>
-                        ))}
-                      </div>
-
-                      <div className="mt-4 p-3.5 bg-amber-50 border border-amber-200 rounded-2xl">
-                        <strong className="text-xs font-bold text-amber-900 block">
-                          Missing Keyword Targets:
-                        </strong>
-                        <div className="flex flex-wrap gap-1.5 mt-2">
-                          {analysisResult.missingKeywords.map((kw) => (
-                            <span
-                              key={kw}
-                              className="px-2 py-0.5 rounded-md bg-white border border-amber-300 text-amber-800 text-[11px] font-mono"
-                            >
-                              {kw}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* ── TAB 4: SECTION-WISE FEEDBACK ── */}
-                  {activeTab === 'sections' && (
-                    <div className="space-y-2.5">
-                      <strong className="text-xs font-bold text-slate-800 block">
-                        ATS Structural Formatting &amp; Section Checks:
-                      </strong>
-                      <div className="space-y-2">
-                        {analysisResult.sections.map((sec) => (
-                          <div
-                            key={sec.name}
-                            className={`p-3 rounded-xl border flex items-start gap-2.5 transition-all ${
-                              sec.found
-                                ? 'bg-emerald-50/40 border-emerald-200/80'
-                                : 'bg-rose-50/40 border-rose-200/80'
-                            }`}
-                          >
-                            <div
-                              className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
-                                sec.found ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'
-                              }`}
-                            >
-                              {sec.found ? <Check className="w-3 h-3 stroke-[3]" /> : <X className="w-3 h-3 stroke-[3]" />}
-                            </div>
-                            <div className="min-w-0">
-                              <strong className="text-xs font-bold text-slate-900 block">
-                                {sec.name}
-                              </strong>
-                              <p className="text-[11px] text-slate-600 mt-0.5 font-medium">
-                                {sec.feedback}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* ── TAB 5: RECOMMENDATIONS ── */}
-                  {activeTab === 'tips' && (
-                    <div className="space-y-2.5">
-                      <strong className="text-xs font-bold text-slate-800 block">
-                        Prioritized Action Plan to Reach 90+ Score:
-                      </strong>
-                      <div className="space-y-2">
-                        {analysisResult.detailedImprovementTips.map((tip, idx) => (
-                          <div
-                            key={idx}
-                            className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl space-y-1.5"
-                          >
-                            <div className="flex items-center justify-between">
-                              <strong className="text-xs font-bold text-slate-900">
-                                {tip.title}
-                              </strong>
-                              <span
-                                className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
-                                  tip.priority === 'high'
-                                    ? 'bg-rose-100 text-rose-700'
-                                    : tip.priority === 'medium'
-                                    ? 'bg-amber-100 text-amber-700'
-                                    : 'bg-blue-100 text-blue-700'
-                                }`}
-                              >
-                                {tip.priority} Priority
-                              </span>
-                            </div>
-                            <p className="text-[11px] text-slate-600">{tip.description}</p>
-                            <div className="pt-1 border-t border-slate-200/60 text-[11px] font-bold text-blue-700 flex items-center gap-1">
-                              <span>Action:</span>
-                              <span className="font-medium text-slate-700">{tip.action}</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-              </div>
-            </div>
+              <AtsAnalysisResultDashboard
+                analysisResult={analysisResult}
+                uploadedFile={uploadedFile}
+                extractedText={extractedText}
+                activeRoleData={activeRoleData}
+                onScanAnother={() => {
+                  setCheckerMode('input');
+                  setActiveStep(1);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                onDownloadReport={handleDownloadResumeReport}
+                onOpenFixedResume={handleOpenFixedResume}
+              />
             )
           ) : (
-            /* ══════════════════════════════════════════════════════════
-               INPUT MODE: 3-STEP RESUME OPTIMIZER (Exact Reference Image 1:1)
-               ══════════════════════════════════════════════════════════ */
-            <div className="w-full my-3">
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr_auto_1fr] items-stretch gap-4 lg:gap-2.5">
-                
-                {/* ── CARD 1: UPLOAD RESUME (Exact Reference Match) ── */}
-                <div className="bg-white rounded-[26px] p-6 border border-slate-200/80 shadow-[0_8px_30px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-[0_12px_36px_rgba(37,99,235,0.08)] transition-all duration-200">
-                  <div>
-                    {/* Header: Solid Blue Badge "1" + Title + Subtitle */}
-                    <div className="flex items-center gap-3.5 mb-4">
-                      <div className="w-9 h-9 rounded-full bg-[#0066ff] text-white font-extrabold text-sm flex items-center justify-center shadow-sm shadow-blue-500/25 shrink-0">
-                        1
-                      </div>
-                      <div>
-                        <h3 className="text-base sm:text-[17px] font-black text-slate-900 leading-tight">
-                          Upload Resume
-                        </h3>
-                        <p className="text-xs text-slate-400 font-medium mt-0.5">
-                          PDF or DOCX (Max 5 MB)
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Drag and Drop Zone */}
-                    <div
-                      onDrop={handleDrop}
-                      onDragOver={handleDragOver}
-                      onDragLeave={handleDragLeave}
-                      onClick={() => fileInputRef.current?.click()}
-                      className={`border-2 border-dashed rounded-2xl p-5 sm:p-6 text-center cursor-pointer transition-all duration-200 flex flex-col items-center justify-center min-h-[195px] mb-4 ${
-                        isDragging
-                          ? 'border-blue-500 bg-blue-50/70 scale-[1.01]'
-                          : uploadedFile
-                          ? 'border-emerald-300 bg-emerald-50/30'
-                          : 'border-[#bfdbfe] bg-[#f8fbff]/60 hover:border-blue-400 hover:bg-blue-50/40'
-                      }`}
-                    >
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                        className="hidden"
-                        onChange={(e) => {
-                          if (e.target.files && e.target.files[0]) {
-                            handleFileProcess(e.target.files[0]);
-                          }
-                        }}
-                      />
-
-                      {uploadedFile ? (
-                        <div className="space-y-2 w-full text-center">
-                          <div className="w-13 h-13 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-2xs">
-                            <FileText className="w-6 h-6 stroke-[2.2]" />
-                          </div>
-                          <strong className="text-sm font-black text-slate-900 block truncate max-w-[200px] mx-auto">
-                            {uploadedFile.name}
-                          </strong>
-                          <span className="inline-flex items-center gap-1.5 text-[11px] text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full font-bold border border-emerald-200">
-                            {(uploadedFile.size / (1024 * 1024)).toFixed(1)} MB • {isExtracting ? 'Extracting text...' : 'Ready for ATS Audit'}
-                          </span>
-                          <div>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleRemoveFile();
-                              }}
-                              className="text-[11px] font-bold text-rose-500 hover:text-rose-700 underline cursor-pointer"
-                            >
-                              Change or remove file
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                          {/* 3D Glowing Blue Cloud Icon with upward arrow */}
-                          <div className="w-16 h-16 rounded-full bg-gradient-to-b from-[#38bdf8] to-[#0066ff] flex items-center justify-center shadow-lg shadow-blue-500/25 mb-2.5 text-white">
-                            <UploadCloud className="w-8 h-8 stroke-[2.4]" />
-                          </div>
-                          <strong className="text-sm font-extrabold text-slate-800 block">
-                            Drag &amp; drop your resume here
-                          </strong>
-                          <span className="text-xs text-slate-400 block mt-0.5">
-                            or click to browse
-                          </span>
-                          <span className="text-[11px] text-slate-400 font-medium block mt-2 mb-3">
-                            Supports PDF, DOCX • Max 5 MB
-                          </span>
-                          <button
-                            type="button"
-                            className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-[#e3efff] hover:bg-[#d4e6ff] text-[#0066ff] text-xs font-bold transition-all shadow-2xs cursor-pointer"
-                          >
-                            <FileText className="w-3.5 h-3.5 stroke-[2.4]" />
-                            <span>Choose File</span>
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Bottom: 100% Secure Upload Mint-Green Pill */}
-                  <div className="p-3 rounded-2xl bg-[#e6fbf2] border border-[#a7f3d0] flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-[#00d084] text-white flex items-center justify-center shrink-0 shadow-sm shadow-emerald-500/20">
-                      <ShieldCheck className="w-4.5 h-4.5 stroke-[2.5]" />
-                    </div>
-                    <div>
-                      <strong className="text-xs font-black text-slate-900 block leading-tight">
-                        100% Secure Upload
-                      </strong>
-                      <span className="text-[11px] text-slate-500 font-medium block">
-                        Your data is private and never shared
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* ── ARROW 1 -> 2 (Exact Reference Match) ── */}
-                <div className="hidden lg:flex items-center justify-center text-blue-500 px-1">
-                  <ChevronRight className="w-7 h-7 stroke-[2.5] text-[#2563eb]" />
-                </div>
-
-                {/* ── CARD 2: SELECT JOB ROLE (Exact Reference Match) ── */}
-                <div className="bg-white rounded-[26px] p-6 border border-slate-200/80 shadow-[0_8px_30px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-[0_12px_36px_rgba(139,92,246,0.08)] transition-all duration-200">
-                  <div>
-                    {/* Header: Solid Purple Badge "2" + Title + Subtitle */}
-                    <div className="flex items-center gap-3.5 mb-4">
-                      <div className="w-9 h-9 rounded-full bg-[#8b5cf6] text-white font-extrabold text-sm flex items-center justify-center shadow-sm shadow-purple-500/25 shrink-0">
-                        2
-                      </div>
-                      <div>
-                        <h3 className="text-base sm:text-[17px] font-black text-slate-900 leading-tight">
-                          Select Job Role
-                        </h3>
-                        <p className="text-xs text-slate-400 font-medium mt-0.5">
-                          Choose your target career track
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Dropdown Box: Layers Icon + Role Name + Chevron */}
-                    <div ref={roleDropdownRef} className="relative mb-5">
-                      <button
-                        type="button"
-                        onClick={() => setRoleDropdownOpen((o) => !o)}
-                        className="w-full flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 bg-white hover:border-purple-300 text-left transition-all cursor-pointer shadow-xs"
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
-                            <Layers className="w-4 h-4 stroke-[2.4]" />
-                          </div>
-                          <span className="text-sm font-extrabold text-slate-800 truncate">
-                            {activeRoleData.name}
-                          </span>
-                        </div>
-                        <ChevronDown className={`w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200 ${roleDropdownOpen ? 'rotate-180 text-purple-600' : ''}`} />
-                      </button>
-
-                      {/* Dropdown Menu */}
-                      {roleDropdownOpen && (
-                        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white rounded-2xl border border-purple-100 shadow-[0_16px_40px_rgba(15,23,42,0.12)] z-30 p-2 space-y-1 max-h-56 overflow-y-auto">
-                          <input
-                            type="text"
-                            placeholder="Search role..."
-                            value={roleSearchFilter}
-                            onChange={(e) => setRoleSearchFilter(e.target.value)}
-                            className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none mb-1 focus:border-purple-500 focus:bg-white font-medium"
-                          />
-                          {filteredRoles.map((r) => (
-                            <div
-                              key={r.id}
-                              onClick={() => {
-                                setSelectedRole(r.id);
-                                setRoleDropdownOpen(false);
-                              }}
-                              className={`p-2.5 rounded-xl text-xs font-semibold cursor-pointer flex items-center justify-between transition-all ${
-                                selectedRole === r.id
-                                  ? 'bg-purple-50 text-purple-700 font-bold'
-                                  : 'text-slate-700 hover:bg-slate-50'
-                              }`}
-                            >
-                              <span>{r.name}</span>
-                              {selectedRole === r.id && <Check className="w-3.5 h-3.5 text-purple-600 stroke-[3]" />}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Target Job Description (Optional) */}
-                    <div>
-                      <label className="text-xs font-black text-slate-900 block mb-2">
-                        Target Job Description (Optional)
-                      </label>
-                      <div className="relative rounded-2xl border border-slate-200 bg-white p-3.5 focus-within:border-purple-300 transition-colors">
-                        <div className="flex items-start gap-2.5">
-                          <FileText className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
-                          <textarea
-                            value={customJobDesc}
-                            onChange={(e) => setCustomJobDesc(e.target.value)}
-                            placeholder="Paste specific job description, keywords or requirements here for better analysis..."
-                            rows={5}
-                            className="w-full text-xs text-slate-700 placeholder:text-slate-400/80 resize-none outline-none bg-transparent font-normal leading-relaxed"
-                          />
-                        </div>
-                        <div className="text-right text-[11px] text-slate-400 font-medium pt-1">
-                          {customJobDesc.length}/2000
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* ── ARROW 2 -> 3 (Exact Reference Match) ── */}
-                <div className="hidden lg:flex items-center justify-center text-blue-500 px-1">
-                  <ChevronRight className="w-7 h-7 stroke-[2.5] text-[#2563eb]" />
-                </div>
-
-                {/* ── CARD 3: AI SCAN & MATCH (Exact Reference Match) ── */}
-                <div className="bg-white rounded-[26px] p-6 border border-slate-200/80 shadow-[0_8px_30px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-[0_12px_36px_rgba(16,185,129,0.08)] transition-all duration-200">
-                  <div>
-                    {/* Header: Solid Green Badge "3" + Title + Subtitle */}
-                    <div className="flex items-center gap-3.5 mb-2">
-                      <div className="w-9 h-9 rounded-full bg-[#10b981] text-white font-extrabold text-sm flex items-center justify-center shadow-sm shadow-emerald-500/25 shrink-0">
-                        3
-                      </div>
-                      <div>
-                        <h3 className="text-base sm:text-[17px] font-black text-slate-900 leading-tight">
-                          AI Scan &amp; Match
-                        </h3>
-                        <p className="text-xs text-slate-400 font-medium mt-0.5">
-                          Compare skills, keywords and role fit
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Central 3D Video Animation (User Provided ATS Animation) */}
-                    <div className="relative w-full h-[215px] flex items-center justify-center my-1 select-none overflow-hidden rounded-2xl bg-gradient-to-b from-[#f8fbff] to-[#edf5ff] border border-blue-100/80 shadow-xs group">
-                      <video
-                        src="/videos/ats_scan_animation.mp4"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        preload="auto"
-                        className="w-full h-full object-cover rounded-2xl pointer-events-none scale-[1.02] transition-transform duration-300"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Bottom: Gradient Button "✨ Scan My Resume →" */}
-                  <div className="pt-2">
-                    <button
-                      type="button"
-                      onClick={handleScanButtonClick}
-                      disabled={isAnalyzing || isExtracting}
-                      className="w-full py-3.5 sm:py-4 px-6 rounded-2xl font-black text-sm text-white bg-gradient-to-r from-[#0084ff] via-[#3b82f6] to-[#9333ea] hover:opacity-95 active:scale-98 transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed group/btn"
-                    >
-                      <Sparkles className="w-4 h-4 text-white fill-white stroke-none" />
-                      <span>Scan My Resume</span>
-                      <ArrowRight className="w-4 h-4 text-white transition-transform duration-200 group-hover/btn:translate-x-1" />
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-            </div>
+            <AtsUploadWorkspace
+              activeStep={activeStep}
+              onStepChange={setActiveStep}
+              uploadedFile={uploadedFile}
+              isExtracting={isExtracting}
+              isAnalyzing={isAnalyzing}
+              extractionError={extractionError}
+              analysisError={analysisError}
+              uploadSuccessMsg={uploadSuccessMsg}
+              isDragging={isDragging}
+              fileInputRef={fileInputRef}
+              onFileProcess={handleFileProcess}
+              onRemoveFile={handleRemoveFile}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              selectedRole={selectedRole}
+              onSelectRole={handleSelectRole}
+              customJobDesc={customJobDesc}
+              onCustomJobDescChange={setCustomJobDesc}
+              onScanClick={handleScanButtonClick}
+            />
           )}
-        {/* ─────────────────────────────────────────────────────────────
-            3. SHORTLIST REASSURANCE & ATS STATS BAR (Exact Reference Match)
-            ───────────────────────────────────────────────────────────── */}
-        <div className="bg-white/95 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-[0_8px_24px_rgba(15,23,42,0.04)] flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-md shadow-blue-500/25 shrink-0">
-              <Rocket className="w-6 h-6 stroke-[2.2]" />
-            </div>
-            <div>
-              <strong className="text-sm sm:text-base font-extrabold text-slate-900 block leading-tight">
-                Boost your chances of getting shortlisted!
-              </strong>
-              <p className="text-xs text-slate-500 font-medium">
-                Get AI-powered insights, actionable tips, and a recruiter-ready resume.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                <Users className="w-4 h-4" />
-              </div>
-              <div>
-                <strong className="text-xs font-black text-slate-900 block leading-none">500K+</strong>
-                <span className="text-[10px] text-slate-400 font-medium">Resumes Analyzed</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
-                <Building2 className="w-4 h-4" />
-              </div>
-              <div>
-                <strong className="text-xs font-black text-slate-900 block leading-none">Top Companies</strong>
-                <span className="text-[10px] text-slate-400 font-medium">Industry Standards</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                <ShieldCheck className="w-4 h-4" />
-              </div>
-              <div>
-                <strong className="text-xs font-black text-slate-900 block leading-none">99%</strong>
-                <span className="text-[10px] text-slate-400 font-medium">Secure &amp; Private</span>
-              </div>
-            </div>
-
-            <button
-              onClick={() => onOpenLogin?.()}
-              className="px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-800 text-xs font-bold border border-slate-300 shadow-2xs hover:shadow-xs active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer ml-auto md:ml-0"
-            >
-              <LayoutDashboard className="w-3.5 h-3.5 text-blue-600" />
-              <span>View Dashboard →</span>
-            </button>
-          </div>
-        </div>
-
-        {/* ─────────────────────────────────────────────────────────────
-            3. NEW ATS CAREER-READY BANNER (1:1 with Approved Reference)
-            Both Desktop & Mobile
-            ───────────────────────────────────────────────────────────── */}
-        <AtsCareerReadyBanner onExploreCourses={onEnrollNow || (() => { window.location.hash = '#home'; window.scrollTo({ top: 0, behavior: 'smooth' }); })} />
 
       </main>
 

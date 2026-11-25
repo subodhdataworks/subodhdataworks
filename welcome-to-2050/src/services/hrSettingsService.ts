@@ -29,33 +29,33 @@ export interface HrSettingsConfig {
 
 export const PRESET_HR_AVATARS: HrAvatarOption[] = [
   {
-    id: 'avatar_rohan_male',
-    name: 'Rohan Verma (HR)',
-    role: 'Senior Technical Recruiter (Indian English)',
-    gender: 'male',
-    imageUrl: '/images/hr_interviewer_indian_male.jpg',
-  },
-  {
     id: 'avatar_priya_female',
     name: 'Aditi Sharma (HR)',
-    role: 'Lead Technical Recruiter (हिंदी)',
+    role: 'Lead Technical Recruiter',
+    gender: 'female',
+    imageUrl: '/images/hr_interviewer_indian_female.jpg',
+  },
+  {
+    id: 'avatar_neha_female',
+    name: 'Neha Sharma (HR)',
+    role: 'Senior Technical Talent Partner',
     gender: 'female',
     imageUrl: '/images/hr_interviewer_indian_female.jpg',
   },
 ];
 
 export const DEFAULT_HR_SETTINGS: HrSettingsConfig = {
-  avatarId: 'avatar_rohan_male',
-  avatarUrl: '/images/hr_interviewer_indian_male.jpg',
-  hrName: 'Rohan Verma',
+  avatarId: 'avatar_priya_female',
+  avatarUrl: '/images/hr_interviewer_indian_female.jpg',
+  hrName: 'Aditi Sharma',
   hrTitle: 'Technical Recruiter',
-  hrRole: 'Senior Technical Recruiter & Analytics Lead',
-  gender: 'male',
-  language: 'en',
-  voiceURI: 'auto',
-  voiceName: 'Default System Voice',
-  speakingRate: 0.94,
-  speakingPitch: 1.0,
+  hrRole: 'Lead Technical Recruiter & Talent Specialist',
+  gender: 'female',
+  language: 'hi',
+  voiceURI: 'hi-IN-SwaraNeural',
+  voiceName: 'Indian Female Voice (Swara)',
+  speakingRate: 0.95,
+  speakingPitch: 1.05,
   isLipSyncEnabled: true,
   avatarStatus: 'ready',
   lastUpdated: new Date().toISOString(),
@@ -162,10 +162,17 @@ export class HrSettingsService {
     return [...PRESET_HR_AVATARS, ...this.getCustomAvatars()];
   }
 
-  // Retrieve browser voices matching language filter
+  // Retrieve browser voices matching language filter, prioritizing Indian Female voices (Swara/Heera)
   public static getAvailableVoices(lang: 'en' | 'hi'): SpeechSynthesisVoice[] {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return [];
     const all = window.speechSynthesis.getVoices();
+    const isIndianFemale = (v: SpeechSynthesisVoice) =>
+      /swara|heera|neerja|kalpana|lekha|veena|ananya|shruti|priya/i.test(v.name) ||
+      ((v.lang.toLowerCase().includes('in') || v.name.toLowerCase().includes('india')) && !/male|man|ravi|prabhat|hemant|madhav|david|mark/i.test(v.name));
+
+    const preferred = all.filter(isIndianFemale);
+    if (preferred.length > 0) return preferred;
+
     if (lang === 'hi') {
       const hiVoices = all.filter(v => v.lang.toLowerCase().startsWith('hi') || v.name.toLowerCase().includes('hindi'));
       if (hiVoices.length > 0) return hiVoices;

@@ -16,6 +16,7 @@ import {
 import { DEEP_LEARNING_CURRICULUM, TabItem } from '../../data/deepLearningCurriculum';
 import { SuccessPlanModal } from './SuccessPlanModal';
 import { isCourseUnlocked, isTopicUnlocked } from '../../services/courseUnlockService';
+import { CompactCurriculumAccordion } from './CompactCurriculumAccordion';
 
 interface DeepLearningHubProps {
   userName?: string;
@@ -224,17 +225,6 @@ export const DeepLearningHub: React.FC<DeepLearningHubProps> = ({
                   <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
                   <span>Enroll for ₹987</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const el = document.getElementById('dl-curriculum-tabs-map');
-                    el?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-800 font-bold text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-2xs"
-                >
-                  <Search className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                  <span>View Course Overview</span>
-                </button>
               </div>
             </div>
 
@@ -346,241 +336,18 @@ export const DeepLearningHub: React.FC<DeepLearningHubProps> = ({
               ───────────────────────────────────────────────────────────────────── */}
           <div className="lg:col-span-8 xl:col-span-9 space-y-4">
 
-            {/* ACTIVE TAB MAIN ACCORDION CONTAINER */}
-            <section className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-sm space-y-3">
-              {/* Modules List for current active tab */}
-              <div className="space-y-3">
-                {activeTab.chapters.map((chapter) => {
-                  const isExpanded = expandedChapters[chapter.id] ?? false;
-                  const completedCount = chapter.topics.filter((t) => t.status === 'completed').length;
-                  const totalCount = chapter.topics.length;
-                  const percent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
-
-                  return (
-                    <div
-                      key={chapter.id}
-                      className={`rounded-2xl border overflow-hidden transition-all duration-300 ${
-                        isExpanded
-                          ? 'border-purple-300/90 bg-white shadow-md shadow-purple-500/5 ring-1 ring-purple-500/10'
-                          : 'border-slate-200/90 bg-slate-50/40 hover:bg-white hover:border-slate-300 hover:shadow-xs'
-                      }`}
-                    >
-                      {/* Chapter Accordion Header */}
-                      <button
-                        type="button"
-                        onClick={() => handleModuleHeaderClick(chapter)}
-                        className="group w-full p-4 sm:p-4.5 flex items-center justify-between gap-4 text-left transition-all duration-200 cursor-pointer"
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          {/* Circle Number */}
-                          <div className={`w-8 h-8 rounded-full font-black text-xs flex items-center justify-center shrink-0 shadow-2xs transition-transform duration-200 group-hover:scale-105 ${
-                            chapter.chapterNum <= 4 ? 'bg-purple-600 text-white' : 'bg-indigo-600 text-white'
-                          }`}>
-                            {chapter.chapterNum}
-                          </div>
-
-                          {/* Doc/Code Icon */}
-                          <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105">
-                            <FileText className="w-4 h-4" />
-                          </div>
-
-                          {/* Title & Description */}
-                          <div className="flex flex-col min-w-0">
-                            <h3 className="text-xs sm:text-sm font-black text-slate-900 truncate group-hover:text-purple-600 transition-colors">
-                              {chapter.title}
-                            </h3>
-                            <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
-                              {chapter.subtitle}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Chapter Stats & Animated Chevron */}
-                        <div className="flex items-center gap-3 shrink-0">
-                          <span className="text-[11px] font-bold text-slate-500 hidden sm:inline">
-                            {totalCount} Topics
-                          </span>
-                          <div className="w-20 h-1.5 rounded-full bg-slate-200 overflow-hidden hidden sm:block">
-                            <div
-                              className="h-full bg-emerald-500 rounded-full transition-all duration-500 ease-out"
-                              style={{ width: `${percent}%` }}
-                            />
-                          </div>
-                          <span className="text-[11px] font-black text-slate-700 hidden sm:inline">
-                            {completedCount} / {totalCount} completed
-                          </span>
-                          <span className="text-xs font-black text-emerald-600">
-                            {percent}%
-                          </span>
-                          <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 ${
-                            isExpanded
-                              ? 'bg-purple-50 text-purple-600 rotate-180 shadow-2xs'
-                              : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200 group-hover:text-slate-600'
-                          }`}>
-                            <ChevronDown className="w-4 h-4 transition-transform duration-300" />
-                          </div>
-                        </div>
-                      </button>
-
-                      {/* Smooth animated accordion collapse/expand container */}
-                      <div
-                        className={`grid transition-all duration-300 ease-in-out ${
-                          isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
-                        }`}
-                      >
-                        <div className="overflow-hidden divide-y divide-slate-100 border-t border-slate-200/80 bg-white">
-                          {chapter.topics.map((topic, tIdx) => {
-                            const isTopicFree = isTopicUnlocked('deep_learning', chapter.chapterNum, topic.topicNum || tIdx + 1, activeTabId);
-                            const isLocked = !isTopicFree;
-                            const isDone = false;
-                            const isCurrent = isTopicFree && !isDone;
-
-                            return (
-                              <div
-                                key={topic.id}
-                                onClick={() => handleTopicClick(topic, chapter.chapterNum)}
-                                className={`group/topic p-3 sm:px-4 sm:py-3.5 flex items-center justify-between gap-3 text-xs transition-all duration-200 cursor-pointer ${
-                                  isCurrent ? 'bg-purple-50/60' : 'hover:bg-slate-50/90'
-                                }`}
-                              >
-                                {/* Left: Number + Status Icon + Title */}
-                                <div className="flex items-center gap-2.5 min-w-0">
-                                  <span className="text-[11px] sm:text-xs font-black text-slate-400 w-7 sm:w-8 shrink-0 text-left group-hover/topic:text-slate-600 transition-colors">
-                                    {topic.topicNum}.
-                                  </span>
-
-                                  {isDone && (
-                                    <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs group-hover/topic:scale-110 transition-transform duration-200">
-                                      <Check className="w-3 h-3 stroke-[3]" />
-                                    </div>
-                                  )}
-                                  {isCurrent && (
-                                    <span className="relative flex h-5 w-5 shrink-0">
-                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-60"></span>
-                                      <span className="relative inline-flex rounded-full h-5 w-5 bg-purple-600 text-white items-center justify-center shadow-xs">
-                                        <Play className="w-2.5 h-2.5 fill-white ml-0.5" />
-                                      </span>
-                                    </span>
-                                  )}
-                                  {isLocked && (
-                                    <div className="w-5 h-5 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 group-hover/topic:scale-110 transition-transform">
-                                      <Lock className="w-2.5 h-2.5" />
-                                    </div>
-                                  )}
-
-                                  <span className={`font-bold truncate transition-colors duration-150 ${
-                                    isCurrent
-                                      ? 'text-purple-900 font-extrabold'
-                                      : isLocked
-                                      ? 'text-slate-700 group-hover/topic:text-purple-600'
-                                      : 'text-slate-800 group-hover/topic:text-purple-600'
-                                  }`}>
-                                    {topic.title}
-                                  </span>
-                                </div>
-
-                                {/* Right: Duration + Status Pill + Action Button (Desktop Only: hidden on mobile so topic title is fully visible) */}
-                                <div className="hidden sm:flex items-center gap-2.5 shrink-0">
-                                  <span className="text-[11px] font-medium text-slate-400 hidden sm:inline">
-                                    {topic.duration}
-                                  </span>
-
-                                  {/* Status Pill */}
-                                  {isDone && (
-                                    <span className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs" title="Completed">
-                                      <Check className="w-3 h-3 stroke-[3]" />
-                                    </span>
-                                  )}
-                                  {isCurrent && (
-                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200 transition-colors">
-                                      In Progress
-                                    </span>
-                                  )}
-                                  {isLocked && (
-                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-50 text-amber-800 border border-amber-200">
-                                      Enroll to Unlock
-                                    </span>
-                                  )}
-
-                                  {/* Action Buttons */}
-                                  {isDone && (
-                                    <div className="flex items-center gap-1.5">
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          onStartTopic && onStartTopic(topic.id, topic.title, 'learn');
-                                        }}
-                                        className="px-2.5 py-1 rounded-lg text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-600 hover:text-white border border-blue-200 hover:border-blue-600 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1"
-                                        title="Watch Video"
-                                      >
-                                        <Play className="w-3 h-3 fill-current" />
-                                        <span>Video</span>
-                                      </button>
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          onStartTopic && onStartTopic(topic.id, topic.title, 'play');
-                                        }}
-                                        className="px-2.5 py-1 rounded-lg text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-600 hover:text-white border border-emerald-200 hover:border-emerald-600 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1"
-                                        title="Practice Code"
-                                      >
-                                        <Code2 className="w-3 h-3" />
-                                        <span>Practice Code</span>
-                                      </button>
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          onStartTopic && onStartTopic(topic.id, topic.title, 'interview');
-                                        }}
-                                        className="px-2.5 py-1 rounded-lg text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-600 hover:text-white border border-purple-200 hover:border-purple-600 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1"
-                                        title="Mock Interview"
-                                      >
-                                        <Mic className="w-3 h-3" />
-                                        <span>Mock Interview</span>
-                                      </button>
-                                    </div>
-                                  )}
-                                  {isCurrent && (
-                                    <button
-                                      type="button"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        onStartTopic && onStartTopic(topic.id, topic.title);
-                                      }}
-                                      className="group/btn px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 hover:shadow-md hover:shadow-purple-500/30 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1.5"
-                                    >
-                                      <span>Continue</span>
-                                      <Play className="w-2.5 h-2.5 fill-white group-hover/btn:translate-x-0.5 transition-transform duration-200" />
-                                    </button>
-                                  )}
-                                  {isLocked && (
-                                    <button
-                                      type="button"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleTopicClick(topic);
-                                      }}
-                                      className="group/btn px-3.5 py-1.5 rounded-lg text-xs font-black text-white bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 hover:shadow-md hover:shadow-amber-500/30 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1.5 shadow-xs"
-                                    >
-                                      <Lock className="w-3 h-3" />
-                                      <span>Unlock</span>
-                                    </button>
-                                  )}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-            </section>
+            {/* ACTIVE TAB MAIN ACCORDION CONTAINER (Compact, Ergonomic & Systematic) */}
+            <CompactCurriculumAccordion
+              chapters={activeTab.chapters}
+              activeTabId={activeTabId}
+              courseKey="deep_learning"
+              courseName="Deep Learning & Neural Networks"
+              isCoursePaid={isCoursePaid}
+              highlightedTopicId={null}
+              onStartTopic={onStartTopic}
+              onOpenUnlockModal={handleOpenSuccessPlan}
+              isTopicUnlocked={isTopicUnlocked}
+            />
 
           </div>
 

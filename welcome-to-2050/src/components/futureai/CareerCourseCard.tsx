@@ -14,7 +14,7 @@ export interface CareerCourseCardProps {
   title: string;
   subtitle?: string;
   shortDesc?: string;
-  image: string;
+  image?: string;
   holoImage?: string;
   video?: string;
   theme?: string;
@@ -179,7 +179,6 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = React.memo(({
   const chosenColorKey = stripColor || COURSE_STRIP_FALLBACK[id] || 'royal-purple';
   const stripTheme = STRIP_COLOR_MAP[chosenColorKey] || STRIP_COLOR_MAP['royal-purple'];
 
-  // Single authoritative image source per course (prevents any initial->loaded image switching)
   const authoritativeSrc = COURSE_AUTHORITATIVE_IMAGES[id] || holoImage || image || '';
   const fallbackJpgSrc = authoritativeSrc.endsWith('.webp')
     ? authoritativeSrc.replace(/\.webp$/, '.jpg')
@@ -187,13 +186,9 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = React.memo(({
 
   const imgRef = useRef<HTMLImageElement | null>(null);
   const [imgSrc, setImgSrc] = useState<string>(authoritativeSrc);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     setImgSrc(authoritativeSrc);
-    if (imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth > 0) {
-      setIsLoaded(true);
-    }
   }, [authoritativeSrc]);
 
   const isAboveFold = typeof badgeNum === 'number' ? badgeNum <= 10 : true;
@@ -201,41 +196,39 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = React.memo(({
   return (
     <article
       onClick={onClick}
-      className={`group relative rounded-[18px] bg-white border border-slate-200/90 ${stripTheme.borderHover} shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_10px_24px_rgba(0,0,0,0.08)] flex flex-col justify-between overflow-hidden transition-all duration-200 ease-out hover:-translate-y-1 cursor-pointer select-none h-full`}
+      className={`group relative rounded-[20px] bg-white border border-[#E5DEFF] ${stripTheme.borderHover} shadow-[0_2px_8px_rgba(109,40,217,0.04)] hover:shadow-[0_10px_22px_rgba(109,40,217,0.10)] flex flex-col justify-between overflow-hidden transition-all duration-200 ease-out hover:-translate-y-1 cursor-pointer select-none h-full`}
     >
-      {/* 1. TOP ARTWORK — Fixed reserved dimensions prevent layout shift */}
-      <div className="relative w-full h-[118px] sm:h-[122px] overflow-hidden bg-slate-900 shrink-0">
-        {/* Top-Left Category or LIVE CLASSES Badge */}
+      {/* 1. TOP ARTWORK — Original Auto-Playing Course Card Video (with Fallback Image) */}
+      <div className="relative w-full h-[118px] sm:h-[122px] overflow-hidden bg-[#1E1B4B] shrink-0">
         {isLiveCourse ? (
-          <div className="absolute top-2.5 left-2.5 z-20 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-red-600 via-rose-600 to-red-600 text-white text-[9.5px] font-black tracking-wider uppercase shadow-[0_2px_10px_rgba(220,38,38,0.45)] border border-red-400/50">
-            <span className="relative flex h-2 w-2 shrink-0">
+          <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-red-600 to-rose-600 text-white text-[9.5px] font-bold tracking-wider uppercase shadow-sm border border-red-400/50">
+            <span className="relative flex h-1.5 w-1.5 shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-80" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white" />
             </span>
             <span>{liveBadgeText}</span>
           </div>
         ) : topBadge ? (
-          <div className="absolute top-2.5 left-2.5 z-20 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/95 backdrop-blur-xs text-slate-800 text-[10px] font-black shadow-sm border border-slate-100">
-            <span>{topBadge.icon}</span>
+          <div className="absolute top-2 left-2 z-20 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/95 backdrop-blur-xs text-[#6D28D9] text-[9.5px] font-bold shadow-xs border border-[#E9E5F5]">
             <span>{topBadge.text}</span>
           </div>
         ) : null}
 
-        {/* Neutral skeleton background underneath image */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-r from-slate-800 via-slate-700/80 to-slate-800"
+          className="absolute inset-0 bg-gradient-to-br from-[#2E1065] via-[#1E1B4B] to-[#312E81]"
         />
 
         {video ? (
           <video
             src={video}
-            poster={imgSrc}
+            poster={video.endsWith('_card.mp4') ? video.replace('_card.mp4', '_poster.webp') : imgSrc}
             autoPlay
             loop
             muted
             playsInline
-            className="relative z-10 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            preload={isAboveFold ? 'auto' : 'metadata'}
+            className="relative z-10 w-full h-full object-cover brightness-[0.94] saturate-[0.95] group-hover:brightness-100 group-hover:scale-105 transition-all duration-300"
           />
         ) : imgSrc && (
           <img
@@ -245,33 +238,35 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = React.memo(({
             width={600}
             height={338}
             loading={isAboveFold ? 'eager' : 'lazy'}
-            decoding="sync"
+            decoding="async"
             fetchPriority={isAboveFold ? 'high' : 'auto'}
-            onLoad={() => setIsLoaded(true)}
             onError={() => {
               if (imgSrc !== fallbackJpgSrc && fallbackJpgSrc) {
                 setImgSrc(fallbackJpgSrc);
-              } else {
-                setIsLoaded(true);
               }
             }}
-            className="relative z-10 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="relative z-10 w-full h-full object-cover brightness-[0.94] saturate-[0.95] group-hover:brightness-100 group-hover:scale-105 transition-all duration-300"
           />
         )}
+
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 z-[15] bg-gradient-to-t from-[#1E1B4B]/60 via-[#1E1B4B]/10 to-[#1E1B4B]/10 pointer-events-none"
+        />
       </div>
 
       {/* 2. CARD BODY */}
-      <div className="px-2.5 py-2 sm:px-3 sm:py-2 flex flex-col flex-1 justify-between gap-1 bg-white">
-        {/* Course Title */}
-        <div className="text-center pt-0.5">
+      <div className="px-3 py-2.5 flex flex-col flex-1 justify-between gap-1.5 bg-white">
+        {/* Course Title — Clean typography with reduced font weight */}
+        <div className="text-center pt-0.5 pb-0.5">
           <h3
             title={title}
-            className="font-black text-[12.5px] sm:text-[13px] xl:text-[13.5px] text-slate-950 tracking-tight leading-snug line-clamp-1"
+            className="font-bold text-[13.5px] sm:text-[14px] text-[#111827] group-hover:text-[#6D28D9] transition-colors tracking-tight leading-snug line-clamp-1 m-0"
           >
             {title}
           </h3>
           {isLiveCourse && shortDesc && (
-            <p className="text-[9.5px] text-slate-500 font-medium leading-tight line-clamp-1 mt-0.5">
+            <p className="text-[10px] text-[#64748B] font-medium leading-tight line-clamp-1 mt-0.5 m-0">
               {shortDesc}
             </p>
           )}
@@ -284,7 +279,7 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = React.memo(({
               <div className="w-5.5 h-5.5 sm:w-6 sm:h-6 flex items-center justify-center group-hover:scale-108 transition-transform">
                 <ToolIcon name={t.name} className="w-4.5 h-4.5 sm:w-5 sm:h-5 object-contain" />
               </div>
-              <span className="text-[9px] font-bold text-slate-700 tracking-tight truncate w-full text-center mt-0.5">
+              <span className="text-[9px] font-semibold text-slate-600 tracking-tight truncate w-full text-center mt-0.5">
                 {t.name}
               </span>
             </div>
@@ -302,10 +297,10 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = React.memo(({
               <Briefcase className="w-3 h-3" />
             </div>
             <div className="flex flex-col min-w-0 text-left">
-              <span className="text-[8.5px] font-bold tracking-tight text-slate-500 uppercase leading-none">
+              <span className="text-[8.5px] font-semibold tracking-tight text-slate-500 uppercase leading-none">
                 {isLiveCourse ? 'Class Format' : 'Job Roles'}
               </span>
-              <span className="text-[9.5px] font-semibold text-slate-800 truncate max-w-[100px] sm:max-w-[115px] mt-0.5">
+              <span className="text-[9.5px] font-medium text-slate-800 truncate max-w-[100px] sm:max-w-[115px] mt-0.5">
                 {courseTypeLabel || jobRoles}
               </span>
             </div>
@@ -313,7 +308,7 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = React.memo(({
 
           {/* Right: Salary / Outcome Pill Container */}
           <div className={`flex flex-col items-end text-right shrink-0 px-2 py-0.5 rounded-lg border ${isLiveCourse ? 'bg-rose-50/80 border-rose-100 text-rose-700' : 'bg-emerald-50 border-emerald-100 text-emerald-700'}`}>
-            <span className="text-[10.5px] sm:text-[11px] font-black tracking-tight leading-none">
+            <span className="text-[10.5px] sm:text-[11px] font-bold tracking-tight leading-none">
               {salary}
             </span>
             <span className="text-[8px] font-medium text-slate-500 mt-0.5">
@@ -326,7 +321,7 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = React.memo(({
         <CourseSocialProof courseId={id} visibleCount={4} />
       </div>
 
-      {/* 3. FULL-WIDTH PREMIUM PRICING STRIP (100% card width, flush with bottom 18px corners) */}
+      {/* 3. FULL-WIDTH PREMIUM PRICING STRIP (100% card width, flush with bottom 20px corners) */}
       <div
         className={`w-full ${stripTheme.bg} px-3 py-2 flex items-center justify-between text-white h-[46px] shrink-0 mt-auto select-none`}
       >
@@ -334,19 +329,19 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = React.memo(({
         {discountBadge && originalPrice ? (
           /* Discounted courses: Original Price | 90% OFF | Selling Price */
           <div className="flex items-center gap-1.5 min-w-0">
-            <span className="text-[10px] xl:text-[10.5px] font-medium text-white/70 line-through tracking-tight whitespace-nowrap">
+            <span className="text-[10px] xl:text-[10.5px] font-normal text-white/75 line-through tracking-tight whitespace-nowrap">
               {originalPrice}
             </span>
-            <span className="bg-yellow-400 text-slate-950 font-black text-[8.5px] xl:text-[9px] px-1.5 py-0.5 rounded shadow-2xs uppercase tracking-tight whitespace-nowrap">
+            <span className="bg-yellow-400 text-slate-950 font-bold text-[8.5px] xl:text-[9px] px-1.5 py-0.5 rounded shadow-2xs uppercase tracking-tight whitespace-nowrap">
               {discountBadge}
             </span>
-            <span className="text-[14px] xl:text-[15.5px] font-black text-white tracking-tight whitespace-nowrap ml-0.5">
+            <span className="text-[14px] xl:text-[15px] font-bold text-white tracking-tight whitespace-nowrap ml-0.5">
               {price}
             </span>
           </div>
         ) : (
           /* Full Stack (No discount): Just Selling Price */
-          <span className="text-[15.5px] xl:text-[16.5px] font-black text-white tracking-tight whitespace-nowrap">
+          <span className="text-[15px] xl:text-[16px] font-bold text-white tracking-tight whitespace-nowrap">
             {price}
           </span>
         )}
@@ -358,7 +353,7 @@ export const CareerCourseCard: React.FC<CareerCourseCardProps> = React.memo(({
             e.stopPropagation();
             onClick();
           }}
-          className={`bg-white ${stripTheme.btnText} hover:bg-slate-50 font-black text-[10px] xl:text-[10.5px] px-2.5 sm:px-3 py-1.5 rounded-full shadow-sm hover:scale-[1.02] active:scale-98 transition-all flex items-center gap-1 shrink-0 cursor-pointer whitespace-nowrap ml-1.5`}
+          className={`bg-white ${stripTheme.btnText} hover:bg-slate-50 font-bold text-[10px] xl:text-[10.5px] px-2.5 sm:px-3 py-1.5 rounded-full shadow-sm hover:scale-[1.02] active:scale-98 transition-all flex items-center gap-1 shrink-0 cursor-pointer whitespace-nowrap ml-1.5`}
         >
           {isUnlocked ? (
             <>

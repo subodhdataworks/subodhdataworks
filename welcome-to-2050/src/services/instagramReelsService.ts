@@ -6,6 +6,7 @@ import {
   deleteDoc,
   query,
   where,
+  limit,
   writeBatch,
 } from 'firebase/firestore';
 import { db } from './firebase';
@@ -231,7 +232,7 @@ export async function fetchCourseInstagramReels(
   }
 
   try {
-    const q = query(collection(db, COLLECTION_NAME), where('courseId', '==', courseId));
+    const q = query(collection(db, COLLECTION_NAME), where('courseId', '==', courseId), limit(30));
     const snap = await getDocs(q);
     hasFetchedFromFirestore[courseId] = true;
 

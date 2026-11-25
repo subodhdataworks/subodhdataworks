@@ -713,7 +713,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
 
   return (
 
-    <div className="min-h-screen w-full bg-[#F4F8FC] text-slate-800 font-sans flex flex-col justify-between overflow-x-hidden selection:bg-blue-500 selection:text-white">
+    <div className="min-h-screen w-full bg-gradient-to-b from-[#FFFFFF] via-[#F7F2FC] to-[#FBF9FD] text-slate-800 font-sans flex flex-col justify-between overflow-x-hidden selection:bg-purple-500 selection:text-white">
 
       
 
@@ -1029,7 +1029,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
 
                 </div>
 
-                <span><strong className="text-slate-900 font-bold">4.9/5</strong> rating trusted by 100K+ learners across India</span>
+                <span><strong className="text-slate-900 font-bold">Career-Focused</strong> visual learning &amp; bilingual AI Mentor across India</span>
 
               </div>
 
@@ -1351,7 +1351,7 @@ export const FutureAiHome: React.FC<FutureAiHomeProps> = ({
 
           </div>
 
-          <span><strong className="text-slate-900 font-bold">4.9/5</strong> rating trusted by 100K+ learners across India</span>
+          <span><strong className="text-slate-900 font-bold">Career-Focused</strong> visual learning &amp; bilingual AI Mentor across India</span>
 
         </div>
 

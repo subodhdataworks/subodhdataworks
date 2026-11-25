@@ -73,7 +73,14 @@ import {
 } from 'lucide-react';
 import { FutureLogo } from './FutureLogo';
 import { soundEffects } from '../../services/soundEffects';
+import { playSwaraVoice, stopSwaraVoice } from '../../services/swaraAudioService';
 import { getModule01TopicData, TopicAssessmentData } from './data/module01TopicContent';
+import { getDataScienceTopicData } from './data/dataScienceTopicContent';
+import { getMlEngineeringTopicData } from './data/mlEngineeringTopicContent';
+import { getAiEngineeringTopicData } from './data/aiEngineeringTopicContent';
+import { getAiToolsPromptTopicData } from './data/aiToolsPromptTopicContent';
+import { getMsOfficeTopicData } from './data/msOfficeTopicContent';
+import { getFullStackMernTopicData } from './data/fullStackMernTopicContent';
 import { getHindiTopicActivity } from './data/hindiActivityContent';
 import { Topic1GamePack } from './games/Topic1GamePack';
 import { PythonIntroGameWorkspace } from './PythonIntroGameWorkspace';
@@ -81,12 +88,40 @@ import { PythonPracticeArena4Games } from './PythonPracticeArena4Games';
 import { getTopicHierarchyInfo } from './PythonChapterView';
 import { HrSettingsService, HrSettingsConfig, DEFAULT_HR_SETTINGS } from '../../services/hrSettingsService';
 import { isTopicUnlocked } from '../../services/courseUnlockService';
+import { NavigationService } from '../../services/navigationService';
 import { StableMouthLipSyncAvatar } from './interview/StableMouthLipSyncAvatar';
 import { ZeroCostMockInterviewRoom } from './interview/ZeroCostMockInterviewRoom';
 import { AdminHrSettingsModal } from '../admin/AdminHrSettingsModal';
 import { awardLearnerTelemetry, markTopicComplete } from '../../services/realAuthService';
 import { PythonTypeVisualLesson } from './visualNotes/PythonTypeVisualLesson';
 import { ExcelVisualLessonViewer } from './visualNotes/ExcelVisualLessonViewer';
+import { SqlVisualLessonViewer } from './visualNotes/SqlVisualLessonViewer';
+import { hasSqlVisualNotes, getStructuredSqlVisualNote } from './visualNotes/sqlVisualNotesData';
+import { PowerBiVisualLessonViewer } from './visualNotes/PowerBiVisualLessonViewer';
+import { hasPowerBiVisualNotes, getPowerBiVisualNote } from './visualNotes/powerBiVisualNotesData';
+import { GenAiVisualLessonViewer } from './visualNotes/GenAiVisualLessonViewer';
+import { hasGenAiVisualNotes, getGenAiVisualNote } from './visualNotes/genAiVisualNotesData';
+import { FoundationsVisualLessonViewer } from './visualNotes/FoundationsVisualLessonViewer';
+import { hasFoundationsVisualNotes, getFoundationsVisualNote } from './visualNotes/foundationsVisualNotesData';
+import { PythonVisualLessonViewer } from './visualNotes/PythonVisualLessonViewer';
+import { hasPythonVisualNotes, getPythonVisualNote } from './visualNotes/pythonVisualNotesData';
+import { ExcelVisualLessonViewer as ExcelStructuredVisualNotesViewer } from './visualNotes/ExcelVisualLessonViewer';
+import { hasExcelVisualNotes, getExcelVisualNote } from './visualNotes/excelVisualNotesData';
+import { buildAssessmentFromVisualNote } from './visualNotes/visualNoteToAssessmentEngine';
+import { DataScienceVisualLessonViewer } from './visualNotes/DataScienceVisualLessonViewer';
+import { hasDataScienceVisualNotes, getDataScienceVisualNote, DATA_SCIENCE_BLUEPRINTS } from './visualNotes/dataScienceVisualNotesData';
+import { MlEngineeringVisualLessonViewer } from './visualNotes/MlEngineeringVisualLessonViewer';
+import { hasMlEngineeringVisualNotes, getMlEngineeringVisualNote, ML_ENGINEERING_BLUEPRINTS } from './visualNotes/mlEngineeringVisualNotesData';
+import { AiEngineeringVisualLessonViewer } from './visualNotes/AiEngineeringVisualLessonViewer';
+import { hasAiEngineeringVisualNotes, getAiEngineeringVisualNote, AI_ENGINEERING_BLUEPRINTS } from './visualNotes/aiEngineeringVisualNotesData';
+import { AiToolsPromptVisualLessonViewer } from './visualNotes/AiToolsPromptVisualLessonViewer';
+import { hasAiToolsPromptVisualNotes, getAiToolsPromptVisualNote, AI_TOOLS_PROMPT_BLUEPRINTS } from './visualNotes/aiToolsPromptVisualNotesData';
+import { MsOfficeVisualLessonViewer } from './visualNotes/MsOfficeVisualLessonViewer';
+import { hasMsOfficeVisualNotes, getMsOfficeVisualNote, MS_OFFICE_BLUEPRINTS } from './visualNotes/msOfficeVisualNotesData';
+import { FullStackMernVisualLessonViewer } from './visualNotes/FullStackMernVisualLessonViewer';
+import { hasFullStackMernVisualNotes, getFullStackMernVisualNote, FULL_STACK_MERN_BLUEPRINTS } from './visualNotes/fullStackMernVisualNotesData';
+import { buildTopicQuestionBankFromBlueprint } from './visualNotes/dsCurriculumBlueprintEngine';
+import { resolveVisualNotesPdfUrl } from './visualNotes/pdfVisualNotesRegistry';
 import { DataAnalyticsVisualLesson } from './visualNotes/DataAnalyticsVisualLesson';
 import { Topic2WhyBusinessesNeedLesson } from './visualNotes/Topic2WhyBusinessesNeedLesson';
 import { Topic3RealLifeExamplesLesson } from './visualNotes/Topic3RealLifeExamplesLesson';
@@ -218,6 +253,9 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
 
   // Future IT Mentor active section & manual scroll sync
   const [activeMentorSection, setActiveMentorSection] = useState<MentorLessonSection | null>(null);
+  const [mentorSpeechProgress, setMentorSpeechProgress] = useState<number>(0);
+  const [mentorLiveTypedText, setMentorLiveTypedText] = useState<string>('');
+  const [isMentorSpeaking, setIsMentorSpeaking] = useState<boolean>(false);
   const [mentorUserScrolled, setMentorUserScrolled] = useState(false);
   const [mentorSectionRect, setMentorSectionRect] = useState<SectionRectInfo | null>(null);
   const [mentorScrollSettled, setMentorScrollSettled] = useState(true);
@@ -236,22 +274,38 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
     if (initialStep) setActiveStep(initialStep);
   }, [initialStep]);
 
+  const getParam = (name: string): string | null => {
+    if (typeof window === 'undefined') return null;
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.has(name)) return searchParams.get(name);
+    if (window.location.hash.includes('?')) {
+      const hashParams = new URLSearchParams(window.location.hash.split('?')[1]);
+      if (hashParams.has(name)) return hashParams.get(name);
+    }
+    return null;
+  };
+
   const [urlTopicId, setUrlTopicId] = useState<number | null>(() => {
     if (typeof window === 'undefined') return null;
-    const params = new URLSearchParams(window.location.hash.includes('?') ? window.location.hash.split('?')[1] : '');
-    const t = params.get('topic');
+    const t = getParam('topic');
     return t ? parseInt(t, 10) : null;
   });
+
+  const [urlHashRev, setUrlHashRev] = useState<number>(0);
 
   // Handle URL hash changes
   useEffect(() => {
     const handleHash = () => {
+      setUrlHashRev((r) => r + 1);
       const rawHash = window.location.hash.toLowerCase();
       const baseHash = rawHash.split('?')[0];
-      const params = new URLSearchParams(window.location.hash.includes('?') ? window.location.hash.split('?')[1] : '');
-      const t = params.get('topic');
-      if (t) setUrlTopicId(parseInt(t, 10));
-      const tabParam = params.get('tab');
+      const t = getParam('topic');
+      if (t) {
+        const parsed = parseInt(t, 10);
+        setUrlTopicId(parsed);
+        setInternalTopicId(parsed);
+      }
+      const tabParam = getParam('tab');
       if (tabParam) setUrlTabId(parseInt(tabParam, 10));
 
       if (baseHash === '#learn' || baseHash === '#video') setActiveStep('learn');
@@ -284,7 +338,18 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
     6: 'ms_office_copilot',
     7: 'full_stack_mern',
   };
-  const activeCourseKey = tabCourseMap[urlTabId] || 'data_analyst';
+  const activeCourseKey = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      const h = window.location.hash.toLowerCase();
+      if (h.includes('course=full_stack_mern')) return 'full_stack_mern';
+      if (h.includes('course=ms_office_copilot')) return 'ms_office_copilot';
+      if (h.includes('course=ai_tools_prompt')) return 'ai_tools_prompt';
+      if (h.includes('course=ai_engineering')) return 'ai_engineering';
+      if (h.includes('course=ml_engineering')) return 'ml_engineering';
+      if (h.includes('course=data_science')) return 'data_science';
+    }
+    return tabCourseMap[urlTabId] || 'data_analyst';
+  }, [urlTabId, urlHashRev]);
   const [internalTopicId, setInternalTopicId] = useState<number>(urlTopicId ?? topicId ?? 1);
   const isCurrentTopicLocked = useMemo(() => {
     return !isTopicUnlocked(activeCourseKey, 1, internalTopicId, urlTabId);
@@ -296,9 +361,24 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
       sessionStorage.setItem('futureai_active_curriculum_topic', `t-${newId}`);
     } catch {}
     if (typeof window !== 'undefined') {
-      const tabParam = isExcelTrack ? 'tab=3' : (urlTabId > 1 ? `tab=${urlTabId}` : '');
-      const query = [`topic=${newId}`, tabParam].filter(Boolean).join('&');
-      window.location.hash = `#${activeStep}?${query}`;
+      const hashStep = activeStep === 'practice' ? 'mcq' : activeStep;
+      if (isFullStackMernCourse) {
+        window.location.hash = `#${hashStep}?topic=${newId}&course=full_stack_mern`;
+      } else if (isMsOfficeCourse) {
+        window.location.hash = `#${hashStep}?topic=${newId}&course=ms_office_copilot`;
+      } else if (isAiToolsPromptCourse) {
+        window.location.hash = `#${hashStep}?topic=${newId}&course=ai_tools_prompt`;
+      } else if (isAiEngineeringCourse) {
+        window.location.hash = `#${hashStep}?topic=${newId}&course=ai_engineering`;
+      } else if (isMlEngineeringCourse) {
+        window.location.hash = `#${hashStep}?topic=${newId}&course=ml_engineering`;
+      } else if (isDataScienceCourse) {
+        window.location.hash = `#${hashStep}?topic=${newId}&course=data_science`;
+      } else {
+        const tabParam = isProjectsTrack ? 'tab=8' : (isInsightsTrack ? 'tab=7' : (isGenAiTrack ? 'tab=6' : (isPowerBiTrack ? 'tab=5' : (isSqlTrack ? 'tab=4' : (isExcelTrack ? 'tab=3' : (urlTabId > 1 ? `tab=${urlTabId}` : ''))))));
+        const query = [`topic=${newId}`, tabParam].filter(Boolean).join('&');
+        window.location.hash = `#${activeStep}?${query}`;
+      }
     }
   };
 
@@ -332,9 +412,75 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
     };
   }, [urlTabId, effectiveTopicId]);
 
+  const isDataScienceCourse = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.hash.toLowerCase().includes('course=data_science');
+    }
+    return false;
+  }, [effectiveTopicId, urlHashRev]);
+
+  const isMlEngineeringCourse = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.hash.toLowerCase().includes('course=ml_engineering');
+    }
+    return false;
+  }, [effectiveTopicId, urlHashRev]);
+
+  const isAiEngineeringCourse = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.hash.toLowerCase().includes('course=ai_engineering');
+    }
+    return false;
+  }, [effectiveTopicId, urlHashRev]);
+
+  const isAiToolsPromptCourse = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.hash.toLowerCase().includes('course=ai_tools_prompt');
+    }
+    return false;
+  }, [effectiveTopicId, urlHashRev]);
+
+  const isMsOfficeCourse = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.hash.toLowerCase().includes('course=ms_office_copilot');
+    }
+    return false;
+  }, [effectiveTopicId, urlHashRev]);
+
+  const isFullStackMernCourse = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.hash.toLowerCase().includes('course=full_stack_mern');
+    }
+    return false;
+  }, [effectiveTopicId, urlHashRev]);
+
+  const activeCourseQuestionBank = useMemo(() => {
+    if (isFullStackMernCourse && FULL_STACK_MERN_BLUEPRINTS[effectiveTopicId]) {
+      return buildTopicQuestionBankFromBlueprint(FULL_STACK_MERN_BLUEPRINTS[effectiveTopicId], 'full_stack_mern', 'Full-Stack MERN Development with AI');
+    }
+    if (isMsOfficeCourse && MS_OFFICE_BLUEPRINTS[effectiveTopicId]) {
+      return buildTopicQuestionBankFromBlueprint(MS_OFFICE_BLUEPRINTS[effectiveTopicId], 'ms_office_copilot', 'Microsoft 365 with Copilot AI');
+    }
+    if (isAiToolsPromptCourse && AI_TOOLS_PROMPT_BLUEPRINTS[effectiveTopicId]) {
+      return buildTopicQuestionBankFromBlueprint(AI_TOOLS_PROMPT_BLUEPRINTS[effectiveTopicId], 'ai_tools_prompt', 'AI Tools & Prompt Engineering');
+    }
+    if (isAiEngineeringCourse && AI_ENGINEERING_BLUEPRINTS[effectiveTopicId]) {
+      return buildTopicQuestionBankFromBlueprint(AI_ENGINEERING_BLUEPRINTS[effectiveTopicId], 'ai_engineering', 'AI Engineering');
+    }
+    if (isMlEngineeringCourse && ML_ENGINEERING_BLUEPRINTS[effectiveTopicId]) {
+      return buildTopicQuestionBankFromBlueprint(ML_ENGINEERING_BLUEPRINTS[effectiveTopicId], 'ml_engineering', 'Machine Learning Engineering');
+    }
+    if (isDataScienceCourse && DATA_SCIENCE_BLUEPRINTS[effectiveTopicId]) {
+      return buildTopicQuestionBankFromBlueprint(DATA_SCIENCE_BLUEPRINTS[effectiveTopicId], 'data_science', 'Data Science & Agentic AI');
+    }
+    return null;
+  }, [effectiveTopicId, isFullStackMernCourse, isMsOfficeCourse, isAiToolsPromptCourse, isAiEngineeringCourse, isMlEngineeringCourse, isDataScienceCourse]);
+
+  // Unified Data Analyst Game UI (1. MCQ -> 2. Puzzle Challenge -> 3. Real-World Challenge) across ALL courses!
   const isTab1Topic = useMemo(() => {
+    if (activeCourseQuestionBank) return true;
     return !!getTopicQuestionBank(urlTabId, effectiveTopicId) || (effectiveTopicId >= 1 && effectiveTopicId <= 80);
-  }, [urlTabId, effectiveTopicId, questionBankRev]);
+  }, [urlTabId, effectiveTopicId, questionBankRev, activeCourseQuestionBank]);
   const isTopicWithoutCoding = isTab1Topic;
   const isTopicWithoutMcq = isTab1Topic;
 
@@ -358,67 +504,162 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
     return false;
   }, [urlTabId, effectiveTopicId]);
 
+  const isSqlTrack = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      const h = window.location.hash;
+      if (h.includes('tab=2') || h.includes('tab=tab-2') || h.includes('tab=1') || h.includes('tab=tab-1')) {
+        return false;
+      }
+      if (h.includes('tab=4') || h.includes('tab=tab-4') || h.includes('track=sql') || h.includes('sql')) {
+        return true;
+      }
+    }
+    if (urlTabId === 2 || urlTabId === 1) return false;
+    if (urlTabId === 4) return true;
+    try {
+      const savedTab = sessionStorage.getItem('futureai_active_curriculum_tab');
+      if (savedTab === 'tab-2' || savedTab === 'tab-1') return false;
+      if (savedTab === 'tab-4') return true;
+    } catch {}
+    if (effectiveTopicId >= 77 && effectiveTopicId <= 126) {
+      return true;
+    }
+    return false;
+  }, [urlTabId, effectiveTopicId]);
+
+  const isPowerBiTrack = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      const h = window.location.hash;
+      if (h.includes('tab=5') || h.includes('tab=tab-5') || h.includes('track=powerbi') || h.includes('powerbi')) {
+        return true;
+      }
+    }
+    if (urlTabId === 5) return true;
+    try {
+      if (sessionStorage.getItem('futureai_active_curriculum_tab') === 'tab-5') return true;
+    } catch {}
+    if ((effectiveTopicId >= 207 && effectiveTopicId <= 252) || (effectiveTopicId >= 127 && effectiveTopicId <= 172)) {
+      return true;
+    }
+    return false;
+  }, [urlTabId, effectiveTopicId]);
+
+  const isGenAiTrack = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      const h = window.location.hash;
+      if (h.includes('tab=6') || h.includes('tab=tab-6') || h.includes('track=genai') || h.includes('genai')) {
+        return true;
+      }
+    }
+    if (urlTabId === 6) return true;
+    try {
+      if (sessionStorage.getItem('futureai_active_curriculum_tab') === 'tab-6') return true;
+    } catch {}
+    if ((effectiveTopicId >= 253 && effectiveTopicId <= 285) || (effectiveTopicId >= 173 && effectiveTopicId <= 205)) {
+      return true;
+    }
+    return false;
+  }, [urlTabId, effectiveTopicId]);
+
+  const isInsightsTrack = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      const h = window.location.hash;
+      if (h.includes('tab=7') || h.includes('tab=tab-7') || h.includes('track=insights') || h.includes('insights')) {
+        return true;
+      }
+    }
+    if (urlTabId === 7) return true;
+    try {
+      if (sessionStorage.getItem('futureai_active_curriculum_tab') === 'tab-7') return true;
+    } catch {}
+    if ((effectiveTopicId >= 286 && effectiveTopicId <= 316) || (effectiveTopicId >= 206 && effectiveTopicId <= 236)) {
+      return true;
+    }
+    return false;
+  }, [urlTabId, effectiveTopicId]);
+
+  const isProjectsTrack = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      const h = window.location.hash;
+      if (h.includes('tab=8') || h.includes('tab=tab-8') || h.includes('track=projects') || h.includes('projects') || h.includes('capstone')) {
+        return true;
+      }
+    }
+    if (urlTabId === 8) return true;
+    try {
+      if (sessionStorage.getItem('futureai_active_curriculum_tab') === 'tab-8') return true;
+    } catch {}
+    if ((effectiveTopicId >= 317 && effectiveTopicId <= 345) || (effectiveTopicId >= 237 && effectiveTopicId <= 265)) {
+      return true;
+    }
+    return false;
+  }, [urlTabId, effectiveTopicId]);
+
+  const currentCourse = useMemo(() => {
+    return NavigationService.getCurrentCourse(urlTabId);
+  }, [urlTabId]);
+
   const handleBackToCourse = useCallback(() => {
     soundEffects.playClick();
-    (() => { try { document.querySelectorAll('video,audio').forEach((m: any) => { try { m.pause(); } catch {} }); if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch {} })();
-    const effectiveTab = isExcelTrack ? 'tab-3' : (urlTabId ? `tab-${urlTabId}` : 'tab-1');
-    onBack(effectiveTopicId, effectiveTab);
-  }, [effectiveTopicId, isExcelTrack, urlTabId, onBack]);
+    NavigationService.silenceAllAudio();
+    const effectiveTab = isProjectsTrack ? 'tab-8' : (isInsightsTrack ? 'tab-7' : (isGenAiTrack ? 'tab-6' : (isPowerBiTrack ? 'tab-5' : (isSqlTrack ? 'tab-4' : (isExcelTrack ? 'tab-3' : (urlTabId ? `tab-${urlTabId}` : 'tab-1'))))));
+    if (onBack) {
+      onBack(effectiveTopicId, effectiveTab);
+    } else {
+      NavigationService.goBackFromWorkspace(effectiveTopicId, urlTabId);
+    }
+  }, [effectiveTopicId, isExcelTrack, isSqlTrack, isPowerBiTrack, isGenAiTrack, isInsightsTrack, isProjectsTrack, urlTabId, onBack]);
 
   // Guaranteed cleanup of media, speech synthesis, and timers when leaving the workspace
   useEffect(() => {
     return () => {
-      (() => { try { document.querySelectorAll('video,audio').forEach((m: any) => { try { m.pause(); } catch {} }); if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch {} })();
+      NavigationService.silenceAllAudio();
     };
   }, []);
 
-  // Auto-redirect if skipped steps are selected on Topic 1
+  // Auto-redirect skipped standalone MCQ/Code tabs into the unified Data Analyst 3-Stage Arena (1. MCQ -> 2. Puzzle -> 3. Real-World)
   useEffect(() => {
+    const customCourseParam = isFullStackMernCourse
+      ? 'full_stack_mern'
+      : isMsOfficeCourse
+      ? 'ms_office_copilot'
+      : isAiToolsPromptCourse
+      ? 'ai_tools_prompt'
+      : isAiEngineeringCourse
+      ? 'ai_engineering'
+      : isMlEngineeringCourse
+      ? 'ml_engineering'
+      : isDataScienceCourse
+      ? 'data_science'
+      : null;
+    const tabNum = isProjectsTrack ? 8 : (isInsightsTrack ? 7 : (isGenAiTrack ? 6 : (isPowerBiTrack ? 5 : (isSqlTrack ? 4 : (isExcelTrack ? 3 : (urlTabId || 1))))));
     if (isTopicWithoutMcq && activeStep === 'practice') {
       setActiveStep('play');
-      if (typeof window !== 'undefined') {
-        window.location.hash = `#play?topic=${effectiveTopicId}`;
+      if (customCourseParam && typeof window !== 'undefined') {
+        window.location.hash = `#play?topic=${effectiveTopicId}&course=${customCourseParam}`;
+      } else {
+        NavigationService.setWorkspaceStep('play', effectiveTopicId, tabNum);
       }
     } else if (isTopicWithoutCoding && activeStep === 'code') {
       setActiveStep('interview');
-      if (typeof window !== 'undefined') {
-        window.location.hash = `#interview?topic=${effectiveTopicId}`;
+      if (customCourseParam && typeof window !== 'undefined') {
+        window.location.hash = `#interview?topic=${effectiveTopicId}&course=${customCourseParam}`;
+      } else {
+        NavigationService.setWorkspaceStep('interview', effectiveTopicId, tabNum);
       }
     }
-  }, [isTopicWithoutMcq, isTopicWithoutCoding, activeStep, effectiveTopicId]);
+  }, [isTopicWithoutMcq, isTopicWithoutCoding, activeStep, effectiveTopicId, isExcelTrack, isSqlTrack, isPowerBiTrack, isGenAiTrack, isInsightsTrack, isProjectsTrack, urlTabId, isFullStackMernCourse, isMsOfficeCourse, isAiToolsPromptCourse, isAiEngineeringCourse, isMlEngineeringCourse, isDataScienceCourse]);
 
   // Silence any interview sound when navigating away from interview tab
   useEffect(() => {
     if (activeStep !== 'interview') {
-      if (typeof window !== 'undefined') {
-        if ('speechSynthesis' in window) {
-          try { window.speechSynthesis.cancel(); } catch {}
-        }
-        if ((window as any).__activeMockAudio) {
-          try {
-            (window as any).__activeMockAudio.pause();
-            (window as any).__activeMockAudio.currentTime = 0;
-          } catch {}
-          (window as any).__activeMockAudio = null;
-        }
-      }
+      NavigationService.silenceAllAudio();
     }
   }, [activeStep]);
 
   const handleSelectTab = (step: WorkspaceStepId) => {
     // Silence all interview speech & audio immediately when leaving interview tab
-    if (typeof window !== 'undefined') {
-      if ('speechSynthesis' in window) {
-        try { window.speechSynthesis.cancel(); } catch {}
-      }
-      if ((window as any).__activeMockAudio) {
-        try {
-          (window as any).__activeMockAudio.pause();
-          (window as any).__activeMockAudio.currentTime = 0;
-        } catch {}
-        (window as any).__activeMockAudio = null;
-      }
-    }
+    NavigationService.silenceAllAudio();
     if (isTopicWithoutMcq && step === 'practice') {
       // Skip MCQ for Topic 1.1 What is Programming
       step = 'play';
@@ -429,17 +670,33 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
     }
     soundEffects.playClick();
     setActiveStep(step);
-    const map: Record<WorkspaceStepId, string> = {
-      learn: '#learn',
-      practice: '#practice',
-      play: '#play',
-      code: '#code',
-      interview: '#interview',
-      score: '#score',
-    };
-    if (typeof window !== 'undefined') {
-      window.location.hash = `${map[step]}?topic=${effectiveTopicId}`;
+    const hashStep = step === 'practice' ? 'mcq' : step;
+    if (isFullStackMernCourse && typeof window !== 'undefined') {
+      window.location.hash = `#${hashStep}?topic=${effectiveTopicId}&course=full_stack_mern`;
+      return;
     }
+    if (isMsOfficeCourse && typeof window !== 'undefined') {
+      window.location.hash = `#${hashStep}?topic=${effectiveTopicId}&course=ms_office_copilot`;
+      return;
+    }
+    if (isAiToolsPromptCourse && typeof window !== 'undefined') {
+      window.location.hash = `#${hashStep}?topic=${effectiveTopicId}&course=ai_tools_prompt`;
+      return;
+    }
+    if (isAiEngineeringCourse && typeof window !== 'undefined') {
+      window.location.hash = `#${hashStep}?topic=${effectiveTopicId}&course=ai_engineering`;
+      return;
+    }
+    if (isMlEngineeringCourse && typeof window !== 'undefined') {
+      window.location.hash = `#${hashStep}?topic=${effectiveTopicId}&course=ml_engineering`;
+      return;
+    }
+    if (isDataScienceCourse && typeof window !== 'undefined') {
+      window.location.hash = `#${hashStep}?topic=${effectiveTopicId}&course=data_science`;
+      return;
+    }
+    const tabNum = isProjectsTrack ? 8 : (isInsightsTrack ? 7 : (isGenAiTrack ? 6 : (isPowerBiTrack ? 5 : (isSqlTrack ? 4 : (isExcelTrack ? 3 : (urlTabId || 1))))));
+    NavigationService.setWorkspaceStep(step, effectiveTopicId, tabNum);
   };
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -512,7 +769,58 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
   // ─────────────────────────────────────────────────────────────────────────────
   // TAB 2: DYNAMIC TOPIC ASSESSMENT DATA & MCQS (13 Topics | 65 Questions)
   // ─────────────────────────────────────────────────────────────────────────────
-  const currentTopicData: TopicAssessmentData = useMemo(() => getModule01TopicData(effectiveTopicId), [effectiveTopicId]);
+  const currentTopicData: TopicAssessmentData = useMemo(() => {
+    if (isFullStackMernCourse) {
+      const mernData = getFullStackMernTopicData(effectiveTopicId);
+      if (mernData) return mernData;
+    }
+    if (isMsOfficeCourse) {
+      const msoData = getMsOfficeTopicData(effectiveTopicId);
+      if (msoData) return msoData;
+    }
+    if (isAiToolsPromptCourse) {
+      const atpData = getAiToolsPromptTopicData(effectiveTopicId);
+      if (atpData) return atpData;
+    }
+    if (isAiEngineeringCourse) {
+      const aiData = getAiEngineeringTopicData(effectiveTopicId);
+      if (aiData) return aiData;
+    }
+    if (isMlEngineeringCourse) {
+      const mlData = getMlEngineeringTopicData(effectiveTopicId);
+      if (mlData) return mlData;
+    }
+    if (isDataScienceCourse) {
+      const dsData = getDataScienceTopicData(effectiveTopicId);
+      if (dsData) return dsData;
+    }
+    // Data Analyst tracks: synthesize 100% Visual-Notes-aligned MCQ, Puzzle/Game & Interview directly from each track's Visual Learning Notes!
+    if (isSqlTrack) {
+      const sqlNote = getStructuredSqlVisualNote(effectiveTopicId);
+      if (sqlNote) return buildAssessmentFromVisualNote(sqlNote, effectiveTopicId, 'da_sql');
+    }
+    if (isExcelTrack) {
+      const excelNote = getExcelVisualNote(effectiveTopicId);
+      if (excelNote) return buildAssessmentFromVisualNote(excelNote, effectiveTopicId, 'da_excel');
+    }
+    if (isPowerBiTrack) {
+      const pbiNote = getPowerBiVisualNote(effectiveTopicId);
+      if (pbiNote) return buildAssessmentFromVisualNote(pbiNote, effectiveTopicId, 'da_pbi');
+    }
+    if (isGenAiTrack) {
+      const genAiNote = getGenAiVisualNote(effectiveTopicId);
+      if (genAiNote) return buildAssessmentFromVisualNote(genAiNote, effectiveTopicId, 'da_genai');
+    }
+    if (hasFoundationsVisualNotes(effectiveTopicId)) {
+      const fndNote = getFoundationsVisualNote(effectiveTopicId);
+      if (fndNote) return buildAssessmentFromVisualNote(fndNote, effectiveTopicId, 'da_fnd');
+    }
+    if (hasPythonVisualNotes(effectiveTopicId)) {
+      const pyNote = getPythonVisualNote(effectiveTopicId);
+      if (pyNote) return buildAssessmentFromVisualNote(pyNote, effectiveTopicId, 'da_py');
+    }
+    return getModule01TopicData(effectiveTopicId);
+  }, [effectiveTopicId, isDataScienceCourse, isMlEngineeringCourse, isAiEngineeringCourse, isAiToolsPromptCourse, isMsOfficeCourse, isFullStackMernCourse, isSqlTrack, isExcelTrack, isPowerBiTrack, isGenAiTrack]);
   const currentHindiActivity = useMemo(() => getHindiTopicActivity(effectiveTopicId), [effectiveTopicId]);
   const mcqQuestions = currentTopicData.mcqs;
 
@@ -767,17 +1075,10 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
   };
 
   const handleSpeakExplanation = () => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
+    stopSwaraVoice();
     const explanationText = mcqQuestions[currentMcqIdx].explanation;
-    const utterance = new SpeechSynthesisUtterance(explanationText);
-    utterance.rate = 1.0;
-    utterance.pitch = 1.1;
-    const voices = window.speechSynthesis.getVoices();
-    const voice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Female'))) || voices.find(v => v.lang.startsWith('en')) || voices[0];
-    if (voice) utterance.voice = voice;
-    utterance.lang = 'en-US';
-    window.speechSynthesis.speak(utterance);
+    if (!explanationText) return;
+    playSwaraVoice(explanationText);
   };
 
   const handleToggleFlag = () => {
@@ -1101,8 +1402,9 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
   const handleL5Phase2Attack = (method: string) => {
     if (l5Attacking) return;
     soundEffects.playClick();
-    if (method === '.append()') {
-      // Correct Python method!
+    const chosenPhase2 = l5BossData.phase2Options?.find((o) => o.id === method || o.text === method);
+    if (chosenPhase2?.isCorrect || (!l5BossData.phase2Options && method === '.append()')) {
+      // Correct verification strike!
       setL5Attacking(true);
       soundEffects.playBossHit();
       setTimeout(() => {
@@ -1646,97 +1948,17 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
       }
     };
 
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const voices = window.speechSynthesis.getVoices();
-      const hiVoice = voices.find(
-        (v) =>
-          v.lang.toLowerCase().startsWith('hi') ||
-          v.name.toLowerCase().includes('hindi') ||
-          v.name.toLowerCase().includes('swara') ||
-          v.name.toLowerCase().includes('kalpana') ||
-          v.name.toLowerCase().includes('hemant')
-      );
-
-      // If Hindi mode is selected but the OS has no Devanagari TTS voice installed,
-      // provide a clean Hinglish/phonetic utterance string so English/Indian-English voices still speak aloud!
-      let utteranceText = textToSpeak;
-      if (activityLang === 'hi' && !hiVoice) {
-        const englishQ = getExactHrQuestion(interviewQuestionIdx, 'en');
-        utteranceText =
-          interviewQuestionIdx === 0 && !isRepeat && !overrideText
-            ? `Welcome to your Python Technical Assessment. Let us begin with question 1: ${englishQ}`
-            : englishQ;
-      }
-
-      const utterance = new SpeechSynthesisUtterance(utteranceText);
-      utterance.rate = rate;
-      utterance.pitch = hrSettings.speakingPitch || 1.0;
-      utterance.volume = 1.0;
-
-      if (hrSettings.voiceURI && hrSettings.voiceURI !== 'auto') {
-        const matched = voices.find((v) => v.voiceURI === hrSettings.voiceURI);
-        if (matched) utterance.voice = matched;
-      } else if (activityLang === 'hi' && hiVoice) {
-        utterance.voice = hiVoice;
-        utterance.lang = 'hi-IN';
-      } else {
-        const wantFemale = hrSettings.gender === 'female';
-        const preferredVoice =
-          voices.find(
-            (v) =>
-              v.lang.toLowerCase().startsWith('en') &&
-              (wantFemale
-                ? v.name.toLowerCase().includes('zira') ||
-                  v.name.toLowerCase().includes('aria') ||
-                  v.name.toLowerCase().includes('jenny') ||
-                  v.name.toLowerCase().includes('samantha') ||
-                  v.name.toLowerCase().includes('female')
-                : v.name.toLowerCase().includes('david') ||
-                  v.name.toLowerCase().includes('guy') ||
-                  v.name.toLowerCase().includes('mark') ||
-                  v.name.toLowerCase().includes('male'))
-          ) ||
-          voices.find((v) => v.lang.toLowerCase().startsWith('en')) ||
-          voices[0];
-        if (preferredVoice) utterance.voice = preferredVoice;
-      }
-
-      utterance.onboundary = (e: any) => {
-        if (utteranceText === textToSpeak && typeof e.charIndex === 'number' && e.charIndex > charIdx) {
-          charIdx = Math.min(e.charIndex + (e.charLength || 5), textToSpeak.length);
-          setLiveSpokenTypingText(textToSpeak.slice(0, charIdx));
-        }
-      };
-
-      const handleSpeechFinishOrFallback = () => {
-        const elapsed = Date.now() - startedAt;
-        // If speechSynthesis ended prematurely (< 1200ms due to autoplay restriction or missing codec),
-        // keep the HR lip-sync and typewriter running smoothly for the natural question duration
-        if (elapsed < 1200) {
-          const remaining = Math.max(1800, minSpeakDurationMs - elapsed);
-          speechFallbackTimerRef.current = setTimeout(finalizeSpeech, remaining);
-        } else {
-          finalizeSpeech();
-        }
-      };
-
-      utterance.onend = handleSpeechFinishOrFallback;
-      utterance.onerror = handleSpeechFinishOrFallback;
-
-      // Safety cap so isHrSpeaking never gets stuck if browser hangs speechSynthesis
-      speechFallbackTimerRef.current = setTimeout(finalizeSpeech, minSpeakDurationMs + 2500);
-
-      window.speechSynthesis.speak(utterance);
-    } else {
-      speechFallbackTimerRef.current = setTimeout(finalizeSpeech, minSpeakDurationMs);
-    }
+    stopSwaraVoice();
+    setIsHrSpeaking(true);
+    playSwaraVoice(textToSpeak, {
+      onStart: () => setIsHrSpeaking(true),
+      onEnd: () => finalizeSpeech(),
+      onError: () => finalizeSpeech(),
+    });
   };
 
   const stopHrSpeaking = () => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-    }
+    stopSwaraVoice();
     if (speechFallbackTimerRef.current) {
       clearTimeout(speechFallbackTimerRef.current);
       speechFallbackTimerRef.current = null;
@@ -1840,7 +2062,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
     if (interviewQuestionIdx < interviewQuestionsList.length - 1) {
       handleSelectQuestionIdx(interviewQuestionIdx + 1);
     } else {
-      handleSelectTab('score');
+      handleBackToCourse();
     }
   };
 
@@ -2237,56 +2459,105 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
 
   return (
     <div className="ptw-root-container">
-      {/* ── Sub-header Navigation Row: Clean, Single Active Pill, No Redundant Video Tab ── */}
-      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-        {/* Left: Back button & Active Visual Learning pill */}
-        <div className="flex items-center gap-2.5">
+      {/* ── Sub-header Navigation Row: Visual Learning, Coding Game, Topic Interview ── */}
+      <div className={`flex items-center gap-2.5 flex-wrap ${activeStep === 'interview' ? 'mb-2' : 'mb-4'}`}>
+        {/* 1. Visual Learning Tab */}
+        <button
+          type="button"
+          onClick={() => handleSelectTab('learn')}
+          className={`px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all border cursor-pointer ${
+            activeStep === 'learn'
+              ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white border-transparent shadow-xs ring-2 ring-purple-400/40'
+              : 'bg-white hover:bg-slate-50 text-slate-700 hover:text-purple-700 border-slate-200/90 shadow-2xs'
+          }`}
+          title="Open Visual Learning"
+        >
+          <BookOpen className={`w-3.5 h-3.5 ${activeStep === 'learn' ? 'text-white' : 'text-purple-600'}`} />
+          <span>Visual Learning</span>
+        </button>
+
+        {/* 2. Standalone Practice MCQ Tab (only shown when NOT using the unified Data Analyst 3-Stage Arena which includes 1. MCQ -> 2. Puzzle -> 3. Real-World) */}
+        {!isTab1Topic && (
           <button
             type="button"
-            onClick={handleBackToCourse}
-            className="px-4 py-1.5 rounded-full text-xs font-bold border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-800 flex items-center gap-1.5 transition shadow-2xs cursor-pointer"
-            title="Back to Course"
+            onClick={() => handleSelectTab('practice')}
+            className={`px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all border cursor-pointer ${
+              activeStep === 'practice'
+                ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white border-transparent shadow-xs ring-2 ring-purple-400/40'
+                : 'bg-white hover:bg-slate-50 text-slate-700 hover:text-purple-700 border-slate-200/90 shadow-2xs'
+            }`}
+            title="Open Practice MCQ"
           >
-            <ChevronLeft className="w-3.5 h-3.5" />
-            <span>Back</span>
+            <CheckCircle2 className={`w-3.5 h-3.5 ${activeStep === 'practice' ? 'text-white' : 'text-purple-600'}`} />
+            <span>Practice MCQ</span>
           </button>
+        )}
 
-          <div className="px-5 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white shadow-xs select-none">
-            <BookOpen className="w-3.5 h-3.5" />
-            <span>Visual Learning</span>
+        {/* 3. Coding Game Tab */}
+        <button
+          type="button"
+          onClick={() => handleSelectTab('play')}
+          className={`px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all border cursor-pointer ${
+            activeStep === 'play'
+              ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white border-transparent shadow-xs ring-2 ring-purple-400/40'
+              : 'bg-white hover:bg-slate-50 text-slate-700 hover:text-purple-700 border-slate-200/90 shadow-2xs'
+          }`}
+          title="Open Coding Game"
+        >
+          <Gamepad2 className={`w-3.5 h-3.5 ${activeStep === 'play' ? 'text-white' : 'text-purple-600'}`} />
+          <span>Coding Game</span>
+        </button>
+
+        {/* 4. Topic Interview Tab */}
+        <button
+          type="button"
+          onClick={() => handleSelectTab('interview')}
+          className={`px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all border cursor-pointer ${
+            activeStep === 'interview'
+              ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white border-transparent shadow-xs ring-2 ring-purple-400/40'
+              : 'bg-white hover:bg-slate-50 text-slate-700 hover:text-purple-700 border-slate-200/90 shadow-2xs'
+          }`}
+          title="Open Topic Interview"
+        >
+          <MessageSquare className={`w-3.5 h-3.5 ${activeStep === 'interview' ? 'text-white' : 'text-purple-600'}`} />
+          <span>Topic Interview</span>
+        </button>
+
+        {/* Bilingual Learning Toggle (English / Hindi) — Synchronized with Visual Learning Notes & AI Mentor */}
+        {activeStep === 'learn' && (
+          <div className="ml-auto inline-flex items-center rounded-full bg-white border border-purple-200/90 p-0.5 shadow-2xs text-xs font-bold">
+            <button
+              type="button"
+              onClick={() => {
+                soundEffects.playClick();
+                setMentorLanguage('english');
+              }}
+              className={`px-3 py-1 rounded-full transition-all cursor-pointer ${
+                mentorLanguage === 'english'
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-2xs'
+                  : 'text-slate-600 hover:text-purple-700'
+              }`}
+              title="Switch Visual Notes & AI Mentor to English"
+            >
+              English
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                soundEffects.playClick();
+                setMentorLanguage('hindi');
+              }}
+              className={`px-3 py-1 rounded-full transition-all cursor-pointer ${
+                mentorLanguage === 'hindi'
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-2xs'
+                  : 'text-slate-600 hover:text-purple-700'
+              }`}
+              title="Switch Visual Notes to Hinglish & AI Mentor to Hindi"
+            >
+              हिंदी / Hinglish
+            </button>
           </div>
-        </div>
-
-        {/* Right: Coding Game & Mock Interview buttons (inactive/outlined by default) */}
-        <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            onClick={() => handleSelectTab('play')}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition border cursor-pointer ${
-              activeStep === 'play'
-                ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white shadow-sm ring-2 ring-purple-400/40'
-                : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200/90 shadow-2xs'
-            }`}
-            title="Launch Coding Game"
-          >
-            <Gamepad2 className="w-3.5 h-3.5 text-purple-600" />
-            <span>Coding Game</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleSelectTab('interview')}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition border cursor-pointer ${
-              activeStep === 'interview'
-                ? 'bg-purple-100 text-purple-950 border-purple-400 font-black shadow-xs ring-2 ring-purple-300'
-                : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200/90 shadow-2xs'
-            }`}
-            title="Launch Mock Interview"
-          >
-            <MessageSquare className="w-3.5 h-3.5 text-purple-600" />
-            <span>Mock Interview</span>
-          </button>
-        </div>
+        )}
       </div>
 
       {/* ── 3. Main Content Area ── */}
@@ -2297,10 +2568,129 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
             ═════════════════════════════════════════════════════════════════ */}
         {activeStep === 'learn' && (
           <>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full items-start">
-            {/* ── LEFT PANEL: SCROLLABLE VISUAL NOTES (approx. 60% width) ── */}
-            <div className="lg:col-span-7 bg-white rounded-3xl border border-purple-100/90 p-2 sm:p-4 shadow-2xs overflow-hidden h-[calc(100vh-140px)] min-h-[620px] flex flex-col relative">
-              {isExcelTrack ? (
+            <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_315px] xl:grid-cols-[minmax(0,1fr)_340px] gap-4 w-full items-start">
+            {/* ── LEFT PANEL: LARGE SCROLLABLE VISUAL NOTES (approx. 75% width) ── */}
+            <div className="w-full min-w-0 bg-white rounded-3xl border border-purple-100/90 p-2 sm:p-4 shadow-2xs overflow-hidden h-[calc(100vh-128px)] min-h-[640px] flex flex-col relative">
+              {isFullStackMernCourse && hasFullStackMernVisualNotes(effectiveTopicId) ? (
+                <div
+                  className="w-full h-full overflow-y-auto p-1 sm:p-3 select-text rounded-2xl relative"
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: '#d8b4fe #faf5ff' }}
+                >
+                  <FullStackMernVisualLessonViewer
+                    topicId={effectiveTopicId}
+                    activeSectionId={activeMentorSection?.id}
+                    speechProgress={mentorSpeechProgress}
+                    liveTypedText={mentorLiveTypedText}
+                    isMentorSpeaking={isMentorSpeaking}
+                    onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                    onScrollSettled={() => setMentorScrollSettled(true)}
+                    language={mentorLanguage === 'hindi' ? 'hi' : 'en'}
+                    onLanguageChange={(l) => setMentorLanguage(l === 'hi' ? 'hindi' : 'english')}
+                  />
+                </div>
+              ) : isMsOfficeCourse && hasMsOfficeVisualNotes(effectiveTopicId) ? (
+                <div
+                  className="w-full h-full overflow-y-auto p-1 sm:p-3 select-text rounded-2xl relative"
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: '#d8b4fe #faf5ff' }}
+                >
+                  <MsOfficeVisualLessonViewer
+                    topicId={effectiveTopicId}
+                    activeSectionId={activeMentorSection?.id}
+                    speechProgress={mentorSpeechProgress}
+                    liveTypedText={mentorLiveTypedText}
+                    isMentorSpeaking={isMentorSpeaking}
+                    onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                    onScrollSettled={() => setMentorScrollSettled(true)}
+                    language={mentorLanguage === 'hindi' ? 'hi' : 'en'}
+                    onLanguageChange={(l) => setMentorLanguage(l === 'hi' ? 'hindi' : 'english')}
+                  />
+                </div>
+              ) : isAiToolsPromptCourse && hasAiToolsPromptVisualNotes(effectiveTopicId) ? (
+                <div
+                  className="w-full h-full overflow-y-auto p-1 sm:p-3 select-text rounded-2xl relative"
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: '#d8b4fe #faf5ff' }}
+                >
+                  <AiToolsPromptVisualLessonViewer
+                    topicId={effectiveTopicId}
+                    activeSectionId={activeMentorSection?.id}
+                    speechProgress={mentorSpeechProgress}
+                    liveTypedText={mentorLiveTypedText}
+                    isMentorSpeaking={isMentorSpeaking}
+                    onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                    onScrollSettled={() => setMentorScrollSettled(true)}
+                    language={mentorLanguage === 'hindi' ? 'hi' : 'en'}
+                    onLanguageChange={(l) => setMentorLanguage(l === 'hi' ? 'hindi' : 'english')}
+                  />
+                </div>
+              ) : isAiEngineeringCourse && hasAiEngineeringVisualNotes(effectiveTopicId) ? (
+                <div
+                  className="w-full h-full overflow-y-auto p-1 sm:p-3 select-text rounded-2xl relative"
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: '#d8b4fe #faf5ff' }}
+                >
+                  <AiEngineeringVisualLessonViewer
+                    topicId={effectiveTopicId}
+                    activeSectionId={activeMentorSection?.id}
+                    speechProgress={mentorSpeechProgress}
+                    liveTypedText={mentorLiveTypedText}
+                    isMentorSpeaking={isMentorSpeaking}
+                    onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                    onScrollSettled={() => setMentorScrollSettled(true)}
+                    language={mentorLanguage === 'hindi' ? 'hi' : 'en'}
+                    onLanguageChange={(l) => setMentorLanguage(l === 'hi' ? 'hindi' : 'english')}
+                  />
+                </div>
+              ) : isMlEngineeringCourse && hasMlEngineeringVisualNotes(effectiveTopicId) ? (
+                <div
+                  className="w-full h-full overflow-y-auto p-1 sm:p-3 select-text rounded-2xl relative"
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: '#d8b4fe #faf5ff' }}
+                >
+                  <MlEngineeringVisualLessonViewer
+                    topicId={effectiveTopicId}
+                    activeSectionId={activeMentorSection?.id}
+                    speechProgress={mentorSpeechProgress}
+                    liveTypedText={mentorLiveTypedText}
+                    isMentorSpeaking={isMentorSpeaking}
+                    onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                    onScrollSettled={() => setMentorScrollSettled(true)}
+                    language={mentorLanguage === 'hindi' ? 'hi' : 'en'}
+                    onLanguageChange={(l) => setMentorLanguage(l === 'hi' ? 'hindi' : 'english')}
+                  />
+                </div>
+              ) : isDataScienceCourse && hasDataScienceVisualNotes(effectiveTopicId) ? (
+                <div
+                  className="w-full h-full overflow-y-auto p-1 sm:p-3 select-text rounded-2xl relative"
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: '#d8b4fe #faf5ff' }}
+                >
+                  <DataScienceVisualLessonViewer
+                    topicId={effectiveTopicId}
+                    activeSectionId={activeMentorSection?.id}
+                    speechProgress={mentorSpeechProgress}
+                    liveTypedText={mentorLiveTypedText}
+                    isMentorSpeaking={isMentorSpeaking}
+                    onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                    onScrollSettled={() => setMentorScrollSettled(true)}
+                    language={mentorLanguage === 'hindi' ? 'hi' : 'en'}
+                    onLanguageChange={(l) => setMentorLanguage(l === 'hi' ? 'hindi' : 'english')}
+                  />
+                </div>
+              ) : isExcelTrack && hasExcelVisualNotes(effectiveTopicId) ? (
+                <div
+                  className="w-full h-full overflow-y-auto p-1 sm:p-3 select-text rounded-2xl relative"
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: '#d8b4fe #faf5ff' }}
+                >
+                  <ExcelStructuredVisualNotesViewer
+                    topicId={effectiveTopicId}
+                    activeSectionId={activeMentorSection?.id}
+                    speechProgress={mentorSpeechProgress}
+                    liveTypedText={mentorLiveTypedText}
+                    isMentorSpeaking={isMentorSpeaking}
+                    onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                    onScrollSettled={() => setMentorScrollSettled(true)}
+                    language={mentorLanguage === 'hindi' ? 'hi' : 'en'}
+                    onLanguageChange={(l) => setMentorLanguage(l === 'hi' ? 'hindi' : 'english')}
+                  />
+                </div>
+              ) : isExcelTrack ? (
                 <div
                   className="w-full h-full overflow-y-auto p-1 sm:p-3 select-text rounded-2xl relative"
                   style={{ scrollbarWidth: 'thin', scrollbarColor: '#d8b4fe #faf5ff' }}
@@ -2314,6 +2704,103 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                     onLanguageChange={setMentorLanguage}
                     onSelectTopic={(newId) => setEffectiveTopicId(newId)}
                     onBackToCurriculum={handleBackToCourse}
+                  />
+                </div>
+              ) : isSqlTrack && hasSqlVisualNotes(effectiveTopicId) ? (
+                <div
+                  className="w-full h-full overflow-y-auto p-1 sm:p-3 select-text rounded-2xl relative"
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: '#d8b4fe #faf5ff' }}
+                >
+                  <SqlVisualLessonViewer
+                    topicId={effectiveTopicId}
+                    activeSectionId={activeMentorSection?.id}
+                    speechProgress={mentorSpeechProgress}
+                    liveTypedText={mentorLiveTypedText}
+                    isMentorSpeaking={isMentorSpeaking}
+                    onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                    onScrollSettled={() => setMentorScrollSettled(true)}
+                    language={mentorLanguage === 'hindi' ? 'hi' : 'en'}
+                    onLanguageChange={(l) => setMentorLanguage(l === 'hi' ? 'hindi' : 'english')}
+                  />
+                </div>
+              ) : isPowerBiTrack && hasPowerBiVisualNotes(effectiveTopicId) ? (
+                <div
+                  className="w-full h-full overflow-y-auto p-1 sm:p-3 select-text rounded-2xl relative"
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: '#d8b4fe #faf5ff' }}
+                >
+                  <PowerBiVisualLessonViewer
+                    topicId={effectiveTopicId}
+                    activeSectionId={activeMentorSection?.id}
+                    speechProgress={mentorSpeechProgress}
+                    liveTypedText={mentorLiveTypedText}
+                    isMentorSpeaking={isMentorSpeaking}
+                    onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                    onScrollSettled={() => setMentorScrollSettled(true)}
+                    language={mentorLanguage === 'hindi' ? 'hi' : 'en'}
+                    onLanguageChange={(l) => setMentorLanguage(l === 'hi' ? 'hindi' : 'english')}
+                  />
+                </div>
+              ) : isGenAiTrack && hasGenAiVisualNotes(effectiveTopicId) ? (
+                <div
+                  className="w-full h-full overflow-y-auto p-1 sm:p-3 select-text rounded-2xl relative"
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: '#d8b4fe #faf5ff' }}
+                >
+                  <GenAiVisualLessonViewer
+                    topicId={effectiveTopicId}
+                    activeSectionId={activeMentorSection?.id}
+                    speechProgress={mentorSpeechProgress}
+                    liveTypedText={mentorLiveTypedText}
+                    isMentorSpeaking={isMentorSpeaking}
+                    onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                    onScrollSettled={() => setMentorScrollSettled(true)}
+                    language={mentorLanguage === 'hindi' ? 'hi' : 'en'}
+                    onLanguageChange={(l) => setMentorLanguage(l === 'hi' ? 'hindi' : 'english')}
+                  />
+                </div>
+              ) : !isExcelTrack &&
+                !isSqlTrack &&
+                !isPowerBiTrack &&
+                !isGenAiTrack &&
+                !isInsightsTrack &&
+                !isProjectsTrack &&
+                hasFoundationsVisualNotes(effectiveTopicId) ? (
+                <div
+                  className="w-full h-full overflow-y-auto p-1 sm:p-3 select-text rounded-2xl relative"
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: '#d8b4fe #faf5ff' }}
+                >
+                  <FoundationsVisualLessonViewer
+                    topicId={effectiveTopicId}
+                    activeSectionId={activeMentorSection?.id}
+                    speechProgress={mentorSpeechProgress}
+                    liveTypedText={mentorLiveTypedText}
+                    isMentorSpeaking={isMentorSpeaking}
+                    onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                    onScrollSettled={() => setMentorScrollSettled(true)}
+                    language={mentorLanguage === 'hindi' ? 'hi' : 'en'}
+                    onLanguageChange={(l) => setMentorLanguage(l === 'hi' ? 'hindi' : 'english')}
+                  />
+                </div>
+              ) : !isExcelTrack &&
+                !isSqlTrack &&
+                !isPowerBiTrack &&
+                !isGenAiTrack &&
+                !isInsightsTrack &&
+                !isProjectsTrack &&
+                hasPythonVisualNotes(effectiveTopicId) ? (
+                <div
+                  className="w-full h-full overflow-y-auto p-1 sm:p-3 select-text rounded-2xl relative"
+                  style={{ scrollbarWidth: 'thin', scrollbarColor: '#d8b4fe #faf5ff' }}
+                >
+                  <PythonVisualLessonViewer
+                    topicId={effectiveTopicId}
+                    activeSectionId={activeMentorSection?.id}
+                    speechProgress={mentorSpeechProgress}
+                    liveTypedText={mentorLiveTypedText}
+                    isMentorSpeaking={isMentorSpeaking}
+                    onSectionRectChange={(rect) => setMentorSectionRect(rect)}
+                    onScrollSettled={() => setMentorScrollSettled(true)}
+                    language={mentorLanguage === 'hindi' ? 'hi' : 'en'}
+                    onLanguageChange={(l) => setMentorLanguage(l === 'hi' ? 'hindi' : 'english')}
                   />
                 </div>
               ) : (effectiveTopicId >= 1 && effectiveTopicId <= 80) ? (
@@ -3047,145 +3534,369 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
               )}
             </div>
 
-            {/* ── RIGHT PANEL: VIDEO LESSON & ACTIONS (approx. 40% width) ── */}
-            <div className="lg:col-span-5 bg-white rounded-3xl border border-purple-100/90 p-5 sm:p-6 shadow-2xs space-y-4">
+            {/* ── RIGHT PANEL: COMPACT VIDEO LESSON SIDEBAR (approx. 25% width) ── */}
+            <div className="w-full bg-white rounded-2xl border border-[#E9E5F5] p-3.5 shadow-[0_6px_24px_rgba(109,40,217,0.06)] space-y-3">
               {/* Header */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-purple-950 font-black text-sm">
-                  <div className="w-6 h-6 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center">
-                    <Play className="w-2.5 h-2.5 fill-current" />
+              <div className="flex items-center justify-between gap-1.5">
+                <div className="flex items-center gap-2 text-[#111827] font-extrabold text-[13px]">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#7C3AED] to-[#6D28D9] text-white flex items-center justify-center shadow-[0_3px_10px_rgba(109,40,217,0.28)]">
+                    <Play className="w-2.5 h-2.5 fill-current ml-0.5" />
                   </div>
-                  <span>Video Lesson (Optional)</span>
+                  <span>Video Lesson</span>
+                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-[#F5F0FF] text-[#6D28D9] border border-[#E5DCFE]">
+                    HD
+                  </span>
                 </div>
-                <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-700 border border-purple-200/60 flex items-center gap-1">
-                  <Clock className="w-3 h-3 text-purple-600" />
-                  <span>10:24 min</span>
+                <span className="px-2 py-0.5 rounded-lg text-[11px] font-bold bg-[#FAF8FF] text-[#5B21B6] border border-[#E5DCFE] flex items-center gap-1 font-mono">
+                  <Clock className="w-3 h-3 text-[#7C3AED]" />
+                  <span>10:24</span>
                 </span>
               </div>
 
-              {/* Video Screen: Large, full width of column, NO AUTOPLAY */}
-              <div className="rounded-2xl overflow-hidden border border-slate-200/90 relative bg-slate-950 aspect-video shadow-xs w-full">
-                {isCurrentTopicLocked ? (
-                  <div className="w-full h-full flex flex-col items-center justify-center bg-slate-950 text-white p-4 text-center">
-                    <Lock className="w-6 h-6 text-amber-400 mb-2" />
-                    <span className="text-xs font-bold text-amber-300">Locked Video Lesson</span>
-                  </div>
-                ) : topic1VideoSource === 'drive' ? (
-                  <iframe
-                    src="https://drive.google.com/file/d/1lpQ_5Imk74nnE2YueuEBidHpXkKGIT9H/preview"
-                    title="1.1 What Is Data Analytics? - Video Lesson"
-                    className="w-full h-full border-none"
-                    allow="fullscreen; encrypted-media; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : (
-                  <video
-                    ref={lessonVideoRef}
-                    src="/videos/what_is_programming_lesson.mp4"
-                    poster="/images/topic_learn/what_is_programming_poster.jpg"
-                    controls
-                    autoPlay={false}
-                    playsInline
-                    className="w-full h-full object-contain"
-                    onPlay={() => setIsVideoPlaying(true)}
-                    onPause={() => setIsVideoPlaying(false)}
-                    onEnded={() => {
-                      setIsVideoPlaying(false);
-                      setIsVideoCompleted(true);
-                    }}
-                  />
-                )}
-                {/* Switch source pill */}
-                <div className="absolute top-2.5 right-2.5 z-20 bg-slate-900/85 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20">
+              {/* Video Screen: Topic-Matched Video or Interactive AI Mentor Visual Walkthrough (Never unrelated video!) */}
+              {(() => {
+                const mernNote = isFullStackMernCourse ? getFullStackMernVisualNote(effectiveTopicId) : null;
+                const msoNote = isMsOfficeCourse ? getMsOfficeVisualNote(effectiveTopicId) : null;
+                const atpNote = isAiToolsPromptCourse ? getAiToolsPromptVisualNote(effectiveTopicId) : null;
+                const aiNote = isAiEngineeringCourse ? getAiEngineeringVisualNote(effectiveTopicId) : null;
+                const mlNote = isMlEngineeringCourse ? getMlEngineeringVisualNote(effectiveTopicId) : null;
+                const dsNote = isDataScienceCourse ? getDataScienceVisualNote(effectiveTopicId) : null;
+                const activeCourseNote = mernNote || msoNote || atpNote || aiNote || mlNote || dsNote;
+                const resolvedTopicTitle = isFullStackMernCourse
+                  ? mernNote?.topic || currentTopicData?.topicTitle || `Full-Stack MERN Topic ${effectiveTopicId}`
+                  : isMsOfficeCourse
+                  ? msoNote?.topic || currentTopicData?.topicTitle || `Microsoft 365 Topic ${effectiveTopicId}`
+                  : isAiToolsPromptCourse
+                  ? atpNote?.topic || currentTopicData?.topicTitle || `AI Tools & Prompt Topic ${effectiveTopicId}`
+                  : isAiEngineeringCourse
+                  ? aiNote?.topic || currentTopicData?.topicTitle || `AI Engineering Topic ${effectiveTopicId}`
+                  : isMlEngineeringCourse
+                  ? mlNote?.topic || currentTopicData?.topicTitle || `ML Engineering Topic ${effectiveTopicId}`
+                  : isDataScienceCourse
+                  ? dsNote?.topic || currentTopicData?.topicTitle || `Data Science Topic ${effectiveTopicId}`
+                  : getTopicQuestionBank(urlTabId, effectiveTopicId)?.topicTitle ||
+                    topicHierarchy?.topicTitle ||
+                    currentTopicData?.topicTitle ||
+                    'Data Analytics & Programming';
+                const resolvedModuleLabel = isFullStackMernCourse
+                  ? mernNote
+                    ? `${mernNote.module} • ${mernNote.moduleTitle}`
+                    : 'Full-Stack MERN Development with AI'
+                  : isMsOfficeCourse
+                  ? msoNote
+                    ? `${msoNote.module} • ${msoNote.moduleTitle}`
+                    : 'Microsoft 365 with Copilot AI'
+                  : isAiToolsPromptCourse
+                  ? atpNote
+                    ? `${atpNote.module} • ${atpNote.moduleTitle}`
+                    : 'AI Tools & Prompt Engineering'
+                  : isAiEngineeringCourse
+                  ? aiNote
+                    ? `${aiNote.module} • ${aiNote.moduleTitle}`
+                    : 'AI Engineering'
+                  : isMlEngineeringCourse
+                  ? mlNote
+                    ? `${mlNote.module} • ${mlNote.moduleTitle}`
+                    : 'Machine Learning Engineering'
+                  : isDataScienceCourse
+                  ? dsNote
+                    ? `${dsNote.module} • ${dsNote.moduleTitle}`
+                    : 'Data Science & Agentic AI'
+                  : topicHierarchy?.moduleName || 'Data Analyst with GenAI';
+
+                const isDataAnalyticsIntroTopic =
+                  !isDataScienceCourse && !isMlEngineeringCourse && !isAiEngineeringCourse && !isAiToolsPromptCourse && !isMsOfficeCourse && !isFullStackMernCourse && effectiveTopicId === 1;
+                const isProgrammingIntroTopic =
+                  (!isDataScienceCourse && !isMlEngineeringCourse && !isAiEngineeringCourse && !isAiToolsPromptCourse && !isMsOfficeCourse && !isFullStackMernCourse && effectiveTopicId === 11) ||
+                  (isDataScienceCourse && effectiveTopicId === 32);
+                const hasDedicatedVideo = isDataAnalyticsIntroTopic || isProgrammingIntroTopic;
+
+                return (
+                  <>
+                    <div className="rounded-xl overflow-hidden border border-[#E5DCFE] relative bg-slate-950 aspect-video shadow-[0_8px_22px_rgba(15,23,42,0.12)] w-full">
+                      {isCurrentTopicLocked ? (
+                        <div className="w-full h-full flex flex-col items-center justify-center bg-slate-950 text-white p-4 text-center">
+                          <Lock className="w-6 h-6 text-amber-400 mb-2" />
+                          <span className="text-xs font-bold text-amber-300">Locked Video Lesson</span>
+                        </div>
+                      ) : isDataAnalyticsIntroTopic && topic1VideoSource === 'drive' ? (
+                        <iframe
+                          src="https://drive.google.com/file/d/1lpQ_5Imk74nnE2YueuEBidHpXkKGIT9H/preview"
+                          title={`${resolvedTopicTitle} - Video Lesson`}
+                          className="w-full h-full border-none"
+                          allow="fullscreen; encrypted-media; picture-in-picture"
+                          allowFullScreen
+                        />
+                      ) : isProgrammingIntroTopic ? (
+                        <video
+                          ref={lessonVideoRef}
+                          src="/videos/what_is_programming_lesson.mp4"
+                          poster="/images/topic_learn/what_is_programming_poster.jpg"
+                          controls
+                          autoPlay={false}
+                          playsInline
+                          className="w-full h-full object-contain"
+                          onPlay={() => setIsVideoPlaying(true)}
+                          onPause={() => setIsVideoPlaying(false)}
+                          onEnded={() => {
+                            setIsVideoPlaying(false);
+                            setIsVideoCompleted(true);
+                          }}
+                        />
+                      ) : (
+                        <div
+                          className="w-full h-full flex flex-col items-center justify-between p-4 text-center select-none"
+                          style={{
+                            background:
+                              'radial-gradient(circle at 50% 25%, rgba(139, 92, 246, 0.28), rgba(15, 23, 42, 0.96) 75%)',
+                          }}
+                        >
+                          <span className="px-2.5 py-0.5 rounded-full bg-white/10 border border-white/15 text-[10px] font-bold tracking-wider uppercase text-purple-200 truncate max-w-full">
+                            {resolvedModuleLabel}
+                          </span>
+                          <div className="space-y-1 px-2">
+                            <div className="text-[14px] sm:text-[15px] font-extrabold text-white leading-snug line-clamp-2">
+                              {resolvedTopicTitle}
+                            </div>
+                            <p className="text-[11px] text-slate-300 font-medium m-0">
+                              Interactive Handwritten Visual Notes + Synchronized AI Mentor Voice Lesson
+                            </p>
+                          </div>
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EDE6FF] text-[#2A174A] text-[11px] font-bold shadow-xs">
+                            <Sparkles className="w-3.5 h-3.5 text-[#6D28D9]" />
+                            <span>Tap AI Mentor on Left to Listen Live</span>
+                          </span>
+                        </div>
+                      )}
+                      {hasDedicatedVideo && (
+                        <div className="absolute top-2.5 right-2.5 z-20 bg-slate-900/90 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/15 shadow-sm">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setTopic1VideoSource((prev) => (prev === 'drive' ? 'local' : 'drive'));
+                            }}
+                            className="text-[11px] font-semibold text-slate-200 hover:text-white flex items-center gap-1.5 cursor-pointer tracking-tight"
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                            <span>{topic1VideoSource === 'drive' ? 'Cloud Stream' : '1080p HD'}</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* ── What You Will Learn Card (Strictly Matched to Current Course & Topic) ── */}
+                    {(() => {
+                      const sectionPills = activeCourseNote
+                        ? activeCourseNote.pages
+                            .flatMap((p) => p.sections.map((s) => s.pill))
+                            .filter(Boolean)
+                            .slice(0, 2)
+                        : [];
+                      const learningPoints = [
+                        `Core concepts and foundation of ${resolvedTopicTitle}`,
+                        sectionPills[0]
+                          ? `${sectionPills[0]} & real-world visual walkthrough`
+                          : `Real-world business use cases & practical implementation`,
+                        sectionPills[1]
+                          ? `${sectionPills[1]} & hands-on examples`
+                          : `Interactive problem-solving for Coding Game challenges`,
+                        `Key interview questions & answers for ${resolvedTopicTitle}`,
+                      ];
+                      return (
+                        <div className="rounded-xl bg-gradient-to-br from-[#FAF8FF] via-white to-[#F5F0FF] border border-[#E5DCFE] p-3.5 space-y-2.5 shadow-[0_2px_10px_rgba(109,40,217,0.04)]">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-lg bg-[#EDE9FE] text-[#6D28D9] flex items-center justify-center shrink-0">
+                                <Sparkles className="w-3.5 h-3.5" />
+                              </div>
+                              <h3 className="text-[13px] font-extrabold text-[#111827] tracking-tight m-0">
+                                What You Will Learn
+                              </h3>
+                            </div>
+                            <span className="text-[10.5px] font-bold text-[#6D28D9] bg-white px-2 py-0.5 rounded-full border border-[#DDD6FE]">
+                              4 Key Takeaways
+                            </span>
+                          </div>
+
+                          <ul className="space-y-1.5 m-0 p-0 list-none">
+                            {learningPoints.map((pt, idx) => (
+                              <li
+                                key={idx}
+                                className="flex items-start gap-2 text-[12px] font-semibold text-[#334155] leading-snug"
+                              >
+                                <CheckCircle2 className="w-3.5 h-3.5 text-[#7C3AED] shrink-0 mt-0.5" />
+                                <span>{pt}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      );
+                    })()}
+                  </>
+                );
+              })()}
+
+              {/* Single Row: Left = Practice (Google Light) | Center = Previous Lesson | Right = Next Lesson */}
+              <div className="flex items-center justify-between gap-2 pt-1 flex-wrap sm:flex-nowrap">
+                {/* Left: Compact White "Practice" Button with 4-Side Google Running Light */}
+                <div className="relative group overflow-hidden p-[2px] rounded-xl inline-flex shrink-0 shadow-[0_0_14px_rgba(66,133,244,0.24),0_0_20px_rgba(139,92,246,0.20)] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]">
+                  <div className="google-border-beam-glow pointer-events-none" />
+                  <div className="google-border-beam-spinner pointer-events-none" />
+
                   <button
                     type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setTopic1VideoSource((prev) => (prev === 'drive' ? 'local' : 'drive'));
+                    onClick={() => {
+                      soundEffects.playClick();
+                      handleSelectTab('play');
                     }}
-                    className="text-[10px] font-bold text-sky-400 hover:text-sky-300 flex items-center gap-1 cursor-pointer"
+                    className="relative z-10 inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-[10px] font-extrabold text-xs bg-white hover:bg-slate-50 text-slate-900 hover:text-[#6D28D9] transition-colors cursor-pointer"
                   >
-                    <span>{topic1VideoSource === 'drive' ? '🌐 Google Drive' : '⚡ Fast HD'}</span>
+                    <Gamepad2 className="w-3.5 h-3.5 text-[#6D28D9]" />
+                    <span>Practice</span>
+                    <ArrowRight className="w-3 h-3 text-[#6D28D9]" />
                   </button>
                 </div>
-              </div>
 
-              {/* Primary CTA: Start Coding Game (Full Width) */}
-              <button
-                type="button"
-                onClick={() => {
-                  soundEffects.playClick();
-                  handleSelectTab('play');
-                }}
-                className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-[0.99]"
-              >
-                <Gamepad2 className="w-4 h-4" />
-                <span>{isExcelTrack ? 'Practice in Excel / Quiz' : 'Start Coding Game'}</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-
-              {/* Bottom Lesson Navigation Buttons Side-by-Side */}
-              <div className="grid grid-cols-2 gap-3 pt-1">
+                {/* Center: Compact Previous Lesson Button */}
                 <button
                   type="button"
                   onClick={() => {
                     soundEffects.playClick();
-                    const minTopic = isExcelTrack ? 27 : 1;
+                    const minTopic = (isFullStackMernCourse || isMsOfficeCourse || isAiToolsPromptCourse || isAiEngineeringCourse || isMlEngineeringCourse || isDataScienceCourse)
+                      ? 1
+                      : isProjectsTrack
+                      ? (effectiveTopicId >= 317 ? 317 : 237)
+                      : (isInsightsTrack
+                        ? (effectiveTopicId >= 286 ? 286 : 206)
+                        : (isGenAiTrack
+                          ? (effectiveTopicId >= 253 ? 253 : 173)
+                          : (isPowerBiTrack
+                            ? (effectiveTopicId >= 207 ? 207 : 127)
+                            : (isSqlTrack ? 77 : (isExcelTrack ? 27 : 1)))));
                     const prevId = Math.max(minTopic, effectiveTopicId - 1);
                     if (prevId !== effectiveTopicId) {
                       setEffectiveTopicId(prevId);
                     }
                   }}
-                  disabled={isExcelTrack ? effectiveTopicId <= 27 : effectiveTopicId <= 1}
-                  className="py-2.5 px-4 rounded-xl bg-white border border-slate-200/90 hover:bg-slate-50 text-slate-700 text-xs font-bold transition disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
+                  disabled={
+                    (isFullStackMernCourse || isMsOfficeCourse || isAiToolsPromptCourse || isAiEngineeringCourse || isMlEngineeringCourse || isDataScienceCourse)
+                      ? effectiveTopicId <= 1
+                      : isProjectsTrack
+                      ? effectiveTopicId <= (effectiveTopicId >= 317 ? 317 : 237)
+                      : (isInsightsTrack
+                        ? effectiveTopicId <= (effectiveTopicId >= 286 ? 286 : 206)
+                        : (isGenAiTrack
+                          ? effectiveTopicId <= (effectiveTopicId >= 253 ? 253 : 173)
+                          : (isPowerBiTrack
+                            ? effectiveTopicId <= (effectiveTopicId >= 207 ? 207 : 127)
+                            : (isSqlTrack ? effectiveTopicId <= 77 : (isExcelTrack ? effectiveTopicId <= 27 : effectiveTopicId <= 1)))))
+                  }
+                  className="px-2.5 py-1.5 rounded-xl bg-[#FAF8FF] border border-[#DDD6FE] hover:bg-[#F3EEFF] hover:border-[#C4B5FD] text-[#4C1D95] text-[11px] font-extrabold transition disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs inline-flex items-center justify-center gap-1 cursor-pointer shrink-0"
                 >
-                  <ChevronLeft className="w-3.5 h-3.5" />
-                  <span>Previous Lesson</span>
+                  <ChevronLeft className="w-3 h-3 text-[#6D28D9]" />
+                  <span>Prev</span>
                 </button>
 
+                {/* Right: Compact Next Lesson Button */}
                 <button
                   type="button"
                   onClick={() => {
                     soundEffects.playClick();
-                    const maxTopic = isExcelTrack ? 76 : 80;
+                    const maxTopic = isFullStackMernCourse
+                      ? 348
+                      : isMsOfficeCourse
+                      ? 301
+                      : isAiToolsPromptCourse
+                      ? 332
+                      : isAiEngineeringCourse
+                      ? 343
+                      : isMlEngineeringCourse
+                      ? 120
+                      : isDataScienceCourse
+                      ? 427
+                      : isProjectsTrack
+                      ? (effectiveTopicId >= 317 ? 345 : 265)
+                      : (isInsightsTrack
+                        ? (effectiveTopicId >= 286 ? 316 : 236)
+                        : (isGenAiTrack
+                          ? (effectiveTopicId >= 253 ? 285 : 205)
+                          : (isPowerBiTrack
+                            ? (effectiveTopicId >= 207 ? 252 : 172)
+                            : (isSqlTrack ? 126 : (isExcelTrack ? 76 : 80)))));
                     const nextId = Math.min(maxTopic, effectiveTopicId + 1);
                     if (nextId !== effectiveTopicId) {
                       setEffectiveTopicId(nextId);
                       if (onNavigateNextTopic) onNavigateNextTopic(nextId);
                     }
                   }}
-                  disabled={isExcelTrack ? effectiveTopicId >= 76 : effectiveTopicId >= 80}
-                  className="py-2.5 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-bold transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                  disabled={
+                    isFullStackMernCourse
+                      ? effectiveTopicId >= 348
+                      : isMsOfficeCourse
+                      ? effectiveTopicId >= 301
+                      : isAiToolsPromptCourse
+                      ? effectiveTopicId >= 332
+                      : isAiEngineeringCourse
+                      ? effectiveTopicId >= 343
+                      : isMlEngineeringCourse
+                      ? effectiveTopicId >= 120
+                      : isDataScienceCourse
+                      ? effectiveTopicId >= 427
+                      : isProjectsTrack
+                      ? effectiveTopicId >= (effectiveTopicId >= 317 ? 345 : 265)
+                      : (isInsightsTrack
+                        ? effectiveTopicId >= (effectiveTopicId >= 286 ? 316 : 236)
+                        : (isGenAiTrack
+                          ? effectiveTopicId >= (effectiveTopicId >= 253 ? 285 : 205)
+                          : (isPowerBiTrack
+                            ? effectiveTopicId >= (effectiveTopicId >= 207 ? 252 : 172)
+                            : (isSqlTrack ? effectiveTopicId >= 126 : (isExcelTrack ? effectiveTopicId >= 76 : effectiveTopicId >= 80)))))
+                  }
+                  className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#5B21B6] hover:from-[#6D28D9] hover:to-[#4C1D95] text-white text-[11px] font-extrabold transition shadow-[0_4px_12px_rgba(109,40,217,0.24)] inline-flex items-center justify-center gap-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
                 >
-                  <span>Next Lesson</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
+                  <span>Next</span>
+                  <ChevronRight className="w-3 h-3 text-purple-100" />
                 </button>
               </div>
             </div>
           </div>
 
-            {/* Future IT Mentor: Flying AI Robot Mascot & Auto-Scroll Controller */}
+            {/* Future IT Mentor: Flying AI Robot Mascot & Tap-to-Explain Controller (Active on all tracks) */}
             <FutureITMentor
-              topicId={effectiveTopicId}
-              isExcelTrack={isExcelTrack}
-              sectionRect={mentorSectionRect}
-              scrollSettled={mentorScrollSettled}
-              language={mentorLanguage}
-              onLanguageChange={setMentorLanguage}
-              isVideoPlaying={isVideoPlaying}
-              onPlayMentor={() => {
-                if (lessonVideoRef.current && !lessonVideoRef.current.paused) {
-                  lessonVideoRef.current.pause();
-                }
-                setIsVideoPlaying(false);
-              }}
-              onActiveSectionChange={(section) => {
-                setActiveMentorSection(section);
-                setMentorUserScrolled(false);
-              }}
-              onUserManualScrollDetected={mentorUserScrolled}
-              onResetUserManualScroll={() => setMentorUserScrolled(false)}
-            />
+                topicId={effectiveTopicId}
+                isExcelTrack={isExcelTrack}
+                isSqlTrack={isSqlTrack}
+                isDataScienceCourse={isDataScienceCourse}
+                isMlEngineeringCourse={isMlEngineeringCourse}
+                isAiEngineeringCourse={isAiEngineeringCourse}
+                isAiToolsPromptCourse={isAiToolsPromptCourse}
+                isMsOfficeCourse={isMsOfficeCourse}
+                isFullStackMernCourse={isFullStackMernCourse}
+                sectionRect={mentorSectionRect}
+                scrollSettled={mentorScrollSettled}
+                language={mentorLanguage}
+                onLanguageChange={setMentorLanguage}
+                isVideoPlaying={isVideoPlaying}
+                onPlayMentor={() => {
+                  if (lessonVideoRef.current && !lessonVideoRef.current.paused) {
+                    lessonVideoRef.current.pause();
+                  }
+                  setIsVideoPlaying(false);
+                }}
+                onActiveSectionChange={(section) => {
+                  setActiveMentorSection(section);
+                  setMentorSpeechProgress(0);
+                  setMentorUserScrolled(false);
+                }}
+                onSpeechProgressChange={(p) => setMentorSpeechProgress(p)}
+                onLiveTypedTextChange={(text, speaking) => {
+                  setMentorLiveTypedText(text);
+                  setIsMentorSpeaking(speaking);
+                }}
+                onUserManualScrollDetected={mentorUserScrolled}
+                onResetUserManualScroll={() => setMentorUserScrolled(false)}
+              />
           </>
         )}
 
@@ -3926,6 +4637,9 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                 userName={userName}
                 tabId={urlTabId}
                 topicId={effectiveTopicId}
+                customQuestionBank={activeCourseQuestionBank}
+                courseKeyOverride={activeCourseQuestionBank ? activeCourseKey : undefined}
+                courseTitleOverride={activeCourseQuestionBank?.tabName}
                 onSelectTopic={(newId) => setEffectiveTopicId(newId)}
                 onBackToCourse={handleBackToCourse}
                 onBackToVideo={() => handleSelectTab('learn')}
@@ -4059,14 +4773,10 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                           <span className="text-sm">🧩</span>
                           <div>
                             <h3 className="stage-title">
-                              {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l1Title || 'लेवल 1 — Code पहेली: सही Syntax जोड़ें')
-                                : 'Level 1 — Code Puzzle: Syntax Assembler'}
+                              {currentTopicData.game.l1.title || 'Level 1 — Code Puzzle: Syntax Assembler'}
                             </h3>
                             <p className="stage-sub">
-                              {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l1Desc || 'ब्लॉक्स पर क्लिक करके Python का सही print कमांड बनाएं।')
-                                : 'Click the magnetic code blocks to assemble a valid Python print command.'}
+                              {currentTopicData.game.l1.question || 'Click the magnetic blocks in the exact logical order.'}
                             </p>
                           </div>
                         </div>
@@ -4080,7 +4790,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                         {/* Blocks Palette */}
                         <div className="l1-blocks-palette-card">
                           <div className="l1-palette-head">
-                            <strong className="l1-palette-title">Magnetic Code Blocks</strong>
+                            <strong className="l1-palette-title">Magnetic Puzzle Blocks</strong>
                             <span className="l1-palette-hint">Click block to slot</span>
                           </div>
                           <div className="l1-chips-grid">
@@ -4109,56 +4819,40 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                         {/* Dropzone Assembly Runway */}
                         <div className="l1-assembly-card">
                           <div className="l1-runway-header">
-                            <div className="flex items-center gap-2">
-                              <Terminal className="w-3.5 h-3.5 text-cyan-500" />
-                              <span className="text-xs font-bold text-slate-700">
-                                Target: Print greeting text <code className="text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded font-bold">"Hello, Python!"</code>
+                            <div className="flex items-center gap-2 min-w-0">
+                              <Terminal className="w-3.5 h-3.5 text-cyan-500 flex-shrink-0" />
+                              <span className="text-xs font-bold text-slate-700 truncate">
+                                Target: <code className="text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded font-bold">{currentTopicData.topicTitle}</code>
                               </span>
                             </div>
-                            <span className="text-[11px] font-semibold text-slate-600">3 Slots</span>
+                            <span className="text-[11px] font-semibold text-slate-600 flex-shrink-0">
+                              {l1ExpectedOrder.length} Slots
+                            </span>
                           </div>
 
-                          <div className="l1-slots-runway">
+                          <div className="l1-slots-runway flex-wrap">
                             <span className="l1-line-num">1</span>
 
-                            {/* Slot 0: Function call */}
-                            <div
-                              className={`l1-magnetic-slot slot-blue ${l1Slots[0] ? 'has-item' : ''}`}
-                              onClick={() => l1Slots[0] && handleL1Remove(0)}
-                              title={l1Slots[0] ? 'Click to remove block' : 'Slot 1: Function call'}
-                            >
-                              {l1Slots[0] ? (
-                                <span className="l1-placed-val">{l1AvailableBlocks.find((b) => b.id === l1Slots[0])?.text}</span>
-                              ) : (
-                                <span className="l1-slot-placeholder text-slate-400 font-sans">[ Slot 1: Command ]</span>
-                              )}
-                            </div>
-
-                            {/* Slot 1: String content */}
-                            <div
-                              className={`l1-magnetic-slot slot-pink ${l1Slots[1] ? 'has-item' : ''}`}
-                              onClick={() => l1Slots[1] && handleL1Remove(1)}
-                              title={l1Slots[1] ? 'Click to remove block' : 'Slot 2: String argument'}
-                            >
-                              {l1Slots[1] ? (
-                                <span className="l1-placed-val">{l1AvailableBlocks.find((b) => b.id === l1Slots[1])?.text}</span>
-                              ) : (
-                                <span className="l1-slot-placeholder text-slate-400 font-sans">[ Slot 2: Argument ]</span>
-                              )}
-                            </div>
-
-                            {/* Slot 2: Closing paren */}
-                            <div
-                              className={`l1-magnetic-slot slot-purple ${l1Slots[2] ? 'has-item' : ''}`}
-                              onClick={() => l1Slots[2] && handleL1Remove(2)}
-                              title={l1Slots[2] ? 'Click to remove block' : 'Slot 3: Closing parenthesis'}
-                            >
-                              {l1Slots[2] ? (
-                                <span className="l1-placed-val">{l1AvailableBlocks.find((b) => b.id === l1Slots[2])?.text}</span>
-                              ) : (
-                                <span className="l1-slot-placeholder text-slate-400 font-sans">[ Slot 3: Close ]</span>
-                              )}
-                            </div>
+                            {l1ExpectedOrder.map((_, slotIdx) => {
+                              const slotColors = ['slot-blue', 'slot-pink', 'slot-purple', 'slot-blue'];
+                              const placedId = l1Slots[slotIdx];
+                              return (
+                                <div
+                                  key={slotIdx}
+                                  className={`l1-magnetic-slot ${slotColors[slotIdx % slotColors.length]} ${placedId ? 'has-item' : ''}`}
+                                  onClick={() => placedId && handleL1Remove(slotIdx)}
+                                  title={placedId ? 'Click to remove block' : `Slot ${slotIdx + 1}: Step ${slotIdx + 1}`}
+                                >
+                                  {placedId ? (
+                                    <span className="l1-placed-val">{l1AvailableBlocks.find((b) => b.id === placedId)?.text}</span>
+                                  ) : (
+                                    <span className="l1-slot-placeholder text-slate-400 font-sans">
+                                      [ Slot {slotIdx + 1}: Step {slotIdx + 1} ]
+                                    </span>
+                                  )}
+                                </div>
+                              );
+                            })}
 
                             <span className="l1-cursor-blink">|</span>
                           </div>
@@ -4169,7 +4863,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                               <div className="flex-1 min-w-0">
                                 <strong>Level 1 Passed! 🎉</strong>
-                                <p>Output: <code className="font-mono font-bold text-emerald-800">Hello, Python!</code> (+25 Coins, +30 XP)</p>
+                                <p>Verified Flow: <code className="font-mono font-bold text-emerald-800">{currentTopicData.game.l1.explanation}</code> (+25 Coins, +30 XP)</p>
                               </div>
                               <div className="flex items-center gap-2">
                                 <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100/90 px-2 py-0.5 rounded-full animate-pulse">
@@ -4193,8 +4887,8 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                             <div className="l1-feedback-banner wrong animate-shake">
                               <AlertCircle className="w-4 h-4 text-rose-600" />
                               <div className="flex-1 min-w-0">
-                                <strong>Syntax Mismatch!</strong>
-                                <p>Python syntax requires: <code className="font-bold">print(</code> followed by string and closing <code className="font-bold">)</code>.</p>
+                                <strong>Order Mismatch!</strong>
+                                <p>Review the step-by-step sequence for <code className="font-bold">{currentTopicData.topicTitle}</code> in your Visual Learning Notes and try again.</p>
                               </div>
                             </div>
                           )}
@@ -4220,14 +4914,10 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                           <span className="text-sm">🧠</span>
                           <div>
                             <h3 className="stage-title">
-                              {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l2Title || 'लेवल 2 — सोचें: Output का सटीक अनुमान')
-                                : 'Level 2 — Think: Quantum Output Predictor'}
+                              {currentTopicData.game.l2.title || 'Level 2 — Think: Concept & Output Predictor'}
                             </h3>
                             <p className="stage-sub">
-                              {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l2Question || 'Python Code को लाइन-दर-लाइन समझें और तय करें कि क्या Output आएगा।')
-                                : 'Trace the Python code line-by-line and predict what the interpreter outputs.'}
+                              {currentTopicData.game.l2.question || 'Trace the Visual Notes example line-by-line and pick the right conclusion.'}
                             </p>
                           </div>
                         </div>
@@ -4242,7 +4932,9 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                               <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
                               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
                             </div>
-                            <span className="text-[11px] font-mono font-bold text-slate-500">quantum_tracer.py</span>
+                            <span className="text-[11px] font-mono font-bold text-slate-500">
+                              {isFullStackMernCourse ? 'mern_example.ts' : isMsOfficeCourse ? 'office_formula.txt' : isSqlTrack ? 'query_trace.sql' : 'visual_notes_trace.txt'}
+                            </span>
                             {l2Scanning && <span className="text-[10px] text-cyan-600 font-bold animate-pulse">⚡ TRACING...</span>}
                           </div>
 
@@ -4262,13 +4954,15 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
 
                           {/* Terminal Output Screen */}
                           <div className="l2-term-output-box">
-                            <span className="l2-output-label">Terminal Console Output:</span>
+                            <span className="l2-output-label">Verified Result:</span>
                             {l2Scanning ? (
-                              <span className="text-cyan-600 font-mono text-xs animate-pulse">Running interpreter...</span>
+                              <span className="text-cyan-600 font-mono text-xs animate-pulse">Tracing Visual Notes example...</span>
                             ) : l2Result === 'correct' ? (
-                              <span className="text-emerald-700 font-mono text-xs font-bold">» Python 3 is Awesome!</span>
+                              <span className="text-emerald-700 font-mono text-xs font-bold">
+                                » {l2Options.find((o) => o.isCorrect)?.text || 'Verified!'}
+                              </span>
                             ) : l2Result === 'wrong' ? (
-                              <span className="text-rose-600 font-mono text-xs font-bold">» Evaluation failed. Try another prediction!</span>
+                              <span className="text-rose-600 font-mono text-xs font-bold">» Not quite — check the Visual Learning Notes and try another option!</span>
                             ) : (
                               <span className="text-slate-600 font-mono text-xs italic">[Awaiting student prediction]</span>
                             )}
@@ -4349,14 +5043,10 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                           <span className="text-sm">🐞</span>
                           <div>
                             <h3 className="stage-title">
-                              {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l3Title || 'लेवल 3 — Debug: साइबर बग हंटर')
-                                : 'Level 3 — Debug: Cyber Bug Hunter'}
+                              {currentTopicData.game.l3.title || 'Level 3 — Debug: Cyber Bug Hunter'}
                             </h3>
                             <p className="stage-sub">
-                              {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l3Question || 'Code में छिपे बग की पहचान करें और सही पैच लगाकर फिक्स करें!')
-                                : 'A rogue bug drone is sabotaging line 2. Lock the laser crosshair and deploy the patch!'}
+                              {currentTopicData.game.l3.question || 'Spot the buggy line from Visual Learning Notes and deploy the right patch!'}
                             </p>
                           </div>
                         </div>
@@ -4387,7 +5077,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                                 >
                                   <span className="l3-num">{item.line}</span>
                                   <code className="l3-code-snippet font-mono">
-                                    {l3BugDefeated && item.isBug ? 'print(f"Deploying agent: {player_name}")' : item.text}
+                                    {l3BugDefeated && item.isBug ? (l3Patches.find((p) => p.isCorrect)?.code || item.text) : item.text}
                                   </code>
 
                                   {/* Holographic Cyber Bug Drone */}
@@ -4440,7 +5130,9 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                           {l3Result === 'wrong' && (
                             <div className="l3-wrong-alert animate-shake">
                               <AlertCircle className="w-3.5 h-3.5 text-rose-600" />
-                              <span>Laser deflected! Python uses <code className="font-bold">print()</code> to output text.</span>
+                              <span>
+                                Laser deflected! {l3Lines.find((l) => l.isBug)?.bugMsg || 'Select the buggy line and choose the Pro Habit patch from Visual Learning Notes.'}
+                              </span>
                             </div>
                           )}
 
@@ -4494,14 +5186,10 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                           <span className="text-sm">⚙️</span>
                           <div>
                             <h3 className="stage-title">
-                              {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l4Title || 'लेवल 4 — निर्माण: Code ब्लूप्रिंट मशीन')
-                                : 'Level 4 — Build: Component Blueprint Machine'}
+                              {currentTopicData.game.l4.title || 'Level 4 — Build: Component Blueprint Machine'}
                             </h3>
                             <p className="stage-sub">
-                              {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l4Question || 'आवश्यक टोकन्स जोड़कर सही Code बनाएं और टेस्ट रनर चलाएं।')
-                                : 'Construct the XP calculation function and execute the automated test runner.'}
+                              {currentTopicData.game.l4.question || 'Snap the two required tokens into Slot 1 and Slot 2 to complete the blueprint.'}
                             </p>
                           </div>
                         </div>
@@ -4515,55 +5203,62 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                         {/* Left: Blueprint Constructor */}
                         <div className="l4-blueprint-card">
                           <div className="l4-bp-header">
-                            <span className="text-xs font-bold text-slate-700">Python Function Blueprint</span>
-                            <span className="text-[11px] font-mono font-bold text-cyan-600">def calculate_xp()</span>
+                            <span className="text-xs font-bold text-slate-700">{currentTopicData.topicTitle} Blueprint</span>
+                            <span className="text-[11px] font-mono font-bold text-cyan-600">2-Stage Pipeline</span>
                           </div>
 
                           <div className="l4-blueprint-code-body">
                             <div className="l4-bp-line">
                               <span className="l4-bp-num">1</span>
-                              <code className="text-slate-800 font-mono font-bold">
-                                def calculate_xp(lessons, bonus):
+                              <code className="text-slate-800 font-mono font-bold whitespace-pre-wrap">
+                                {currentTopicData.game.l4.prefixCode}
                               </code>
                             </div>
-                            <div className="l4-bp-line l4-indent">
+                            <div className="l4-bp-line l4-indent flex-wrap">
                               <span className="l4-bp-num">2</span>
-                              <span className="text-purple-600 font-mono font-bold mr-2">return</span>
 
                               {/* Slot 1: Token */}
                               <div
                                 className={`l4-slot-chip ${l4Slot1 ? 'has-item' : ''}`}
                                 onClick={() => setL4Slot1(null)}
-                                title={l4Slot1 ? 'Click to remove' : 'Slot 1: Select variable token'}
+                                title={l4Slot1 ? 'Click to remove' : currentTopicData.game.l4.slot1Target}
                               >
                                 {l4Slot1 ? (
                                   <span className="font-mono font-bold">{l4Slot1}</span>
                                 ) : (
-                                  <span className="text-slate-400 italic text-[11px] font-sans">[ Slot 1 ]</span>
+                                  <span className="text-slate-400 italic text-[11px] font-sans">[ {currentTopicData.game.l4.slot1Target || 'Slot 1'} ]</span>
                                 )}
                               </div>
 
-                              <span className="text-slate-700 font-mono font-black mx-1.5">* 10 +</span>
+                              <span className="text-slate-700 font-mono font-black mx-1.5">
+                                {currentTopicData.game.l4.midCode || '→'}
+                              </span>
 
-                              {/* Slot 2: Bonus Token */}
+                              {/* Slot 2: Token */}
                               <div
                                 className={`l4-slot-chip ${l4Slot2 ? 'has-item' : ''}`}
                                 onClick={() => setL4Slot2(null)}
-                                title={l4Slot2 ? 'Click to remove' : 'Slot 2: Select addition token'}
+                                title={l4Slot2 ? 'Click to remove' : currentTopicData.game.l4.slot2Target}
                               >
                                 {l4Slot2 ? (
                                   <span className="font-mono font-bold">{l4Slot2}</span>
                                 ) : (
-                                  <span className="text-slate-400 italic text-[11px] font-sans">[ Slot 2 ]</span>
+                                  <span className="text-slate-400 italic text-[11px] font-sans">[ {currentTopicData.game.l4.slot2Target || 'Slot 2'} ]</span>
                                 )}
                               </div>
+
+                              {currentTopicData.game.l4.suffixCode && (
+                                <span className="text-slate-600 font-mono text-xs ml-1.5">
+                                  {currentTopicData.game.l4.suffixCode}
+                                </span>
+                              )}
                             </div>
                           </div>
 
                           {/* Token Bay */}
                           <div className="l4-token-bay">
                             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                              Available Formula Tokens:
+                              Available Visual Notes Tokens:
                             </span>
                             <div className="flex flex-wrap gap-1.5">
                               {l4AvailableTokens.map((tok) => (
@@ -4585,15 +5280,15 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                         {/* Right: Test Suite Console */}
                         <div className="l4-test-runner-card">
                           <div className="l4-test-header">
-                            <strong className="text-xs font-bold text-slate-800">Automated Test Suite</strong>
-                            {l4RunningTests && <span className="text-[11px] text-cyan-600 font-bold animate-pulse">Running 3 Tests...</span>}
+                            <strong className="text-xs font-bold text-slate-800">Automated Verification Suite</strong>
+                            {l4RunningTests && <span className="text-[11px] text-cyan-600 font-bold animate-pulse">Running 3 Checks...</span>}
                           </div>
 
                           <div className="l4-tests-stack">
                             {[
-                              { name: 'Test 1: calculate_xp(5, 20)', expected: '70', stepReq: 1 },
-                              { name: 'Test 2: calculate_xp(10, 50)', expected: '150', stepReq: 2 },
-                              { name: 'Test 3: calculate_xp(0, 100)', expected: '100', stepReq: 3 },
+                              { name: `Check 1: Stage 1 matches "${currentTopicData.game.l4.slot1Target}"`, expected: 'PASS', stepReq: 1 },
+                              { name: `Check 2: Stage 2 matches "${currentTopicData.game.l4.slot2Target}"`, expected: 'PASS', stepReq: 2 },
+                              { name: `Check 3: Output verifies ${currentTopicData.topicTitle}`, expected: currentTopicData.game.l4.expectedOutput || 'Verified', stepReq: 3 },
                             ].map((tc, idx) => {
                               const isEvaluated = l4TestStep >= tc.stepReq;
                               const isPassed = isEvaluated && l4Result === 'correct';
@@ -4667,14 +5362,10 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                           <Swords className="w-5 h-5 text-rose-500" />
                           <div>
                             <h3 className="stage-title text-rose-900">
-                              {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l5Title || 'लेवल 5 — बॉस फाइट: द साइबर सेंटिनल')
-                                : 'Level 5 — BOSS FIGHT: The Cyber Sentinel'}
+                              {l5BossData.title || 'Level 5 — BOSS FIGHT: Real-World Challenge'}
                             </h3>
                             <p className="stage-sub">
-                              {activityLang === 'hi'
-                                ? (currentHindiActivity.game.l5Question || 'असली Python मुकाबला! शील्ड को तोड़ें और सही Python कमांड से बॉस को हराएं।')
-                                : "Real Python combat! Breach Giga-Glitch's shield and fire the ultimate Python strike."}
+                              {l5BossData.question || 'Apply your Visual Learning Notes to defeat the Production Boss!'}
                             </p>
                           </div>
                         </div>
@@ -4690,8 +5381,8 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                           {/* Boss HP Bar */}
                           <div className="l5-boss-hp-container">
                             <div className="flex items-center justify-between mb-1">
-                              <span className="text-xs font-black text-rose-700 tracking-wider">
-                                👾 CYBER SENTINEL "GIGA-GLITCH"
+                              <span className="text-xs font-black text-rose-700 tracking-wider uppercase">
+                                👾 {l5BossData.bossName || 'PRODUCTION BOSS'}
                               </span>
                               <strong className="text-xs font-mono font-bold text-rose-600">
                                 {l5BossHp} / 100 HP
@@ -4719,11 +5410,11 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                             {/* Combat Dialogue */}
                             <div className="l5-boss-dialogue-bubble">
                               {l5BossDefeated ? (
-                                <span className="text-slate-600 font-bold">"System shutting down... You're a master of Python!"</span>
+                                <span className="text-slate-600 font-bold">"System shutting down... You truly mastered {currentTopicData.topicTitle}!"</span>
                               ) : l5Phase === 1 ? (
-                                <span className="text-rose-700 font-bold">"My Loop Barrier deflects all attacks! Solve range() if you can!"</span>
+                                <span className="text-rose-700 font-bold">"{l5BossData.scenario || `Show me your job-ready strategy for ${currentTopicData.topicTitle}!`}"</span>
                               ) : (
-                                <span className="text-amber-700 font-bold">"Shield compromised! You can't arm your list without the right method!"</span>
+                                <span className="text-amber-700 font-bold">"Shield compromised! Confirm the verified rule for {currentTopicData.topicTitle} to finish me!"</span>
                               )}
                             </div>
                           </div>
@@ -4735,38 +5426,36 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                         {/* Right: Player Attack Terminal */}
                         <div className="l5-player-cockpit-card">
                           <div className="l5-cockpit-header">
-                            <span className="text-xs font-black text-slate-800">Python Attack Cockpit</span>
+                            <span className="text-xs font-black text-slate-800">{currentTopicData.topicTitle} — Boss Cockpit</span>
                             <span className="text-[11px] font-bold text-cyan-600">Phase {l5Phase} of 2</span>
                           </div>
 
                           {!l5BossDefeated && l5Phase === 1 && (
                             <div className="l5-challenge-phase animate-fade-in">
                               <p className="text-xs font-bold text-slate-700 mb-2">
-                                ⚔️ Strike 1: Complete the range statement to loop <span className="text-rose-600 font-bold">5 times</span> and fire a 50-HP plasma burst:
+                                ⚔️ {l5BossData.phase1Prompt || `Strike 1: Choose the job-ready approach for ${currentTopicData.topicTitle}:`}
                               </p>
-                              <div className="l5-code-prompt">
-                                <code className="font-mono text-xs font-bold text-slate-900">
-                                  for strike in range(1, <span className="text-rose-600 underline font-black">?</span>):
-                                </code>
-                              </div>
 
                               <div className="l5-attack-options-grid">
-                                {[
-                                  { val: '6', label: 'Option A: 6', desc: 'for strike in range(1, 6):' },
-                                  { val: '5', label: 'Option B: 5', desc: 'for strike in range(1, 5):' },
-                                  { val: '10', label: 'Option C: 10', desc: 'for strike in range(1, 10):' },
-                                ].map((opt) => (
+                                {(l5BossData.phase1Options && l5BossData.phase1Options.length > 0
+                                  ? l5BossData.phase1Options
+                                  : [
+                                      { id: '6', text: 'for strike in range(1, 6):', isCorrect: true },
+                                      { id: '5', text: 'for strike in range(1, 5):', isCorrect: false },
+                                      { id: '10', text: 'for strike in range(1, 10):', isCorrect: false },
+                                    ]
+                                ).map((opt, idx) => (
                                   <button
-                                    key={opt.val}
+                                    key={opt.id}
                                     className="l5-strike-btn"
-                                    onClick={() => handleL5Phase1Attack(opt.val)}
+                                    onClick={() => handleL5Phase1Attack(opt.id)}
                                     disabled={l5Attacking}
                                   >
                                     <div className="flex items-center justify-between">
-                                      <strong className="text-xs font-mono font-bold text-slate-800">{opt.label}</strong>
+                                      <strong className="text-xs font-mono font-bold text-slate-800">Option {String.fromCharCode(65 + idx)}</strong>
                                       <span className="l5-dmg-tag">⚡ Strike Command</span>
                                     </div>
-                                    <span className="text-[11px] text-slate-500 font-mono block text-left mt-0.5">{opt.desc}</span>
+                                    <span className="text-[11px] text-slate-700 font-sans block text-left mt-1">{opt.text}</span>
                                   </button>
                                 ))}
                               </div>
@@ -4776,31 +5465,29 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                           {!l5BossDefeated && l5Phase === 2 && (
                             <div className="l5-challenge-phase animate-fade-in">
                               <p className="text-xs font-bold text-slate-700 mb-2">
-                                💥 Final Strike: Choose the Python list method to add the <span className="text-purple-600 font-bold">"PLASMA_BLASTER"</span> to inventory:
+                                💥 {l5BossData.phase2Prompt || `Final Strike: Verify ${currentTopicData.topicTitle}:`}
                               </p>
-                              <div className="l5-code-prompt">
-                                <code className="font-mono text-xs font-bold text-slate-900">
-                                  laser_weapons.<span className="text-purple-600 underline font-black">?</span>("PLASMA_BLASTER")
-                                </code>
-                              </div>
 
                               <div className="l5-attack-options-grid">
-                                {[
-                                  { method: '.append()', label: 'Option A: .append()', desc: 'laser_weapons.append("PLASMA_BLASTER")' },
-                                  { method: '.push()', label: 'Option B: .push()', desc: 'laser_weapons.push("PLASMA_BLASTER")' },
-                                  { method: '.insert_last()', label: 'Option C: .insert_last()', desc: 'laser_weapons.insert_last("PLASMA_BLASTER")' },
-                                ].map((opt) => (
+                                {(l5BossData.phase2Options && l5BossData.phase2Options.length > 0
+                                  ? l5BossData.phase2Options
+                                  : [
+                                      { id: '.append()', text: 'laser_weapons.append("PLASMA_BLASTER")', isCorrect: true },
+                                      { id: '.push()', text: 'laser_weapons.push("PLASMA_BLASTER")', isCorrect: false },
+                                      { id: '.insert_last()', text: 'laser_weapons.insert_last("PLASMA_BLASTER")', isCorrect: false },
+                                    ]
+                                ).map((opt, idx) => (
                                   <button
-                                    key={opt.method}
+                                    key={opt.id}
                                     className="l5-strike-btn"
-                                    onClick={() => handleL5Phase2Attack(opt.method)}
+                                    onClick={() => handleL5Phase2Attack(opt.id)}
                                     disabled={l5Attacking}
                                   >
                                     <div className="flex items-center justify-between">
-                                      <strong className="text-xs font-mono font-bold text-slate-800">{opt.label}</strong>
-                                      <span className="l5-dmg-tag">⚡ Arm Method</span>
+                                      <strong className="text-xs font-mono font-bold text-slate-800">Option {String.fromCharCode(65 + idx)}</strong>
+                                      <span className="l5-dmg-tag">⚡ Final Strike</span>
                                     </div>
-                                    <span className="text-[11px] text-slate-500 font-mono block text-left mt-0.5">{opt.desc}</span>
+                                    <span className="text-[11px] text-slate-700 font-sans block text-left mt-1">{opt.text}</span>
                                   </button>
                                 ))}
                               </div>
@@ -4811,10 +5498,10 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                             <div className="l5-boss-defeated-panel animate-fade-in">
                               <Trophy className="w-10 h-10 text-amber-500 mx-auto mb-2 animate-bounce" />
                               <strong className="text-base font-black text-slate-900 block">
-                                🏆 BOSS DEFEATED! CYBER SENTINEL DOWN!
+                                🏆 BOSS DEFEATED! {currentTopicData.topicTitle} MASTERED!
                               </strong>
                               <p className="text-xs text-slate-600 mt-1 mb-3">
-                                You executed real Python logic to neutralize the threat. You've cleared all 5 mini-games!
+                                You applied your Visual Learning Notes accurately across all 5 levels!
                               </p>
                               <div className="flex items-center justify-center gap-3">
                                 <button className="stage-reset-btn" onClick={handleL5ResetBoss}>
@@ -4921,11 +5608,11 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                 </div>
                 {showGameHint ? (
                   <p className="plw-hint-text animate-fade-in">
-                    {activeGameLevel === 1 && '💡 Call the output function and pass the greeting string enclosed in parentheses.'}
-                    {activeGameLevel === 2 && '💡 In f-strings, expressions inside curly braces {} evaluate to the variable values.'}
-                    {activeGameLevel === 3 && '💡 Look closely at the spelling of the output statement on the infected line.'}
-                    {activeGameLevel === 4 && '💡 Assemble the formula: multiply lessons by 10 and add the bonus variable.'}
-                    {activeGameLevel === 5 && '💡 Notice: range(start, stop) runs from start up to stop - 1.'}
+                    {activeGameLevel === 1 && `💡 Follow the exact step sequence from Visual Learning Notes: ${currentTopicData.game.l1.explanation}`}
+                    {activeGameLevel === 2 && `💡 ${currentTopicData.mcqs[1]?.hint || currentTopicData.mcqs[0]?.hint || 'Re-read the worked example in Visual Learning Notes.'}`}
+                    {activeGameLevel === 3 && `💡 ${l3Lines.find((l) => l.isBug)?.bugMsg || 'Spot the buggy line and choose the Pro Habit patch.'}`}
+                    {activeGameLevel === 4 && `💡 Fill Slot 1 (${currentTopicData.game.l4.slot1Target}) first, then Slot 2 (${currentTopicData.game.l4.slot2Target}).`}
+                    {activeGameLevel === 5 && `💡 Recall the Beginner Mistake vs Pro Habit and Key Takeaways for ${currentTopicData.topicTitle}.`}
                   </p>
                 ) : (
                   <p className="plw-hint-text text-slate-400 italic">
@@ -5449,6 +6136,22 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
             <ZeroCostMockInterviewRoom
               tabId={urlTabId}
               topicId={effectiveTopicId}
+              courseKey={
+                isFullStackMernCourse
+                  ? 'full_stack_mern'
+                  : isMsOfficeCourse
+                  ? 'ms_office_copilot'
+                  : isAiToolsPromptCourse
+                  ? 'ai_tools_prompt'
+                  : isAiEngineeringCourse
+                  ? 'ai_engineering'
+                  : isMlEngineeringCourse
+                  ? 'ml_engineering'
+                  : isDataScienceCourse
+                  ? 'data_science'
+                  : undefined
+              }
+              topicTitleOverride={currentTopicData.topicTitle}
               userName={userName}
               language={activityLang}
               onLanguageChange={handleSelectActivityLang}
@@ -5461,7 +6164,7 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                   setZeroCostInterviewScorePct(finalAveragePercent);
                 }
                 setInterviewSubmitted(true);
-                handleSelectTab('score');
+                handleBackToCourse();
               }}
             />
             <AdminHrSettingsModal
@@ -5495,14 +6198,14 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
               gender: 'female' as const,
             },
             {
-              id: 'avatar_alex_male',
-              shortName: 'Alex',
-              badge: 'US',
-              avatarUrl: '/images/male_tech_hr_interviewer.jpg',
-              hrName: 'Alex Chen',
+              id: 'avatar_neha_female',
+              shortName: 'Neha',
+              badge: 'Lead',
+              avatarUrl: '/images/hr_interviewer_indian_female.jpg',
+              hrName: 'Neha Sharma',
               hrTitle: 'Senior Technical Recruiter & Data Lead',
               hrRole: 'Google & Microsoft Talent Partner',
-              gender: 'male' as const,
+              gender: 'female' as const,
             },
             {
               id: 'avatar_priya_female',
@@ -5515,14 +6218,14 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
               gender: 'female' as const,
             },
             {
-              id: 'avatar_rohan_male',
-              shortName: 'Rohan',
+              id: 'avatar_ananya_female',
+              shortName: 'Ananya',
               badge: 'IN',
-              avatarUrl: '/images/hr_interviewer_indian_male.jpg',
-              hrName: 'Rohan Verma',
+              avatarUrl: '/images/hr_interviewer_indian_female.jpg',
+              hrName: 'Ananya Verma',
               hrTitle: 'Principal Data Architect & Recruiter',
               hrRole: 'Tier-1 Analytics Hiring Partner',
-              gender: 'male' as const,
+              gender: 'female' as const,
             },
           ];
 
@@ -5606,35 +6309,6 @@ export const PythonTopicWorkspace: React.FC<PythonTopicWorkspaceProps> = ({
                             </button>
                           );
                         })}
-                      </div>
-
-                      {/* Interview Language Switcher */}
-                      <div className="flex items-center justify-between text-[11px] font-bold text-slate-600 mt-1.5 pt-1.5 border-t border-slate-200/70">
-                        <span>Language:</span>
-                        <div className="flex items-center gap-1">
-                          <button
-                            type="button"
-                            className={`plw-pill-btn ${activityLang === 'en' ? 'active' : ''}`}
-                            onClick={() => {
-                              handleSelectActivityLang('en');
-                              stopHrSpeaking();
-                              stopInterviewRecording();
-                            }}
-                          >
-                            🇬🇧 English
-                          </button>
-                          <button
-                            type="button"
-                            className={`plw-pill-btn ${activityLang === 'hi' ? 'active' : ''}`}
-                            onClick={() => {
-                              handleSelectActivityLang('hi');
-                              stopHrSpeaking();
-                              stopInterviewRecording();
-                            }}
-                          >
-                            🇮🇳 हिंदी
-                          </button>
-                        </div>
                       </div>
 
                       {/* Audio & Settings Quick Actions */}

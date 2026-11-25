@@ -18,6 +18,11 @@ import { SuccessPlanModal } from './SuccessPlanModal';
 import { isCourseUnlocked, isTopicUnlocked } from '../../services/courseUnlockService';
 import { UniversalMobileCourseView } from './UniversalMobileCourseView';
 import './UniversalMobileCourseView.css';
+import { CompactCurriculumAccordion } from './CompactCurriculumAccordion';
+import { CourseHorizontalTrackNav } from './course/CourseHorizontalTrackNav';
+import { CourseProgressSidebar } from './course/CourseProgressSidebar';
+import { CourseHeroActionButtons } from './course/CourseHeroActionsAndStats';
+import { getCoursePriceFromConfig } from '../../services/topicProgressTracker';
 
 interface AiToolsPromptHubProps {
   userName?: string;
@@ -155,7 +160,7 @@ export const AiToolsPromptHub: React.FC<AiToolsPromptHubProps> = ({
             '📜 Industry Certificate',
             '✨ AI-Powered Learning',
           ]}
-          enrollPriceText="Enroll for ₹9"
+          enrollPriceText={`Enroll for ${getCoursePriceFromConfig('ai_tools_prompt')}`}
           isCoursePaid={isCoursePaid}
           onBack={onBack}
           onEnroll={() => handleOpenSuccessPlan('AI Tools & Prompt Engineering')}
@@ -175,9 +180,9 @@ export const AiToolsPromptHub: React.FC<AiToolsPromptHubProps> = ({
         <main className="w-full pt-0 space-y-3">
 
         {/* =========================================================================
-            1. TOP HERO BANNER: LIGHT EXECUTIVE THEME (HIGH-CONTRAST TECH BACKDROP)
+            1. TOP HERO BANNER: SLIM FUTURE IT PURPLE-WHITE THEME
             ========================================================================= */}
-        <section className="w-full relative rounded-2xl lg:rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm bg-white text-slate-900 md:h-[275px] md:min-h-[275px] md:max-h-[275px]">
+        <section className="w-full relative rounded-2xl overflow-hidden border border-[#E9E5F5] shadow-[0_4px_18px_rgba(109,40,217,0.06)] bg-white text-[#111827] md:h-[210px] md:min-h-[210px] md:max-h-[210px]">
           {/* Background Poster Image */}
           <img
             src="/images/cube_genai.jpg"
@@ -187,119 +192,61 @@ export const AiToolsPromptHub: React.FC<AiToolsPromptHubProps> = ({
               (e.target as HTMLImageElement).src = '/images/data_analyst_light_banner.jpg';
             }}
           />
-          {/* Soft Pearl Gradient: Left side is crisp white for clear black text, smoothly fading to transparent towards the right */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 md:via-white/80 to-transparent pointer-events-none w-full md:w-[58%] lg:w-[52%]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent pointer-events-none md:hidden" />
+          {/* Soft Pearl Lavender-White Gradient for Crisp Readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-[#FAF8FF]/95 md:via-white/88 to-transparent pointer-events-none w-full md:w-[60%] lg:w-[54%]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/85 via-transparent to-transparent pointer-events-none md:hidden" />
 
-          <div className="relative z-10 px-4 py-2.5 sm:px-6 lg:px-7 lg:py-2.5 flex flex-col justify-between h-full">
+          <div className="relative z-10 px-4 py-3 sm:px-6 lg:px-7 flex flex-col justify-center h-full">
             
             {/* Left Content Zone */}
-            <div className="max-w-3xl space-y-1 min-w-0">
-              {/* Back Arrow + Eyebrow Pill */}
-              <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-                {onBack && (
-                  <button
-                    type="button"
-                    onClick={onBack}
-                    title="Back to All Courses"
-                    aria-label="Back"
-                    className="w-8 h-8 shrink-0 rounded-full bg-white hover:bg-slate-50 text-slate-800 flex items-center justify-center border border-slate-200 shadow-2xs hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                  >
-                    <ArrowLeft className="w-4 h-4 text-slate-800 stroke-[2.5]" />
-                  </button>
-                )}
-                <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-[9.5px] sm:text-[11px] font-black text-amber-800 tracking-wide uppercase shadow-2xs min-w-0">
-                  <Flame className="w-3.5 h-3.5 fill-amber-500 text-amber-500 shrink-0" />
-                  <span className="truncate">FUTURE IT INDUSTRY • PRACTICAL AI SKILLS</span>
-                </div>
-              </div>
-
+            <div className="max-w-2xl space-y-1.5 min-w-0 pt-3 sm:pt-4">
               {/* Headline */}
-              <h1 className="text-xl min-[375px]:text-2xl sm:text-2xl lg:text-[28px] font-black tracking-tight text-slate-950 leading-tight">
+              <h1 className="text-lg sm:text-xl lg:text-[24px] font-bold tracking-tight text-[#111827] leading-tight m-0">
                 AI Tools &amp;{' '}
-                <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-rose-600 bg-clip-text text-transparent">
+                <span className="text-[#6D28D9]">
                   Prompt Engineering
                 </span>
               </h1>
 
               {/* Subtitle */}
-              <p className="text-xs sm:text-[13.5px] text-slate-700 font-semibold leading-relaxed max-w-xl">
+              <p className="text-xs sm:text-[13px] text-[#64748B] font-medium leading-snug max-w-xl m-0">
                 Master ChatGPT 4o, Claude 3.5, Midjourney, advanced prompting frameworks, and automated multi-step AI workflows for 10x business productivity.
               </p>
 
               {/* Feature Pills */}
-              <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-[10px] sm:text-[10.5px] font-bold text-slate-700">
-                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-2.5 sm:px-3 py-1 rounded-full shadow-2xs">
+              <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-[11px] sm:text-xs font-medium text-slate-700">
+                <span className="flex items-center gap-1 bg-white/95 border border-[#E9E5F5] px-2.5 py-0.5 rounded-full shadow-2xs">
                   🔰 Beginner to Advanced
                 </span>
-                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-2.5 sm:px-3 py-1 rounded-full shadow-2xs">
+                <span className="flex items-center gap-1 bg-white/95 border border-[#E9E5F5] px-2.5 py-0.5 rounded-full shadow-2xs">
                   ✍️ Advanced Prompt Frameworks
                 </span>
-                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-2.5 sm:px-3 py-1 rounded-full shadow-2xs">
+                <span className="flex items-center gap-1 bg-white/95 border border-[#E9E5F5] px-2.5 py-0.5 rounded-full shadow-2xs">
                   🎨 Multimodal Media Creation
                 </span>
-                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-2.5 sm:px-3 py-1 rounded-full shadow-2xs">
+                <span className="flex items-center gap-1 bg-white/95 border border-[#E9E5F5] px-2.5 py-0.5 rounded-full shadow-2xs">
                   ⚡ 10x Business Automation
                 </span>
-                <span className="flex items-center gap-1.5 bg-white/95 border border-slate-200/90 px-2.5 sm:px-3 py-1 rounded-full shadow-2xs">
+                <span className="flex items-center gap-1 bg-white/95 border border-[#E9E5F5] px-2.5 py-0.5 rounded-full shadow-2xs">
                   🛠️ 4 Real-World Projects
                 </span>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-0.5">
-                <button
-                  type="button"
-                  onClick={() => onStartTopic && onStartTopic('pt-t-1', 'What Is Artificial Intelligence?')}
-                  className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-amber-600 via-orange-500 to-amber-700 hover:from-amber-700 hover:to-orange-600 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-amber-500/25 active:scale-95 transition-all cursor-pointer"
-                >
-                  <Play className="w-3.5 h-3.5 fill-white shrink-0" />
-                  <span>Learning</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleOpenSuccessPlan('AI Tools & Prompt Engineering')}
-                  className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-emerald-600/25 active:scale-95 transition-all cursor-pointer"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
-                  <span>Enroll for ₹987</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const el = document.getElementById('pt-curriculum-tabs-map');
-                    el?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-800 font-bold text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-2xs"
-                >
-                  <Search className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                  <span>View Course Overview</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Bottom Stats Bar inside Hero */}
-            <div className="mt-1 pt-1.5 border-t border-slate-200/70 bg-white/75 backdrop-blur-sm -mx-4 sm:-mx-6 lg:-mx-7 -mb-2.5 px-4 sm:px-6 lg:px-7 py-1.5 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 text-[11px] sm:text-xs font-black text-slate-800 rounded-b-2xl lg:rounded-b-3xl">
-              <div className="flex items-center gap-1.5">
-                <span className="w-6 h-6 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 flex items-center justify-center font-black text-[11px]">30</span>
-                <span>Modules</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-6 h-6 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center font-black text-[11px]">332</span>
-                <span>Topics</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-6 h-6 rounded-lg bg-purple-50 text-purple-700 border border-purple-200 flex items-center justify-center font-black text-[11px]">4</span>
-                <span>Projects</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-6 h-6 rounded-lg bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center font-black text-[11px]">📜</span>
-                <span>Certificate</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center font-black text-[11px]">🎯</span>
-                <span>Job Ready Skills</span>
-              </div>
+              {/* Action Buttons (Dynamic Enrollment & Continue Learning Logic) */}
+              <CourseHeroActionButtons
+                curriculum={AI_TOOLS_PROMPT_CURRICULUM}
+                courseKey="ai_tools_prompt"
+                courseTitle="AI Tools & Prompt Engineering"
+                isCoursePaid={isCoursePaid}
+                isTopicAccessible={isTopicUnlocked}
+                onOpenEnrollModal={handleOpenSuccessPlan}
+                onResumeLesson={(topicId, title, tabId) => {
+                  recordTopicStarted(topicId, 'ai_tools_prompt', tabId, title);
+                  if (onStartTopic) {
+                    onStartTopic(topicId, title, 'learn', tabId);
+                  }
+                }}
+              />
             </div>
 
           </div>
@@ -308,73 +255,12 @@ export const AiToolsPromptHub: React.FC<AiToolsPromptHubProps> = ({
         {/* =========================================================================
             2. FULL-WIDTH HORIZONTAL TABS (Compact, Real 3D Icons, No "Tab" text)
             ========================================================================= */}
-        <div id="pt-curriculum-tabs-map" className="overflow-x-auto scroll-smooth scrollbar-none pb-1.5 pt-0.5 px-0.5">
-          <div className="flex items-center gap-2 sm:gap-2.5 min-w-max">
-            {AI_TOOLS_PROMPT_CURRICULUM.map((tab) => {
-              const isActive = tab.id === activeTabId;
-              const moduleCount = tab.chapters.length;
-              const topicCount = tab.chapters.reduce((acc, c) => acc + c.topics.length, 0);
-
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  ref={(el) => { tabButtonRefs.current[tab.id] = el; }}
-                  onClick={() => handleSelectTab(tab.id)}
-                  className={`group relative py-2 px-3 sm:py-2 sm:px-3 rounded-xl flex items-center gap-2.5 text-left transition-all duration-200 hover:-translate-y-0.5 active:scale-95 cursor-pointer border ${
-                    isActive
-                      ? 'bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 text-white border-amber-500 shadow-md shadow-amber-500/25 z-10'
-                      : 'bg-white hover:bg-slate-50/90 text-slate-800 border-slate-200 hover:border-amber-300 hover:shadow-sm shadow-2xs'
-                  }`}
-                >
-                  {/* Real 3D High-Definition Icon Tile */}
-                  <div
-                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0 p-1 transition-all duration-200 ${
-                      isActive
-                        ? 'bg-white/20 backdrop-blur-xs border border-white/30'
-                        : 'bg-slate-100/80 border border-slate-200/70 group-hover:border-amber-200'
-                    }`}
-                  >
-                    <img
-                      src={getTabRealIcon(tab.tabNum)}
-                      alt={tab.title}
-                      className="w-7 h-7 sm:w-7.5 sm:h-7.5 object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-200"
-                      onError={(e) => {
-                        (e.target as HTMLElement).style.display = 'none';
-                      }}
-                    />
-                  </div>
-
-                  {/* Title & Chapter Subtitle */}
-                  <div className="flex flex-col min-w-0 pr-1">
-                    <div className="flex items-center gap-1.5">
-                      <span className={`text-[10px] font-black w-4 h-4 rounded-md flex items-center justify-center shrink-0 ${
-                        isActive
-                          ? 'bg-white/25 text-white border border-white/30'
-                          : 'bg-amber-50 text-amber-800 border border-amber-200/80'
-                      }`}>
-                        {tab.tabNum}
-                      </span>
-                      <span className={`text-xs sm:text-[13px] font-bold truncate leading-tight tracking-tight ${
-                        isActive ? 'text-white' : 'text-slate-900'
-                      }`}>
-                        {tab.shortTitle}
-                      </span>
-                    </div>
-
-                    <span className={`text-[10px] sm:text-[10.5px] font-medium leading-none mt-1 flex items-center gap-1 ${
-                      isActive ? 'text-amber-100' : 'text-slate-500'
-                    }`}>
-                      <span>{moduleCount} Modules</span>
-                      <span className="opacity-40">•</span>
-                      <span>{topicCount} Topics</span>
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <CourseHorizontalTrackNav
+          tabs={AI_TOOLS_PROMPT_CURRICULUM}
+          activeTabId={activeTabId}
+          onSelectTab={handleSelectTab}
+          getTabIconSrc={getTabRealIcon}
+        />
 
         {/* =========================================================================
             3. LOWER SECTION: 2-COLUMN LAYOUT (LEFT: CHAPTER ACCORDION • RIGHT: SIDEBAR BELOW TABS)
@@ -386,241 +272,18 @@ export const AiToolsPromptHub: React.FC<AiToolsPromptHubProps> = ({
               ───────────────────────────────────────────────────────────────────── */}
           <div className="lg:col-span-8 xl:col-span-9 space-y-4">
 
-            {/* ACTIVE TAB MAIN ACCORDION CONTAINER */}
-            <section className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-sm space-y-3">
-              {/* Modules List for current active tab */}
-              <div className="space-y-3">
-                {activeTab.chapters.map((chapter) => {
-                  const isExpanded = expandedChapters[chapter.id] ?? false;
-                  const completedCount = chapter.topics.filter((t) => t.status === 'completed').length;
-                  const totalCount = chapter.topics.length;
-                  const percent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
-
-                  return (
-                    <div
-                      key={chapter.id}
-                      className={`rounded-2xl border overflow-hidden transition-all duration-300 ${
-                        isExpanded
-                          ? 'border-amber-300/90 bg-white shadow-md shadow-amber-500/5 ring-1 ring-amber-500/10'
-                          : 'border-slate-200/90 bg-slate-50/40 hover:bg-white hover:border-slate-300 hover:shadow-xs'
-                      }`}
-                    >
-                      {/* Chapter Accordion Header */}
-                      <button
-                        type="button"
-                        onClick={() => handleModuleHeaderClick(chapter)}
-                        className="group w-full p-4 sm:p-4.5 flex items-center justify-between gap-4 text-left transition-all duration-200 cursor-pointer"
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          {/* Circle Number */}
-                          <div className={`w-8 h-8 rounded-full font-black text-xs flex items-center justify-center shrink-0 shadow-2xs transition-transform duration-200 group-hover:scale-105 ${
-                            chapter.chapterNum <= 3 ? 'bg-amber-600 text-white' : 'bg-orange-600 text-white'
-                          }`}>
-                            {chapter.chapterNum}
-                          </div>
-
-                          {/* Doc/Code Icon */}
-                          <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105">
-                            <FileText className="w-4 h-4" />
-                          </div>
-
-                          {/* Title & Description */}
-                          <div className="flex flex-col min-w-0">
-                            <h3 className="text-xs sm:text-sm font-black text-slate-900 truncate group-hover:text-amber-600 transition-colors">
-                              {chapter.title}
-                            </h3>
-                            <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
-                              {chapter.subtitle}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Chapter Stats & Animated Chevron */}
-                        <div className="flex items-center gap-3 shrink-0">
-                          <span className="text-[11px] font-bold text-slate-500 hidden sm:inline">
-                            {totalCount} Topics
-                          </span>
-                          <div className="w-20 h-1.5 rounded-full bg-slate-200 overflow-hidden hidden sm:block">
-                            <div
-                              className="h-full bg-emerald-500 rounded-full transition-all duration-500 ease-out"
-                              style={{ width: `${percent}%` }}
-                            />
-                          </div>
-                          <span className="text-[11px] font-black text-slate-700 hidden sm:inline">
-                            {completedCount} / {totalCount} completed
-                          </span>
-                          <span className="text-xs font-black text-emerald-600">
-                            {percent}%
-                          </span>
-                          <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 ${
-                            isExpanded
-                              ? 'bg-amber-50 text-amber-600 rotate-180 shadow-2xs'
-                              : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200 group-hover:text-slate-600'
-                          }`}>
-                            <ChevronDown className="w-4 h-4 transition-transform duration-300" />
-                          </div>
-                        </div>
-                      </button>
-
-                      {/* Smooth animated accordion collapse/expand container */}
-                      <div
-                        className={`grid transition-all duration-300 ease-in-out ${
-                          isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
-                        }`}
-                      >
-                        <div className="overflow-hidden divide-y divide-slate-100 border-t border-slate-200/80 bg-white">
-                          {chapter.topics.map((topic, tIdx) => {
-                            const isTopicFree = isTopicUnlocked('ai_tools_prompt', chapter.chapterNum, topic.topicNum || tIdx + 1, activeTabId);
-                            const isLocked = !isTopicFree;
-                            const isDone = false;
-                            const isCurrent = isTopicFree && !isDone;
-
-                            return (
-                              <div
-                                key={topic.id}
-                                onClick={() => handleTopicClick(topic, chapter.chapterNum)}
-                                className={`group/topic p-3 sm:px-4 sm:py-3.5 flex items-center justify-between gap-3 text-xs transition-all duration-200 cursor-pointer ${
-                                  isCurrent ? 'bg-amber-50/60' : 'hover:bg-slate-50/90'
-                                }`}
-                              >
-                                {/* Left: Number + Status Icon + Title */}
-                                <div className="flex items-center gap-2.5 min-w-0">
-                                  <span className="text-[11px] sm:text-xs font-black text-slate-400 w-7 sm:w-8 shrink-0 text-left group-hover/topic:text-slate-600 transition-colors">
-                                    {topic.topicNum}.
-                                  </span>
-
-                                  {isDone && (
-                                    <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs group-hover/topic:scale-110 transition-transform duration-200">
-                                      <Check className="w-3 h-3 stroke-[3]" />
-                                    </div>
-                                  )}
-                                  {isCurrent && (
-                                    <span className="relative flex h-5 w-5 shrink-0">
-                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-60"></span>
-                                      <span className="relative inline-flex rounded-full h-5 w-5 bg-amber-600 text-white items-center justify-center shadow-xs">
-                                        <Play className="w-2.5 h-2.5 fill-white ml-0.5" />
-                                      </span>
-                                    </span>
-                                  )}
-                                  {isLocked && (
-                                    <div className="w-5 h-5 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 group-hover/topic:scale-110 transition-transform">
-                                      <Lock className="w-2.5 h-2.5" />
-                                    </div>
-                                  )}
-
-                                  <span className={`font-bold truncate transition-colors duration-150 ${
-                                    isCurrent
-                                      ? 'text-amber-900 font-extrabold'
-                                      : isLocked
-                                      ? 'text-slate-700 group-hover/topic:text-amber-600'
-                                      : 'text-slate-800 group-hover/topic:text-amber-600'
-                                  }`}>
-                                    {topic.title}
-                                  </span>
-                                </div>
-
-                                {/* Right: Duration + Status Pill + Action Button (Desktop Only: hidden on mobile so topic title is fully visible) */}
-                                <div className="hidden sm:flex items-center gap-2.5 shrink-0">
-                                  <span className="text-[11px] font-medium text-slate-400 hidden sm:inline">
-                                    {topic.duration}
-                                  </span>
-
-                                  {/* Status Pill */}
-                                  {isDone && (
-                                    <span className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs" title="Completed">
-                                      <Check className="w-3 h-3 stroke-[3]" />
-                                    </span>
-                                  )}
-                                  {isCurrent && (
-                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 transition-colors">
-                                      In Progress
-                                    </span>
-                                  )}
-                                  {isLocked && (
-                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-50 text-amber-800 border border-amber-200">
-                                      Enroll to Unlock
-                                    </span>
-                                  )}
-
-                                  {/* Action Buttons */}
-                                  {isDone && (
-                                    <div className="flex items-center gap-1.5">
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          onStartTopic && onStartTopic(topic.id, topic.title, 'learn');
-                                        }}
-                                        className="px-2.5 py-1 rounded-lg text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-600 hover:text-white border border-blue-200 hover:border-blue-600 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1"
-                                        title="Watch Video"
-                                      >
-                                        <Play className="w-3 h-3 fill-current" />
-                                        <span>Video</span>
-                                      </button>
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          onStartTopic && onStartTopic(topic.id, topic.title, 'play');
-                                        }}
-                                        className="px-2.5 py-1 rounded-lg text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-600 hover:text-white border border-emerald-200 hover:border-emerald-600 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1"
-                                        title="Practice Code"
-                                      >
-                                        <Code2 className="w-3 h-3" />
-                                        <span>Practice Code</span>
-                                      </button>
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          onStartTopic && onStartTopic(topic.id, topic.title, 'interview');
-                                        }}
-                                        className="px-2.5 py-1 rounded-lg text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-600 hover:text-white border border-purple-200 hover:border-purple-600 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1"
-                                        title="Mock Interview"
-                                      >
-                                        <Mic className="w-3 h-3" />
-                                        <span>Mock Interview</span>
-                                      </button>
-                                    </div>
-                                  )}
-                                  {isCurrent && (
-                                    <button
-                                      type="button"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        onStartTopic && onStartTopic(topic.id, topic.title);
-                                      }}
-                                      className="group/btn px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 hover:shadow-md hover:shadow-amber-500/30 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1.5"
-                                    >
-                                      <span>Continue</span>
-                                      <Play className="w-2.5 h-2.5 fill-white group-hover/btn:translate-x-0.5 transition-transform duration-200" />
-                                    </button>
-                                  )}
-                                  {isLocked && (
-                                    <button
-                                      type="button"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleTopicClick(topic);
-                                      }}
-                                      className="group/btn px-3.5 py-1.5 rounded-lg text-xs font-black text-white bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 hover:shadow-md hover:shadow-amber-500/30 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1.5 shadow-xs"
-                                    >
-                                      <Lock className="w-3 h-3" />
-                                      <span>Unlock</span>
-                                    </button>
-                                  )}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-            </section>
+            {/* ACTIVE TAB MAIN ACCORDION CONTAINER (Compact, Ergonomic & Systematic) */}
+            <CompactCurriculumAccordion
+              chapters={activeTab.chapters}
+              activeTabId={activeTabId}
+              courseKey="ai_tools_prompt"
+              courseName="AI Tools & Prompt Engineering"
+              isCoursePaid={isCoursePaid}
+              highlightedTopicId={null}
+              onStartTopic={onStartTopic}
+              onOpenUnlockModal={handleOpenSuccessPlan}
+              isTopicUnlocked={isTopicUnlocked}
+            />
 
           </div>
 
@@ -628,145 +291,14 @@ export const AiToolsPromptHub: React.FC<AiToolsPromptHubProps> = ({
           {/* ─────────────────────────────────────────────────────────────────────
               RIGHT COLUMN: SIDEBAR WIDGETS (Cols 9-12 / 10-12)
               ───────────────────────────────────────────────────────────────────── */}
-          <aside className="lg:col-span-4 xl:col-span-3 space-y-4">
-            
-            {/* 1. YOUR PROGRESS CARD */}
-            <div className="bg-white rounded-3xl p-5 border border-slate-200/90 shadow-sm space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-black text-sm text-slate-900">Your Progress</h3>
-                <span className="text-[11px] font-bold text-amber-700 hover:underline cursor-pointer">
-                  View Details →
-                </span>
-              </div>
-
-              {/* Circular Gauge Meter */}
-              <div className="flex items-center gap-4">
-                <div className="relative w-16 h-16 shrink-0 flex items-center justify-center">
-                  <svg className="w-16 h-16 -rotate-90">
-                    <circle cx="32" cy="32" r="26" stroke="#f1f5f9" strokeWidth="6" fill="none" />
-                    <circle
-                      cx="32"
-                      cy="32"
-                      r="26"
-                      stroke="#10b981"
-                      strokeWidth="6"
-                      strokeDasharray={163.36}
-                      strokeDashoffset={163.36 * (1 - 0.25)}
-                      strokeLinecap="round"
-                      fill="none"
-                    />
-                  </svg>
-                  <span className="absolute font-black text-sm text-slate-900">25%</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xs font-black text-slate-900">
-                    25 / 332 Lessons Completed
-                  </span>
-                  <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden mt-1.5">
-                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: '25%' }} />
-                  </div>
-                </div>
-              </div>
-
-              {/* 4-Grid Stat Boxes */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-2 pt-1">
-                <div className="p-2.5 rounded-xl bg-purple-50/70 border border-purple-100 flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-purple-600 text-white flex items-center justify-center font-black text-xs shrink-0">
-                    4
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-[11px] font-extrabold text-slate-900 leading-tight">Projects</span>
-                  </div>
-                </div>
-
-                <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-100 flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-amber-500 text-white flex items-center justify-center font-black text-xs shrink-0">
-                    28
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-[11px] font-extrabold text-slate-900 leading-tight">Quizzes</span>
-                  </div>
-                </div>
-
-                <div className="p-2.5 rounded-xl bg-rose-50/70 border border-rose-100 flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-rose-500 text-white flex items-center justify-center font-black text-xs shrink-0">
-                    1
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-[11px] font-extrabold text-slate-900 leading-tight">Certificate</span>
-                  </div>
-                </div>
-
-                <div className="p-2.5 rounded-xl bg-teal-50/70 border border-teal-100 flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-teal-600 text-white flex items-center justify-center font-black text-xs shrink-0">
-                    12
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-[11px] font-extrabold text-slate-900 leading-tight">hrs Spent</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 2. LEARNING PATH STEPPER */}
-            <div className="bg-white rounded-3xl p-5 border border-slate-200/90 shadow-sm space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="font-black text-sm text-slate-900">Learning Path</h3>
-                <span className="text-[11px] font-bold text-amber-700 hover:underline cursor-pointer">
-                  View All →
-                </span>
-              </div>
-
-              <div className="space-y-3 pt-1">
-                {/* Step 1 */}
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-amber-600 text-white font-black text-xs flex items-center justify-center shrink-0">
-                    1
-                  </div>
-                  <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0">
-                    <Check className="w-3 h-3 stroke-[3]" />
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-xs font-black text-slate-900 truncate">
-                      AI Foundations &amp; Safety
-                    </span>
-                    <span className="text-[10px] text-slate-400">4 / 32 topics</span>
-                  </div>
-                </div>
-
-                {/* Step 2 */}
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-black text-xs flex items-center justify-center shrink-0">
-                    2
-                  </div>
-                  <div className="w-5 h-5 rounded-full border-2 border-amber-500 flex items-center justify-center shrink-0" />
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-xs font-black text-slate-900 truncate">
-                      AI Chat Assistants &amp; Media Tools
-                    </span>
-                    <span className="text-[10px] text-slate-400">0 / 42 topics</span>
-                  </div>
-                </div>
-
-                {/* Step 3 */}
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-slate-100 text-slate-400 font-black text-xs flex items-center justify-center shrink-0">
-                    3
-                  </div>
-                  <div className="w-5 h-5 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center shrink-0">
-                    <Lock className="w-2.5 h-2.5" />
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-xs font-bold text-slate-400 truncate">
-                      Advanced Prompt Engineering &amp; Workflows
-                    </span>
-                    <span className="text-[10px] text-slate-400">Complete previous tabs to unlock</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </aside>
+          <CourseProgressSidebar
+            curriculum={AI_TOOLS_PROMPT_CURRICULUM}
+            courseKey="ai_tools_prompt"
+            activeTabId={activeTabId}
+            onSelectTab={handleSelectTab}
+            projectsCount={6}
+            isTopicAccessible={isTopicUnlocked}
+          />
 
         </div>
       </main>

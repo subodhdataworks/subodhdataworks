@@ -1,0 +1,67 @@
+# Future IT Industry
+
+> Learn Today. Earn Tomorrow. Future IT Industry (operated by Power Green Industries) is an Indian IT education and career-readiness platform offering interactive visual learning, bilingual English/Hindi AI mentorship, hands-on coding practice, mock interviews, ATS resume evaluation, and job-oriented technology programs.
+
+## Platform Overview
+
+Future IT Industry helps learners build practical technology skills through structured, project-driven curricula designed for beginners, freshers, career-gap returners, non-IT graduates, and working professionals switching into IT and AI roles.
+
+- Official Website: https://futureitindustry.com/
+- Course Catalog: https://futureitindustry.com/courses
+- Detailed Platform Reference: https://futureitindustry.com/llms-full.txt
+- XML Sitemap: https://futureitindustry.com/sitemap.xml
+
+## Public Courses
+
+- [Data Analyst with GenAI](https://futureitindustry.com/courses/data-analyst-genai): Master Python, SQL, Power BI, Excel & GenAI to build automated business dashboards. Tools: Python, SQL, Power BI, Excel, ChatGPT.
+- [Data Science & Agentic AI](https://futureitindustry.com/courses/data-science-agentic-ai): Build Machine Learning models, RAG pipelines, and autonomous AI Agent systems. Tools: Python, PyTorch, LangChain, Vector DB, RAG.
+- [Machine Learning Engineering](https://futureitindustry.com/courses/ml-engineering): Build, train, and deploy production-scale ML pipelines with MLOps and Docker. Tools: Python, FastAPI, Docker, Kubernetes, Cloud.
+- [AI Engineering](https://futureitindustry.com/courses/ai-engineering): Build and deploy end-to-end enterprise AI products, LLMs, and multi-agent solutions. Tools: OpenAI, LangChain, Hugging Face, Vector DB, RAG.
+- [AI Tools & Prompt Engineering](https://futureitindustry.com/courses/ai-tools-prompt): 10x your productivity with ChatGPT-4o, Claude 3.5, Midjourney, Cursor & Zapier automations. Tools: ChatGPT, OpenAI, LangChain, Python, Cloud.
+- [Microsoft Office 365 with Copilot](https://futureitindustry.com/courses/ms-office-copilot): Automate executive reporting, decks, financial models, and emails with Microsoft Copilot AI. Tools: Excel, DAX, Power Query, Power BI, OpenAI.
+- [Full Stack Web Development](https://futureitindustry.com/courses/full-stack-web-dev): Build modern responsive full-stack applications with React, Node.js, Express & PostgreSQL. Tools: React, Node.js, TypeScript, Docker, GitHub.
+- [AI Website Builder Pro](https://futureitindustry.com/courses/ai-website-dev): Build corporate sites, e-commerce stores, SaaS dashboards, and booking portals with AI, full database and payment integrations. Tools: AI Builder, React, Node.js, SQL, Payments. Format: Live Instructor-Led Class.
+- [AI App Builder Pro](https://futureitindustry.com/courses/ai-android-dev): Build professional Android mobile apps for food delivery, shopping, fintech, and booking with AI, Firebase and Play Store deployment. Tools: Android, AI Builder, Firebase, REST API, Play Store. Format: Live Instructor-Led Class.
+- [AI Video Creator Pro](https://futureitindustry.com/courses/ai-video-creation): Create cinematic brand advertisements, product showcases, social reels, and YouTube videos with AI characters, lip-sync, and 4K export. Tools: AI Video, Lip Sync, AI Voice, Cinema 4K, Ads & Reels. Format: Live Instructor-Led Class.
+
+## Core Learning & Career Features
+
+- **Interactive Visual Learning**: Structured visual learning notes with concept diagrams, editorial infographics, code walkthroughs, and step-by-step explanations designed for clear conceptual retention.
+- **AI Mentor & Bilingual Learning**: Interactive AI Mentor with synchronized English and Hindi (Hinglish) explanations so learners can study technical concepts in their preferred language.
+- **Coding Practice & DSA**: Hands-on coding challenges and Data Structures & Algorithms practice tracks covering Python, SQL, and Excel.
+- **MCQ, Puzzle Challenge & Real-World Challenge**: Multi-format topic assessments including multiple-choice quizzes, logic puzzle challenges, and practical real-world business scenarios.
+- **Topic Interview & Mock Interviews**: Topic-level technical interview Q&A drills alongside AI-assisted mock interviews and HR round preparation.
+- **ATS Resume Score**: Public [ATS Resume Checker](https://futureitindustry.com/ats-resume-checker) for analyzing resume formatting, keyword alignment, and recruiter readiness.
+- **Internship & Placement Preparation**: Structured capstone portfolio projects, interview question banks, and career readiness guidance.
+
+## Learning Pathways
+
+- **Non-IT Background**: Zero-to-job foundation starting from core logic, Excel, SQL, and visual programming fundamentals with no prior coding background assumed.
+- **Career Gap**: Skill refresh and portfolio rebuilding pathway with hands-on projects, ATS resume optimization, and interview practice.
+- **Freshers**: Structured foundational-to-advanced tracks combining visual concepts, coding practice, projects, and placement preparation.
+- **Career Switch**: Fast-track role transition pathways targeting Data Analytics, Data Science, Machine Learning, AI Engineering, and Full Stack Web Development.
+
+## Public Pages & Policies
+
+- [Home](https://futureitindustry.com/): Platform overview, career pathways, and course catalog.
+- [Courses](https://futureitindustry.com/courses): Full directory of publicly available technology and AI courses.
+- [ATS Resume Checker](https://futureitindustry.com/ats-resume-checker): Resume evaluation and ATS readiness tool.
+- [About Us](https://futureitindustry.com/about): Organization background and legal entity details (Power Green Industries).
+- [Contact Us](https://futureitindustry.com/contact): Official support channels, registered office, and working hours.
+- [Terms & Conditions](https://futureitindustry.com/terms): Platform terms of use.
+- [Privacy Policy](https://futureitindustry.com/privacy): Data handling and learner privacy practices.
+- [Refund Policy](https://futureitindustry.com/refund): Cancellation and refund guidelines.
+
+## Contact & Support
+
+- **Operating Brand**: Future IT Industry
+- **Legal Entity**: Power Green Industries
+- **Support Phone**: +91 8210778369
+- **WhatsApp Support**: https://wa.me/917632099528
+- **Official Email**: subodh.mscit@gmail.com
+- **Registered Office**: 4, Varma House, Bakarpur, Bihar, PIN: 844127, India
+- **Support Hours**: Monday – Saturday: 9:00 AM – 7:00 PM IST; Sunday: 10:00 AM – 2:00 PM IST
+
+## Optional
+
+- [Full Platform & Curriculum Guide (llms-full.txt)](https://futureitindustry.com/llms-full.txt): Detailed public course overviews, curriculum summaries, platform capabilities, and FAQs.

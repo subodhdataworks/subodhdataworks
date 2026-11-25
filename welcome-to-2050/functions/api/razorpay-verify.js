@@ -15,7 +15,8 @@ import {
   setFirestoreDocument,
   runFirestoreTransaction,
 } from './_firestore-admin.js';
-
+
+import { createJsonResponder, handleCorsPreflight, rejectUnauthorizedOrigin } from './_cors.js';
 const CANONICAL_COURSE_PRICES_INR = {
   data_analyst: 4,
   data_science: 987,
@@ -30,15 +31,9 @@ const CANONICAL_COURSE_PRICES_INR = {
   ai_video_creation: 999,
 };
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Content-Type': 'application/json',
-};
-
-const json = (data, status = 200) =>
-  new Response(JSON.stringify(data), { status, headers: corsHeaders });
+const CORS_OPTS = { methods: "POST, OPTIONS", headers: "Content-Type" };
+// Strict origin-allowlisted CORS is applied per request via _cors.js
+const json = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 
 async function hmacSha256Hex(secret, message) {
   const enc = new TextEncoder();
@@ -67,6 +62,9 @@ function safeEqual(a, b) {
 }
 
 export async function onRequestPost(context) {
+  const _corsBlocked = rejectUnauthorizedOrigin(context.request, context.env, CORS_OPTS);
+  if (_corsBlocked) return _corsBlocked;
+  const json = createJsonResponder(context.request, context.env, CORS_OPTS);
   const { request, env } = context;
   const keySecret = env?.RAZORPAY_KEY_SECRET;
 
@@ -329,6 +327,6 @@ export async function onRequestPost(context) {
   }
 }
 
-export async function onRequestOptions() {
-  return new Response(null, { status: 204, headers: corsHeaders });
+export async function onRequestOptions(context) {
+  return handleCorsPreflight(context, CORS_OPTS);
 }

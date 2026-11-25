@@ -1,11 +1,16 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react';
+import { getSwaraAudioAmplitude } from '../../../services/swaraAudioService';
 import './StableMouthLipSyncAvatar.css';
 
 export interface StableMouthLipSyncAvatarProps {
-  imageUrl: string;
+  imageUrl?: string;
+  imageSrc?: string;
+  alt?: string;
   isSpeaking: boolean;
   speakingText?: string;
+  spokenText?: string;
   speakingRate?: number;
+  speechRate?: number;
   gender?: 'female' | 'male';
   isLipSyncEnabled?: boolean;
   hideInternalBadge?: boolean;
@@ -13,22 +18,22 @@ export interface StableMouthLipSyncAvatarProps {
 }
 
 // Multi-language Phoneme/Viseme classifications for natural mouth articulation
-// Maps character combinations / phonemes (English & Hindi/Devanagari) to aperture (0.0 to 1.0) and width (0.85 to 1.15)
+// Maps character combinations / phonemes (English & Hindi/Devanagari) to aperture (-0.22 to 1.0) and width (0.85 to 1.15)
 function getVisemeParams(char: string, nextChar: string = ''): { aperture: number; width: number } {
   const pair = (char + nextChar).toLowerCase();
   const c = char.toLowerCase();
 
   // Space or punctuation -> natural syllable/word closure pause
   if (/[\s,.\-!?;:।॥"']/.test(char)) {
-    return { aperture: 0.04, width: 1.0 };
+    return { aperture: -0.14, width: 1.0 };
   }
-  // English & Hindi bilabials: m, b, p, म, ब, प, भ -> closed lips press
+  // English & Hindi bilabials: m, b, p, म, ब, प, भ -> closed lips press together
   if (['m', 'b', 'p'].includes(c) || ['म', 'ब', 'प', 'भ'].includes(char)) {
-    return { aperture: 0.05, width: 0.98 };
+    return { aperture: -0.24, width: 0.98 };
   }
   // Labiodentals: f, v, फ़ -> slightly parted
   if (['f', 'v'].includes(c) || char === 'फ़' || char === 'फ' || char === 'व') {
-    return { aperture: 0.22, width: 0.96 };
+    return { aperture: 0.12, width: 0.96 };
   }
   // Wide open vowels: a, aa, आ, अ, ा, ऐ, ॉ -> highest jaw drop
   if (pair.startsWith('aa') || c === 'a' || ['आ', 'अ', 'ा', 'ऐ', 'ॉ'].includes(char)) {
@@ -43,30 +48,34 @@ function getVisemeParams(char: string, nextChar: string = ''): { aperture: numbe
     c === 'w' ||
     ['ओ', 'औ', 'उ', 'ऊ', 'ो', 'ौ', 'ु', 'ू'].includes(char)
   ) {
-    return { aperture: 0.68, width: 0.88 };
+    return { aperture: 0.68, width: 0.90 };
   }
   // Spread vowels: e, i, ee, इ, ई, ए, ि, ी, े -> moderate aperture, slightly wider corners
   if (pair.startsWith('ee') || c === 'e' || c === 'i' || c === 'y' || ['इ', 'ई', 'ए', 'ि', 'ी', 'े'].includes(char)) {
-    return { aperture: 0.54, width: 1.10 };
+    return { aperture: 0.54, width: 1.06 };
   }
   // Consonants: t, d, s, z, n, l, r, k, g, त, थ, द, ध, न, स, र, ल, क, ख, ग -> medium articulation
   if (/[tdsznlrkgjch]/.test(c) || /[\u0900-\u097F]/.test(char)) {
-    return { aperture: 0.40, width: 1.0 };
+    return { aperture: 0.34, width: 1.0 };
   }
 
-  return { aperture: 0.45, width: 1.0 };
+  return { aperture: 0.42, width: 1.0 };
 }
 
 export const StableMouthLipSyncAvatar: React.FC<StableMouthLipSyncAvatarProps> = ({
   imageUrl,
+  imageSrc,
   isSpeaking,
-  speakingText = '',
-  speakingRate = 0.94,
+  speakingText,
+  spokenText,
+  speakingRate,
+  speechRate,
   gender = 'female',
   isLipSyncEnabled = true,
-  hideInternalBadge = false,
   className = '',
 }) => {
+  const effectiveText = speakingText ?? spokenText ?? '';
+  const effectiveSpeakingRate = speakingRate ?? speechRate ?? 0.94;
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imageObjRef = useRef<HTMLImageElement | null>(null);
@@ -81,18 +90,60 @@ export const StableMouthLipSyncAvatar: React.FC<StableMouthLipSyncAvatarProps> =
   const blinkProgressRef = useRef(0.0); // 0 = open, 1 = closed
   const lastBlinkTimeRef = useRef(Date.now());
 
-  // Pixel-verified facial landmark coordinates for the 1024x576 Indian HR portraits
+  // Pixel-verified facial landmark coordinates for the Indian HR & Mentor portraits
+  const safeImageUrl = imageUrl || imageSrc || '/images/hr_interviewer_futureit_neha.jpg';
+  const isTransparentCutout = safeImageUrl.includes('future_it_mentor_girl');
   const mouthCoords = useMemo(() => {
-    // 1. Aditi Sharma - Indian Female HR (hr_interviewer_indian_female.jpg, 1024x576)
-    if (imageUrl.includes('indian_female') || gender === 'female') {
+    // 00. Visual Learning Female Mentor Cutout (future_it_mentor_girl.png, 664x576 exact tilted lip seam scan)
+    if (safeImageUrl.includes('future_it_mentor_girl')) {
       return {
-        centerX: 0.495,
-        centerY: 0.4184,
-        widthPct: 0.072,
-        heightPct: 0.064,
-        maxJawDropPx: 16.5,
-        leftEye: { x: 0.463, y: 0.311, rx: 14, ry: 6.5 },
-        rightEye: { x: 0.526, y: 0.311, rx: 14, ry: 6.5 },
+        centerX: 0.3780, // x = 251px (exact center between corners x=228 and x=274)
+        centerY: 0.3299, // y = 190.0px (exact inner seam below upper teeth at x=251)
+        widthPct: 0.0693, // 46px mouth width
+        heightPct: 0.0556, // 32px lower lip + chin height for seamless feathering
+        maxJawDropPx: 7.2,
+        mouthSlope: -0.135, // matches her charming head tilt (left corner y=191.8 -> right corner y=188.2)
+        leftEye: { x: 0.3268, y: 0.2309, rx: 11.5, ry: 4.8 },
+        rightEye: { x: 0.4111, y: 0.2170, rx: 11.5, ry: 4.8 },
+      };
+    }
+    // 0A. Neha Sharma - Future IT Industry Official HR Interviewer (1024x576, exact pixel scan)
+    if (safeImageUrl.includes('futureit_neha')) {
+      return {
+        centerX: 0.5039,
+        centerY: 0.3837,
+        widthPct: 0.0475,
+        heightPct: 0.045,
+        maxJawDropPx: 9.5,
+        mouthSlope: -0.02,
+        leftEye: { x: 0.4717, y: 0.2778, rx: 12.5, ry: 5.2 },
+        rightEye: { x: 0.5303, y: 0.2760, rx: 12.5, ry: 5.2 },
+      };
+    }
+    // 0B. Ritika Verma - Future IT Industry Topic Interview HR (1024x576, exact pixel scan)
+    if (safeImageUrl.includes('futureit_ritika')) {
+      return {
+        centerX: 0.5029,
+        centerY: 0.3976,
+        widthPct: 0.0475,
+        heightPct: 0.045,
+        maxJawDropPx: 9.5,
+        mouthSlope: -0.04,
+        leftEye: { x: 0.4668, y: 0.2882, rx: 12.5, ry: 5.2 },
+        rightEye: { x: 0.5273, y: 0.2813, rx: 12.5, ry: 5.2 },
+      };
+    }
+    // 1. Aditi Sharma - Super Ultra Powerful 2050 AI HR Director (hr_interviewer_indian_female.jpg)
+    if (safeImageUrl.includes('indian_female') || safeImageUrl.includes('ai_hr_director') || gender === 'female') {
+      return {
+        centerX: 0.503,
+        centerY: 0.4236,
+        widthPct: 0.070,
+        heightPct: 0.050,
+        maxJawDropPx: 12.0,
+        mouthSlope: 0.0,
+        leftEye: { x: 0.4707, y: 0.2951, rx: 13, ry: 5.5 },
+        rightEye: { x: 0.5361, y: 0.2951, rx: 13, ry: 5.5 },
       };
     }
     // 2. Rohan Verma - Indian Male HR (hr_interviewer_indian_male.jpg, 1024x576)
@@ -101,17 +152,18 @@ export const StableMouthLipSyncAvatar: React.FC<StableMouthLipSyncAvatarProps> =
       centerY: 0.4375,
       widthPct: 0.072,
       heightPct: 0.064,
-      maxJawDropPx: 16.5,
+      maxJawDropPx: 14.5,
+      mouthSlope: 0.0,
       leftEye: { x: 0.452, y: 0.318, rx: 14, ry: 6.5 },
       rightEye: { x: 0.521, y: 0.319, rx: 14, ry: 6.5 },
     };
-  }, [gender, imageUrl]);
+  }, [gender, safeImageUrl]);
 
   // Load avatar image
   useEffect(() => {
     setImageLoaded(false);
     const img = new Image();
-    img.src = imageUrl;
+    img.src = safeImageUrl;
     img.onload = () => {
       imageObjRef.current = img;
       setImageLoaded(true);
@@ -123,45 +175,78 @@ export const StableMouthLipSyncAvatar: React.FC<StableMouthLipSyncAvatarProps> =
       img.onload = null;
       img.onerror = null;
     };
-  }, [imageUrl]);
+  }, [safeImageUrl]);
 
-  // Real-time syllable & phoneme driver synchronized with spoken text (enhanced lip-sync articulation)
+  // Real-time syllable & phoneme driver synchronized with live spoken audio & visemes
   useEffect(() => {
     if (!isSpeaking || !isLipSyncEnabled) {
       targetApertureRef.current = 0.0;
+      currentApertureRef.current = 0.0;
       targetWidthScaleRef.current = 1.0;
+      currentWidthScaleRef.current = 1.0;
       return;
     }
 
-    const effectiveRate = Math.max(0.75, Math.min(1.35, speakingRate || 0.94));
-    const stepMs = Math.max(50, Math.floor(72 / effectiveRate));
+    const effectiveRate = Math.max(0.75, Math.min(1.35, effectiveSpeakingRate || 1.0));
+    const stepMs = Math.max(42, Math.floor(60 / effectiveRate));
 
     let tickCount = 0;
-    const interval = setInterval(() => {
-      tickCount++;
-      const cleanChars = Array.from((speakingText || '').trim());
-      const textLen = cleanChars.length;
+    const cleanChars = Array.from(
+      (effectiveText || 'Welcome to Future IT Industry visual learning session').trim()
+    );
+    const textLen = cleanChars.length;
 
-      if (textLen > 0) {
-        const idx = tickCount % textLen;
-        const char = cleanChars[textLen - 1] && textLen < 260 ? cleanChars[textLen - 1] : cleanChars[idx] || 'a';
+    const interval = setInterval(() => {
+      // 1. Direct Live Wave Amplitude from Swara Audio
+      const liveAmp = getSwaraAudioAmplitude();
+
+      if (liveAmp > 0) {
+        tickCount++;
+        const idx = textLen > 0 ? tickCount % textLen : 0;
+        const char = cleanChars[idx] || 'a';
         const nextChar = cleanChars[idx + 1] || ' ';
         const { aperture, width } = getVisemeParams(char, nextChar);
 
-        // Enhanced syllabic oscillation so mouth opens & closes with strong, natural articulation
-        const syllableWave = Math.sin(tickCount * 1.05) * 0.26;
-        const nextAperture = Math.max(0.04, Math.min(1.0, aperture * 1.15 + syllableWave));
-        targetApertureRef.current = nextAperture;
-        targetWidthScaleRef.current = width;
+        if (aperture < 0 || liveAmp < 0.08) {
+          // Bilabial closure or brief syllable boundary -> gently close lower lip upward
+          targetApertureRef.current = -0.22;
+          targetWidthScaleRef.current = 0.99;
+        } else {
+          // Open mouth proportional to live audio volume with phonetic shape
+          targetApertureRef.current = Math.min(
+            0.95,
+            Math.max(0.08, (aperture * 0.55 + 0.35) * liveAmp * 1.25)
+          );
+          targetWidthScaleRef.current = width;
+        }
+      } else if (textLen > 0) {
+        // 2. Synthesized Speech / WebSpeech / Character-by-Character Phoneme Traversal
+        tickCount++;
+        const idx = tickCount % textLen;
+        const char = cleanChars[idx] || ' ';
+        const nextChar = cleanChars[idx + 1] || ' ';
+
+        const { aperture, width } = getVisemeParams(char, nextChar);
+        if (aperture < 0) {
+          // Natural lip closure on spaces, punctuation, and m/b/p consonants
+          targetApertureRef.current = aperture;
+          targetWidthScaleRef.current = width;
+        } else {
+          const syllableOsc = Math.abs(Math.sin(tickCount * 0.78)) * 0.45 + 0.42;
+          targetApertureRef.current = Math.min(0.9, Math.max(0.08, aperture * syllableOsc));
+          targetWidthScaleRef.current = width;
+        }
       } else {
-        const cadence = Math.sin(Date.now() / 90) * 0.48 + 0.52;
-        targetApertureRef.current = Math.max(0.06, cadence);
-        targetWidthScaleRef.current = 0.95 + Math.cos(Date.now() / 120) * 0.08;
+        targetApertureRef.current = 0.0;
       }
     }, stepMs);
 
-    return () => clearInterval(interval);
-  }, [isSpeaking, speakingText, speakingRate, isLipSyncEnabled]);
+    return () => {
+      clearInterval(interval);
+      targetApertureRef.current = 0.0;
+      currentApertureRef.current = 0.0;
+    };
+  }, [isSpeaking, effectiveText, effectiveSpeakingRate, isLipSyncEnabled]);
 
   // Natural periodic eye blinking (every 3.8 - 5.5s, lasting 120ms)
   useEffect(() => {
@@ -179,7 +264,7 @@ export const StableMouthLipSyncAvatar: React.FC<StableMouthLipSyncAvatarProps> =
     return () => clearInterval(blinkInterval);
   }, []);
 
-  // 60FPS Canvas Render Loop — 100% Rock-Steady Frame, Enhanced Multi-Slice Upper & Lower Lip Warp
+  // 60FPS Canvas Render Loop — 100% Rock-Steady Frame, Slope-Aligned Photographic Upper & Lower Lip Articulation
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !imageLoaded || !imageObjRef.current) return;
@@ -190,126 +275,115 @@ export const StableMouthLipSyncAvatar: React.FC<StableMouthLipSyncAvatarProps> =
     const img = imageObjRef.current;
     const cw = (canvas.width = img.naturalWidth || 1024);
     const ch = (canvas.height = img.naturalHeight || 576);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
     const mx = mouthCoords.centerX * cw;
     const my = mouthCoords.centerY * ch;
     const mw = mouthCoords.widthPct * cw;
     const mh = mouthCoords.heightPct * ch;
     const maxDrop = mouthCoords.maxJawDropPx;
+    const slope = (mouthCoords as { mouthSlope?: number }).mouthSlope || 0;
 
     const render = () => {
-      // Snappy spring interpolation for responsive lip articulation
-      const damp = isSpeaking ? 0.42 : 0.46;
-      currentApertureRef.current += (targetApertureRef.current - currentApertureRef.current) * damp;
-      currentWidthScaleRef.current += (targetWidthScaleRef.current - currentWidthScaleRef.current) * damp;
+      // If speaking stopped or disabled, instantly snap aperture to 0 with zero lingering
+      if (!isSpeaking || !isLipSyncEnabled) {
+        currentApertureRef.current = 0.0;
+        targetApertureRef.current = 0.0;
+        currentWidthScaleRef.current = 1.0;
+        targetWidthScaleRef.current = 1.0;
+      } else {
+        const damp = 0.42;
+        currentApertureRef.current += (targetApertureRef.current - currentApertureRef.current) * damp;
+        currentWidthScaleRef.current += (targetWidthScaleRef.current - currentWidthScaleRef.current) * damp;
+      }
 
       const aperture = currentApertureRef.current;
       const jawDrop = aperture * maxDrop;
 
-      // 1. Draw 100% stationary base portrait
+      // 1. Clear overlay canvas (base portrait is rendered by the crisp native <img> underlay)
       ctx.clearRect(0, 0, cw, ch);
-      ctx.drawImage(img, 0, 0, cw, ch);
+      if (!isTransparentCutout) {
+        ctx.drawImage(img, 0, 0, cw, ch);
+      }
 
-      // 2. Enhanced Multi-Slice Seamless Upper & Lower Lip Warp + Anatomical Oral Cavity
-      if (aperture > 0.02 && isLipSyncEnabled) {
+      // 2. Slope-Aligned Bidirectional Photographic Lip Warp (Both Closing & Opening along exact tilted mouth seam)
+      if (Math.abs(aperture) > 0.03 && isLipSyncEnabled) {
         const widthScale = currentWidthScaleRef.current;
         const activeMouthW = mw * widthScale;
 
-        // A. Warp upper lip slightly upward & lower lip/chin downward using 32 vertical slices
-        const numSlices = 32;
-        const warpSpanW = activeMouthW * 1.08;
+        const numSlices = 40;
+        const warpSpanW = activeMouthW * 1.02;
         const sliceW = warpSpanW / numSlices;
         const startX = mx - warpSpanW / 2;
-        const upperH = mh * 0.48;
+        const upperH = mh * 0.42;
 
         for (let i = 0; i < numSlices; i++) {
           const sx = startX + i * sliceW;
+          const sliceCenterX = sx + sliceW * 0.5;
+          // Exact tilted mouth seam Y at this horizontal slice (matches head tilt to sub-pixel accuracy)
+          const localMy = my + (sliceCenterX - mx) * slope;
+
           const u = ((i + 0.5) / numSlices) * 2 - 1;
-          const horizFalloff = Math.pow(Math.max(0, Math.cos(u * Math.PI * 0.5)), 1.45);
+          // Smooth bell curve tapering to 0 at left and right mouth corners
+          const horizFalloff = Math.pow(Math.max(0, Math.cos(u * Math.PI * 0.5)), 1.75);
           const localDrop = jawDrop * horizFalloff;
-          const localUpperLift = localDrop * 0.22;
 
           if (localDrop > 0.2) {
-            // Subtle upper-lip lift
+            const localUpperLift = localDrop * 0.16;
+            const lowerShift = localDrop * 0.86;
+
+            // Fill the tiny parted inner-mouth gap along the tilted seam with natural inner-lip tone
+            const gapTop = localMy - localUpperLift;
+            const gapHeight = lowerShift + localUpperLift + 1.2;
+            const sliceGrad = ctx.createLinearGradient(sx, gapTop, sx, gapTop + gapHeight);
+            sliceGrad.addColorStop(0, 'rgb(198, 168, 166)'); // Soft upper tooth bottom edge blend
+            sliceGrad.addColorStop(0.32, 'rgb(148, 66, 74)'); // Natural warm rose inner oral tone
+            sliceGrad.addColorStop(1, 'rgb(176, 84, 92)'); // Lower inner lip edge blend
+            ctx.fillStyle = sliceGrad;
+            ctx.fillRect(sx, gapTop, sliceW + 0.8, gapHeight);
+
+            // A1. Upper lip + upper teeth lift slightly upward
             ctx.drawImage(
               img,
               sx,
-              my - upperH,
-              sliceW + 0.7,
+              localMy - upperH,
+              sliceW + 0.85,
               upperH,
               sx,
-              my - upperH - localUpperLift,
-              sliceW + 0.7,
+              localMy - upperH - localUpperLift,
+              sliceW + 0.85,
               upperH
             );
 
-            // Expressive lower-lip & chin drop
+            // A2. Lower lip and chin drop smoothly downward while bottom of chin stays anchored at localMy + mh
             ctx.drawImage(
               img,
               sx,
-              my,
-              sliceW + 0.7,
+              localMy,
+              sliceW + 0.85,
               mh,
               sx,
-              my + localDrop * 0.94,
-              sliceW + 0.7,
-              mh - localDrop * 0.32
+              localMy + lowerShift,
+              sliceW + 0.85,
+              Math.max(4, mh - lowerShift)
+            );
+          } else if (localDrop < -0.15) {
+            // Bilabial / syllable closure: gently lift lower lip upward to close over the teeth
+            const closeLift = Math.min(2.4, Math.abs(localDrop) * 1.15);
+            ctx.drawImage(
+              img,
+              sx,
+              localMy,
+              sliceW + 0.85,
+              mh,
+              sx,
+              localMy - closeLift,
+              sliceW + 0.85,
+              mh + closeLift
             );
           }
         }
-
-        // B. Curved Anatomical Mouth Parting Cavity between lifted upper lip and dropped lower lip
-        const cavityW = activeMouthW * 0.86;
-        const cavityH = Math.max(2.2, jawDrop * 0.98);
-        const leftCornerX = mx - cavityW / 2;
-        const rightCornerX = mx + cavityW / 2;
-
-        ctx.save();
-        ctx.beginPath();
-        // Upper lip inner arch
-        ctx.moveTo(leftCornerX, my);
-        ctx.quadraticCurveTo(mx, my - cavityH * 0.24, rightCornerX, my);
-        // Lower lip inner arch (shifted down by jawDrop)
-        ctx.quadraticCurveTo(mx, my + cavityH * 1.16, leftCornerX, my);
-        ctx.closePath();
-        ctx.clip();
-
-        // Deep natural oral cavity gradient
-        const oralGrad = ctx.createLinearGradient(mx, my - 3, mx, my + cavityH + 3);
-        oralGrad.addColorStop(0, '#260d11');
-        oralGrad.addColorStop(0.35, '#160609');
-        oralGrad.addColorStop(0.75, '#120407');
-        oralGrad.addColorStop(1, '#2b0f14');
-        ctx.fillStyle = oralGrad;
-        ctx.fillRect(leftCornerX - 2, my - 5, cavityW + 4, cavityH + 10);
-
-        // Upper Teeth Arch when mouth opens
-        if (aperture > 0.14) {
-          const teethW = cavityW * 0.70;
-          const teethH = Math.min(4.8, cavityH * 0.38);
-          ctx.beginPath();
-          ctx.moveTo(mx - teethW / 2, my - 1);
-          ctx.quadraticCurveTo(mx, my + teethH * 1.38, mx + teethW / 2, my - 1);
-          ctx.closePath();
-          ctx.fillStyle = 'rgba(248, 244, 239, 0.92)';
-          ctx.fill();
-        }
-
-        // Tongue Warmth at the bottom of the oral cavity on vowels
-        if (aperture > 0.35) {
-          const tongueW = cavityW * 0.54;
-          ctx.beginPath();
-          ctx.ellipse(mx, my + cavityH * 0.86, tongueW / 2, cavityH * 0.30, 0, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(175, 72, 82, 0.70)';
-          ctx.fill();
-        }
-
-        // Soft inner lip shadow around the contour for seamless blending
-        ctx.strokeStyle = 'rgba(30, 8, 12, 0.58)';
-        ctx.lineWidth = 1.4;
-        ctx.stroke();
-
-        ctx.restore();
       }
 
       // 3. Natural Eye Blink using sampled upper-eyelid skin texture from the portrait itself
@@ -372,20 +446,20 @@ export const StableMouthLipSyncAvatar: React.FC<StableMouthLipSyncAvatarProps> =
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        backgroundColor: '#0a0f1d',
+        backgroundColor: isTransparentCutout ? 'transparent' : '#0a0f1d',
       }}
     >
-      {/* 100% Stationary Static Avatar Underlay */}
+      {/* 100% Stationary Crisp Native <img> Underlay (Browser Lanczos High-DPI Sharpness) */}
       <img
-        src={imageUrl}
-        alt="HR Interviewer"
+        src={safeImageUrl}
+        alt="AI Mentor"
         className="stable-avatar-base-img"
         style={{
           position: 'absolute',
           inset: 0,
           width: '100%',
           height: '100%',
-          objectFit: 'cover',
+          objectFit: isTransparentCutout ? 'contain' : 'cover',
           display: 'block',
           userSelect: 'none',
           pointerEvents: 'none',
@@ -401,24 +475,11 @@ export const StableMouthLipSyncAvatar: React.FC<StableMouthLipSyncAvatarProps> =
           inset: 0,
           width: '100%',
           height: '100%',
-          objectFit: 'cover',
+          objectFit: isTransparentCutout ? 'contain' : 'cover',
           display: 'block',
           pointerEvents: 'none',
         }}
       />
-
-      {/* Sleek Live Voice Equalizer Badge (Top-Left below Live Indicator) */}
-      {isSpeaking && !hideInternalBadge && (
-        <div className="stable-avatar-speaking-indicator">
-          <div className="hud-sound-equalizer">
-            <span className="hud-bar bar-1" />
-            <span className="hud-bar bar-2" />
-            <span className="hud-bar bar-3" />
-            <span className="hud-bar bar-4" />
-          </div>
-          <span className="speaking-label">HR Speaking Live</span>
-        </div>
-      )}
     </div>
   );
 };

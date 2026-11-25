@@ -152,10 +152,24 @@ export const ThemeAccentProvider: React.FC<{ children: React.ReactNode }> = ({ c
   );
 };
 
+const DEFAULT_FALLBACK_CONTEXT: ThemeAccentContextType = {
+  accent: 'emerald-cyan',
+  accentConfig: ACCENT_PALETTES['emerald-cyan'],
+  setAccent: () => {},
+  soundEnabled: true,
+  toggleSound: () => {},
+  playHover: () => {},
+  playClick: () => {},
+  playCinema: () => {},
+  activeVideoIndex: 0,
+  setActiveVideoIndex: () => {},
+  videoList: [],
+};
+
 export const useThemeAccent = (): ThemeAccentContextType => {
   const context = useContext(ThemeAccentContext);
   if (!context) {
-    throw new Error('useThemeAccent must be used within a ThemeAccentProvider');
+    return DEFAULT_FALLBACK_CONTEXT;
   }
   return context;
 };

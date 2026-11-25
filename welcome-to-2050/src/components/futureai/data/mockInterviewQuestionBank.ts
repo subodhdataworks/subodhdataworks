@@ -6,6 +6,12 @@ import { getTopicQuestionBank } from './questionBankRegistry';
 // ============================================================================
 
 import { getModule01TopicData } from './module01TopicContent';
+import { getDataScienceTopicData } from './dataScienceTopicContent';
+import { getMlEngineeringTopicData } from './mlEngineeringTopicContent';
+import { getAiEngineeringTopicData } from './aiEngineeringTopicContent';
+import { getAiToolsPromptTopicData } from './aiToolsPromptTopicContent';
+import { getMsOfficeTopicData } from './msOfficeTopicContent';
+import { getFullStackMernTopicData } from './fullStackMernTopicContent';
 import { getHindiTopicActivity } from './hindiActivityContent';
 
 export interface KeywordRule {
@@ -841,7 +847,109 @@ export function resetCustomInterviewQuestionsForTopic(topicId: number): void {
 }
 
 // Build a complete question list for any Topic ID, merging topic-specific questions from shared registry & module01TopicContent
-export function getPreloadedInterviewQuestionsForTopic(topicId: number = 1, tabId: number = 1): PreloadedInterviewQuestion[] {
+export function getPreloadedInterviewQuestionsForTopic(
+  topicId: number = 1,
+  tabId: number = 1,
+  courseKey?: string
+): PreloadedInterviewQuestion[] {
+  // Course-specific interview questions for Microsoft 365, AI Tools & Prompt, AI Engineering, ML Engineering & Data Science (never fall back to Data Analyst)
+  if (
+    courseKey === 'full_stack_mern' ||
+    courseKey === 'ms_office_copilot' ||
+    courseKey === 'ai_tools_prompt' ||
+    courseKey === 'ai_engineering' ||
+    courseKey === 'ml_engineering' ||
+    courseKey === 'data_science'
+  ) {
+    const courseTopicData =
+      courseKey === 'full_stack_mern'
+        ? getFullStackMernTopicData(topicId)
+        : courseKey === 'ms_office_copilot'
+        ? getMsOfficeTopicData(topicId)
+        : courseKey === 'ai_tools_prompt'
+        ? getAiToolsPromptTopicData(topicId)
+        : courseKey === 'ai_engineering'
+        ? getAiEngineeringTopicData(topicId)
+        : courseKey === 'ml_engineering'
+        ? getMlEngineeringTopicData(topicId)
+        : getDataScienceTopicData(topicId);
+    if (courseTopicData && Array.isArray(courseTopicData.interviewQuestions) && courseTopicData.interviewQuestions.length > 0) {
+      return courseTopicData.interviewQuestions.map((tq, index) => {
+        const idealEn = tq.modelAnswer || '';
+        const rawWords = Array.from(
+          new Set(
+            idealEn
+              .toLowerCase()
+              .replace(/[^a-z0-9\s-]/g, ' ')
+              .split(/\s+/)
+              .filter(
+                (w) =>
+                  w.length >= 4 &&
+                  ![
+                    'that', 'this', 'with', 'from', 'into', 'when', 'what',
+                    'your', 'they', 'have', 'more', 'used', 'make', 'such',
+                    'like', 'help', 'helps', 'using', 'would', 'their', 'which',
+                    'only', 'also', 'than', 'then', 'both', 'each', 'over',
+                  ].includes(w)
+              )
+          )
+        ).slice(0, 5);
+
+        const kwRules: KeywordRule[] =
+          rawWords.length > 0
+            ? rawWords.map((w, kwIdx) => ({
+                id: `${courseKey}_t${topicId}_q${tq.id}_kw${kwIdx}`,
+                labelEn: w.charAt(0).toUpperCase() + w.slice(1),
+                labelHi: w.charAt(0).toUpperCase() + w.slice(1),
+                weight: 1.25,
+                synonyms: [w],
+              }))
+            : [
+                {
+                  id: `${courseKey}_t${topicId}_k1`,
+                  labelEn: courseTopicData.topicTitle,
+                  labelHi: courseTopicData.topicTitle,
+                  weight: 3.5,
+                  synonyms: [courseTopicData.topicTitle.toLowerCase()],
+                },
+              ];
+
+        return {
+          id: index + 1,
+          topicId,
+          topic: courseTopicData.topicTitle,
+          difficulty: index === 0 ? 'Easy' : index < 3 ? 'Medium' : 'Hard',
+          questionEn: tq.question,
+          questionHi: tq.question,
+          hintEn: `Explain ${courseTopicData.topicTitle} clearly with architecture/concept reasoning and a real-world production example.`,
+          hintHi: `${courseTopicData.topicTitle} ko clear concept aur real-world production example ke saath explain karein.`,
+          idealAnswerEn: idealEn,
+          idealAnswerHi: idealEn,
+          exampleAnswerEn: idealEn,
+          exampleAnswerHi: idealEn,
+          requiredKeywords: kwRules,
+          importantConcepts: [
+            {
+              id: `c_${courseKey}_${topicId}_${index}`,
+              conceptEn: `Core concepts of ${courseTopicData.topicTitle}`,
+              conceptHi: `${courseTopicData.topicTitle} ke mukhya concepts`,
+              weight: 3.0,
+              patterns: rawWords.length > 0 ? rawWords : [courseTopicData.topicTitle.toLowerCase()],
+            },
+          ],
+          commonMistakes: [],
+          scoringRules: {
+            keywordWeight: 5.0,
+            conceptWeight: 3.5,
+            structureWeight: 1.5,
+            minWordCount: 6,
+            maxScore: 10,
+          },
+        };
+      });
+    }
+  }
+
   // Check for admin custom configured questions first
   const custom = getCustomInterviewQuestions();
   if (custom[topicId] && Array.isArray(custom[topicId]) && custom[topicId].length > 0) {
@@ -856,35 +964,77 @@ export function getPreloadedInterviewQuestionsForTopic(topicId: number = 1, tabI
   if (qb && qb.mockInterview && qb.mockInterview.length > 0) {
     const publishedBankQs = qb.mockInterview.filter((item) => item && item.published !== false && item.deleted !== true);
     if (publishedBankQs.length > 0) {
-      return publishedBankQs.map((item, idx) => ({
-        id: item.id || idx + 1,
-        topicId: topicId,
-        topic: qb.topicTitle,
-        difficulty: (item as any).difficulty || ('Medium' as const),
-        questionEn: item.question,
-        questionHi: (item as any).questionHi || item.question,
-        hintEn: (item as any).hintEn || `Focus on explaining ${qb.topicTitle} with business examples.`,
-        hintHi: (item as any).hintHi || `${qb.topicTitle} ko aasan shabdon me samjhayein.`,
-        idealAnswerEn: item.sampleAnswer,
-        idealAnswerHi: (item as any).sampleAnswerHi || item.sampleAnswer,
-        exampleAnswerEn: item.sampleAnswer,
-        exampleAnswerHi: (item as any).sampleAnswerHi || item.sampleAnswer,
-        requiredKeywords: [
-          { id: 'k1', labelEn: qb.topicTitle, labelHi: qb.topicTitle, weight: 3.5, synonyms: [qb.topicTitle.toLowerCase(), 'data', 'analytics'] },
-          { id: 'k2', labelEn: 'business', labelHi: 'business', weight: 2.5, synonyms: ['business', 'decision', 'analysis'] },
-        ],
-        importantConcepts: [
-          { id: 'c1', conceptEn: 'Core Definition', conceptHi: 'Mukhya Paribhasha', weight: 2.5, patterns: ['concept', 'information', 'process'] },
-        ],
-        commonMistakes: [],
-        scoringRules: {
-          keywordWeight: 5.0,
-          conceptWeight: 3.5,
-          structureWeight: 1.5,
-          minWordCount: 6,
-          maxScore: 10,
-        },
-      }));
+      return publishedBankQs.map((item, idx) => {
+        const extractedTerms = Array.from(
+          new Set(
+            (item.sampleAnswer || '')
+              .toLowerCase()
+              .replace(/[^a-z0-9\s-]/g, ' ')
+              .split(/\s+/)
+              .filter(
+                (w) =>
+                  w.length >= 4 &&
+                  ![
+                    'that', 'this', 'with', 'from', 'into', 'when', 'what',
+                    'your', 'they', 'have', 'more', 'used', 'make', 'such',
+                    'like', 'help', 'helps', 'using', 'would', 'their', 'which',
+                  ].includes(w)
+              )
+          )
+        ).slice(0, 4);
+
+        const dynamicKwRules: KeywordRule[] =
+          extractedTerms.length > 0
+            ? extractedTerms.map((term, kIdx) => ({
+                id: `t${topicId}_q${idx + 1}_k${kIdx + 1}`,
+                labelEn: term.charAt(0).toUpperCase() + term.slice(1),
+                labelHi: term.charAt(0).toUpperCase() + term.slice(1),
+                weight: 1.5,
+                synonyms: [term],
+              }))
+            : [
+                {
+                  id: 'k1',
+                  labelEn: qb.topicTitle,
+                  labelHi: qb.topicTitle,
+                  weight: 3.5,
+                  synonyms: [qb.topicTitle.toLowerCase(), 'data', 'analytics'],
+                },
+              ];
+
+        return {
+          id: item.id || idx + 1,
+          topicId: topicId,
+          topic: qb.topicTitle,
+          difficulty: (item as any).difficulty || ('Medium' as const),
+          questionEn: item.question,
+          questionHi: (item as any).questionHi || item.question,
+          hintEn: (item as any).hintEn || `Focus on explaining ${qb.topicTitle} with a clear definition and real-world business example.`,
+          hintHi: (item as any).hintHi || `${qb.topicTitle} ko aasan shabdon me samjhayein.`,
+          idealAnswerEn: item.sampleAnswer,
+          idealAnswerHi: (item as any).sampleAnswerHi || item.sampleAnswer,
+          exampleAnswerEn: item.sampleAnswer,
+          exampleAnswerHi: (item as any).sampleAnswerHi || item.sampleAnswer,
+          requiredKeywords: dynamicKwRules,
+          importantConcepts: [
+            {
+              id: 'c1',
+              conceptEn: `Core concepts of ${qb.topicTitle}`,
+              conceptHi: 'Mukhya Paribhasha',
+              weight: 2.5,
+              patterns: extractedTerms.length > 0 ? extractedTerms : ['data', 'analysis', 'business'],
+            },
+          ],
+          commonMistakes: [],
+          scoringRules: {
+            keywordWeight: 5.0,
+            conceptWeight: 3.5,
+            structureWeight: 1.5,
+            minWordCount: 6,
+            maxScore: 10,
+          },
+        };
+      });
     }
   }
 
@@ -994,9 +1144,37 @@ export function tokenizeAnswerText(normalizedText: string): string[] {
 }
 
 export function evaluateInterviewAnswerDeterministically(
-  rawStudentAnswer: string,
-  question: PreloadedInterviewQuestion
+  param1: string | PreloadedInterviewQuestion | any,
+  param2: string | PreloadedInterviewQuestion | any,
+  _lang?: string
 ): DeterministicEvaluationResult {
+  // Support either (rawStudentAnswer, question) or (question, rawStudentAnswer) safely
+  let rawStudentAnswer: string = '';
+  let question: PreloadedInterviewQuestion = {} as PreloadedInterviewQuestion;
+
+  if (typeof param1 === 'string') {
+    rawStudentAnswer = param1;
+    question = (param2 && typeof param2 === 'object' ? param2 : {}) as PreloadedInterviewQuestion;
+  } else if (typeof param2 === 'string') {
+    rawStudentAnswer = param2;
+    question = (param1 && typeof param1 === 'object' ? param1 : {}) as PreloadedInterviewQuestion;
+  } else {
+    rawStudentAnswer = String(param1 || '');
+    question = (param2 && typeof param2 === 'object' ? param2 : {}) as PreloadedInterviewQuestion;
+  }
+
+  const safeRequiredKeywords = Array.isArray(question?.requiredKeywords) ? question.requiredKeywords : [];
+  const safeImportantConcepts = Array.isArray(question?.importantConcepts) ? question.importantConcepts : [];
+  const safeCommonMistakes = Array.isArray(question?.commonMistakes) ? question.commonMistakes : [];
+  const safeScoringRules = question?.scoringRules || {
+    maxScore: 10,
+    minWordCount: 5,
+    keywordWeight: 4.0,
+    conceptWeight: 3.5,
+    structureWeight: 2.5,
+    passThreshold: 6.0,
+  };
+
   const normalizedText = normalizeAnswerText(rawStudentAnswer);
   const tokens = tokenizeAnswerText(normalizedText);
   const tokenSet = new Set(tokens);
@@ -1005,18 +1183,18 @@ export function evaluateInterviewAnswerDeterministically(
   if (wordCount === 0) {
     return {
       score: 0,
-      maxScore: question.scoringRules.maxScore,
+      maxScore: safeScoringRules.maxScore || 10,
       normalizedText: '',
       tokens: [],
       wordCount: 0,
       matchedKeywords: [],
-      missingKeywords: question.requiredKeywords.map((k) => ({
+      missingKeywords: safeRequiredKeywords.map((k) => ({
         id: k.id,
         labelEn: k.labelEn,
         labelHi: k.labelHi,
       })),
       matchedConcepts: [],
-      missingConcepts: question.importantConcepts.map((c) => ({
+      missingConcepts: safeImportantConcepts.map((c) => ({
         id: c.id,
         conceptEn: c.conceptEn,
         conceptHi: c.conceptHi,
@@ -1041,11 +1219,12 @@ export function evaluateInterviewAnswerDeterministically(
   let totalKeywordWeight = 0;
   let earnedKeywordWeight = 0;
 
-  for (const kw of question.requiredKeywords) {
-    totalKeywordWeight += kw.weight;
+  for (const kw of safeRequiredKeywords) {
+    totalKeywordWeight += kw.weight || 1;
     let foundTerm: string | null = null;
 
-    for (const syn of kw.synonyms) {
+    const synonyms = Array.isArray(kw.synonyms) ? kw.synonyms : [];
+    for (const syn of synonyms) {
       const normSyn = normalizeAnswerText(syn);
       if (!normSyn) continue;
       if (normSyn.includes(' ')) {
@@ -1062,7 +1241,7 @@ export function evaluateInterviewAnswerDeterministically(
     }
 
     if (foundTerm) {
-      earnedKeywordWeight += kw.weight;
+      earnedKeywordWeight += kw.weight || 1;
       matchedKeywords.push({
         id: kw.id,
         labelEn: kw.labelEn,
@@ -1084,15 +1263,16 @@ export function evaluateInterviewAnswerDeterministically(
   let totalConceptWeight = 0;
   let earnedConceptWeight = 0;
 
-  for (const cp of question.importantConcepts) {
-    totalConceptWeight += cp.weight;
-    const isMatched = cp.patterns.some((pat) => {
+  for (const cp of safeImportantConcepts) {
+    totalConceptWeight += cp.weight || 1;
+    const patterns = Array.isArray(cp.patterns) ? cp.patterns : [];
+    const isMatched = patterns.some((pat) => {
       const normPat = normalizeAnswerText(pat);
       return normPat && normalizedText.includes(normPat);
     });
 
     if (isMatched) {
-      earnedConceptWeight += cp.weight;
+      earnedConceptWeight += cp.weight || 1;
       matchedConcepts.push({
         id: cp.id,
         conceptEn: cp.conceptEn,
@@ -1117,9 +1297,9 @@ export function evaluateInterviewAnswerDeterministically(
   }> = [];
   let penaltyPoints = 0;
 
-  for (const mk of question.commonMistakes) {
-    if (mk.triggerPatterns.includes('__MISSING_EXAMPLE__')) {
-      // Trigger if question asks for an example and student missed the example keyword
+  for (const mk of safeCommonMistakes) {
+    const triggerPatterns = Array.isArray(mk.triggerPatterns) ? mk.triggerPatterns : [];
+    if (triggerPatterns.includes('__MISSING_EXAMPLE__')) {
       const missedExampleKw = missingKeywords.some((k) => k.id === 'kw_example');
       if (missedExampleKw) {
         detectedMistakes.push({
@@ -1129,12 +1309,12 @@ export function evaluateInterviewAnswerDeterministically(
           correctionEn: mk.correctionEn,
           correctionHi: mk.correctionHi,
         });
-        penaltyPoints += mk.penalty;
+        penaltyPoints += mk.penalty || 0;
       }
       continue;
     }
 
-    const triggered = mk.triggerPatterns.some((pat) => {
+    const triggered = triggerPatterns.some((pat) => {
       const normPat = normalizeAnswerText(pat);
       return normPat && normalizedText.includes(normPat);
     });
@@ -1147,34 +1327,40 @@ export function evaluateInterviewAnswerDeterministically(
         correctionEn: mk.correctionEn,
         correctionHi: mk.correctionHi,
       });
-      penaltyPoints += mk.penalty;
+      penaltyPoints += mk.penalty || 0;
     }
   }
 
   // Check if answer is too brief (< minWordCount)
-  if (wordCount < question.scoringRules.minWordCount) {
+  const minWords = safeScoringRules.minWordCount || 5;
+  if (wordCount < minWords) {
     detectedMistakes.push({
       id: 'mk_too_brief',
       mistakeEn: `Answer is very brief (${wordCount} words). Technical interviews require a full explanation.`,
       mistakeHi: `उत्तर बहुत छोटा है (${wordCount} शब्द)। इंटरव्यू में पूरा स्पष्टीकरण और उदाहरण दें।`,
-      correctionEn: `Aim for at least ${question.scoringRules.minWordCount}–25 words covering both the definition and an example.`,
-      correctionHi: `कम से कम ${question.scoringRules.minWordCount}–25 शब्दों में परिभाषा और उदाहरण दोनों शामिल करें।`,
+      correctionEn: `Aim for at least ${minWords}–25 words covering both the definition and an example.`,
+      correctionHi: `कम से कम ${minWords}–25 शब्दों में परिभाषा और उदाहरण दोनों शामिल करें।`,
     });
   }
 
   // 4. Calculate Transparent Weighted Score out of 10
-  const kwRatio = totalKeywordWeight > 0 ? earnedKeywordWeight / totalKeywordWeight : 0;
-  const cpRatio = totalConceptWeight > 0 ? earnedConceptWeight / totalConceptWeight : 0;
+  const kwRatio = totalKeywordWeight > 0 ? earnedKeywordWeight / totalKeywordWeight : 0.8;
+  const cpRatio = totalConceptWeight > 0 ? earnedConceptWeight / totalConceptWeight : 0.8;
 
-  const keywordPoints = Number((kwRatio * question.scoringRules.keywordWeight).toFixed(2));
-  const conceptPoints = Number((cpRatio * question.scoringRules.conceptWeight).toFixed(2));
+  const kwWeight = safeScoringRules.keywordWeight ?? 4.0;
+  const cpWeight = safeScoringRules.conceptWeight ?? 3.5;
+  const stWeight = safeScoringRules.structureWeight ?? 2.5;
+  const maxSc = safeScoringRules.maxScore ?? 10;
+
+  const keywordPoints = Number((kwRatio * kwWeight).toFixed(2));
+  const conceptPoints = Number((cpRatio * cpWeight).toFixed(2));
 
   // Structure points: based on sufficient length + sentence completeness
-  const lengthRatio = Math.min(1, wordCount / Math.max(1, question.scoringRules.minWordCount * 1.5));
-  const structurePoints = Number((lengthRatio * question.scoringRules.structureWeight).toFixed(2));
+  const lengthRatio = Math.min(1, wordCount / Math.max(1, minWords * 1.5));
+  const structurePoints = Number((lengthRatio * stWeight).toFixed(2));
 
   const rawScore = keywordPoints + conceptPoints + structurePoints - penaltyPoints;
-  const clampedScore = Math.max(0, Math.min(question.scoringRules.maxScore, Number(rawScore.toFixed(1))));
+  const clampedScore = Math.max(0, Math.min(maxSc, Number(rawScore.toFixed(1))));
 
   // 5. Build Deterministic Suggestions from Prewritten Templates
   const suggestionsEn: string[] = [];
@@ -1206,23 +1392,26 @@ export function evaluateInterviewAnswerDeterministically(
     suggestionsHi.push('शानदार! आपके उत्तर में सभी आवश्यक Keywords और मुख्य बिंदु स्पष्ट रूप से शामिल हैं।');
   }
 
+  const totalKwCount = safeRequiredKeywords.length || 1;
+  const totalCpCount = safeImportantConcepts.length || 1;
+
   const summaryEn =
     clampedScore >= 8.5
-      ? `Strong Answer (${clampedScore}/10): You covered ${matchedKeywords.length} of ${question.requiredKeywords.length} key points and ${matchedConcepts.length} of ${question.importantConcepts.length} core concepts.`
+      ? `Strong Answer (${clampedScore}/10): You covered ${matchedKeywords.length} of ${totalKwCount} key points and ${matchedConcepts.length} of ${totalCpCount} core concepts.`
       : clampedScore >= 5.5
-      ? `Good Effort (${clampedScore}/10): You matched ${matchedKeywords.length} of ${question.requiredKeywords.length} keywords. Review the missing points below to improve your score.`
-      : `Needs Improvement (${clampedScore}/10): Only ${matchedKeywords.length} of ${question.requiredKeywords.length} required keywords were detected. Compare your answer with the Ideal Answer below.`;
+      ? `Good Effort (${clampedScore}/10): You matched ${matchedKeywords.length} of ${totalKwCount} keywords. Review the missing points below to improve your score.`
+      : `Needs Improvement (${clampedScore}/10): Only ${matchedKeywords.length} of ${totalKwCount} required keywords were detected. Compare your answer with the Ideal Answer below.`;
 
   const summaryHi =
     clampedScore >= 8.5
-      ? `शानदार उत्तर (${clampedScore}/10): आपने ${question.requiredKeywords.length} में से ${matchedKeywords.length} Keywords और ${question.importantConcepts.length} में से ${matchedConcepts.length} मुख्य अवधारणाओं को कवर किया।`
+      ? `शानदार उत्तर (${clampedScore}/10): आपने ${totalKwCount} में से ${matchedKeywords.length} Keywords और ${totalCpCount} में से ${matchedConcepts.length} मुख्य अवधारणाओं को कवर किया।`
       : clampedScore >= 5.5
-      ? `अच्छा प्रयास (${clampedScore}/10): आपने ${question.requiredKeywords.length} में से ${matchedKeywords.length} Keywords शामिल किए। बेहतर स्कोर के लिए छूटे हुए बिंदु देखें।`
-      : `सुधार की आवश्यकता (${clampedScore}/10): केवल ${matchedKeywords.length}/${question.requiredKeywords.length} आवश्यक Keywords मिले। नीचे दिए गए आदर्श उत्तर से तुलना करें।`;
+      ? `अच्छा प्रयास (${clampedScore}/10): आपने ${totalKwCount} में से ${matchedKeywords.length} Keywords शामिल किए। बेहतर स्कोर के लिए छूटे हुए बिंदु देखें।`
+      : `सुधार की आवश्यकता (${clampedScore}/10): केवल ${matchedKeywords.length}/${totalKwCount} आवश्यक Keywords मिले। नीचे दिए गए आदर्श उत्तर से तुलना करें।`;
 
   return {
     score: clampedScore,
-    maxScore: question.scoringRules.maxScore,
+    maxScore: maxSc,
     normalizedText,
     tokens,
     wordCount,

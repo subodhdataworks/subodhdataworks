@@ -430,13 +430,13 @@ export const SmartPythonClassroomV5: React.FC<SmartPythonClassroomV5Props> = ({
 
     if (!playVoice) return;
 
-    // Unified Question Voice: Pure Desi Indian English for English mode, Swara girl voice for Hindi
+    // Unified Question Voice: Swara Indian Female voice for both Hindi and English
     let audioUrl = '';
     if (language === 'en') {
       if (topicId === 'py_01_basics_01' && activeQuestionIndex === 0) {
         audioUrl = '/audio/smart_teacher/en/q_play.mp3';
       } else {
-        audioUrl = `/api/human-tts?lang=en&voice=en-IN-PrabhatNeural&text=${encodeURIComponent(qText)}`;
+        audioUrl = `/api/human-tts?lang=hi&voice=hi-IN-SwaraNeural&text=${encodeURIComponent(qText)}`;
       }
     } else {
       if (topicId === 'py_01_basics_01' && activeQuestionIndex === 0) {
@@ -483,13 +483,12 @@ export const SmartPythonClassroomV5: React.FC<SmartPythonClassroomV5Props> = ({
     const sNum = stepIndex + 1;
 
     // Unified Universal Engine:
-    // In English mode: Pure Desi Indian English studio recordings or Prabhat Indian English voice
-    // In Hindi mode: Authentic Module 1 Visual Explanation Girl Voice (hi-IN-SwaraNeural)
+    // Authentic Module 1 Visual Explanation Girl Voice (hi-IN-SwaraNeural) for both Hindi & English
     if (language === 'en') {
       if (topicId === 'py_01_basics_01' && activeQuestionIndex === 0 && sNum <= 4) {
         audioUrl = `/audio/smart_teacher/en/step_${sNum}.mp3`;
       } else {
-        audioUrl = `/api/human-tts?lang=en&voice=en-IN-PrabhatNeural&text=${encodeURIComponent(fallback || text)}`;
+        audioUrl = `/api/human-tts?lang=hi&voice=hi-IN-SwaraNeural&text=${encodeURIComponent(fallback || text)}`;
       }
     } else {
       if (topicId === 'py_01_basics_01' && activeQuestionIndex === 0 && sNum <= 4) {

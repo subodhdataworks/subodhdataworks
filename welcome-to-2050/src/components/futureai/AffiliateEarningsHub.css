@@ -3479,3 +3479,103 @@
     flex-direction: column;
   }
 }
+
+/* ============================================================ */
+/* SLIM & PURPLE-WHITE THEME OVERRIDE FOR EARN CASH HERO BANNER */
+/* ============================================================ */
+.affiliate-hero-slider-wrap {
+  height: 210px !important;
+  min-height: 210px !important;
+  max-height: 210px !important;
+  border-radius: 20px !important;
+  border: 1px solid #e9e5f5 !important;
+  box-shadow: 0 4px 18px rgba(109, 40, 217, 0.06) !important;
+}
+
+.affiliate-banner-text-overlay {
+  gap: 5px !important;
+  padding: 12px 20px 12px 32px !important;
+  max-width: 600px !important;
+}
+
+.ath-overlay-headline {
+  font-size: clamp(19px, 1.9vw, 24px) !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.ath-hl-line1 {
+  color: #111827 !important;
+}
+
+.ath-hl-cyan,
+.ath-hl-gold {
+  background: linear-gradient(90deg, #6D28D9 0%, #7C3AED 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+.ath-overlay-subtitle {
+  font-size: 0.78rem !important;
+  line-height: 1.38 !important;
+  color: #64748B !important;
+  font-weight: 500 !important;
+}
+
+.ath-step-pill {
+  padding: 2.5px 8px !important;
+  border: 1px solid #e9e5f5 !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  box-shadow: 0 1px 3px rgba(109, 40, 217, 0.04) !important;
+}
+
+.ath-step-num {
+  background: linear-gradient(135deg, #6D28D9, #7C3AED) !important;
+  font-weight: 700 !important;
+}
+
+.ath-step-label {
+  font-size: 0.68rem !important;
+  font-weight: 600 !important;
+  color: #111827 !important;
+}
+
+.ath-step-arrow {
+  color: #7C3AED !important;
+  font-weight: 700 !important;
+}
+
+.ath-feature-glass-pill {
+  padding: 2.5px 8px !important;
+  border-radius: 8px !important;
+  background: #F5F3FF !important;
+  border: 1px solid #E9E5F5 !important;
+  color: #4C1D95 !important;
+  font-size: 0.68rem !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+.ath-overlay-cta-btn {
+  padding: 6.5px 15px !important;
+  border-radius: 12px !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  box-shadow: 0 3px 10px rgba(109, 40, 217, 0.22) !important;
+}
+
+.ath-overlay-cta-btn.ath-cta-cyan,
+.ath-overlay-cta-btn.ath-cta-gold {
+  background: linear-gradient(135deg, #6D28D9 0%, #7C3AED 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 3px 10px rgba(109, 40, 217, 0.24) !important;
+}
+
+.ath-overlay-social-proof {
+  font-size: 0.7rem !important;
+  font-weight: 600 !important;
+  color: #64748B !important;
+}

@@ -61,7 +61,7 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     shortDesc: 'Master Python, SQL, Power BI, Excel & GenAI to build automated business dashboards.',
     image: COURSE_AUTHORITATIVE_IMAGES['data-analyst-genai'],
     holoImage: COURSE_AUTHORITATIVE_IMAGES['data-analyst-genai'],
-    video: '/videos/data_analyst_genai_v3.mp4',
+    video: '/videos/cards/data_analyst_genai_v3_card.mp4',
     theme: 'blue',
     stripColor: 'sapphire-blue',
     tools: [
@@ -84,7 +84,7 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     shortDesc: 'Build Machine Learning models, RAG pipelines, and autonomous AI Agent systems.',
     image: COURSE_AUTHORITATIVE_IMAGES['data-science-agentic-ai'],
     holoImage: COURSE_AUTHORITATIVE_IMAGES['data-science-agentic-ai'],
-    video: '/videos/data_science_agentic_ai_course.mp4',
+    video: '/videos/cards/data_science_agentic_ai_course_card.mp4',
     theme: 'purple',
     stripColor: 'royal-purple',
     tools: [
@@ -107,7 +107,7 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     shortDesc: 'Build, train, and deploy production-scale ML pipelines with MLOps and Docker.',
     image: COURSE_AUTHORITATIVE_IMAGES['ml-engineering'],
     holoImage: COURSE_AUTHORITATIVE_IMAGES['ml-engineering'],
-    video: '/videos/ml_engineering_course.mp4',
+    video: '/videos/cards/ml_engineering_course_card.mp4',
     theme: 'orange',
     stripColor: 'vibrant-orange',
     tools: [
@@ -130,7 +130,7 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     shortDesc: 'Build and deploy end-to-end enterprise AI products, LLMs, and multi-agent solutions.',
     image: COURSE_AUTHORITATIVE_IMAGES['ai-engineering'],
     holoImage: COURSE_AUTHORITATIVE_IMAGES['ai-engineering'],
-    video: '/videos/ai_engineering_course_v2.mp4',
+    video: '/videos/cards/ai_engineering_course_v2_card.mp4',
     theme: 'emerald',
     stripColor: 'emerald-green',
     tools: [
@@ -153,7 +153,7 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     shortDesc: '10x your productivity with ChatGPT-4o, Claude 3.5, Midjourney, Cursor & Zapier automations.',
     image: COURSE_AUTHORITATIVE_IMAGES['ai-tools-prompt'],
     holoImage: COURSE_AUTHORITATIVE_IMAGES['ai-tools-prompt'],
-    video: '/videos/ai_tools_prompt_engineering.mp4',
+    video: '/videos/cards/ai_tools_prompt_engineering_card.mp4',
     theme: 'dark',
     stripColor: 'indigo-cobalt',
     tools: [
@@ -226,7 +226,7 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     shortDesc: 'Build corporate sites, e-commerce stores, SaaS dashboards, and booking portals with AI, full database and payment integrations.',
     image: COURSE_AUTHORITATIVE_IMAGES['ai-website-dev'],
     holoImage: COURSE_AUTHORITATIVE_IMAGES['ai-website-dev'],
-    video: '/videos/ai_website_builder_pro.mp4',
+    video: '/videos/cards/ai_website_builder_pro_card.mp4',
     theme: 'orange',
     stripColor: 'amber-gold',
     tools: [
@@ -253,7 +253,7 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     shortDesc: 'Build professional Android mobile apps for food delivery, shopping, fintech, and booking with AI, Firebase and Play Store deployment.',
     image: COURSE_AUTHORITATIVE_IMAGES['ai-android-dev'],
     holoImage: COURSE_AUTHORITATIVE_IMAGES['ai-android-dev'],
-    video: '/videos/ai_app_builder_pro.mp4',
+    video: '/videos/cards/ai_app_builder_pro_card.mp4',
     theme: 'blue',
     stripColor: 'ocean-cyan',
     tools: [
@@ -280,7 +280,7 @@ export const CAREER_COURSES_12: CareerCourseItem[] = [
     shortDesc: 'Create cinematic brand advertisements, product showcases, social reels, and YouTube videos with AI characters, lip-sync, and 4K export.',
     image: COURSE_AUTHORITATIVE_IMAGES['ai-video-creation'],
     holoImage: COURSE_AUTHORITATIVE_IMAGES['ai-video-creation'],
-    video: '/videos/ai_video_creator_pro.mp4',
+    video: '/videos/cards/ai_video_creator_pro_card.mp4',
     theme: 'pink',
     stripColor: 'cinematic-red',
     tools: [
