@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Briefcase } from 'lucide-react';
 import { CurriculumTabLike } from '../../../services/topicProgressTracker';
 
 export interface CourseHorizontalTrackNavProps {
@@ -74,21 +74,30 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
   return (
     <div id="curriculum-tabs-map" className="relative w-full group/tracknav">
       <style>{`
-        @keyframes roadmapFlow {
-          0% { transform: translateX(-100%); opacity: 0; }
-          25% { opacity: 1; }
-          75% { opacity: 1; }
-          100% { transform: translateX(220%); opacity: 0; }
+        @keyframes roadDashMove {
+          0% { background-position: 0 0; }
+          100% { background-position: 16px 0; }
         }
-        @keyframes roadmapPulseRing {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.38); }
-          50% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+        .roadmap-road-dashes {
+          background-image: repeating-linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.92) 0px,
+            rgba(255, 255, 255, 0.92) 5px,
+            transparent 5px,
+            transparent 10px
+          );
+          background-size: 16px 2px;
         }
-        .roadmap-connector-flow {
-          animation: roadmapFlow 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        }
-        .roadmap-active-glow {
-          animation: roadmapPulseRing 2.4s ease-in-out infinite;
+        .roadmap-road-dashes-active {
+          background-image: repeating-linear-gradient(
+            90deg,
+            #fde047 0px,
+            #fde047 5px,
+            transparent 5px,
+            transparent 10px
+          );
+          background-size: 16px 2px;
+          animation: roadDashMove 1.1s linear infinite;
         }
       `}</style>
 
@@ -176,43 +185,51 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
                   )}
                 </button>
 
-                {/* Consistent Roadmap Connector between consecutive steps */}
-                {!isLast && (
+                {/* Road Segment Connector between every milestone (and leading into final Job destination) */}
+                <div
+                  className="flex items-center shrink-0 select-none"
+                  aria-hidden="true"
+                >
                   <div
-                    className="flex items-center px-1 shrink-0 select-none"
-                    aria-hidden="true"
+                    className={`relative w-6 sm:w-8 h-[14px] flex items-center justify-center border-y transition-colors ${
+                      isConnectorPassed
+                        ? 'bg-emerald-800 border-emerald-400/80'
+                        : isConnectorNext
+                        ? 'bg-slate-800 border-emerald-400/70'
+                        : 'bg-slate-700 border-slate-500/70'
+                    }`}
                   >
                     <div
-                      className={`relative w-4 sm:w-5 h-[2px] rounded-full overflow-hidden ${
-                        isConnectorPassed
-                          ? 'bg-emerald-500'
-                          : isConnectorNext
-                          ? 'bg-emerald-300'
-                          : 'bg-slate-200'
-                      }`}
-                    >
-                      {(isConnectorNext || isConnectorPassed) && (
-                        <span
-                          className={`absolute inset-y-0 left-0 w-3 rounded-full roadmap-connector-flow ${
-                            isConnectorPassed
-                              ? 'bg-gradient-to-r from-transparent via-white/85 to-transparent'
-                              : 'bg-gradient-to-r from-transparent via-emerald-500 to-transparent'
-                          }`}
-                        />
-                      )}
-                    </div>
-                    <ChevronRight
-                      className={`w-3.5 h-3.5 -ml-1.5 stroke-[2.5] transition-colors ${
+                      className={`w-full h-[2px] ${
                         isConnectorPassed || isConnectorNext
-                          ? 'text-emerald-500'
-                          : 'text-slate-300'
+                          ? 'roadmap-road-dashes-active'
+                          : 'roadmap-road-dashes opacity-75'
                       }`}
                     />
                   </div>
-                )}
+                </div>
               </React.Fragment>
             );
           })}
+
+          {/* Final Career Destination Milestone: Job */}
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.location.hash = '#placement';
+              }
+            }}
+            title="Career Destination: Placement & Job Readiness"
+            className="group relative py-1.5 px-3 sm:px-3.5 rounded-xl flex items-center gap-2 text-left transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.99] cursor-pointer border bg-gradient-to-r from-[#5B21B6] via-[#6D28D9] to-[#7C3AED] text-white border-purple-400/80 shadow-[0_4px_14px_rgba(109,40,217,0.28)]"
+          >
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center shrink-0 bg-white/20 border border-white/30">
+              <Briefcase className="w-4 h-4 text-amber-300 stroke-[2.3]" />
+            </div>
+            <span className="text-[12px] sm:text-[12.5px] font-extrabold tracking-tight leading-tight pr-0.5 text-white">
+              Job
+            </span>
+          </button>
         </div>
       </div>
 

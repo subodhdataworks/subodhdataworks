@@ -169,7 +169,7 @@ export const FullStackMernHub: React.FC<FullStackMernHubProps> = ({
       <div className="course-desktop-only">
         <main className="w-full pt-0 space-y-3">
           {/* 1. TOP HERO BANNER: SLIM FUTURE IT PURPLE-WHITE THEME */}
-          <section className="w-full relative rounded-2xl overflow-hidden border border-[#E9E5F5] shadow-[0_4px_18px_rgba(109,40,217,0.06)] bg-white text-[#111827] md:h-[210px] md:min-h-[210px] md:max-h-[210px]">
+          <section className="w-full relative rounded-2xl overflow-hidden border border-[#E6E0F4] shadow-[0_2px_14px_rgba(109,40,217,0.05)] bg-white text-[#111827] md:h-[148px] md:min-h-[148px] md:max-h-[148px]">
             <img
               src="/images/full_stack_web_development_poster.jpg"
               alt="Full-Stack MERN Development with AI"
@@ -181,8 +181,8 @@ export const FullStackMernHub: React.FC<FullStackMernHubProps> = ({
             <div className="absolute inset-0 bg-gradient-to-r from-white via-[#FAF8FF]/95 md:via-white/88 to-transparent pointer-events-none w-full md:w-[60%] lg:w-[54%]" />
             <div className="absolute inset-0 bg-gradient-to-t from-white/85 via-transparent to-transparent pointer-events-none md:hidden" />
 
-            <div className="relative z-10 px-4 py-3 sm:px-6 lg:px-7 flex flex-col justify-center h-full">
-              <div className="max-w-2xl space-y-1.5 min-w-0 pt-3 sm:pt-4">
+            <div className="relative z-10 px-4 py-2.5 sm:px-6 lg:px-7 flex flex-col justify-center h-full">
+              <div className="max-w-2xl space-y-1.5 min-w-0">
                 <h1 className="text-lg sm:text-xl lg:text-[24px] font-bold tracking-tight text-[#111827] leading-tight m-0">
                   Full-Stack MERN{' '}
                   <span className="text-[#6D28D9]">Development with AI</span>

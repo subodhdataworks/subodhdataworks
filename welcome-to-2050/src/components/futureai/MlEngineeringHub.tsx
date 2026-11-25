@@ -183,7 +183,7 @@ export const MlEngineeringHub: React.FC<MlEngineeringHubProps> = ({
         {/* =========================================================================
             1. TOP HERO BANNER: SLIM FUTURE IT PURPLE-WHITE THEME
             ========================================================================= */}
-        <section className="w-full relative rounded-2xl overflow-hidden border border-[#E9E5F5] shadow-[0_4px_18px_rgba(109,40,217,0.06)] bg-white text-[#111827] md:h-[210px] md:min-h-[210px] md:max-h-[210px]">
+        <section className="w-full relative rounded-2xl overflow-hidden border border-[#E6E0F4] shadow-[0_2px_14px_rgba(109,40,217,0.05)] bg-white text-[#111827] md:h-[148px] md:min-h-[148px] md:max-h-[148px]">
           {/* Full Background Daylight Tech Campus / ML Engineering Workspace Photo */}
           <img
             src="/images/student-robot-project-hero.jpg"
@@ -197,10 +197,10 @@ export const MlEngineeringHub: React.FC<MlEngineeringHubProps> = ({
           <div className="absolute inset-0 bg-gradient-to-r from-white via-[#FAF8FF]/95 md:via-white/88 to-transparent pointer-events-none w-full md:w-[60%] lg:w-[54%]" />
           <div className="absolute inset-0 bg-gradient-to-t from-white/85 via-transparent to-transparent pointer-events-none md:hidden" />
 
-          <div className="relative z-10 px-4 py-3 sm:px-6 lg:px-7 flex flex-col justify-center h-full">
+          <div className="relative z-10 px-4 py-2.5 sm:px-6 lg:px-7 flex flex-col justify-center h-full">
             
             {/* Left Content Zone */}
-            <div className="max-w-2xl space-y-1.5 min-w-0 pt-3 sm:pt-4">
+            <div className="max-w-2xl space-y-1.5 min-w-0">
               {/* Headline */}
               <h1 className="text-lg sm:text-xl lg:text-[24px] font-bold tracking-tight text-[#111827] leading-tight m-0">
                 Machine Learning{' '}
