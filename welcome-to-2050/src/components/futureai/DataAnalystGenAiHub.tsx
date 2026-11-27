@@ -455,10 +455,17 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
           <div className="absolute inset-0 bg-gradient-to-r from-white via-white/98 md:via-white/95 to-transparent pointer-events-none w-full md:w-[75%] lg:w-[65%]" />
           <div className="absolute inset-0 bg-gradient-to-t from-white/85 via-transparent to-transparent pointer-events-none md:hidden" />
 
-          <div className="relative z-10 px-4 py-2.5 sm:px-6 lg:px-7 flex flex-col justify-center h-full">
+          <div className="relative z-10 px-4 py-2.5 sm:px-6 lg:px-7 flex items-center justify-between h-full">
             
             {/* Left Content Zone */}
-            <div className="max-w-2xl space-y-1.5 min-w-0">
+            <div className="max-w-xl xl:max-w-2xl space-y-1.5 min-w-0">
+              {/* Career-Ready Eyebrow Pill */}
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1 bg-purple-50 border border-purple-200 text-[#7C3AED] px-2.5 py-0.5 rounded-full text-[10.5px] font-bold shadow-2xs">
+                  ✦ Career-Ready Program
+                </span>
+              </div>
+
               {/* Headline */}
               <h1 className="text-lg sm:text-xl lg:text-[21px] font-bold tracking-tight text-[#0F172A] leading-tight m-0">
                 Data Analyst with{' '}
@@ -486,9 +493,6 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                 <span className="inline-flex items-center gap-1 bg-white/95 border border-[#E5E0F3] px-2.5 py-0.5 rounded-full shadow-2xs">
                   📜 Industry Certificate
                 </span>
-                <span className="inline-flex items-center gap-1 bg-white/95 border border-[#E5E0F3] px-2.5 py-0.5 rounded-full shadow-2xs">
-                  🤖 AI-Powered Learning
-                </span>
               </div>
 
               {/* Action Buttons (Dynamic Enrollment & Continue Learning Logic) */}
@@ -507,6 +511,39 @@ export const DataAnalystGenAiHub: React.FC<DataAnalystGenAiHubProps> = ({
                     }
                   }}
                 />
+              </div>
+            </div>
+
+            {/* Right Card Zone: Career Outcomes (Exact match to reference mockup) */}
+            <div className="hidden lg:flex items-center absolute right-0 top-0 bottom-0 w-[175px] xl:w-[200px] bg-gradient-to-br from-[#7C3AED] via-[#6D28D9] to-[#5B21B6] rounded-l-3xl p-3 text-white flex-col justify-between shadow-[-4px_0_16px_rgba(109,40,217,0.22)] select-none">
+              <div className="space-y-1.5 w-full pt-0.5">
+                <div className="flex items-center justify-between text-[11px] font-bold">
+                  <span>Learn</span>
+                  <span className="text-emerald-300 font-extrabold">✓</span>
+                </div>
+                <div className="flex items-center justify-between text-[11px] font-bold">
+                  <span>Build</span>
+                  <span className="text-emerald-300 font-extrabold">✓</span>
+                </div>
+                <div className="flex items-center justify-between text-[11px] font-bold">
+                  <span>Practice</span>
+                  <span className="text-emerald-300 font-extrabold">✓</span>
+                </div>
+                <div className="flex items-center justify-between text-[11px] font-bold">
+                  <span>Get Job</span>
+                  <span className="text-amber-300 font-extrabold">✓</span>
+                </div>
+              </div>
+
+              {/* Upward Growth Graph Icon */}
+              <div className="w-full flex items-end justify-end gap-1 pb-0.5 opacity-90">
+                <div className="w-1.5 h-2.5 bg-white/40 rounded-t-xs" />
+                <div className="w-1.5 h-4 bg-white/60 rounded-t-xs" />
+                <div className="w-1.5 h-5.5 bg-white/80 rounded-t-xs" />
+                <div className="w-1.5 h-7.5 bg-white rounded-t-xs" />
+                <svg className="w-4 h-4 text-emerald-300 ml-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M7 17L17 7M17 7H7M17 7V17" />
+                </svg>
               </div>
             </div>
 
