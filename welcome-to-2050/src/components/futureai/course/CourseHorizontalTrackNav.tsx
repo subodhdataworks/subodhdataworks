@@ -167,7 +167,7 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
   const [canScrollRight, setCanScrollRight] = useState(false);
 
   // Student character motion physics states
-  const [characterPos, setCharacterPos] = useState<{ x: number; y: number }>({ x: 60, y: 11 });
+  const [characterPos, setCharacterPos] = useState<{ x: number; y: number }>({ x: 60, y: 62 });
   const [characterState, setCharacterState] = useState<CharacterAnimationState>('idle');
   const [characterDirection, setCharacterDirection] = useState<1 | -1>(1);
   const [isJobSelected, setIsJobSelected] = useState(false);
@@ -178,6 +178,7 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
   const milestoneDistsRef = useRef<Record<string, number>>({});
   const [roadSvgPathD, setRoadSvgPathD] = useState<string>('');
   const [waypointNodes, setWaypointNodes] = useState<Array<{ x: number; y: number }>>([]);
+  const [milestoneWaypoints, setMilestoneWaypoints] = useState<Array<{ id: string; x: number; y: number }>>([]);
   const [trackWidth, setTrackWidth] = useState<number>(1400);
 
   // Milestones sequence: Dynamic course tabs + Final "Job" Destination
@@ -255,7 +256,7 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
     setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 10);
   }, []);
 
-  // Measure card coordinates and build continuous grey road SVG path with waypoint nodes
+  // Measure card coordinates and build continuous curvy highway SVG path with waypoint nodes
   const measureRoadAndMilestones = useCallback(() => {
     const container = trackInnerRef.current;
     if (!container) return;
@@ -264,45 +265,58 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
     const width = Math.max(containerRect.width, container.scrollWidth, 1100);
     setTrackWidth(width);
 
+    // Natural winding highway wave elevation across destinations (y oscillates between 58 and 74)
+    const getRoadY = (idx: number) => {
+      const wave = [62, 74, 58, 74, 58, 74, 60, 72, 64];
+      return wave[idx % wave.length];
+    };
+
     // Coordinates of each milestone center
     const cardCenters: Array<{ id: string; x: number; y: number }> = [];
 
-    allMilestones.forEach((m) => {
+    allMilestones.forEach((m, idx) => {
       const el = cardRefs.current[m.id];
       if (el) {
         const cRect = el.getBoundingClientRect();
         const cX = cRect.left - containerRect.left + cRect.width / 2;
-        // Road centerline runs through the middle of the cards (y ≈ 23px)
-        const cY = 23;
+        const cY = getRoadY(idx);
         cardCenters.push({ id: m.id, x: cX, y: cY });
       }
     });
 
     if (cardCenters.length < 2) return;
 
-    // Build continuous grey road running through the destinations
-    let pathD = `M ${Math.max(12, cardCenters[0].x - 50)} 23`;
+    // Build authentic winding highway road with smooth cubic Bézier curves ("thera meda highway")
+    let pathD = `M ${Math.max(12, cardCenters[0].x - 50)} ${cardCenters[0].y}`;
+    pathD += ` L ${cardCenters[0].x} ${cardCenters[0].y}`;
 
     const nodes: Array<{ x: number; y: number }> = [];
 
-    for (let i = 0; i < cardCenters.length; i++) {
+    for (let i = 1; i < cardCenters.length; i++) {
+      const prev = cardCenters[i - 1];
       const curr = cardCenters[i];
-      if (i === 0) {
-        pathD += ` L ${curr.x} ${curr.y}`;
-      } else {
-        const prev = cardCenters[i - 1];
-        const midX = (prev.x + curr.x) / 2;
-        // Waypoint ring node in the road between consecutive milestones
-        nodes.push({ x: midX, y: 23 });
-        pathD += ` L ${curr.x} ${curr.y}`;
-      }
+      const dx = curr.x - prev.x;
+
+      // Smooth highway S-curve with horizontal entry and exit tangents
+      const cp1x = prev.x + dx * 0.45;
+      const cp1y = prev.y;
+      const cp2x = prev.x + dx * 0.55;
+      const cp2y = curr.y;
+
+      pathD += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${curr.x} ${curr.y}`;
+
+      // Intermediate road checkpoint node
+      const midX = (prev.x + curr.x) / 2;
+      const midY = (prev.y + curr.y) / 2;
+      nodes.push({ x: midX, y: midY });
     }
 
     const last = cardCenters[cardCenters.length - 1];
-    pathD += ` L ${last.x + 55} 23`;
+    pathD += ` L ${last.x + 55} ${last.y}`;
 
     setRoadSvgPathD(pathD);
     setWaypointNodes(nodes);
+    setMilestoneWaypoints(cardCenters);
 
     // Measure exact path lengths at each milestone center
     requestAnimationFrame(() => {
@@ -338,8 +352,8 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
       if (currentPathDistRef.current === 0) {
         currentPathDistRef.current = targetDist;
         const pt = pathEl.getPointAtLength(targetDist);
-        // Student character stands on top of the card/road
-        setCharacterPos({ x: pt.x, y: 11 });
+        // Student character stands on the highway road below the button
+        setCharacterPos({ x: pt.x, y: pt.y });
       }
     });
   }, [allMilestones, activeTabId, isJobSelected]);
@@ -410,7 +424,7 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
       if (prefersReducedMotion) {
         currentPathDistRef.current = targetDist;
         const pt = pathEl.getPointAtLength(targetDist);
-        setCharacterPos({ x: pt.x, y: 11 });
+        setCharacterPos({ x: pt.x, y: pt.y });
         setCharacterState(targetMilestoneId === 'job-destination' ? 'celebrate' : 'idle');
         return;
       }
@@ -429,14 +443,14 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
         currentPathDistRef.current = currentDist;
 
         const pt = pathEl.getPointAtLength(currentDist);
-        setCharacterPos({ x: pt.x, y: 11 });
+        setCharacterPos({ x: pt.x, y: pt.y });
 
         if (progress < 1) {
           animFrameIdRef.current = requestAnimationFrame(animateStep);
         } else {
           currentPathDistRef.current = targetDist;
           const finalPt = pathEl.getPointAtLength(targetDist);
-          setCharacterPos({ x: finalPt.x, y: 11 });
+          setCharacterPos({ x: finalPt.x, y: finalPt.y });
 
           if (targetMilestoneId === 'job-destination') {
             setCharacterState('celebrate');
@@ -589,45 +603,45 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
         role="tablist"
         aria-label="Interactive Career Journey Roadmap"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        className="overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden pt-6 pb-1 px-1 relative"
+        className="overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden pt-2 pb-1 px-1 relative"
       >
         <div
           ref={trackInnerRef}
-          className="relative flex items-center justify-between min-w-max mx-auto px-4"
-          style={{ width: `${trackWidth}px`, height: '46px' }}
+          className="relative flex items-start justify-between min-w-max mx-auto px-4"
+          style={{ width: `${trackWidth}px`, height: '96px' }}
         >
           {/* ───────────────────────────────────────────────────────────────────
-              CONTINUOUS PREMIUM GREY ROAD SVG (Running behind the cards)
+              CONTINUOUS CURVY HIGHWAY ROAD SVG ("Thera Meda Highway")
               ─────────────────────────────────────────────────────────────────── */}
           {roadSvgPathD && (
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none overflow-visible z-0"
-              style={{ width: `${trackWidth}px`, height: '46px' }}
+              style={{ width: `${trackWidth}px`, height: '96px' }}
               aria-hidden="true"
             >
               <defs>
                 <filter id="greyRoadShadow" x="-10%" y="-20%" width="120%" height="160%">
-                  <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor="#000000" floodOpacity="0.1" />
+                  <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000000" floodOpacity="0.14" />
                 </filter>
               </defs>
 
-              {/* 1. Road Border / Shoulder: #D1D5DB */}
+              {/* 1. Highway Shoulder / Curb: #D1D5DB */}
               <path
                 d={roadSvgPathD}
                 stroke="#D1D5DB"
-                strokeWidth="9"
+                strokeWidth="12"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 fill="none"
                 filter="url(#greyRoadShadow)"
               />
 
-              {/* 2. Premium Grey Road Surface: #9CA3AF */}
+              {/* 2. Premium Grey Highway Asphalt: #9CA3AF */}
               <path
                 ref={roadPathRef}
                 d={roadSvgPathD}
                 stroke="#9CA3AF"
-                strokeWidth="6"
+                strokeWidth="8"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 fill="none"
@@ -637,19 +651,56 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
               <path
                 d={roadSvgPathD}
                 stroke="#FFFFFF"
-                strokeWidth="1.2"
-                strokeDasharray="4 3"
+                strokeWidth="1.3"
+                strokeDasharray="4 4"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 fill="none"
                 opacity="0.95"
               />
 
-              {/* Circular Waypoint Nodes on the Road between Destinations */}
+              {/* Highway Stems & Destination Waypoint Rings under each button */}
+              {milestoneWaypoints.map((wp) => {
+                const isSel =
+                  (wp.id === activeTabId && !isJobSelected) ||
+                  (wp.id === 'job-destination' && isJobSelected);
+                return (
+                  <g key={`milestone-node-${wp.id}`}>
+                    {/* Vertical guideline connecting button to highway stop */}
+                    <line
+                      x1={wp.x}
+                      y1={38}
+                      x2={wp.x}
+                      y2={wp.y - 6}
+                      stroke={isSel ? '#7C3AED' : '#CBD5E1'}
+                      strokeWidth={isSel ? '1.8' : '1.2'}
+                      strokeDasharray={isSel ? 'none' : '2 2'}
+                      opacity={isSel ? 0.9 : 0.6}
+                    />
+                    {/* Highway Station Landmark Circle */}
+                    <circle
+                      cx={wp.x}
+                      cy={wp.y}
+                      r="5.5"
+                      fill="#FFFFFF"
+                      stroke={isSel ? '#7C3AED' : '#94A3B8'}
+                      strokeWidth="2"
+                    />
+                    <circle
+                      cx={wp.x}
+                      cy={wp.y}
+                      r="2.5"
+                      fill={isSel ? '#7C3AED' : '#94A3B8'}
+                    />
+                  </g>
+                );
+              })}
+
+              {/* Intermediate Checkpoint Waypoint Nodes along the curves */}
               {waypointNodes.map((node, nIdx) => (
                 <g key={`waypoint-${nIdx}`}>
-                  <circle cx={node.x} cy={node.y} r="4.5" fill="#FFFFFF" stroke="#94A3B8" strokeWidth="1.5" />
-                  <circle cx={node.x} cy={node.y} r="2" fill="#3B82F6" opacity="0.8" />
+                  <circle cx={node.x} cy={node.y} r="3.5" fill="#FFFFFF" stroke="#94A3B8" strokeWidth="1.2" />
+                  <circle cx={node.x} cy={node.y} r="1.5" fill="#3B82F6" opacity="0.8" />
                 </g>
               ))}
             </svg>
@@ -681,7 +732,7 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
                 ref={(el) => {
                   cardRefs.current[m.id] = el;
                 }}
-                className="relative z-10 flex flex-col items-center"
+                className="relative z-10 flex flex-col items-center pt-1"
               >
                 {/* Floating Google Maps Location Pin Directly Above Active/Selected Card */}
                 {isSelected && (
@@ -743,22 +794,22 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
           })}
 
           {/* ───────────────────────────────────────────────────────────────────
-              ANIMATED STUDENT CHARACTER (Walking on top of the active destination)
+              ANIMATED STUDENT CHARACTER (Standing on the Highway Road Below Button)
               ─────────────────────────────────────────────────────────────────── */}
           <div
             className="absolute z-20 pointer-events-none transition-none"
             style={{
               left: `${characterPos.x}px`,
               top: `${characterPos.y}px`,
-              transform: 'translate(-50%, -100%)',
+              transform: 'translate(-50%, -92%)',
             }}
           >
             <StudentCharacter
               state={characterState}
               direction={characterDirection}
               isJobCelebration={isJobSelected}
-              width={24}
-              height={34}
+              width={32}
+              height={46}
             />
           </div>
         </div>
