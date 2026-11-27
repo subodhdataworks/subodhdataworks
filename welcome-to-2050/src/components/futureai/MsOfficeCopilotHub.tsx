@@ -190,7 +190,7 @@ export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
             }}
           />
           {/* Soft Pearl Lavender-White Gradient for Crisp Readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-[#FAF8FF]/95 md:via-white/88 to-transparent pointer-events-none w-full md:w-[60%] lg:w-[54%]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/98 md:via-white/95 to-transparent pointer-events-none w-full md:w-[75%] lg:w-[65%]" />
           <div className="absolute inset-0 bg-gradient-to-t from-white/85 via-transparent to-transparent pointer-events-none md:hidden" />
 
           <div className="relative z-10 px-4 py-2.5 sm:px-6 lg:px-7 flex flex-col justify-center h-full">
@@ -198,7 +198,7 @@ export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
             {/* Left Content Zone */}
             <div className="max-w-2xl space-y-1.5 min-w-0">
               {/* Headline */}
-              <h1 className="text-lg sm:text-xl lg:text-[24px] font-bold tracking-tight text-[#111827] leading-tight m-0">
+              <h1 className="text-lg sm:text-xl lg:text-[24px] font-bold tracking-tight text-[#0F172A] leading-tight m-0">
                 Microsoft 365 with{' '}
                 <span className="text-[#6D28D9]">
                   Copilot AI
@@ -206,7 +206,7 @@ export const MsOfficeCopilotHub: React.FC<MsOfficeCopilotHubProps> = ({
               </h1>
 
               {/* Subtitle */}
-              <p className="text-xs sm:text-[13px] text-[#64748B] font-medium leading-snug max-w-xl m-0">
+              <p className="text-xs sm:text-[13px] text-slate-700 font-medium leading-snug max-w-xl m-0">
                 Automate executive reports, financial models in Excel, PowerPoint presentations, Teams summaries, and Power Automate workflows with Microsoft Copilot AI.
               </p>
 

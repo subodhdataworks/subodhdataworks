@@ -269,15 +269,15 @@ export const CompactCurriculumAccordion: React.FC<CompactCurriculumAccordionProp
       <div className={`compact-curriculum-split select-text ${className}`}>
         <div className="flex flex-col md:flex-row items-start gap-4">
           {/* ── LEFT COLUMN: MODULES LIST ── */}
-          <div className="w-full md:w-[272px] xl:w-[296px] shrink-0 bg-white rounded-2xl border border-[#E6E0F4] shadow-[0_2px_12px_rgba(109,40,217,0.05)] overflow-hidden md:sticky md:top-20">
-            <div className="px-4 py-3 bg-[#FAF8FF] border-b border-[#EFEAF8] flex items-center justify-between">
+          <div className="w-full md:w-[264px] xl:w-[280px] shrink-0 bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden md:sticky md:top-20">
+            <div className="px-3.5 py-2.5 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Layers className="w-4 h-4 text-[#6D28D9]" />
-                <span className="text-[11.5px] font-extrabold uppercase tracking-wider text-[#1E1B4B]">
+                <span className="text-[11.5px] font-bold uppercase tracking-wider text-slate-800">
                   Modules
                 </span>
               </div>
-              <span className="px-2 py-0.5 rounded-full bg-white border border-[#DDD6FE] text-[11px] font-bold text-[#6D28D9] tabular-nums">
+              <span className="px-2 py-0.5 rounded-full bg-white border border-slate-200 text-[11px] font-bold text-[#6D28D9] tabular-nums">
                 {chapters.length}
               </span>
             </div>
@@ -285,7 +285,7 @@ export const CompactCurriculumAccordion: React.FC<CompactCurriculumAccordionProp
             {/* Mobile horizontal strip + Desktop smooth-scrolling vertical list */}
             <div
               style={{ scrollbarWidth: 'thin', scrollbarColor: '#d8b4fe transparent' }}
-              className="flex md:flex-col gap-2 md:gap-1.5 p-2.5 overflow-x-auto md:overflow-x-visible md:max-h-[calc(100vh-210px)] md:overflow-y-auto scroll-smooth"
+              className="flex md:flex-col gap-1.5 md:gap-1 p-2 overflow-x-auto md:overflow-x-visible max-h-none md:max-h-[min(560px,calc(100vh-180px))] md:overflow-y-auto scroll-smooth"
             >
               {chapters.map((ch) => {
                 const isSelected = activeChapter?.id === ch.id;
@@ -306,10 +306,10 @@ export const CompactCurriculumAccordion: React.FC<CompactCurriculumAccordionProp
                       setSelectedChapterId(ch.id);
                       if (searchQuery) setSearchQuery('');
                     }}
-                    className={`group text-left rounded-xl px-3 py-2.5 transition-all duration-150 cursor-pointer shrink-0 md:shrink w-[225px] md:w-full border ${
+                    className={`group text-left rounded-xl px-2.5 py-2 transition-all duration-150 cursor-pointer shrink-0 md:shrink w-[220px] md:w-full border ${
                       isSelected
                         ? 'bg-emerald-50/90 border-emerald-300/90 shadow-2xs'
-                        : 'bg-white border-transparent hover:bg-emerald-50/40 hover:border-emerald-200/70'
+                        : 'bg-white border-transparent hover:bg-slate-50 hover:border-slate-200/80'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
@@ -385,17 +385,17 @@ export const CompactCurriculumAccordion: React.FC<CompactCurriculumAccordionProp
                     className="bg-white rounded-2xl border border-[#E6E0F4] shadow-[0_2px_12px_rgba(109,40,217,0.05)] overflow-hidden"
                   >
                     {/* Selected Module Header */}
-                    <div className="px-4 sm:px-5 py-3.5 bg-[#FAF8FF] border-b border-[#EFEAF8] flex flex-wrap items-center justify-between gap-3">
+                    <div className="px-4 sm:px-5 py-2.5 sm:py-3 bg-slate-50/70 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-2.5">
                       <div className="min-w-0 flex-1 space-y-1">
                         <div className="flex items-center gap-2.5 flex-wrap">
-                          <span className="px-2.5 py-0.5 rounded-md bg-[#EDE9FE] text-[#6D28D9] text-[11px] font-bold uppercase tracking-wider shrink-0">
+                          <span className="px-2.5 py-0.5 rounded-md bg-purple-50 text-[#6D28D9] border border-purple-200/60 text-[11px] font-bold uppercase tracking-wider shrink-0">
                             Module {chapter.chapterNum}
                           </span>
                           <span className="text-[12px] font-semibold text-slate-500 tabular-nums">
                             {chDone} / {chTotal} Completed ({chPct}%)
                           </span>
                         </div>
-                        <h3 className="text-[15.5px] sm:text-[16.5px] font-extrabold text-[#0F172A] m-0 leading-snug">
+                        <h3 className="text-[15px] sm:text-[16px] font-bold text-[#0F172A] m-0 leading-snug">
                           {cleanModuleTitle(chapter.title)}
                         </h3>
                       </div>
@@ -433,14 +433,14 @@ export const CompactCurriculumAccordion: React.FC<CompactCurriculumAccordionProp
                             key={topic.id}
                             id={`topic-row-${topic.id}`}
                             onClick={() => handleTopicAction(topic, chapter.chapterNum, topicNum)}
-                            className={`group/topic min-h-[56px] px-4 sm:px-5 py-3 flex items-center justify-between gap-3 transition-colors duration-150 cursor-pointer ${
+                            className={`group/topic min-h-[50px] px-4 sm:px-5 py-2.5 sm:py-3 flex items-center justify-between gap-3 transition-colors duration-150 cursor-pointer ${
                               isRowHighlighted
-                                ? 'bg-[#F5F3FF] shadow-[inset_3px_0_0_#7C3AED]'
+                                ? 'bg-purple-50/60 shadow-[inset_3px_0_0_#6D28D9]'
                                 : isDone
-                                ? 'bg-emerald-50/15 hover:bg-emerald-50/45'
+                                ? 'bg-white hover:bg-slate-50/70'
                                 : isInProgress
-                                ? 'bg-[#FAF8FF]/65 hover:bg-[#F5F0FF] hover:shadow-[inset_3px_0_0_#A78BFA]'
-                                : 'bg-white hover:bg-[#F7F4FF] hover:shadow-[inset_3px_0_0_#C4B5FD]'
+                                ? 'bg-white hover:bg-slate-50/70 shadow-[inset_2px_0_0_#6D28D9]'
+                                : 'bg-white hover:bg-slate-50/70'
                             }`}
                           >
                             <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -523,7 +523,7 @@ export const CompactCurriculumAccordion: React.FC<CompactCurriculumAccordionProp
                                       e.stopPropagation();
                                       handleTopicAction(topic, chapter.chapterNum, topicNum);
                                     }}
-                                    className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-gradient-to-r from-[#7045E8] to-[#5B21B6] hover:brightness-110 shadow-2xs transition-all flex items-center gap-1 cursor-pointer"
+                                    className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-[#6D28D9] hover:bg-[#5B21B6] shadow-2xs transition-all flex items-center gap-1 cursor-pointer"
                                   >
                                     <span>Continue</span>
                                     <Play className="w-2.5 h-2.5 fill-white" />
@@ -697,7 +697,7 @@ export const CompactCurriculumAccordion: React.FC<CompactCurriculumAccordionProp
                 <button
                   type="button"
                   onClick={() => toggleChapter(chapter.id)}
-                  className="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-3 text-left transition-colors duration-200 cursor-pointer hover:bg-[#F6F2FF]/40 group"
+                  className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between gap-3 text-left transition-colors duration-200 cursor-pointer hover:bg-slate-50/70 group"
                 >
                   <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
                     {/* Compact Module Pill */}
@@ -799,14 +799,14 @@ export const CompactCurriculumAccordion: React.FC<CompactCurriculumAccordionProp
                           key={topic.id}
                           id={`topic-row-${topic.id}`}
                           onClick={() => handleTopicAction(topic, chapter.chapterNum, topicNum)}
-                          className={`group/topic px-3 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between gap-2.5 transition-all duration-150 cursor-pointer ${
+                          className={`group/topic px-3.5 sm:px-4 py-2.5 flex items-center justify-between gap-2.5 transition-all duration-150 cursor-pointer ${
                             isRowHighlighted
-                              ? 'bg-purple-50/80 ring-1 ring-[#7045E8] shadow-2xs'
+                              ? 'bg-purple-50/70 ring-1 ring-[#6D28D9] shadow-2xs'
                               : isDone
-                              ? 'bg-emerald-50/15 hover:bg-emerald-50/40'
+                              ? 'bg-white hover:bg-slate-50/70'
                               : isInProgress
-                              ? 'bg-[#F6F2FF]/40 hover:bg-[#F6F2FF]/70'
-                              : 'bg-white hover:bg-slate-50/80'
+                              ? 'bg-white hover:bg-slate-50/70 shadow-[inset_2px_0_0_#6D28D9]'
+                              : 'bg-white hover:bg-slate-50/70'
                           }`}
                         >
                           {/* LEFT: Topic Index Badge + Title + Inline Meta */}
@@ -899,7 +899,7 @@ export const CompactCurriculumAccordion: React.FC<CompactCurriculumAccordionProp
                                     e.stopPropagation();
                                     handleTopicAction(topic, chapter.chapterNum, topicNum);
                                   }}
-                                  className="px-3 py-1 rounded-lg text-xs font-semibold text-white bg-gradient-to-r from-[#7045E8] to-[#5B21B6] hover:brightness-110 shadow-2xs hover:shadow-xs transition-all flex items-center gap-1 cursor-pointer"
+                                  className="px-3 py-1 rounded-lg text-xs font-semibold text-white bg-[#6D28D9] hover:bg-[#5B21B6] shadow-2xs hover:shadow-xs transition-all flex items-center gap-1 cursor-pointer"
                                   title="Continue lesson"
                                 >
                                   <span>Continue</span>

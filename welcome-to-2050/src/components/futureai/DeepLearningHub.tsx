@@ -138,7 +138,7 @@ export const DeepLearningHub: React.FC<DeepLearningHubProps> = ({
         {/* =========================================================================
             1. TOP HERO BANNER: LIGHT EXECUTIVE THEME (HIGH-CONTRAST TECH BACKDROP)
             ========================================================================= */}
-        <section className="w-full relative rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm bg-white text-slate-900">
+        <section className="w-full relative rounded-2xl overflow-hidden border border-[#E6E0F4] shadow-[0_2px_14px_rgba(109,40,217,0.05)] bg-white text-[#111827] md:h-[148px] md:min-h-[148px] md:max-h-[148px]">
           {/* Full Background Daylight Tech Campus / Deep Learning Workspace Photo */}
           <img
             src="/images/hero-student-robot-poster.jpg"
@@ -149,10 +149,10 @@ export const DeepLearningHub: React.FC<DeepLearningHubProps> = ({
             }}
           />
           {/* Soft Pearl Gradient: Left side is crisp white for clear black text, smoothly fading to transparent towards the right */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 md:via-white/80 to-transparent pointer-events-none w-full md:w-[58%] lg:w-[52%]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/98 md:via-white/95 to-transparent pointer-events-none w-full md:w-[75%] lg:w-[65%]" />
           <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent pointer-events-none md:hidden" />
 
-          <div className="relative z-10 p-4 sm:p-6 lg:p-7 flex flex-col justify-between min-h-[220px] sm:min-h-[240px]">
+          <div className="relative z-10 px-4 py-2.5 sm:px-6 lg:px-7 flex flex-col justify-center h-full">
             
             {/* Left Content Zone */}
             <div className="max-w-2xl space-y-2.5 min-w-0">
@@ -176,9 +176,9 @@ export const DeepLearningHub: React.FC<DeepLearningHubProps> = ({
               </div>
 
               {/* Headline */}
-              <h1 className="text-xl min-[375px]:text-2xl sm:text-3xl lg:text-[34px] font-black tracking-tight text-slate-950 leading-tight">
+              <h1 className="text-xl min-[375px]:text-2xl sm:text-3xl lg:text-[34px] font-bold tracking-tight text-[#0F172A] leading-tight">
                 Deep{' '}
-                <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 bg-clip-text text-transparent">
+                <span className="text-[#6D28D9]">
                   Learning
                 </span>
               </h1>
@@ -212,7 +212,7 @@ export const DeepLearningHub: React.FC<DeepLearningHubProps> = ({
                 <button
                   type="button"
                   onClick={() => onStartTopic && onStartTopic('dl-t-4', 'AI vs Machine Learning vs Deep Learning')}
-                  className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm shadow-purple-500/25 active:scale-95 transition-all cursor-pointer"
+                  className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer"
                 >
                   <Play className="w-3.5 h-3.5 fill-white shrink-0" />
                   <span>Learning</span>

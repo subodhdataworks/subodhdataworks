@@ -113,10 +113,10 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
             const isConnectorPassed = idx < activeIdx;
             const isConnectorNext = idx === activeIdx;
             const isHigh = idx % 2 === 0;
-            // Winding S-curve path connecting high (-6px) <-> low (+6px) milestones like a real curved road
+            // Elegant slim S-curve road connector between alternating milestones
             const roadPath = isHigh
-              ? 'M 0 13 C 15 13, 21 29, 36 29'
-              : 'M 0 29 C 15 29, 21 13, 36 13';
+              ? 'M 0 9 C 12 9, 16 19, 28 19'
+              : 'M 0 19 C 12 19, 16 9, 28 9';
 
             return (
               <React.Fragment key={tab.id}>
@@ -129,29 +129,29 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
                   }}
                   onClick={() => onSelectTab(tab.id)}
                   className={`group relative py-1.5 px-2.5 sm:px-3 rounded-xl flex items-center gap-2 text-left transition-all duration-200 active:scale-[0.99] cursor-pointer border focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 ${
-                    isHigh ? '-translate-y-2 hover:-translate-y-2.5' : 'translate-y-2 hover:translate-y-1.5'
+                    isHigh ? '-translate-y-1.5 hover:-translate-y-2' : 'translate-y-1.5 hover:translate-y-1'
                   } ${
                     isActive
                       ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-500 shadow-[0_4px_12px_rgba(16,185,129,0.24)] z-10'
                       : isPassed
                       ? 'bg-emerald-50/80 hover:bg-emerald-50 text-emerald-950 border-emerald-200/90 shadow-2xs'
-                      : 'bg-white hover:bg-emerald-50/45 text-[#1E293B] border-[#E5E0F3] hover:border-emerald-300 shadow-2xs'
+                      : 'bg-white hover:bg-slate-50 text-[#1E293B] border-slate-200 hover:border-emerald-300 shadow-2xs'
                   }`}
                 >
                   {/* Compact 3D Icon Tile */}
                   <div
-                    className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center shrink-0 p-0.5 transition-colors duration-200 ${
+                    className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 p-0.5 transition-colors duration-200 ${
                       isActive
                         ? 'bg-white/20 border border-white/30'
                         : isPassed
                         ? 'bg-white border border-emerald-200'
-                        : 'bg-[#FAF8FF] border border-[#EAE5F5] group-hover:border-emerald-200'
+                        : 'bg-slate-50 border border-slate-200 group-hover:border-emerald-200'
                     }`}
                   >
                     <img
                       src={getTabIconSrc(tab.tabNum, tab.iconName)}
                       alt={tab.title}
-                      className="w-5 h-5 object-contain group-hover:scale-105 transition-transform duration-200"
+                      className="w-4.5 h-4.5 sm:w-5 sm:h-5 object-contain group-hover:scale-105 transition-transform duration-200"
                       onError={(e) => {
                         (e.target as HTMLElement).style.display = 'none';
                       }}
@@ -179,32 +179,32 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
                   aria-hidden="true"
                 >
                   <svg
-                    width="36"
-                    height="42"
-                    viewBox="0 0 36 42"
+                    width="28"
+                    height="28"
+                    viewBox="0 0 28 28"
                     fill="none"
-                    className="w-8 sm:w-9 h-[42px] overflow-visible"
+                    className="w-7 h-[28px] overflow-visible"
                   >
                     {/* Outer road shoulder / curb */}
                     <path
                       d={roadPath}
-                      stroke="#94A3B8"
-                      strokeWidth="15"
+                      stroke="#CBD5E1"
+                      strokeWidth="7"
                       strokeLinecap="butt"
                     />
                     {/* Authentic dark asphalt road surface */}
                     <path
                       d={roadPath}
-                      stroke="#2D333D"
-                      strokeWidth="12.5"
+                      stroke="#334155"
+                      strokeWidth="5"
                       strokeLinecap="butt"
                     />
                     {/* Center dashed road lane marking */}
                     <path
                       d={roadPath}
                       stroke={isConnectorPassed || isConnectorNext ? '#FACC15' : '#F8FAFC'}
-                      strokeWidth="1.8"
-                      strokeDasharray="4 4"
+                      strokeWidth="1.1"
+                      strokeDasharray="3 3"
                       strokeLinecap="round"
                       className={isConnectorPassed || isConnectorNext ? 'roadmap-curved-dash-active' : 'opacity-90'}
                     />
@@ -223,14 +223,14 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
               }
             }}
             title="Career Destination: Placement & Job Readiness"
-            className={`group relative py-1.5 px-3 sm:px-3.5 rounded-xl flex items-center gap-2 text-left transition-all duration-200 active:scale-[0.99] cursor-pointer border bg-gradient-to-r from-[#5B21B6] via-[#6D28D9] to-[#7C3AED] text-white border-purple-400/80 shadow-[0_4px_14px_rgba(109,40,217,0.28)] ${
-              tabs.length % 2 === 0 ? '-translate-y-2 hover:-translate-y-2.5' : 'translate-y-2 hover:translate-y-1.5'
+            className={`group relative py-1.5 px-3 sm:px-3.5 rounded-xl flex items-center gap-2 text-left transition-all duration-200 active:scale-[0.99] cursor-pointer border bg-[#6D28D9] hover:bg-[#5B21B6] text-white border-purple-500 shadow-sm ${
+              tabs.length % 2 === 0 ? '-translate-y-1.5 hover:-translate-y-2' : 'translate-y-1.5 hover:translate-y-1'
             }`}
           >
-            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center shrink-0 bg-white/20 border border-white/30">
-              <Briefcase className="w-4 h-4 text-amber-300 stroke-[2.3]" />
+            <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 bg-white/20 border border-white/30">
+              <Briefcase className="w-3.5 h-3.5 text-amber-300 stroke-[2.2]" />
             </div>
-            <span className="text-[12px] sm:text-[12.5px] font-extrabold tracking-tight leading-tight pr-0.5 text-white">
+            <span className="text-[12px] sm:text-[12.5px] font-bold tracking-tight leading-tight pr-0.5 text-white">
               Job
             </span>
           </button>

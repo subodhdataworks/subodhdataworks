@@ -68,7 +68,7 @@ export const CourseHeroActionButtons: React.FC<CourseHeroActionsProps> = ({
       <button
         type="button"
         onClick={() => onOpenEnrollModal(courseTitle)}
-        className="px-4 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white font-semibold text-xs sm:text-[13px] flex items-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer"
+        className="px-4 py-1.5 sm:py-2 rounded-xl bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-semibold text-xs sm:text-[13px] flex items-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer"
       >
         <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
         <span>Enroll for {coursePrice}</span>
