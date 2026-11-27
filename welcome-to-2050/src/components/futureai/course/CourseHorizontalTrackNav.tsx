@@ -15,7 +15,7 @@ export interface CourseHorizontalTrackNavProps {
 // OFFICIAL TECHNOLOGY LOGOS (High-definition Crisp Vectors Matching Image)
 // ─────────────────────────────────────────────────────────────────────────────
 
-const OfficialPythonLogo: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
+const OfficialPythonLogo: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg viewBox="0 0 110 110" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M54.5 4C27.2 4 28.7 15.8 28.7 15.8L28.8 28.2H55.4V32.1H18.2C18.2 32.1 4 30.3 4 57.7C4 85 16.4 83.7 16.4 83.7H23.7V73.4C23.7 73.4 23.2 61 35.8 61H62.7C62.7 61 74.3 61.3 74.3 50.1V15.8C74.3 15.8 76.5 4 54.5 4ZM40.9 12.3C44.4 12.3 47.2 15.1 47.2 18.6C47.2 22.1 44.4 24.9 40.9 24.9C37.4 24.9 34.6 22.1 34.6 18.6C34.6 15.1 37.4 12.3 40.9 12.3Z"
@@ -28,7 +28,7 @@ const OfficialPythonLogo: React.FC<{ className?: string }> = ({ className = 'w-5
   </svg>
 );
 
-const OfficialExcelLogo: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
+const OfficialExcelLogo: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg viewBox="0 0 32 32" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect x="7" y="4" width="22" height="24" rx="3" fill="#107C41" />
     <path d="M14 9H25V14H14V9Z" fill="#185C37" opacity="0.6" />
@@ -42,7 +42,7 @@ const OfficialExcelLogo: React.FC<{ className?: string }> = ({ className = 'w-5 
   </svg>
 );
 
-const OfficialPowerBiLogo: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
+const OfficialPowerBiLogo: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg viewBox="0 0 32 32" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect x="5" y="17" width="5.5" height="11" rx="1.5" fill="#E6AD10" />
     <rect x="13.25" y="11" width="5.5" height="17" rx="1.5" fill="#F2C811" />
@@ -50,7 +50,7 @@ const OfficialPowerBiLogo: React.FC<{ className?: string }> = ({ className = 'w-
   </svg>
 );
 
-const OfficialSqlDatabaseLogo: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
+const OfficialSqlDatabaseLogo: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg viewBox="0 0 24 24" className={className} fill="none" stroke="#2563EB" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
     <ellipse cx="12" cy="5" rx="9" ry="3" fill="#DBEAFE" />
     <path d="M3 5V12C3 13.66 7.03 15 12 15C16.97 15 21 13.66 21 12V5" />
@@ -58,7 +58,7 @@ const OfficialSqlDatabaseLogo: React.FC<{ className?: string }> = ({ className =
   </svg>
 );
 
-const OfficialGenAiLogo: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
+const OfficialGenAiLogo: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect x="2" y="2" width="20" height="20" rx="4" fill="#0284C7" />
     <path
@@ -70,7 +70,7 @@ const OfficialGenAiLogo: React.FC<{ className?: string }> = ({ className = 'w-5 
   </svg>
 );
 
-const OfficialTargetLogo: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
+const OfficialTargetLogo: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg viewBox="0 0 24 24" className={className} fill="none" stroke="#EF4444" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10" stroke="#DC2626" fill="#FEE2E2" />
     <circle cx="12" cy="12" r="6" stroke="#EF4444" fill="#FFFFFF" />
@@ -78,7 +78,7 @@ const OfficialTargetLogo: React.FC<{ className?: string }> = ({ className = 'w-5
   </svg>
 );
 
-const OfficialAnalyticsLogo: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
+const OfficialAnalyticsLogo: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg viewBox="0 0 24 24" className={className} fill="none" stroke="#0284C7" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="9" stroke="#0284C7" fill="#E0F2FE" />
     <circle cx="12" cy="12" r="4.5" stroke="#0284C7" />
@@ -86,7 +86,7 @@ const OfficialAnalyticsLogo: React.FC<{ className?: string }> = ({ className = '
   </svg>
 );
 
-const OfficialTrophyLogo: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
+const OfficialTrophyLogo: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M6 4H18V9C18 12.31 15.31 15 12 15C8.69 15 6 12.31 6 9V4Z"
@@ -122,12 +122,12 @@ const GoogleMapsPin: React.FC<GoogleMapsPinProps> = ({
   return (
     <div className={`relative flex flex-col items-center select-none ${className}`}>
       <svg
-        width="22"
-        height="32"
+        width="16"
+        height="23"
         viewBox="0 0 24 34"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.22)]"
+        className="filter drop-shadow-[0_1.5px_3px_rgba(0,0,0,0.22)]"
       >
         <path
           d="M 12 0 C 5.37 0 0 5.37 0 12 C 0 21 11.2 33 11.25 33.5 C 11.62 33.9 12.38 33.9 12.75 33.5 C 12.8 33 24 21 24 12 C 24 5.37 18.63 0 12 0 Z"
@@ -140,7 +140,7 @@ const GoogleMapsPin: React.FC<GoogleMapsPinProps> = ({
       {/* Pulse Ripple Effect for the Selected Pin */}
       {isPulse && (
         <span
-          className="absolute -bottom-1 w-3.5 h-1.5 rounded-full animate-ping opacity-75 pointer-events-none"
+          className="absolute -bottom-0.5 w-2.5 h-1 rounded-full animate-ping opacity-75 pointer-events-none"
           style={{ backgroundColor: color }}
         />
       )}
@@ -167,7 +167,7 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
   const [canScrollRight, setCanScrollRight] = useState(false);
 
   // Student character motion physics states
-  const [characterPos, setCharacterPos] = useState<{ x: number; y: number }>({ x: 60, y: 35 });
+  const [characterPos, setCharacterPos] = useState<{ x: number; y: number }>({ x: 60, y: 11 });
   const [characterState, setCharacterState] = useState<CharacterAnimationState>('idle');
   const [characterDirection, setCharacterDirection] = useState<1 | -1>(1);
   const [isJobSelected, setIsJobSelected] = useState(false);
@@ -272,8 +272,8 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
       if (el) {
         const cRect = el.getBoundingClientRect();
         const cX = cRect.left - containerRect.left + cRect.width / 2;
-        // Road centerline runs through the middle of the cards (y ≈ 56px)
-        const cY = 56;
+        // Road centerline runs through the middle of the cards (y ≈ 23px)
+        const cY = 23;
         cardCenters.push({ id: m.id, x: cX, y: cY });
       }
     });
@@ -281,7 +281,7 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
     if (cardCenters.length < 2) return;
 
     // Build continuous grey road running through the destinations
-    let pathD = `M ${Math.max(12, cardCenters[0].x - 50)} 56`;
+    let pathD = `M ${Math.max(12, cardCenters[0].x - 50)} 23`;
 
     const nodes: Array<{ x: number; y: number }> = [];
 
@@ -293,13 +293,13 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
         const prev = cardCenters[i - 1];
         const midX = (prev.x + curr.x) / 2;
         // Waypoint ring node in the road between consecutive milestones
-        nodes.push({ x: midX, y: 56 });
+        nodes.push({ x: midX, y: 23 });
         pathD += ` L ${curr.x} ${curr.y}`;
       }
     }
 
     const last = cardCenters[cardCenters.length - 1];
-    pathD += ` L ${last.x + 55} 56`;
+    pathD += ` L ${last.x + 55} 23`;
 
     setRoadSvgPathD(pathD);
     setWaypointNodes(nodes);
@@ -339,7 +339,7 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
         currentPathDistRef.current = targetDist;
         const pt = pathEl.getPointAtLength(targetDist);
         // Student character stands on top of the card/road
-        setCharacterPos({ x: pt.x, y: 38 });
+        setCharacterPos({ x: pt.x, y: 11 });
       }
     });
   }, [allMilestones, activeTabId, isJobSelected]);
@@ -410,7 +410,7 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
       if (prefersReducedMotion) {
         currentPathDistRef.current = targetDist;
         const pt = pathEl.getPointAtLength(targetDist);
-        setCharacterPos({ x: pt.x, y: 38 });
+        setCharacterPos({ x: pt.x, y: 11 });
         setCharacterState(targetMilestoneId === 'job-destination' ? 'celebrate' : 'idle');
         return;
       }
@@ -429,14 +429,14 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
         currentPathDistRef.current = currentDist;
 
         const pt = pathEl.getPointAtLength(currentDist);
-        setCharacterPos({ x: pt.x, y: 38 });
+        setCharacterPos({ x: pt.x, y: 11 });
 
         if (progress < 1) {
           animFrameIdRef.current = requestAnimationFrame(animateStep);
         } else {
           currentPathDistRef.current = targetDist;
           const finalPt = pathEl.getPointAtLength(targetDist);
-          setCharacterPos({ x: finalPt.x, y: 38 });
+          setCharacterPos({ x: finalPt.x, y: 11 });
 
           if (targetMilestoneId === 'job-destination') {
             setCharacterState('celebrate');
@@ -533,41 +533,41 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
   const renderOfficialIcon = (tabNum: number, iconName?: string, title?: string) => {
     const norm = (iconName || title || '').toLowerCase();
 
-    if (norm.includes('python')) return <OfficialPythonLogo className="w-5 h-5" />;
-    if (norm.includes('excel')) return <OfficialExcelLogo className="w-5 h-5" />;
-    if (norm.includes('sql') || norm.includes('data')) return <OfficialSqlDatabaseLogo className="w-5 h-5" />;
-    if (norm.includes('powerbi') || norm.includes('dashboard')) return <OfficialPowerBiLogo className="w-5 h-5" />;
-    if (norm.includes('genai') || norm.includes('ai') || norm.includes('gpt')) return <OfficialGenAiLogo className="w-5 h-5" />;
-    if (norm.includes('insight') || norm.includes('chart') || norm.includes('analytics')) return <OfficialAnalyticsLogo className="w-5 h-5" />;
-    if (norm.includes('project') || norm.includes('capstone') || norm.includes('trophy')) return <OfficialTrophyLogo className="w-5 h-5" />;
-    if (norm.includes('job') || norm.includes('placement')) return <Briefcase className="w-4 h-4 text-white stroke-[2.3]" />;
+    if (norm.includes('python')) return <OfficialPythonLogo className="w-4 h-4" />;
+    if (norm.includes('excel')) return <OfficialExcelLogo className="w-4 h-4" />;
+    if (norm.includes('sql') || norm.includes('data')) return <OfficialSqlDatabaseLogo className="w-4 h-4" />;
+    if (norm.includes('powerbi') || norm.includes('dashboard')) return <OfficialPowerBiLogo className="w-4 h-4" />;
+    if (norm.includes('genai') || norm.includes('ai') || norm.includes('gpt')) return <OfficialGenAiLogo className="w-4 h-4" />;
+    if (norm.includes('insight') || norm.includes('chart') || norm.includes('analytics')) return <OfficialAnalyticsLogo className="w-4 h-4" />;
+    if (norm.includes('project') || norm.includes('capstone') || norm.includes('trophy')) return <OfficialTrophyLogo className="w-4 h-4" />;
+    if (norm.includes('job') || norm.includes('placement')) return <Briefcase className="w-3.5 h-3.5 text-white stroke-[2.3]" />;
 
     switch (tabNum) {
       case 1:
-        return <OfficialTargetLogo className="w-5 h-5" />;
+        return <OfficialTargetLogo className="w-4 h-4" />;
       case 2:
-        return <OfficialPythonLogo className="w-5 h-5" />;
+        return <OfficialPythonLogo className="w-4 h-4" />;
       case 3:
-        return <OfficialExcelLogo className="w-5 h-5" />;
+        return <OfficialExcelLogo className="w-4 h-4" />;
       case 4:
-        return <OfficialSqlDatabaseLogo className="w-5 h-5" />;
+        return <OfficialSqlDatabaseLogo className="w-4 h-4" />;
       case 5:
-        return <OfficialPowerBiLogo className="w-5 h-5" />;
+        return <OfficialPowerBiLogo className="w-4 h-4" />;
       case 6:
-        return <OfficialGenAiLogo className="w-5 h-5" />;
+        return <OfficialGenAiLogo className="w-4 h-4" />;
       case 7:
-        return <OfficialAnalyticsLogo className="w-5 h-5" />;
+        return <OfficialAnalyticsLogo className="w-4 h-4" />;
       case 8:
-        return <OfficialTrophyLogo className="w-5 h-5" />;
+        return <OfficialTrophyLogo className="w-4 h-4" />;
       default:
-        return <OfficialTargetLogo className="w-5 h-5" />;
+        return <OfficialTargetLogo className="w-4 h-4" />;
     }
   };
 
   return (
     <div
       id="curriculum-tabs-map"
-      className="relative w-full group/tracknav bg-transparent py-1 select-none"
+      className="relative w-full group/tracknav bg-transparent py-0 select-none -my-1"
     >
       {/* Scroll Left Button */}
       {canScrollLeft && (
@@ -575,9 +575,9 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
           type="button"
           onClick={() => scrollByAmount(-280)}
           aria-label="Scroll learning roadmap left"
-          className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-30 w-8 h-8 rounded-full bg-white/95 hover:bg-purple-50 text-purple-700 border border-purple-200 shadow-md items-center justify-center transition-all cursor-pointer"
+          className="hidden md:flex absolute left-1 top-1/2 -translate-y-1/2 z-30 w-7 h-7 rounded-full bg-white/95 hover:bg-purple-50 text-purple-700 border border-purple-200 shadow-md items-center justify-center transition-all cursor-pointer"
         >
-          <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
+          <ChevronLeft className="w-3.5 h-3.5 stroke-[2.5]" />
         </button>
       )}
 
@@ -589,12 +589,12 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
         role="tablist"
         aria-label="Interactive Career Journey Roadmap"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        className="overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden pt-8 pb-3 px-1 relative"
+        className="overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden pt-6 pb-1 px-1 relative"
       >
         <div
           ref={trackInnerRef}
           className="relative flex items-center justify-between min-w-max mx-auto px-4"
-          style={{ width: `${trackWidth}px`, height: '76px' }}
+          style={{ width: `${trackWidth}px`, height: '46px' }}
         >
           {/* ───────────────────────────────────────────────────────────────────
               CONTINUOUS PREMIUM GREY ROAD SVG (Running behind the cards)
@@ -602,12 +602,12 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
           {roadSvgPathD && (
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none overflow-visible z-0"
-              style={{ width: `${trackWidth}px`, height: '76px' }}
+              style={{ width: `${trackWidth}px`, height: '46px' }}
               aria-hidden="true"
             >
               <defs>
                 <filter id="greyRoadShadow" x="-10%" y="-20%" width="120%" height="160%">
-                  <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000000" floodOpacity="0.12" />
+                  <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor="#000000" floodOpacity="0.1" />
                 </filter>
               </defs>
 
@@ -615,7 +615,7 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
               <path
                 d={roadSvgPathD}
                 stroke="#D1D5DB"
-                strokeWidth="14"
+                strokeWidth="9"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 fill="none"
@@ -627,7 +627,7 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
                 ref={roadPathRef}
                 d={roadSvgPathD}
                 stroke="#9CA3AF"
-                strokeWidth="10"
+                strokeWidth="6"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 fill="none"
@@ -637,8 +637,8 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
               <path
                 d={roadSvgPathD}
                 stroke="#FFFFFF"
-                strokeWidth="1.5"
-                strokeDasharray="5 5"
+                strokeWidth="1.2"
+                strokeDasharray="4 3"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 fill="none"
@@ -648,8 +648,8 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
               {/* Circular Waypoint Nodes on the Road between Destinations */}
               {waypointNodes.map((node, nIdx) => (
                 <g key={`waypoint-${nIdx}`}>
-                  <circle cx={node.x} cy={node.y} r="7" fill="#FFFFFF" stroke="#94A3B8" strokeWidth="2" />
-                  <circle cx={node.x} cy={node.y} r="3" fill="#3B82F6" opacity="0.8" />
+                  <circle cx={node.x} cy={node.y} r="4.5" fill="#FFFFFF" stroke="#94A3B8" strokeWidth="1.5" />
+                  <circle cx={node.x} cy={node.y} r="2" fill="#3B82F6" opacity="0.8" />
                 </g>
               ))}
             </svg>
@@ -685,7 +685,7 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
               >
                 {/* Floating Google Maps Location Pin Directly Above Active/Selected Card */}
                 {isSelected && (
-                  <div className="absolute -top-7 left-1/2 -translate-x-1/2 z-30 pointer-events-none animate-bounce">
+                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 z-30 pointer-events-none animate-bounce">
                     <GoogleMapsPin color={pinColor} isPulse={true} />
                   </div>
                 )}
@@ -699,28 +699,28 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
                   onClick={() => handleMilestoneClick(m.id, m.isJob)}
                   onKeyDown={(e) => handleKeyDown(e, idx)}
                   title={m.title}
-                  className={`group relative h-[42px] px-3 sm:px-3.5 rounded-full flex items-center gap-2.5 text-left transition-all duration-200 active:scale-95 cursor-pointer border focus:outline-none ${
+                  className={`group relative h-[30px] sm:h-[32px] px-2.5 sm:px-3 rounded-full flex items-center gap-1.5 text-left transition-all duration-200 active:scale-95 cursor-pointer border focus:outline-none ${
                     m.isJob
                       ? isSelected
-                        ? 'bg-[#7C3AED] text-white border-[#6D28D9] ring-2 ring-amber-400 shadow-[0_4px_16px_rgba(124,58,237,0.35)]'
-                        : 'bg-[#7C3AED] hover:bg-[#6D28D9] text-white border-transparent shadow-md'
+                        ? 'bg-[#7C3AED] text-white border-[#6D28D9] ring-2 ring-amber-400 shadow-[0_3px_12px_rgba(124,58,237,0.3)]'
+                        : 'bg-[#7C3AED] hover:bg-[#6D28D9] text-white border-transparent shadow-sm'
                       : isGreenPill
-                      ? 'bg-emerald-600 text-white border-emerald-700 shadow-md'
+                      ? 'bg-emerald-600 text-white border-emerald-700 shadow-sm'
                       : isSelected
-                      ? 'bg-white text-[#7C3AED] border-[#7C3AED] ring-2 ring-[#7C3AED]/35 shadow-[0_4px_16px_rgba(124,58,237,0.22)]'
+                      ? 'bg-white text-[#7C3AED] border-[#7C3AED] ring-2 ring-[#7C3AED]/35 shadow-[0_3px_12px_rgba(124,58,237,0.2)]'
                       : isCompleted
                       ? 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200 shadow-sm'
                       : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200 shadow-sm'
                   }`}
                 >
                   {/* Icon Container */}
-                  <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                  <div className="w-4 h-4 flex items-center justify-center shrink-0">
                     {renderOfficialIcon(m.tabNum, m.iconName, m.title)}
                   </div>
 
                   {/* Destination Name */}
                   <span
-                    className={`text-[13px] sm:text-[13.5px] font-bold truncate leading-tight tracking-tight ${
+                    className={`text-[11.5px] sm:text-[12px] font-bold truncate leading-tight tracking-tight ${
                       m.isJob
                         ? 'text-white'
                         : isGreenPill
@@ -757,6 +757,8 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
               state={characterState}
               direction={characterDirection}
               isJobCelebration={isJobSelected}
+              width={24}
+              height={34}
             />
           </div>
         </div>
@@ -768,9 +770,9 @@ export const CourseHorizontalTrackNav: React.FC<CourseHorizontalTrackNavProps> =
           type="button"
           onClick={() => scrollByAmount(280)}
           aria-label="Scroll learning roadmap right"
-          className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-30 w-8 h-8 rounded-full bg-white/95 hover:bg-purple-50 text-purple-700 border border-purple-200 shadow-md items-center justify-center transition-all cursor-pointer"
+          className="hidden md:flex absolute right-1 top-1/2 -translate-y-1/2 z-30 w-7 h-7 rounded-full bg-white/95 hover:bg-purple-50 text-purple-700 border border-purple-200 shadow-md items-center justify-center transition-all cursor-pointer"
         >
-          <ChevronRight className="w-4 h-4 stroke-[2.5]" />
+          <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
         </button>
       )}
     </div>

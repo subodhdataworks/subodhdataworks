@@ -7,6 +7,8 @@ export interface StudentCharacterProps {
   direction?: 1 | -1; // 1 = facing right (forward), -1 = facing left (backward)
   className?: string;
   isJobCelebration?: boolean;
+  width?: number;
+  height?: number;
 }
 
 export const StudentCharacter: React.FC<StudentCharacterProps> = ({
@@ -14,6 +16,8 @@ export const StudentCharacter: React.FC<StudentCharacterProps> = ({
   direction = 1,
   className = '',
   isJobCelebration = false,
+  width = 24,
+  height = 34,
 }) => {
   const isWalking = state === 'walking';
   const isCelebrating = state === 'celebrate' || isJobCelebration;
@@ -119,12 +123,12 @@ export const StudentCharacter: React.FC<StudentCharacterProps> = ({
         }`}
       >
         <svg
-          width="44"
-          height="62"
+          width={width}
+          height={height}
           viewBox="0 0 44 62"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="overflow-visible filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.18)]"
+          className="overflow-visible filter drop-shadow-[0_1.5px_3px_rgba(0,0,0,0.18)]"
         >
           {/* Subtle Ground Contact Shadow */}
           <ellipse cx="22" cy="60" rx="11" ry="2.2" fill="#000000" opacity="0.22" />
