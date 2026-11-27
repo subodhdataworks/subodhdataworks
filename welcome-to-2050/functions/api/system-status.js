@@ -88,52 +88,9 @@ export async function onRequestGet(context) {
       };
     }
 
-    // Safe Diagnostic Trace & Full Production Backup Audit
-    try {
-      const [refPayments, platPayments, ledgerEntries, affStats, withdrawals, courseEnrollments, registeredUsers, clicksDocs, authUsers] = await Promise.all([
-        listFirestoreCollectionDocs('processed_referral_payments', env).catch((e) => [{ _err: e.message }]),
-        listFirestoreCollectionDocs('platform_payments', env).catch((e) => [{ _err: e.message }]),
-        listFirestoreCollectionDocs('wallet_ledger', env).catch((e) => [{ _err: e.message }]),
-        listFirestoreCollectionDocs('affiliate_stats', env).catch((e) => [{ _err: e.message }]),
-        listFirestoreCollectionDocs('withdrawal_requests', env).catch((e) => [{ _err: e.message }]),
-        listFirestoreCollectionDocs('course_enrollments', env).catch((e) => [{ _err: e.message }]),
-        listFirestoreCollectionDocs('registered_users', env).catch((e) => [{ _err: e.message }]),
-        listFirestoreCollectionDocs('referral_clicks', env).catch((e) => [{ _err: e.message }]),
-        listFirebaseAuthUsers(env).catch((e) => [{ error: e.message }]),
-      ]);
-
-      statusReport.affiliateAudit = {
-        auth_users: (authUsers || []).map((u) => ({
-          uid: u.localId || u.uid,
-          email: u.email,
-          displayName: u.displayName,
-          phoneNumber: u.phoneNumber,
-          createdAt: u.createdAt,
-          lastLoginAt: u.lastLoginAt,
-          customAttributes: u.customAttributes,
-          error: u.error,
-        })),
-        processed_referral_payments: refPayments,
-        platform_payments: platPayments,
-        wallet_ledger: ledgerEntries,
-        affiliate_stats: affStats,
-        withdrawal_requests: withdrawals,
-        course_enrollments: courseEnrollments,
-        registered_users: (registeredUsers || []).map((u) => ({
-          uid: u.uid || u.id,
-          email: u.email,
-          referredBy: u.referredBy,
-          referralCode: u.referralCode,
-          refCode: u.refCode,
-          createdAt: u.createdAt || u.registeredAt,
-          _err: u._err,
-        })),
-        referral_clicks_count: (clicksDocs || []).length,
-        referral_clicks: clicksDocs,
-      };
-    } catch (auditErr) {
-      statusReport.affiliateAuditError = auditErr?.message;
-    }
+    // Security: Do not expose user PII, auth_users, payments, or wallet ledger on public GET /api/system-status.
+    // Detailed admin audit data is served exclusively through JWT-authenticated /api/admin-data.
+    statusReport.piiRedacted = true;
   }
 
   return json({ success: true, systemStatus: statusReport });

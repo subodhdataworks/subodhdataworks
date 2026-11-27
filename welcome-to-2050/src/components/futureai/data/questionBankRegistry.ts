@@ -633,16 +633,28 @@ export function getSyncedAccountLearningState(): SyncedUserLearningAccountState 
   }
 }
 
+function buildSyncedTopicKey(
+  tabId: number | string,
+  topicId: number | string,
+  courseKey?: string
+): string {
+  const base = `tab_${Number(tabId) || 1}_topic_${topicId}`;
+  const cleanCourse = (courseKey || '').trim().toLowerCase();
+  if (!cleanCourse || cleanCourse === 'data_analyst') return base;
+  return `${cleanCourse}_${base}`;
+}
+
 export function getSyncedTopicProgress(
   tabId: number | string,
-  topicId: number | string
+  topicId: number | string,
+  courseKey?: string
 ): {
   totalPoints: number;
   dayStreak: number;
   topicState: SyncedTopicActivityState | null;
 } {
   const state = getSyncedAccountLearningState();
-  const tKey = `tab_${Number(tabId) || 1}_topic_${topicId}`;
+  const tKey = buildSyncedTopicKey(tabId, topicId, courseKey);
   return {
     totalPoints: state.totalPoints || 0,
     dayStreak: state.dayStreak || 0,
@@ -668,12 +680,13 @@ export async function saveSyncedTopicProgress(
     interviewSubmittedTextByQId?: Record<number, string>;
     interviewEvaluationsByQId?: Record<number, any>;
     interviewScorePct?: number;
-  }
+  },
+  courseKey?: string
 ): Promise<void> {
   if (typeof window === 'undefined') return;
   const userKey = getActiveLearnerStorageKey();
   const current = getSyncedAccountLearningState();
-  const tKey = `tab_${Number(tabId) || 1}_topic_${topicId}`;
+  const tKey = buildSyncedTopicKey(tabId, topicId, courseKey);
   const prevTopic: SyncedTopicActivityState = current.topics[tKey] || {
     unlockedGame: 1,
     activeGame: 1,

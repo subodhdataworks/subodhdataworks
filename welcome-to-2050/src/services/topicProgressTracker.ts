@@ -156,11 +156,10 @@ export function getTopicProgressInfo(
     }
   } catch {}
 
-  // Check synced learning state ONLY for data_analyst (questionBankRegistry keys are data_analyst tab/topic pairs)
-  const synced =
-    isAuthenticated && canonicalCourse === 'data_analyst'
-      ? getSyncedTopicProgress(rawTabId, numericId)
-      : { topicState: null };
+  // Check cloud-synced per-user, per-course learning state across ALL 7 courses
+  const synced = isAuthenticated
+    ? getSyncedTopicProgress(rawTabId, numericId, canonicalCourse)
+    : { topicState: null };
   const topicState = synced.topicState;
 
   if (
