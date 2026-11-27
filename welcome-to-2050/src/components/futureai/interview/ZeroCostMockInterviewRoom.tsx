@@ -616,7 +616,7 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
     setAnswerElapsedSeconds(0);
     setSttError(null);
     setActiveRightTab('feedback');
-    saveSyncedTopicProgress(tabId, topicId, , courseKey);
+    saveSyncedTopicProgress(tabId, topicId, { interviewCurrentQIdx: idx }, courseKey);
   };
 
   const courseStorageKey = `course_tab_${tabId}`;
@@ -845,7 +845,13 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
     const nextIdx = currentQIdx + 1;
     const hasNextQuestion = nextIdx < questions.length;
 
-    saveSyncedTopicProgress(tabId, topicId, , courseKey);
+    saveSyncedTopicProgress(tabId, topicId, {
+      interviewCurrentQIdx: hasNextQuestion ? nextIdx : currentQIdx,
+      interviewSubmittedTextByQId: nextSubmittedMap,
+      interviewEvaluationsByQId: nextEvalsMap,
+      interviewScorePct: avgPct,
+      pointsDelta: isSelectedVerdict ? 15 : 5,
+    }, courseKey);
 
     if (hasNextQuestion) {
       // Advance directly to the next question; overall result is shown at the end after the last question
@@ -910,7 +916,11 @@ export const ZeroCostMockInterviewRoom: React.FC<ZeroCostMockInterviewRoomProps>
     setSttError(null);
     sessionStartedAtRef.current = Date.now();
     setCompletedTopicResult(null);
-    saveSyncedTopicProgress(tabId, topicId, , courseKey);
+    saveSyncedTopicProgress(tabId, topicId, {
+      interviewCurrentQIdx: 0,
+      interviewSubmittedTextByQId: {},
+      interviewEvaluationsByQId: {},
+    }, courseKey);
   };
 
   const handleEndSession = () => {

@@ -519,7 +519,14 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
       const nextQuizIdx = isLastQuiz ? quizIdx : quizIdx + 1;
       const nextUnlocked = isLastQuiz ? Math.max(unlockedGame, 2) : unlockedGame;
 
-      saveSyncedTopicProgress(tabId, numericTopicId, , courseKey);
+      saveSyncedTopicProgress(tabId, numericTopicId, {
+        totalPoints: nextScore,
+        dayStreak: nextStreak,
+        pointsDelta: 10,
+        quizIdx: nextQuizIdx,
+        unlockedGame: nextUnlocked,
+        activeGame: isLastQuiz ? 2 : 1,
+      }, courseKey);
 
       // Build direct voice feedback with Indian voice (NO question repetition!)
       // Direct full answer: "Right answer! [Option text]"
@@ -551,7 +558,9 @@ export const PythonPracticeArena4Games: React.FC<PythonPracticeArena4GamesProps>
       setQuizFeedback('wrong');
       soundEffects.playQuizWrong();
       setStreak(0);
-      saveSyncedTopicProgress(tabId, numericTopicId, , courseKey);
+      saveSyncedTopicProgress(tabId, numericTopicId, {
+        dayStreak: 0,
+      }, courseKey);
       speakWithFullVoice('Galat jawab, try again!', currentVoiceGender);
     }
   };
@@ -802,7 +811,15 @@ print(result)`
       triggerDynamicCelebration(puzzleIdx + 10, nextStreak);
 
       const isLastPuzzle = puzzleIdx >= puzzleChallenges.length - 1;
-      saveSyncedTopicProgress(tabId, numericTopicId, , courseKey);
+      saveSyncedTopicProgress(tabId, numericTopicId, {
+        totalPoints: nextScore,
+        dayStreak: nextStreak,
+        pointsDelta: 15,
+        puzzleIdx: isLastPuzzle ? puzzleIdx : puzzleIdx + 1,
+        unlockedGame: isLastPuzzle ? Math.max(unlockedGame, 3) : unlockedGame,
+        activeGame: isLastPuzzle ? 3 : 2,
+        game2Completed: isLastPuzzle,
+      }, courseKey);
 
       setTimeout(() => {
         if (puzzleIdx < puzzleChallenges.length - 1) {
@@ -814,7 +831,11 @@ print(result)`
           confetti({ particleCount: 80, spread: 100, origin: { y: 0.6 } });
           soundEffects.playCelebration();
           setFloatingXp(ACTIVITY_LABELS.realWorldChallenge.unlockMessage);
-          saveSyncedTopicProgress(tabId, numericTopicId, , courseKey);
+          saveSyncedTopicProgress(tabId, numericTopicId, {
+            game2Completed: true,
+            unlockedGame: 3,
+            activeGame: 3,
+          }, courseKey);
           setTimeout(() => {
             setActiveGame(3);
           }, 1400);
@@ -824,7 +845,9 @@ print(result)`
       setPuzzleStatus('wrong');
       soundEffects.playQuizWrong();
       setStreak(0);
-      saveSyncedTopicProgress(tabId, numericTopicId, , courseKey);
+      saveSyncedTopicProgress(tabId, numericTopicId, {
+        dayStreak: 0,
+      }, courseKey);
     }
   };
 
@@ -907,7 +930,14 @@ print(result)`
       setTimeout(() => setFloatingXp(null), 1000);
 
       const allMatched = Object.keys(nextMatches).length === matchPairs.length;
-      saveSyncedTopicProgress(tabId, numericTopicId, , courseKey);
+      saveSyncedTopicProgress(tabId, numericTopicId, {
+        totalPoints: nextScore,
+        dayStreak: nextStreak,
+        pointsDelta: 10,
+        matchedPairs: nextMatches,
+        unlockedGame: allMatched ? Math.max(unlockedGame, 4) : unlockedGame,
+        activeGame: allMatched ? 4 : 3,
+      }, courseKey);
 
       // Check if all matched
       if (allMatched) {
@@ -970,7 +1000,15 @@ print(result)`
       setMissionDone(true);
     }
 
-    saveSyncedTopicProgress(tabId, numericTopicId, , courseKey);
+    saveSyncedTopicProgress(tabId, numericTopicId, {
+      totalPoints: nextScore,
+      dayStreak: nextStreak,
+      pointsDelta: 25,
+      missionIdx: isAllMissionsDone ? missionIdx : missionIdx + 1,
+      missionDone: isAllMissionsDone,
+      unlockedGame: 3,
+      activeGame: 3,
+    }, courseKey);
   };
 
   const handleAdvanceMission = () => {
@@ -1855,25 +1893,25 @@ print(result)`
       if (quizIdx < quizQuestions.length - 1) {
         const nextIdx = quizIdx + 1;
         setQuizIdx(nextIdx);
-        saveSyncedTopicProgress(tabId, numericTopicId, , courseKey);
+        saveSyncedTopicProgress(tabId, numericTopicId, { quizIdx: nextIdx }, courseKey);
       } else {
         const nextUnlocked = Math.max(unlockedGame, 2);
         setUnlockedGame(nextUnlocked);
         setActiveGame(2);
-        saveSyncedTopicProgress(tabId, numericTopicId, , courseKey);
+        saveSyncedTopicProgress(tabId, numericTopicId, { unlockedGame: nextUnlocked, activeGame: 2 }, courseKey);
       }
     } else if (activeGame === 2) {
       if (puzzleIdx < puzzleChallenges.length - 1) {
         const nextIdx = puzzleIdx + 1;
         setPuzzleIdx(nextIdx);
-        saveSyncedTopicProgress(tabId, numericTopicId, , courseKey);
+        saveSyncedTopicProgress(tabId, numericTopicId, { puzzleIdx: nextIdx }, courseKey);
       } else {
         setGame2Completed(true);
         setUnlockedGame((prev) => Math.max(prev, 3));
         confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
         soundEffects.playCelebration();
         setFloatingXp(ACTIVITY_LABELS.realWorldChallenge.movingMessage);
-        saveSyncedTopicProgress(tabId, numericTopicId, , courseKey);
+        saveSyncedTopicProgress(tabId, numericTopicId, { game2Completed: true, unlockedGame: 3, activeGame: 3 }, courseKey);
         setTimeout(() => {
           setActiveGame(3);
         }, 800);
@@ -1882,13 +1920,13 @@ print(result)`
       if (missionIdx < missionsCount - 1) {
         const nextIdx = missionIdx + 1;
         setMissionIdx(nextIdx);
-        saveSyncedTopicProgress(tabId, numericTopicId, , courseKey);
+        saveSyncedTopicProgress(tabId, numericTopicId, { missionIdx: nextIdx }, courseKey);
       } else {
         setMissionDone(true);
         confetti({ particleCount: 80, spread: 100, origin: { y: 0.6 } });
         soundEffects.playCelebration();
         setFloatingXp('🎉 All Practice Games Completed! Starting Mock Interview... ✨');
-        saveSyncedTopicProgress(tabId, numericTopicId, , courseKey);
+        saveSyncedTopicProgress(tabId, numericTopicId, { missionDone: true }, courseKey);
         setTimeout(() => {
           if (onNextToInterview) onNextToInterview();
         }, 1200);
@@ -2423,7 +2461,15 @@ print(result)`
                     setMissionDone(true);
                   }
 
-                  saveSyncedTopicProgress(tabId, numericTopicId, , courseKey);
+                  saveSyncedTopicProgress(tabId, numericTopicId, {
+                    totalPoints: nextScore,
+                    dayStreak: nextStreak,
+                    pointsDelta: pointsGained,
+                    missionIdx: isAllMissionsDone ? missionIdx : missionIdx + 1,
+                    missionDone: isAllMissionsDone,
+                    unlockedGame: 3,
+                    activeGame: 3,
+                  }, courseKey);
                 }}
                 onNextMission={handleAdvanceMission}
                 isLastMission={missionIdx >= missionsCount - 1}
